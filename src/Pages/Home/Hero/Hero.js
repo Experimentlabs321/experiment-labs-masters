@@ -8,7 +8,7 @@ import Stories from 'react-insta-stories';
 import ArrowCircleLeftRoundedIcon from '@mui/icons-material/ArrowCircleLeftRounded';
 import ArrowCircleRightRoundedIcon from '@mui/icons-material/ArrowCircleRightRounded';
 
-const Hero = () => {
+const Hero = ({ onButtonClick }) => {
     const visibleIndex = useRef(0);
 
     const [stories, setStories] = useState([
@@ -86,7 +86,7 @@ const Hero = () => {
         <div>
             <section className="bg-green bg-opacity-30 lg:h-[600px]">
                 <div style={{ height: "100%" }} className="grid mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12">
-                    <div className="mr-auto place-self-center lg:col-span-6 py-8 lg:py-16 px-4 lg:pl-16">
+                    <div className="mr-auto place-self-center lg:col-span-6 py-16 px-4 lg:pl-16">
                         <h1 className="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-5xl text-black font-serif">Plan your career by <span className='italic bg-gradient-to-t from-green to-50% to-transparent'>practically</span> experiencing it.</h1>
 
                         <div className='my-8 text-gray-600 flex flex-col gap-3 justify-start'>
@@ -95,15 +95,15 @@ const Hero = () => {
                             <span><CurrencyRupeeIcon className='mr-2' />Placements driven courses with <span className='font-bold initial'>profile building,stream selection and career planning</span></span>
                         </div>
 
-                        <Button sx={{ bgcolor: '#0cc5db', padding: '15px 20px', fontWeight: "600", fontSize: '16px', ":hover": { bgcolor: "rgb(62 232 181)" } }} variant="contained" endIcon={<ArrowCircleRightOutlinedIcon className='h-6 w-6' />}>
+                        <Button onClick={onButtonClick} sx={{ bgcolor: '#0cc5db', padding: '15px 20px', fontWeight: "600", fontSize: '16px', ":hover": { bgcolor: "rgb(62 232 181)" } }} variant="contained" endIcon={<ArrowCircleRightOutlinedIcon className='h-6 w-6' />}>
                             Explore Courses
                         </Button>
 
                     </div>
 
-                    <div className='lg:col-span-6 lg:h-full relative h-[600px]'>
-                        <div style={{ position: 'absolute', top: '0', left: '0', width: "100%", height: "100%", backgroundColor: 'rgba(0,0,10,0.6)' }}></div>
-                        <video ref={myVideoRef} style={{ width: "100%", height: "100%", objectFit: "cover" }} autoPlay loop muted>
+                    <div className='hidden lg:block md:col-span-6 lg:h-full relative h-[600px]'>
+                        <div style={{ position: 'absolute', top: '0', left: '0', width: "100%", height: "100%", backgroundColor:'rgba(128,128,128,0.8)'}}></div>
+                        <video ref={myVideoRef} style={{ width: "100%", height: "100%", objectFit: "cover", WebkitFilter:"blur(5px) saturate(1)" }} muted>
                             <source ref={mySourceRef} src={currentVideo} type="video/mp4" />
                         </video>
                         <div className='flex justify-center items-center gap-5' style={{
@@ -113,7 +113,7 @@ const Hero = () => {
                             transform: "translate(-50%, -50%)"
                         }}>
                             <button className='hidden sm:block' type="button" onClick={onPrevious}>
-                                <ArrowCircleLeftRoundedIcon sx={{fontSize:'30px', color: 'rgb(156 163 175)', ":hover":{color:"rgb(62 232 181)"}}} />
+                                <ArrowCircleLeftRoundedIcon className='opacity-80' sx={{fontSize:'30px', color: 'rgb(156 163 175)', ":hover":{color:"rgb(62 232 181)"}}} />
                             </button>
                             <div>
                                 <Stories
@@ -128,7 +128,7 @@ const Hero = () => {
                                 />
                             </div>
                             <button className='hidden sm:block' type="button" onClick={onNext}>
-                                <ArrowCircleRightRoundedIcon sx={{fontSize:'30px', color: 'rgb(156 163 175)', ":hover":{color:"rgb(62 232 181)"}}} />
+                                <ArrowCircleRightRoundedIcon className='opacity-80' sx={{fontSize:'30px', color: 'rgb(156 163 175)', ":hover":{color:"rgb(62 232 181)"}}} />
                             </button>
                         </div>
                     </div>

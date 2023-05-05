@@ -1,0 +1,33 @@
+.parent-container {
+    display: flex;
+    overflow-x: scroll;
+    gap: 10px;
+    margin-top: 32px;
+}
+
+.parent-container::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari, and Opera */
+}
+
+
+.courses {
+    border: 2px solid gray;
+    flex-shrink: 0;
+    flex-basis: 84px;
+    height: fit-content;
+    text-align: center;
+    font-size: 20px;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all ease-in-out 0.5s;
+}
+
+.courses:last-of-type {
+    flex-basis: 200px;
+  }
+  
+  .courses:hover {
+    background-color: #3EE8B5;
+  }
