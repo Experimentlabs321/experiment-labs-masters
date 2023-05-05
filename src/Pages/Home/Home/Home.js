@@ -1,11 +1,14 @@
 import React from 'react';
 import MyHelmet from '../../../Components/MyHelmet/MyHelpmet';
+import Hero from '../Hero/Hero';
 
 const Home = () => {
     return (
         <div>
             <MyHelmet>Home</MyHelmet>
-           <h1 className='text-5xl text-green'>Hello word</h1>  
+            <div className='mt-[3rem]'>
+                <Hero />
+            </div>
         </div>
     );
 };
