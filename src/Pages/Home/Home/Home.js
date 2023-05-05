@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import MyHelmet from '../../../Components/MyHelmet/MyHelpmet';
 import Hero from '../Hero/Hero';
 import Feature from '../Feature/Feature';
+import TakeTest from '../TakeTest/TakeTest';
 
 const Home = () => {
 
@@ -22,6 +23,7 @@ const Home = () => {
             <div ref={featureRef}>
                 <Feature />
             </div>
+            <TakeTest/>
         </div>
     );
 };
