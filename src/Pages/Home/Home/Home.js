@@ -8,7 +8,9 @@ const Home = () => {
     const featureRef = useRef(null);
 
     const handleButtonClick = () => {
-        featureRef.current.scrollIntoView({ behavior: 'smooth' });
+        const featurePosition = featureRef.current.getBoundingClientRect().top;
+        const headerHeight = 80;
+        window.scrollTo({ top: featurePosition - headerHeight, behavior: 'smooth' });
     };
 
     return (
@@ -18,7 +20,7 @@ const Home = () => {
                 <Hero onButtonClick={handleButtonClick} />
             </div>
             <div ref={featureRef}>
-                <Feature/>
+                <Feature />
             </div>
         </div>
     );
