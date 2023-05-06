@@ -1,0 +1,41 @@
+.all-parent-container {
+    display: flex;
+    overflow-x: scroll;
+    gap: 10px;
+    margin-top: 32px;
+    padding-bottom: 20px;
+}
+
+.all-parent-container::-webkit-scrollbar {
+    /* display: none; */
+    /* Chrome, Safari, and Opera */
+    width: 8px;
+    height: 8px;
+}
+
+/* scrollbar thumb */
+.all-parent-container::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 4px;
+}
+
+/* scrollbar track */
+.all-parent-container::-webkit-scrollbar-track {
+    background-color: #f0f0f0;
+}
+
+/* scrollbar corner */
+.all-parent-container::-webkit-scrollbar-corner {
+    background-color: #f0f0f0;
+}
+
+
+.all-courses {
+    flex-shrink: 0;
+    flex-basis: 80vw;
+    max-width: 320px;
+    height: fit-content;
+    cursor: pointer;
+    transition: all ease-in-out 0.5s;
+}
+

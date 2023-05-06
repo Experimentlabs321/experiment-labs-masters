@@ -3,6 +3,7 @@ import MyHelmet from '../../../Components/MyHelmet/MyHelpmet';
 import Hero from '../Hero/Hero';
 import Feature from '../Feature/Feature';
 import TakeTest from '../TakeTest/TakeTest';
+import AllCourses from '../AllCourses/AllCourses';
 
 const Home = () => {
 
@@ -24,6 +25,7 @@ const Home = () => {
                 <Feature />
             </div>
             <TakeTest/>
+            <AllCourses/>
         </div>
     );
 };
