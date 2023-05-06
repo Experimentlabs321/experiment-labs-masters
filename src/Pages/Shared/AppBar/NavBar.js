@@ -132,7 +132,7 @@ const NavBar = (props) => {
     return (
         <Box sx={{ display: 'flex'}}>
             <CssBaseline />
-            <AppBar component="nav" sx={{ bgcolor: 'white', padding: '4px'  }}>
+            <AppBar component="nav" sx={{ bgcolor: 'white', padding: '10px 20px 10px 10px'  }}>
                 <Toolbar>
 
                     <Typography

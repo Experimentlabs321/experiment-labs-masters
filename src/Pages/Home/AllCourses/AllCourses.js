@@ -67,7 +67,7 @@ const AllCourses = () => {
 
             for (let i = 0; i < elements.length; i++) {
                 const element = elements[i];
-                const elementPosition = element.offsetTop + element.offsetHeight;
+                const elementPosition = element.offsetTop - 260 + element.offsetHeight;
 
                 if (scrollPosition >= elementPosition) {
                     setSelected(Number(element.id));
