@@ -5,10 +5,10 @@ import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOu
 
 const TakeTest = () => {
     return (
-        <div className='mt-48 bg-green h-96 w-full'>
+        <div className='mt-48 bg-custom-blue h-96 w-full'>
             <div className='px-5 lg:px-40 flex items-center gap-10' style={{ height: '100%' }}>
                 <div className='w-full lg:w-1/2'>
-                    <h1 className='text-dark text-3xl font-normal mb-6'>Take a free personality Evaluation test <br />
+                    <h1 className='text-white text-3xl font-normal mb-6'>Take a free personality Evaluation test <br />
                         And <span className='font-bold'>Book a 1 on 1 counseling session.</span> </h1>
                     <Button
                         size='large'

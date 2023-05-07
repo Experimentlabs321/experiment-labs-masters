@@ -29,7 +29,8 @@
 }
 
 .courses:hover {
-    background-color: #3EE8B5;
+    background-color: #397FEB;
+    color: white;
 }
 
 .feature-slide-parent-container {

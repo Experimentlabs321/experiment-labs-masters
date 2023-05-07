@@ -79,7 +79,7 @@ const NavBar = (props) => {
         <YouTubeIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
         <LinkedInIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
         <TwitterIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
-        <Button onClick={toggleDrawer(true)} sx={{ bgcolor: '#0CC5DB', ":hover": { bgcolor: '#3EE8B5' } }} variant="contained" endIcon={<ExpandMoreIcon />}>
+        <Button onClick={toggleDrawer(true)} sx={{ bgcolor: '#97E7AA', ":hover": { bgcolor: '#3EE8B5' }, color:'black' }} variant="contained" endIcon={<ExpandMoreIcon />}>
             All Courses
         </Button>
     ];
@@ -97,7 +97,7 @@ const NavBar = (props) => {
         <Button onClick={toggleDrawer(true)} sx={{ bgcolor: '#fff', color:'black' }} size='medium' variant="text" startIcon={<TwitterIcon />}>
             Twitter
         </Button>,
-        <Button onClick={toggleDrawer(true)} sx={{ bgcolor: '#0CC5DB', ":hover": { bgcolor: '#3EE8B5' } }} variant="contained" endIcon={<ExpandMoreIcon />}>
+        <Button onClick={toggleDrawer(true)} sx={{ bgcolor: '#97E7AA', ":hover": { bgcolor: '#3EE8B5' }, color:'black' }} variant="contained" endIcon={<ExpandMoreIcon />}>
             All Courses
         </Button>
     ];

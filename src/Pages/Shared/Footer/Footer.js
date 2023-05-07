@@ -48,16 +48,16 @@ const Footer = () => {
                             <div className="flex justify-start space-x-3">
                                 
                                 <Link rel="noopener noreferrer" href="#" title="Youtube" className="flex items-center p-1">
-                                    <InstagramIcon className='w-6 h-6 hover:text-green' />
+                                    <InstagramIcon className='w-6 h-6 hover:text-custom-blue' />
                                 </Link>
                                 <Link rel="noopener noreferrer" href="#" title="Youtube" className="flex items-center p-1">
-                                    <YouTubeIcon className='w-6 h-6 hover:text-green' />
+                                    <YouTubeIcon className='w-6 h-6 hover:text-custom-blue' />
                                 </Link>
                                 <Link rel="noopener noreferrer" href="#" title="Youtube" className="flex items-center p-1">
-                                    <LinkedInIcon className='w-6 h-6 hover:text-green' />
+                                    <LinkedInIcon className='w-6 h-6 hover:text-custom-blue' />
                                 </Link>
                                 <Link rel="noopener noreferrer" href="#" title="Youtube" className="flex items-center p-1">
-                                    <TwitterIcon className='w-6 h-6 hover:text-green' />
+                                    <TwitterIcon className='w-6 h-6 hover:text-custom-blue' />
                                 </Link>
                             </div>
                             <div className='divider'></div>

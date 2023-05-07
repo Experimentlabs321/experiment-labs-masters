@@ -84,18 +84,18 @@ const Hero = ({ onButtonClick }) => {
 
     return (
         <div>
-            <section className="bg-green bg-opacity-30 lg:h-[600px]">
+            <section className="bg-custom-blue lg:h-[600px]">
                 <div style={{ height: "100%" }} className="grid mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12">
                     <div className="mr-auto place-self-center lg:col-span-6 py-16 px-4 lg:pl-16">
-                        <h1 className="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-5xl text-black font-serif">Plan your career by <span className='italic bg-gradient-to-t from-green to-50% to-transparent'>practically</span> experiencing it.</h1>
+                        <h1 className="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-5xl text-white font-serif">Plan your career by <span className='italic bg-gradient-to-t from-custom-blue to-50% to-transparent'>practically</span> experiencing it.</h1>
 
-                        <div className='my-8 text-gray-600 flex flex-col gap-3 justify-start'>
+                        <div className='my-8 text-white flex flex-col gap-3 justify-start'>
                             <span><LanguageIcon className='mr-2' /> Curriculum that takes learning<span className='font-bold initial'> {` beyond the classroom`}</span></span>
                             <span><BusinessCenterIcon className='mr-2' /> Classes led by <span className='font-bold initial'>100+ MDs, CEOs & Founders</span></span>
                             <span><CurrencyRupeeIcon className='mr-2' />Placements driven courses with <span className='font-bold initial'>profile building,stream selection and career planning</span></span>
                         </div>
 
-                        <Button onClick={onButtonClick} sx={{ bgcolor: '#0cc5db', padding: '15px 20px', fontWeight: "600", fontSize: '16px', ":hover": { bgcolor: "rgb(62 232 181)" } }} variant="contained" endIcon={<ArrowCircleRightOutlinedIcon className='h-6 w-6' />}>
+                        <Button onClick={onButtonClick} sx={{ bgcolor: '#97E7AA', ":hover": { bgcolor: '#3EE8B5' }, padding: '15px 20px', color:'black',fontWeight: "600", fontSize: '16px' }} variant="contained" endIcon={<ArrowCircleRightOutlinedIcon className='h-6 w-6' />}>
                             Explore Courses
                         </Button>
 
