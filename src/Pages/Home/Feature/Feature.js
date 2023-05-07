@@ -175,7 +175,7 @@ const Feature = () => {
     // console.log(isLargeScreen);
 
     return (
-        <div className='px-10 lg:px-40 mt-20' ref={containerRef}>
+        <div className='px-5 lg:px-40 mt-20' ref={containerRef}>
             <div ref={stickyRef} style={{ position: `${isLargeScreen ? 'sticky' : 'block'}`, top: 75, backgroundColor: 'white', padding: "30px 0", zIndex: '1000' }}>
                 <h1 className='text-4xl font-serif'>Envision. Experiment. Educate. Enable.</h1>
                 <h1 className='text-4xl font-serif font-extrabold mt-2'><span className='bg-gradient-to-t from-green to-50% to-transparent'>Hands-on</span> & <span className='bg-gradient-to-t from-green to-50% to-transparent'>Placement</span> Driven Programmes</h1>
