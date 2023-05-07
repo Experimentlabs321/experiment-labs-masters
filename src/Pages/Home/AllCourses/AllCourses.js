@@ -18,6 +18,9 @@ import 'swiper/css/scrollbar';
 import ArrowCircleLeftRoundedIcon from '@mui/icons-material/ArrowCircleLeftRounded';
 import ArrowCircleRightRoundedIcon from '@mui/icons-material/ArrowCircleRightRounded';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CleanHandsTwoToneIcon from '@mui/icons-material/CleanHandsTwoTone';
+import CurrencyExchangeTwoToneIcon from '@mui/icons-material/CurrencyExchangeTwoTone';
+import MoneyTwoToneIcon from '@mui/icons-material/MoneyTwoTone';
 
 const AllCourses = () => {
 
@@ -154,7 +157,7 @@ const AllCourses = () => {
 
                 {/* Big Screen */}
 
-                <div className='hidden w-full lg:flex flex-col gap-20 getId'>
+                <div className='hidden w-full lg:flex flex-col gap-24 getId'>
                     {/* First one  */}
                     <div className='w-full rounded-xl bg-custom-blue bg-opacity-5 flex p-10 items-start gap-10' id={0}>
                         <div>
@@ -443,10 +446,136 @@ const AllCourses = () => {
 
                     </div>
 
+                    {/* Sixth One */}
+                    <div className='w-full rounded-xl bg-custom-blue bg-opacity-5 p-10 items-start gap-10' id={5}>
+                        <div className='flex gap-10 items-center'>
+                            <div>
+                                <h1 className='text-2xl font-bold font-serif text-dark'>Get Mentored by Top CXOs</h1>
+                                <p className='text-sm font-light my-3'>Experience one-on-one mentorship, coaching and guidance from CXOs across industries.</p>
+                                <p className='mb-3'>Our Mentors Include</p>
+
+                                <div className='grid grid-cols-2 gap-4 gap-y-6 pt-6 pb-8 pr-5'>
+                                    <div className='flex items-center gap-3'>
+                                        <img alt="" className="w-12 h-12 rounded-full ring-2 ring-offset-4 dark:bg-gray-500 ring-custom-blue ring-offset-gray-800" src="https://source.unsplash.com/40x40/?portrait?1" />
+                                        <div>
+                                            <h1 className='text-sm'>Full Name</h1>
+                                            <p className='text-xs font-light'>Work Role</p>
+                                        </div>
+                                    </div>
+                                    <div className='flex items-center gap-3'>
+                                        <img alt="" className="w-12 h-12 rounded-full ring-2 ring-offset-4 dark:bg-gray-500 ring-custom-blue ring-offset-gray-800" src="https://source.unsplash.com/40x40/?portrait?1" />
+                                        <div>
+                                            <h1 className='text-sm'>Full Name</h1>
+                                            <p className='text-xs font-light'>Work Role</p>
+                                        </div>
+                                    </div>
+                                    <div className='flex items-center gap-3'>
+                                        <img alt="" className="w-12 h-12 rounded-full ring-2 ring-offset-4 dark:bg-gray-500 ring-custom-blue ring-offset-gray-800" src="https://source.unsplash.com/40x40/?portrait?1" />
+                                        <div>
+                                            <h1 className='text-sm'>Full Name</h1>
+                                            <p className='text-xs font-light'>Work Role</p>
+                                        </div>
+                                    </div>
+                                    <div className='flex items-center gap-3'>
+                                        <img alt="" className="w-12 h-12 rounded-full ring-2 ring-offset-4 dark:bg-gray-500 ring-custom-blue ring-offset-gray-800" src="https://source.unsplash.com/40x40/?portrait?1" />
+                                        <div>
+                                            <h1 className='text-sm'>Full Name</h1>
+                                            <p className='text-xs font-light'>Work Role</p>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
 
 
-                    <div className='w-full h-96 bg-custom-blue bg-opacity-5' id={5}></div>
-                    <div className='w-full h-96 bg-custom-blue bg-opacity-5' id={6}></div>
+                            <div>
+                                <div>
+                                    <iframe
+                                        loop={true}
+                                        height={180}
+                                        width={280}
+                                        keyboardNavigation={true}
+                                        style={{ borderRadius: '15px', border: '1px solid gray' }}
+                                        src={stories[0]?.url}
+                                        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowFullScreen
+                                        title="Embedded video"
+                                    />
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+
+                    </div>
+
+                    {/* Seventh One */}
+                    <div className='w-full rounded-xl bg-custom-blue bg-opacity-5 p-10 items-start gap-10' id={6}>
+                        <div className='flex gap-10 items-center'>
+                            <div>
+                                <h1 className='text-2xl font-bold font-serif text-dark'>Run a 5 Cr. Investment Fund
+                                </h1>
+                                <p className='text-sm font-light my-3'>The Masters’ Union Investment Fund has a working capital of over 5 Crores, invested across diverse asset classes like Crypto and Blockchain, Public and Private Equities, Fund of Funds, REITs and InvITs and of course, startups. </p>
+                                <p className='mb-3'>Our Portfolio Includes</p>
+
+                                <div className='grid grid-cols-1 gap-4 gap-y-6 pt-6 pb-8 pr-5'>
+                                    <div className='flex items-center gap-3'>
+                                        <div className='border-2 border-custom-blue p-2 rounded-full'>
+                                            <CleanHandsTwoToneIcon className='text-2xl text-custom-blue' />
+                                        </div>
+                                        <div>
+                                            <h1 className='text-sm'>Investments in Public Equities</h1>
+                                            <p className='text-xs font-light'>Poonawala Group • ITC • CDSL and 27 more!</p>
+                                        </div>
+                                    </div>
+                                    <div className='flex items-center gap-3'>
+                                        <div className='border-2 border-custom-blue p-2 rounded-full'>
+                                            <CurrencyExchangeTwoToneIcon className='text-2xl text-custom-blue' />
+                                        </div>
+                                        <div>
+                                            <h1 className='text-sm'>Investments as a VC</h1>
+                                            <p className='text-xs font-light'>AlphaMint Labs • BluSmart and 4 more!</p>
+                                        </div>
+                                    </div>
+                                    <div className='flex items-center gap-3'>
+                                        <div className='border-2 border-custom-blue p-2 rounded-full'>
+                                            <MoneyTwoToneIcon className='text-2xl text-custom-blue' />
+                                        </div>
+                                        <div>
+                                            <h1 className='text-sm'>Alternate Investments</h1>
+                                            <p className='text-xs font-light'>Antler India (LPs) • Gold • REITs • InvITs • Forex</p>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+                            <div>
+                                <div>
+                                    <iframe
+                                        loop={true}
+                                        height={180}
+                                        width={280}
+                                        keyboardNavigation={true}
+                                        style={{ borderRadius: '15px', border: '1px solid gray' }}
+                                        src={stories[0]?.url}
+                                        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowFullScreen
+                                        title="Embedded video"
+                                    />
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+
+                    </div>
+
                 </div>
 
 
@@ -622,7 +751,7 @@ const AllCourses = () => {
 
                         {/* Fifth Slide */}
                         <SwiperSlide style={{ maxWidth: '400px', minWidth: '400px', minHeight: '575px', maxHeight: '575px' }}>
-                            <div className='w-[340px] max-w-[340px] rounded-xl bg-custom-blue bg-opacity-5 flex flex-col-reverse justify-end min-h-[560px] max-h-[560px]' id={3}>
+                            <div className='w-[340px] max-w-[340px] rounded-xl bg-custom-blue bg-opacity-5 flex flex-col-reverse justify-end min-h-[560px] max-h-[560px]' id={4}>
                                 <div className='p-3'>
                                     <h1 className='text-xl font-bold font-serif text-dark'>Hustle Through a Weekend of Iteration and Innovation</h1>
                                     <p className='text-sm font-light my-3'>Students engage with peers to bridge gaps, share ideas, and develop their best prototypes in under 48 hours.</p>
@@ -662,6 +791,103 @@ const AllCourses = () => {
                                     </div>
                                 </div>
 
+                                <div className='w-full'>
+                                    <iframe
+                                        style={{ borderTopLeftRadius: '8px', borderTopRightRadius: '8px', width: '100%', height: '200px', objectFit: 'cover', border: '1px solid gray' }}
+                                        currentIndex={selectedIndex}
+                                        src='https://dsqqu7oxq6o1v.cloudfront.net/motion-array-1388812-A012_06252056_C069-high.mp4'
+                                        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowFullScreen
+                                        title="Embedded video"
+                                    />
+                                </div>
+                            </div>
+                        </SwiperSlide>
+
+                        {/* Sixth Slide */}
+                        <SwiperSlide style={{ maxWidth: '400px', minWidth: '400px', minHeight: '575px', maxHeight: '575px' }}>
+                            <div className='w-[340px] max-w-[340px] rounded-xl bg-custom-blue bg-opacity-5 flex flex-col-reverse justify-end min-h-[560px] max-h-[560px]' id={5}>
+                                <div className='p-3'>
+                                    <div>
+                                        <h1 className='text-2xl font-bold font-serif text-dark'>Get Mentored by Top CXOs</h1>
+                                        <p className='text-sm font-light my-3'>Experience one-on-one mentorship, coaching and guidance from CXOs across industries.</p>
+                                        <p className='mb-3'>Our Mentors Include</p>
+
+                                        <div className='grid grid-cols-1 gap-4 gap-y-6 pl-2 pt-6 pb-8 pr-5'>
+                                            <div className='flex items-center gap-3'>
+                                                <img alt="" className="w-6 h-6 rounded-full ring-2 ring-offset-4 dark:bg-gray-500 ring-custom-blue ring-offset-gray-800" src="https://source.unsplash.com/40x40/?portrait?1" />
+                                                <div>
+                                                    <h1 className='text-sm'>Full Name</h1>
+                                                    <p className='text-xs font-light'>Work Role</p>
+                                                </div>
+                                            </div>
+                                            <div className='flex items-center gap-3'>
+                                                <img alt="" className="w-6 h-6 rounded-full ring-2 ring-offset-4 dark:bg-gray-500 ring-custom-blue ring-offset-gray-800" src="https://source.unsplash.com/40x40/?portrait?1" />
+                                                <div>
+                                                    <h1 className='text-sm'>Full Name</h1>
+                                                    <p className='text-xs font-light'>Work Role</p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className='w-full'>
+                                    <iframe
+                                        style={{ borderTopLeftRadius: '8px', borderTopRightRadius: '8px', width: '100%', height: '200px', objectFit: 'cover', border: '1px solid gray' }}
+                                        currentIndex={selectedIndex}
+                                        src='https://dsqqu7oxq6o1v.cloudfront.net/motion-array-1388812-A012_06252056_C069-high.mp4'
+                                        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowFullScreen
+                                        title="Embedded video"
+                                    />
+                                </div>
+                            </div>
+                        </SwiperSlide>
+
+
+                        {/* Seventh Slide */}
+                        <SwiperSlide style={{ maxWidth: '400px', minWidth: '400px', minHeight: '575px', maxHeight: '575px' }}>
+                            <div className='w-[340px] max-w-[340px] rounded-xl bg-custom-blue bg-opacity-5 flex flex-col-reverse justify-end min-h-[560px] max-h-[560px]' id={6}>
+
+                                <div className='p-3'>
+                                    <h1 className='text-2xl font-bold font-serif text-dark'>Run a 5 Cr. Investment Fund
+                                    </h1>
+                                    <p className='text-sm font-light my-3'>The Masters’ Union Investment Fund has a working capital of over 5 Crores...</p>
+                                    <p className='mb-3'>Our Portfolio Includes</p>
+
+                                    <div className='grid grid-cols-1 gap-4 gap-y-3 pt-3 pb-8 pr-5'>
+                                        <div className='flex items-center gap-3'>
+                                            <div className='border-2 border-custom-blue p-1 rounded-full'>
+                                                <CleanHandsTwoToneIcon className='text-2xl text-custom-blue' />
+                                            </div>
+                                            <div>
+                                                <h1 className='text-sm'>Investments in Public Equities</h1>
+                                                <p className='text-xs font-light'>Poonawala Group • ITC • CDSL and 27 more!</p>
+                                            </div>
+                                        </div>
+                                        <div className='flex items-center gap-3'>
+                                            <div className='border-2 border-custom-blue p-1 rounded-full'>
+                                                <CurrencyExchangeTwoToneIcon className='text-2xl text-custom-blue' />
+                                            </div>
+                                            <div>
+                                                <h1 className='text-sm'>Investments as a VC</h1>
+                                                <p className='text-xs font-light'>AlphaMint Labs • BluSmart and 4 more!</p>
+                                            </div>
+                                        </div>
+                                        <div className='flex items-center gap-3'>
+                                            <div className='border-2 border-custom-blue p-1 rounded-full'>
+                                                <MoneyTwoToneIcon className='text-2xl text-custom-blue' />
+                                            </div>
+                                            <div>
+                                                <h1 className='text-sm'>Alternate Investments</h1>
+                                                <p className='text-xs font-light'>Antler India (LPs) • Gold • REITs • InvITs • Forex</p>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
                                 <div className='w-full'>
                                     <iframe
                                         style={{ borderTopLeftRadius: '8px', borderTopRightRadius: '8px', width: '100%', height: '200px', objectFit: 'cover', border: '1px solid gray' }}
