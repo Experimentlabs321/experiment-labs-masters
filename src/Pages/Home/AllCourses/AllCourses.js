@@ -75,8 +75,8 @@ const AllCourses = () => {
             // console.log(bottomOffset, bottomOffset2);
 
             if ((bottomOffset < 0) && (window.innerWidth > 1024)) {
-                stickyRef.current.style.position = 'absolute';
-                stickyRef2.current.style.position = 'absolute';
+                stickyRef.current.style.position = 'block';
+                stickyRef2.current.style.position = 'block';
                 stickyRef.current.style.bottom = '0';
                 stickyRef2.current.style.bottom = '0';
             } else {

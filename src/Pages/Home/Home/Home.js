@@ -4,6 +4,8 @@ import Hero from '../Hero/Hero';
 import Feature from '../Feature/Feature';
 import TakeTest from '../TakeTest/TakeTest';
 import AllCourses from '../AllCourses/AllCourses';
+import AiTutor from '../AIiTutor/AiTutor';
+import MeetTheMaster from '../MeetTheMasters/MeetTheMaster';
 
 const Home = () => {
 
@@ -26,6 +28,8 @@ const Home = () => {
             </div>
             <TakeTest/>
             <AllCourses/>
+            <AiTutor/>
+            <MeetTheMaster/>
         </div>
     );
 };
