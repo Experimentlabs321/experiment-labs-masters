@@ -1,0 +1,3 @@
+.eu-container::-webkit-scrollbar{
+    display: none;
+}

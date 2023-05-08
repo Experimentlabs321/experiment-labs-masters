@@ -6,6 +6,9 @@ import TakeTest from '../TakeTest/TakeTest';
 import AllCourses from '../AllCourses/AllCourses';
 import AiTutor from '../AIiTutor/AiTutor';
 import MeetTheMaster from '../MeetTheMasters/MeetTheMaster';
+import CEOChallenge from '../CEOChallenge/CEOChallenge';
+import LifeAtUnion from '../LifeAtUnion/LifeAtUnion';
+import ExperienceUnion from '../ExperienceUnion/ExperienceUnion';
 
 const Home = () => {
 
@@ -30,6 +33,9 @@ const Home = () => {
             <AllCourses/>
             <AiTutor/>
             <MeetTheMaster/>
+            <CEOChallenge/>
+            <LifeAtUnion/>
+            <ExperienceUnion/>
         </div>
     );
 };

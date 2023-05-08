@@ -1,0 +1,20 @@
+.ceo-curved-sides {
+    border-bottom-left-radius: 30% 50%;
+    border-bottom-right-radius: 30% 50%;
+    border-top-left-radius: 30% 50%;
+    border-top-right-radius: 30% 50%;
+    height: 100%;
+    border-left: 20px solid rgba(0, 0, 0, 0.14);
+    border-right: 20px solid rgba(0, 0, 0, 0.14);
+}
+.ceo-curved-sides2 {
+    border-bottom-left-radius: 30% 50%;
+    border-bottom-right-radius: 30% 50%;
+    border-top-left-radius: 30% 50%;
+    border-top-right-radius: 30% 50%;
+    height: 100%;
+    border-left: 20px solid rgba(0, 0, 0, 0.073);
+    border-right: 20px solid rgba(0, 0, 0, 0.073);
+    object-fit: cover;
+}
+
