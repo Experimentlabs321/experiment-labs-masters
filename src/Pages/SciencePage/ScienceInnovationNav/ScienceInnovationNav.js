@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -20,11 +20,32 @@ import TwitterIcon from '@mui/icons-material/Twitter';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import logo from '../../../assets/Logos/Group 2859890.png';
 import { Link } from 'react-router-dom';
+import './style.css';
+import { Link as ScrollLink, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll';  // Import ScrollLink, scroll, scrollSpy, and scroller
+
 
 
 
 const ScienceInnovationNav = (props) => {
     const [state, setState] = React.useState(false);
+
+    const scrollToSection = (sectionId) => {
+        scroll.scrollTo(sectionId, {
+            duration: 500,  // Adjust the duration as needed
+            smooth: 'easeInOutQuart',  // Adjust the easing function as needed
+        });
+    };
+
+    const [activeSection, setActiveSection] = useState('');
+
+    const handleSetActiveSection = (sectionId) => {
+        setActiveSection(sectionId);
+    };
+
+    useEffect(() => {
+        scrollSpy.update();
+    }, []);
+
 
     const toggleDrawer = (open) => (event) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -75,29 +96,29 @@ const ScienceInnovationNav = (props) => {
     text-white hover:text-cyan hover:transition-colors hover:delay-300 hover:ease-in-out
 `
     const navItems = [
-        <div style={{ fontSize: '16px', textTransform:'initial' }} className={navItemSytle}>Admissions</div>,
-        <div style={{ fontSize: '16px', textTransform:'initial' }} className={navItemSytle}>Student Life</div>,
-        <div style={{ fontSize: '16px', textTransform:'initial' }} className={navItemSytle}>Careers</div>,
-        <div style={{ fontSize: '16px', textTransform:'initial' }} className={navItemSytle}>Research</div>,
-        <Button onClick={toggleDrawer(true)} sx={{ bgcolor: '#97E7AA', ":hover": { bgcolor: '#3EE8B5' }, color:'black' }} variant="contained" endIcon={<ExpandMoreIcon />}>
+        <div style={{ fontSize: '16px', textTransform: 'initial' }} className={navItemSytle}>Admissions</div>,
+        <div style={{ fontSize: '16px', textTransform: 'initial' }} className={navItemSytle}>Student Life</div>,
+        <div style={{ fontSize: '16px', textTransform: 'initial' }} className={navItemSytle}>Careers</div>,
+        <div style={{ fontSize: '16px', textTransform: 'initial' }} className={navItemSytle}>Research</div>,
+        <Button onClick={toggleDrawer(true)} sx={{ bgcolor: '#97E7AA', ":hover": { bgcolor: '#3EE8B5' }, color: 'black' }} variant="contained" endIcon={<ExpandMoreIcon />}>
             All Courses
         </Button>
     ];
 
     const navItems2 = [
-        <Button onClick={toggleDrawer(true)} sx={{ color: '#fff', bgcolor:'#121212', textTransform:'initial' }} size='medium' variant="text">
+        <Button onClick={toggleDrawer(true)} sx={{ color: '#fff', bgcolor: '#121212', textTransform: 'initial' }} size='medium' variant="text">
             Admissions
         </Button>,
-        <Button onClick={toggleDrawer(true)} sx={{ color: '#fff', bgcolor:'#121212', textTransform:'initial' }} size='medium' variant="text">
+        <Button onClick={toggleDrawer(true)} sx={{ color: '#fff', bgcolor: '#121212', textTransform: 'initial' }} size='medium' variant="text">
             Student Life
         </Button>,
-        <Button onClick={toggleDrawer(true)} sx={{ color: '#fff', bgcolor:'#121212', textTransform:'initial' }} size='medium' variant="text">
+        <Button onClick={toggleDrawer(true)} sx={{ color: '#fff', bgcolor: '#121212', textTransform: 'initial' }} size='medium' variant="text">
             Careers
         </Button>,
-        <Button onClick={toggleDrawer(true)} sx={{ color: '#fff', bgcolor:'#121212', textTransform:'initial' }} size='medium' variant="text">
+        <Button onClick={toggleDrawer(true)} sx={{ color: '#fff', bgcolor: '#121212', textTransform: 'initial' }} size='medium' variant="text">
             Research
         </Button>,
-        <Button onClick={toggleDrawer(true)} sx={{ bgcolor: '#97E7AA', ":hover": { bgcolor: '#3EE8B5' }, color:'black' }} variant="contained" endIcon={<ExpandMoreIcon />}>
+        <Button onClick={toggleDrawer(true)} sx={{ bgcolor: '#97E7AA', ":hover": { bgcolor: '#3EE8B5' }, color: 'black' }} variant="contained" endIcon={<ExpandMoreIcon />}>
             All Courses
         </Button>
     ];
@@ -110,7 +131,7 @@ const ScienceInnovationNav = (props) => {
     };
 
     const drawer = (
-        <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center', bgcolor:'#121212', height:'100%' }}>
+        <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center', bgcolor: '#121212', height: '100%' }}>
             <Typography variant="h6" sx={{ my: 2 }}>
                 <img className='h-10 ml-2' src={logo} alt="icon" />
             </Typography>
@@ -130,10 +151,10 @@ const ScienceInnovationNav = (props) => {
     const container = window !== undefined ? () => window().document.body : undefined;
 
     return (
-        <Box sx={{ display: 'flex'}}>
+        <Box sx={{ display: 'flex' }}>
             <CssBaseline />
-            <AppBar component="nav" sx={{ bgcolor: '#424242' , padding: '10px 20px 10px 10px'  }}>
-                <Toolbar>
+            <AppBar component="nav">
+                <Toolbar sx={{ bgcolor: '#424242', padding: '10px 20px 10px 10px' }}>
 
                     <Typography
                         variant="h6"
@@ -166,6 +187,77 @@ const ScienceInnovationNav = (props) => {
                         {list('top')}
                     </Drawer>
                 </Toolbar>
+                <div className='bg-[#7a7979] px-10 lg:px-32 font w-full'>
+                    <div className='flex justify-start md:justify-center gap-10 items-center overflow-x-scroll hidden-scroll'>
+
+                        <ScrollLink
+                            to='overview'
+                            smooth={true}
+                            duration={500}
+                            onClick={() => scrollToSection('overview')}
+                            spy={true}
+                            className="px-3 py-2 cursor-pointer"
+                            activeClass="bg-custom-blue px-3 py-2 cursor-pointer bg-opacity-30 border-b-2 border-custom-blue"
+                            onSetActive={handleSetActiveSection}
+                        >Overview</ScrollLink>
+
+                        <ScrollLink
+                            to='masters'
+                            smooth={true}
+                            duration={500}
+                            onClick={() => scrollToSection('masters')}
+                            spy={true}
+                            className="px-3 py-2 cursor-pointer"
+                            activeClass="bg-custom-blue px-3 py-2 cursor-pointer bg-opacity-30 border-b-2 border-custom-blue"
+                            onSetActive={handleSetActiveSection}
+                        >Masters</ScrollLink>
+
+                        <ScrollLink
+                            to='curriculum'
+                            smooth={true}
+                            duration={500}
+                            onClick={() => scrollToSection('curriculum')}
+                            spy={true}
+                            className="px-3 py-2 cursor-pointer"
+                            activeClass="bg-custom-blue px-3 py-2 cursor-pointer bg-opacity-30 border-b-2 border-custom-blue"
+                            onSetActive={handleSetActiveSection}
+                        >Curriculum</ScrollLink>
+
+                        <ScrollLink
+                            to='campus'
+                            smooth={true}
+                            duration={500}
+                            onClick={() => scrollToSection('campus')}
+                            spy={true}
+                            className="px-3 py-2 cursor-pointer"
+                            activeClass="bg-custom-blue px-3 py-2 cursor-pointer bg-opacity-30 border-b-2 border-custom-blue"
+                            onSetActive={handleSetActiveSection}
+                        >Campus</ScrollLink>
+
+                        <ScrollLink
+                            to='faqs'
+                            smooth={true}
+                            duration={500}
+                            onClick={() => scrollToSection('faqs')}
+                            spy={true}
+                            className="px-3 py-2 cursor-pointer"
+                            activeClass="bg-custom-blue px-3 py-2 cursor-pointer bg-opacity-30 border-b-2 border-custom-blue"
+                            onSetActive={handleSetActiveSection}
+                        >FAQs</ScrollLink>
+
+                        <ScrollLink
+                            to='news'
+                            smooth={true}
+                            duration={500}
+                            onClick={() => scrollToSection('news')}
+                            spy={true}
+                            className="px-3 py-2 cursor-pointer"
+                            activeClass="bg-custom-blue px-3 py-2 cursor-pointer bg-opacity-30 border-b-2 border-custom-blue"
+                            onSetActive={handleSetActiveSection}
+                        >News</ScrollLink>
+
+                    </div>
+                </div>
             </AppBar>
             <Box component="nav">
                 <Drawer
@@ -184,6 +276,7 @@ const ScienceInnovationNav = (props) => {
                     {drawer}
                 </Drawer>
             </Box>
+
 
         </Box>
 
