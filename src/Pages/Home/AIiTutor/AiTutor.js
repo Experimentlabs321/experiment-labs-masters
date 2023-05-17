@@ -5,7 +5,7 @@ import './style.css';
 
 const AiTutor = () => {
     return (
-        <div className='mt-48 bg-custom-blue h-96'>
+        <div className='mt-48 bg-custom-blue h-96 font'>
             <div className='px-5 lg:px-40 flex items-center gap-10' style={{ height: '100%' }}>
                 <div className='w-full lg:w-1/2'>
                     <h1 className='text-white text-3xl font-normal mb-6'><span className='font-extrabold'>World's First AI Tutor</span> <br />

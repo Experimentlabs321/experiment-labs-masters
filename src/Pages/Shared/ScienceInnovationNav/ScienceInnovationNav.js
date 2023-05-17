@@ -23,7 +23,7 @@ import { Link } from 'react-router-dom';
 
 
 
-const NavBar = (props) => {
+const ScienceInnovationNav = (props) => {
     const [state, setState] = React.useState(false);
 
     const toggleDrawer = (open) => (event) => {
@@ -72,30 +72,30 @@ const NavBar = (props) => {
 
     const drawerWidth = 240;
     const navItemSytle = `
-    bg-gray-400 p-[3px] rounded-full hover:bg-cyan hover:transition-colors hover:delay-300 hover:ease-in-out
+    text-white hover:text-cyan hover:transition-colors hover:delay-300 hover:ease-in-out
 `
     const navItems = [
-        <InstagramIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
-        <YouTubeIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
-        <LinkedInIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
-        <TwitterIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
+        <div style={{ fontSize: '16px', textTransform:'initial' }} className={navItemSytle}>Admissions</div>,
+        <div style={{ fontSize: '16px', textTransform:'initial' }} className={navItemSytle}>Student Life</div>,
+        <div style={{ fontSize: '16px', textTransform:'initial' }} className={navItemSytle}>Careers</div>,
+        <div style={{ fontSize: '16px', textTransform:'initial' }} className={navItemSytle}>Research</div>,
         <Button onClick={toggleDrawer(true)} sx={{ bgcolor: '#97E7AA', ":hover": { bgcolor: '#3EE8B5' }, color:'black' }} variant="contained" endIcon={<ExpandMoreIcon />}>
             All Courses
         </Button>
     ];
 
     const navItems2 = [
-        <Button onClick={toggleDrawer(true)} sx={{ color: '#fff', bgcolor:'#121212' }} size='medium' variant="text" startIcon={<InstagramIcon />}>
-            Instagram
+        <Button onClick={toggleDrawer(true)} sx={{ color: '#fff', bgcolor:'#121212', textTransform:'initial' }} size='medium' variant="text">
+            Admissions
         </Button>,
-        <Button onClick={toggleDrawer(true)} sx={{ color: '#fff', bgcolor:'#121212' }} size='medium' variant="text" startIcon={<YouTubeIcon />}>
-            YouTube
+        <Button onClick={toggleDrawer(true)} sx={{ color: '#fff', bgcolor:'#121212', textTransform:'initial' }} size='medium' variant="text">
+            Student Life
         </Button>,
-        <Button onClick={toggleDrawer(true)} sx={{ color: '#fff', bgcolor:'#121212' }} size='medium' variant="text" startIcon={<LinkedInIcon />}>
-            LinkedIn
+        <Button onClick={toggleDrawer(true)} sx={{ color: '#fff', bgcolor:'#121212', textTransform:'initial' }} size='medium' variant="text">
+            Careers
         </Button>,
-        <Button onClick={toggleDrawer(true)} sx={{ color: '#fff', bgcolor:'#121212' }} size='medium' variant="text" startIcon={<TwitterIcon />}>
-            Twitter
+        <Button onClick={toggleDrawer(true)} sx={{ color: '#fff', bgcolor:'#121212', textTransform:'initial' }} size='medium' variant="text">
+            Research
         </Button>,
         <Button onClick={toggleDrawer(true)} sx={{ bgcolor: '#97E7AA', ":hover": { bgcolor: '#3EE8B5' }, color:'black' }} variant="contained" endIcon={<ExpandMoreIcon />}>
             All Courses
@@ -115,15 +115,15 @@ const NavBar = (props) => {
                 <img className='h-10 ml-2' src={logo} alt="icon" />
             </Typography>
             <Divider />
-            <List>
+            <div>
                 {navItems2.map((item) => (
                     <ListItem key={item} disablePadding>
-                        <ListItemButton sx={{ textAlign: 'center', color: 'white' }}>
-                            <ListItemText primary={item} />
+                        <ListItemButton sx={{ textAlign: 'left', color: 'white' }}>
+                            <span>{item}</span>
                         </ListItemButton>
                     </ListItem>
                 ))}
-            </List>
+            </div>
         </Box>
     );
 
@@ -190,13 +190,13 @@ const NavBar = (props) => {
     );
 };
 
-NavBar.propTypes = {
+ScienceInnovationNav.propTypes = {
     /**
      * Injected by the documentation to work in an iframe.
      * You won't need it on your project.
      */
-    window: NavBar.func,
+    window: ScienceInnovationNav.func,
 };
 
 
-export default NavBar;
+export default ScienceInnovationNav;

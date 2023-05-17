@@ -23,7 +23,7 @@ const MeetTheMaster = () => {
         <div className='mt-44 px-10 lg:px-28'>
             <div className='mb-10 flex justify-between items-start'>
                 <div>
-                    <h1 className='text-2xl xl:text-4xl font-extrabold font-serif'>Learn from the <span className='bg-gradient-to-t from-custom-blue to-transparent to-50%'>Masters, Hands-On</span></h1>
+                    <h1 className='text-2xl xl:text-4xl font-extrabold font'>Learn from the <span className='bg-gradient-to-t from-custom-blue to-transparent to-50%'>Masters, Hands-On</span></h1>
                     <p className='text-xl mt-2 font-thin'>Take a closer look into our classrooms
                     </p>
                 </div>
@@ -35,7 +35,7 @@ const MeetTheMaster = () => {
                 ref={containerRef}
                 className='flex overflow-x-scroll scroll-smooth gap-5 mtm-container'
             >
-                <div className='border-2 border-dark hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px]'>
+                <div className='border-2 border-gray-400 bg-[#424242] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px]'>
                     <iframe
                         className='w-full h-[210px] object-cover'
                         src={`https://dsqqu7oxq6o1v.cloudfront.net/motion-array-1290096-NRkICuxxxg-high.mp4`}
@@ -44,13 +44,13 @@ const MeetTheMaster = () => {
                         title="Embedded youtube"
                     />
                     <div className='p-3'>
-                        <h4 className='font-extrabold font-serif'>Full Name</h4>
+                        <h4 className='font-extrabold font'>Full Name</h4>
                         <h6 className='text-sm font-thin'>Work Role, Company</h6>
                         <p className='text-sm font-thin mt-2'>Teaching :</p>
                         <p className='text-xs font-semibold'>Full Subject Name</p>
                     </div>
                 </div>
-                <div className='border-2 border-dark hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px]'>
+                <div className='border-2 border-gray-400 bg-[#424242] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px]'>
                     <iframe
                         className='w-full h-[210px] object-cover'
                         src={`https://dsqqu7oxq6o1v.cloudfront.net/motion-array-1290096-NRkICuxxxg-high.mp4`}
@@ -59,13 +59,13 @@ const MeetTheMaster = () => {
                         title="Embedded youtube"
                     />
                     <div className='p-3'>
-                        <h4 className='font-extrabold font-serif'>Full Name</h4>
+                        <h4 className='font-extrabold font'>Full Name</h4>
                         <h6 className='text-sm font-thin'>Work Role, Company</h6>
                         <p className='text-sm font-thin mt-2'>Teaching :</p>
                         <p className='text-xs font-semibold'>Full Subject Name</p>
                     </div>
                 </div>
-                <div className='border-2 border-dark hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px]'>
+                <div className='border-2 border-gray-400 bg-[#424242] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px]'>
                     <iframe
                         className='w-full h-[210px] object-cover'
                         src={`https://dsqqu7oxq6o1v.cloudfront.net/motion-array-1290096-NRkICuxxxg-high.mp4`}
@@ -74,13 +74,13 @@ const MeetTheMaster = () => {
                         title="Embedded youtube"
                     />
                     <div className='p-3'>
-                        <h4 className='font-extrabold font-serif'>Full Name</h4>
+                        <h4 className='font-extrabold font'>Full Name</h4>
                         <h6 className='text-sm font-thin'>Work Role, Company</h6>
                         <p className='text-sm font-thin mt-2'>Teaching :</p>
                         <p className='text-xs font-semibold'>Full Subject Name</p>
                     </div>
                 </div>
-                <div className='border-2 border-dark hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px]'>
+                <div className='border-2 border-gray-400 bg-[#424242] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px]'>
                     <iframe
                         className='w-full h-[210px] object-cover'
                         src={`https://dsqqu7oxq6o1v.cloudfront.net/motion-array-1290096-NRkICuxxxg-high.mp4`}
@@ -89,13 +89,13 @@ const MeetTheMaster = () => {
                         title="Embedded youtube"
                     />
                     <div className='p-3'>
-                        <h4 className='font-extrabold font-serif'>Full Name</h4>
+                        <h4 className='font-extrabold font'>Full Name</h4>
                         <h6 className='text-sm font-thin'>Work Role, Company</h6>
                         <p className='text-sm font-thin mt-2'>Teaching :</p>
                         <p className='text-xs font-semibold'>Full Subject Name</p>
                     </div>
                 </div>
-                <div className='border-2 border-dark hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px]'>
+                <div className='border-2 border-gray-400 bg-[#424242] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px]'>
                     <iframe
                         className='w-full h-[210px] object-cover'
                         src={`https://dsqqu7oxq6o1v.cloudfront.net/motion-array-1290096-NRkICuxxxg-high.mp4`}
@@ -104,13 +104,13 @@ const MeetTheMaster = () => {
                         title="Embedded youtube"
                     />
                     <div className='p-3'>
-                        <h4 className='font-extrabold font-serif'>Full Name</h4>
+                        <h4 className='font-extrabold font'>Full Name</h4>
                         <h6 className='text-sm font-thin'>Work Role, Company</h6>
                         <p className='text-sm font-thin mt-2'>Teaching :</p>
                         <p className='text-xs font-semibold'>Full Subject Name</p>
                     </div>
                 </div>
-                <div className='border-2 border-dark hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px]'>
+                <div className='border-2 border-gray-400 bg-[#424242] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px]'>
                     <iframe
                         className='w-full h-[210px] object-cover'
                         src={`https://dsqqu7oxq6o1v.cloudfront.net/motion-array-1290096-NRkICuxxxg-high.mp4`}
@@ -119,13 +119,13 @@ const MeetTheMaster = () => {
                         title="Embedded youtube"
                     />
                     <div className='p-3'>
-                        <h4 className='font-extrabold font-serif'>Full Name</h4>
+                        <h4 className='font-extrabold font'>Full Name</h4>
                         <h6 className='text-sm font-thin'>Work Role, Company</h6>
                         <p className='text-sm font-thin mt-2'>Teaching :</p>
                         <p className='text-xs font-semibold'>Full Subject Name</p>
                     </div>
                 </div>
-                <div className='border-2 border-dark hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px]'>
+                <div className='border-2 border-gray-400 bg-[#424242] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px]'>
                     <iframe
                         className='w-full h-[210px] object-cover'
                         src={`https://dsqqu7oxq6o1v.cloudfront.net/motion-array-1290096-NRkICuxxxg-high.mp4`}
@@ -134,13 +134,13 @@ const MeetTheMaster = () => {
                         title="Embedded youtube"
                     />
                     <div className='p-3'>
-                        <h4 className='font-extrabold font-serif'>Full Name</h4>
+                        <h4 className='font-extrabold font'>Full Name</h4>
                         <h6 className='text-sm font-thin'>Work Role, Company</h6>
                         <p className='text-sm font-thin mt-2'>Teaching :</p>
                         <p className='text-xs font-semibold'>Full Subject Name</p>
                     </div>
                 </div>
-                <div className='border-2 border-dark hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px]'>
+                <div className='border-2 border-gray-400 bg-[#424242] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px]'>
                     <iframe
                         className='w-full h-[210px] object-cover'
                         src={`https://dsqqu7oxq6o1v.cloudfront.net/motion-array-1290096-NRkICuxxxg-high.mp4`}
@@ -149,7 +149,7 @@ const MeetTheMaster = () => {
                         title="Embedded youtube"
                     />
                     <div className='p-3'>
-                        <h4 className='font-extrabold font-serif'>Full Name</h4>
+                        <h4 className='font-extrabold font'>Full Name</h4>
                         <h6 className='text-sm font-thin'>Work Role, Company</h6>
                         <p className='text-sm font-thin mt-2'>Teaching :</p>
                         <p className='text-xs font-semibold'>Full Subject Name</p>

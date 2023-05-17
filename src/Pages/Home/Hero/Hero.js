@@ -7,6 +7,7 @@ import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import Stories from 'react-insta-stories';
 import ArrowCircleLeftRoundedIcon from '@mui/icons-material/ArrowCircleLeftRounded';
 import ArrowCircleRightRoundedIcon from '@mui/icons-material/ArrowCircleRightRounded';
+import './style.css'
 
 const Hero = ({ onButtonClick }) => {
     const visibleIndex = useRef(0);
@@ -83,11 +84,11 @@ const Hero = ({ onButtonClick }) => {
     console.log(stories[selectedIndex].url, selectedIndex);
 
     return (
-        <div>
+        <div className='font'>
             <section className="bg-custom-blue lg:h-[600px]">
                 <div style={{ height: "100%" }} className="grid mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12">
                     <div className="mr-auto place-self-center lg:col-span-6 py-16 px-4 lg:pl-16">
-                        <h1 className="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-5xl text-white font-serif">Plan your career by <span className='italic bg-gradient-to-t from-custom-blue to-50% to-transparent'>practically</span> experiencing it.</h1>
+                        <h1 className="max-w-2xl mb-4 text-3xl font-bold tracking-tight leading-none md:text-5xl xl:text-5xl text-white">Plan your career by <br /> <span className='bg-gradient-to-t from-custom-blue to-50% to-transparent'>practically</span> experiencing it.</h1>
 
                         <div className='my-8 text-white flex flex-col gap-3 justify-start'>
                             <span><LanguageIcon className='mr-2' /> Curriculum that takes learning<span className='font-bold initial'> {` beyond the classroom`}</span></span>

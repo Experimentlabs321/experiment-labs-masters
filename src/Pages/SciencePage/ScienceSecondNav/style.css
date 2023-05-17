@@ -5,6 +5,6 @@
     font-family: 'Inter', sans-serif;
 }
 
-.eu-container::-webkit-scrollbar{
+.hidden-scroll::-webkit-scrollbar{
     display: none;
 }

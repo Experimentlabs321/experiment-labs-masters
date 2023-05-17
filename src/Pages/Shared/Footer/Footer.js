@@ -18,8 +18,8 @@ const Footer = () => {
 
     </>
     return (
-        <div className='mt-40'>
-            <footer className="px-10 md:px-40 text-white bg-black">
+        <div className='pt-40 bg-[#121212]'>
+            <footer className="px-10 md:px-40 text-white bg-[#424242]">
                 <div className="container flex flex-col justify-between py-10 mx-auto">
                     <div>
                         <Link to={'/'} href="#" className="flex justify-start">
