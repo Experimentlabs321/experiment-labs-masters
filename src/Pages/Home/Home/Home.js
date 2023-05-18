@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import MyHelmet from '../../../Components/MyHelmet/MyHelpmet';
 import Hero from '../Hero/Hero';
 import Feature from '../Feature/Feature';
@@ -19,6 +19,11 @@ const Home = () => {
         const headerHeight = 80;
         window.scrollTo({ top: featurePosition - headerHeight, behavior: 'smooth' });
     };
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
 
     return (
         <div className='bg-[#121212] text-white'>

@@ -40,7 +40,7 @@ const Overview = () => {
                     </div>
                     <div className='flex flex-col items-center gap-3'>
                         <iframe
-                            className='rounded-2xl w-full h-[290px] lg:max-w-[500px]'
+                            className='rounded-2xl w-full h-[290px] lg:min-w-[500px]'
                             style={{ borderRight: "5px solid rgb(57 , 127 , 235, 0.2)", borderBottom: "5px solid rgb(57 , 127 , 235, 0.2)" }}
                             src={`https://dsqqu7oxq6o1v.cloudfront.net/motion-array-1177701-mBCKbnRAFv-high.mp4`}
                             allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
