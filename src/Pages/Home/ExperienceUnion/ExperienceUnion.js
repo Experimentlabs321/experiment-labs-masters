@@ -6,6 +6,7 @@ import { Button } from '@mui/material';
 import ArrowCircleLeftRoundedIcon from '@mui/icons-material/ArrowCircleLeftRounded';
 import ArrowCircleRightRoundedIcon from '@mui/icons-material/ArrowCircleRightRounded';
 import './style.css';
+import { Link } from 'react-router-dom';
 
 const ExperienceUnion = () => {
 
@@ -40,7 +41,7 @@ const ExperienceUnion = () => {
                 ref={containerRef}
                 className='flex overflow-x-scroll scroll-smooth gap-5 eu-container pb-10'
             >
-                <div className='border-2 border-gray-400 bg-[#424242] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px] rounded-xl'>
+                <div className='border-2 border-gray-400 bg-[#424242] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out min-w-[290px] max-w-[290px] rounded-xl'>
                     <img
                         className='w-full h-[200px] object-cover rounded-t-xl'
                         src={`https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8dGVjaHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60`}
@@ -53,10 +54,10 @@ const ExperienceUnion = () => {
                             <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>Offline</span>
                         </div>
                         <p className='text-sm font-thin mt-2 mb-6'>Masters' Union is starting May with a bang with The Masters' Union Startup Weekend! Get ready to find your perfect co-founder, build a product, pitch to investors, and become the next big thing in the startup world.</p>
-                        <button className='border-2 border-cyan text-cyan rounded-xl w-full py-2'>Registration Closed</button>
+                        <Link to='/experience-union'><button className='bg-transparent border-2 hover:bg-cyan hover:text-white border-cyan text-cyan rounded-xl w-full py-2'>Registration Closed</button></Link>
                     </div>
                 </div>
-                <div className='border-2 border-gray-400 bg-[#424242] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px] rounded-xl'>
+                <div className='border-2 border-gray-400 bg-[#424242] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out min-w-[290px] max-w-[290px] rounded-xl'>
                     <img
                         className='w-full h-[200px] object-cover rounded-t-xl'
                         src={`https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8dGVjaHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60`}
@@ -69,10 +70,10 @@ const ExperienceUnion = () => {
                             <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>Offline</span>
                         </div>
                         <p className='text-sm font-thin mt-2 mb-6'>Masters' Union is starting May with a bang with The Masters' Union Startup Weekend! Get ready to find your perfect co-founder, build a product, pitch to investors, and become the next big thing in the startup world.</p>
-                        <button className='border-2 border-cyan text-cyan rounded-xl w-full py-2'>Registration Closed</button>
+                        <Link to='/experience-union'><button className='bg-transparent border-2 hover:bg-cyan hover:text-white border-cyan text-cyan rounded-xl w-full py-2'>Registration Closed</button></Link>
                     </div>
                 </div>
-                <div className='border-2 border-gray-400 bg-[#424242] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px] rounded-xl'>
+                <div className='border-2 border-gray-400 bg-[#424242] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out min-w-[290px] max-w-[290px] rounded-xl'>
                     <img
                         className='w-full h-[200px] object-cover rounded-t-xl'
                         src={`https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8dGVjaHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60`}
@@ -85,10 +86,10 @@ const ExperienceUnion = () => {
                             <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>Offline</span>
                         </div>
                         <p className='text-sm font-thin mt-2 mb-6'>Masters' Union is starting May with a bang with The Masters' Union Startup Weekend! Get ready to find your perfect co-founder, build a product, pitch to investors, and become the next big thing in the startup world.</p>
-                        <button className='border-2 border-cyan text-cyan rounded-xl w-full py-2'>Registration Closed</button>
+                        <Link to='/experience-union'><button className='bg-transparent border-2 hover:bg-cyan hover:text-white border-cyan text-cyan rounded-xl w-full py-2'>Registration Closed</button></Link>
                     </div>
                 </div>
-                <div className='border-2 border-gray-400 bg-[#424242] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px] rounded-xl'>
+                <div className='border-2 border-gray-400 bg-[#424242] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out min-w-[290px] max-w-[290px] rounded-xl'>
                     <img
                         className='w-full h-[200px] object-cover rounded-t-xl'
                         src={`https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8dGVjaHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60`}
@@ -101,10 +102,10 @@ const ExperienceUnion = () => {
                             <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>Offline</span>
                         </div>
                         <p className='text-sm font-thin mt-2 mb-6'>Masters' Union is starting May with a bang with The Masters' Union Startup Weekend! Get ready to find your perfect co-founder, build a product, pitch to investors, and become the next big thing in the startup world.</p>
-                        <button className='border-2 border-cyan text-cyan rounded-xl w-full py-2'>Registration Closed</button>
+                        <Link to='/experience-union'><button className='bg-transparent border-2 hover:bg-cyan hover:text-white border-cyan text-cyan rounded-xl w-full py-2'>Registration Closed</button></Link>
                     </div>
                 </div>
-                <div className='border-2 border-gray-400 bg-[#424242] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px] rounded-xl'>
+                <div className='border-2 border-gray-400 bg-[#424242] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out min-w-[290px] max-w-[290px] rounded-xl'>
                     <img
                         className='w-full h-[200px] object-cover rounded-t-xl'
                         src={`https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8dGVjaHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60`}
@@ -117,10 +118,10 @@ const ExperienceUnion = () => {
                             <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>Offline</span>
                         </div>
                         <p className='text-sm font-thin mt-2 mb-6'>Masters' Union is starting May with a bang with The Masters' Union Startup Weekend! Get ready to find your perfect co-founder, build a product, pitch to investors, and become the next big thing in the startup world.</p>
-                        <button className='border-2 border-cyan text-cyan rounded-xl w-full py-2'>Registration Closed</button>
+                        <Link to='/experience-union'><button className='bg-transparent border-2 hover:bg-cyan hover:text-white border-cyan text-cyan rounded-xl w-full py-2'>Registration Closed</button></Link>
                     </div>
                 </div>
-                <div className='border-2 border-gray-400 bg-[#424242] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px] rounded-xl'>
+                <div className='border-2 border-gray-400 bg-[#424242] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out min-w-[290px] max-w-[290px] rounded-xl'>
                     <img
                         className='w-full h-[200px] object-cover rounded-t-xl'
                         src={`https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8dGVjaHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60`}
@@ -133,10 +134,10 @@ const ExperienceUnion = () => {
                             <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>Offline</span>
                         </div>
                         <p className='text-sm font-thin mt-2 mb-6'>Masters' Union is starting May with a bang with The Masters' Union Startup Weekend! Get ready to find your perfect co-founder, build a product, pitch to investors, and become the next big thing in the startup world.</p>
-                        <button className='border-2 border-cyan text-cyan rounded-xl w-full py-2'>Registration Closed</button>
+                        <Link to='/experience-union'><button className='bg-transparent border-2 hover:bg-cyan hover:text-white border-cyan text-cyan rounded-xl w-full py-2'>Registration Closed</button></Link>
                     </div>
                 </div>
-                <div className='border-2 border-gray-400 bg-[#424242] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px] rounded-xl'>
+                <div className='border-2 border-gray-400 bg-[#424242] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out min-w-[290px] max-w-[290px] rounded-xl'>
                     <img
                         className='w-full h-[200px] object-cover rounded-t-xl'
                         src={`https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8dGVjaHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60`}
@@ -149,7 +150,7 @@ const ExperienceUnion = () => {
                             <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>Offline</span>
                         </div>
                         <p className='text-sm font-thin mt-2 mb-6'>Masters' Union is starting May with a bang with The Masters' Union Startup Weekend! Get ready to find your perfect co-founder, build a product, pitch to investors, and become the next big thing in the startup world.</p>
-                        <button className='border-2 border-cyan text-cyan rounded-xl w-full py-2'>Registration Closed</button>
+                        <Link to='/experience-union'><button className='bg-transparent border-2 hover:bg-cyan hover:text-white border-cyan text-cyan rounded-xl w-full py-2'>Registration Closed</button></Link>
                     </div>
                 </div>
 
