@@ -32,9 +32,9 @@ const Overview = () => {
                             </div>
                         </div>
 
-                        <div className='flex gap-8'>
-                            <button className='bg-cyan font-semibold hover:bg-opacity-80 hover:transition-all hover:delay-300 hover:ease-out w-1/2 py-3'>DOWNLOAD PLACEMENT REPORT</button>
-                            <button className='border-2 bg-white text-cyan border-cyan font-semibold hover:bg-opacity-80 hover:transition-all hover:delay-300 hover:ease-out w-1/2 py-3'>CONNECT WITH COUNSELLOR</button>
+                        <div className='flex flex-col lg:flex-row w-full gap-8'>
+                            <button className='bg-cyan font-semibold hover:bg-opacity-80 hover:transition-all hover:delay-300 hover:ease-out w-full py-3'>DOWNLOAD PLACEMENT REPORT</button>
+                            <button className='border-2 bg-white text-cyan border-cyan font-semibold hover:bg-opacity-80 hover:transition-all hover:delay-300 hover:ease-out w-full py-3'>CONNECT WITH COUNSELLOR</button>
                         </div>
 
                     </div>

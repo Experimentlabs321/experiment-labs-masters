@@ -11,6 +11,8 @@ import Footer from '../../Shared/Footer/Footer';
 import ScienceInnovationNav from '../ScienceInnovationNav/ScienceInnovationNav';
 import AllCourses from '../../Home/AllCourses/AllCourses';
 import DualManagement from '../DualMangement/DualManagement';
+import HearFromStudents from '../HearFromStudents/HearFromStudents';
+import GetInTouch from '../GetInTouch/GetInTouch';
 
 const SciencePage = () => {
 
@@ -35,11 +37,11 @@ const SciencePage = () => {
                 <Overview />
             </div>
 
-            <div id='masters' className='mt-28'>
+            <div id='masters' className='mt-32'>
                 <Masters />
             </div>
 
-            <div id='curriculum' className='mt-28'>
+            <div id='curriculum' className='mt-32'>
                 <Curriculum />
                 <div className='mt-28'>
                     <AllCourses />
@@ -47,11 +49,17 @@ const SciencePage = () => {
                 <div className='mt-32'>
                     <DualManagement />
                 </div>
+                <div className='mt-32'>
+                    <HearFromStudents/>
+                </div>
+                <div className='mt-32'>
+                    <GetInTouch/>
+                </div>
             </div>
 
 
 
-            <div id='campus' className='mt-96'>
+            <div id='campus' className='mt-32'>
                 <Campus />
             </div>
 
