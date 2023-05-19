@@ -245,7 +245,7 @@ const ScienceInnovationNav = (props) => {
                             onSetActive={handleSetActiveSection}
                         >FAQs</ScrollLink>
 
-                        <ScrollLink
+                        {/* <ScrollLink
                             to='news'
                             smooth={true}
                             duration={500}
@@ -254,7 +254,7 @@ const ScienceInnovationNav = (props) => {
                             className="px-3 py-2 cursor-pointer"
                             activeClass="bg-custom-blue px-3 py-2 cursor-pointer bg-opacity-30 border-b-2 border-custom-blue"
                             onSetActive={handleSetActiveSection}
-                        >News</ScrollLink>
+                        >News</ScrollLink> */}
 
                     </div>
                 </div>

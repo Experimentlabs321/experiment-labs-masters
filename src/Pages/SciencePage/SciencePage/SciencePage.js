@@ -10,6 +10,7 @@ import { Link as ScrollLink, animateScroll as scroll } from 'react-scroll';
 import Footer from '../../Shared/Footer/Footer';
 import ScienceInnovationNav from '../ScienceInnovationNav/ScienceInnovationNav';
 import AllCourses from '../../Home/AllCourses/AllCourses';
+import DualManagement from '../DualMangement/DualManagement';
 
 const SciencePage = () => {
 
@@ -40,11 +41,15 @@ const SciencePage = () => {
 
             <div id='curriculum' className='mt-28'>
                 <Curriculum />
+                <div className='mt-28'>
+                    <AllCourses />
+                </div>
+                <div className='mt-32'>
+                    <DualManagement />
+                </div>
             </div>
 
-            <div className='mt-28'>
-                <AllCourses />
-            </div>
+
 
             <div id='campus' className='mt-96'>
                 <Campus />
@@ -53,10 +58,10 @@ const SciencePage = () => {
             <div id='faqs' className='mt-96'>
                 <FAQs />
             </div>
-
+{/* 
             <div id='news' className='mt-96'>
                 <News />
-            </div>
+            </div> */}
 
             <Footer />
 
