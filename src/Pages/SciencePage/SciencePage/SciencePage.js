@@ -63,7 +63,7 @@ const SciencePage = () => {
                 <Campus />
             </div>
 
-            <div id='faqs' className='mt-96'>
+            <div id='faqs' className='mt-32 mb-32'>
                 <FAQs />
             </div>
 {/* 
