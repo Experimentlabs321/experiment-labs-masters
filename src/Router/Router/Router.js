@@ -4,6 +4,8 @@ import ErrorPage from "../../Pages/Shared/ErroPage/ErrorPage";
 import Home from "../../Pages/Home/Home/Home";
 import SciencePage from "../../Pages/SciencePage/SciencePage/SciencePage";
 import ExperienceUnionPage from "../../Pages/ExperienceUnion/ExperienceUnionPage/ExperienceUnionPage";
+import Register from "../../Pages/Login/Register/Register";
+import Login from "../../Pages/Login/Login/Login";
 
 const router = createBrowserRouter([
     {
@@ -14,6 +16,15 @@ const router = createBrowserRouter([
             {
                 path: '/',
                 element: <Home />
+            },
+            {
+                path: '/login',
+                element: <Login/>
+        
+            },
+            {
+                path: '/register',
+                element: <Register/>
             }
         ]
     },
@@ -27,6 +38,7 @@ const router = createBrowserRouter([
         element: <ExperienceUnionPage/>,
 
     },
+  
 
 ]);
 

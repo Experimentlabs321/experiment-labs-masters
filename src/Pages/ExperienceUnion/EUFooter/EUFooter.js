@@ -22,7 +22,10 @@ const EUFooter = () => {
         <Link>Cookie & Privacy Policy
         </Link>
 
-    </>
+    </>;
+
+    
+
     return (
         <div className='bg-[#121212] text-white'>
             <div style={{ background: `url(${darkbg})`, width: '100%', objectFit: 'cover' }} className='border-t-2 border-b-4 border-cyan px-10 lg:px-32 py-20'>

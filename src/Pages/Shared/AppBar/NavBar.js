@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -19,7 +19,13 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import logo from '../../../assets/Logos/Group 2859890.png';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../../contexts/AuthProvider';
+import { Dialog, useMediaQuery, useTheme } from '@mui/material';
+import qs from 'qs';
+import axios from 'axios';
+import { GoogleAuthProvider } from 'firebase/auth';
+import CryptoJS from 'crypto-js';
 
 
 
@@ -73,34 +79,19 @@ const NavBar = (props) => {
     const drawerWidth = 240;
     const navItemSytle = `
     bg-gray-400 p-[3px] rounded-full hover:bg-cyan hover:transition-colors hover:delay-300 hover:ease-in-out
-`
-    const navItems = [
-        <InstagramIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
-        <YouTubeIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
-        <LinkedInIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
-        <TwitterIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
-        <Button onClick={toggleDrawer(true)} sx={{ bgcolor: '#97E7AA', ":hover": { bgcolor: '#3EE8B5' }, color:'black' }} variant="contained" endIcon={<ExpandMoreIcon />}>
-            All Courses
-        </Button>
-    ];
+`;
+    const { user, logOut } = useContext(AuthContext);
 
-    const navItems2 = [
-        <Button onClick={toggleDrawer(true)} sx={{ color: '#fff', bgcolor:'#121212' }} size='medium' variant="text" startIcon={<InstagramIcon />}>
-            Instagram
-        </Button>,
-        <Button onClick={toggleDrawer(true)} sx={{ color: '#fff', bgcolor:'#121212' }} size='medium' variant="text" startIcon={<YouTubeIcon />}>
-            YouTube
-        </Button>,
-        <Button onClick={toggleDrawer(true)} sx={{ color: '#fff', bgcolor:'#121212' }} size='medium' variant="text" startIcon={<LinkedInIcon />}>
-            LinkedIn
-        </Button>,
-        <Button onClick={toggleDrawer(true)} sx={{ color: '#fff', bgcolor:'#121212' }} size='medium' variant="text" startIcon={<TwitterIcon />}>
-            Twitter
-        </Button>,
-        <Button onClick={toggleDrawer(true)} sx={{ bgcolor: '#97E7AA', ":hover": { bgcolor: '#3EE8B5' }, color:'black' }} variant="contained" endIcon={<ExpandMoreIcon />}>
-            All Courses
-        </Button>
-    ];
+    const handleLogout = () => {
+        logOut()
+            .then(res => {
+                console.log(res);
+                navigate('/');
+            })
+            .catch(error => console.error(error))
+    }
+
+
 
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -109,8 +100,277 @@ const NavBar = (props) => {
         setMobileOpen((prevState) => !prevState);
     };
 
+    // const [open, setOpen] = React.useState(false);
+    // // const [error, setError] = React.useState("");
+    // const theme = useTheme();
+    // const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+
+    // const handleClickOpen = () => {
+    //     setOpen(true);
+    // };
+
+    // const handleClose = () => {
+    //     setOpen(false);
+    // };
+
+
+    // const handleSubmit = event => {
+    //     event.preventDefault();
+    //     const form = event.target;
+    //     const name = form.name.value;
+    //     const email = form.email.value;
+    //     const phone = form.phone.value;
+    //     const selectClass = form.selectClass.value;
+
+    //     console.log(name, email, phone, selectClass);
+
+    //     if (!name || !email || !phone || !selectClass) {
+    //         setError("Please fill in all the fields");
+    //     }
+
+    //     else {
+
+    //         const a = document.createElement('a');
+    //         a.href = 'https://drive.google.com/uc?export=download&id=1-g7Bsun3RvKAezjWFZOL9QOvlnfcELRk';
+    //         a.download = 'Brochure.pdf'; // Set the desired file name
+    //         a.click();
+    //         handleClose();
+    //     }
+    // }
+
+
+    const { signIn, providerLogin } = useContext(AuthContext);
+
+    const [error, setError] = useState('');
+
+    const navigate = useNavigate();
+
+
+
+
+    // login with email and password
+    const handleSubmit = event => {
+        // event.preventDefault();
+        // const form = event.target;
+        // const email = form.email.value;
+        // const password = form.password.value;
+
+        // console.log(email, password);
+
+        // signIn(email, password)
+        //     .then(result => {
+        //         const user = result.user;
+        //         console.log(user);
+        //         form.reset();
+        //         setError('');
+
+        //         const currentUser = {
+        //             email: user?.email
+        //         }
+
+        //         //get token
+        //         fetch(`https://dentist-fantastic-server.vercel.app/jwt`, {
+        //             method: 'POST',
+        //             headers: {
+        //                 'content-type': 'application/json'
+        //             },
+        //             body: JSON.stringify(currentUser)
+        //         })
+        //             .then(res => res.json())
+        //             .then(data => {
+        //                 console.log(data);
+        //                 localStorage.setItem('token', data.token);
+        //                 // navigate to old page
+        //                 navigate(from, { replace: true });
+        //             })
+        //             .catch(err => console.error(err));
+
+
+        //     })
+        //     .catch(error => {
+        //         console.error(error);
+        //         setError(error.message)
+        //     })
+    }
+
+
+
+    const graphyLogin = async (email, displayName) => {
+        // event.preventDefault();
+
+        // const postData = {
+        //     mid: 'namanjain4098',
+        //     key: '2eb5be47-6526-4578-821b-400a74e63d9b',
+        //     email: 'john@xyz.com',
+        //     name: 'john'
+        // }
+
+        // fetch('https://api.ongraphy.com/public/v1/learners', {
+        //     method: 'POST',
+        //     headers: {
+        //         'content-type': '<string>'
+        //     },
+        //     body: JSON.stringify(postData)
+        // })
+        //     .then(res => res.json())
+        //     .then(data => {
+        //         console.log(data);
+        //     })
+        //     .catch(error => console.error(error))
+
+
+
+        const data = qs.stringify({
+            mid: process.env.REACT_APP_mid,
+            key: process.env.REACT_APP_key,
+            email: email,
+            name: displayName
+        });
+
+        const config = {
+            method: 'post',
+            url: 'https://api.ongraphy.com/public/v1/learners',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            data: data
+        };
+
+        axios(config)
+            .then(response => {
+                console.log(JSON.stringify(response.data?.status));
+                // Construct the payload for the JWT token
+                const payload = {
+                    name: displayName,
+                    email: email,
+                    exp: 1616239022,
+                };
+
+                // Convert the payload to a Base64Url encoded string
+                const payloadBase64 = btoa(JSON.stringify(payload))
+                    .replace(/=/g, '')
+                    .replace(/\+/g, '-')
+                    .replace(/\//g, '_');
+
+                // console.log(payloadBase64);
+
+                // Construct the header
+                const header = {
+                    alg: "HS256",
+                    typ: "JWT"
+                };
+
+                // Convert the header to a Base64Url encoded string
+                const headerBase64 = btoa(JSON.stringify(header))
+                    .replace(/=/g, '')
+                    .replace(/\+/g, '-')
+                    .replace(/\//g, '_');
+
+
+                //console.log(headerBase64);
+
+
+
+                // Your API token obtained from Graphy
+                const apiToken = process.env.REACT_APP_key;
+
+                // Construct the signature
+                const signature = CryptoJS.HmacSHA256(headerBase64 + "." + payloadBase64, apiToken);
+
+                // Convert the signature to a Base64Url encoded string
+                const signatureBase64 = CryptoJS.enc.Base64.stringify(signature)
+                    .replace(/=/g, '')
+                    .replace(/\+/g, '-')
+                    .replace(/\//g, '_');
+
+                console.log(signatureBase64);
+
+                // // Construct the JWT token
+                // const jwtToken = `${headerBase64}.${payloadBase64}.${signatureBase64}`;
+
+                // Construct the SSO URL with the JWT token
+                const ssoUrl = `login/&returnurl=https://experiment-labs-masters.web.app/mycourses?ssoToken=${signatureBase64}`;
+
+                // // Redirect the user to the SSO URL
+                // //window.location.href = ssoUrl;
+                navigate(ssoUrl);
+                // console.log("SSO URL --->",ssoUrl);
+
+            })
+            .catch(error => {
+                console.log(error);
+            });
+
+
+
+    }
+
+
+
+    //Login with google provider
+    const handleGoogleSignIn = () => {
+        const googleProvider = new GoogleAuthProvider();
+        providerLogin(googleProvider)
+            .then(result => {
+                const email = result?.user?.email;
+                const displayName = result?.user?.displayName;
+                console.log(email, displayName);
+                if (email) {
+                    graphyLogin(email, displayName);
+                }
+                setError('');
+
+            })
+            .catch(error => {
+                console.error(error);
+                setError(error.message)
+            });
+    }
+
+
+
+    const navItems = [
+        <InstagramIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
+        <YouTubeIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
+        <LinkedInIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
+        <TwitterIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
+        (!user ? <Button sx={{ bgcolor: '#3EE8B5', ":hover": { bgcolor: '#97E7AA' }, color: 'white' }} variant="contained">
+            Login
+        </Button> :
+            <Button onClick={handleLogout} sx={{ bgcolor: '#3EE8B5', ":hover": { bgcolor: '#97E7AA' }, color: 'white' }} variant="contained">
+                <Link>Log Out</Link>
+            </Button>
+        ),
+        <Button onClick={toggleDrawer(true)} sx={{ bgcolor: '#97E7AA', ":hover": { bgcolor: '#3EE8B5' }, color: 'black' }} variant="contained" endIcon={<ExpandMoreIcon />}>
+            All Courses
+        </Button>,
+    ];
+
+    const navItems2 = [
+        <Button sx={{ color: '#fff', bgcolor: '#121212' }} size='medium' variant="text" startIcon={<InstagramIcon />}>
+            Instagram
+        </Button>,
+        <Button sx={{ color: '#fff', bgcolor: '#121212' }} size='medium' variant="text" startIcon={<YouTubeIcon />}>
+            YouTube
+        </Button>,
+        <Button sx={{ color: '#fff', bgcolor: '#121212' }} size='medium' variant="text" startIcon={<LinkedInIcon />}>
+            LinkedIn
+        </Button>,
+        <Button sx={{ color: '#fff', bgcolor: '#121212' }} size='medium' variant="text" startIcon={<TwitterIcon />}>
+            Twitter
+        </Button>,
+        <Button sx={{ bgcolor: '#3EE8B5', ":hover": { bgcolor: '#97E7AA' }, color: 'white' }} variant="outline">
+            Login
+        </Button>,
+        <Button onClick={toggleDrawer(true)} sx={{ bgcolor: '#97E7AA', ":hover": { bgcolor: '#3EE8B5' }, color: 'black' }} variant="contained" endIcon={<ExpandMoreIcon />}>
+            All Courses
+        </Button>
+    ];
+
+
+
     const drawer = (
-        <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center', bgcolor:'#121212', height:'100%' }}>
+        <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center', bgcolor: '#121212', height: '100%' }}>
             <Typography variant="h6" sx={{ my: 2 }}>
                 <img className='h-10 ml-2' src={logo} alt="icon" />
             </Typography>
@@ -130,9 +390,9 @@ const NavBar = (props) => {
     const container = window !== undefined ? () => window().document.body : undefined;
 
     return (
-        <Box sx={{ display: 'flex'}}>
+        <Box sx={{ display: 'flex' }}>
             <CssBaseline />
-            <AppBar component="nav" sx={{ bgcolor: '#424242' , padding: '10px 20px 10px 10px'  }}>
+            <AppBar component="nav" sx={{ bgcolor: '#424242', padding: '10px 20px 10px 10px' }}>
                 <Toolbar>
 
                     <Typography
@@ -184,6 +444,49 @@ const NavBar = (props) => {
                     {drawer}
                 </Drawer>
             </Box>
+            {/* <Dialog
+                fullScreen={fullScreen}
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="responsive-dialog-title"
+                sx={{ width: '100%', borderRadius: '10px' }}
+            >
+
+                <div className="w-full lg:min-w-[400px] h-full lg:min-h-[70vh] p-8 bg-[#424242] text-white mx-auto shadow-xl border-2 border-cyan">
+                    <h1 className="text-2xl font-bold text-cyan mb-6">Login</h1>
+                    <form onSubmit={handleSubmit} noValidate="" action="" className="space-y-6 ng-untouched ng-pristine ng-valid">
+                        <div className="space-y-3 text-sm">
+                            <label htmlFor="username" className="block">Email</label>
+                            <input type="email" name="email" id="username" placeholder="Email" className="w-full rounded-xl border px-4 py-3 border-gray-300 bg-gray-50 text-gray-800 focus:border-red-600" required />
+                        </div>
+                        <div className="space-y-3 text-sm">
+                            <label htmlFor="password" className="block">Password</label>
+                            <input type="password" name="password" id="password" placeholder="Password" className="border w-full px-4 py-3 rounded-xl border-gray-300 bg-gray-50 text-gray-800 focus:border-red-600" required />
+
+                        </div>
+                        <input type='submit' value='Login' className="block w-full p-3 text-center rounded-xl text-gray-50 bg-cyan hover:bg-opacity-70 font-bold hover:transition-all hover:delay-200 hover:ease-out" />
+                        <p className='text-center text-error'><small>{error}</small></p>
+                    </form>
+                    <div className="flex items-center">
+                        <div className="flex-1 h-px sm:w-16 bg-gray-300"></div>
+                        <p className="px-3 text-sm">Or</p>
+                        <div className="flex-1 h-px sm:w-16 bg-gray-300"></div>
+                    </div>
+                    <div className="flex justify-center mt-4 mb-4">
+                        <button onClick={handleGoogleSignIn} aria-label="Login with Google" type="button" className="flex items-center justify-center w-full p-3 space-x-4 border rounded-xl font-bold hover:bg-[#585858] hover:transition-all hover:delay-200 hover:ease-out">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" className="w-5 h-5 fill-current text-blue-500">
+                                <path d="M16.318 13.714v5.484h9.078c-0.37 2.354-2.745 6.901-9.078 6.901-5.458 0-9.917-4.521-9.917-10.099s4.458-10.099 9.917-10.099c3.109 0 5.193 1.318 6.38 2.464l4.339-4.182c-2.786-2.599-6.396-4.182-10.719-4.182-8.844 0-16 7.151-16 16s7.156 16 16 16c9.234 0 15.365-6.49 15.365-15.635 0-1.052-0.115-1.854-0.255-2.651z"></path>
+                            </svg>
+                            <p>Login with Google</p>
+                        </button>
+                    </div>
+                    <p className="text-xs text-center sm:px-6">Don't have an account?
+                        <Link rel="noopener noreferrer" to='/register' className="underline text-error"> Register</Link>
+                    </p>
+                </div>
+
+
+            </Dialog> */}
 
         </Box>
 
