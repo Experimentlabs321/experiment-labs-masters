@@ -75,115 +75,166 @@ const Login = () => {
         //     })
     }
 
-
-
     const graphyLogin = async (email, displayName) => {
-        // event.preventDefault();
+        try {
+            const payload = {
+                name: displayName,
+                email: email,
+                exp: Math.floor(Date.now() / 1000) + 60 * 60, // Set the token expiration time
+            };
 
-        // const postData = {
-        //     mid: 'namanjain4098',
-        //     key: '2eb5be47-6526-4578-821b-400a74e63d9b',
-        //     email: 'john@xyz.com',
-        //     name: 'john'
-        // }
+            // Convert the payload to a Base64Url encoded string
+            const payloadBase64 = btoa(JSON.stringify(payload))
+                .replace(/=/g, "")
+                .replace(/\+/g, "-")
+                .replace(/\//g, "_");
 
-        // fetch('https://api.ongraphy.com/public/v1/learners', {
-        //     method: 'POST',
-        //     headers: {
-        //         'content-type': '<string>'
-        //     },
-        //     body: JSON.stringify(postData)
-        // })
-        //     .then(res => res.json())
-        //     .then(data => {
-        //         console.log(data);
-        //     })
-        //     .catch(error => console.error(error))
+            // Construct the header
+            const header = {
+                alg: "HS256",
+                typ: "JWT",
+            };
 
+            // Convert the header to a Base64Url encoded string
+            const headerBase64 = btoa(JSON.stringify(header))
+                .replace(/=/g, "")
+                .replace(/\+/g, "-")
+                .replace(/\//g, "_");
 
+            // Your API token obtained from Graphy
+            const apiToken = process.env.REACT_APP_key;
 
-        const data = qs.stringify({
-            mid: process.env.REACT_APP_mid,
-            key: process.env.REACT_APP_key,
-            email: email,
-            name: displayName
-        });
+            // Construct the signature
+            const signature = CryptoJS.HmacSHA256(
+                `${headerBase64}.${payloadBase64}`,
+                apiToken
+            );
 
-        const config = {
-            method: 'post',
-            url: 'https://api.ongraphy.com/public/v1/learners',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            data: data
-        };
+            // Convert the signature to a Base64Url encoded string
+            const signatureBase64 = CryptoJS.enc.Base64.stringify(signature)
+                .replace(/=/g, "")
+                .replace(/\+/g, "-")
+                .replace(/\//g, "_");
 
-        axios(config)
-            .then(response => {
-                console.log(JSON.stringify(response.data?.status));
-                const payload = {
-                    name: 'Muhammed Rakibul Hasan',
-                    email: 'rakibulhasan50415714@gmail.com',
-                    exp: 1616239022,
-                };
+            // Construct the SSO URL with the JWT token
+            const ssoUrl = `https://www.experimentlabs.in/t/u/activeCourses?ssoToken=${headerBase64}.${payloadBase64}.${signatureBase64}`;
 
-                // Convert the payload to a Base64Url encoded string
-                const payloadBase64 = btoa(JSON.stringify(payload))
-                    .replace(/=/g, '')
-                    .replace(/\+/g, '-')
-                    .replace(/\//g, '_');
-
-                // console.log(payloadBase64);
-
-                // Construct the header
-                const header = {
-                    alg: "HS256",
-                    typ: "JWT"
-                };
-
-                // Convert the header to a Base64Url encoded string
-                const headerBase64 = btoa(JSON.stringify(header))
-                    .replace(/=/g, '')
-                    .replace(/\+/g, '-')
-                    .replace(/\//g, '_');
-
-
-                //console.log(headerBase64);
+            // Redirect the user to the SSO URL
+            window.location.href = ssoUrl;
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
 
 
-                // Your API token obtained from Graphy
-                const apiToken = process.env.REACT_APP_key;
+    // const graphyLogin = async (email, displayName) => {
+    //     // event.preventDefault();
 
-                // Construct the signature
-                const signature = CryptoJS.HmacSHA256(headerBase64 + "." + payloadBase64, apiToken);
+    //     // const postData = {
+    //     //     mid: 'namanjain4098',
+    //     //     key: '2eb5be47-6526-4578-821b-400a74e63d9b',
+    //     //     email: 'john@xyz.com',
+    //     //     name: 'john'
+    //     // }
 
-                // Convert the signature to a Base64Url encoded string
-                const signatureBase64 = CryptoJS.enc.Base64.stringify(signature)
-                    .replace(/=/g, '')
-                    .replace(/\+/g, '-')
-                    .replace(/\//g, '_');
-
-                console.log(signatureBase64);
-
-                // // Construct the JWT token
-                // const jwtToken = `${headerBase64}.${payloadBase64}.${signatureBase64}`;
-
-                // Construct the SSO URL with the JWT token
-                const ssoUrl = `?ssoToken=${signatureBase64}`;
-
-                // // Redirect the user to the SSO URL
-                // //window.location.href = ssoUrl;
-                navigate(ssoUrl);
-                // console.log("SSO URL --->",ssoUrl);
-            })
-            .catch(error => {
-                console.log(error);
-            });
+    //     // fetch('https://api.ongraphy.com/public/v1/learners', {
+    //     //     method: 'POST',
+    //     //     headers: {
+    //     //         'content-type': '<string>'
+    //     //     },
+    //     //     body: JSON.stringify(postData)
+    //     // })
+    //     //     .then(res => res.json())
+    //     //     .then(data => {
+    //     //         console.log(data);
+    //     //     })
+    //     //     .catch(error => console.error(error))
 
 
 
-    }
+    //     const data = qs.stringify({
+    //         mid: process.env.REACT_APP_mid,
+    //         key: process.env.REACT_APP_key,
+    //         email: email,
+    //         name: displayName
+    //     });
+
+    //     const config = {
+    //         method: 'post',
+    //         url: 'https://api.ongraphy.com/public/v1/learners',
+    //         headers: {
+    //             'Content-Type': 'application/x-www-form-urlencoded'
+    //         },
+    //         data: data
+    //     };
+
+    //     axios(config)
+    //         .then(response => {
+    //             console.log(JSON.stringify(response.data?.status));
+    //             const payload = {
+    //                 name: 'Muhammed Rakibul Hasan',
+    //                 email: 'rakibulhasan50415714@gmail.com',
+    //                 exp: 1616239022,
+    //             };
+
+    //             // Convert the payload to a Base64Url encoded string
+    //             const payloadBase64 = btoa(JSON.stringify(payload))
+    //                 .replace(/=/g, '')
+    //                 .replace(/\+/g, '-')
+    //                 .replace(/\//g, '_');
+
+    //             // console.log(payloadBase64);
+
+    //             // Construct the header
+    //             const header = {
+    //                 alg: "HS256",
+    //                 typ: "JWT"
+    //             };
+
+    //             // Convert the header to a Base64Url encoded string
+    //             const headerBase64 = btoa(JSON.stringify(header))
+    //                 .replace(/=/g, '')
+    //                 .replace(/\+/g, '-')
+    //                 .replace(/\//g, '_');
+
+
+    //             //console.log(headerBase64);
+
+
+
+    //             // Your API token obtained from Graphy
+    //             const apiToken = process.env.REACT_APP_key;
+
+    //             // Construct the signature
+    //             const signature = CryptoJS.HmacSHA256(headerBase64 + "." + payloadBase64, apiToken);
+
+    //             // Convert the signature to a Base64Url encoded string
+    //             const signatureBase64 = CryptoJS.enc.Base64.stringify(signature)
+    //                 .replace(/=/g, '')
+    //                 .replace(/\+/g, '-')
+    //                 .replace(/\//g, '_');
+
+    //             console.log(signatureBase64);
+
+    //             // // Construct the JWT token
+    //             // const jwtToken = `${headerBase64}.${payloadBase64}.${signatureBase64}`;
+
+    //             // Construct the SSO URL with the JWT token
+    //             const ssoUrl = `?ssoToken=${signatureBase64}`;
+
+    //             // // Redirect the user to the SSO URL
+    //             // //window.location.href = ssoUrl;
+    //             navigate(ssoUrl);
+    //             // console.log("SSO URL --->",ssoUrl);
+    //         })
+    //         .catch(error => {
+    //             console.log(error);
+    //         });
+
+
+
+    // }
 
 
 

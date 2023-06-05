@@ -18,7 +18,7 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import logo from '../../../assets/Logos/Group 2859890.png';
+import logo from '../../../assets/Frame 155 1.png';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../contexts/AuthProvider';
 import { Dialog, useMediaQuery, useTheme } from '@mui/material';
@@ -149,183 +149,183 @@ const NavBar = (props) => {
 
 
     // login with email and password
-    const handleSubmit = event => {
-        // event.preventDefault();
-        // const form = event.target;
-        // const email = form.email.value;
-        // const password = form.password.value;
+    // const handleSubmit = event => {
+    //     // event.preventDefault();
+    //     // const form = event.target;
+    //     // const email = form.email.value;
+    //     // const password = form.password.value;
 
-        // console.log(email, password);
+    //     // console.log(email, password);
 
-        // signIn(email, password)
-        //     .then(result => {
-        //         const user = result.user;
-        //         console.log(user);
-        //         form.reset();
-        //         setError('');
+    //     // signIn(email, password)
+    //     //     .then(result => {
+    //     //         const user = result.user;
+    //     //         console.log(user);
+    //     //         form.reset();
+    //     //         setError('');
 
-        //         const currentUser = {
-        //             email: user?.email
-        //         }
+    //     //         const currentUser = {
+    //     //             email: user?.email
+    //     //         }
 
-        //         //get token
-        //         fetch(`https://dentist-fantastic-server.vercel.app/jwt`, {
-        //             method: 'POST',
-        //             headers: {
-        //                 'content-type': 'application/json'
-        //             },
-        //             body: JSON.stringify(currentUser)
-        //         })
-        //             .then(res => res.json())
-        //             .then(data => {
-        //                 console.log(data);
-        //                 localStorage.setItem('token', data.token);
-        //                 // navigate to old page
-        //                 navigate(from, { replace: true });
-        //             })
-        //             .catch(err => console.error(err));
-
-
-        //     })
-        //     .catch(error => {
-        //         console.error(error);
-        //         setError(error.message)
-        //     })
-    }
+    //     //         //get token
+    //     //         fetch(`https://dentist-fantastic-server.vercel.app/jwt`, {
+    //     //             method: 'POST',
+    //     //             headers: {
+    //     //                 'content-type': 'application/json'
+    //     //             },
+    //     //             body: JSON.stringify(currentUser)
+    //     //         })
+    //     //             .then(res => res.json())
+    //     //             .then(data => {
+    //     //                 console.log(data);
+    //     //                 localStorage.setItem('token', data.token);
+    //     //                 // navigate to old page
+    //     //                 navigate(from, { replace: true });
+    //     //             })
+    //     //             .catch(err => console.error(err));
 
 
-
-    const graphyLogin = async (email, displayName) => {
-        // event.preventDefault();
-
-        // const postData = {
-        //     mid: 'namanjain4098',
-        //     key: '2eb5be47-6526-4578-821b-400a74e63d9b',
-        //     email: 'john@xyz.com',
-        //     name: 'john'
-        // }
-
-        // fetch('https://api.ongraphy.com/public/v1/learners', {
-        //     method: 'POST',
-        //     headers: {
-        //         'content-type': '<string>'
-        //     },
-        //     body: JSON.stringify(postData)
-        // })
-        //     .then(res => res.json())
-        //     .then(data => {
-        //         console.log(data);
-        //     })
-        //     .catch(error => console.error(error))
+    //     //     })
+    //     //     .catch(error => {
+    //     //         console.error(error);
+    //     //         setError(error.message)
+    //     //     })
+    // }
 
 
 
-        const data = qs.stringify({
-            mid: process.env.REACT_APP_mid,
-            key: process.env.REACT_APP_key,
-            email: email,
-            name: displayName
-        });
+    // const graphyLogin = async (email, displayName) => {
+    //     // event.preventDefault();
 
-        const config = {
-            method: 'post',
-            url: 'https://api.ongraphy.com/public/v1/learners',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            data: data
-        };
+    //     // const postData = {
+    //     //     mid: 'namanjain4098',
+    //     //     key: '2eb5be47-6526-4578-821b-400a74e63d9b',
+    //     //     email: 'john@xyz.com',
+    //     //     name: 'john'
+    //     // }
 
-        axios(config)
-            .then(response => {
-                console.log(JSON.stringify(response.data?.status));
-                // Construct the payload for the JWT token
-                const payload = {
-                    name: displayName,
-                    email: email,
-                    exp: 1616239022,
-                };
-
-                // Convert the payload to a Base64Url encoded string
-                const payloadBase64 = btoa(JSON.stringify(payload))
-                    .replace(/=/g, '')
-                    .replace(/\+/g, '-')
-                    .replace(/\//g, '_');
-
-                // console.log(payloadBase64);
-
-                // Construct the header
-                const header = {
-                    alg: "HS256",
-                    typ: "JWT"
-                };
-
-                // Convert the header to a Base64Url encoded string
-                const headerBase64 = btoa(JSON.stringify(header))
-                    .replace(/=/g, '')
-                    .replace(/\+/g, '-')
-                    .replace(/\//g, '_');
-
-
-                //console.log(headerBase64);
+    //     // fetch('https://api.ongraphy.com/public/v1/learners', {
+    //     //     method: 'POST',
+    //     //     headers: {
+    //     //         'content-type': '<string>'
+    //     //     },
+    //     //     body: JSON.stringify(postData)
+    //     // })
+    //     //     .then(res => res.json())
+    //     //     .then(data => {
+    //     //         console.log(data);
+    //     //     })
+    //     //     .catch(error => console.error(error))
 
 
 
-                // Your API token obtained from Graphy
-                const apiToken = process.env.REACT_APP_key;
+    //     const data = qs.stringify({
+    //         mid: process.env.REACT_APP_mid,
+    //         key: process.env.REACT_APP_key,
+    //         email: email,
+    //         name: displayName
+    //     });
 
-                // Construct the signature
-                const signature = CryptoJS.HmacSHA256(headerBase64 + "." + payloadBase64, apiToken);
+    //     const config = {
+    //         method: 'post',
+    //         url: 'https://api.ongraphy.com/public/v1/learners',
+    //         headers: {
+    //             'Content-Type': 'application/x-www-form-urlencoded'
+    //         },
+    //         data: data
+    //     };
 
-                // Convert the signature to a Base64Url encoded string
-                const signatureBase64 = CryptoJS.enc.Base64.stringify(signature)
-                    .replace(/=/g, '')
-                    .replace(/\+/g, '-')
-                    .replace(/\//g, '_');
+    //     axios(config)
+    //         .then(response => {
+    //             console.log(JSON.stringify(response.data?.status));
+    //             // Construct the payload for the JWT token
+    //             const payload = {
+    //                 name: displayName,
+    //                 email: email,
+    //                 exp: 1616239022,
+    //             };
 
-                console.log(signatureBase64);
+    //             // Convert the payload to a Base64Url encoded string
+    //             const payloadBase64 = btoa(JSON.stringify(payload))
+    //                 .replace(/=/g, '')
+    //                 .replace(/\+/g, '-')
+    //                 .replace(/\//g, '_');
 
-                // // Construct the JWT token
-                // const jwtToken = `${headerBase64}.${payloadBase64}.${signatureBase64}`;
+    //             // console.log(payloadBase64);
 
-                // Construct the SSO URL with the JWT token
-                const ssoUrl = `login/&returnurl=https://experiment-labs-masters.web.app/mycourses?ssoToken=${signatureBase64}`;
+    //             // Construct the header
+    //             const header = {
+    //                 alg: "HS256",
+    //                 typ: "JWT"
+    //             };
 
-                // // Redirect the user to the SSO URL
-                // //window.location.href = ssoUrl;
-                navigate(ssoUrl);
-                // console.log("SSO URL --->",ssoUrl);
-
-            })
-            .catch(error => {
-                console.log(error);
-            });
+    //             // Convert the header to a Base64Url encoded string
+    //             const headerBase64 = btoa(JSON.stringify(header))
+    //                 .replace(/=/g, '')
+    //                 .replace(/\+/g, '-')
+    //                 .replace(/\//g, '_');
 
 
+    //             //console.log(headerBase64);
 
-    }
+
+
+    //             // Your API token obtained from Graphy
+    //             const apiToken = process.env.REACT_APP_key;
+
+    //             // Construct the signature
+    //             const signature = CryptoJS.HmacSHA256(headerBase64 + "." + payloadBase64, apiToken);
+
+    //             // Convert the signature to a Base64Url encoded string
+    //             const signatureBase64 = CryptoJS.enc.Base64.stringify(signature)
+    //                 .replace(/=/g, '')
+    //                 .replace(/\+/g, '-')
+    //                 .replace(/\//g, '_');
+
+    //             console.log(signatureBase64);
+
+    //             // // Construct the JWT token
+    //             // const jwtToken = `${headerBase64}.${payloadBase64}.${signatureBase64}`;
+
+    //             // Construct the SSO URL with the JWT token
+    //             const ssoUrl = `login/&returnurl=https://experiment-labs-masters.web.app/mycourses?ssoToken=${signatureBase64}`;
+
+    //             // // Redirect the user to the SSO URL
+    //             // //window.location.href = ssoUrl;
+    //             navigate(ssoUrl);
+    //             // console.log("SSO URL --->",ssoUrl);
+
+    //         })
+    //         .catch(error => {
+    //             console.log(error);
+    //         });
+
+
+
+    // }
 
 
 
     //Login with google provider
-    const handleGoogleSignIn = () => {
-        const googleProvider = new GoogleAuthProvider();
-        providerLogin(googleProvider)
-            .then(result => {
-                const email = result?.user?.email;
-                const displayName = result?.user?.displayName;
-                console.log(email, displayName);
-                if (email) {
-                    graphyLogin(email, displayName);
-                }
-                setError('');
+    // const handleGoogleSignIn = () => {
+    //     const googleProvider = new GoogleAuthProvider();
+    //     providerLogin(googleProvider)
+    //         .then(result => {
+    //             const email = result?.user?.email;
+    //             const displayName = result?.user?.displayName;
+    //             console.log(email, displayName);
+    //             if (email) {
+    //                 graphyLogin(email, displayName);
+    //             }
+    //             setError('');
 
-            })
-            .catch(error => {
-                console.error(error);
-                setError(error.message)
-            });
-    }
+    //         })
+    //         .catch(error => {
+    //             console.error(error);
+    //             setError(error.message)
+    //         });
+    // }
 
 
 
@@ -334,14 +334,14 @@ const NavBar = (props) => {
         <YouTubeIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
         <LinkedInIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
         <TwitterIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
-        (!user ? <Button sx={{ bgcolor: '#3EE8B5', ":hover": { bgcolor: '#97E7AA' }, color: 'white' }} variant="contained">
-            Login
+        (!user ? <Button sx={{ bgcolor: '#94A4FF', borderRadius:'22.5px' , ":hover": { bgcolor: '#FF557A' }, color: 'white', width:'100%' }} variant="contained">
+            <Link to={'/login'}>Login</Link>
         </Button> :
-            <Button onClick={handleLogout} sx={{ bgcolor: '#3EE8B5', ":hover": { bgcolor: '#97E7AA' }, color: 'white' }} variant="contained">
+            <Button onClick={handleLogout} sx={{ bgcolor: '#94A4FF', borderRadius:'22.5px' , ":hover": { bgcolor: '#FF557A' }, color: 'white', width:'100%' }} variant="contained">
                 <Link>Log Out</Link>
             </Button>
         ),
-        <Button onClick={toggleDrawer(true)} sx={{ bgcolor: '#97E7AA', ":hover": { bgcolor: '#3EE8B5' }, color: 'black' }} variant="contained" endIcon={<ExpandMoreIcon />}>
+        <Button onClick={toggleDrawer(true)} sx={{ bgcolor: '#FF557A', ":hover": { bgcolor: '#94A4FF', }, color: 'white',  width:'100%',borderRadius:'22.5px' }} variant="contained" endIcon={<ExpandMoreIcon />}>
             All Courses
         </Button>,
     ];
@@ -359,10 +359,10 @@ const NavBar = (props) => {
         <Button sx={{ color: '#fff', bgcolor: '#121212' }} size='medium' variant="text" startIcon={<TwitterIcon />}>
             Twitter
         </Button>,
-        <Button sx={{ bgcolor: '#3EE8B5', ":hover": { bgcolor: '#97E7AA' }, color: 'white' }} variant="outline">
-            Login
+        <Button sx={{ bgcolor: '#94A4FF', borderRadius:'22.5px' , ":hover": { bgcolor: '#FF557A' }, color: 'white', width:'100%' }} variant="outline">
+            <Link to={'/login'}>Login</Link>
         </Button>,
-        <Button onClick={toggleDrawer(true)} sx={{ bgcolor: '#97E7AA', ":hover": { bgcolor: '#3EE8B5' }, color: 'black' }} variant="contained" endIcon={<ExpandMoreIcon />}>
+        <Button onClick={toggleDrawer(true)} sx={{ bgcolor: '#FF557A', ":hover": { bgcolor: '#94A4FF', }, color: 'white',  width:'100%',borderRadius:'22.5px' }} variant="contained" endIcon={<ExpandMoreIcon />}>
             All Courses
         </Button>
     ];
@@ -370,10 +370,11 @@ const NavBar = (props) => {
 
 
     const drawer = (
-        <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center', bgcolor: '#121212', height: '100%' }}>
-            <Typography variant="h6" sx={{ my: 2 }}>
-                <img className='h-10 ml-2' src={logo} alt="icon" />
-            </Typography>
+        <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center', bgcolor: '#141414', height: '100%', color:'white' }}>
+            <div className='my-8 ml-2 flex gap-2 items-center'>
+                <img className='h-6 ml-2' src={logo} alt="icon" />
+                <h1 className='text-logo-white font-semibold'>Experiment Labs</h1>
+            </div>
             <Divider />
             <List>
                 {navItems2.map((item) => (
@@ -392,7 +393,7 @@ const NavBar = (props) => {
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
-            <AppBar component="nav" sx={{ bgcolor: '#424242', padding: '10px 20px 10px 10px' }}>
+            <AppBar component="nav" sx={{ bgcolor: '#141414', padding: '10px 20px 10px 10px' }}>
                 <Toolbar>
 
                     <Typography
@@ -400,7 +401,11 @@ const NavBar = (props) => {
                         component="div"
                         sx={{ flexGrow: 1, color: 'black' }}
                     >
-                        <Link to={'/'}><img className='h-8 md:h-12' src={logo} alt="icon" /></Link>
+                        <Link className='flex gap-3 items-center' to={'/'}>
+                            <img className='h-6 md:h-8' src={logo} alt="icon" />
+                            <h1 className='text-logo-white font-semibold'>Experiment Labs</h1>
+                        </Link>
+
                     </Typography>
                     <Box sx={{ display: { xs: 'none', sm: 'block' }, color: 'black' }}>
                         {navItems.map((item) => (
@@ -410,13 +415,13 @@ const NavBar = (props) => {
                         ))}
                     </Box>
                     <IconButton
-                        color="black"
+                        color="white"
                         aria-label="open drawer"
                         edge="end"
                         onClick={handleDrawerToggle}
                         sx={{ ml: 'auto', display: { sm: 'none' } }}
                     >
-                        <MenuIcon />
+                        <MenuIcon sx={{color:'white'}} />
                     </IconButton>
                     <Drawer
                         anchor={'top'}

@@ -26,7 +26,7 @@ const Home = () => {
 
 
     return (
-        <div className='bg-[#121212] text-white'>
+        <div className='bg-dark text-white'>
             <MyHelmet>Home</MyHelmet>
             <div className='mt-[3rem]'>
                 <Hero onButtonClick={handleButtonClick} />
