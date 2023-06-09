@@ -9,9 +9,12 @@ import { Button } from '@mui/material';
 import { ArrowCircleRightOutlined } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import img1 from '../../../assets/feature/Rectangle Thumpsup.png';
+import img1 from '../../../assets/feature/Rectangle 28.png';
 import img2 from '../../../assets/feature/Rectangle 26.png';
 import img3 from '../../../assets/feature/Rectangle 27.png';
+import imgL1 from '../../../assets/feature/Rectangle 28L.png';
+import imgL2 from '../../../assets/feature/Rectangle 26L.png';
+import imgL3 from '../../../assets/feature/Rectangle 27L.png';
 
 const Feature = () => {
 
@@ -38,7 +41,8 @@ const Feature = () => {
                         'Build your own innovative products and learn about different innovation based careers',
                         'Industry projects from Zomato, Swiggy, Nykaa and many more'
                     ],
-                    img: img1
+                    img: img1,
+                    imgLg: imgL1
                 },
                 {
                     title: 'Leadership and career planning through Business',
@@ -54,7 +58,8 @@ const Feature = () => {
                         'Build your own ventures and learn about different business based careers and path to leadership',
                         'Build Strong portfolios, chart out the best indian and international institutions and how to get admissions'
                     ],
-                    img: img2
+                    img: img2,
+                    imgLg: imgL2
                 },
                 {
                     category: 'Humanities/Arts',
@@ -70,7 +75,8 @@ const Feature = () => {
                         'Learn about different career options by experiential learning',
                         'Connect with industry experts and mentors to get guidance and advice.'
                     ],
-                    img: img3
+                    img: img3,
+                    imgLg: imgL3
                 }
 
             ]
@@ -92,7 +98,8 @@ const Feature = () => {
                         'Build your own innovative products and learn about different innovation based careers',
                         'Industry projects from Zomato, Swiggy, Nykaa and many more'
                     ],
-                    img: img1
+                    img: img1,
+                    imgLg: imgL1
                 }
             ]
         },
@@ -113,7 +120,8 @@ const Feature = () => {
                         'Build your own ventures and learn about different business based careers and path to leadership',
                         'Build Strong portfolios, chart out the best indian and international institutions and how to get admissions'
                     ],
-                    img: img2
+                    img: img2,
+                    imgLg: imgL2
                 }
             ]
         },
@@ -134,7 +142,8 @@ const Feature = () => {
                         'Learn about different career options by experiential learning',
                         'Connect with industry experts and mentors to get guidance and advice.'
                     ],
-                    img: img3
+                    img: img3,
+                    imgLg: imgL3
                 }
             ]
         }
@@ -194,7 +203,7 @@ const Feature = () => {
             <div ref={stickyRef} style={{ position: `${isLargeScreen ? 'sticky' : 'block'}`, top: 75, backgroundColor: '#141414', padding: "30px 0", zIndex: '1000' }}>
                 <h1 className='text-4xl font-medium'>Envision. Experiment. Educate. Enable.</h1>
                 <h1 className='text-4xl mt-2 font-medium'>Hands-on & Placement Driven Programmes</h1>
-                <div className='parent-container lg:justify-center flex-wrap'>
+                <div className='parent-container lg:justify-center justify-start'>
                     {
                         courses.map((course, index) => (
                             <div onClick={() => setSelectedIndex(index)} className={`courses ${selectedIndex !== index && 'bg-dark'} ${selectedIndex === index && 'bg-purple text-white'}`} key={index}>
@@ -207,13 +216,12 @@ const Feature = () => {
 
 
 
-            <div className='hidden lg:grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 mt-8 relative px-2'>
+            {selectedIndex === 0 && <div className='hidden lg:grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 mt-8 relative px-4'>
                 {
                     courses[selectedIndex]?.details?.map((course, index) =>
                         <Link onMouseEnter={() => setMouseEnteredIndex(index)} onMouseLeave={() => setMouseEnteredIndex(-1)} to={'/science-innovation'}>
                             <div style={{
-                                backgroundImage: "linear-gradient(to top left, #000000 -95%, rgba(0, 0, 0, 0.6096) 10.55%, rgba(0, 0, 0, 0) 90%)",
-                                backgroundColor: '#6278FF',
+                                background:"linear-gradient(360deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.12192) 25.08%, rgba(0, 0, 0, 0) 50%), #6278FF",
                                 borderRadius: '24px',
                                 padding: '31px 10px 40px',
 
@@ -245,17 +253,16 @@ const Feature = () => {
                             </div>
 
                             <Link to={'/science-innovation'}>
-                                <div style={{ borderRadius: '24px' }} className={`${index === mouseEnteredIndex ? 'absolute top-0 z-50 max-w-[400px] min-w-[380px] w-[380px]' : 'hidden'} bg-[#94A4FF] pt-1 pl-1`}>
+                                <div style={{ borderRadius: '24px' }} className={`${index === mouseEnteredIndex ? 'absolute top-0 z-50 w-[25vw]' : 'hidden'} bg-[#94A4FF] pt-1 pl-1`}>
                                     <div style={{
-                                        backgroundImage: "linear-gradient(to top left, #000000 -95%, rgba(0, 0, 0, 0.6096) 10.55%, rgba(0, 0, 0, 0) 90%)",
-                                        backgroundColor: '#6278FF',
+                                        background:"linear-gradient(360deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.12192) 25.08%, rgba(0, 0, 0, 0) 50%), #6278FF",
                                         borderRadius: '24px',
                                     }}
                                         key={index}
                                         className='min-h-[480px] max-h-[480px]'>
                                         <div className='w-full p-5'>
                                             <div style={{ borderBottom: "2px solid #94A4FF" }} className='pb-5'>
-                                                <h4 className='text-xl font-bold mt-3 font-sans'>{course.title}</h4>
+                                                <h4 className='text-xl font-bold mt-3 '>{course.title}</h4>
                                             </div>
                                         </div>
                                         <div className='w-full px-5'>
@@ -286,21 +293,74 @@ const Feature = () => {
                         </Link>
                     )
                 }
-            </div>
+            </div>}
+
+            {selectedIndex !== 0 && <div className='hidden lg:block mt-8 px-4'>
+                {
+                    courses[selectedIndex]?.details?.map((course, index) =>
+                        <Link to={'/science-innovation'}>
+
+                            <div style={{ borderRadius: '24px' }} className={`bg-[#94A4FF] pt-1 pl-1`}>
+                                <div style={{
+                                    background:"linear-gradient(360deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.12192) 25.08%, rgba(0, 0, 0, 0) 50%), #6278FF",
+                                    borderRadius: '24px',
+                                }}
+                                    key={index}
+                                    className='flex gap-10 items-center'>
+
+                                    <img style={{ height: '100%', width: '470px', objectFit: 'cover' }} src={course?.imgLg} alt="" />
+
+                                    <div>
+                                        <div className='w-full p-5'>
+                                            <div style={{ borderBottom: "2px solid #94A4FF" }} className='pb-10'>
+                                                <h4 className='text-3xl font-bold mt-3'>{course.title}</h4>
+                                            </div>
+                                        </div>
+                                        <div className='w-full px-5 py-5'>
+                                            <div style={{ borderBottom: "2px solid #94A4FF" }}  className='flex items-center justify-between gap-10 pb-10'>
+                                                <div className='grid grid-cols-2 justify-between gap-y-4'>
+                                                    <div className='flex items-center'><span className='p-[6px] rounded mr-2 bg-opacity-40'><AccessTimeRoundedIcon sx={{ color: '#94A4FF' }} /></span><span style={{ fontSize: '12px' }} className='font-bold'>{course?.data[0]}</span></div>
+                                                    <div className='flex items-center'><span className='p-[6px] rounded mr-2 bg-opacity-40'><LocationOnRoundedIcon sx={{ color: '#94A4FF' }} /></span><span style={{ fontSize: '12px' }} className='font-bold'>{course?.data[1]}</span></div>
+                                                    <div className='flex items-center'><span className='p-[6px] rounded mr-2 bg-opacity-40'><WorkRoundedIcon sx={{ color: '#94A4FF' }} /></span><span style={{ fontSize: '12px' }} className='font-bold'>{course?.data[2]}</span></div>
+                                                    <div className='flex items-center'><span className='p-[6px] rounded mr-2 bg-opacity-40'><CalendarMonthRoundedIcon sx={{ color: '#94A4FF' }} /></span><span style={{ fontSize: '12px' }} className='font-bold'>{course?.data[3]}</span></div>
+                                                </div>
+                                                <div className='flex flex-col gap-3'>
+                                                    {
+                                                        course?.info?.map((point, index) => <div className='flex flex-row items-center gap-1'>
+                                                            <span><PlayArrowRoundedIcon sx={{ color: '#94A4FF', opacity: '0.4' }} /></span>
+                                                            <span style={{ fontSize: '12px', fontWeight: '700' }}>{point}</span>
+                                                        </div>)
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div className='text-center py-10 px-5'>
+                                                <Link style={{ borderRadius: '22.5px', fontSize: '18px' }} className='mt-5 px-5 py-2 bg-pink text-white hover:bg-purple' >Apply Now </Link>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </Link>
+                    )
+                }
+            </div>}
 
             <div className='block lg:hidden'>
                 <div className='feature-slide-parent-container'>
                     {
                         courses[selectedIndex]?.details?.map((course, index) =>
                             <div style={{
-                                backgroundImage: "linear-gradient(to top left, #000000 -95%, rgba(0, 0, 0, 0.6096) 10.55%, rgba(0, 0, 0, 0) 90%)",
-                                backgroundColor: '#6278FF',
+                                background:"linear-gradient(360deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.12192) 25.08%, rgba(0, 0, 0, 0) 50%), #6278FF",
                                 borderRadius: '24px',
                             }} key={index} className='relative feature-course'>
                                 <Link to={'/science-innovation'}>
                                     <div className='w-full p-5'>
                                         <div style={{ borderBottom: "2px solid #94A4FF" }} className='pb-5'>
-                                            <h4 className='text-xl font-bold mt-3 font-sans'>{course.title}</h4>
+                                            <h4 className='text-xl font-bold mt-3 '>{course.title}</h4>
                                         </div>
                                     </div>
                                     <div className='w-full px-5'>

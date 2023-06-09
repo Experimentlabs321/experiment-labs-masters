@@ -15,7 +15,7 @@ const ExperienceUnionPage = () => {
     }, []);
 
     return (
-        <div className='bg-[#121212] h-[100vh]'>
+        <div className='bg- h-[100vh]'>
             <MyHelmet>Experience Union</MyHelmet>
             <ExperienceUnionNav/>
 

@@ -4,7 +4,7 @@ import './style.css';
 
 const LifeAtUnion = () => {
     return (
-        <div className='mt-40 px-10 lg:px-28'>
+        <div className='mt-40 pb-20 px-10 lg:px-28'>
             <div className='flex items-start justify-between gap-10'>
                 <div>
                     <h1 className='text-2xl xl:text-4xl font-extrabold font bg-gradient-to-t from-custom-blue to-transparent to-50%'>Life at the Union</h1>

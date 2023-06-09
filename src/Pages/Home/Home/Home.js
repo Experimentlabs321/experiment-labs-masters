@@ -36,7 +36,7 @@ const Home = () => {
             </div>
             <TakeTest/>
             <AllCourses/>
-            <AiTutor/>
+            {/* <AiTutor/> */}
             <MeetTheMaster/>
             <CEOChallenge/>
             <LifeAtUnion/>

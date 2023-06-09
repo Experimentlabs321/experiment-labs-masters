@@ -136,72 +136,71 @@ const AllCourses = () => {
     }, []);
 
     return (
-        <div className='mt-28 px-5 py-10 lg:px-30 xl:px-32 font' ref={containerRef}>
-            <h1 className='font-bold text-4xl font block lg:hidden mb-6 lg:mb-0'>Hands-on. <span className='bg-gradient-to-t from-custom-blue to-transparent to-50%'>Disruptive. Experiential.</span></h1>
-            <div ref={stickyRef} style={{ top: 70, backgroundColor: '#121212', padding: "35px 0", zIndex: '1000', width: '100%' }} className='hidden lg:block'>
-                <h1 className='font-bold text-4xl'>Hands-on. <span className='bg-gradient-to-t from-custom-blue to-transparent to-50%'>Disruptive. Experiential.</span></h1>
+        <div className='mt-28 px-5 py-10 lg:px-30 xl:px-32' ref={containerRef}>
+            <h1 className='font-bold text-4xl block lg:hidden mb-6 lg:mb-0'>Hands-on. <span className=' '>Disruptive. Experiential.</span></h1>
+            <div ref={stickyRef} style={{ top: 70, backgroundColor: '#141414', padding: "35px 0", zIndex: '1000', width: '100%' }} className='hidden lg:block'>
+                <h1 className='font-bold text-4xl'>Hands-on. <span className=' '>Disruptive. Experiential.</span></h1>
                 <h6 className='text-lg mt-2 font-light'>See how we teach across all our courses</h6>
 
             </div>
             <div className='flex flex-row gap-10 items-start'>
 
-                <div ref={stickyRef2} style={{ position: 'sticky', top: 220, backgroundColor: '#121212', zIndex: '1' }} className='hidden lg:flex flex-col gap-5 min-w-[300px] sticky'>
-                    <span onClick={() => handleClick(0)} className={`${selected === 0 && 'shadow-lg border-2'} hover:border-2 rounded-xl py-4 pl-4 transition-all duration-100 ease-in cursor-pointer bg-[#424242]`}>0 to 1 Journey</span>
-                    <span onClick={() => handleClick(1)} className={`${selected === 1 && 'shadow-lg border-2'} hover:border-2 rounded-xl py-4 pl-4 transition-all duration-100 ease-in cursor-pointer bg-[#424242]`}>Creator Challenge</span>
-                    <span onClick={() => handleClick(2)} className={`${selected === 2 && 'shadow-lg border-2'} hover:border-2 rounded-xl py-4 pl-4 transition-all duration-100 ease-in cursor-pointer bg-[#424242]`}>Local Consulting Challenge</span>
-                    <span onClick={() => handleClick(3)} className={`${selected === 3 && 'shadow-lg border-2'} hover:border-2 rounded-xl py-4 pl-4 transition-all duration-100 ease-in cursor-pointer bg-[#424242]`}>Venture Initiation Program</span>
-                    <span onClick={() => handleClick(4)} className={`${selected === 4 && 'shadow-lg border-2'} hover:border-2 rounded-xl py-4 pl-4 transition-all duration-100 ease-in cursor-pointer bg-[#424242]`}>Startup Weekends</span>
-                    <span onClick={() => handleClick(5)} className={`${selected === 5 && 'shadow-lg border-2'} hover:border-2 rounded-xl py-4 pl-4 transition-all duration-100 ease-in cursor-pointer bg-[#424242]`}>CXO Mentorship Programme</span>
-                    <span onClick={() => handleClick(6)} className={`${selected === 6 && 'shadow-lg border-2'} hover:border-2 rounded-xl py-4 pl-4 transition-all duration-100 ease-in cursor-pointer bg-[#424242]`}>Student Investment Fund</span>
+                <div ref={stickyRef2} style={{ position: 'sticky', top: 220, backgroundColor: '#141414', zIndex: '1' }} className='hidden lg:flex flex-col gap-1 min-w-[420px] sticky'>
+                    <span onClick={() => handleClick(0)} className={`${selected === 0 && 'shadow-lg border-4 border-purple font-semibold'} hover:border-4 border-purple rounded-xl py-4 pl-4 transition-all duration-100 ease-in cursor-pointer bg-dark`}>0 to 1 Journey</span>
+                    <span onClick={() => handleClick(1)} className={`${selected === 1 && 'shadow-lg border-4 border-purple font-semibold'} hover:border-4 border-purple rounded-xl py-4 pl-4 transition-all duration-100 ease-in cursor-pointer bg-dark`}>Technical Skills</span>
+                    <span onClick={() => handleClick(2)} className={`${selected === 2 && 'shadow-lg border-4 border-purple font-semibold text-sm'} hover:border-4 border-purple rounded-xl py-4 pl-4 transition-all duration-100 ease-in cursor-pointer bg-dark`}>Emotional & Personality Development</span>
+                    <span onClick={() => handleClick(3)} className={`${selected === 3 && 'shadow-lg border-4 border-purple font-semibold'} hover:border-4 border-purple rounded-xl py-4 pl-4 transition-all duration-100 ease-in cursor-pointer bg-dark`}>Hands on Career Exploration</span>
+                    <span onClick={() => handleClick(4)} className={`${selected === 4 && 'shadow-lg border-4 border-purple font-semibold'} hover:border-4 border-purple rounded-xl py-4 pl-4 transition-all duration-100 ease-in cursor-pointer bg-dark`}>Portfolio Building</span>
+                    <span onClick={() => handleClick(5)} className={`${selected === 5 && 'shadow-lg border-4 border-purple font-semibold'} hover:border-4 border-purple rounded-xl py-4 pl-4 transition-all duration-100 ease-in cursor-pointer bg-dark`}>Global Competitions</span>
+                    <span onClick={() => handleClick(6)} className={`${selected === 6 && 'shadow-lg border-4 border-purple font-semibold'} hover:border-4 border-purple rounded-xl py-4 pl-4 transition-all duration-100 ease-in cursor-pointer bg-dark`}>Gamified Problems</span>
+                    <span onClick={() => handleClick(7)} className={`${selected === 7 && 'shadow-lg border-4 border-purple font-semibold'} hover:border-4 border-purple rounded-xl py-4 pl-4 transition-all duration-100 ease-in cursor-pointer bg-dark`}>Prize Money</span>
                 </div>
 
                 {/* Big Screen */}
 
                 <div className='hidden w-full lg:flex flex-col gap-24 getId'>
                     {/* First one  */}
-                    <div className='w-full rounded-xl bg-[#424242] flex p-10 items-start gap-10' id={0}>
+                    <div style={{
+                        background:"linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                        border: '3px solid #BCC5FF'
+                    }}
+                        className='w-full rounded-xl flex p-10 items-start gap-10' id={0}>
                         <div>
-                            <h1 className='text-2xl font-bold font text-white'>Launch and Build your own Products & Business</h1>
-                            <p className='text-sm font-light my-3'>From finding the right idea to building the product to getting sales and building financial models you will learn how different careers look like in a corporation.</p>
-                            <p className='text-sm font-light my-3'>Get exposure to over <span className='font-semibold'>50+ Career option.</span>
+                            <h1 className='text-3xl font-bold text-white'>Launch and Build your own Products & Business</h1>
+                            <p className='text-lg font-thin my-6'>From finding the right idea to building the product to getting sales and building financial models you will learn how different careers look like in a corporation.</p>
+                            <p className='text-lg font-thin mb-6'>Get exposure to over <span className='font-semibold'>50+ Career option.</span>
                             </p>
 
-                            <p className='hidden lg:block'>Some of our Student Brands</p>
+                            <p className='hidden lg:block text-xl font-semibold'>Some of our Student Brands</p>
 
 
-                            <div className='hidden lg:grid grid-cols-2 lg:grid-cols-3 gap-4 pt-4 pb-8 pr-5'>
-                                <img className='h-12 hover:shadow-md hover:shadow-custom-blue transition-all duration-100 ease-in cursor-pointer p-2 rounded-xl' src={logo2} alt="logo" />
-                                <img className='h-12 hover:shadow-md hover:shadow-custom-blue transition-all duration-100 ease-in cursor-pointer p-2 rounded-xl' src={logo2} alt="logo" />
-                                <img className='h-12 hover:shadow-md hover:shadow-custom-blue transition-all duration-100 ease-in cursor-pointer p-2 rounded-xl' src={logo2} alt="logo" />
-                                <img className='h-12 hover:shadow-md hover:shadow-custom-blue transition-all duration-100 ease-in cursor-pointer p-2 rounded-xl' src={logo2} alt="logo" />
-                                <img className='h-12 hover:shadow-md hover:shadow-custom-blue transition-all duration-100 ease-in cursor-pointer p-2 rounded-xl' src={logo2} alt="logo" />
-                                <img className='h-12 hover:shadow-md hover:shadow-custom-blue transition-all duration-100 ease-in cursor-pointer p-2 rounded-xl' src={logo2} alt="logo" />
+                            <div className='flex items-end justify-between gap-20'>
+                                <div className='hidden lg:grid grid-cols-2 lg:grid-cols-3 gap-4 pt-4 pr-5'>
+                                    <img className='h-12 hover:shadow-md hover:shadow-custom-blue transition-all duration-100 ease-in cursor-pointer p-2 rounded-xl' src={logo2} alt="logo" />
+                                    <img className='h-12 hover:shadow-md hover:shadow-custom-blue transition-all duration-100 ease-in cursor-pointer p-2 rounded-xl' src={logo2} alt="logo" />
+                                    <img className='h-12 hover:shadow-md hover:shadow-custom-blue transition-all duration-100 ease-in cursor-pointer p-2 rounded-xl' src={logo2} alt="logo" />
+                                    <img className='h-12 hover:shadow-md hover:shadow-custom-blue transition-all duration-100 ease-in cursor-pointer p-2 rounded-xl' src={logo2} alt="logo" />
+                                    <img className='h-12 hover:shadow-md hover:shadow-custom-blue transition-all duration-100 ease-in cursor-pointer p-2 rounded-xl' src={logo2} alt="logo" />
+                                    <img className='h-12 hover:shadow-md hover:shadow-custom-blue transition-all duration-100 ease-in cursor-pointer p-2 rounded-xl' src={logo2} alt="logo" />
+                                </div>
+
+                                <Button endIcon={<OutboundOutlinedIcon />} size='large' variant='contained' sx={{ bgcolor: '#0CC5DB', ":hover": { bgcolor: '#3EE8B5' }, textTransform: 'capitalize', width: '160px' }}>See All</Button>
                             </div>
 
-                            <Button endIcon={<OutboundOutlinedIcon />} size='large' variant='contained' sx={{ bgcolor: '#0CC5DB', ":hover": { bgcolor: '#3EE8B5' }, textTransform: 'capitalize', width: '160px' }}>See All</Button>
 
-
-                        </div>
-                        <div className='z-0 hidden lg:block'>
-                            <iframe
-                                loop={true}
-                                height={450}
-                                width={280}
-                                keyboardNavigation={true}
-                                style={{ borderRadius: '15px', border: '1px solid gray' }}
-                                currentIndex={selectedIndex}
-                                src='https://dsqqu7oxq6o1v.cloudfront.net/motion-array-1388812-A012_06252056_C069-high.mp4'
-                                allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowFullScreen
-                                title="Embedded video"
-                            />
                         </div>
                     </div>
 
+
+
+
                     {/* second one */}
-                    <div className='w-full rounded-xl bg-[#424242] flex p-10 items-start gap-10' id={1}>
+                    <div style={{
+                        background:"linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                        border: '3px solid #BCC5FF'
+                    }} className='w-full rounded-xl flex p-10 items-start gap-10' id={1}>
                         <div>
-                            <h1 className='text-2xl font-bold font text-white'>Become a Creator-preneur</h1>
+                            <h1 className='text-2xl font-bold text-white'>Become a Creator-preneur</h1>
                             <p className='text-sm font-light my-3'>From identifying a content niche to building an audience, students are trained to grow their personal brands on Youtube, Instagram, and LinkedIn.</p>
 
                             <p className='hidden lg:block'>Meet Our Resident Influencers</p>
@@ -268,9 +267,12 @@ const AllCourses = () => {
 
                     {/* Third one */}
 
-                    <div className='w-full rounded-xl bg-[#424242] flex p-10 items-start gap-10' id={2}>
+                    <div style={{
+                        background:"linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                        border: '3px solid #BCC5FF'
+                    }} className='w-full rounded-xl flex p-10 items-start gap-10' id={2}>
                         <div>
-                            <h1 className='text-2xl font-bold font text-white'>Champion and Transform Local Businesses
+                            <h1 className='text-2xl font-bold text-white'>Champion and Transform Local Businesses
                             </h1>
                             <p className='text-sm font-light my-3'>Step into the shoes of a consultant by adopting existing local businesses, transforming their strategy and processes, and accelerating their business success.</p>
 
@@ -303,10 +305,13 @@ const AllCourses = () => {
 
 
                     {/* Fourth one  */}
-                    <div className='w-full rounded-xl bg-[#424242] p-10 items-start gap-10' id={3}>
+                    <div style={{
+                        background:"linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                        border: '3px solid #BCC5FF'
+                    }} className='w-full rounded-xl p-10 items-start gap-10' id={3}>
                         <div className='flex gap-10 items-center'>
                             <div>
-                                <h1 className='text-2xl font-bold font text-white'>Develop and Deploy Early-Stage Startups</h1>
+                                <h1 className='text-2xl font-bold text-white'>Develop and Deploy Early-Stage Startups</h1>
                                 <p className='text-sm font-light my-3'>Students build and run a startup, end-to-end. 10% of our first cohort went on to work full-time on their startups, with 3 of them raising angel investments.</p>
                             </div>
 
@@ -381,10 +386,13 @@ const AllCourses = () => {
                     </div>
 
                     {/* Fifth one */}
-                    <div className='w-full rounded-xl bg-[#424242] p-10 items-start gap-10' id={4}>
+                    <div style={{
+                        background:"linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                        border: '3px solid #BCC5FF'
+                    }} className='w-full rounded-xl p-10 items-start gap-10' id={4}>
                         <div className='flex gap-10 items-center'>
                             <div>
-                                <h1 className='text-2xl font-bold font text-white'>Hustle Through a Weekend of Iteration and Innovation</h1>
+                                <h1 className='text-2xl font-bold text-white'>Hustle Through a Weekend of Iteration and Innovation</h1>
                                 <p className='text-sm font-light my-3'>Students engage with peers to bridge gaps, share ideas, and develop their best prototypes in under 48 hours.</p>
                                 <p className='mb-3'>Engage With Themes Across</p>
 
@@ -447,10 +455,13 @@ const AllCourses = () => {
                     </div>
 
                     {/* Sixth One */}
-                    <div className='w-full rounded-xl bg-[#424242] p-10 items-start gap-10' id={5}>
+                    <div style={{
+                        background:"linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                        border: '3px solid #BCC5FF'
+                    }} className='w-full rounded-xl p-10 items-start gap-10' id={5}>
                         <div className='flex gap-10 items-center'>
                             <div>
-                                <h1 className='text-2xl font-bold font text-white'>Get Mentored by Top CXOs</h1>
+                                <h1 className='text-2xl font-bold text-white'>Get Mentored by Top CXOs</h1>
                                 <p className='text-sm font-light my-3'>Experience one-on-one mentorship, coaching and guidance from CXOs across industries.</p>
                                 <p className='mb-3'>Our Mentors Include</p>
 
@@ -512,10 +523,82 @@ const AllCourses = () => {
                     </div>
 
                     {/* Seventh One */}
-                    <div className='w-full rounded-xl bg-[#424242] p-10 items-start gap-10' id={6}>
+                    <div style={{
+                        background:"linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                        border: '3px solid #BCC5FF'
+                    }} className='w-full rounded-xl p-10 items-start gap-10' id={6}>
                         <div className='flex gap-10 items-center'>
                             <div>
-                                <h1 className='text-2xl font-bold font text-white'>Run a 5 Cr. Investment Fund
+                                <h1 className='text-2xl font-bold text-white'>Run a 5 Cr. Investment Fund
+                                </h1>
+                                <p className='text-sm font-light my-3'>The Masters’ Union Investment Fund has a working capital of over 5 Crores, invested across diverse asset classes like Crypto and Blockchain, Public and Private Equities, Fund of Funds, REITs and InvITs and of course, startups. </p>
+                                <p className='mb-3'>Our Portfolio Includes</p>
+
+                                <div className='grid grid-cols-1 gap-4 gap-y-6 pt-6 pb-8 pr-5'>
+                                    <div className='flex items-center gap-3'>
+                                        <div className='border-2 border-custom-blue p-2 rounded-full'>
+                                            <CleanHandsTwoToneIcon className='text-2xl text-custom-blue' />
+                                        </div>
+                                        <div>
+                                            <h1 className='text-sm'>Investments in Public Equities</h1>
+                                            <p className='text-xs font-light'>Poonawala Group • ITC • CDSL and 27 more!</p>
+                                        </div>
+                                    </div>
+                                    <div className='flex items-center gap-3'>
+                                        <div className='border-2 border-custom-blue p-2 rounded-full'>
+                                            <CurrencyExchangeTwoToneIcon className='text-2xl text-custom-blue' />
+                                        </div>
+                                        <div>
+                                            <h1 className='text-sm'>Investments as a VC</h1>
+                                            <p className='text-xs font-light'>AlphaMint Labs • BluSmart and 4 more!</p>
+                                        </div>
+                                    </div>
+                                    <div className='flex items-center gap-3'>
+                                        <div className='border-2 border-custom-blue p-2 rounded-full'>
+                                            <MoneyTwoToneIcon className='text-2xl text-custom-blue' />
+                                        </div>
+                                        <div>
+                                            <h1 className='text-sm'>Alternate Investments</h1>
+                                            <p className='text-xs font-light'>Antler India (LPs) • Gold • REITs • InvITs • Forex</p>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+                            <div>
+                                <div>
+                                    <iframe
+                                        loop={true}
+                                        height={180}
+                                        width={280}
+                                        keyboardNavigation={true}
+                                        style={{ borderRadius: '15px', border: '1px solid gray' }}
+                                        src={stories[0]?.url}
+                                        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowFullScreen
+                                        title="Embedded video"
+                                    />
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+
+                    </div>
+
+
+                    {/* Eight One */}
+                    <div style={{
+                        background:"linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                        border: '3px solid #BCC5FF'
+                    }} className='w-full rounded-xl p-10 items-start gap-10' id={7}>
+                        <div className='flex gap-10 items-center'>
+                            <div>
+                                <h1 className='text-2xl font-bold text-white'>Run a 5 Cr. Investment Fund
                                 </h1>
                                 <p className='text-sm font-light my-3'>The Masters’ Union Investment Fund has a working capital of over 5 Crores, invested across diverse asset classes like Crypto and Blockchain, Public and Private Equities, Fund of Funds, REITs and InvITs and of course, startups. </p>
                                 <p className='mb-3'>Our Portfolio Includes</p>
@@ -601,9 +684,9 @@ const AllCourses = () => {
 
                         {/* First Slide */}
                         <SwiperSlide style={{ maxWidth: '400px', minWidth: '400px', minHeight: '575px', maxHeight: '575px' }}>
-                            <div className='w-[340px] max-w-[340px] rounded-xl bg-[#424242] flex flex-col-reverse justify-end min-h-[560px] max-h-[560px]' id={0}>
+                            <div className='w-[340px] max-w-[340px] rounded-xl bg-dark flex flex-col-reverse justify-end min-h-[560px] max-h-[560px]' id={0}>
                                 <div className='p-3'>
-                                    <h1 className='text-2xl font-bold font text-white'>Launch and Build your own Products & Business</h1>
+                                    <h1 className='text-2xl font-bold text-white'>Launch and Build your own Products & Business</h1>
                                     <p className='text-sm font-light my-3'>From finding the right idea to building the product to getting sales and building financial models you will learn how different careers look like in a corporation.</p>
                                     <p className='text-sm font-light my-3'>Get exposure to over <span className='font-semibold'>50+ Career option.</span>
                                     </p>
@@ -639,9 +722,9 @@ const AllCourses = () => {
 
                         {/* Second Slide */}
                         <SwiperSlide style={{ maxWidth: '400px', minWidth: '400px' }}>
-                            <div className='w-[340px] max-w-[340px] rounded-xl bg-[#424242] flex flex-col-reverse justify-end min-h-[560px] max-h-[560px]' id={1}>
+                            <div className='w-[340px] max-w-[340px] rounded-xl bg-dark flex flex-col-reverse justify-end min-h-[560px] max-h-[560px]' id={1}>
                                 <div className='p-3'>
-                                    <h1 className='text-2xl font-bold font text-white'>Become a Creator-preneur</h1>
+                                    <h1 className='text-2xl font-bold text-white'>Become a Creator-preneur</h1>
                                     <p className='text-sm font-light my-3'>From finding the right idea to building the product to getting sales and building financial models you will learn how different careers look like in a corporation.</p>
 
                                     <div className='flex lg:hidden justify-between items-center'>
@@ -684,9 +767,9 @@ const AllCourses = () => {
 
                         {/* Third Slide */}
                         <SwiperSlide style={{ maxWidth: '400px', minWidth: '400px', minHeight: '575px', maxHeight: '575px' }}>
-                            <div className='w-[340px] max-w-[340px] rounded-xl bg-[#424242] flex flex-col-reverse justify-end min-h-[560px] max-h-[560px]' id={2}>
+                            <div className='w-[340px] max-w-[340px] rounded-xl bg-dark flex flex-col-reverse justify-end min-h-[560px] max-h-[560px]' id={2}>
                                 <div className='p-3'>
-                                    <h1 className='text-2xl font-bold font text-white'>Champion and Transform Local Businesses</h1>
+                                    <h1 className='text-2xl font-bold text-white'>Champion and Transform Local Businesses</h1>
                                     <p className='text-sm font-light my-3'>Step into the shoes of a consultant by adopting existing local businesses, transforming their strategy and processes, and accelerating their business success.</p>
 
                                     <p>Meet Our Client Partners</p>
@@ -715,9 +798,9 @@ const AllCourses = () => {
 
                         {/* Fourth Slide */}
                         <SwiperSlide style={{ maxWidth: '400px', minWidth: '400px', minHeight: '575px', maxHeight: '575px' }}>
-                            <div className='w-[340px] max-w-[340px] rounded-xl bg-[#424242] flex flex-col-reverse justify-end min-h-[560px] max-h-[560px]' id={3}>
+                            <div className='w-[340px] max-w-[340px] rounded-xl bg-dark flex flex-col-reverse justify-end min-h-[560px] max-h-[560px]' id={3}>
                                 <div className='p-3'>
-                                    <h1 className='text-2xl font-bold font text-white'>Launch and Build your own Products & Business</h1>
+                                    <h1 className='text-2xl font-bold text-white'>Launch and Build your own Products & Business</h1>
                                     <p className='text-sm font-light my-3'>Students build and run a startup, end-to-end. 10% of our first cohort went on to work full-time on their startups, with 3 of them raising angel investments.</p>
 
                                     <p>Our Startup Showcase</p>
@@ -751,9 +834,9 @@ const AllCourses = () => {
 
                         {/* Fifth Slide */}
                         <SwiperSlide style={{ maxWidth: '400px', minWidth: '400px', minHeight: '575px', maxHeight: '575px' }}>
-                            <div className='w-[340px] max-w-[340px] rounded-xl bg-[#424242] flex flex-col-reverse justify-end min-h-[560px] max-h-[560px]' id={4}>
+                            <div className='w-[340px] max-w-[340px] rounded-xl bg-dark flex flex-col-reverse justify-end min-h-[560px] max-h-[560px]' id={4}>
                                 <div className='p-3'>
-                                    <h1 className='text-xl font-bold font text-white'>Hustle Through a Weekend of Iteration and Innovation</h1>
+                                    <h1 className='text-xl font-bold text-white'>Hustle Through a Weekend of Iteration and Innovation</h1>
                                     <p className='text-sm font-light my-3'>Students engage with peers to bridge gaps, share ideas, and develop their best prototypes in under 48 hours.</p>
                                     <p className='mb-3'>Engage With Themes Across</p>
 
@@ -806,10 +889,10 @@ const AllCourses = () => {
 
                         {/* Sixth Slide */}
                         <SwiperSlide style={{ maxWidth: '400px', minWidth: '400px', minHeight: '575px', maxHeight: '575px' }}>
-                            <div className='w-[340px] max-w-[340px] rounded-xl bg-[#424242] flex flex-col-reverse justify-end min-h-[560px] max-h-[560px]' id={5}>
+                            <div className='w-[340px] max-w-[340px] rounded-xl bg-dark flex flex-col-reverse justify-end min-h-[560px] max-h-[560px]' id={5}>
                                 <div className='p-3'>
                                     <div>
-                                        <h1 className='text-2xl font-bold font text-white'>Get Mentored by Top CXOs</h1>
+                                        <h1 className='text-2xl font-bold text-white'>Get Mentored by Top CXOs</h1>
                                         <p className='text-sm font-light my-3'>Experience one-on-one mentorship, coaching and guidance from CXOs across industries.</p>
                                         <p className='mb-3'>Our Mentors Include</p>
 
@@ -849,10 +932,10 @@ const AllCourses = () => {
 
                         {/* Seventh Slide */}
                         <SwiperSlide style={{ maxWidth: '400px', minWidth: '400px', minHeight: '575px', maxHeight: '575px' }}>
-                            <div className='w-[340px] max-w-[340px] rounded-xl bg-[#424242] flex flex-col-reverse justify-end min-h-[560px] max-h-[560px]' id={6}>
+                            <div className='w-[340px] max-w-[340px] rounded-xl bg-dark flex flex-col-reverse justify-end min-h-[560px] max-h-[560px]' id={6}>
 
                                 <div className='p-3'>
-                                    <h1 className='text-2xl font-bold font text-white'>Run a 5 Cr. Investment Fund
+                                    <h1 className='text-2xl font-bold text-white'>Run a 5 Cr. Investment Fund
                                     </h1>
                                     <p className='text-sm font-light my-3'>The Masters’ Union Investment Fund has a working capital of over 5 Crores...</p>
                                     <p className='mb-3'>Our Portfolio Includes</p>
@@ -914,7 +997,7 @@ const AllCourses = () => {
 
                         <div className='rounded-xl bg-custom-blue all-courses bg-opacity-5 flex flex-col-reverse items-start' id={0}>
                             <div className='p-3'>
-                                <h1 className='text-2xl font-bold font text-white'>Launch and Build your own Products & Business</h1>
+                                <h1 className='text-2xl font-bold text-white'>Launch and Build your own Products & Business</h1>
                                 <p className='text-sm font-light my-3'>From finding the right idea to building the product to getting sales and building financial models you will learn how different careers look like in a corporation.</p>
                                 <p className='text-sm font-light my-3'>Get exposure to over <span className='font-semibold'>50+ Career option.</span>
                                 </p>
@@ -949,7 +1032,7 @@ const AllCourses = () => {
 
                         <div className='rounded-xl bg-custom-blue all-courses bg-opacity-5 flex flex-col-reverse items-start' id={1}>
                             <div className='p-3'>
-                                <h1 className='text-2xl font-bold font text-white'>Become a Creator-preneur</h1>
+                                <h1 className='text-2xl font-bold text-white'>Become a Creator-preneur</h1>
                                 <p className='text-sm font-light my-3'>From finding the right idea to building the product to getting sales and building financial models you will learn how different careers look like in a corporation.</p>
 
                                 <div className='flex lg:hidden justify-between items-center'>

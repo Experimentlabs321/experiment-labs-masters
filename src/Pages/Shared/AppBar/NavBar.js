@@ -330,14 +330,14 @@ const NavBar = (props) => {
 
 
     const navItems = [
-        <InstagramIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
-        <YouTubeIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
-        <LinkedInIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
-        <TwitterIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
-        (!user ? <Button sx={{ bgcolor: '#94A4FF', borderRadius:'22.5px' , ":hover": { bgcolor: '#FF557A' }, color: 'white', width:'100%' }} variant="contained">
+        // <InstagramIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
+        // <YouTubeIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
+        // <LinkedInIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
+        // <TwitterIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
+        (!user ? <Button sx={{ bgcolor: '#FF557A', borderRadius:'22.5px' , ":hover": { bgcolor: '#94A4FF' }, color: 'white', width:'100%' }} variant="contained">
             <Link to={'/login'}>Login</Link>
         </Button> :
-            <Button onClick={handleLogout} sx={{ bgcolor: '#94A4FF', borderRadius:'22.5px' , ":hover": { bgcolor: '#FF557A' }, color: 'white', width:'100%' }} variant="contained">
+            <Button onClick={handleLogout} sx={{ bgcolor: '#FF557A', borderRadius:'22.5px' , ":hover": { bgcolor: '#94A4FF' }, color: 'white', width:'100%' }} variant="contained">
                 <Link>Log Out</Link>
             </Button>
         ),
@@ -347,19 +347,19 @@ const NavBar = (props) => {
     ];
 
     const navItems2 = [
-        <Button sx={{ color: '#fff', bgcolor: '#121212' }} size='medium' variant="text" startIcon={<InstagramIcon />}>
-            Instagram
-        </Button>,
-        <Button sx={{ color: '#fff', bgcolor: '#121212' }} size='medium' variant="text" startIcon={<YouTubeIcon />}>
-            YouTube
-        </Button>,
-        <Button sx={{ color: '#fff', bgcolor: '#121212' }} size='medium' variant="text" startIcon={<LinkedInIcon />}>
-            LinkedIn
-        </Button>,
-        <Button sx={{ color: '#fff', bgcolor: '#121212' }} size='medium' variant="text" startIcon={<TwitterIcon />}>
-            Twitter
-        </Button>,
-        <Button sx={{ bgcolor: '#94A4FF', borderRadius:'22.5px' , ":hover": { bgcolor: '#FF557A' }, color: 'white', width:'100%' }} variant="outline">
+        // <Button sx={{ color: '#fff', bgcolor: '#121212' }} size='medium' variant="text" startIcon={<InstagramIcon />}>
+        //     Instagram
+        // </Button>,
+        // <Button sx={{ color: '#fff', bgcolor: '#121212' }} size='medium' variant="text" startIcon={<YouTubeIcon />}>
+        //     YouTube
+        // </Button>,
+        // <Button sx={{ color: '#fff', bgcolor: '#121212' }} size='medium' variant="text" startIcon={<LinkedInIcon />}>
+        //     LinkedIn
+        // </Button>,
+        // <Button sx={{ color: '#fff', bgcolor: '#121212' }} size='medium' variant="text" startIcon={<TwitterIcon />}>
+        //     Twitter
+        // </Button>,
+        <Button sx={{ bgcolor: '#FF557A', borderRadius:'22.5px' , ":hover": { bgcolor: '#94A4FF' }, color: 'white', width:'100%' }} variant="outline">
             <Link to={'/login'}>Login</Link>
         </Button>,
         <Button onClick={toggleDrawer(true)} sx={{ bgcolor: '#FF557A', ":hover": { bgcolor: '#94A4FF', }, color: 'white',  width:'100%',borderRadius:'22.5px' }} variant="contained" endIcon={<ExpandMoreIcon />}>

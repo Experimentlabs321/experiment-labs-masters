@@ -7,8 +7,7 @@ import img from '../../../assets/taket-test/Mask group.png'
 const TakeTest = () => {
     return (
         <div style={{
-            backgroundImage: "linear-gradient(to top left, #000000 -95%, rgba(0, 0, 0, 0.6096) 10.55%, rgba(0, 0, 0, 0) 90%)",
-            backgroundColor: '#6278FF',
+            background:'linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF'
         }} className='mt-48 w-full box-border'>
             <div className='p-10 lg:py-0 lg:pl-0 flex flex-row-reverse justify-between items-center gap-10 box-border' style={{ height: '100%' }}>
                 <div className='w-full lg:w-1/2 text-center box-border'>
