@@ -402,7 +402,7 @@ const NavBar = (props) => {
                         sx={{ flexGrow: 1, color: 'black' }}
                     >
                         <Link className='flex gap-3 items-center' to={'/'}>
-                            <img className='h-6 md:h-8' src={logo} alt="icon" />
+                            <img className='h-6 lg:h-8' src={logo} alt="icon" />
                             <h1 className='text-logo-white font-semibold'>Experiment Labs</h1>
                         </Link>
 

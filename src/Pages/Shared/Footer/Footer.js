@@ -21,7 +21,7 @@ const Footer = () => {
     return (
         <div className='bg-dark'>
             <footer className="text-white" style={{background:'linear-gradient(357.6deg, #000000 7.81%, rgba(0, 0, 0, 0.609575) 171.95%), #6278FF'}}>
-                <div className='px-10 md:px-40'>
+                <div className='px-10 lg:px-40'>
                     <div className="container flex flex-col lg:flex-row-reverse justify-between py-32 mx-auto">
                         <div>
                             <Link to={'/'} href="#" className="flex justify-start">

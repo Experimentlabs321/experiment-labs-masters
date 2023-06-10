@@ -161,7 +161,7 @@ const ScienceInnovationNav = (props) => {
                         component="div"
                         sx={{ flexGrow: 1, color: 'black' }}
                     >
-                        <Link to={'/'}><img className='h-8 md:h-12' src={logo} alt="icon" /></Link>
+                        <Link to={'/'}><img className='h-8 lg:h-12' src={logo} alt="icon" /></Link>
                     </Typography>
                     <Box sx={{ display: { xs: 'none', sm: 'block' }, color: 'black' }}>
                         {navItems.map((item) => (
@@ -188,7 +188,7 @@ const ScienceInnovationNav = (props) => {
                     </Drawer>
                 </Toolbar>
                 <div className='bg-[#7a7979] px-10 lg:px-32 font w-full'>
-                    <div className='flex justify-start md:justify-center gap-10 items-center overflow-x-scroll hidden-scroll'>
+                    <div className='flex justify-start lg:justify-center gap-10 items-center overflow-x-scroll hidden-scroll'>
 
                         <ScrollLink
                             to='overview'

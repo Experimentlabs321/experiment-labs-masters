@@ -21,6 +21,14 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CleanHandsTwoToneIcon from '@mui/icons-material/CleanHandsTwoTone';
 import CurrencyExchangeTwoToneIcon from '@mui/icons-material/CurrencyExchangeTwoTone';
 import MoneyTwoToneIcon from '@mui/icons-material/MoneyTwoTone';
+import oneLogo1 from '../../../assets/logog/Gift a song 1.png';
+import oneLogo2 from '../../../assets/logog/logo2 1.png';
+import oneLogo3 from '../../../assets/logog/logo-png 1.png';
+import techLearnt from '../../../assets/logog/Group 2860107.png';
+import CheckIcon from '@mui/icons-material/Check';
+import pathImg from '../../../assets/logog/Clip path group.png';
+import collegeImg from '../../../assets/logog/colleges.png';
+import competition from '../../../assets/logog/competition.png';
 
 const AllCourses = () => {
 
@@ -136,7 +144,7 @@ const AllCourses = () => {
     }, []);
 
     return (
-        <div className='mt-28 px-5 py-10 lg:px-30 xl:px-32' ref={containerRef}>
+        <div style={{ width: '100%' }} className='mt-28 px-5 py-10 lg:px-30 xl:px-32' ref={containerRef}>
             <h1 className='font-bold text-4xl block lg:hidden mb-6 lg:mb-0'>Hands-on. <span className=' '>Disruptive. Experiential.</span></h1>
             <div ref={stickyRef} style={{ top: 70, backgroundColor: '#141414', padding: "35px 0", zIndex: '1000', width: '100%' }} className='hidden lg:block'>
                 <h1 className='font-bold text-4xl'>Hands-on. <span className=' '>Disruptive. Experiential.</span></h1>
@@ -161,7 +169,7 @@ const AllCourses = () => {
                 <div className='hidden w-full lg:flex flex-col gap-24 getId'>
                     {/* First one  */}
                     <div style={{
-                        background:"linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                        background: "linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
                         border: '3px solid #BCC5FF'
                     }}
                         className='w-full rounded-xl flex p-10 items-start gap-10' id={0}>
@@ -171,360 +179,212 @@ const AllCourses = () => {
                             <p className='text-lg font-thin mb-6'>Get exposure to over <span className='font-semibold'>50+ Career option.</span>
                             </p>
 
-                            <p className='hidden lg:block text-xl font-semibold'>Some of our Student Brands</p>
+                            <p className='hidden lg:block text-2xl font-semibold'>Some of our Student Brands</p>
 
 
-                            <div className='flex items-end justify-between gap-20'>
-                                <div className='hidden lg:grid grid-cols-2 lg:grid-cols-3 gap-4 pt-4 pr-5'>
-                                    <img className='h-12 hover:shadow-md hover:shadow-custom-blue transition-all duration-100 ease-in cursor-pointer p-2 rounded-xl' src={logo2} alt="logo" />
-                                    <img className='h-12 hover:shadow-md hover:shadow-custom-blue transition-all duration-100 ease-in cursor-pointer p-2 rounded-xl' src={logo2} alt="logo" />
-                                    <img className='h-12 hover:shadow-md hover:shadow-custom-blue transition-all duration-100 ease-in cursor-pointer p-2 rounded-xl' src={logo2} alt="logo" />
-                                    <img className='h-12 hover:shadow-md hover:shadow-custom-blue transition-all duration-100 ease-in cursor-pointer p-2 rounded-xl' src={logo2} alt="logo" />
-                                    <img className='h-12 hover:shadow-md hover:shadow-custom-blue transition-all duration-100 ease-in cursor-pointer p-2 rounded-xl' src={logo2} alt="logo" />
-                                    <img className='h-12 hover:shadow-md hover:shadow-custom-blue transition-all duration-100 ease-in cursor-pointer p-2 rounded-xl' src={logo2} alt="logo" />
+                            <div className='flex items-end justify-between mt-8 gap-10'>
+                                <div className='flex flex-wrap gap-7'>
+                                    <img className='cursor-pointer h-[70px]' src={oneLogo1} alt="logo" />
+                                    <img className='cursor-pointer h-[70px]' src={oneLogo2} alt="logo" />
+                                    <img className='cursor-pointer h-[70px]' src={oneLogo3} alt="logo" />
                                 </div>
 
-                                <Button endIcon={<OutboundOutlinedIcon />} size='large' variant='contained' sx={{ bgcolor: '#0CC5DB', ":hover": { bgcolor: '#3EE8B5' }, textTransform: 'capitalize', width: '160px' }}>See All</Button>
+                                <Button size='large' variant='contained' sx={{ bgcolor: '#FF557A', borderRadius: '24px', ":hover": { bgcolor: '#94A4FF' }, textTransform: 'capitalize', minWidth: '160px' }}>Apply Now</Button>
                             </div>
 
 
                         </div>
                     </div>
+
+
 
 
 
 
                     {/* second one */}
                     <div style={{
-                        background:"linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                        background: "linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
                         border: '3px solid #BCC5FF'
                     }} className='w-full rounded-xl flex p-10 items-start gap-10' id={1}>
                         <div>
-                            <h1 className='text-2xl font-bold text-white'>Become a Creator-preneur</h1>
-                            <p className='text-sm font-light my-3'>From identifying a content niche to building an audience, students are trained to grow their personal brands on Youtube, Instagram, and LinkedIn.</p>
+                            <h1 className='text-3xl font-bold text-white'>Technical Skills as a Gateway to Academic & Career Success</h1>
+                            <p className='text-lg font-thin my-8'>At Experiment Labs we equip learners essential technical skills, the building blocks of career exploration. From coding to data analysis, unlock your potential and shape your future with a solid foundation in high-demand technical skills.</p>
 
-                            <p className='hidden lg:block'>Meet Our Resident Influencers</p>
+                            <p className='text-lg font-thin mb-8'>Get exposure to over <span className='font-semibold'>20+ Technical Skills.</span>
+                            </p>
+
+                            <p className='hidden lg:block text-2xl font-semibold'>Technologies Learnt</p>
 
 
-                            <div className='hidden lg:grid grid-cols-2 gap-4 gap-y-6 pt-6 pb-8 pr-5'>
-                                <div className='flex items-center gap-3'>
-                                    <img alt="" className="w-12 h-12 rounded-full ring-2 ring-offset-4 dark:bg-gray-500 ring-custom-blue ring-offset-gray-800" src="https://source.unsplash.com/40x40/?portrait?1" />
-                                    <div>
-                                        <h1 className='text-sm'>Full Name</h1>
-                                        <p className='text-xs font-light'>Work Role</p>
-                                    </div>
+                            <div className='flex justify-between items-end mt-8 gap-10'>
+                                <div>
+                                    <img src={techLearnt} alt="" />
                                 </div>
-                                <div className='flex items-center gap-3'>
-                                    <img alt="" className="w-12 h-12 rounded-full ring-2 ring-offset-4 dark:bg-gray-500 ring-custom-blue ring-offset-gray-800" src="https://source.unsplash.com/40x40/?portrait?1" />
-                                    <div>
-                                        <h1 className='text-sm'>Full Name</h1>
-                                        <p className='text-xs font-light'>Work Role</p>
-                                    </div>
-                                </div>
-                                <div className='flex items-center gap-3'>
-                                    <img alt="" className="w-12 h-12 rounded-full ring-2 ring-offset-4 dark:bg-gray-500 ring-custom-blue ring-offset-gray-800" src="https://source.unsplash.com/40x40/?portrait?1" />
-                                    <div>
-                                        <h1 className='text-sm'>Full Name</h1>
-                                        <p className='text-xs font-light'>Work Role</p>
-                                    </div>
-                                </div>
-                                <div className='flex items-center gap-3'>
-                                    <img alt="" className="w-12 h-12 rounded-full ring-2 ring-offset-4 dark:bg-gray-500 ring-custom-blue ring-offset-gray-800" src="https://source.unsplash.com/40x40/?portrait?1" />
-                                    <div>
-                                        <h1 className='text-sm'>Full Name</h1>
-                                        <p className='text-xs font-light'>Work Role</p>
-                                    </div>
-                                </div>
-                                <div className='flex items-center gap-3'>
-                                    <img alt="" className="w-12 h-12 rounded-full ring-2 ring-offset-4 dark:bg-gray-500 ring-custom-blue ring-offset-gray-800" src="https://source.unsplash.com/40x40/?portrait?1" />
-                                    <div>
-                                        <h1 className='text-sm'>Full Name</h1>
-                                        <p className='text-xs font-light'>Work Role</p>
-                                    </div>
-                                </div>
+
+                                <Button size='large' variant='contained' sx={{ bgcolor: '#FF557A', borderRadius: '24px', ":hover": { bgcolor: '#94A4FF' }, textTransform: 'capitalize', minWidth: '160px' }}>Apply Now</Button>
                             </div>
 
-                            <Button endIcon={<OutboundOutlinedIcon />} size='large' variant='contained' sx={{ bgcolor: '#0CC5DB', ":hover": { bgcolor: '#3EE8B5' }, textTransform: 'capitalize', width: '160px' }}>See All</Button>
 
-
-                        </div>
-                        <div className='z-0 hidden lg:block'>
-                            <iframe
-                                loop={true}
-                                height={450}
-                                width={280}
-                                keyboardNavigation={true}
-                                style={{ borderRadius: '15px', border: '1px solid gray' }}
-                                currentIndex={selectedIndex}
-                                src='https://dsqqu7oxq6o1v.cloudfront.net/motion-array-1388812-A012_06252056_C069-high.mp4'
-                                allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowFullScreen
-                                title="Embedded video"
-                            />
                         </div>
                     </div>
+
+
+
+
+
+
 
 
                     {/* Third one */}
 
                     <div style={{
-                        background:"linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                        background: "linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
                         border: '3px solid #BCC5FF'
                     }} className='w-full rounded-xl flex p-10 items-start gap-10' id={2}>
                         <div>
-                            <h1 className='text-2xl font-bold text-white'>Champion and Transform Local Businesses
-                            </h1>
-                            <p className='text-sm font-light my-3'>Step into the shoes of a consultant by adopting existing local businesses, transforming their strategy and processes, and accelerating their business success.</p>
+                            <h1 className='text-3xl font-bold text-white'>Master Soft Skills and become a champion leader</h1>
+                            <p className='text-lg font-thin my-8'>Experiment Labs provides a transformative platform for building soft skills, fostering self-discovery, and empowering individuals to identify their ideal career path with confidence and clarity.</p>
 
-                            <p>Meet Our Client Partners</p>
+                            <p className='text-lg font-thin mb-8'>Get exposure to over <span className='font-semibold'>20+ Soft Skills.</span>
+                            </p>
+
+                            <p className='hidden lg:block text-2xl font-semibold'>Soft Skills Learnt</p>
 
 
-                            <div className='hidden lg:grid grid-cols-2 lg:grid-cols-3 gap-4 pt-4 pb-8 pr-5'>
-                                <img className='h-12 hover:shadow-md hover:shadow-custom-blue transition-all duration-100 ease-in cursor-pointer p-2 rounded-xl' src={logo2} alt="logo" />
-                                <img className='h-12 hover:shadow-md hover:shadow-custom-blue transition-all duration-100 ease-in cursor-pointer p-2 rounded-xl' src={logo2} alt="logo" />
-                                <img className='h-12 hover:shadow-md hover:shadow-custom-blue transition-all duration-100 ease-in cursor-pointer p-2 rounded-xl' src={logo2} alt="logo" />
+                            <div className='flex justify-between items-end mt-8'>
+                                <div>
+                                    <div className='grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-1'>
+                                        <span className='flex gap-1 items-start font-semibold'><CheckIcon sx={{ fontSize: '16px' }} />Leadership</span>
+                                        <span className='flex gap-1 items-start font-semibold'><CheckIcon sx={{ fontSize: '16px' }} />Negotiation</span>
+                                        <span className='flex gap-1 items-start font-semibold'><CheckIcon sx={{ fontSize: '16px' }} />Time Management</span>
+                                        <span className='flex gap-1 items-start font-semibold'><CheckIcon sx={{ fontSize: '16px' }} />Humility</span>
+                                        <span className='flex gap-1 items-start font-semibold'><CheckIcon sx={{ fontSize: '16px' }} />Observation Skills</span>
+                                        <span className='flex gap-1 items-start font-semibold'><CheckIcon sx={{ fontSize: '16px' }} />Empathy</span>
+                                        <span className='flex gap-1 items-start font-semibold'><CheckIcon sx={{ fontSize: '16px' }} />Communication</span>
+                                        <span className='flex gap-1 items-start font-semibold'><CheckIcon sx={{ fontSize: '16px', color: 'transparent' }} />Many More.......</span>
+                                        <span className='flex gap-1 items-start font-semibold'><CheckIcon sx={{ fontSize: '16px' }} />First Principle Thinking</span>
+                                    </div>
+                                </div>
+
+                                <Button size='large' variant='contained' sx={{ bgcolor: '#FF557A', borderRadius: '24px', ":hover": { bgcolor: '#94A4FF' }, textTransform: 'capitalize', minWidth: '160px' }}>Apply Now</Button>
                             </div>
 
 
                         </div>
-                        <div className='z-0 hidden lg:block'>
-                            <iframe
-                                loop={true}
-                                height={240}
-                                width={280}
-                                keyboardNavigation={true}
-                                style={{ borderRadius: '15px', border: '1px solid gray', objectFit: 'cover' }}
-                                currentIndex={selectedIndex}
-                                src='https://dsqqu7oxq6o1v.cloudfront.net/motion-array-1388812-A012_06252056_C069-high.mp4'
-                                allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowFullScreen
-                                title="Embedded video"
-                            />
-                        </div>
                     </div>
+
+
+
+
+
+
 
 
                     {/* Fourth one  */}
                     <div style={{
-                        background:"linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                        background: "linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
                         border: '3px solid #BCC5FF'
-                    }} className='w-full rounded-xl p-10 items-start gap-10' id={3}>
-                        <div className='flex gap-10 items-center'>
-                            <div>
-                                <h1 className='text-2xl font-bold text-white'>Develop and Deploy Early-Stage Startups</h1>
-                                <p className='text-sm font-light my-3'>Students build and run a startup, end-to-end. 10% of our first cohort went on to work full-time on their startups, with 3 of them raising angel investments.</p>
-                            </div>
+                    }} className='w-full rounded-xl py-10 pl-10 items-start gap-10' id={3}>
+                        <div>
+                            <h1 className='text-3xl font-bold text-white pr-10'>Explore Careers by practically Experiencing them</h1>
+                            <p className='text-lg font-thin mt-8 pr-10'>Experiment Labs offers hands-on learning experiences across 50+ fields, enabling individuals to practically explore careers and gain invaluable insights to make informed decisions about their professional journey.</p>
 
-
-                            <div>
+                            <div className='flex justify-between items-start'>
                                 <div>
-                                    <iframe
-                                        loop={true}
-                                        height={180}
-                                        width={280}
-                                        keyboardNavigation={true}
-                                        style={{ borderRadius: '15px', border: '1px solid gray' }}
-                                        src={stories[selectedIndex]?.url}
-                                        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                        allowFullScreen
-                                        title="Embedded video"
-                                    />
+                                    <p className='text-lg font-thin my-6'>Get exposure to  <span className='font-semibold'>over 50+ Career option.</span>
+                                    </p>
+
+                                    <p className='hidden lg:block text-2xl font-semibold'>Chart your leadership journey in the career of your choice</p>
                                 </div>
-                                <div className='flex justify-center'>
-                                    <button className='hidden sm:block' type="button" onClick={onPrevious}>
-                                        <ArrowCircleLeftRoundedIcon className='opacity-80' sx={{ fontSize: '40px', color: 'rgb(156 163 175)', ":hover": { color: "#397FEB" } }} />
-                                    </button>
-                                    <button className='hidden sm:block' type="button" onClick={onNext}>
-                                        <ArrowCircleRightRoundedIcon className='opacity-80' sx={{ fontSize: '40px', color: '#397FEB', ":hover": { color: "#397FEB" } }} />
-                                    </button>
+
+
+                                <div className='flex flex-col items-end'>
+                                    <div>
+                                        <img src={pathImg} alt="" />
+                                    </div>
+
+                                    <Button size='large' variant='contained' sx={{ bgcolor: '#FF557A', borderRadius: '24px', ":hover": { bgcolor: '#94A4FF' }, textTransform: 'capitalize', minWidth: '160px', marginRight: '40px' }}>Apply Now</Button>
                                 </div>
                             </div>
 
-
-                        </div>
-                        <p>Our Startup Showcase</p>
-
-                        <div className='mt-8 flex gap-6'>
-                            <div className='border rounded-2xl flex gap-3 flex-col border-gray-400 p-4 w-full hover:shadow-md cursor-pointer hover:shadow-custom-blue'>
-                                <img className='h-8 w-fit' src={logo2} alt="Top logo" />
-                                <div className='py-2'>
-                                    <p className='text-sm'>$1m + raised</p>
-                                    <p className='text-xs mt-2 font-light'>Founder</p>
-                                    <p className='font-semibold'>Dharmil Bavishi</p>
-                                </div>
-                                <div className='flex gap-6 flex-wrap'>
-                                    <img className='h-8 w-fit p-1 border border-gray-400 bg-[#121212] rounded-md' src={logo2} alt="Top logo" />
-                                    <img className='h-8 w-fit p-1 border border-gray-400 bg-[#121212] rounded-md' src={logo2} alt="Top logo" />
-                                </div>
-                            </div>
-                            <div className='border rounded-2xl flex gap-3 flex-col border-gray-400 p-4 w-full hover:shadow-md cursor-pointer hover:shadow-custom-blue'>
-                                <img className='h-8 w-fit' src={logo2} alt="Top logo" />
-                                <div className='py-2'>
-                                    <p className='text-sm'>$1m + raised</p>
-                                    <p className='text-xs mt-2 font-light'>Founder</p>
-                                    <p className='font-semibold'>Dharmil Bavishi</p>
-                                </div>
-                                <div className='flex gap-6 flex-wrap'>
-                                    <img className='h-8 w-fit p-1 border border-gray-400 bg-[#121212] rounded-md' src={logo2} alt="Top logo" />
-                                    <img className='h-8 w-fit p-1 border border-gray-400 bg-[#121212] rounded-md' src={logo2} alt="Top logo" />
-                                </div>
-                            </div>
-                            <div className='border rounded-2xl flex gap-3 flex-col border-gray-400 p-4 w-full hover:shadow-md cursor-pointer hover:shadow-custom-blue'>
-                                <img className='h-8 w-fit' src={logo2} alt="Top logo" />
-                                <div className='py-2'>
-                                    <p className='text-sm'>$1m + raised</p>
-                                    <p className='text-xs mt-2 font-light'>Founder</p>
-                                    <p className='font-semibold'>Dharmil Bavishi</p>
-                                </div>
-                                <div className='flex gap-6 flex-wrap'>
-                                    <img className='h-8 w-fit p-1 border border-gray-400 bg-[#121212] rounded-md' src={logo2} alt="Top logo" />
-                                    <img className='h-8 w-fit p-1 border border-gray-400 bg-[#121212] rounded-md' src={logo2} alt="Top logo" />
-                                </div>
-                            </div>
 
                         </div>
                     </div>
+
+
+
+
 
                     {/* Fifth one */}
                     <div style={{
-                        background:"linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                        background: "linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
                         border: '3px solid #BCC5FF'
                     }} className='w-full rounded-xl p-10 items-start gap-10' id={4}>
-                        <div className='flex gap-10 items-center'>
-                            <div>
-                                <h1 className='text-2xl font-bold text-white'>Hustle Through a Weekend of Iteration and Innovation</h1>
-                                <p className='text-sm font-light my-3'>Students engage with peers to bridge gaps, share ideas, and develop their best prototypes in under 48 hours.</p>
-                                <p className='mb-3'>Engage With Themes Across</p>
 
-                                <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-y-2'>
 
-                                    <div className='flex gap-2 items-center'>
-                                        <CheckCircleIcon />
-                                        <p className='text-xs font-light'>Martech Hackathon</p>
-                                    </div>
-                                    <div className='flex gap-2 items-center'>
-                                        <CheckCircleIcon />
-                                        <p className='text-xs font-light'>Blockchain Hackathon</p>
-                                    </div>
-                                    <div className='flex gap-2 items-center'>
-                                        <CheckCircleIcon />
-                                        <p className='text-xs font-light'>Metaverse Hackathon</p>
-                                    </div>
-                                    <div className='flex gap-2 items-center'>
-                                        <CheckCircleIcon />
-                                        <p className='text-xs font-light'>Edtech Hackathon</p>
-                                    </div>
-                                    <div className='flex gap-2 items-center'>
-                                        <CheckCircleIcon />
-                                        <p className='text-xs font-light'>Fintech Hackathon</p>
-                                    </div>
-                                    <div className='flex gap-2 items-center'>
-                                        <CheckCircleIcon />
-                                        <p className='text-xs font-light'>Crypto Hackathon</p>
-                                    </div>
-                                    <div className='flex gap-2 items-center'>
-                                        <CheckCircleIcon />
-                                        <p className='text-xs font-light'>AI/ML Hackathon</p>
-                                    </div>
+                        <div>
+                            <h1 className='text-3xl font-bold text-white'>Build your profile for admissions to Ivy League Colleges</h1>
+                            <p className='text-lg font-thin my-8'>Experiment Labs enriches your profile for Ivy League College admissions by offering hands-on experience in multiple fields, complementing your Statement of Purpose (SOP) and Letters of Recommendation (LOR) with practical skills and demonstrated passion.</p>
 
+                            <p className='hidden lg:block text-2xl font-semibold'>Get Admissions to Ivy League Colleges</p>
+
+
+                            <div className='flex justify-between items-end mt-8 gap-10'>
+                                <div className='flex flex-col gap-1 items-end'>
+                                    <img style={{ maxHeight: '115px' }} src={collegeImg} alt="" />
+                                    <span>and many more.</span>
                                 </div>
-                            </div>
 
-
-                            <div>
-                                <div>
-                                    <iframe
-                                        loop={true}
-                                        height={180}
-                                        width={280}
-                                        keyboardNavigation={true}
-                                        style={{ borderRadius: '15px', border: '1px solid gray' }}
-                                        src={stories[0]?.url}
-                                        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                        allowFullScreen
-                                        title="Embedded video"
-                                    />
-                                </div>
+                                <Button size='large' variant='contained' sx={{ bgcolor: '#FF557A', borderRadius: '24px', ":hover": { bgcolor: '#94A4FF' }, textTransform: 'capitalize', minWidth: '160px' }}>Apply Now</Button>
                             </div>
 
 
                         </div>
 
-
-
                     </div>
+
+
+
+
 
                     {/* Sixth One */}
                     <div style={{
-                        background:"linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                        background: "linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
                         border: '3px solid #BCC5FF'
                     }} className='w-full rounded-xl p-10 items-start gap-10' id={5}>
-                        <div className='flex gap-10 items-center'>
-                            <div>
-                                <h1 className='text-2xl font-bold text-white'>Get Mentored by Top CXOs</h1>
-                                <p className='text-sm font-light my-3'>Experience one-on-one mentorship, coaching and guidance from CXOs across industries.</p>
-                                <p className='mb-3'>Our Mentors Include</p>
 
-                                <div className='grid grid-cols-2 gap-4 gap-y-6 pt-6 pb-8 pr-5'>
-                                    <div className='flex items-center gap-3'>
-                                        <img alt="" className="w-12 h-12 rounded-full ring-2 ring-offset-4 dark:bg-gray-500 ring-custom-blue ring-offset-gray-800" src="https://source.unsplash.com/40x40/?portrait?1" />
-                                        <div>
-                                            <h1 className='text-sm'>Full Name</h1>
-                                            <p className='text-xs font-light'>Work Role</p>
-                                        </div>
-                                    </div>
-                                    <div className='flex items-center gap-3'>
-                                        <img alt="" className="w-12 h-12 rounded-full ring-2 ring-offset-4 dark:bg-gray-500 ring-custom-blue ring-offset-gray-800" src="https://source.unsplash.com/40x40/?portrait?1" />
-                                        <div>
-                                            <h1 className='text-sm'>Full Name</h1>
-                                            <p className='text-xs font-light'>Work Role</p>
-                                        </div>
-                                    </div>
-                                    <div className='flex items-center gap-3'>
-                                        <img alt="" className="w-12 h-12 rounded-full ring-2 ring-offset-4 dark:bg-gray-500 ring-custom-blue ring-offset-gray-800" src="https://source.unsplash.com/40x40/?portrait?1" />
-                                        <div>
-                                            <h1 className='text-sm'>Full Name</h1>
-                                            <p className='text-xs font-light'>Work Role</p>
-                                        </div>
-                                    </div>
-                                    <div className='flex items-center gap-3'>
-                                        <img alt="" className="w-12 h-12 rounded-full ring-2 ring-offset-4 dark:bg-gray-500 ring-custom-blue ring-offset-gray-800" src="https://source.unsplash.com/40x40/?portrait?1" />
-                                        <div>
-                                            <h1 className='text-sm'>Full Name</h1>
-                                            <p className='text-xs font-light'>Work Role</p>
-                                        </div>
-                                    </div>
+                        <div>
+                            <h1 className='text-3xl font-bold text-white'>Prepare for global competitions worth $20 Mn</h1>
+                            <p className='text-lg font-thin my-8'>From finding the right idea to building the product to getting sales and building financial models you will learn how different careers look like in a corporation.</p>
 
+                            <p className='text-lg font-thin mb-8'>Get exposure to over <span className='font-semibold'>50+ Career option.</span>
+                            </p>
+
+                            <p className='hidden lg:block text-2xl font-semibold'>Global Competitions</p>
+
+
+                            <div className='flex justify-between items-end mt-8 gap-10'>
+                                <div className='flex flex-col gap-1 items-end'>
+                                    <img style={{ maxHeight: '115px' }} src={competition} alt="" />
+                                    <span>and many more.</span>
                                 </div>
-                            </div>
 
-
-                            <div>
-                                <div>
-                                    <iframe
-                                        loop={true}
-                                        height={180}
-                                        width={280}
-                                        keyboardNavigation={true}
-                                        style={{ borderRadius: '15px', border: '1px solid gray' }}
-                                        src={stories[0]?.url}
-                                        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                        allowFullScreen
-                                        title="Embedded video"
-                                    />
-                                </div>
+                                <Button size='large' variant='contained' sx={{ bgcolor: '#FF557A', borderRadius: '24px', ":hover": { bgcolor: '#94A4FF' }, textTransform: 'capitalize', minWidth: '160px' }}>Apply Now</Button>
                             </div>
 
 
                         </div>
 
-
-
                     </div>
+
+
+
+
+
 
                     {/* Seventh One */}
                     <div style={{
-                        background:"linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                        background: "linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
                         border: '3px solid #BCC5FF'
                     }} className='w-full rounded-xl p-10 items-start gap-10' id={6}>
                         <div className='flex gap-10 items-center'>
@@ -593,7 +453,7 @@ const AllCourses = () => {
 
                     {/* Eight One */}
                     <div style={{
-                        background:"linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                        background: "linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
                         border: '3px solid #BCC5FF'
                     }} className='w-full rounded-xl p-10 items-start gap-10' id={7}>
                         <div className='flex gap-10 items-center'>
@@ -840,7 +700,7 @@ const AllCourses = () => {
                                     <p className='text-sm font-light my-3'>Students engage with peers to bridge gaps, share ideas, and develop their best prototypes in under 48 hours.</p>
                                     <p className='mb-3'>Engage With Themes Across</p>
 
-                                    <div className='grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-y-2'>
+                                    <div className='grid grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-y-2'>
 
                                         <div className='flex gap-2 items-center'>
                                             <CheckCircleIcon />

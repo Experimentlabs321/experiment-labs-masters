@@ -105,7 +105,7 @@ const ExperienceUnionNav = (props) => {
                         component="div"
                         sx={{ flexGrow: 1, color: 'black' }}
                     >
-                        <Link to={'/'}><img className='h-8 md:h-12' src={logo} alt="icon" /></Link>
+                        <Link to={'/'}><img className='h-8 lg:h-12' src={logo} alt="icon" /></Link>
                     </Typography>
                   
                     <IconButton

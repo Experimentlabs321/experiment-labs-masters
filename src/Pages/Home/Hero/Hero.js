@@ -88,32 +88,31 @@ const Hero = ({ onButtonClick }) => {
     // console.log(stories[selectedIndex].url, selectedIndex);
 
     return (
-        <div>
-            <section className="lg:h-[585px] text-white">
-                <div style={{ height: "100%", background: "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF" }} className="flex lg:justify-end items-center">
-                    <div className="relative">
-                        <div className='pt-28 pb-20 px-10 lg:pr-10 lg:pl-10'>
-                            <h1 className="text-4xl font-bold">Discover Your Path to Success <br />
-                                with Real-World Experience</h1>
-                            <p className='mt-8 mb-12 text-2xl'>Build leadership like a muscle</p>
+        <section className="lg:h-[585px] text-white">
+            <div style={{ height: "100%", background: "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF" }} className="flex lg:justify-end items-center">
+                <div className="relative">
+                    <div className='pt-28 pb-20 px-10 lg:pr-10 lg:pl-10'>
+                        <h1 className="text-4xl font-bold">Discover Your Path to Success <br />
+                            with Real-World Experience</h1>
+                        <p className='mt-8 mb-12 text-2xl'>Build leadership like a muscle</p>
 
-                            {/* <div className='my-8 text-white flex flex-col gap-3 justify-start'>
+                        {/* <div className='my-8 text-white flex flex-col gap-3 justify-start'>
                             <span><LanguageIcon className='mr-2' /> Curriculum that takes learning<span className='font-bold initial'> {` beyond the classroom`}</span></span>
                             <span><BusinessCenterIcon className='mr-2' /> Classes led by <span className='font-bold initial'>100+ MDs, CEOs & Founders</span></span>
                             <span><CurrencyRupeeIcon className='mr-2' />Placements driven courses with <span className='font-bold initial'>profile building,stream selection and career planning</span></span>
                         </div> */}
 
-                            <Button onClick={onButtonClick} sx={{ bgcolor: '#FF557A', ":hover": { bgcolor: '#94A4FF' }, padding: '10px 30px 10px 50px', color: 'white', fontWeight: "500", fontSize: '22px', textTransform: 'initial', borderRadius: '45px' }} variant="contained" endIcon={<ArrowForwardIosIcon className='h-6 w-6' />}>
-                                Learn More
-                            </Button>
-                        </div>
-
-
+                        <Button onClick={onButtonClick} sx={{ bgcolor: '#FF557A', ":hover": { bgcolor: '#94A4FF' }, padding: '10px 30px 10px 50px', color: 'white', fontWeight: "500", fontSize: '22px', textTransform: 'initial', borderRadius: '45px' }} variant="contained" endIcon={<ArrowForwardIosIcon className='h-6 w-6' />}>
+                            Learn More
+                        </Button>
                     </div>
 
 
+                </div>
 
-                    {/* <div className='hidden lg:block md:col-span-6 lg:h-full relative h-[600px]'>
+
+
+                {/* <div className='hidden lg:block lg:col-span-6 lg:h-full relative h-[600px]'>
                         <div style={{ position: 'absolute', top: '0', left: '0', width: "100%", height: "100%", backgroundColor: 'rgba(128,128,128,0.8)' }}></div>
                         <video ref={myVideoRef} style={{ width: "100%", height: "100%", objectFit: "cover", WebkitFilter: "blur(5px) saturate(1)" }} muted>
                             <source ref={mySourceRef} src={currentVideo} type="video/mp4" />
@@ -145,12 +144,11 @@ const Hero = ({ onButtonClick }) => {
                         </div>
                     </div> */}
 
-                    <img className='z-50 w-[60vw] h-[100%] object-cover hidden lg:block' src={img} alt="" />
+                <img className='z-50 w-[60vw] h-[100%] object-cover hidden lg:block' src={img} alt="" />
 
-                </div>
-            </section>
+            </div>
+        </section>
 
-        </div>
     );
 };
 

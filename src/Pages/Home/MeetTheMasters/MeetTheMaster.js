@@ -27,7 +27,7 @@ const MeetTheMaster = () => {
                     <p className='text-xl mt-2 font-thin'>Take a closer look into our classrooms
                     </p>
                 </div>
-                <div className='hidden md:block'>
+                <div className='hidden lg:block'>
                     <Button endIcon={<OutboundOutlinedIcon />} size='large' variant='contained' sx={{ bgcolor: '#397FEB', ":hover": { bgcolor: '#0CC5DB' }, textTransform: 'capitalize' }}>Meet the Masters</Button>
                 </div>
             </div>
@@ -159,15 +159,15 @@ const MeetTheMaster = () => {
             </div>
             <div className="carousel-button-group">
                 <div className='flex justify-left mt-5'>
-                    <button onClick={handleScrollLeft} className='hidden md:block' type="button">
+                    <button onClick={handleScrollLeft} className='hidden lg:block' type="button">
                         <ArrowCircleLeftRoundedIcon className='opacity-80' sx={{ fontSize: '50px', color: 'rgb(156 163 175)', ":hover": { color: "#397FEB" } }} />
                     </button>
-                    <button onClick={handleScrollRight} className='hidden md:block' type="button">
+                    <button onClick={handleScrollRight} className='hidden lg:block' type="button">
                         <ArrowCircleRightRoundedIcon className='opacity-80' sx={{ fontSize: '50px', color: '#397FEB', ":hover": { color: "#397FEB" } }} />
                     </button>
                 </div>
             </div>
-            <div className='block md:hidden mt-10'>
+            <div className='block lg:hidden mt-10'>
                 <Button endIcon={<OutboundOutlinedIcon />} size='large' variant='contained' sx={{ bgcolor: '#397FEB', ":hover": { bgcolor: '#0CC5DB' }, textTransform: 'capitalize', width: '100%' }}>Meet the Masters</Button>
             </div>
         </div>

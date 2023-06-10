@@ -96,7 +96,7 @@ const EUFooter = () => {
                 </div>
             </div>
             <div>
-                <footer className="px-10 md:px-32 text-white">
+                <footer className="px-10 lg:px-32 text-white">
                     <div className="container flex flex-col justify-between py-10 mx-auto">
                         <div>
                             <Link to={'/'} href="#" className="flex justify-start">
