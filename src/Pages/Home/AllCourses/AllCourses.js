@@ -29,6 +29,8 @@ import CheckIcon from '@mui/icons-material/Check';
 import pathImg from '../../../assets/logog/Clip path group.png';
 import collegeImg from '../../../assets/logog/colleges.png';
 import competition from '../../../assets/logog/competition.png';
+import gamifiedImg from '../../../assets/logog/gamifiedImg.png';
+import prizeImg from '../../../assets/logog/prizeImg.png';
 
 const AllCourses = () => {
 
@@ -387,60 +389,20 @@ const AllCourses = () => {
                         background: "linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
                         border: '3px solid #BCC5FF'
                     }} className='w-full rounded-xl p-10 items-start gap-10' id={6}>
-                        <div className='flex gap-10 items-center'>
-                            <div>
-                                <h1 className='text-2xl font-bold text-white'>Run a 5 Cr. Investment Fund
-                                </h1>
-                                <p className='text-sm font-light my-3'>The Masters’ Union Investment Fund has a working capital of over 5 Crores, invested across diverse asset classes like Crypto and Blockchain, Public and Private Equities, Fund of Funds, REITs and InvITs and of course, startups. </p>
-                                <p className='mb-3'>Our Portfolio Includes</p>
-
-                                <div className='grid grid-cols-1 gap-4 gap-y-6 pt-6 pb-8 pr-5'>
-                                    <div className='flex items-center gap-3'>
-                                        <div className='border-2 border-custom-blue p-2 rounded-full'>
-                                            <CleanHandsTwoToneIcon className='text-2xl text-custom-blue' />
-                                        </div>
-                                        <div>
-                                            <h1 className='text-sm'>Investments in Public Equities</h1>
-                                            <p className='text-xs font-light'>Poonawala Group • ITC • CDSL and 27 more!</p>
-                                        </div>
-                                    </div>
-                                    <div className='flex items-center gap-3'>
-                                        <div className='border-2 border-custom-blue p-2 rounded-full'>
-                                            <CurrencyExchangeTwoToneIcon className='text-2xl text-custom-blue' />
-                                        </div>
-                                        <div>
-                                            <h1 className='text-sm'>Investments as a VC</h1>
-                                            <p className='text-xs font-light'>AlphaMint Labs • BluSmart and 4 more!</p>
-                                        </div>
-                                    </div>
-                                    <div className='flex items-center gap-3'>
-                                        <div className='border-2 border-custom-blue p-2 rounded-full'>
-                                            <MoneyTwoToneIcon className='text-2xl text-custom-blue' />
-                                        </div>
-                                        <div>
-                                            <h1 className='text-sm'>Alternate Investments</h1>
-                                            <p className='text-xs font-light'>Antler India (LPs) • Gold • REITs • InvITs • Forex</p>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
 
 
-                            <div>
+                        <div>
+                            <h1 className='text-3xl font-bold text-white'>Gamified Live learning platform,</h1>
+                            <p className='text-lg font-thin my-8'>We enable students to earn and redeem their own points to deliver hands on experience. Instant gratification that unlocks the next step in the journey</p>
+
+
+
+                            <div className='flex justify-center gap-2 items-end mt-8'>
                                 <div>
-                                    <iframe
-                                        loop={true}
-                                        height={180}
-                                        width={280}
-                                        keyboardNavigation={true}
-                                        style={{ borderRadius: '15px', border: '1px solid gray' }}
-                                        src={stories[0]?.url}
-                                        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                        allowFullScreen
-                                        title="Embedded video"
-                                    />
+                                    <img src={gamifiedImg} alt="" />
                                 </div>
+
+                                <Button size='large' variant='contained' sx={{ bgcolor: '#FF557A', borderRadius: '24px', ":hover": { bgcolor: '#94A4FF' }, textTransform: 'capitalize', minWidth: '160px' }}>Apply Now</Button>
                             </div>
 
 
@@ -456,60 +418,18 @@ const AllCourses = () => {
                         background: "linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
                         border: '3px solid #BCC5FF'
                     }} className='w-full rounded-xl p-10 items-start gap-10' id={7}>
-                        <div className='flex gap-10 items-center'>
-                            <div>
-                                <h1 className='text-2xl font-bold text-white'>Run a 5 Cr. Investment Fund
-                                </h1>
-                                <p className='text-sm font-light my-3'>The Masters’ Union Investment Fund has a working capital of over 5 Crores, invested across diverse asset classes like Crypto and Blockchain, Public and Private Equities, Fund of Funds, REITs and InvITs and of course, startups. </p>
-                                <p className='mb-3'>Our Portfolio Includes</p>
-
-                                <div className='grid grid-cols-1 gap-4 gap-y-6 pt-6 pb-8 pr-5'>
-                                    <div className='flex items-center gap-3'>
-                                        <div className='border-2 border-custom-blue p-2 rounded-full'>
-                                            <CleanHandsTwoToneIcon className='text-2xl text-custom-blue' />
-                                        </div>
-                                        <div>
-                                            <h1 className='text-sm'>Investments in Public Equities</h1>
-                                            <p className='text-xs font-light'>Poonawala Group • ITC • CDSL and 27 more!</p>
-                                        </div>
-                                    </div>
-                                    <div className='flex items-center gap-3'>
-                                        <div className='border-2 border-custom-blue p-2 rounded-full'>
-                                            <CurrencyExchangeTwoToneIcon className='text-2xl text-custom-blue' />
-                                        </div>
-                                        <div>
-                                            <h1 className='text-sm'>Investments as a VC</h1>
-                                            <p className='text-xs font-light'>AlphaMint Labs • BluSmart and 4 more!</p>
-                                        </div>
-                                    </div>
-                                    <div className='flex items-center gap-3'>
-                                        <div className='border-2 border-custom-blue p-2 rounded-full'>
-                                            <MoneyTwoToneIcon className='text-2xl text-custom-blue' />
-                                        </div>
-                                        <div>
-                                            <h1 className='text-sm'>Alternate Investments</h1>
-                                            <p className='text-xs font-light'>Antler India (LPs) • Gold • REITs • InvITs • Forex</p>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
 
 
-                            <div>
+                        <div>
+                            <h1 className='text-3xl font-bold text-white'>What you will get ?</h1>
+
+
+                            <div className='flex justify-center gap-2 items-end mt-8'>
                                 <div>
-                                    <iframe
-                                        loop={true}
-                                        height={180}
-                                        width={280}
-                                        keyboardNavigation={true}
-                                        style={{ borderRadius: '15px', border: '1px solid gray' }}
-                                        src={stories[0]?.url}
-                                        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                        allowFullScreen
-                                        title="Embedded video"
-                                    />
+                                    <img src={prizeImg} alt="" />
                                 </div>
+
+                                <Button size='large' variant='contained' sx={{ bgcolor: '#FF557A', borderRadius: '24px', ":hover": { bgcolor: '#94A4FF' }, textTransform: 'capitalize', width: '160px' }}>Apply Now</Button>
                             </div>
 
 
@@ -527,7 +447,305 @@ const AllCourses = () => {
 
                 {/* small screen */}
 
-                <div className='lg:hidden w-full'>
+                <div className='lg:hidden w-full flex flex-row items-start overflow-x-scroll gap-10 getId mt-8'>
+                    {/* First one  */}
+                    <div style={{
+                        background: "linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                        border: '3px solid #BCC5FF',
+                        minWidth:'450px',
+                        minHeight:'625px'
+                        
+                    }}
+                        className='w-full rounded-xl flex p-10 items-start gap-10' id={0}>
+                        <div>
+                            <h1 className='text-3xl font-bold text-white'>Launch and Build your own Products & Business</h1>
+                            <p className='text-lg font-thin my-6'>From finding the right idea to building the product to getting sales and building financial models you will learn how different careers look like in a corporation.</p>
+                            <p className='text-lg font-thin mb-6'>Get exposure to over <span className='font-semibold'>50+ Career option.</span>
+                            </p>
+
+                            <p className='hidden lg:block text-2xl font-semibold'>Some of our Student Brands</p>
+
+
+                            <div className='flex flex-col mt-8 gap-10'>
+                                <div className='flex flex-wrap gap-7'>
+                                    <img className='cursor-pointer h-[70px]' src={oneLogo1} alt="logo" />
+                                    <img className='cursor-pointer h-[70px]' src={oneLogo2} alt="logo" />
+                                    <img className='cursor-pointer h-[70px]' src={oneLogo3} alt="logo" />
+                                </div>
+
+                                <Button size='large' variant='contained' sx={{ bgcolor: '#FF557A', borderRadius: '24px', ":hover": { bgcolor: '#94A4FF' }, textTransform: 'capitalize', maxWidth: '160px' }}>Apply Now</Button>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+
+
+
+
+
+                    {/* second one */}
+                    <div style={{
+                        background: "linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                        border: '3px solid #BCC5FF',
+                        minWidth:'450px',
+                        minHeight:'625px'
+                        
+                    }} className='w-full rounded-xl flex p-10 items-start gap-10' id={1}>
+                        <div>
+                            <h1 className='text-3xl font-bold text-white'>Technical Skills as a Gateway to Academic & Career Success</h1>
+                            <p className='text-lg font-thin my-8'>At Experiment Labs we equip learners essential technical skills, the building blocks of career exploration. From coding to data analysis, unlock your potential and shape your future with a solid foundation in high-demand technical skills.</p>
+
+                            <p className='text-lg font-thin mb-8'>Get exposure to over <span className='font-semibold'>20+ Technical Skills.</span>
+                            </p>
+
+                            <p className='hidden lg:block text-2xl font-semibold'>Technologies Learnt</p>
+
+
+                            <div className='flex flex-col mt-8 gap-10'>
+                                <div>
+                                    <img src={techLearnt} alt="" />
+                                </div>
+
+                                <Button size='large' variant='contained' sx={{ bgcolor: '#FF557A', borderRadius: '24px', ":hover": { bgcolor: '#94A4FF' }, textTransform: 'capitalize', maxWidth: '160px' }}>Apply Now</Button>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+
+
+
+
+
+
+
+                    {/* Third one */}
+
+                    <div style={{
+                        background: "linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                        border: '3px solid #BCC5FF',
+                        minWidth:'450px',
+                        minHeight:'625px'
+                        
+                    }} className='w-full rounded-xl flex p-10 items-start gap-10' id={2}>
+                        <div>
+                            <h1 className='text-3xl font-bold text-white'>Master Soft Skills and become a champion leader</h1>
+                            <p className='text-lg font-thin my-8'>Experiment Labs provides a transformative platform for building soft skills, fostering self-discovery, and empowering individuals to identify their ideal career path with confidence and clarity.</p>
+
+                            <p className='text-lg font-thin mb-8'>Get exposure to over <span className='font-semibold'>20+ Soft Skills.</span>
+                            </p>
+
+                            <p className='hidden lg:block text-2xl font-semibold'>Soft Skills Learnt</p>
+
+
+                            <div className='flex flex-col mt-8'>
+                                <div>
+                                    <div className='grid grid-cols-2 gap-x-8 gap-y-1 mb-8'>
+                                        <span className='flex gap-1 items-start font-semibold'><CheckIcon sx={{ fontSize: '16px' }} />Leadership</span>
+                                        <span className='flex gap-1 items-start font-semibold'><CheckIcon sx={{ fontSize: '16px' }} />Negotiation</span>
+                                        <span className='flex gap-1 items-start font-semibold'><CheckIcon sx={{ fontSize: '16px' }} />Time Management</span>
+                                        <span className='flex gap-1 items-start font-semibold'><CheckIcon sx={{ fontSize: '16px' }} />Humility</span>
+                                        <span className='flex gap-1 items-start font-semibold'><CheckIcon sx={{ fontSize: '16px' }} />Observation Skills</span>
+                                        {/* <span className='flex gap-1 items-start font-semibold'><CheckIcon sx={{ fontSize: '16px' }} />Empathy</span>
+                                        <span className='flex gap-1 items-start font-semibold'><CheckIcon sx={{ fontSize: '16px' }} />Communication</span> */}
+                                        <span className='flex gap-1 items-start font-semibold'><CheckIcon sx={{ fontSize: '16px', color: 'transparent' }} />Many More.......</span>
+                                        {/* <span className='flex gap-1 items-start font-semibold'><CheckIcon sx={{ fontSize: '16px' }} />First Principle Thinking</span> */}
+                                    </div>
+                                </div>
+
+                                <Button size='large' variant='contained' sx={{ bgcolor: '#FF557A', borderRadius: '24px', ":hover": { bgcolor: '#94A4FF' }, textTransform: 'capitalize', maxWidth: '160px' }}>Apply Now</Button>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+
+
+
+
+
+
+
+                    {/* Fourth one  */}
+                    <div style={{
+                        background: "linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                        border: '3px solid #BCC5FF',
+                        minWidth:'450px',
+                        minHeight:'625px'
+                        
+                    }} className='w-full rounded-xl p-10 items-start gap-10' id={3}>
+                        <div>
+                            <h1 className='text-3xl font-bold text-white'>Explore Careers by practically Experiencing them</h1>
+                            <p className='text-lg font-thin mt-8'>Experiment Labs offers hands-on learning experiences across 50+ fields, enabling individuals to practically explore careers and gain invaluable insights to make informed decisions about their professional journey.</p>
+
+                            <div className='flex flex-col'>
+                                <div>
+                                    <p className='text-lg font-thin my-6'>Get exposure to  <span className='font-semibold'>over 50+ Career option.</span>
+                                    </p>
+
+                                    <p className='hidden lg:block text-2xl font-semibold'>Chart your leadership journey in the career of your choice</p>
+                                </div>
+
+
+                                <div className='flex flex-col items-start'>
+                                    <div>
+                                        <img className='w-1/2' src={pathImg} alt="" />
+                                    </div>
+
+                                    <Button size='large' variant='contained' sx={{ bgcolor: '#FF557A', borderRadius: '24px', ":hover": { bgcolor: '#94A4FF' }, textTransform: 'capitalize', minWidth: '160px', marginRight: '40px' }}>Apply Now</Button>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+
+
+
+
+                    {/* Fifth one */}
+                    <div style={{
+                        background: "linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                        border: '3px solid #BCC5FF',
+                        minWidth:'450px',
+                        minHeight:'625px'
+                        
+                    }} className='w-full rounded-xl p-10 items-start gap-10' id={4}>
+
+
+                        <div>
+                            <h1 className='text-3xl font-bold text-white'>Build your profile for admissions to Ivy League Colleges</h1>
+                            <p className='text-lg font-thin my-8'>Experiment Labs enriches your profile for Ivy League College admissions by offering hands-on experience in multiple fields, complementing your Statement of Purpose (SOP) and Letters of Recommendation (LOR) with practical skills and demonstrated passion.</p>
+
+                            <p className='hidden lg:block text-2xl font-semibold'>Get Admissions to Ivy League Colleges</p>
+
+
+                            <div className='flex flex-col mt-8 gap-10'>
+                                <div className='flex flex-col gap-1'>
+                                    <img className='w-full' src={collegeImg} alt="" />
+                                    <span>and many more.</span>
+                                </div>
+
+                                <Button size='large' variant='contained' sx={{ bgcolor: '#FF557A', borderRadius: '24px', ":hover": { bgcolor: '#94A4FF' }, textTransform: 'capitalize', maxWidth: '160px' }}>Apply Now</Button>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+
+
+
+
+                    {/* Sixth One */}
+                    <div style={{
+                        background: "linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                        border: '3px solid #BCC5FF',
+                        minWidth:'450px',
+                        minHeight:'625px'
+                        
+                    }} className='w-full rounded-xl p-10 items-start gap-10' id={5}>
+
+                        <div>
+                            <h1 className='text-3xl font-bold text-white'>Prepare for global competitions worth $20 Mn</h1>
+                            <p className='text-lg font-thin my-8'>From finding the right idea to building the product to getting sales and building financial models you will learn how different careers look like in a corporation.</p>
+
+                            <p className='text-lg font-thin mb-8'>Get exposure to over <span className='font-semibold'>50+ Career option.</span>
+                            </p>
+
+                            <p className='hidden lg:block text-2xl font-semibold'>Global Competitions</p>
+
+
+                            <div className='flex flex-col mt-8 gap-10'>
+                                <div className='flex flex-col gap-1'>
+                                    <img className='w-full' src={competition} alt="" />
+                                    <span>and many more.</span>
+                                </div>
+
+                                <Button size='large' variant='contained' sx={{ bgcolor: '#FF557A', borderRadius: '24px', ":hover": { bgcolor: '#94A4FF' }, textTransform: 'capitalize', maxWidth: '160px' }}>Apply Now</Button>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+
+
+
+
+
+                    {/* Seventh One */}
+                    <div style={{
+                        background: "linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                        border: '3px solid #BCC5FF',
+                        minWidth:'450px',
+                        minHeight:'625px'
+                        
+                    }} className='w-full rounded-xl p-10 items-start gap-10' id={6}>
+
+
+                        <div>
+                            <h1 className='text-3xl font-bold text-white'>Gamified Live learning platform,</h1>
+                            <p className='text-lg font-thin my-8'>We enable students to earn and redeem their own points to deliver hands on experience. Instant gratification that unlocks the next step in the journey</p>
+
+
+
+                            <div className='flex flex-col justify-center gap-10 items-start mt-8'>
+                                <div>
+                                    <img className='w-full mx-auto' src={gamifiedImg} alt="" />
+                                </div>
+
+                                <Button size='large' variant='contained' sx={{ bgcolor: '#FF557A', borderRadius: '24px', ":hover": { bgcolor: '#94A4FF' }, textTransform: 'capitalize', minWidth: '160px' }}>Apply Now</Button>
+                            </div>
+
+
+                        </div>
+
+
+
+                    </div>
+
+
+                    {/* Eight One */}
+                    <div style={{
+                        background: "linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                        border: '3px solid #BCC5FF',
+                        minWidth:'450px',
+                        minHeight:'625px'
+                        
+                    }} className='w-full rounded-xl p-10 items-start gap-10' id={7}>
+
+
+                        <div>
+                            <h1 className='text-3xl font-bold text-white'>What you will get ?</h1>
+
+
+                            <div className='flex flex-col justify-center gap-10 items-start mt-8'>
+                                <div>
+                                    <img className='mx-auto w-full' src={prizeImg} alt="" />
+                                </div>
+
+                                <Button size='large' variant='contained' sx={{ bgcolor: '#FF557A', borderRadius: '24px', ":hover": { bgcolor: '#94A4FF' }, textTransform: 'capitalize', width: '160px' }}>Apply Now</Button>
+                            </div>
+
+
+                        </div>
+
+
+
+                    </div>
+
+                </div>
+
+
+                {/* <div className='lg:hidden w-full mt-6'>
                     <Swiper
                         modules={[Navigation, Pagination, Scrollbar, A11y, FreeMode]}
                         style={{ minWidth: '100%' }}
@@ -542,7 +760,7 @@ const AllCourses = () => {
                         onSwiper={(swiper) => console.log(swiper)}
                     >
 
-                        {/* First Slide */}
+                        
                         <SwiperSlide style={{ maxWidth: '400px', minWidth: '400px', minHeight: '575px', maxHeight: '575px' }}>
                             <div className='w-[340px] max-w-[340px] rounded-xl bg-dark flex flex-col-reverse justify-end min-h-[560px] max-h-[560px]' id={0}>
                                 <div className='p-3'>
@@ -580,7 +798,9 @@ const AllCourses = () => {
 
 
 
-                        {/* Second Slide */}
+
+
+                        
                         <SwiperSlide style={{ maxWidth: '400px', minWidth: '400px' }}>
                             <div className='w-[340px] max-w-[340px] rounded-xl bg-dark flex flex-col-reverse justify-end min-h-[560px] max-h-[560px]' id={1}>
                                 <div className='p-3'>
@@ -625,7 +845,7 @@ const AllCourses = () => {
                         </SwiperSlide>
 
 
-                        {/* Third Slide */}
+                       
                         <SwiperSlide style={{ maxWidth: '400px', minWidth: '400px', minHeight: '575px', maxHeight: '575px' }}>
                             <div className='w-[340px] max-w-[340px] rounded-xl bg-dark flex flex-col-reverse justify-end min-h-[560px] max-h-[560px]' id={2}>
                                 <div className='p-3'>
@@ -656,7 +876,7 @@ const AllCourses = () => {
                         </SwiperSlide>
 
 
-                        {/* Fourth Slide */}
+                       
                         <SwiperSlide style={{ maxWidth: '400px', minWidth: '400px', minHeight: '575px', maxHeight: '575px' }}>
                             <div className='w-[340px] max-w-[340px] rounded-xl bg-dark flex flex-col-reverse justify-end min-h-[560px] max-h-[560px]' id={3}>
                                 <div className='p-3'>
@@ -692,7 +912,7 @@ const AllCourses = () => {
                         </SwiperSlide>
 
 
-                        {/* Fifth Slide */}
+                       
                         <SwiperSlide style={{ maxWidth: '400px', minWidth: '400px', minHeight: '575px', maxHeight: '575px' }}>
                             <div className='w-[340px] max-w-[340px] rounded-xl bg-dark flex flex-col-reverse justify-end min-h-[560px] max-h-[560px]' id={4}>
                                 <div className='p-3'>
@@ -747,7 +967,6 @@ const AllCourses = () => {
                             </div>
                         </SwiperSlide>
 
-                        {/* Sixth Slide */}
                         <SwiperSlide style={{ maxWidth: '400px', minWidth: '400px', minHeight: '575px', maxHeight: '575px' }}>
                             <div className='w-[340px] max-w-[340px] rounded-xl bg-dark flex flex-col-reverse justify-end min-h-[560px] max-h-[560px]' id={5}>
                                 <div className='p-3'>
@@ -790,7 +1009,7 @@ const AllCourses = () => {
                         </SwiperSlide>
 
 
-                        {/* Seventh Slide */}
+                       
                         <SwiperSlide style={{ maxWidth: '400px', minWidth: '400px', minHeight: '575px', maxHeight: '575px' }}>
                             <div className='w-[340px] max-w-[340px] rounded-xl bg-dark flex flex-col-reverse justify-end min-h-[560px] max-h-[560px]' id={6}>
 
@@ -848,7 +1067,7 @@ const AllCourses = () => {
                         <SwiperSlide style={{ maxWidth: '0', minWidth: '0' }}></SwiperSlide>
 
                     </Swiper>
-                </div>
+                </div> */}
 
                 {/* <div className='block lg:hidden'>
                     <div className='getId all-parent-container'>
