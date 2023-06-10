@@ -6,6 +6,8 @@ import { Button } from '@mui/material';
 import ArrowCircleLeftRoundedIcon from '@mui/icons-material/ArrowCircleLeftRounded';
 import ArrowCircleRightRoundedIcon from '@mui/icons-material/ArrowCircleRightRounded';
 import './style.css';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
 const MeetTheMaster = () => {
 
@@ -23,12 +25,12 @@ const MeetTheMaster = () => {
         <div className='mt-44 px-10 lg:px-28'>
             <div className='mb-10 flex justify-between items-start'>
                 <div>
-                    <h1 className='text-2xl xl:text-4xl font-extrabold font'>Learn from the <span className='bg-gradient-to-t from-custom-blue to-transparent to-50%'>Masters, Hands-On</span></h1>
-                    <p className='text-xl mt-2 font-thin'>Take a closer look into our classrooms
+                    <h1 className='text-2xl xl:text-4xl font-extrabold font'>Learn from the <span>Masters, Hands-On</span></h1>
+                    <p className='text-xl mt-2 font-thin lowercase'>Take a closer look into our classrooms
                     </p>
                 </div>
                 <div className='hidden lg:block'>
-                    <Button endIcon={<OutboundOutlinedIcon />} size='large' variant='contained' sx={{ bgcolor: '#397FEB', ":hover": { bgcolor: '#0CC5DB' }, textTransform: 'capitalize' }}>Meet the Masters</Button>
+                    <Button endIcon={<ArrowForwardIosIcon />} size='large' variant='contained' sx={{ bgcolor: '#94A4FF', ":hover": { bgcolor: '#6278FF' }, textTransform: 'capitalize', borderRadius:'24px' }}>Meet the Masters</Button>
                 </div>
             </div>
             <div
@@ -160,10 +162,10 @@ const MeetTheMaster = () => {
             <div className="carousel-button-group">
                 <div className='flex justify-left mt-5'>
                     <button onClick={handleScrollLeft} className='hidden lg:block' type="button">
-                        <ArrowCircleLeftRoundedIcon className='opacity-80' sx={{ fontSize: '50px', color: 'rgb(156 163 175)', ":hover": { color: "#397FEB" } }} />
+                        <ArrowBackIosNewIcon className='opacity-80' sx={{ fontSize: '50px', color: 'rgb(156 163 175)', ":hover": { color: "#397FEB" } }} />
                     </button>
                     <button onClick={handleScrollRight} className='hidden lg:block' type="button">
-                        <ArrowCircleRightRoundedIcon className='opacity-80' sx={{ fontSize: '50px', color: '#397FEB', ":hover": { color: "#397FEB" } }} />
+                        <ArrowBackIosNewIcon className='opacity-80' sx={{ fontSize: '50px', color: '#397FEB', ":hover": { color: "#397FEB" } }} />
                     </button>
                 </div>
             </div>
