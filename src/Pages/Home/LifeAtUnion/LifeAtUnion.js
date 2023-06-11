@@ -11,7 +11,7 @@ const LifeAtUnion = () => {
                     <h1 className='text-3xl font-semibold'>People Speak @  Experiment Labs</h1>
                 </div>
             </div>
-            <div className='mt-12 flex justify-between items-end gap-10 overflow-x-auto scroll-smooth my-container'>
+            <div className='mt-12 flex justify-between items-end gap-10 overflow-x-scroll scroll-smooth my-container'>
                 <div>
                     <iframe
                         width="290"
@@ -45,7 +45,7 @@ const LifeAtUnion = () => {
                         title="Embedded youtube"
                     />
                 </div>
-                <img style={{height:'170px'}} src={collan} alt="" />
+                <img className='lg:block hidden' style={{height:'170px'}} src={collan} alt="" />
             </div>
             <button className='flex sm:hidden w-full justify-center mt-8 items-center gap-3 bg-gradient-to-r from-pink-700 via-orange-600 to-yellow text-white px-4 py-3 rounded-lg hover:shadow-xl hover:shadow-orange-200'>Follow on Instagram <InstagramIcon /></button>
         </div>

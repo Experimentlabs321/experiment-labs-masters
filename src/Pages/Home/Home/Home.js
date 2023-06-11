@@ -9,6 +9,7 @@ import MeetTheMaster from '../MeetTheMasters/MeetTheMaster';
 import CEOChallenge from '../CEOChallenge/CEOChallenge';
 import LifeAtUnion from '../LifeAtUnion/LifeAtUnion';
 import ExperienceUnion from '../ExperienceUnion/ExperienceUnion';
+import Campus from '../../SciencePage/Campus/Campus';
 
 const Home = () => {
 
@@ -40,6 +41,7 @@ const Home = () => {
             <MeetTheMaster/>
             <CEOChallenge/>
             <LifeAtUnion/>
+            <Campus/>
             <ExperienceUnion/>
         </div>
     );

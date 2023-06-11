@@ -62,10 +62,10 @@ const Masters = () => {
                             <div className="carousel-button-group">
                                 <div className='flex justify-left mt-5'>
                                     <button onClick={handleScrollLeft} className='hidden lg:block' type="button">
-                                        <ArrowCircleLeftRoundedIcon className='opacity-80' sx={{ fontSize: '50px', color: 'rgb(156 163 175)', ":hover": { color: "#397FEB" } }} />
+                                        <ArrowCircleLeftRoundedIcon className='' sx={{ fontSize: '50px', color: 'rgb(156 163 175)', ":hover": { color: "#397FEB" } }} />
                                     </button>
                                     <button onClick={handleScrollRight} className='hidden lg:block' type="button">
-                                        <ArrowCircleRightRoundedIcon className='opacity-80' sx={{ fontSize: '50px', color: '#397FEB', ":hover": { color: "#397FEB" } }} />
+                                        <ArrowCircleRightRoundedIcon className='' sx={{ fontSize: '50px', color: '#397FEB', ":hover": { color: "#397FEB" } }} />
                                     </button>
                                 </div>
                             </div>

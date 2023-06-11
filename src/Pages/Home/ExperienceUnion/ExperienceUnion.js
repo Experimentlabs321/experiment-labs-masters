@@ -3,8 +3,8 @@ import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 import OutboundOutlinedIcon from '@mui/icons-material/OutboundOutlined';
 import { Button } from '@mui/material';
-import ArrowCircleLeftRoundedIcon from '@mui/icons-material/ArrowCircleLeftRounded';
-import ArrowCircleRightRoundedIcon from '@mui/icons-material/ArrowCircleRightRounded';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import './style.css';
 import { Link } from 'react-router-dom';
 
@@ -21,7 +21,7 @@ const ExperienceUnion = () => {
     }
 
     return (
-        <div className='pb-20 mt-44 pt-[130px] px-10 lg:px-28' style={{background:'linear-gradient(180deg, #101010 0%, rgba(0, 0, 0, 0.6096) 100%), rgba(0, 64, 148, 0.45)'}}>
+        <div className='pb-20 mt-44 pt-[130px] px-10 lg:px-28' style={{ background: 'linear-gradient(180deg, #101010 0%, rgba(0, 0, 0, 0.6096) 100%), rgba(0, 64, 148, 0.45)' }}>
             <div className='flex flex-col gap-10 items-start'>
                 <div>
                     <h1 className='text-2xl xl:text-4xl font-semibold'><span>Experience the Labs</span></h1>
@@ -29,7 +29,7 @@ const ExperienceUnion = () => {
                 <div className="carousel-button-group">
                     <div className='flex gap-7'>
                         <button onClick={handleScrollLeft} className='hidden lg:block' type="button">
-                            <ArrowCircleLeftRoundedIcon className='opacity-80' sx={{ fontSize: '50px', color: 'rgb(156 163 175)', ":hover": { color: "#397FEB" } }} />
+                            <ArrowBackIosNewIcon sx={{ fontSize: '28px', color: '#141414', borderRadius: '50%', ":hover": { color: "#397FEB" }, background: '#94A4FF', height: '40px', width: '40px', padding: '5px' }} />
                         </button>
 
 
@@ -155,7 +155,7 @@ const ExperienceUnion = () => {
 
 
                         <button onClick={handleScrollRight} className='hidden lg:block' type="button">
-                            <ArrowCircleRightRoundedIcon className='opacity-80' sx={{ fontSize: '50px', color: '#397FEB', ":hover": { color: "#397FEB" } }} />
+                            <ArrowForwardIosIcon sx={{ fontSize: '28px', color: '#141414', borderRadius: '50%', ":hover": { color: "#397FEB" }, background: '#94A4FF', height: '40px', width: '40px', padding: '5px' }} />
                         </button>
                     </div>
                 </div>
@@ -163,7 +163,7 @@ const ExperienceUnion = () => {
 
             </div>
             <div
-               
+
                 className='flex eu-container overflow-x-scroll scroll-smooth gap-5 pb-10 lg:hidden'
             >
                 <div className='border-2 border-gray-400 hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out min-w-[290px] max-w-[290px] rounded-xl'>
