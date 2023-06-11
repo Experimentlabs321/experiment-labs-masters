@@ -35,7 +35,7 @@ const MeetTheMaster = () => {
         <div className='mt-44 px-10 lg:px-28'>
             <div className='mb-10 flex justify-between items-start'>
                 <div>
-                    <h1 className='text-3xl xl:text-4xl font-extrabold font'>Meet Your MENTORS </h1>
+                    <h1 className='text-3xl xl:text-4xl font-extrabold capitalize'>Meet Your MENTORS </h1>
                     <p className='text-xl mt-2 font-thin lowercase'>Take a closer look into our classrooms
                     </p>
                 </div>
