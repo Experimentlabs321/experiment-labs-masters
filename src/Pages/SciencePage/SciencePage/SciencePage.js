@@ -13,6 +13,7 @@ import AllCourses from '../../Home/AllCourses/AllCourses';
 import DualManagement from '../DualMangement/DualManagement';
 import HearFromStudents from '../HearFromStudents/HearFromStudents';
 import GetInTouch from '../GetInTouch/GetInTouch';
+import CEOChallenge from '../../Home/CEOChallenge/CEOChallenge';
 
 const SciencePage = () => {
 
@@ -43,11 +44,14 @@ const SciencePage = () => {
 
             <div id='curriculum' className='mt-32'>
                 <Curriculum />
-                <div className='mt-28'>
-                    <AllCourses />
-                </div>
                 <div className='mt-32'>
                     <DualManagement />
+                </div>
+                <div className='mt-28'>
+                    <CEOChallenge/>
+                </div>
+                <div className='mt-28'>
+                    <AllCourses />
                 </div>
                 <div className='mt-32'>
                     <HearFromStudents/>
