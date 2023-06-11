@@ -11,9 +11,23 @@ import './style.css';
 import img from '../../../assets/heroImg.png'
 import BgImg from '../../../assets/HeroBg.png';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Slide from '@mui/material/Slide';
+import axios from 'axios';
+import emailjs from '@emailjs/browser';
+import { toast } from 'react-hot-toast';
 
 
-const Hero = ({ onButtonClick }) => {
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
+
+
+const Hero = () => {
     // const visibleIndex = useRef(0);
 
     // const [stories, setStories] = useState([
@@ -87,6 +101,81 @@ const Hero = ({ onButtonClick }) => {
 
     // console.log(stories[selectedIndex].url, selectedIndex);
 
+
+    const [open, setOpen] = React.useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const form = useRef();
+
+
+    const handleSubmit = event => {
+        event.preventDefault();
+        const form = event.target;
+        const name = form.name.value;
+        const number = form.number.value;
+        const email = form.email.value;
+        const option = form.option.value;
+        const city = form.city.value;
+
+        const data = {
+            Name: name,
+            Number: '+91' + number,
+            Email: email,
+            Option: option,
+            City: city,
+            Time: new Date(),
+        };
+
+        console.log(data);
+
+        fetch("https://sheet.best/api/sheets/79b86141-ec12-4a0a-85ae-3e1669d63607", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        })
+            .then((data) => {
+                // The response comes here
+                console.log(data);
+            })
+            .catch((error) => {
+                // Errors are reported there
+                console.log(error);
+            });
+
+
+        const templateParams = {
+            from_name: name,
+            message: `
+            Name: ${name},
+            Number: ${'+91' + number},
+            Email: ${email},
+            ${option},
+            City: ${city},
+            Time: ${new Date()},
+            `
+        };
+
+        emailjs.send('service_s3bklnu', 'template_l0yacbb', templateParams, 'U0g6Ht1DVmnBbENk0')
+            .then((result) => {
+                console.log(result.text);
+                toast.success("Message Sent");
+                event.target.reset();
+            }, (error) => {
+                console.log(error.text);
+            });
+
+    }
+
+
     return (
         <section className="lg:h-[585px] text-white">
             <div style={{ height: "100%", background: "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF" }} className="flex lg:justify-end items-center">
@@ -102,7 +191,7 @@ const Hero = ({ onButtonClick }) => {
                             <span><CurrencyRupeeIcon className='mr-2' />Placements driven courses with <span className='font-bold initial'>profile building,stream selection and career planning</span></span>
                         </div> */}
 
-                        <Button onClick={onButtonClick} sx={{ bgcolor: '#FF557A', ":hover": { bgcolor: '#94A4FF' }, padding: '10px 30px 10px 50px', color: 'white', fontWeight: "500", fontSize: '22px', textTransform: 'initial', borderRadius: '45px' }} variant="contained" endIcon={<ArrowForwardIosIcon className='h-6 w-6' />}>
+                        <Button onClick={handleClickOpen} sx={{ bgcolor: '#FF557A', ":hover": { bgcolor: '#94A4FF' }, padding: '10px 30px 10px 50px', color: 'white', fontWeight: "500", fontSize: '22px', textTransform: 'initial', borderRadius: '45px' }} variant="contained" endIcon={<ArrowForwardIosIcon className='h-6 w-6' />}>
                             Learn More
                         </Button>
                     </div>
@@ -147,6 +236,52 @@ const Hero = ({ onButtonClick }) => {
                 <img className='z-50 w-[60vw] h-[100%] object-cover hidden lg:block' src={img} alt="" />
 
             </div>
+            <Dialog
+                open={open}
+                TransitionComponent={Transition}
+                keepMounted
+                onClose={handleClose}
+                aria-labelledby="responsive-dialog-title"
+            >
+
+                <div className='bg-dark w-full min-w-[300px] sm:min-w-[350px] lg:w-[500px] p-5 cursor-pointer'>
+                    <div className='w-full'>
+                        <h4 onClick={handleClose} className='text-xl text-white text-right hover:text-purple'>x</h4>
+                        <h1 className='text-2xl font-semibold text-pink text-center'>Learn More</h1>
+                    </div>
+                    <form ref={form} onSubmit={handleSubmit} autoComplete='off' className='lg:px-10'>
+                        <div className='flex flex-col items-center mt-6 gap-1 text-white'>
+                            <label htmlFor="name">Enter Name</label>
+                            <input required className="text-center w-full py-2 rounded-3xl text-black focus:outline-none" placeholder='Enter your Name' type="text" name="name" id="name" />
+                        </div>
+                        <div className='flex flex-col items-center mt-6 gap-1 text-white'>
+                            <label htmlFor="number">Enter Number</label>
+                            <input required className="text-center w-full py-2 rounded-3xl text-black focus:outline-none" placeholder='Enter your number' type="number" name="number" id="number" />
+                        </div>
+                        <div className='flex flex-col items-center mt-6 gap-1 text-white'>
+                            <label htmlFor="email">Enter Email</label>
+                            <input required className="text-center w-full py-2 rounded-3xl text-black focus:outline-none" placeholder='Enter your email' type="email" name="email" id="email" />
+                        </div>
+                        <div className='flex flex-col items-center mt-6 gap-1 text-white'>
+                            <label htmlFor="option">Select One</label>
+                            <select required className="text-center w-full py-2 rounded-3xl text-black focus:outline-none" name="option" id="option">
+                                <option value="Student">Student</option>
+                                <option value="Parent">Parent</option>
+                                <option value="Counselor">Counselor</option>
+                                <option value="Others">Others</option>
+                            </select>
+                        </div>
+                        <div className='flex flex-col items-center mt-6 gap-1 text-white'>
+                            <label htmlFor="city">Enter City</label>
+                            <input required className="text-center w-full py-2 rounded-3xl text-black focus:outline-none" placeholder='Enter your city' type="text" name="city" id="city" />
+                        </div>
+                        <div className='flex flex-col items-center mt-6 gap-1 text-white'>
+                            <input className='text-white py-2 font-bold rounded-3xl bg-pink hover:bg-purple w-1/2 text-center' type="submit" value={'Submit'} />
+                        </div>
+                    </form>
+                </div>
+
+            </Dialog>
         </section>
 
     );

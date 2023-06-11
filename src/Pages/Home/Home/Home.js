@@ -13,13 +13,13 @@ import Campus from '../../SciencePage/Campus/Campus';
 
 const Home = () => {
 
-    const featureRef = useRef(null);
+    // const featureRef = useRef(null);
 
-    const handleButtonClick = () => {
-        const featurePosition = featureRef.current.getBoundingClientRect().top;
-        const headerHeight = 80;
-        window.scrollTo({ top: featurePosition - headerHeight, behavior: 'smooth' });
-    };
+    // const handleButtonClick = () => {
+    //     const featurePosition = featureRef.current.getBoundingClientRect().top;
+    //     const headerHeight = 80;
+    //     window.scrollTo({ top: featurePosition - headerHeight, behavior: 'smooth' });
+    // };
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -30,9 +30,9 @@ const Home = () => {
         <div style={{width:'100%'}} className='bg-dark text-white'>
             <MyHelmet>Home</MyHelmet>
             <div className='mt-[3rem]'>
-                <Hero onButtonClick={handleButtonClick} />
+                <Hero />
             </div>
-            <div ref={featureRef}>
+            <div>
                 <Feature />
             </div>
             <TakeTest/>
@@ -42,7 +42,7 @@ const Home = () => {
             <CEOChallenge/>
             <LifeAtUnion/>
             <Campus/>
-            <ExperienceUnion/>
+            {/* <ExperienceUnion/> */}
         </div>
     );
 };
