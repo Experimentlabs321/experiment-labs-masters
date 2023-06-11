@@ -47,7 +47,6 @@ const LifeAtUnion = () => {
                 </div>
                 <img className='lg:block hidden' style={{height:'170px'}} src={collan} alt="" />
             </div>
-            <button className='flex sm:hidden w-full justify-center mt-8 items-center gap-3 bg-gradient-to-r from-pink-700 via-orange-600 to-yellow text-white px-4 py-3 rounded-lg hover:shadow-xl hover:shadow-orange-200'>Follow on Instagram <InstagramIcon /></button>
         </div>
     );
 };

@@ -7,6 +7,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import './style.css';
 import { Link } from 'react-router-dom';
+import meetImg from '../../../assets/people-meeting-seminar-office-concept 1 (1).png';
 
 const ExperienceUnion = () => {
 
@@ -35,118 +36,188 @@ const ExperienceUnion = () => {
 
                         <div
                             ref={containerRef}
-                            className='overflow-x-scroll scroll-smooth gap-8 eu-container pb-10 lg:w-[75vw] lg:flex hidden'
+                            className='overflow-x-scroll scroll-smooth gap-8 eu-container pb-10 lg:w-[75vw] hidden lg:flex'
                         >
-                            <div className='border-2 border-gray-400 hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out lg:min-w-[360px] min-w-[290px] max-w-[290px] lg:max-w-[360px] rounded-xl'>
+                            <div style={{
+                                border: '5px solid #94A4FF'
+                            }} className='bg-transparent lg:min-w-[360px] min-w-[290px] max-w-[290px] lg:max-w-[360px] rounded-3xl p-5'>
                                 <img
-                                    className='w-full h-[200px] object-cover rounded-t-xl'
-                                    src={`https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8dGVjaHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60`}
+                                    style={{
+                                        borderRight: "5px solid #6278FF",
+                                        borderBottom: "5px solid #6278FF",
+                                    }}
+                                    className='w-full rounded-3xl h-[200px] object-cover'
+                                    src={meetImg}
                                     alt=''
                                 />
-                                <div className='p-3'>
-                                    <h4 className='font-extrabold font text-xl'>The Masters' Union Startup Weekend</h4>
-                                    <div className='text-xs font-bold mt-5 flex gap-3'>
-                                        <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>6th May 2023 - 7th May 2023</span>
-                                        <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>Offline</span>
+                                <div className='mt-3'>
+                                    <h4 className='font-extrabold font text-xl'>Experiment Labs Summer
+                                        Startup Week</h4>
+                                    <div className='text-xs font-bold my-5 flex gap-8'>
+                                        <span className='text-purple font-bold text-xs'>5th jun 2023 - 11th jun 2023</span>
+                                        <span className='text-purple font-bold text-xs'>Offline</span>
                                     </div>
-                                    <p className='text-sm font-thin mt-2 mb-6'>Masters' Union is starting May with a bang with The Masters' Union Startup Weekend! Get ready to find your perfect co-founder, build a product, pitch to investors, and become the next big thing in the startup world.</p>
-                                    <Link to='/experience-union'><button className='bg-transparent border-2 hover:bg-cyan hover:text-white border-cyan text-cyan rounded-xl w-full py-2'>Registration Closed</button></Link>
+                                    <p className='text-sm font-thin mt-2 mb-6'>Join the 7-day saga to experience a
+                                        jam ek full of workshops, mentorship
+                                        hours, panel discussion etc.
+                                    </p>
+                                    <Link className="flex justify-center" to='/experience-union'><button className='bg-blue hover:bg-purple text-white rounded-3xl w-1/2 mx-auto py-2'>Register Now</button></Link>
                                 </div>
                             </div>
-                            <div className='border-2 border-gray-400 bg-transparent hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out lg:min-w-[360px] min-w-[290px] max-w-[290px] lg:max-w-[360px] rounded-xl'>
+                            <div style={{
+                                border: '5px solid #94A4FF'
+                            }} className='bg-transparent lg:min-w-[360px] min-w-[290px] max-w-[290px] lg:max-w-[360px] rounded-3xl p-5'>
                                 <img
-                                    className='w-full h-[200px] object-cover rounded-t-xl'
-                                    src={`https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8dGVjaHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60`}
+                                    style={{
+                                        borderRight: "5px solid #6278FF",
+                                        borderBottom: "5px solid #6278FF",
+                                    }}
+                                    className='w-full rounded-3xl h-[200px] object-cover'
+                                    src={meetImg}
                                     alt=''
                                 />
-                                <div className='p-3'>
-                                    <h4 className='font-extrabold font text-xl'>The Masters' Union Startup Weekend</h4>
-                                    <div className='text-xs font-bold mt-5 flex gap-3'>
-                                        <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>6th May 2023 - 7th May 2023</span>
-                                        <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>Offline</span>
+                                <div className='mt-3'>
+                                    <h4 className='font-extrabold font text-xl'>Experiment Labs Summer
+                                        Startup Week</h4>
+                                    <div className='text-xs font-bold my-5 flex gap-8'>
+                                        <span className='text-purple font-bold text-xs'>5th jun 2023 - 11th jun 2023</span>
+                                        <span className='text-purple font-bold text-xs'>Offline</span>
                                     </div>
-                                    <p className='text-sm font-thin mt-2 mb-6'>Masters' Union is starting May with a bang with The Masters' Union Startup Weekend! Get ready to find your perfect co-founder, build a product, pitch to investors, and become the next big thing in the startup world.</p>
-                                    <Link to='/experience-union'><button className='bg-transparent border-2 hover:bg-cyan hover:text-white border-cyan text-cyan rounded-xl w-full py-2'>Registration Closed</button></Link>
+                                    <p className='text-sm font-thin mt-2 mb-6'>Join the 7-day saga to experience a
+                                        jam ek full of workshops, mentorship
+                                        hours, panel discussion etc.
+                                    </p>
+                                    <Link className="flex justify-center" to='/experience-union'><button className='bg-blue hover:bg-purple text-white rounded-3xl w-1/2 mx-auto py-2'>Register Now</button></Link>
                                 </div>
                             </div>
-                            <div className='border-2 border-gray-400 bg-transparent hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out lg:min-w-[360px] min-w-[290px] max-w-[290px] lg:max-w-[360px] rounded-xl'>
+                            <div style={{
+                                border: '5px solid #94A4FF'
+                            }} className='bg-transparent lg:min-w-[360px] min-w-[290px] max-w-[290px] lg:max-w-[360px] rounded-3xl p-5'>
                                 <img
-                                    className='w-full h-[200px] object-cover rounded-t-xl'
-                                    src={`https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8dGVjaHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60`}
+                                    style={{
+                                        borderRight: "5px solid #6278FF",
+                                        borderBottom: "5px solid #6278FF",
+                                    }}
+                                    className='w-full rounded-3xl h-[200px] object-cover'
+                                    src={meetImg}
                                     alt=''
                                 />
-                                <div className='p-3'>
-                                    <h4 className='font-extrabold font text-xl'>The Masters' Union Startup Weekend</h4>
-                                    <div className='text-xs font-bold mt-5 flex gap-3'>
-                                        <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>6th May 2023 - 7th May 2023</span>
-                                        <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>Offline</span>
+                                <div className='mt-3'>
+                                    <h4 className='font-extrabold font text-xl'>Experiment Labs Summer
+                                        Startup Week</h4>
+                                    <div className='text-xs font-bold my-5 flex gap-8'>
+                                        <span className='text-purple font-bold text-xs'>5th jun 2023 - 11th jun 2023</span>
+                                        <span className='text-purple font-bold text-xs'>Offline</span>
                                     </div>
-                                    <p className='text-sm font-thin mt-2 mb-6'>Masters' Union is starting May with a bang with The Masters' Union Startup Weekend! Get ready to find your perfect co-founder, build a product, pitch to investors, and become the next big thing in the startup world.</p>
-                                    <Link to='/experience-union'><button className='bg-transparent border-2 hover:bg-cyan hover:text-white border-cyan text-cyan rounded-xl w-full py-2'>Registration Closed</button></Link>
+                                    <p className='text-sm font-thin mt-2 mb-6'>Join the 7-day saga to experience a
+                                        jam ek full of workshops, mentorship
+                                        hours, panel discussion etc.
+                                    </p>
+                                    <Link className="flex justify-center" to='/experience-union'><button className='bg-blue hover:bg-purple text-white rounded-3xl w-1/2 mx-auto py-2'>Register Now</button></Link>
                                 </div>
                             </div>
-                            <div className='border-2 border-gray-400 bg-transparent hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out lg:min-w-[360px] min-w-[290px] max-w-[290px] lg:max-w-[360px] rounded-xl'>
+                            <div style={{
+                                border: '5px solid #94A4FF'
+                            }} className='bg-transparent lg:min-w-[360px] min-w-[290px] max-w-[290px] lg:max-w-[360px] rounded-3xl p-5'>
                                 <img
-                                    className='w-full h-[200px] object-cover rounded-t-xl'
-                                    src={`https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8dGVjaHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60`}
+                                    style={{
+                                        borderRight: "5px solid #6278FF",
+                                        borderBottom: "5px solid #6278FF",
+                                    }}
+                                    className='w-full rounded-3xl h-[200px] object-cover'
+                                    src={meetImg}
                                     alt=''
                                 />
-                                <div className='p-3'>
-                                    <h4 className='font-extrabold font text-xl'>The Masters' Union Startup Weekend</h4>
-                                    <div className='text-xs font-bold mt-5 flex gap-3'>
-                                        <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>6th May 2023 - 7th May 2023</span>
-                                        <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>Offline</span>
+                                <div className='mt-3'>
+                                    <h4 className='font-extrabold font text-xl'>Experiment Labs Summer
+                                        Startup Week</h4>
+                                    <div className='text-xs font-bold my-5 flex gap-8'>
+                                        <span className='text-purple font-bold text-xs'>5th jun 2023 - 11th jun 2023</span>
+                                        <span className='text-purple font-bold text-xs'>Offline</span>
                                     </div>
-                                    <p className='text-sm font-thin mt-2 mb-6'>Masters' Union is starting May with a bang with The Masters' Union Startup Weekend! Get ready to find your perfect co-founder, build a product, pitch to investors, and become the next big thing in the startup world.</p>
-                                    <Link to='/experience-union'><button className='bg-transparent border-2 hover:bg-cyan hover:text-white border-cyan text-cyan rounded-xl w-full py-2'>Registration Closed</button></Link>
+                                    <p className='text-sm font-thin mt-2 mb-6'>Join the 7-day saga to experience a
+                                        jam ek full of workshops, mentorship
+                                        hours, panel discussion etc.
+                                    </p>
+                                    <Link className="flex justify-center" to='/experience-union'><button className='bg-blue hover:bg-purple text-white rounded-3xl w-1/2 mx-auto py-2'>Register Now</button></Link>
                                 </div>
                             </div>
-                            <div className='border-2 border-gray-400 bg-transparent hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out lg:min-w-[360px] min-w-[290px] max-w-[290px] lg:max-w-[360px] rounded-xl'>
+                            <div style={{
+                                border: '5px solid #94A4FF'
+                            }} className='bg-transparent lg:min-w-[360px] min-w-[290px] max-w-[290px] lg:max-w-[360px] rounded-3xl p-5'>
                                 <img
-                                    className='w-full h-[200px] object-cover rounded-t-xl'
-                                    src={`https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8dGVjaHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60`}
+                                    style={{
+                                        borderRight: "5px solid #6278FF",
+                                        borderBottom: "5px solid #6278FF",
+                                    }}
+                                    className='w-full rounded-3xl h-[200px] object-cover'
+                                    src={meetImg}
                                     alt=''
                                 />
-                                <div className='p-3'>
-                                    <h4 className='font-extrabold font text-xl'>The Masters' Union Startup Weekend</h4>
-                                    <div className='text-xs font-bold mt-5 flex gap-3'>
-                                        <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>6th May 2023 - 7th May 2023</span>
-                                        <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>Offline</span>
+                                <div className='mt-3'>
+                                    <h4 className='font-extrabold font text-xl'>Experiment Labs Summer
+                                        Startup Week</h4>
+                                    <div className='text-xs font-bold my-5 flex gap-8'>
+                                        <span className='text-purple font-bold text-xs'>5th jun 2023 - 11th jun 2023</span>
+                                        <span className='text-purple font-bold text-xs'>Offline</span>
                                     </div>
-                                    <p className='text-sm font-thin mt-2 mb-6'>Masters' Union is starting May with a bang with The Masters' Union Startup Weekend! Get ready to find your perfect co-founder, build a product, pitch to investors, and become the next big thing in the startup world.</p>
-                                    <Link to='/experience-union'><button className='bg-transparent border-2 hover:bg-cyan hover:text-white border-cyan text-cyan rounded-xl w-full py-2'>Registration Closed</button></Link>
+                                    <p className='text-sm font-thin mt-2 mb-6'>Join the 7-day saga to experience a
+                                        jam ek full of workshops, mentorship
+                                        hours, panel discussion etc.
+                                    </p>
+                                    <Link className="flex justify-center" to='/experience-union'><button className='bg-blue hover:bg-purple text-white rounded-3xl w-1/2 mx-auto py-2'>Register Now</button></Link>
                                 </div>
                             </div>
-                            <div className='border-2 border-gray-400 bg-transparent hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out lg:min-w-[360px] min-w-[290px] max-w-[290px] lg:max-w-[360px] rounded-xl'>
+                            <div style={{
+                                border: '5px solid #94A4FF'
+                            }} className='bg-transparent lg:min-w-[360px] min-w-[290px] max-w-[290px] lg:max-w-[360px] rounded-3xl p-5'>
                                 <img
-                                    className='w-full h-[200px] object-cover rounded-t-xl'
-                                    src={`https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8dGVjaHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60`}
+                                    style={{
+                                        borderRight: "5px solid #6278FF",
+                                        borderBottom: "5px solid #6278FF",
+                                    }}
+                                    className='w-full rounded-3xl h-[200px] object-cover'
+                                    src={meetImg}
                                     alt=''
                                 />
-                                <div className='p-3'>
-                                    <h4 className='font-extrabold font text-xl'>The Masters' Union Startup Weekend</h4>
-                                    <div className='text-xs font-bold mt-5 flex gap-3'>
-                                        <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>6th May 2023 - 7th May 2023</span>
-                                        <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>Offline</span>
+                                <div className='mt-3'>
+                                    <h4 className='font-extrabold font text-xl'>Experiment Labs Summer
+                                        Startup Week</h4>
+                                    <div className='text-xs font-bold my-5 flex gap-8'>
+                                        <span className='text-purple font-bold text-xs'>5th jun 2023 - 11th jun 2023</span>
+                                        <span className='text-purple font-bold text-xs'>Offline</span>
                                     </div>
-                                    <p className='text-sm font-thin mt-2 mb-6'>Masters' Union is starting May with a bang with The Masters' Union Startup Weekend! Get ready to find your perfect co-founder, build a product, pitch to investors, and become the next big thing in the startup world.</p>
-                                    <Link to='/experience-union'><button className='bg-transparent border-2 hover:bg-cyan hover:text-white border-cyan text-cyan rounded-xl w-full py-2'>Registration Closed</button></Link>
+                                    <p className='text-sm font-thin mt-2 mb-6'>Join the 7-day saga to experience a
+                                        jam ek full of workshops, mentorship
+                                        hours, panel discussion etc.
+                                    </p>
+                                    <Link className="flex justify-center" to='/experience-union'><button className='bg-blue hover:bg-purple text-white rounded-3xl w-1/2 mx-auto py-2'>Register Now</button></Link>
                                 </div>
                             </div>
-                            <div className='border-2 border-gray-400 bg-transparent hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out lg:min-w-[360px] min-w-[290px] max-w-[290px] lg:max-w-[360px] rounded-xl'>
+                            <div style={{
+                                border: '5px solid #94A4FF'
+                            }} className='bg-transparent lg:min-w-[360px] min-w-[290px] max-w-[290px] lg:max-w-[360px] rounded-3xl p-5'>
                                 <img
-                                    className='w-full h-[200px] object-cover rounded-t-xl'
-                                    src={`https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8dGVjaHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60`}
+                                    style={{
+                                        borderRight: "5px solid #6278FF",
+                                        borderBottom: "5px solid #6278FF",
+                                    }}
+                                    className='w-full rounded-3xl h-[200px] object-cover'
+                                    src={meetImg}
                                     alt=''
                                 />
-                                <div className='p-3'>
-                                    <h4 className='font-extrabold font text-xl'>The Masters' Union Startup Weekend</h4>
-                                    <div className='text-xs font-bold mt-5 flex gap-3'>
-                                        <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>6th May 2023 - 7th May 2023</span>
-                                        <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>Offline</span>
+                                <div className='mt-3'>
+                                    <h4 className='font-extrabold font text-xl'>Experiment Labs Summer
+                                        Startup Week</h4>
+                                    <div className='text-xs font-bold my-5 flex gap-8'>
+                                        <span className='text-purple font-bold text-xs'>5th jun 2023 - 11th jun 2023</span>
+                                        <span className='text-purple font-bold text-xs'>Offline</span>
                                     </div>
-                                    <p className='text-sm font-thin mt-2 mb-6'>Masters' Union is starting May with a bang with The Masters' Union Startup Weekend! Get ready to find your perfect co-founder, build a product, pitch to investors, and become the next big thing in the startup world.</p>
-                                    <Link to='/experience-union'><button className='bg-transparent border-2 hover:bg-cyan hover:text-white border-cyan text-cyan rounded-xl w-full py-2'>Registration Closed</button></Link>
+                                    <p className='text-sm font-thin mt-2 mb-6'>Join the 7-day saga to experience a
+                                        jam ek full of workshops, mentorship
+                                        hours, panel discussion etc.
+                                    </p>
+                                    <Link className="flex justify-center" to='/experience-union'><button className='bg-blue hover:bg-purple text-white rounded-3xl w-1/2 mx-auto py-2'>Register Now</button></Link>
                                 </div>
                             </div>
 
@@ -164,118 +235,196 @@ const ExperienceUnion = () => {
             </div>
             <div
 
+
                 className='flex eu-container overflow-x-scroll scroll-smooth gap-5 pb-10 lg:hidden'
             >
-                <div className='border-2 border-gray-400 hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out min-w-[290px] max-w-[290px] rounded-xl'>
+                <div style={{
+                    border: '5px solid #94A4FF'
+                }}
+                    className='bg-transparent lg:min-w-[360px] min-w-[320px] max-w-[320px] lg:max-w-[360px] rounded-3xl p-5'>
                     <img
-                        className='w-full h-[200px] object-cover rounded-t-xl'
-                        src={`https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8dGVjaHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60`}
+                        style={{
+                            borderRight: "5px solid #6278FF",
+                            borderBottom: "5px solid #6278FF",
+                        }}
+                        className='w-full rounded-3xl h-[200px] object-cover'
+                        src={meetImg}
                         alt=''
                     />
-                    <div className='p-3'>
-                        <h4 className='font-extrabold font text-xl'>The Masters' Union Startup Weekend</h4>
-                        <div className='text-xs font-bold mt-5 flex gap-3'>
-                            <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>6th May 2023 - 7th May 2023</span>
-                            <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>Offline</span>
+                    <div className='mt-3'>
+                        <h4 className='font-extrabold font text-xl'>Experiment Labs Summer
+                            Startup Week</h4>
+                        <div className='text-xs font-bold my-5 flex gap-3'>
+                            <span className='text-purple font-bold text-xs'>5th jun 2023 - 11th jun 2023 </span>
+                            <span className='text-purple font-bold text-xs'>Offline</span>
                         </div>
-                        <p className='text-sm font-thin mt-2 mb-6'>Masters' Union is starting May with a bang with The Masters' Union Startup Weekend! Get ready to find your perfect co-founder, build a product, pitch to investors, and become the next big thing in the startup world.</p>
-                        <Link to='/experience-union'><button className='bg-transparent border-2 hover:bg-cyan hover:text-white border-cyan text-cyan rounded-xl w-full py-2'>Registration Closed</button></Link>
+                        <p className='text-sm font-thin mt-2 mb-6'>Join the 7-day saga to experience a
+                            jam ek full of workshops, mentorship
+                            hours, panel discussion etc.
+                        </p>
+                        <Link className="flex justify-center" to='/experience-union'><button className='bg-blue hover:bg-purple text-white rounded-3xl w-1/2 mx-auto py-2'>Register Now</button></Link>
                     </div>
                 </div>
-                <div className='border-2 border-gray-400 bg-transparent hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out min-w-[290px] max-w-[290px] rounded-xl'>
+                <div style={{
+                    border: '5px solid #94A4FF'
+                }}
+                    className='bg-transparent lg:min-w-[360px] min-w-[320px] max-w-[320px] lg:max-w-[360px] rounded-3xl p-5'>
                     <img
-                        className='w-full h-[200px] object-cover rounded-t-xl'
-                        src={`https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8dGVjaHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60`}
+                        style={{
+                            borderRight: "5px solid #6278FF",
+                            borderBottom: "5px solid #6278FF",
+                        }}
+                        className='w-full rounded-3xl h-[200px] object-cover'
+                        src={meetImg}
                         alt=''
                     />
-                    <div className='p-3'>
-                        <h4 className='font-extrabold font text-xl'>The Masters' Union Startup Weekend</h4>
-                        <div className='text-xs font-bold mt-5 flex gap-3'>
-                            <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>6th May 2023 - 7th May 2023</span>
-                            <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>Offline</span>
+                    <div className='mt-3'>
+                        <h4 className='font-extrabold font text-xl'>Experiment Labs Summer
+                            Startup Week</h4>
+                        <div className='text-xs font-bold my-5 flex gap-3'>
+                            <span className='text-purple font-bold text-xs'>5th jun 2023 - 11th jun 2023 </span>
+                            <span className='text-purple font-bold text-xs'>Offline</span>
                         </div>
-                        <p className='text-sm font-thin mt-2 mb-6'>Masters' Union is starting May with a bang with The Masters' Union Startup Weekend! Get ready to find your perfect co-founder, build a product, pitch to investors, and become the next big thing in the startup world.</p>
-                        <Link to='/experience-union'><button className='bg-transparent border-2 hover:bg-cyan hover:text-white border-cyan text-cyan rounded-xl w-full py-2'>Registration Closed</button></Link>
+                        <p className='text-sm font-thin mt-2 mb-6'>Join the 7-day saga to experience a
+                            jam ek full of workshops, mentorship
+                            hours, panel discussion etc.
+                        </p>
+                        <Link className="flex justify-center" to='/experience-union'><button className='bg-blue hover:bg-purple text-white rounded-3xl w-1/2 mx-auto py-2'>Register Now</button></Link>
                     </div>
                 </div>
-                <div className='border-2 border-gray-400 bg-transparent hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out min-w-[290px] max-w-[290px] rounded-xl'>
+                <div style={{
+                    border: '5px solid #94A4FF'
+                }}
+                    className='bg-transparent lg:min-w-[360px] min-w-[320px] max-w-[320px] lg:max-w-[360px] rounded-3xl p-5'>
                     <img
-                        className='w-full h-[200px] object-cover rounded-t-xl'
-                        src={`https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8dGVjaHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60`}
+                        style={{
+                            borderRight: "5px solid #6278FF",
+                            borderBottom: "5px solid #6278FF",
+                        }}
+                        className='w-full rounded-3xl h-[200px] object-cover'
+                        src={meetImg}
                         alt=''
                     />
-                    <div className='p-3'>
-                        <h4 className='font-extrabold font text-xl'>The Masters' Union Startup Weekend</h4>
-                        <div className='text-xs font-bold mt-5 flex gap-3'>
-                            <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>6th May 2023 - 7th May 2023</span>
-                            <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>Offline</span>
+                    <div className='mt-3'>
+                        <h4 className='font-extrabold font text-xl'>Experiment Labs Summer
+                            Startup Week</h4>
+                        <div className='text-xs font-bold my-5 flex gap-3'>
+                            <span className='text-purple font-bold text-xs'>5th jun 2023 - 11th jun 2023 </span>
+                            <span className='text-purple font-bold text-xs'>Offline</span>
                         </div>
-                        <p className='text-sm font-thin mt-2 mb-6'>Masters' Union is starting May with a bang with The Masters' Union Startup Weekend! Get ready to find your perfect co-founder, build a product, pitch to investors, and become the next big thing in the startup world.</p>
-                        <Link to='/experience-union'><button className='bg-transparent border-2 hover:bg-cyan hover:text-white border-cyan text-cyan rounded-xl w-full py-2'>Registration Closed</button></Link>
+                        <p className='text-sm font-thin mt-2 mb-6'>Join the 7-day saga to experience a
+                            jam ek full of workshops, mentorship
+                            hours, panel discussion etc.
+                        </p>
+                        <Link className="flex justify-center" to='/experience-union'><button className='bg-blue hover:bg-purple text-white rounded-3xl w-1/2 mx-auto py-2'>Register Now</button></Link>
                     </div>
                 </div>
-                <div className='border-2 border-gray-400 bg-transparent hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out min-w-[290px] max-w-[290px] rounded-xl'>
+                <div style={{
+                    border: '5px solid #94A4FF'
+                }}
+                    className='bg-transparent lg:min-w-[360px] min-w-[320px] max-w-[320px] lg:max-w-[360px] rounded-3xl p-5'>
                     <img
-                        className='w-full h-[200px] object-cover rounded-t-xl'
-                        src={`https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8dGVjaHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60`}
+                        style={{
+                            borderRight: "5px solid #6278FF",
+                            borderBottom: "5px solid #6278FF",
+                        }}
+                        className='w-full rounded-3xl h-[200px] object-cover'
+                        src={meetImg}
                         alt=''
                     />
-                    <div className='p-3'>
-                        <h4 className='font-extrabold font text-xl'>The Masters' Union Startup Weekend</h4>
-                        <div className='text-xs font-bold mt-5 flex gap-3'>
-                            <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>6th May 2023 - 7th May 2023</span>
-                            <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>Offline</span>
+                    <div className='mt-3'>
+                        <h4 className='font-extrabold font text-xl'>Experiment Labs Summer
+                            Startup Week</h4>
+                        <div className='text-xs font-bold my-5 flex gap-3'>
+                            <span className='text-purple font-bold text-xs'>5th jun 2023 - 11th jun 2023 </span>
+                            <span className='text-purple font-bold text-xs'>Offline</span>
                         </div>
-                        <p className='text-sm font-thin mt-2 mb-6'>Masters' Union is starting May with a bang with The Masters' Union Startup Weekend! Get ready to find your perfect co-founder, build a product, pitch to investors, and become the next big thing in the startup world.</p>
-                        <Link to='/experience-union'><button className='bg-transparent border-2 hover:bg-cyan hover:text-white border-cyan text-cyan rounded-xl w-full py-2'>Registration Closed</button></Link>
+                        <p className='text-sm font-thin mt-2 mb-6'>Join the 7-day saga to experience a
+                            jam ek full of workshops, mentorship
+                            hours, panel discussion etc.
+                        </p>
+                        <Link className="flex justify-center" to='/experience-union'><button className='bg-blue hover:bg-purple text-white rounded-3xl w-1/2 mx-auto py-2'>Register Now</button></Link>
                     </div>
                 </div>
-                <div className='border-2 border-gray-400 bg-transparent hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out min-w-[290px] max-w-[290px] rounded-xl'>
+                <div style={{
+                    border: '5px solid #94A4FF'
+                }}
+                    className='bg-transparent lg:min-w-[360px] min-w-[320px] max-w-[320px] lg:max-w-[360px] rounded-3xl p-5'>
                     <img
-                        className='w-full h-[200px] object-cover rounded-t-xl'
-                        src={`https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8dGVjaHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60`}
+                        style={{
+                            borderRight: "5px solid #6278FF",
+                            borderBottom: "5px solid #6278FF",
+                        }}
+                        className='w-full rounded-3xl h-[200px] object-cover'
+                        src={meetImg}
                         alt=''
                     />
-                    <div className='p-3'>
-                        <h4 className='font-extrabold font text-xl'>The Masters' Union Startup Weekend</h4>
-                        <div className='text-xs font-bold mt-5 flex gap-3'>
-                            <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>6th May 2023 - 7th May 2023</span>
-                            <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>Offline</span>
+                    <div className='mt-3'>
+                        <h4 className='font-extrabold font text-xl'>Experiment Labs Summer
+                            Startup Week</h4>
+                        <div className='text-xs font-bold my-5 flex gap-3'>
+                            <span className='text-purple font-bold text-xs'>5th jun 2023 - 11th jun 2023 </span>
+                            <span className='text-purple font-bold text-xs'>Offline</span>
                         </div>
-                        <p className='text-sm font-thin mt-2 mb-6'>Masters' Union is starting May with a bang with The Masters' Union Startup Weekend! Get ready to find your perfect co-founder, build a product, pitch to investors, and become the next big thing in the startup world.</p>
-                        <Link to='/experience-union'><button className='bg-transparent border-2 hover:bg-cyan hover:text-white border-cyan text-cyan rounded-xl w-full py-2'>Registration Closed</button></Link>
+                        <p className='text-sm font-thin mt-2 mb-6'>Join the 7-day saga to experience a
+                            jam ek full of workshops, mentorship
+                            hours, panel discussion etc.
+                        </p>
+                        <Link className="flex justify-center" to='/experience-union'><button className='bg-blue hover:bg-purple text-white rounded-3xl w-1/2 mx-auto py-2'>Register Now</button></Link>
                     </div>
                 </div>
-                <div className='border-2 border-gray-400 bg-transparent hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out min-w-[290px] max-w-[290px] rounded-xl'>
+                <div style={{
+                    border: '5px solid #94A4FF'
+                }}
+                    className='bg-transparent lg:min-w-[360px] min-w-[320px] max-w-[320px] lg:max-w-[360px] rounded-3xl p-5'>
                     <img
-                        className='w-full h-[200px] object-cover rounded-t-xl'
-                        src={`https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8dGVjaHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60`}
+                        style={{
+                            borderRight: "5px solid #6278FF",
+                            borderBottom: "5px solid #6278FF",
+                        }}
+                        className='w-full rounded-3xl h-[200px] object-cover'
+                        src={meetImg}
                         alt=''
                     />
-                    <div className='p-3'>
-                        <h4 className='font-extrabold font text-xl'>The Masters' Union Startup Weekend</h4>
-                        <div className='text-xs font-bold mt-5 flex gap-3'>
-                            <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>6th May 2023 - 7th May 2023</span>
-                            <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>Offline</span>
+                    <div className='mt-3'>
+                        <h4 className='font-extrabold font text-xl'>Experiment Labs Summer
+                            Startup Week</h4>
+                        <div className='text-xs font-bold my-5 flex gap-3'>
+                            <span className='text-purple font-bold text-xs'>5th jun 2023 - 11th jun 2023 </span>
+                            <span className='text-purple font-bold text-xs'>Offline</span>
                         </div>
-                        <p className='text-sm font-thin mt-2 mb-6'>Masters' Union is starting May with a bang with The Masters' Union Startup Weekend! Get ready to find your perfect co-founder, build a product, pitch to investors, and become the next big thing in the startup world.</p>
-                        <Link to='/experience-union'><button className='bg-transparent border-2 hover:bg-cyan hover:text-white border-cyan text-cyan rounded-xl w-full py-2'>Registration Closed</button></Link>
+                        <p className='text-sm font-thin mt-2 mb-6'>Join the 7-day saga to experience a
+                            jam ek full of workshops, mentorship
+                            hours, panel discussion etc.
+                        </p>
+                        <Link className="flex justify-center" to='/experience-union'><button className='bg-blue hover:bg-purple text-white rounded-3xl w-1/2 mx-auto py-2'>Register Now</button></Link>
                     </div>
                 </div>
-                <div className='border-2 border-gray-400 bg-transparent hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out min-w-[290px] max-w-[290px] rounded-xl'>
+                <div style={{
+                    border: '5px solid #94A4FF'
+                }}
+                    className='bg-transparent lg:min-w-[360px] min-w-[320px] max-w-[320px] lg:max-w-[360px] rounded-3xl p-5'>
                     <img
-                        className='w-full h-[200px] object-cover rounded-t-xl'
-                        src={`https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8dGVjaHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60`}
+                        style={{
+                            borderRight: "5px solid #6278FF",
+                            borderBottom: "5px solid #6278FF",
+                        }}
+                        className='w-full rounded-3xl h-[200px] object-cover'
+                        src={meetImg}
                         alt=''
                     />
-                    <div className='p-3'>
-                        <h4 className='font-extrabold font text-xl'>The Masters' Union Startup Weekend</h4>
-                        <div className='text-xs font-bold mt-5 flex gap-3'>
-                            <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>6th May 2023 - 7th May 2023</span>
-                            <span className='px-2 p-1 bg-custom-blue bg-opacity-40 rounded-full text-xs font-light'>Offline</span>
+                    <div className='mt-3'>
+                        <h4 className='font-extrabold font text-xl'>Experiment Labs Summer
+                            Startup Week</h4>
+                        <div className='text-xs font-bold my-5 flex gap-3'>
+                            <span className='text-purple font-bold text-xs'>5th jun 2023 - 11th jun 2023 </span>
+                            <span className='text-purple font-bold text-xs'>Offline</span>
                         </div>
-                        <p className='text-sm font-thin mt-2 mb-6'>Masters' Union is starting May with a bang with The Masters' Union Startup Weekend! Get ready to find your perfect co-founder, build a product, pitch to investors, and become the next big thing in the startup world.</p>
-                        <Link to='/experience-union'><button className='bg-transparent border-2 hover:bg-cyan hover:text-white border-cyan text-cyan rounded-xl w-full py-2'>Registration Closed</button></Link>
+                        <p className='text-sm font-thin mt-2 mb-6'>Join the 7-day saga to experience a
+                            jam ek full of workshops, mentorship
+                            hours, panel discussion etc.
+                        </p>
+                        <Link className="flex justify-center" to='/experience-union'><button className='bg-blue hover:bg-purple text-white rounded-3xl w-1/2 mx-auto py-2'>Register Now</button></Link>
                     </div>
                 </div>
 
