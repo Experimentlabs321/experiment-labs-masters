@@ -56,7 +56,8 @@ const Feature = () => {
                         'Industry projects from Zomato, Swiggy, Nykaa and many more'
                     ],
                     img: img1,
-                    imgLg: imgL1
+                    imgLg: imgL1,
+                    link: '/science-innovation'
                 },
                 {
                     title: 'Leadership and career planning through Business',
@@ -73,7 +74,8 @@ const Feature = () => {
                         'Build Strong portfolios, chart out the best indian and international institutions and how to get admissions'
                     ],
                     img: img2,
-                    imgLg: imgL2
+                    imgLg: imgL2,
+                    link: '/commerce-entrepreneurship/'
                 },
                 {
                     category: 'Humanities/Arts',
@@ -90,7 +92,8 @@ const Feature = () => {
                         'Connect with industry experts and mentors to get guidance and advice.'
                     ],
                     img: img3,
-                    imgLg: imgL3
+                    imgLg: imgL3,
+                    link: '/humanities-arts/'
                 }
 
             ]
@@ -113,7 +116,8 @@ const Feature = () => {
                         'Industry projects from Zomato, Swiggy, Nykaa and many more'
                     ],
                     img: img1,
-                    imgLg: imgL1
+                    imgLg: imgL1,
+                    link: '/science-innovation'
                 }
             ]
         },
@@ -135,7 +139,8 @@ const Feature = () => {
                         'Build Strong portfolios, chart out the best indian and international institutions and how to get admissions'
                     ],
                     img: img2,
-                    imgLg: imgL2
+                    imgLg: imgL2,
+                    link: '/commerce-entrepreneurship/'
                 }
             ]
         },
@@ -157,7 +162,8 @@ const Feature = () => {
                         'Connect with industry experts and mentors to get guidance and advice.'
                     ],
                     img: img3,
-                    imgLg: imgL3
+                    imgLg: imgL3,
+                    link: '/humanities-arts/'
                 }
             ]
         }
@@ -316,7 +322,7 @@ const Feature = () => {
             {selectedIndex === 0 && <div className='hidden lg:grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 mt-8 relative px-4'>
                 {
                     courses[selectedIndex]?.details?.map((course, index) =>
-                        <Link onMouseEnter={() => setMouseEnteredIndex(index)} onMouseLeave={() => setMouseEnteredIndex(-1)} to={'/science-innovation'}>
+                        <Link onMouseEnter={() => setMouseEnteredIndex(index)} onMouseLeave={() => setMouseEnteredIndex(-1)} to={course?.link}>
                             <div style={{
                                 background:"linear-gradient(360deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.12192) 25.08%, rgba(0, 0, 0, 0) 50%), #6278FF",
                                 borderRadius: '24px',
@@ -349,7 +355,7 @@ const Feature = () => {
                                 <img src={course?.img} alt="" />
                             </div>
 
-                            <Link to={'/science-innovation'}>
+                            <Link to={course?.link}>
                                 <div style={{ borderRadius: '24px' }} className={`${index === mouseEnteredIndex ? 'absolute top-0 z-50 w-[25vw]' : 'hidden'} bg-[#94A4FF] pt-1 pl-1`}>
                                     <div style={{
                                         background:"linear-gradient(360deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.12192) 25.08%, rgba(0, 0, 0, 0) 50%), #6278FF",
@@ -395,7 +401,7 @@ const Feature = () => {
             {selectedIndex !== 0 && <div className='hidden lg:block mt-8 px-4'>
                 {
                     courses[selectedIndex]?.details?.map((course, index) =>
-                        <Link to={'/science-innovation'}>
+                        <Link to={course?.link}>
 
                             <div style={{ borderRadius: '24px' }} className={`bg-[#94A4FF] pt-1 pl-1`}>
                                 <div style={{

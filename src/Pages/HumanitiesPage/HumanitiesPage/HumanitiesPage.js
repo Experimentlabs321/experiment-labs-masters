@@ -30,7 +30,7 @@ const HumanitiesPage = () => {
 
   return (
     <div className="bg-dark text-white">
-      <MyHelmet>Science/Innovation</MyHelmet>
+      <MyHelmet>Humanities/Arts</MyHelmet>
 
       <ScienceInnovationNav />
 

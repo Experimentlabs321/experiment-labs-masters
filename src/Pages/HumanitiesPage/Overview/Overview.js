@@ -1,6 +1,6 @@
 import React from 'react';
 import img from '../../../assets/wepik-export-20230516131526jrNm.png';
-import img1 from '../../../assets/Overview/thumbnail-teacher-ambassador.png'
+import img1 from '../../../assets/Overview/Mask group.png'
 import './style.css';
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -15,20 +15,20 @@ const Overview = () => {
                 <div className='flex flex-col lg:flex-row gap-16 justify-center items-center'>
                     <div>
                         
-                        <h2 className='text-3xl my-8'>Explore career and become a leader by building business</h2>
-                            <p className='bg-[#6278FF] py-1 px-2 rounded-3xl text-sm text-bold inline'>Career planning through business</p>
+                        <h2 className='text-3xl my-8'>Explore careers and become a leader by building Movies</h2>
+                            <p className='bg-[#6278FF] py-1 px-2 rounded-3xl text-sm text-bold inline'>Career Planning through Creativity</p>
                         <div className='mb-8 flex mt-11 flex-col gap-3'>
                             <div className='flex flex-row items-center gap-1'>
                                 <span><PlayArrowRoundedIcon sx={{ color: '#FFFFFF' }} /></span>
-                                <span style={{ fontWeight: '500' }}>Discover Discover various career options  in Engineering,Product Management,Design, Research and 40+ fields.</span>
+                                <span style={{ fontWeight: '500' }}>Discover various career options  in Marketing, Copywriting, Filmmaking, Liberal Arts, Event Management and 40+ fields.</span>
                             </div>
                             <div className='flex flex-row items-center gap-1'>
                                 <span><PlayArrowRoundedIcon sx={{ color: '#FFFFFF' }} /></span>
-                                <span style={{ fontWeight: '500' }}>Create a standout portfolio for lvy league admissions in india and abroad</span>
+                                <span style={{ fontWeight: '500' }}>Create a standout portfolio for Ivy League admissions in India and abroad.</span>
                             </div>
                             <div className='flex flex-row items-center gap-1'>
                                 <span><PlayArrowRoundedIcon sx={{ color: '#FFFFFF' }} /></span>
-                                <span style={{ fontWeight: '500' }}>Gain career clarity in commerce post 12th by working on Industry projects.</span>
+                                <span style={{ fontWeight: '500' }}>Gain career clarity in Humanities post 12th by working on industry projects.</span>
                             </div>
                         </div>
 
