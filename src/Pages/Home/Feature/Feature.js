@@ -15,6 +15,20 @@ import img3 from '../../../assets/feature/Rectangle 27.png';
 import imgL1 from '../../../assets/feature/Rectangle 28L.png';
 import imgL2 from '../../../assets/feature/Rectangle 26L.png';
 import imgL3 from '../../../assets/feature/Rectangle 27L.png';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Slide from '@mui/material/Slide';
+import axios from 'axios';
+import emailjs from '@emailjs/browser';
+import { toast } from 'react-hot-toast';
+import ReactGA from "react-ga4";
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const Feature = () => {
 
@@ -171,6 +185,7 @@ const Feature = () => {
         };
     }, []);
 
+
     useEffect(() => {
         if (isLargeScreen) {
             const handleScroll = () => {
@@ -197,6 +212,80 @@ const Feature = () => {
 
     console.log('Mouse Entered Index-----> ', mouseEnteredIndex);
 
+
+    const [open, setOpen] = React.useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const form = useRef();
+
+
+    const handleSubmit = event => {
+        event.preventDefault();
+        const form = event.target;
+        const name = form.name.value;
+        const number = form.number.value;
+        const email = form.email.value;
+        const option = form.option.value;
+        const city = form.city.value;
+
+        const data = {
+            Name: name,
+            Number: '+91' + number,
+            Email: email,
+            Option: option,
+            City: city,
+            Time: new Date(),
+        };
+
+        console.log(data);
+
+        fetch("https://sheet.best/api/sheets/79b86141-ec12-4a0a-85ae-3e1669d63607", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        })
+            .then((data) => {
+                // The response comes here
+                console.log(data);
+            })
+            .catch((error) => {
+                // Errors are reported there
+                console.log(error);
+            });
+
+
+        const templateParams = {
+            from_name: name,
+            message: `
+            Name: ${name},
+            Number: ${'+91' + number},
+            Email: ${email},
+            ${option},
+            City: ${city},
+            Time: ${new Date()},
+            `
+        };
+
+        emailjs.send('service_s3bklnu', 'template_l0yacbb', templateParams, 'U0g6Ht1DVmnBbENk0')
+            .then((result) => {
+                console.log(result.text);
+                toast.success("Message Sent");
+                event.target.reset();
+            }, (error) => {
+                console.log(error.text);
+            });
+
+    }
+
     return (
         <div className='px-5 lg:px-40 mt-20' ref={containerRef}>
 
@@ -206,7 +295,15 @@ const Feature = () => {
                 <div className='parent-container lg:justify-center justify-start'>
                     {
                         courses.map((course, index) => (
-                            <div onClick={() => setSelectedIndex(index)} className={`courses ${selectedIndex !== index && 'bg-dark'} ${selectedIndex === index && 'bg-purple text-white'}`} key={index}>
+                            <div onClick={() => {
+                                ReactGA.event({
+                                    category: "Click",
+                                    action: course?.category,
+                                    label:course?.category
+                                });
+                                setSelectedIndex(index);
+                                
+                                }} className={`courses ${selectedIndex !== index && 'bg-dark'} ${selectedIndex === index && 'bg-purple text-white'}`} key={index}>
                                 {course?.category}
                             </div>
                         ))
@@ -281,7 +378,7 @@ const Feature = () => {
                                                 }
                                             </div>
                                             <div className='absolute bottom-0 right-0 p-6'>
-                                                <Link style={{ borderRadius: '22.5px', fontSize: '16px' }} className='mt-5 px-5 py-2 bg-pink text-white hover:bg-purple' >Apply Now </Link>
+                                                <Link onClick={handleClickOpen} style={{ borderRadius: '22.5px', fontSize: '16px' }} className='mt-5 px-5 py-2 bg-pink text-white hover:bg-purple'>Apply Now </Link>
                                             </div>
 
                                         </div>
@@ -334,7 +431,7 @@ const Feature = () => {
                                                 </div>
                                             </div>
                                             <div className='text-center py-10 px-5'>
-                                                <Link style={{ borderRadius: '22.5px', fontSize: '18px' }} className='mt-5 px-5 py-2 bg-pink text-white hover:bg-purple' >Apply Now </Link>
+                                                <Link style={{ borderRadius: '22.5px', fontSize: '18px' }} className='mt-5 px-5 py-2 bg-pink text-white hover:bg-purple'>Apply Now </Link>
                                             </div>
 
                                         </div>
@@ -379,7 +476,7 @@ const Feature = () => {
                                             }
                                         </div>
                                         <div className='absolute bottom-0 right-0 p-6'>
-                                            <Link style={{ borderRadius: '22.5px', fontSize: '16px' }} className='mt-5 px-5 py-2 bg-pink text-white hover:bg-purple' >Apply Now </Link>
+                                            <Link style={{ borderRadius: '22.5px', fontSize: '16px' }} className='mt-5 px-5 py-2 bg-pink text-white hover:bg-purple'>Apply Now </Link>
                                         </div>
 
                                     </div>

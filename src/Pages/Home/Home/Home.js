@@ -10,6 +10,7 @@ import CEOChallenge from '../CEOChallenge/CEOChallenge';
 import LifeAtUnion from '../LifeAtUnion/LifeAtUnion';
 import ExperienceUnion from '../ExperienceUnion/ExperienceUnion';
 import Campus from '../../SciencePage/Campus/Campus';
+import ReactGA from "react-ga4";
 
 const Home = () => {
 
@@ -23,11 +24,12 @@ const Home = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0);
+        ReactGA.send({ hitType: "pageview", page: "/", title: "Home" });
     }, []);
 
 
     return (
-        <div style={{width:'100%'}} className='bg-dark text-white'>
+        <div style={{ width: '100%' }} className='bg-dark text-white'>
             <MyHelmet>Home</MyHelmet>
             <div className='mt-[3rem]'>
                 <Hero />
@@ -35,13 +37,13 @@ const Home = () => {
             <div>
                 <Feature />
             </div>
-            <TakeTest/>
-            <AllCourses/>
+            <TakeTest />
+            <AllCourses />
             {/* <AiTutor/> */}
-            <MeetTheMaster/>
-            <CEOChallenge/>
-            <LifeAtUnion/>
-            <Campus/>
+            <MeetTheMaster />
+            <CEOChallenge />
+            <LifeAtUnion />
+            <Campus />
             {/* <ExperienceUnion/> */}
         </div>
     );

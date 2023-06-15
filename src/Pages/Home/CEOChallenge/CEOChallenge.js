@@ -11,6 +11,7 @@ import Slide from '@mui/material/Slide';
 import axios from 'axios';
 import emailjs from '@emailjs/browser';
 import { toast } from 'react-hot-toast';
+import ReactGA from "react-ga4";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -21,6 +22,11 @@ const CEOChallenge = () => {
     const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => {
+        ReactGA.event({
+            category: "Click",
+            action: "Apply Now",
+            label:'Apply Now'
+        });
         setOpen(true);
     };
 
@@ -31,6 +37,11 @@ const CEOChallenge = () => {
 
     const handleSubmit = event => {
         event.preventDefault();
+        ReactGA.event({
+            category: "Click",
+            action: "Submit Data",
+            label:'Submit Data'
+        });
         const form = event.target;
         const name = form.name.value;
         const number = form.number.value;
@@ -81,7 +92,7 @@ const CEOChallenge = () => {
         emailjs.send('service_s3bklnu', 'template_l0yacbb', templateParams, 'U0g6Ht1DVmnBbENk0')
             .then((result) => {
                 console.log(result.text);
-                toast.success("Message Sent");
+                // toast.success("Message Sent");
                 event.target.reset();
             }, (error) => {
                 console.log(error.text);

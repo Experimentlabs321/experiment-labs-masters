@@ -4,6 +4,7 @@ import { Button } from '@mui/material';
 import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
 import img from '../../../assets/taket-test/Mask group.png';
 import { Link } from 'react-router-dom';
+import ReactGA from "react-ga4";
 
 const TakeTest = () => {
     return (
@@ -16,6 +17,13 @@ const TakeTest = () => {
                         <span>&</span> <br /> Book a<span className='font-bold'> 1 on 1 counseling session.</span> </h1>
                     <Link target='_blank' to={`http://experimentlabs.xyz/personality.html`}>
                         <Button
+                            onClick={() => {
+                                ReactGA.event({
+                                    category: "Click",
+                                    action: "Take Test",
+                                    label: 'Take Test'
+                                });
+                            }}
                             size='large'
                             sx={
                                 {
