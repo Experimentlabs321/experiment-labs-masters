@@ -34,7 +34,7 @@ const Overview = () => {
 
                         <div className='flex flex-col lg:flex-row w-full gap-8'>
                             
-                            <button className=' rounded-3xl bg-[#6278FF] font-semibold hover:bg-opacity-80 hover:transition-all hover:delay-300 hover:ease-out w-full py-1'>Connect With Councelor</button>
+                            <button className=' rounded-3xl bg-[#6278FF] font-semibold hover:bg-opacity-80 hover:transition-all hover:delay-300 hover:ease-out w-full py-1'>Connect With Councilor</button>
                             <button className=' border border-[#6278FF] rounded-3xl font-semibold hover:bg-opacity-80 hover:transition-all hover:delay-300 hover:ease-out w-full py-1'>Download Career Report</button>
                         </div>
 
