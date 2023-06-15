@@ -378,20 +378,20 @@ const DualManagement = () => {
                     Week 1
                   </span>
 
-                  <details className="w-full border rounded-2xl">
-                    <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
+                  <div className="w-full border rounded-2xl">
+                    <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
                       Introduction - Why this lab?
-                    </summary>
+                    </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
                       Unlock your next milestone with our Develop product sense
                       and gain Practical skills for success in the real world
                     </p>
-                  </details>
-                  {/* <details className="w-full border rounded-lg">
+                  </div>
+                  {/* <div className="w-full border rounded-lg">
                                         <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600"><span className='bg-custom-blue p-1 font-bold mr-2 rounded-md bg-opacity-60'>In Class</span>
                                             Core and Skill Concentrations</summary>
                                         <p className="px-4 py-6 pt-0 ml-4 -mt-4">Tincidunt ut hac condimentum rhoncus phasellus nostra. Magna porttitor egestas tincidunt neque vehicula potenti. </p>
-                                    </details> */}
+                                    </div> */}
                 </div>
               </div>
             </VerticalTimelineElement>
@@ -413,21 +413,21 @@ const DualManagement = () => {
                     Week 2
                   </span>
 
-                  <details className="w-full border rounded-lg">
-                    <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
+                  <div className="w-full border rounded-lg">
+                    <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
                       Approach to Problem Identification
-                    </summary>
+                    </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
                       Unlocking Solutions through Empathy: Our approach to
                       problem identification involves deep empathy, validating
                       challenges, and understanding diverse perspectives.{" "}
                     </p>
-                  </details>
-                  {/* <details className="w-full border rounded-lg">
+                  </div>
+                  {/* <div className="w-full border rounded-lg">
                                         <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600"><span className='bg-custom-blue p-1 font-bold mr-2 rounded-md bg-opacity-60'>In Class</span>
                                             Core and Skill Concentrations</summary>
                                         <p className="px-4 py-6 pt-0 ml-4 -mt-4">Tincidunt ut hac condimentum rhoncus phasellus nostra. Magna porttitor egestas tincidunt neque vehicula potenti. </p>
-                                    </details> */}
+                                    </div> */}
                 </div>
               </div>
             </VerticalTimelineElement>
@@ -449,20 +449,20 @@ const DualManagement = () => {
                     Week 3
                   </span>
 
-                  <details className="w-full border rounded-lg">
-                    <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
+                  <div className="w-full border rounded-lg">
+                    <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
                       Problem Validation - Discovery
-                    </summary>
+                    </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
                       Eliminate doubts, validate ideas, and embrace acceptance
                       on your educational journey.{" "}
                     </p>
-                  </details>
-                  {/*  <details className="w-full border rounded-lg">
+                  </div>
+                  {/*  <div className="w-full border rounded-lg">
                                         <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600"><span className='bg-custom-blue p-1 font-bold mr-2 rounded-md bg-opacity-60'>In Class</span>
                                             VIP Challenge</summary>
                                         <p className="px-4 py-6 pt-0 ml-4 -mt-4">Tincidunt ut hac condimentum rhoncus phasellus nostra. Magna porttitor egestas tincidunt neque vehicula potenti. </p>
-                                    </details> */}
+                                    </div> */}
                 </div>
               </div>
             </VerticalTimelineElement>
@@ -484,10 +484,10 @@ const DualManagement = () => {
                     Week 4
                   </span>
 
-                  <details className="w-full border rounded-lg">
-                    <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
+                  <div className="w-full border rounded-lg">
+                    <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
                       Problem Solving
-                    </summary>
+                    </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
                       {" "}
                       Enhance critical thinking skills and practical
@@ -495,12 +495,12 @@ const DualManagement = () => {
                       the ability to analyze complex issues and solutions for
                       real-world challenges
                     </p>
-                  </details>
-                  {/*  <details className="w-full border rounded-lg">
+                  </div>
+                  {/*  <div className="w-full border rounded-lg">
                                         <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600"><span className='bg-custom-blue p-1 font-bold mr-2 rounded-md bg-opacity-60'>In Class</span>
                                             VIP Challenge</summary>
                                         <p className="px-4 py-6 pt-0 ml-4 -mt-4">Tincidunt ut hac condimentum rhoncus phasellus nostra. Magna porttitor egestas tincidunt neque vehicula potenti. </p>
-                                    </details> */}
+                                    </div> */}
                 </div>
               </div>
             </VerticalTimelineElement>
@@ -522,21 +522,21 @@ const DualManagement = () => {
                     Week 5
                   </span>
 
-                  <details className="w-full border rounded-lg">
-                    <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
+                  <div className="w-full border rounded-lg">
+                    <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
                       UI/ UX - The design thinking
-                    </summary>
+                    </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
                       Immerse yourself in the world of UI/UX - The Design
                       Thinking. Gain a fresh perspective and ignite a new vision
                       in user-centric design.
                     </p>
-                  </details>
-                  {/*  <details className="w-full border rounded-lg">
+                  </div>
+                  {/*  <div className="w-full border rounded-lg">
                                         <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600"><span className='bg-custom-blue p-1 font-bold mr-2 rounded-md bg-opacity-60'>In Class</span>
                                             VIP Challenge</summary>
                                         <p className="px-4 py-6 pt-0 ml-4 -mt-4">Tincidunt ut hac condimentum rhoncus phasellus nostra. Magna porttitor egestas tincidunt neque vehicula potenti. </p>
-                                    </details> */}
+                                    </div> */}
                 </div>
               </div>
             </VerticalTimelineElement>
@@ -558,21 +558,21 @@ const DualManagement = () => {
                     Week 6
                   </span>
 
-                  <details className="w-full border rounded-lg">
-                    <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
+                  <div className="w-full border rounded-lg">
+                    <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
                       Impact Measurement
-                    </summary>
+                    </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
                       Gain insights and perform a reality check with Impact
                       Measurement and Analytics. Evaluate the effectiveness of
                       educational initiatives with data-driven analysis.{" "}
                     </p>
-                  </details>
-                  {/*   <details className="w-full border rounded-lg">
+                  </div>
+                  {/*   <div className="w-full border rounded-lg">
                                         <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600"><span className='bg-custom-blue p-1 font-bold mr-2 rounded-md bg-opacity-60'>In Class</span>
                                             VIP Challenge</summary>
                                         <p className="px-4 py-6 pt-0 ml-4 -mt-4">Tincidunt ut hac condimentum rhoncus phasellus nostra. Magna porttitor egestas tincidunt neque vehicula potenti. </p>
-                                    </details> */}
+                                    </div> */}
                 </div>
               </div>
             </VerticalTimelineElement>
@@ -594,22 +594,22 @@ const DualManagement = () => {
                     Week 7
                   </span>
 
-                  <details className="w-full border rounded-lg">
-                    <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
+                  <div className="w-full border rounded-lg">
+                    <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
                       Technology 101 for PMs
-                    </summary>
+                    </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
                       Develop a tech mindset and thrive in the new era with
                       Technology 101 for PMs. Gain essential knowledge to
                       navigate the intersection of technology and project
                       management.{" "}
                     </p>
-                  </details>
-                  {/* <details className="w-full border rounded-lg">
+                  </div>
+                  {/* <div className="w-full border rounded-lg">
                                         <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600"><span className='bg-custom-blue p-1 font-bold mr-2 rounded-md bg-opacity-60'>In Class</span>
                                             VIP Challenge</summary>
                                         <p className="px-4 py-6 pt-0 ml-4 -mt-4">Tincidunt ut hac condimentum rhoncus phasellus nostra. Magna porttitor egestas tincidunt neque vehicula potenti. </p>
-                                    </details> */}
+                                    </div> */}
                 </div>
               </div>
             </VerticalTimelineElement>
@@ -631,22 +631,22 @@ const DualManagement = () => {
                     Week 8
                   </span>
 
-                  <details className="w-full border rounded-lg">
-                    <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
+                  <div className="w-full border rounded-lg">
+                    <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
                       Product roadmap & execution
-                    </summary>
+                    </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
                       Navigate your educational journey with Product Roadmap &
                       Execution. Master the art of documentation and build a
                       strategic mindset for success.
                     </p>
-                  </details>
-                  {/* <details className="w-full border rounded-lg">
+                  </div>
+                  {/* <div className="w-full border rounded-lg">
                                         <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600"><span className='bg-custom-blue p-1 font-bold mr-2 rounded-md bg-opacity-60'>In Class</span>
 
                                             One Day Profit Challenge</summary>
                                         <p className="px-4 py-6 pt-0 ml-4 -mt-4">Tincidunt ut hac condimentum rhoncus phasellus nostra. Magna porttitor egestas tincidunt neque vehicula potenti. </p>
-                                    </details> */}
+                                    </div> */}
                 </div>
               </div>
             </VerticalTimelineElement>
@@ -668,22 +668,22 @@ const DualManagement = () => {
                     Week 9
                   </span>
 
-                  <details className="w-full border rounded-lg">
-                    <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
+                  <div className="w-full border rounded-lg">
+                    <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
                       Getting your first customers -Acquisition
-                    </summary>
+                    </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
                       Master the art of acquiring your first customers through
                       networking, learning, and unlearning. Build a strong
                       customer base and propel your business forward.
                     </p>
-                  </details>
-                  {/* <details className="w-full border rounded-lg">
+                  </div>
+                  {/* <div className="w-full border rounded-lg">
                                         <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600"><span className='bg-custom-blue p-1 font-bold mr-2 rounded-md bg-opacity-60'>In Class</span>
 
                                             One Day Profit Challenge</summary>
                                         <p className="px-4 py-6 pt-0 ml-4 -mt-4">Tincidunt ut hac condimentum rhoncus phasellus nostra. Magna porttitor egestas tincidunt neque vehicula potenti. </p>
-                                    </details> */}
+                                    </div> */}
                 </div>
               </div>
             </VerticalTimelineElement>
@@ -704,22 +704,22 @@ const DualManagement = () => {
                     Week 10
                   </span>
 
-                  <details className="w-full border rounded-lg">
-                    <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
+                  <div className="w-full border rounded-lg">
+                    <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
                       Case studies & Analysis
-                    </summary>
+                    </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
                       Explore the world of Case Studies & Analysis for
                       insightful learning, net practice, and unlearning and
                       relearning methodologies
                     </p>
-                  </details>
-                  {/* <details className="w-full border rounded-lg">
+                  </div>
+                  {/* <div className="w-full border rounded-lg">
                                         <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600"><span className='bg-custom-blue p-1 font-bold mr-2 rounded-md bg-opacity-60'>In Class</span>
 
                                             One Day Profit Challenge</summary>
                                         <p className="px-4 py-6 pt-0 ml-4 -mt-4">Tincidunt ut hac condimentum rhoncus phasellus nostra. Magna porttitor egestas tincidunt neque vehicula potenti. </p>
-                                    </details> */}
+                                    </div> */}
                 </div>
               </div>
             </VerticalTimelineElement>
@@ -740,22 +740,22 @@ const DualManagement = () => {
                     Week 11
                   </span>
 
-                  <details className="w-full border rounded-lg">
-                    <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
+                  <div className="w-full border rounded-lg">
+                    <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
                       Product Interviews/ Strategies
-                    </summary>
+                    </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
                       Master Product Interviews and Strategies through effective
                       communication and hands-on practice. Boost your skills and
                       excel in the competitive market
                     </p>
-                  </details>
-                  {/* <details className="w-full border rounded-lg">
+                  </div>
+                  {/* <div className="w-full border rounded-lg">
                                         <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600"><span className='bg-custom-blue p-1 font-bold mr-2 rounded-md bg-opacity-60'>In Class</span>
 
                                             One Day Profit Challenge</summary>
                                         <p className="px-4 py-6 pt-0 ml-4 -mt-4">Tincidunt ut hac condimentum rhoncus phasellus nostra. Magna porttitor egestas tincidunt neque vehicula potenti. </p>
-                                    </details> */}
+                                    </div> */}
                 </div>
               </div>
             </VerticalTimelineElement>
@@ -776,22 +776,22 @@ const DualManagement = () => {
                     Week 12
                   </span>
 
-                  <details className="w-full border rounded-lg">
-                    <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
+                  <div className="w-full border rounded-lg">
+                    <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
                       Demo Day
-                    </summary>
+                    </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
                       Master Product Interviews and Strategies through effective
                       communication and hands-on practice. Boost your skills and
                       excel in the competitive market
                     </p>
-                  </details>
-                  {/* <details className="w-full border rounded-lg">
+                  </div>
+                  {/* <div className="w-full border rounded-lg">
                                         <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600"><span className='bg-custom-blue p-1 font-bold mr-2 rounded-md bg-opacity-60'>In Class</span>
 
                                             One Day Profit Challenge</summary>
                                         <p className="px-4 py-6 pt-0 ml-4 -mt-4">Tincidunt ut hac condimentum rhoncus phasellus nostra. Magna porttitor egestas tincidunt neque vehicula potenti. </p>
-                                    </details> */}
+                                    </div> */}
                 </div>
               </div>
             </VerticalTimelineElement>
@@ -807,20 +807,20 @@ const DualManagement = () => {
                     Week 1
                   </span>
 
-                  <details className="w-full border rounded-2xl">
-                    <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
+                  <div className="w-full border rounded-2xl">
+                    <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
                       Introduction - Why this lab?
-                    </summary>
+                    </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
                       Unlock your next milestone with our Develop product sense
                       and gain Practical skills for success in the real world
                     </p>
-                  </details>
-                  {/* <details className="w-full border rounded-lg">
+                  </div>
+                  {/* <div className="w-full border rounded-lg">
                                         <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600"><span className='bg-custom-blue p-1 font-bold mr-2 rounded-md bg-opacity-60'>In Class</span>
                                             Core and Skill Concentrations</summary>
                                         <p className="px-4 py-6 pt-0 ml-4 -mt-4">Tincidunt ut hac condimentum rhoncus phasellus nostra. Magna porttitor egestas tincidunt neque vehicula potenti. </p>
-                                    </details> */}
+                                    </div> */}
                 </div>
               </div>
             </div>
@@ -832,21 +832,21 @@ const DualManagement = () => {
                     Week 2
                   </span>
 
-                  <details className="w-full border rounded-lg">
-                    <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
+                  <div className="w-full border rounded-lg">
+                    <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
                       Approach to Problem Identification
-                    </summary>
+                    </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
                       Unlocking Solutions through Empathy: Our approach to
                       problem identification involves deep empathy, validating
                       challenges, and understanding diverse perspectives.{" "}
                     </p>
-                  </details>
-                  {/* <details className="w-full border rounded-lg">
+                  </div>
+                  {/* <div className="w-full border rounded-lg">
                                         <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600"><span className='bg-custom-blue p-1 font-bold mr-2 rounded-md bg-opacity-60'>In Class</span>
                                             Core and Skill Concentrations</summary>
                                         <p className="px-4 py-6 pt-0 ml-4 -mt-4">Tincidunt ut hac condimentum rhoncus phasellus nostra. Magna porttitor egestas tincidunt neque vehicula potenti. </p>
-                                    </details> */}
+                                    </div> */}
                 </div>
               </div>
             </div>
@@ -858,20 +858,20 @@ const DualManagement = () => {
                     Week 3
                   </span>
 
-                  <details className="w-full border rounded-lg">
-                    <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
+                  <div className="w-full border rounded-lg">
+                    <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
                       Problem Validation - Discovery
-                    </summary>
+                    </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
                       Eliminate doubts, validate ideas, and embrace acceptance
                       on your educational journey.
                     </p>
-                  </details>
-                  {/*  <details className="w-full border rounded-lg">
+                  </div>
+                  {/*  <div className="w-full border rounded-lg">
                                         <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600"><span className='bg-custom-blue p-1 font-bold mr-2 rounded-md bg-opacity-60'>In Class</span>
                                             VIP Challenge</summary>
                                         <p className="px-4 py-6 pt-0 ml-4 -mt-4">Tincidunt ut hac condimentum rhoncus phasellus nostra. Magna porttitor egestas tincidunt neque vehicula potenti. </p>
-                                    </details> */}
+                                    </div> */}
                 </div>
               </div>
             </div>
@@ -883,22 +883,22 @@ const DualManagement = () => {
                     Week 4
                   </span>
 
-                  <details className="w-full border rounded-lg">
-                    <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
+                  <div className="w-full border rounded-lg">
+                    <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
                       Problem Solving
-                    </summary>
+                    </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
                       Enhance critical thinking skills and practical
                       implementation through our problem-solving courses. Gain
                       the ability to analyze complex issues and solutions for
                       real-world challenges{" "}
                     </p>
-                  </details>
-                  {/*  <details className="w-full border rounded-lg">
+                  </div>
+                  {/*  <div className="w-full border rounded-lg">
                                         <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600"><span className='bg-custom-blue p-1 font-bold mr-2 rounded-md bg-opacity-60'>In Class</span>
                                             VIP Challenge</summary>
                                         <p className="px-4 py-6 pt-0 ml-4 -mt-4">Tincidunt ut hac condimentum rhoncus phasellus nostra. Magna porttitor egestas tincidunt neque vehicula potenti. </p>
-                                    </details> */}
+                                    </div> */}
                 </div>
               </div>
             </div>
@@ -910,20 +910,20 @@ const DualManagement = () => {
                     Week 5
                   </span>
 
-                  <details className="w-full border rounded-lg">
-                    <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
+                  <div className="w-full border rounded-lg">
+                    <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
                       UI/ UX - The design thinking
-                    </summary>
+                    </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
                       Lectus iaculis orci metus vitae ligula dictum per. Nisl
                       per nullam taciti at adipiscing est.{" "}
                     </p>
-                  </details>
-                  {/*  <details className="w-full border rounded-lg">
+                  </div>
+                  {/*  <div className="w-full border rounded-lg">
                                         <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600"><span className='bg-custom-blue p-1 font-bold mr-2 rounded-md bg-opacity-60'>In Class</span>
                                             VIP Challenge</summary>
                                         <p className="px-4 py-6 pt-0 ml-4 -mt-4">Tincidunt ut hac condimentum rhoncus phasellus nostra. Magna porttitor egestas tincidunt neque vehicula potenti. </p>
-                                    </details> */}
+                                    </div> */}
                 </div>
               </div>
             </div>
@@ -935,21 +935,21 @@ const DualManagement = () => {
                     Week 6
                   </span>
 
-                  <details className="w-full border rounded-lg">
-                    <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
+                  <div className="w-full border rounded-lg">
+                    <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
                       Impact Measurement
-                    </summary>
+                    </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
                       Gain insights and perform a reality check with Impact
                       Measurement and Analytics. Evaluate the effectiveness of
                       educational initiatives with data-driven analysis.
                     </p>
-                  </details>
-                  {/*   <details className="w-full border rounded-lg">
+                  </div>
+                  {/*   <div className="w-full border rounded-lg">
                                         <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600"><span className='bg-custom-blue p-1 font-bold mr-2 rounded-md bg-opacity-60'>In Class</span>
                                             VIP Challenge</summary>
                                         <p className="px-4 py-6 pt-0 ml-4 -mt-4">Tincidunt ut hac condimentum rhoncus phasellus nostra. Magna porttitor egestas tincidunt neque vehicula potenti. </p>
-                                    </details> */}
+                                    </div> */}
                 </div>
               </div>
             </div>
@@ -961,22 +961,22 @@ const DualManagement = () => {
                     Week 7
                   </span>
 
-                  <details className="w-full border rounded-lg">
-                    <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
+                  <div className="w-full border rounded-lg">
+                    <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
                       Technology 101 for PMs
-                    </summary>
+                    </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
                       Develop a tech mindset and thrive in the new era with
                       Technology 101 for PMs. Gain essential knowledge to
                       navigate the intersection of technology and project
                       management.{" "}
                     </p>
-                  </details>
-                  {/* <details className="w-full border rounded-lg">
+                  </div>
+                  {/* <div className="w-full border rounded-lg">
                                         <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600"><span className='bg-custom-blue p-1 font-bold mr-2 rounded-md bg-opacity-60'>In Class</span>
                                             VIP Challenge</summary>
                                         <p className="px-4 py-6 pt-0 ml-4 -mt-4">Tincidunt ut hac condimentum rhoncus phasellus nostra. Magna porttitor egestas tincidunt neque vehicula potenti. </p>
-                                    </details> */}
+                                    </div> */}
                 </div>
               </div>
             </div>
@@ -988,22 +988,22 @@ const DualManagement = () => {
                     Week 8
                   </span>
 
-                  <details className="w-full border rounded-lg">
-                    <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
+                  <div className="w-full border rounded-lg">
+                    <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
                       Product roadmap & execution
-                    </summary>
+                    </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
                       Navigate your educational journey with Product Roadmap &
                       Execution. Master the art of documentation and build a
                       strategic mindset for success.
                     </p>
-                  </details>
-                  {/* <details className="w-full border rounded-lg">
+                  </div>
+                  {/* <div className="w-full border rounded-lg">
                                         <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600"><span className='bg-custom-blue p-1 font-bold mr-2 rounded-md bg-opacity-60'>In Class</span>
 
                                             One Day Profit Challenge</summary>
                                         <p className="px-4 py-6 pt-0 ml-4 -mt-4">Tincidunt ut hac condimentum rhoncus phasellus nostra. Magna porttitor egestas tincidunt neque vehicula potenti. </p>
-                                    </details> */}
+                                    </div> */}
                 </div>
               </div>
             </div>
@@ -1014,22 +1014,22 @@ const DualManagement = () => {
                     Week 9
                   </span>
 
-                  <details className="w-full border rounded-lg">
-                    <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
+                  <div className="w-full border rounded-lg">
+                    <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
                       Getting your first customers -Acquisition
-                    </summary>
+                    </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
                       Master the art of acquiring your first customers through
                       networking, learning, and unlearning. Build a strong
                       customer base and propel your business forward.
                     </p>
-                  </details>
-                  {/* <details className="w-full border rounded-lg">
+                  </div>
+                  {/* <div className="w-full border rounded-lg">
                                         <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600"><span className='bg-custom-blue p-1 font-bold mr-2 rounded-md bg-opacity-60'>In Class</span>
 
                                             One Day Profit Challenge</summary>
                                         <p className="px-4 py-6 pt-0 ml-4 -mt-4">Tincidunt ut hac condimentum rhoncus phasellus nostra. Magna porttitor egestas tincidunt neque vehicula potenti. </p>
-                                    </details> */}
+                                    </div> */}
                 </div>
               </div>
             </div>
@@ -1040,22 +1040,22 @@ const DualManagement = () => {
                     Week 10
                   </span>
 
-                  <details className="w-full border rounded-lg">
-                    <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
+                  <div className="w-full border rounded-lg">
+                    <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
                       Case studies & Analysis
-                    </summary>
+                    </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
                       Explore the world of Case Studies & Analysis for
                       insightful learning, net practice, and unlearning and
                       relearning methodologies
                     </p>
-                  </details>
-                  {/* <details className="w-full border rounded-lg">
+                  </div>
+                  {/* <div className="w-full border rounded-lg">
                                         <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600"><span className='bg-custom-blue p-1 font-bold mr-2 rounded-md bg-opacity-60'>In Class</span>
 
                                             One Day Profit Challenge</summary>
                                         <p className="px-4 py-6 pt-0 ml-4 -mt-4">Tincidunt ut hac condimentum rhoncus phasellus nostra. Magna porttitor egestas tincidunt neque vehicula potenti. </p>
-                                    </details> */}
+                                    </div> */}
                 </div>
               </div>
             </div>
@@ -1066,22 +1066,22 @@ const DualManagement = () => {
                     Week 11
                   </span>
 
-                  <details className="w-full border rounded-lg">
-                    <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
+                  <div className="w-full border rounded-lg">
+                    <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
                       Product Interviews/ Strategies
-                    </summary>
+                    </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
                       Master Product Interviews and Strategies through effective
                       communication and hands-on practice. Boost your skills and
                       excel in the competitive market
                     </p>
-                  </details>
-                  {/* <details className="w-full border rounded-lg">
+                  </div>
+                  {/* <div className="w-full border rounded-lg">
                                         <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600"><span className='bg-custom-blue p-1 font-bold mr-2 rounded-md bg-opacity-60'>In Class</span>
 
                                             One Day Profit Challenge</summary>
                                         <p className="px-4 py-6 pt-0 ml-4 -mt-4">Tincidunt ut hac condimentum rhoncus phasellus nostra. Magna porttitor egestas tincidunt neque vehicula potenti. </p>
-                                    </details> */}
+                                    </div> */}
                 </div>
               </div>
               <div className="w-full">
@@ -1090,22 +1090,22 @@ const DualManagement = () => {
                     Week 12
                   </span>
 
-                  <details className="w-full border rounded-lg">
-                    <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
+                  <div className="w-full border rounded-lg">
+                    <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
                       Demo Day
-                    </summary>
+                    </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
                       Master Product Interviews and Strategies through effective
                       communication and hands-on practice. Boost your skills and
                       excel in the competitive market
                     </p>
-                  </details>
-                  {/* <details className="w-full border rounded-lg">
+                  </div>
+                  {/* <div className="w-full border rounded-lg">
                                         <summary className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600"><span className='bg-custom-blue p-1 font-bold mr-2 rounded-md bg-opacity-60'>In Class</span>
 
                                             One Day Profit Challenge</summary>
                                         <p className="px-4 py-6 pt-0 ml-4 -mt-4">Tincidunt ut hac condimentum rhoncus phasellus nostra. Magna porttitor egestas tincidunt neque vehicula potenti. </p>
-                                    </details> */}
+                                    </div> */}
                 </div>
               </div>
             </div>
