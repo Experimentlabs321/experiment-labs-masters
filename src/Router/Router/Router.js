@@ -6,40 +6,45 @@ import SciencePage from "../../Pages/SciencePage/SciencePage/SciencePage";
 import ExperienceUnionPage from "../../Pages/ExperienceUnion/ExperienceUnionPage/ExperienceUnionPage";
 import Register from "../../Pages/Login/Register/Register";
 import Login from "../../Pages/Login/Login/Login";
+import CommercePage from "../../Pages/CommercePage/CommercePage/CommercePage";
+import HumanitiesPage from "../../Pages/HumanitiesPage/HumanitiesPage/HumanitiesPage";
 
 const router = createBrowserRouter([
-    {
-        path: '/',
-        element: <Main />,
-        errorElement: <ErrorPage />,
-        children: [
-            {
-                path: '/',
-                element: <Home />
-            },
-            {
-                path: '/login',
-                element: <Login/>
-        
-            },
-            {
-                path: '/register',
-                element: <Register/>
-            }
-        ]
-    },
-    {
-        path: '/science-innovation/',
-        element: <SciencePage />,
-
-    },
-    {
-        path: '/experience-union',
-        element: <ExperienceUnionPage/>,
-
-    },
-  
-
+  {
+    path: "/",
+    element: <Main />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
+      {
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "/register",
+        element: <Register />,
+      },
+    ],
+  },
+  {
+    path: "/science-innovation/",
+    element: <SciencePage />,
+  },
+  {
+    path: "/commerce-entrepreneurship/",
+    element: <CommercePage />,
+  },
+  {
+    path: "/humanities-arts/",
+    element: <HumanitiesPage />,
+  },
+  {
+    path: "/experience-union",
+    element: <ExperienceUnionPage />,
+  },
 ]);
 
 export default router;
