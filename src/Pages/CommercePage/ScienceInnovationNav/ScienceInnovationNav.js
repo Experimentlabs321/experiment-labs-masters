@@ -425,7 +425,7 @@ const ScienceInnovationNav = (props) => {
       sx={{ textAlign: "center", bgcolor: "#121212", height: "100%" }}
     >
       <Typography variant="h6" sx={{ my: 2 }}>
-        <img className="h-10 ml-2" src={logo} alt="icon" />
+        <img className="h-6 ml-2" src={logo} alt="icon" />
       </Typography>
       <Divider />
       <div>
@@ -727,7 +727,7 @@ const ScienceInnovationNav = (props) => {
             sx={{ flexGrow: 1, color: "black" }}
           >
             <Link to={"/"}>
-              <img className="h-8 lg:h-12" src={logo} alt="icon" />
+              <img className="h-6 lg:h-8" src={logo} alt="icon" />
             </Link>
           </Typography>
           <Box sx={{ display: { xs: "none", sm: "block" }, color: "black" }}>
