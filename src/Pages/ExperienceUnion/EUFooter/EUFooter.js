@@ -28,7 +28,7 @@ const EUFooter = () => {
 
     return (
         <div className='bg-[#121212] text-white'>
-            <div style={{ background: `url(${darkbg})`, width: '100%', objectFit: 'cover' }} className='border-t-2 border-b-4 border-cyan px-10 lg:px-32 py-20'>
+            {/* <div style={{ background: `url(${darkbg})`, width: '100%', objectFit: 'cover' }} className='border-t-2 border-b-4 border-cyan px-10 lg:px-32 py-20'>
                 <div className='px-10 lg:px-32 flex flex-col lg:flex-row gap-20 justify-between items-center'>
                     <div className='w-full'>
                         <h1 className='text-2xl font-bold'>
@@ -94,7 +94,7 @@ const EUFooter = () => {
                         </form>
                     </div>
                 </div>
-            </div>
+            </div> */}
             <div>
                 <footer className="px-10 lg:px-32 text-white">
                     <div className="container flex flex-col justify-between py-10 mx-auto">

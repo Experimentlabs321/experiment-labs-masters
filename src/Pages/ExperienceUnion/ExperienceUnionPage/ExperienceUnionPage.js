@@ -19,9 +19,9 @@ const ExperienceUnionPage = () => {
             <MyHelmet>Experience Union</MyHelmet>
             <ExperienceUnionNav/>
 
-            <div>
+            {/* <div>
                 <ExperienceUnionHero/>
-            </div>
+            </div> */}
             <SummerStartUp/>
 
             <div className='my-32'>
