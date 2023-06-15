@@ -151,30 +151,6 @@ const ScienceInnovationNav = (props) => {
     text-white hover:text-cyan hover:transition-colors hover:delay-300 hover:ease-in-out
 `;
   const navItems = [
-    <div
-      style={{ fontSize: "16px", textTransform: "initial" }}
-      className={navItemSytle}
-    >
-      Admissions
-    </div>,
-    <div
-      style={{ fontSize: "16px", textTransform: "initial" }}
-      className={navItemSytle}
-    >
-      Student Life
-    </div>,
-    <div
-      style={{ fontSize: "16px", textTransform: "initial" }}
-      className={navItemSytle}
-    >
-      Careers
-    </div>,
-    <div
-      style={{ fontSize: "16px", textTransform: "initial" }}
-      className={navItemSytle}
-    >
-      Research
-    </div>,
     !user ? (
       <Button
         onClick={handleClickOpen}

@@ -356,18 +356,16 @@ const NavBar = (props) => {
       </Button>
     ),
     <Button
-      onClick={toggleDrawer(true)}
       sx={{
         bgcolor: "#FF557A",
+        borderRadius: "22.5px",
         ":hover": { bgcolor: "#94A4FF" },
         color: "white",
         width: "100%",
-        borderRadius: "22.5px",
       }}
       variant="contained"
-      endIcon={<ExpandMoreIcon />}
     >
-      All Courses
+      <Link>Apply Now</Link>
     </Button>,
   ];
 
@@ -397,18 +395,17 @@ const NavBar = (props) => {
       <Link to={"/login"}>Login</Link>
     </Button>,
     <Button
-      onClick={toggleDrawer(true)}
+      onClick={handleLogout}
       sx={{
         bgcolor: "#FF557A",
+        borderRadius: "22.5px",
         ":hover": { bgcolor: "#94A4FF" },
         color: "white",
         width: "100%",
-        borderRadius: "22.5px",
       }}
       variant="contained"
-      endIcon={<ExpandMoreIcon />}
     >
-      All Courses
+      <Link>Apply Now</Link>
     </Button>,
   ];
 
