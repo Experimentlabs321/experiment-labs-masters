@@ -8,7 +8,7 @@ import img from '../../../assets/GetCareer/serious-teacher-checking-assignment-t
 const GetCareer = () => {
     return (
         // <div style={{ background: `url(${img})`, objectFit: 'cover' }} className='pt-40 flex items-center justify-center pb-40'>
-        <div style={{ background: 'linear-gradient(-270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF' }} className='pt-40 flex items-center justify-center pb-40'>
+        <div style={{ background: 'linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF' }} className='pt-40 flex items-center justify-center pb-40'>
             <div className='px-10  flex flex-col lg:flex-row gap-12 items-center'>
 
                 <div className='w-full '>

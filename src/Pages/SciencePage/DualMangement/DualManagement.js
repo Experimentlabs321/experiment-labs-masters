@@ -32,6 +32,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import HearStraight from '../HearStraight';
+import HearFromStudents from '../HearFromStudents/HearFromStudents';
 
 const DualManagement = () => {
 
@@ -71,7 +72,7 @@ const DualManagement = () => {
     return (
         <div className='mt-28 px-5 py-10 lg:px-30 xl:px-32 font' ref={containerRef}>
             <h1 className='font-bold text-4xl font block lg:hidden mb-6 lg:mb-0'>Curriculum with Dual Focus on Tech And Management</h1>
-            <div ref={stickyRef} style={{ top: 90,backgroundColor: '#141414', padding: "35px 0", zIndex: '1000', width: '100%' }} className='hidden lg:block'>
+            <div ref={stickyRef} style={{ top: 80, backgroundColor: '#141414', padding: "35px 0", zIndex: '1000', width: '100%' }} className='hidden lg:block'>
                 <h1 className='font-bold text-3xl'>Curriculum with Dual Focus on Tech And Management</h1>
 
             </div>
@@ -259,8 +260,8 @@ const DualManagement = () => {
                         <VerticalTimelineElement
                             className="vertical-timeline-element--work"
                             iconStyle={{ color: '#397EFB', backgroundColor: '#94A4FF' }}
-                            contentStyle={{ background: '#141414', minWidth: '500px', maxWidth: '600px', width: '100%' }}
-                            contentArrowStyle={{ background: '#141414' }}
+                            contentStyle={{ backgroundColor:'transparent', minWidth: '500px', maxWidth: '600px', width: '100%', border:'none' }}
+                            contentArrowStyle={{ backgroundColor: 'transparent' }}
 
                         >
 
@@ -947,7 +948,7 @@ const DualManagement = () => {
 
             </div>
 
-            <HearStraight></HearStraight>
+            <HearFromStudents/>
         </div>
     );
 };

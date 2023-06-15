@@ -7,7 +7,7 @@ import CallIcon from '@mui/icons-material/Call';
 const GetInTouch = () => {
     return (
         // <div style={{ background: `url(${img})`, objectFit: 'cover' }} className='pt-40 flex items-center justify-center pb-40'>
-        <div style={{background:'linear-gradient(-270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF'}} className='pt-40 flex items-center justify-center pb-40'>
+        <div style={{background:'linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF'}} className='pt-40 flex items-center justify-center pb-40'>
             <div className='px-10 lg:px-32 flex flex-col lg:flex-row gap-20 justify-between items-center'>
                 <div className='w-full text-center'>
                     <h1 className='text-4xl font-bold'>
@@ -45,7 +45,7 @@ const GetInTouch = () => {
                             <label className='text-xs font-light'>I authorize Masters' Union to contact me with updates via Calls, SMS, WhatsApp and Emails. This will override my registry on DND/NDNC.</label>
                         </div> */}
                         <div className='mt-6 flex gap-2 justify-center '>
-                            <input className='w-44 bg-[#FF557A] py-2 rounded-3xl hover:bg-opacity-60 hover:transition-all hover:delay-200 hover:ease-out' type="submit" value={'Get In Touch'} />
+                            <input className='w-44 bg-pink py-2 rounded-3xl hover:bg-purple hover:transition-all hover:delay-200 hover:ease-out' type="submit" value={'Get In Touch'} />
                         </div>
                     </form>
                 </div>
