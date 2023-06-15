@@ -15,8 +15,8 @@ const Overview = () => {
                 <div className='flex flex-col lg:flex-row gap-16 justify-center items-center'>
                     <div>
                         
-                        <h2 className='text-3xl my-8'>Explore career and become a leader by building business</h2>
-                            <p className='bg-[#6278FF] py-1 px-2 rounded-3xl text-sm text-bold inline'>Career planning through business</p>
+                        <h2 className='text-3xl my-8'>Explore careers and become a leader by building innovative products</h2>
+                            <p className='bg-[#6278FF] py-1 px-2 rounded-3xl text-sm text-bold inline'>Career Planning through Innovation</p>
                         <div className='mb-8 flex mt-11 flex-col gap-3'>
                             <div className='flex flex-row items-center gap-1'>
                                 <span><PlayArrowRoundedIcon sx={{ color: '#FFFFFF' }} /></span>
