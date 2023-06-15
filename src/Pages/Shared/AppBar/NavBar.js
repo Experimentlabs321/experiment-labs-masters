@@ -26,34 +26,34 @@ import { Dialog, useMediaQuery, useTheme } from "@mui/material";
 import qs from "qs";
 import axios from "axios";
 import {
-    GoogleAuthProvider,
-    createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  createUserWithEmailAndPassword,
 } from "firebase/auth";
 import CryptoJS from "crypto-js";
 import MailIcon from "@mui/icons-material/Mail";
 
 const NavBar = (props) => {
-    const [state, setState] = React.useState(false);
+  const [state, setState] = React.useState(false);
 
-    const toggleDrawer = (open) => (event) => {
-        if (
-            event.type === "keydown" &&
-            (event.key === "Tab" || event.key === "Shift")
-        ) {
-            return;
-        }
+  const toggleDrawer = (open) => (event) => {
+    if (
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
+    }
 
-        setState(!state);
-    };
+    setState(!state);
+  };
 
-    const list = () => (
-        <Box
-            sx={{ width: "100%", height: "50vh" }}
-            role="presentation"
-            onClick={toggleDrawer(false)}
-            onKeyDown={toggleDrawer(false)}
-        >
-            {/* <List>
+  const list = () => (
+    <Box
+      sx={{ width: "100%", height: "50vh" }}
+      role="presentation"
+      onClick={toggleDrawer(false)}
+      onKeyDown={toggleDrawer(false)}
+    >
+      {/* <List>
                 {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
                     <ListItem key={text} disablePadding>
                         <ListItemButton>
@@ -78,485 +78,485 @@ const NavBar = (props) => {
                     </ListItem>
                 ))}
             </List> */}
-            <h1 className="text-4xl mt-20 mx-auto w-80">Will be added later</h1>
-        </Box>
-    );
+      <h1 className="text-4xl mt-20 mx-auto w-80">Will be added later</h1>
+    </Box>
+  );
 
-    const drawerWidth = 240;
-    const navItemSytle = `
+  const drawerWidth = 240;
+  const navItemSytle = `
     bg-gray-400 p-[3px] rounded-full hover:bg-cyan hover:transition-colors hover:delay-300 hover:ease-in-out
 `;
-    const { user, logOut } = useContext(AuthContext);
+  const { user, logOut } = useContext(AuthContext);
 
-    const handleLogout = () => {
-        logOut()
-            .then((res) => {
-                console.log(res);
-                navigate("/");
-            })
-            .catch((error) => console.error(error));
-    };
+  const handleLogout = () => {
+    logOut()
+      .then((res) => {
+        console.log(res);
+        navigate("/");
+      })
+      .catch((error) => console.error(error));
+  };
 
-    const { window } = props;
-    const [mobileOpen, setMobileOpen] = React.useState(false);
+  const { window } = props;
+  const [mobileOpen, setMobileOpen] = React.useState(false);
 
-    const handleDrawerToggle = () => {
-        setMobileOpen((prevState) => !prevState);
-    };
+  const handleDrawerToggle = () => {
+    setMobileOpen((prevState) => !prevState);
+  };
 
-    const [open, setOpen] = React.useState(false);
-    const [open1, setOpen1] = React.useState(false);
-    const [open2, setOpen2] = React.useState(false);
-    // const [error, setError] = React.useState("");
-    const theme = useTheme();
-    const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const [open, setOpen] = React.useState(false);
+  const [open1, setOpen1] = React.useState(false);
+  const [open2, setOpen2] = React.useState(false);
+  // const [error, setError] = React.useState("");
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
 
-    const handleClose = () => {
-        setOpen(false);
-    };
-    const handleClickOpen1 = () => {
-        setOpen1(true);
-    };
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleClickOpen1 = () => {
+    setOpen1(true);
+  };
 
-    const handleClose1 = () => {
-        setOpen1(false);
-    };
-    const handleClickOpen2 = () => {
-        setOpen2(true);
-    };
+  const handleClose1 = () => {
+    setOpen1(false);
+  };
+  const handleClickOpen2 = () => {
+    setOpen2(true);
+  };
 
-    const handleClose2 = () => {
-        setOpen2(false);
-    };
+  const handleClose2 = () => {
+    setOpen2(false);
+  };
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const form = event.target;
-        const name = form.name.value;
-        const email = form.email.value;
-        const phone = form.phone.value;
-        const selectClass = form.selectClass.value;
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const form = event.target;
+    const name = form.name.value;
+    const email = form.email.value;
+    const phone = form.phone.value;
+    const selectClass = form.selectClass.value;
 
-        console.log(name, email, phone, selectClass);
+    console.log(name, email, phone, selectClass);
 
-        if (!name || !email || !phone || !selectClass) {
-            setError("Please fill in all the fields");
-        } else {
-            const a = document.createElement("a");
-            a.href =
-                "https://drive.google.com/uc?export=download&id=1-g7Bsun3RvKAezjWFZOL9QOvlnfcELRk";
-            a.download = "Brochure.pdf"; // Set the desired file name
-            a.click();
-            handleClose();
+    if (!name || !email || !phone || !selectClass) {
+      setError("Please fill in all the fields");
+    } else {
+      const a = document.createElement("a");
+      a.href =
+        "https://drive.google.com/uc?export=download&id=1-g7Bsun3RvKAezjWFZOL9QOvlnfcELRk";
+      a.download = "Brochure.pdf"; // Set the desired file name
+      a.click();
+      handleClose();
+    }
+  };
+
+  const { signIn, providerLogin, createUser, updateUserProfile } =
+    useContext(AuthContext);
+
+  const [error, setError] = useState("");
+  const [loginData, setLoginData] = useState({});
+  const [loginDataMain, setLoginDataMain] = useState({});
+  const [newLogin, setNewLogin] = useState(false);
+
+  const navigate = useNavigate();
+
+  const graphyLogin = async (email, displayName) => {
+    console.log(email, displayName);
+    try {
+      const payload = {
+        name: displayName,
+        email: email,
+        exp: Math.floor(Date.now() / 1000) + 60 * 60, // Set the token expiration time
+      };
+
+      // Convert the payload to a Base64Url encoded string
+      const payloadBase64 = btoa(JSON.stringify(payload))
+        .replace(/=/g, "")
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_");
+
+      // Construct the header
+      const header = {
+        alg: "HS256",
+        typ: "JWT",
+      };
+
+      // Convert the header to a Base64Url encoded string
+      const headerBase64 = btoa(JSON.stringify(header))
+        .replace(/=/g, "")
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_");
+
+      // Your API token obtained from Graphy
+      const apiToken = process.env.REACT_APP_key;
+
+      // Construct the signature
+      const signature = CryptoJS.HmacSHA256(
+        `${headerBase64}.${payloadBase64}`,
+        apiToken
+      );
+
+      // Convert the signature to a Base64Url encoded string
+      const signatureBase64 = CryptoJS.enc.Base64.stringify(signature)
+        .replace(/=/g, "")
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_");
+
+      // Construct the SSO URL with the JWT token
+      const ssoUrl = `https://www.experimentlabs.in/t/u/activeCourses?ssoToken=${headerBase64}.${payloadBase64}.${signatureBase64}`;
+
+      // Redirect the user to the SSO URL
+      // window.location.href = ssoUrl;
+      const a = document.createElement("a");
+      a.href = ssoUrl;
+      a.click();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  //Login with google provider
+  const handleGoogleSignIn = () => {
+    const googleProvider = new GoogleAuthProvider();
+    providerLogin(googleProvider)
+      .then((result) => {
+        const email = result?.user?.email;
+        const displayName = result?.user?.displayName;
+        navigate("/dashboard");
+        if (email) {
+          graphyLogin(email, displayName);
         }
-    };
+        setError("");
+      })
+      .catch((error) => {
+        console.error(error);
+        setError(error.message);
+      });
+  };
 
-    const { signIn, providerLogin, createUser, updateUserProfile } =
-        useContext(AuthContext);
+  const handleOnBlur = (e) => {
+    const field = e.target.name;
+    const value = e.target.value;
+    const newLoginData = { ...loginData };
+    newLoginData[field] = value;
+    setLoginData(newLoginData);
+  };
 
-    const [error, setError] = useState("");
-    const [loginData, setLoginData] = useState({});
-    const [loginDataMain, setLoginDataMain] = useState({});
-    const [newLogin, setNewLogin] = useState(false);
+  // const registerUser = (e) => {
+  //   console.log(loginData);
+  //   e.preventDefault();
+  // };
 
-    const navigate = useNavigate();
+  // Register user with Email Password
+  const registerUser = (e) => {
+    createUser(loginData.email, loginData.password)
+      .then((userCredential) => {
+        // sent name to firebase
+        updateUserProfile({
+          displayName: loginData.name,
+        })
+          .then(() => {
+            graphyLogin(loginData.email, loginData.name);
+            // navigate("/dashboard");
+          })
+          .catch((error) => {});
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+    e.preventDefault();
+  };
 
-    const graphyLogin = async (email, displayName) => {
-        console.log(email, displayName);
-        try {
-            const payload = {
-                name: displayName,
-                email: email,
-                exp: Math.floor(Date.now() / 1000) + 60 * 60, // Set the token expiration time
-            };
+  // Login user with Email Password
+  const loginUser = (email, password, location, history) => {
+    signIn(email, password)
+      .then((userCredential) => {})
+      .catch((error) => {});
+  };
 
-            // Convert the payload to a Base64Url encoded string
-            const payloadBase64 = btoa(JSON.stringify(payload))
-                .replace(/=/g, "")
-                .replace(/\+/g, "-")
-                .replace(/\//g, "_");
+  const handleOnChange = (e) => {
+    const field = e.target.name;
+    const value = e.target.value;
+    const newLoginData = { ...loginDataMain };
+    newLoginData[field] = value;
+    setLoginDataMain(newLoginData);
+  };
 
-            // Construct the header
-            const header = {
-                alg: "HS256",
-                typ: "JWT",
-            };
+  const handleLoginSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await signIn(loginDataMain.email, loginDataMain.password).then(() => {
+        setNewLogin(true);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-            // Convert the header to a Base64Url encoded string
-            const headerBase64 = btoa(JSON.stringify(header))
-                .replace(/=/g, "")
-                .replace(/\+/g, "-")
-                .replace(/\//g, "_");
+  useEffect(() => {
+    if (newLogin) {
+      if (user) {
+        graphyLogin(user.email, user.displayName);
+      }
+    }
+  }, [user]);
 
-            // Your API token obtained from Graphy
-            const apiToken = process.env.REACT_APP_key;
+  const waitForUserData = () => {
+    return new Promise((resolve, reject) => {
+      if (!user) {
+        // User data is available, unsubscribe from the observer and resolve the promise
+        waitForUserData();
+        resolve(user);
+      }
+      if (user) return user;
+    });
+  };
+  const userChecking = () => {
+    console.log(user);
+  };
 
-            // Construct the signature
-            const signature = CryptoJS.HmacSHA256(
-                `${headerBase64}.${payloadBase64}`,
-                apiToken
-            );
+  const navItems = [
+    // <InstagramIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
+    // <YouTubeIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
+    // <LinkedInIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
+    // <TwitterIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
+    !user ? (
+      <Button
+        onClick={handleClickOpen}
+        sx={{
+          bgcolor: "#FF557A",
+          borderRadius: "22.5px",
+          ":hover": { bgcolor: "#94A4FF" },
+          color: "white",
+          width: "100%",
+        }}
+        variant="contained"
+      >
+        {/* <Link to={'/login'}>Login</Link> */}Login
+      </Button>
+    ) : (
+      <Button
+        onClick={handleLogout}
+        sx={{
+          bgcolor: "#FF557A",
+          borderRadius: "22.5px",
+          ":hover": { bgcolor: "#94A4FF" },
+          color: "white",
+          width: "100%",
+        }}
+        variant="contained"
+      >
+        <Link>Log Out</Link>
+      </Button>
+    ),
+    <Button
+      onClick={toggleDrawer(true)}
+      sx={{
+        bgcolor: "#FF557A",
+        ":hover": { bgcolor: "#94A4FF" },
+        color: "white",
+        width: "100%",
+        borderRadius: "22.5px",
+      }}
+      variant="contained"
+      endIcon={<ExpandMoreIcon />}
+    >
+      All Courses
+    </Button>,
+  ];
 
-            // Convert the signature to a Base64Url encoded string
-            const signatureBase64 = CryptoJS.enc.Base64.stringify(signature)
-                .replace(/=/g, "")
-                .replace(/\+/g, "-")
-                .replace(/\//g, "_");
+  const navItems2 = [
+    // <Button sx={{ color: '#fff', bgcolor: '#121212' }} size='medium' variant="text" startIcon={<InstagramIcon />}>
+    //     Instagram
+    // </Button>,
+    // <Button sx={{ color: '#fff', bgcolor: '#121212' }} size='medium' variant="text" startIcon={<YouTubeIcon />}>
+    //     YouTube
+    // </Button>,
+    // <Button sx={{ color: '#fff', bgcolor: '#121212' }} size='medium' variant="text" startIcon={<LinkedInIcon />}>
+    //     LinkedIn
+    // </Button>,
+    // <Button sx={{ color: '#fff', bgcolor: '#121212' }} size='medium' variant="text" startIcon={<TwitterIcon />}>
+    //     Twitter
+    // </Button>,
+    <Button
+      sx={{
+        bgcolor: "#FF557A",
+        borderRadius: "22.5px",
+        ":hover": { bgcolor: "#94A4FF" },
+        color: "white",
+        width: "100%",
+      }}
+      variant="outline"
+    >
+      <Link to={"/login"}>Login</Link>
+    </Button>,
+    <Button
+      onClick={toggleDrawer(true)}
+      sx={{
+        bgcolor: "#FF557A",
+        ":hover": { bgcolor: "#94A4FF" },
+        color: "white",
+        width: "100%",
+        borderRadius: "22.5px",
+      }}
+      variant="contained"
+      endIcon={<ExpandMoreIcon />}
+    >
+      All Courses
+    </Button>,
+  ];
 
-            // Construct the SSO URL with the JWT token
-            const ssoUrl = `https://www.experimentlabs.in/t/u/activeCourses?ssoToken=${headerBase64}.${payloadBase64}.${signatureBase64}`;
+  const drawer = (
+    <Box
+      onClick={handleDrawerToggle}
+      sx={{
+        textAlign: "center",
+        bgcolor: "#141414",
+        height: "100%",
+        color: "white",
+      }}
+    >
+      <div className="my-8 ml-2 flex gap-2 items-center">
+        <img className="h-6 ml-2" src={logo} alt="icon" />
+        <h1 className="text-logo-white font-semibold">Experiment Labs</h1>
+      </div>
+      <Divider />
+      <List>
+        {navItems2.map((item) => (
+          <ListItem key={item} disablePadding>
+            <ListItemButton sx={{ textAlign: "center", color: "white" }}>
+              <ListItemText primary={item} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
 
-            // Redirect the user to the SSO URL
-            // window.location.href = ssoUrl;
-            const a = document.createElement("a");
-            a.href = ssoUrl;
-            a.click();
-        } catch (error) {
-            console.error(error);
-        }
-    };
+  const container =
+    window !== undefined ? () => window().document.body : undefined;
 
-    //Login with google provider
-    const handleGoogleSignIn = () => {
-        const googleProvider = new GoogleAuthProvider();
-        providerLogin(googleProvider)
-            .then((result) => {
-                const email = result?.user?.email;
-                const displayName = result?.user?.displayName;
-                navigate("/dashboard");
-                if (email) {
-                    graphyLogin(email, displayName);
-                }
-                setError("");
-            })
-            .catch((error) => {
-                console.error(error);
-                setError(error.message);
-            });
-    };
-
-    const handleOnBlur = (e) => {
-        const field = e.target.name;
-        const value = e.target.value;
-        const newLoginData = { ...loginData };
-        newLoginData[field] = value;
-        setLoginData(newLoginData);
-    };
-
-    // const registerUser = (e) => {
-    //   console.log(loginData);
-    //   e.preventDefault();
-    // };
-
-    // Register user with Email Password
-    const registerUser = (e) => {
-        createUser(loginData.email, loginData.password)
-            .then((userCredential) => {
-                // sent name to firebase
-                updateUserProfile({
-                    displayName: loginData.name,
-                })
-                    .then(() => {
-                        graphyLogin(loginData.email, loginData.name);
-                        // navigate("/dashboard");
-                    })
-                    .catch((error) => { });
-            })
-            .catch((error) => {
-                console.log(error.message);
-            });
-        e.preventDefault();
-    };
-
-    // Login user with Email Password
-    // const loginUser = (email, password, location, history) => {
-    //   signIn(email, password)
-    //     .then((userCredential) => {})
-    //     .catch((error) => {});
-    // };
-
-    const handleOnChange = (e) => {
-        const field = e.target.name;
-        const value = e.target.value;
-        const newLoginData = { ...loginDataMain };
-        newLoginData[field] = value;
-        setLoginDataMain(newLoginData);
-    };
-
-    const handleLoginSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            await signIn(loginDataMain.email, loginDataMain.password).then(() => {
-                setNewLogin(true);
-            });
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    useEffect(() => {
-        if (newLogin) {
-            if (user) {
-                graphyLogin(user.email, user.displayName);
-            }
-        }
-    }, [user]);
-
-    const waitForUserData = () => {
-        return new Promise((resolve, reject) => {
-            if (!user) {
-                // User data is available, unsubscribe from the observer and resolve the promise
-                waitForUserData();
-                resolve(user);
-            }
-            if (user) return user;
-        });
-    };
-    const userChecking = () => {
-        console.log(user);
-    };
-
-    const navItems = [
-        // <InstagramIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
-        // <YouTubeIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
-        // <LinkedInIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
-        // <TwitterIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
-        !user ? (
-            <Button
-                onClick={handleClickOpen}
-                sx={{
-                    bgcolor: "#FF557A",
-                    borderRadius: "22.5px",
-                    ":hover": { bgcolor: "#94A4FF" },
-                    color: "white",
-                    width: "100%",
-                }}
-                variant="contained"
-            >
-                {/* <Link to={'/login'}>Login</Link> */}Login
-            </Button>
-        ) : (
-            <Button
-                onClick={handleLogout}
-                sx={{
-                    bgcolor: "#FF557A",
-                    borderRadius: "22.5px",
-                    ":hover": { bgcolor: "#94A4FF" },
-                    color: "white",
-                    width: "100%",
-                }}
-                variant="contained"
-            >
-                <Link>Log Out</Link>
-            </Button>
-        ),
-        <Button
-            onClick={toggleDrawer(true)}
-            sx={{
-                bgcolor: "#FF557A",
-                ":hover": { bgcolor: "#94A4FF" },
-                color: "white",
-                width: "100%",
-                borderRadius: "22.5px",
-            }}
-            variant="contained"
-            endIcon={<ExpandMoreIcon />}
-        >
-            All Courses
-        </Button>,
-    ];
-
-    const navItems2 = [
-        // <Button sx={{ color: '#fff', bgcolor: '#121212' }} size='medium' variant="text" startIcon={<InstagramIcon />}>
-        //     Instagram
-        // </Button>,
-        // <Button sx={{ color: '#fff', bgcolor: '#121212' }} size='medium' variant="text" startIcon={<YouTubeIcon />}>
-        //     YouTube
-        // </Button>,
-        // <Button sx={{ color: '#fff', bgcolor: '#121212' }} size='medium' variant="text" startIcon={<LinkedInIcon />}>
-        //     LinkedIn
-        // </Button>,
-        // <Button sx={{ color: '#fff', bgcolor: '#121212' }} size='medium' variant="text" startIcon={<TwitterIcon />}>
-        //     Twitter
-        // </Button>,
-        <Button
-            sx={{
-                bgcolor: "#FF557A",
-                borderRadius: "22.5px",
-                ":hover": { bgcolor: "#94A4FF" },
-                color: "white",
-                width: "100%",
-            }}
-            variant="outline"
-        >
-            <Link to={"/login"}>Login</Link>
-        </Button>,
-        <Button
-            onClick={toggleDrawer(true)}
-            sx={{
-                bgcolor: "#FF557A",
-                ":hover": { bgcolor: "#94A4FF" },
-                color: "white",
-                width: "100%",
-                borderRadius: "22.5px",
-            }}
-            variant="contained"
-            endIcon={<ExpandMoreIcon />}
-        >
-            All Courses
-        </Button>,
-    ];
-
-    const drawer = (
-        <Box
+  return (
+    <Box sx={{ display: "flex" }}>
+      <CssBaseline />
+      <AppBar
+        component="nav"
+        sx={{ bgcolor: "#141414", padding: "10px 20px 10px 10px" }}
+      >
+        <Toolbar>
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ flexGrow: 1, color: "black" }}
+          >
+            <Link className="flex gap-3 items-center" to={"/"}>
+              <img className="h-6 lg:h-8" src={logo} alt="icon" />
+              <h1 className="text-logo-white font-semibold">Experiment Labs</h1>
+            </Link>
+          </Typography>
+          <Box sx={{ display: { xs: "none", sm: "block" }, color: "black" }}>
+            {navItems.map((item) => (
+              <Button key={item} sx={{ color: "#121212" }}>
+                {item}
+              </Button>
+            ))}
+          </Box>
+          <IconButton
+            color="white"
+            aria-label="open drawer"
+            edge="end"
             onClick={handleDrawerToggle}
-            sx={{
-                textAlign: "center",
-                bgcolor: "#141414",
-                height: "100%",
-                color: "white",
-            }}
+            sx={{ ml: "auto", display: { sm: "none" } }}
+          >
+            <MenuIcon sx={{ color: "white" }} />
+          </IconButton>
+          <Drawer anchor={"top"} open={state} onClose={toggleDrawer(false)}>
+            {list("top")}
+          </Drawer>
+        </Toolbar>
+      </AppBar>
+      <Box component="nav">
+        <Drawer
+          container={container}
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{
+            keepMounted: true, // Better open performance on mobile.
+          }}
+          sx={{
+            display: { xs: "block", sm: "none" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth,
+            },
+          }}
         >
-            <div className="my-8 ml-2 flex gap-2 items-center">
-                <img className="h-6 ml-2" src={logo} alt="icon" />
-                <h1 className="text-logo-white font-semibold">Experiment Labs</h1>
+          {drawer}
+        </Drawer>
+      </Box>
+      <Dialog
+        fullScreen={fullScreen}
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="responsive-dialog-title"
+        sx={{ width: "100%", borderRadius: "22px" }}
+      >
+        <div className="w-full lg:min-w-[400px]  h-full lg:min-h-[475px] bg-[#141414] text-white  mx-auto border-2 border-white p-8 flex justify-center items-center  ">
+          <div className="text-center">
+            <span
+              onClick={handleClose}
+              className=" cursor-pointer absolute top-3 right-5 text-[20px]"
+            >
+              x
+            </span>
+            <h1 className="text-[#FF557A] text-[27px]">Login</h1>
+            <p className="text-[#FF557A] mb-[43px]">
+              to continue using the Experiment Labs
+            </p>
+            <div className="">
+              <button
+                onClick={handleGoogleSignIn}
+                aria-label="Login with Google"
+                type="button"
+                className="flex items-center justify-center w-full p-3 space-x-4 border rounded-[24px] hover:transition-all hover:delay-200 hover:ease-out hover:bg-slate-200 bg-white text-black mb-[25px]"
+              >
+                {/* <img className="w-[20px] h-[20px]" src={GoogleLogo} alt="" /> */}
+                <p className="text-[20px]">Continue with Google</p>
+              </button>
+              <button
+                onClick={() => {
+                  handleClose();
+                  handleClickOpen1();
+                }}
+                aria-label="Login with Google"
+                type="button"
+                className="flex items-center justify-center w-full p-3 space-x-4 border rounded-[24px] hover:transition-all hover:delay-200 hover:ease-out hover:bg-slate-200 bg-white text-black mb-[25px]"
+              >
+                <MailIcon className="" />
+                <p className="text-[20px]">Continue with Email</p>
+              </button>
             </div>
-            <Divider />
-            <List>
-                {navItems2.map((item) => (
-                    <ListItem key={item} disablePadding>
-                        <ListItemButton sx={{ textAlign: "center", color: "white" }}>
-                            <ListItemText primary={item} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
-            </List>
-        </Box>
-    );
-
-    const container =
-        window !== undefined ? () => window().document.body : undefined;
-
-    return (
-        <Box sx={{ display: "flex" }}>
-            <CssBaseline />
-            <AppBar
-                component="nav"
-                sx={{ bgcolor: "#141414", padding: "10px 20px 10px 10px" }}
-            >
-                <Toolbar>
-                    <Typography
-                        variant="h6"
-                        component="div"
-                        sx={{ flexGrow: 1, color: "black" }}
-                    >
-                        <Link className="flex gap-3 items-center" to={"/"}>
-                            <img className="h-6 lg:h-8" src={logo} alt="icon" />
-                            <h1 className="text-logo-white font-semibold">Experiment Labs</h1>
-                        </Link>
-                    </Typography>
-                    <Box sx={{ display: { xs: "none", sm: "block" }, color: "black" }}>
-                        {navItems.map((item) => (
-                            <Button key={item} sx={{ color: "#121212" }}>
-                                {item}
-                            </Button>
-                        ))}
-                    </Box>
-                    <IconButton
-                        color="white"
-                        aria-label="open drawer"
-                        edge="end"
-                        onClick={handleDrawerToggle}
-                        sx={{ ml: "auto", display: { sm: "none" } }}
-                    >
-                        <MenuIcon sx={{ color: "white" }} />
-                    </IconButton>
-                    <Drawer anchor={"top"} open={state} onClose={toggleDrawer(false)}>
-                        {list("top")}
-                    </Drawer>
-                </Toolbar>
-            </AppBar>
-            <Box component="nav">
-                <Drawer
-                    container={container}
-                    variant="temporary"
-                    open={mobileOpen}
-                    onClose={handleDrawerToggle}
-                    ModalProps={{
-                        keepMounted: true, // Better open performance on mobile.
-                    }}
-                    sx={{
-                        display: { xs: "block", sm: "none" },
-                        "& .MuiDrawer-paper": {
-                            boxSizing: "border-box",
-                            width: drawerWidth,
-                        },
-                    }}
-                >
-                    {drawer}
-                </Drawer>
-            </Box>
-            <Dialog
-                fullScreen={fullScreen}
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="responsive-dialog-title"
-                sx={{ width: "100%", borderRadius: "22px" }}
-            >
-                <div className="w-full lg:min-w-[400px]  h-full lg:min-h-[475px] bg-[#141414] text-white  mx-auto border-2 border-white p-8 flex justify-center items-center  ">
-                    <div className="text-center">
-                        <span
-                            onClick={handleClose}
-                            className=" cursor-pointer absolute top-3 right-5 text-[20px]"
-                        >
-                            x
-                        </span>
-                        <h1 className="text-[#FF557A] text-[27px]">Login</h1>
-                        <p className="text-[#FF557A] mb-[43px]">
-                            to continue using the Experiment Labs
-                        </p>
-                        <div className="">
-                            <button
-                                onClick={handleGoogleSignIn}
-                                aria-label="Login with Google"
-                                type="button"
-                                className="flex items-center justify-center w-full p-3 space-x-4 border rounded-[24px] hover:transition-all hover:delay-200 hover:ease-out hover:bg-slate-200 bg-white text-black mb-[25px]"
-                            >
-                                {/* <img className="w-[20px] h-[20px]" src={GoogleLogo} alt="" /> */}
-                                <p className="text-[20px]">Continue with Google</p>
-                            </button>
-                            <button
-                                onClick={() => {
-                                    handleClose();
-                                    handleClickOpen1();
-                                }}
-                                aria-label="Login with Google"
-                                type="button"
-                                className="flex items-center justify-center w-full p-3 space-x-4 border rounded-[24px] hover:transition-all hover:delay-200 hover:ease-out hover:bg-slate-200 bg-white text-black mb-[25px]"
-                            >
-                                <MailIcon className="" />
-                                <p className="text-[20px]">Continue with Email</p>
-                            </button>
-                        </div>
-                        <p>
-                            Don't have an account?{" "}
-                            <span
-                                onClick={() => {
-                                    handleClickOpen2();
-                                    handleClose();
-                                }}
-                                className="text-[#FF557A] cursor-pointer"
-                            >
-                                Register
-                            </span>
-                        </p>
-                    </div>
-                </div>
-                {/* <div className="">
+            <p>
+              Don't have an account?{" "}
+              <span
+                onClick={() => {
+                  handleClickOpen2();
+                  handleClose();
+                }}
+                className="text-[#FF557A] cursor-pointer"
+              >
+                Register
+              </span>
+            </p>
+          </div>
+        </div>
+        {/* <div className="">
           <div className="w-full lg:min-w-[400px] h-full lg:min-h-[70vh] p-8 rounded-[22px] bg-[#141414] text-white mx-auto shadow-xl border-2 border-white">
             <h1 className="text-2xl font-bold text-cyan mb-6">Login</h1>
             <form
@@ -635,154 +635,154 @@ const NavBar = (props) => {
             </p>
           </div>
         </div> */}
-            </Dialog>
-            <Dialog
-                fullScreen={fullScreen}
-                open={open1}
-                onClose={handleClose1}
-                aria-labelledby="responsive-dialog-title"
-                sx={{ width: "100%", borderRadius: "22px" }}
+      </Dialog>
+      <Dialog
+        fullScreen={fullScreen}
+        open={open1}
+        onClose={handleClose1}
+        aria-labelledby="responsive-dialog-title"
+        sx={{ width: "100%", borderRadius: "22px" }}
+      >
+        <div className="w-full lg:min-w-[400px]  h-full lg:min-h-[475px] bg-[#141414] text-white  mx-auto border-2 border-white p-8 flex justify-center items-center  ">
+          <div className="text-center">
+            <span
+              onClick={handleClose1}
+              className=" cursor-pointer absolute top-3 right-5 text-[20px]"
             >
-                <div className="w-full lg:min-w-[400px]  h-full lg:min-h-[475px] bg-[#141414] text-white  mx-auto border-2 border-white p-8 flex justify-center items-center  ">
-                    <div className="text-center">
-                        <span
-                            onClick={handleClose1}
-                            className=" cursor-pointer absolute top-3 right-5 text-[20px]"
-                        >
-                            x
-                        </span>
-                        <h1 className="text-[#FF557A] text-[27px]">Login</h1>
-                        <p className="text-[#FF557A] text-[16px] mb-[45px]">
-                            to continue using the Experiment Labs
-                        </p>
-                        <form onSubmit={handleLoginSubmit} className="flex flex-col">
-                            <label className="text-[18px] mb-[9px]" htmlFor="email">
-                                Enter Email
-                            </label>
-                            <input
-                                type="email"
-                                name="email"
-                                onChange={handleOnChange}
-                                className=" text-[black] text-[17px] text-center leading-[38px] rounded-[25px] mb-[19px]"
-                                placeholder="Enter your email"
-                            />
-                            <label className="text-[18px] mb-[9px]" htmlFor="password">
-                                Password
-                            </label>
-                            <input
-                                type="password"
-                                name="password"
-                                onChange={handleOnChange}
-                                className=" text-[black] text-[17px] text-center leading-[38px] rounded-[25px] mb-[19px]"
-                                placeholder="Enter password"
-                            />
-                            <button
-                                onClick={() => {
-                                    handleClose();
-                                    handleClickOpen1();
-                                }}
-                                className="text-[20px] bg-[#FF557A] w-fit self-center py-[8px] px-[40px] rounded-[25px] mb-[18px]"
-                            >
-                                Login
-                            </button>
-                        </form>
-                        <p>
-                            Don't have an account?{" "}
-                            <span
-                                onClick={() => {
-                                    handleClickOpen2();
-                                    handleClose1();
-                                }}
-                                className="text-[#FF557A] cursor-pointer"
-                            >
-                                Register
-                            </span>
-                        </p>
-                    </div>
-                </div>
-            </Dialog>
-            <Dialog
-                fullScreen={fullScreen}
-                open={open2}
-                onClose={handleClose2}
-                aria-labelledby="responsive-dialog-title"
-                sx={{ width: "100%", borderRadius: "22px" }}
+              x
+            </span>
+            <h1 className="text-[#FF557A] text-[27px]">Login</h1>
+            <p className="text-[#FF557A] text-[16px] mb-[45px]">
+              to continue using the Experiment Labs
+            </p>
+            <form onSubmit={handleLoginSubmit} className="flex flex-col">
+              <label className="text-[18px] mb-[9px]" htmlFor="email">
+                Enter Email
+              </label>
+              <input
+                type="email"
+                name="email"
+                onChange={handleOnChange}
+                className=" text-[black] text-[17px] text-center leading-[38px] rounded-[25px] mb-[19px]"
+                placeholder="Enter your email"
+              />
+              <label className="text-[18px] mb-[9px]" htmlFor="password">
+                Password
+              </label>
+              <input
+                type="password"
+                name="password"
+                onChange={handleOnChange}
+                className=" text-[black] text-[17px] text-center leading-[38px] rounded-[25px] mb-[19px]"
+                placeholder="Enter password"
+              />
+              <button
+                onClick={() => {
+                  handleClose();
+                  handleClickOpen1();
+                }}
+                className="text-[20px] bg-[#FF557A] w-fit self-center py-[8px] px-[40px] rounded-[25px] mb-[18px]"
+              >
+                Login
+              </button>
+            </form>
+            <p>
+              Don't have an account?{" "}
+              <span
+                onClick={() => {
+                  handleClickOpen2();
+                  handleClose1();
+                }}
+                className="text-[#FF557A] cursor-pointer"
+              >
+                Register
+              </span>
+            </p>
+          </div>
+        </div>
+      </Dialog>
+      <Dialog
+        fullScreen={fullScreen}
+        open={open2}
+        onClose={handleClose2}
+        aria-labelledby="responsive-dialog-title"
+        sx={{ width: "100%", borderRadius: "22px" }}
+      >
+        <div className="w-full lg:min-w-[400px]  h-full lg:min-h-[475px] bg-[#141414] text-white  mx-auto border-2 border-white p-8 flex justify-center items-center  ">
+          <div className="text-center">
+            <span
+              onClick={handleClose2}
+              className=" cursor-pointer absolute top-3 right-5 text-[20px]"
             >
-                <div className="w-full lg:min-w-[400px]  h-full lg:min-h-[475px] bg-[#141414] text-white  mx-auto border-2 border-white p-8 flex justify-center items-center  ">
-                    <div className="text-center">
-                        <span
-                            onClick={handleClose2}
-                            className=" cursor-pointer absolute top-3 right-5 text-[20px]"
-                        >
-                            x
-                        </span>
-                        <h1 className="text-[#FF557A] text-[27px] mb-[25px]">Register</h1>
-                        <form onSubmit={registerUser} className="flex flex-col">
-                            <label className="text-[18px] mb-[9px]" htmlFor="name">
-                                Enter Name
-                            </label>
-                            <input
-                                type="text"
-                                name="name"
-                                required
-                                onBlur={handleOnBlur}
-                                className=" text-[black] text-[17px] text-center leading-[38px] rounded-[25px] mb-[19px]"
-                                placeholder="Enter your email"
-                            />
-                            <label className="text-[18px] mb-[9px]" htmlFor="email">
-                                Enter Email
-                            </label>
-                            <input
-                                type="email"
-                                name="email"
-                                required
-                                onBlur={handleOnBlur}
-                                className=" text-[black] text-[17px] text-center leading-[38px] rounded-[25px] mb-[19px]"
-                                placeholder="Enter your email"
-                            />
-                            <label className="text-[18px] mb-[9px]" htmlFor="password">
-                                Password
-                            </label>
-                            <input
-                                type="password"
-                                name="password"
-                                required
-                                onBlur={handleOnBlur}
-                                className=" text-[black] text-[17px] text-center leading-[38px] rounded-[25px] mb-[19px]"
-                                placeholder="Enter Confirm Email"
-                            />
-                            <button
-                                type="submit"
-                                className="text-[20px] bg-[#FF557A] w-fit self-center py-[8px] px-[40px] rounded-[25px] mb-[18px]"
-                            >
-                                Register
-                            </button>
-                        </form>
-                        <p>
-                            Already have an account?{" "}
-                            <span
-                                onClick={() => {
-                                    handleClickOpen();
-                                    handleClose2();
-                                }}
-                                className="text-[#FF557A] cursor-pointer"
-                            >
-                                Login
-                            </span>
-                        </p>
-                    </div>
-                </div>
-            </Dialog>
-        </Box>
-    );
+              x
+            </span>
+            <h1 className="text-[#FF557A] text-[27px] mb-[25px]">Register</h1>
+            <form onSubmit={registerUser} className="flex flex-col">
+              <label className="text-[18px] mb-[9px]" htmlFor="name">
+                Enter Name
+              </label>
+              <input
+                type="text"
+                name="name"
+                required
+                onBlur={handleOnBlur}
+                className=" text-[black] text-[17px] text-center leading-[38px] rounded-[25px] mb-[19px]"
+                placeholder="Enter your email"
+              />
+              <label className="text-[18px] mb-[9px]" htmlFor="email">
+                Enter Email
+              </label>
+              <input
+                type="email"
+                name="email"
+                required
+                onBlur={handleOnBlur}
+                className=" text-[black] text-[17px] text-center leading-[38px] rounded-[25px] mb-[19px]"
+                placeholder="Enter your email"
+              />
+              <label className="text-[18px] mb-[9px]" htmlFor="password">
+                Password
+              </label>
+              <input
+                type="password"
+                name="password"
+                required
+                onBlur={handleOnBlur}
+                className=" text-[black] text-[17px] text-center leading-[38px] rounded-[25px] mb-[19px]"
+                placeholder="Enter Confirm Email"
+              />
+              <button
+                type="submit"
+                className="text-[20px] bg-[#FF557A] w-fit self-center py-[8px] px-[40px] rounded-[25px] mb-[18px]"
+              >
+                Register
+              </button>
+            </form>
+            <p>
+              Already have an account?{" "}
+              <span
+                onClick={() => {
+                  handleClickOpen();
+                  handleClose2();
+                }}
+                className="text-[#FF557A] cursor-pointer"
+              >
+                Login
+              </span>
+            </p>
+          </div>
+        </div>
+      </Dialog>
+    </Box>
+  );
 };
 
 NavBar.propTypes = {
-    /**
-     * Injected by the documentation to work in an iframe.
-     * You won't need it on your project.
-     */
-    window: NavBar.func,
+  /**
+   * Injected by the documentation to work in an iframe.
+   * You won't need it on your project.
+   */
+  window: NavBar.func,
 };
 
 export default NavBar;
