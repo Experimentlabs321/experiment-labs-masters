@@ -16,7 +16,7 @@ const Campus = () => {
     return (
         <div className='px-10 lg:px-28 pt-40'>
             <h1 className='text-4xl font-bold'>Urban Campuses</h1>
-            <p className='text-lg mt-4 font-light lg:ml-14'>First Floor, Block E 1, Jhandewalan Extension</p>
+            <p className='text-lg mt-4 font-light lg:ml-14'>Situated in Central Delhi, 0.8Kms from Connaught Place </p>
             <div className='mt-6 lg:block hidden px-14'>
                 <div className='flex justify-start items-start gap-6'>
                     <img src={vector} alt="" />

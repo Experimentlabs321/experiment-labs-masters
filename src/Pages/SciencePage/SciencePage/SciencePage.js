@@ -14,6 +14,7 @@ import DualManagement from '../DualMangement/DualManagement';
 import HearFromStudents from '../HearFromStudents/HearFromStudents';
 import GetInTouch from '../GetInTouch/GetInTouch';
 import CEOChallenge from '../../Home/CEOChallenge/CEOChallenge';
+import GetCareer from '../GetCareer/GetCareer';
 
 const SciencePage = () => {
 
@@ -29,7 +30,7 @@ const SciencePage = () => {
     };
 
     return (
-        <div className='bg-[#121212] text-white'>
+        <div className='bg-dark text-white'>
             <MyHelmet>Science/Innovation</MyHelmet>
 
             <ScienceInnovationNav />
@@ -37,10 +38,13 @@ const SciencePage = () => {
             <div id='overview'>
                 <Overview />
             </div>
-
-            <div id='masters' className='mt-32'>
-                <Masters />
+            <div id='' className='mt-32'>
+                <GetCareer/>
             </div>
+
+           {/*  <div id='masters' className='mt-32'>
+                <Masters />
+            </div> */}
 
             <div id='curriculum' className='mt-32'>
                 <Curriculum />
@@ -53,9 +57,9 @@ const SciencePage = () => {
                 <div className='mt-28'>
                     <AllCourses />
                 </div>
-                <div className='mt-32'>
+                {/* <div className='mt-32'>
                     <HearFromStudents/>
-                </div>
+                </div> */}
                 <div className='mt-32'>
                     <GetInTouch/>
                 </div>
@@ -67,9 +71,9 @@ const SciencePage = () => {
                 <Campus />
             </div>
 
-            <div id='faqs' className='mt-32 mb-32'>
+           {/*  <div id='faqs' className='mt-32 mb-32'>
                 <FAQs />
-            </div>
+            </div> */}
 {/* 
             <div id='news' className='mt-96'>
                 <News />

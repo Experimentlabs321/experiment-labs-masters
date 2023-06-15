@@ -100,7 +100,7 @@ const ScienceInnovationNav = (props) => {
         <div style={{ fontSize: '16px', textTransform: 'initial' }} className={navItemSytle}>Student Life</div>,
         <div style={{ fontSize: '16px', textTransform: 'initial' }} className={navItemSytle}>Careers</div>,
         <div style={{ fontSize: '16px', textTransform: 'initial' }} className={navItemSytle}>Research</div>,
-        <Button onClick={toggleDrawer(true)} sx={{ bgcolor: '#97E7AA', ":hover": { bgcolor: '#3EE8B5' }, color: 'black' }} variant="contained" endIcon={<ExpandMoreIcon />}>
+        <Button onClick={toggleDrawer(true)} sx={{ bgcolor: '#FF557A', ":hover": { bgcolor: '#FF557A' }, color: 'black',  borderRadius: '25px' }} variant="contained" endIcon={<ExpandMoreIcon />}>
             All Courses
         </Button>
     ];
@@ -118,7 +118,7 @@ const ScienceInnovationNav = (props) => {
         <Button onClick={toggleDrawer(true)} sx={{ color: '#fff', bgcolor: '#121212', textTransform: 'initial' }} size='medium' variant="text">
             Research
         </Button>,
-        <Button onClick={toggleDrawer(true)} sx={{ bgcolor: '#97E7AA', ":hover": { bgcolor: '#3EE8B5' }, color: 'black' }} variant="contained" endIcon={<ExpandMoreIcon />}>
+        <Button onClick={toggleDrawer(true)} sx={{ bgcolor: '#FF557A', ":hover": { bgcolor: '#FF557A' }, color: 'black' }} variant="contained" endIcon={<ExpandMoreIcon />}>
             All Courses
         </Button>
     ];
@@ -154,7 +154,7 @@ const ScienceInnovationNav = (props) => {
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
             <AppBar component="nav">
-                <Toolbar sx={{ bgcolor: '#424242', padding: '10px 20px 10px 10px' }}>
+                <Toolbar sx={{ bgcolor: '#141414', padding: '10px 20px 10px 10px' }}>
 
                     <Typography
                         variant="h6"
@@ -187,9 +187,16 @@ const ScienceInnovationNav = (props) => {
                         {list('top')}
                     </Drawer>
                 </Toolbar>
-                <div className='bg-[#7a7979] px-10 lg:px-32 font w-full'>
-                    <div className='flex justify-start lg:justify-center gap-10 items-center overflow-x-scroll hidden-scroll'>
 
+                <div className=' bg-[#141414]'>
+                      <div className='bg-[#37417E] mx-10 px-10 py-2 lg:px-32 rounded-b-3xl'>
+                        
+                      </div>
+                </div>
+
+               {/*  <div className='bg-[#37417E] px-10 lg:py-2 lg:px-32 font mx-10 rounded-b-3xl'>
+                    <div className='flex justify-start lg:justify-center gap-10 items-center overflow-x-scroll hidden-scroll'>
+                          
                         <ScrollLink
                             to='overview'
                             smooth={true}
@@ -245,7 +252,7 @@ const ScienceInnovationNav = (props) => {
                             onSetActive={handleSetActiveSection}
                         >FAQs</ScrollLink>
 
-                        {/* <ScrollLink
+                        <ScrollLink
                             to='news'
                             smooth={true}
                             duration={500}
@@ -254,10 +261,11 @@ const ScienceInnovationNav = (props) => {
                             className="px-3 py-2 cursor-pointer"
                             activeClass="bg-custom-blue px-3 py-2 cursor-pointer bg-opacity-30 border-b-2 border-custom-blue"
                             onSetActive={handleSetActiveSection}
-                        >News</ScrollLink> */}
+                        >News</ScrollLink>
 
                     </div>
-                </div>
+                </div> */}
+                
             </AppBar>
             <Box component="nav">
                 <Drawer
