@@ -31,6 +31,7 @@ import {
 } from "firebase/auth";
 import CryptoJS from "crypto-js";
 import MailIcon from "@mui/icons-material/Mail";
+import GoogleLogo from "../../../assets/icons/googleIcon.png";
 
 const NavBar = (props) => {
   const [state, setState] = React.useState(false);
@@ -526,7 +527,7 @@ const NavBar = (props) => {
                 type="button"
                 className="flex items-center justify-center w-full p-3 space-x-4 border rounded-[24px] hover:transition-all hover:delay-200 hover:ease-out hover:bg-slate-200 bg-white text-black mb-[25px]"
               >
-                {/* <img className="w-[20px] h-[20px]" src={GoogleLogo} alt="" /> */}
+                <img className="w-[20px] h-[20px]" src={GoogleLogo} alt="" />
                 <p className="text-[20px]">Continue with Google</p>
               </button>
               <button

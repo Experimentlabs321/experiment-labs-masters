@@ -17,6 +17,8 @@ const HearStraight = () => {
     function handleScrollRight() {
         containerRef.current.scrollLeft += 300; // scroll right by 100 pixels
     }
+
+
     return (
         <div>
             <div className=' flex justify-between mt-5'>
