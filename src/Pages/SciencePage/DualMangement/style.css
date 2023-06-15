@@ -3,3 +3,6 @@
 .hidden-scroll::-webkit-scrollbar{
     display: none;
 }
+.vertical-timeline-element-content{
+    box-shadow: none !important;
+}
