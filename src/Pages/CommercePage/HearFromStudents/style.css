@@ -1,0 +1,4 @@
+
+.hfs-container::-webkit-scrollbar{
+    display: none;
+}
