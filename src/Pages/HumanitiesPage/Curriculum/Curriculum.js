@@ -30,9 +30,7 @@ const Curriculum = () => {
                     <div>
                         <h2 className='text-3xl my-8'>Highly Individualized Curriculum</h2>
                         <p className='mb-8 text-[#7D7D7D]'>
-                            The business kab by experiment labs is an extremely
-                            flexible programme that can be highly customized to meet
-                            the needs of each student's career aspirations.
+                            The Creativity Lab by Experiment Labs is an extremely flexible programme that can be highly customized to meet the needs of each student’s career aspirations.
                         </p>
                         <div className='mb-8 grid grid-cols-1 lg:grid-cols-2 gap-2'>
                             <div className='flex flex-row items-center gap-3'>
@@ -108,7 +106,7 @@ const Curriculum = () => {
                                     <div
                                         ref={containerRef}
                                         className='flex overflow-x-scroll scroll-smooth gap-5 mtm-container w-[80vw]'
-                                     
+
                                     >
                                         <div className='border-2  rounded-2xl border-gray-400 bg-[#7683CC] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px]'>
                                             <div className='border-gray-400 p-3'>
