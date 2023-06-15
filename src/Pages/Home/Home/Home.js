@@ -10,39 +10,41 @@ import CEOChallenge from '../CEOChallenge/CEOChallenge';
 import LifeAtUnion from '../LifeAtUnion/LifeAtUnion';
 import ExperienceUnion from '../ExperienceUnion/ExperienceUnion';
 import Campus from '../../SciencePage/Campus/Campus';
+import ReactGA from "react-ga4";
 
 const Home = () => {
 
-    const featureRef = useRef(null);
+    // const featureRef = useRef(null);
 
-    const handleButtonClick = () => {
-        const featurePosition = featureRef.current.getBoundingClientRect().top;
-        const headerHeight = 80;
-        window.scrollTo({ top: featurePosition - headerHeight, behavior: 'smooth' });
-    };
+    // const handleButtonClick = () => {
+    //     const featurePosition = featureRef.current.getBoundingClientRect().top;
+    //     const headerHeight = 80;
+    //     window.scrollTo({ top: featurePosition - headerHeight, behavior: 'smooth' });
+    // };
 
     useEffect(() => {
         window.scrollTo(0, 0);
+        ReactGA.send({ hitType: "pageview", page: "/", title: "Home" });
     }, []);
 
 
     return (
-        <div style={{width:'100%'}} className='bg-dark text-white'>
+        <div style={{ width: '100%' }} className='bg-dark text-white'>
             <MyHelmet>Home</MyHelmet>
             <div className='mt-[3rem]'>
-                <Hero onButtonClick={handleButtonClick} />
+                <Hero />
             </div>
-            <div ref={featureRef}>
+            <div>
                 <Feature />
             </div>
-            <TakeTest/>
-            <AllCourses/>
+            <TakeTest />
+            <AllCourses />
             {/* <AiTutor/> */}
-            <MeetTheMaster/>
-            <CEOChallenge/>
-            <LifeAtUnion/>
-            <Campus/>
-            <ExperienceUnion/>
+            <MeetTheMaster />
+            <CEOChallenge />
+            <LifeAtUnion />
+            <Campus />
+            {/* <ExperienceUnion/> */}
         </div>
     );
 };
