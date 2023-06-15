@@ -15,8 +15,8 @@ const Overview = () => {
                 <div className='flex flex-col lg:flex-row gap-16 justify-center items-center'>
                     <div>
                         
-                        <h2 className='text-3xl my-8'>Explore career and become a leader by building business</h2>
-                            <p className='bg-[#6278FF] py-1 px-2 rounded-3xl text-sm text-bold inline'>Career planning through business</p>
+                        <h2 className='text-3xl my-8'>Explore careers and become a leader by building innovative products</h2>
+                            <p className='bg-[#6278FF] py-1 px-2 rounded-3xl text-sm text-bold inline'>Career Planning through Innovation</p>
                         <div className='mb-8 flex mt-11 flex-col gap-3'>
                             <div className='flex flex-row items-center gap-1'>
                                 <span><PlayArrowRoundedIcon sx={{ color: '#FFFFFF' }} /></span>
@@ -34,7 +34,7 @@ const Overview = () => {
 
                         <div className='flex flex-col lg:flex-row w-full gap-8'>
                             
-                            <button className=' rounded-3xl bg-[#6278FF] font-semibold hover:bg-opacity-80 hover:transition-all hover:delay-300 hover:ease-out w-full py-1'>Connect With Councelor</button>
+                            <button className=' rounded-3xl bg-[#6278FF] font-semibold hover:bg-opacity-80 hover:transition-all hover:delay-300 hover:ease-out w-full py-1'>Connect With Councilor</button>
                             <button className=' border border-[#6278FF] rounded-3xl font-semibold hover:bg-opacity-80 hover:transition-all hover:delay-300 hover:ease-out w-full py-1'>Download Career Report</button>
                         </div>
 
