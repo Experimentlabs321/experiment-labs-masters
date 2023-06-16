@@ -8,6 +8,8 @@ import Register from "../../Pages/Login/Register/Register";
 import Login from "../../Pages/Login/Login/Login";
 import CommercePage from "../../Pages/CommercePage/CommercePage/CommercePage";
 import HumanitiesPage from "../../Pages/HumanitiesPage/HumanitiesPage/HumanitiesPage";
+import ExperienceUnionCommercePage from "../../Pages/ExperienceUnionCommerce/ExperienceUnionPage/ExperienceUnionCommercePage";
+import ExperienceUnionHumanitiesPage from "../../Pages/ExperienceUnionHumanities/ExperienceUnionPage/ExperienceUnionHumanitiesPage";
 
 const router = createBrowserRouter([
   {
@@ -44,6 +46,14 @@ const router = createBrowserRouter([
   {
     path: "/experience-union",
     element: <ExperienceUnionPage />,
+  },
+  {
+    path: "/experience-union-commerce",
+    element: <ExperienceUnionCommercePage />,
+  },
+  {
+    path: "/experience-union-humanities",
+    element: <ExperienceUnionHumanitiesPage />,
   },
 ]);
 
