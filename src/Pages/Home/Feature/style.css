@@ -10,6 +10,16 @@
     /* Chrome, Safari, and Opera */
 }
 
+.hPart{
+    padding-bottom: 20px
+}
+
+.hPart::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    /* Chrome, Safari, and Opera */
+}
+
 
 .courses {
     border: 2px solid #94A4FF;
