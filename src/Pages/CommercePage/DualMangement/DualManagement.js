@@ -107,15 +107,7 @@ const DualManagement = () => {
                   <PlayArrowRoundedIcon sx={{ color: "#FFFFFF" }} />
                 </span>
                 <span className="text-sm font-light">
-                  What is Innovation and Product Development
-                </span>
-              </div>
-              <div className="flex flex-row items-start gap-1">
-                <span>
-                  <PlayArrowRoundedIcon sx={{ color: "#FFFFFF" }} />
-                </span>
-                <span className="text-sm font-light">
-                  Finding the Right ideas and problem Solving
+                  Find the Right ideas and problem solving
                 </span>
               </div>
               <div className="flex flex-row items-start gap-1">
@@ -131,7 +123,7 @@ const DualManagement = () => {
                   <PlayArrowRoundedIcon sx={{ color: "#FFFFFF" }} />
                 </span>
                 <span className="text-sm font-light">
-                  Technology 101 and Engineering
+                  Getting your first customers and building processes
                 </span>
               </div>
               <div className="flex flex-row items-start gap-1">
@@ -139,9 +131,10 @@ const DualManagement = () => {
                   <PlayArrowRoundedIcon sx={{ color: "#FFFFFF" }} />
                 </span>
                 <span className="text-sm font-light">
-                  Understanding Audiences, Case studies & Strategies
+                  Understanding financial modeling
                 </span>
               </div>
+              
               <div className="flex flex-row items-start lg:ml-8 gap-1">
                 {/*                                 <span><PlayArrowRoundedIcon sx={{ color: '#FFFFFF' }} /></span>
                  */}{" "}
@@ -158,23 +151,30 @@ const DualManagement = () => {
                 </span>
                 <span className="text-sm font-light">Critical Thinking</span>
               </div>
-              <div className="flex flex-row items-start gap-1">
-                <span>
-                  <PlayArrowRoundedIcon sx={{ color: "#FFFFFF" }} />
-                </span>
-                <span className="text-sm font-light">Tech mindset</span>
-              </div>
-              <div className="flex flex-row items-start gap-1">
-                <span>
-                  <PlayArrowRoundedIcon sx={{ color: "#FFFFFF" }} />
-                </span>
-                <span className="text-sm font-light">Communications</span>
-              </div>
+             
               <div className="flex flex-row items-start gap-1">
                 <span>
                   <PlayArrowRoundedIcon sx={{ color: "#FFFFFF" }} />
                 </span>
                 <span className="text-sm font-light">Analytics</span>
+              </div>
+              <div className="flex flex-row items-start gap-1">
+                <span>
+                  <PlayArrowRoundedIcon sx={{ color: "#FFFFFF" }} />
+                </span>
+                <span className="text-sm font-light">Negotiation</span>
+              </div>
+              <div className="flex flex-row items-start gap-1">
+                <span>
+                  <PlayArrowRoundedIcon sx={{ color: "#FFFFFF" }} />
+                </span>
+                <span className="text-sm font-light">Time Management</span>
+              </div>
+              <div className="flex flex-row items-start gap-1">
+                <span>
+                  <PlayArrowRoundedIcon sx={{ color: "#FFFFFF" }} />
+                </span>
+                <span className="text-sm font-light">Leadership</span>
               </div>
 
               <div className="flex flex-row items-start lg:ml-8 gap-1">
@@ -191,7 +191,7 @@ const DualManagement = () => {
                 <span>
                   <PlayArrowRoundedIcon sx={{ color: "#FFFFFF" }} />
                 </span>
-                <span className="text-sm font-light">Product Management</span>
+                <span className="text-sm font-light">Entrepreneurship</span>
               </div>
               <div className="flex flex-row items-start gap-1">
                 <span>
@@ -203,19 +203,19 @@ const DualManagement = () => {
                 <span>
                   <PlayArrowRoundedIcon sx={{ color: "#FFFFFF" }} />
                 </span>
-                <span className="text-sm font-light">Design</span>
+                <span className="text-sm font-light">Finance</span>
               </div>
               <div className="flex flex-row items-start gap-1">
                 <span>
                   <PlayArrowRoundedIcon sx={{ color: "#FFFFFF" }} />
                 </span>
-                <span className="text-sm font-light">Engineering</span>
+                <span className="text-sm font-light">Sales</span>
               </div>
               <div className="flex flex-row items-start gap-1">
                 <span>
                   <PlayArrowRoundedIcon sx={{ color: "#FFFFFF" }} />
                 </span>
-                <span className="text-sm font-light">Research</span>
+                <span className="text-sm font-light">Operations</span>
               </div>
               <div className="flex flex-row items-start lg:ml-8 gap-1">
                 {/*                                 <span><PlayArrowRoundedIcon sx={{ color: '#FFFFFF' }} /></span>
