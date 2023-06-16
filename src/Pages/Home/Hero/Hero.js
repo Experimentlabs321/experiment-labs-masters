@@ -191,9 +191,9 @@ const Hero = () => {
         <section className="lg:h-[585px] text-white">
             <div style={{ height: "100%", background: "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF" }} className="flex lg:justify-end items-center">
                 <div className="relative">
-                    <div className='pt-28 pb-20 px-10 lg:pr-10 lg:pl-10'>
-                        <h1 className="text-4xl font-bold">Discover Your Path to Success <br />
-                            with Real-World Experience</h1>
+                    <div className='pt-28 pb-20 px-10 lg:pl-10'>
+                        <h1 className="text-4xl font-bold">Discover Your Path to a Successful
+                            career with Real-World Experience</h1>
                         <p className='mt-8 mb-12 text-2xl'>Build leadership like a muscle</p>
 
                         {/* <div className='my-8 text-white flex flex-col gap-3 justify-start'>
