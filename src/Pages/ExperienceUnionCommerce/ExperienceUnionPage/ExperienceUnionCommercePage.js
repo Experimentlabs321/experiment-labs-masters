@@ -23,9 +23,7 @@ const ExperienceUnionCommercePage = () => {
             </div> */}
       <SummerStartUp />
 
-      <div className="">
-        <Timeline />
-      </div>
+      <Timeline />
 
       <EUFooter />
     </div>
