@@ -1,5 +1,6 @@
 import React from "react";
 import background from "../../../assets/background.avif";
+import img from "../../../assets/EnperienceUnion/groupImg.png"
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import darkbg from "../../../assets/darkbg.jpg";
 import Person3Icon from "@mui/icons-material/Person3";
@@ -293,11 +294,13 @@ const SummerStartUp = () => {
             is a highly immersive.{" "}
           </p>
         </div>
-        <img
-          className="bg-[#4242421d] h-[280px] w-full lg:min-w-[515px] lg:max-w-[515px] object-cover rounded-lg"
-          src={background}
+        <div className=" lg:min-w-[400px] lg:max-w-[400px] w-full">
+        <img style={{objectFit:"cover"}}
+          className=" h-full w-full  rounded-lg "
+          src={img}
           alt=""
         />
+        </div>
       </div>
     </div>
   );
