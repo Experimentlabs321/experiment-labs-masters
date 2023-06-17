@@ -1,6 +1,6 @@
 import React from "react";
 import background from "../../../assets/background.avif";
-import img from "../../../assets/EnperienceUnion/groupImg.png"
+import img from "../../../assets/feature/Rectangle 26L.png";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import darkbg from "../../../assets/darkbg.jpg";
 import Person3Icon from "@mui/icons-material/Person3";
@@ -21,59 +21,62 @@ const SummerStartUp = () => {
           width: "100%",
           objectFit: "cover",
         }}
-        className=" px-10 lg:px-28 py-20 pt-40"
+        className=" lg:px-28 py-20 pt-40"
       >
-        <div className="px-10 lg:px-32 flex flex-col lg:flex-row gap-20 justify-between items-center">
+        <div className="px-5 xl:px-32 flex flex-col lg:flex-row gap-20 justify-between items-center">
           <div className="w-full">
-            <h1 className="text-4xl font-bold">
+            <h1 className="text-4xl lg:text-6xl font-bold">
               Leadership Through{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
                 Creativity
               </span>
             </h1>
-            <h4 className="text-2xl font-bold my-8">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
-                Programme
-              </span>{" "}
-              Includes
-            </h4>
-            <div className="flex flex-col gap-4">
-              <span className="flex gap-2 items-start">
-                <ArrowCircleRightIcon sx={{ color: "rgb(12 197 219)" }} />{" "}
-                <span>
-                  Get exposed to{" "}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
-                    50+
-                  </span>{" "}
-                  Careers like Film Making, Marketing, Copywriting,
-                  Cinematography, Event Management, Hospitality and Many More
-                </span>
-              </span>
-              <span className="flex gap-2 items-start">
-                <ArrowCircleRightIcon sx={{ color: "rgb(12 197 219)" }} />
-                <span>
-                  {" "}
-                  Learn from top{" "}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
-                    CXO
+            <div className="hidden lg:block">
+              <h4 className="text-2xl font-bold my-8">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
+                  Programme
+                </span>{" "}
+                Includes
+              </h4>
+              <div className="flex flex-col gap-4">
+                <span className="flex gap-2 items-start">
+                  <ArrowCircleRightIcon sx={{ color: "rgb(12 197 219)" }} />{" "}
+                  <span>
+                    Get exposed to{" "}
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
+                      50+
+                    </span>{" "}
+                    Careers like Film Making, Marketing, Copywriting,
+                    Cinematography, Event Management, Hospitality and Many More
                   </span>
-                  ,{" "}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
-                    MDs{" "}
-                  </span>
-                  and{" "}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
-                    Industry{" "}
-                  </span>
-                  <span>leaders from top B-schools.</span>
                 </span>
-              </span>
-              <span className="flex gap-2 items-start">
-                <ArrowCircleRightIcon sx={{ color: "rgb(12 197 219)" }} />
-                <span>
-                  A unique gamified pedagogy that makes you a successful leader.
+                <span className="flex gap-2 items-start">
+                  <ArrowCircleRightIcon sx={{ color: "rgb(12 197 219)" }} />
+                  <span>
+                    {" "}
+                    Learn from top{" "}
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
+                      CXO
+                    </span>
+                    ,{" "}
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
+                      MDs{" "}
+                    </span>
+                    and{" "}
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
+                      Industry{" "}
+                    </span>
+                    <span>leaders from top B-schools.</span>
+                  </span>
                 </span>
-              </span>
+                <span className="flex gap-2 items-start">
+                  <ArrowCircleRightIcon sx={{ color: "rgb(12 197 219)" }} />
+                  <span>
+                    A unique gamified pedagogy that makes you a successful
+                    leader.
+                  </span>
+                </span>
+              </div>
             </div>
           </div>
           <div className="w-full">
@@ -147,6 +150,52 @@ const SummerStartUp = () => {
               </div>
             </form>
           </div>
+          <div className="block lg:hidden">
+            <h4 className="text-2xl font-bold my-8">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
+                Programme
+              </span>{" "}
+              Includes
+            </h4>
+            <div className="flex flex-col gap-4">
+              <span className="flex gap-2 items-start">
+                <ArrowCircleRightIcon sx={{ color: "rgb(12 197 219)" }} />{" "}
+                <span>
+                  Get exposed to{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
+                    50+
+                  </span>{" "}
+                  Careers like Film Making, Marketing, Copywriting,
+                  Cinematography, Event Management, Hospitality and Many More
+                </span>
+              </span>
+              <span className="flex gap-2 items-start">
+                <ArrowCircleRightIcon sx={{ color: "rgb(12 197 219)" }} />
+                <span>
+                  {" "}
+                  Learn from top{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
+                    CXO
+                  </span>
+                  ,{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
+                    MDs{" "}
+                  </span>
+                  and{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
+                    Industry{" "}
+                  </span>
+                  <span>leaders from top B-schools.</span>
+                </span>
+              </span>
+              <span className="flex gap-2 items-start">
+                <ArrowCircleRightIcon sx={{ color: "rgb(12 197 219)" }} />
+                <span>
+                  A unique gamified pedagogy that makes you a successful leader.
+                </span>
+              </span>
+            </div>
+          </div>
         </div>
       </div>
       <div className="bg-[#141414] px-10 lg:px-32 py-20">
@@ -199,13 +248,8 @@ const SummerStartUp = () => {
                 <span>Commencement Date</span>
               </div>
               <div className="mt-2">
-                <h1 className="text-2xl font-bold">May 26,2023</h1>
-                <p
-                  style={{ visibility: "hidden" }}
-                  className="font-thin mt-2 text-sm"
-                >
-                  Opt-in Residential
-                </p>
+                <h1 className="text-2xl font-bold">July 11,2023</h1>
+                <p className="font-thin mt-2 text-sm">Limited seats only</p>
               </div>
             </div>
           </div>
@@ -251,13 +295,8 @@ const SummerStartUp = () => {
                 <span>Commencement Date</span>
               </div>
               <div className="mt-2">
-                <h1 className="text-2xl font-bold">May 26,2023</h1>
-                <p
-                  style={{ visibility: "hidden" }}
-                  className="font-thin mt-2 text-sm"
-                >
-                  Opt-in Residential
-                </p>
+                <h1 className="text-2xl font-bold">July 11,2023</h1>
+                <p className="font-thin mt-2 text-sm">Limited seats only</p>
               </div>
             </div>
           </div>
@@ -265,13 +304,13 @@ const SummerStartUp = () => {
       </div>
       <div className="bg-[#141414] flex flex-col-reverse lg:flex-row-reverse px-10 lg:px-32 py-20 justify-start lg:justify-evenly gap-y-16 lg:items-center text-white">
         <div className="max-w-[500px]">
-          <h1 className="text-3xl font-semibold mt-4">
+          <h1 className="text-3xl lg:text:5xl font-semibold mt-4">
             What is{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
               Creativity Lab?
             </span>
           </h1>
-          <p className="mt-4">
+          <p className="mt-4  lg:text-xl">
             Creativity Lab by Experiment Labs is a{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
               unique pedagogy
@@ -286,13 +325,13 @@ const SummerStartUp = () => {
           </p>
         </div>
         <div className=" lg:min-w-[400px] lg:max-w-[400px] w-full">
-        <img style={{objectFit:"cover"}}
-          className=" h-full w-full  rounded-lg "
-          src={img}
-          alt=""
-        />
+          <img
+            style={{ objectFit: "cover" }}
+            className=" h-full w-full  rounded-lg "
+            src={img}
+            alt=""
+          />
         </div>
-        
       </div>
     </div>
   );
