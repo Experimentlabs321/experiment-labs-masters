@@ -23,7 +23,7 @@ const ExperienceUnionHumanitiesPage = () => {
             </div> */}
       <SummerStartUp />
 
-      <div className="my-32">
+      <div className="">
         <Timeline />
       </div>
 
