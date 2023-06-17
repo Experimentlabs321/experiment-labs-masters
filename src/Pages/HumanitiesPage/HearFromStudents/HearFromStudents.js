@@ -7,6 +7,21 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import "./style.css";
 import { useRef } from "react";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Slide from "@mui/material/Slide";
+import axios from "axios";
+import emailjs from "@emailjs/browser";
+import { toast } from "react-hot-toast";
+import ReactGA from "react-ga4";
+
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const HearFromStudents = () => {
   const containerRef = useRef(null);
@@ -18,6 +33,99 @@ const HearFromStudents = () => {
   function handleScrollRight() {
     containerRef.current.scrollLeft += 300; // scroll right by 100 pixels
   }
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    ReactGA.event({
+      category: "Click",
+      action: "More Info From Dual Management",
+      label: "Submit",
+    });
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const form = useRef();
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    ReactGA.event({
+      category: "Click",
+      action: "Submit Data From More Info From Dual Management",
+      label: "Submit Data",
+    });
+    const form = event.target;
+    const name = form.name.value;
+    const number = form.number.value;
+    const email = form.email.value;
+    const option = form.option.value;
+    const city = form.city.value;
+
+    const data = {
+      Name: name,
+      Number: "+91" + number,
+      Email: email,
+      Option: option,
+      City: city,
+      Time: new Date(),
+    };
+
+    console.log(data);
+
+    fetch(
+      "https://sheet.best/api/sheets/79b86141-ec12-4a0a-85ae-3e1669d63607",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    )
+      .then((data) => {
+        // The response comes here
+        console.log(data);
+      })
+      .catch((error) => {
+        // Errors are reported there
+        console.log(error);
+      });
+
+    const templateParams = {
+      from_name: name,
+      message: `
+            Name: ${name},
+            Number: ${"+91" + number},
+            Email: ${email},
+            ${option},
+            City: ${city},
+            Time: ${new Date()},
+            `,
+    };
+
+    emailjs
+      .send(
+        "service_s3bklnu",
+        "template_l0yacbb",
+        templateParams,
+        "U0g6Ht1DVmnBbENk0"
+      )
+      .then(
+        (result) => {
+          console.log(result.text);
+          // toast.success("Successfully Added Your Info");
+          event.target.reset();
+        },
+        (error) => {
+          console.log(error.text);
+        }
+      );
+  };
+
 
   return (
     <div>
@@ -166,9 +274,9 @@ const HearFromStudents = () => {
                 </div>
             </div> */}
       <div className=" flex justify-between mt-10">
-        <h1 className="text-xl">Hear Straight from our Students</h1>
+        {/* <h1 className="text-xl">Hear Straight from our Students</h1> */}
 
-        <button className="px-5 py-1 bg-[#FF557A] rounded-3xl hover:bg-opacity-75">
+        <button onClick={handleClickOpen} className="px-5 py-1 bg-[#FF557A] rounded-3xl hover:bg-opacity-75">
           More info
         </button>
       </div>
@@ -293,6 +401,99 @@ const HearFromStudents = () => {
           </div>
         </div>
       </div>
+      <Dialog
+        open={open}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleClose}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <div className="bg-dark w-full min-w-[300px] sm:min-w-[350px] lg:w-[500px] p-5 cursor-pointer">
+          <div className="w-full">
+            <h4
+              onClick={handleClose}
+              className="text-xl text-white text-right hover:text-purple"
+            >
+              x
+            </h4>
+            <h1 className="text-2xl font-semibold text-pink text-center">
+              Connect With Counsellor
+            </h1>
+          </div>
+          <form
+            ref={form}
+            onSubmit={handleSubmit}
+            autoComplete="off"
+            className="lg:px-10"
+          >
+            <div className="flex flex-col items-center mt-6 gap-1 text-white">
+              <label htmlFor="name">Enter Name</label>
+              <input
+                required
+                className="text-center w-full py-2 rounded-3xl text-black focus:outline-none"
+                placeholder="Enter your Name"
+                type="text"
+                name="name"
+                id="name"
+              />
+            </div>
+            <div className="flex flex-col items-center mt-6 gap-1 text-white">
+              <label htmlFor="number">Enter Number</label>
+              <input
+                required
+                className="text-center w-full py-2 rounded-3xl text-black focus:outline-none"
+                placeholder="Enter your number"
+                type="number"
+                name="number"
+                id="number"
+              />
+            </div>
+            <div className="flex flex-col items-center mt-6 gap-1 text-white">
+              <label htmlFor="email">Enter Email</label>
+              <input
+                required
+                className="text-center w-full py-2 rounded-3xl text-black focus:outline-none"
+                placeholder="Enter your email"
+                type="email"
+                name="email"
+                id="email"
+              />
+            </div>
+            <div className="flex flex-col items-center mt-6 gap-1 text-white">
+              <label htmlFor="option">Select One</label>
+              <select
+                required
+                className="text-center w-full py-2 rounded-3xl text-black focus:outline-none"
+                name="option"
+                id="option"
+              >
+                <option value="Student">Student</option>
+                <option value="Parent">Parent</option>
+                <option value="Counselor">Counselor</option>
+                <option value="Others">Others</option>
+              </select>
+            </div>
+            <div className="flex flex-col items-center mt-6 gap-1 text-white">
+              <label htmlFor="city">Enter City</label>
+              <input
+                required
+                className="text-center w-full py-2 rounded-3xl text-black focus:outline-none"
+                placeholder="Enter your city"
+                type="text"
+                name="city"
+                id="city"
+              />
+            </div>
+            <div className="flex flex-col items-center mt-6 gap-1 text-white">
+              <input
+                className="text-white py-2 font-bold rounded-3xl bg-pink hover:bg-purple w-1/2 text-center"
+                type="submit"
+                value={"Submit"}
+              />
+            </div>
+          </form>
+        </div>
+      </Dialog>
     </div>
   );
 };
