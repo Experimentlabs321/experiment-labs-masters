@@ -21,9 +21,9 @@ const SummerStartUp = () => {
           width: "100%",
           objectFit: "cover",
         }}
-        className=" px-10 lg:px-28 py-20 pt-40"
+        className="lg:px-28 py-20 pt-40"
       >
-        <div className="px-10 lg:px-32 flex flex-col lg:flex-row gap-20 justify-between items-center">
+        <div className="px-5 xl:px-32 flex flex-col lg:flex-row gap-20 justify-between items-center">
           <div className="w-full">
             <h1 className="text-4xl lg:text-6xl font-bold">
               Leadership through{" "}
@@ -31,57 +31,52 @@ const SummerStartUp = () => {
                 Innovation
               </span>
             </h1>
-            {/* <div className="mt-6 p-5 border rounded-lg border-dashed">
-              <h1 className="text-3xl font-bold">
-                SUMMER STARTUP WEEK FEE <br />
+            <div className="hidden lg:block">
+              <h4 className="text-2xl font-bold my-8">
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
-                  INR 19,999/-
-                </span>
-              </h1>
-            </div> */}
-            <h4 className="text-2xl font-bold my-8">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
-                Programme
-              </span>{" "}
-              Includes
-            </h4>
-            <div className="flex flex-col gap-4">
-              <span className="flex gap-2 items-start">
-                <ArrowCircleRightIcon sx={{ color: "rgb(12 197 219)" }} />{" "}
-                <span>
-                  Get exposed to{" "}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
-                    50+
-                  </span>{" "}
-                  Careers like Product Management, Design, Innovation,
-                  Engineering research Strategy and Many More
-                </span>
-              </span>
-              <span className="flex gap-2 items-start">
-                <ArrowCircleRightIcon sx={{ color: "rgb(12 197 219)" }} />
-                <span>
-                  {" "}
-                  Learn from top{" "}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
-                    CXO
+                  Programme
+                </span>{" "}
+                Includes
+              </h4>
+              <div className="flex flex-col gap-4">
+                <span className="flex gap-2 items-start">
+                  <ArrowCircleRightIcon sx={{ color: "rgb(12 197 219)" }} />{" "}
+                  <span>
+                    Get exposed to{" "}
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
+                      50+
+                    </span>{" "}
+                    Careers like Product Management, Design, Innovation,
+                    Engineering research Strategy and Many More
                   </span>
-                  ,{" "}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
-                    MDs{" "}
-                  </span>
-                  and{" "}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
-                    Industry{" "}
-                  </span>
-                  <span>leaders from top B-schools.</span>
                 </span>
-              </span>
-              <span className="flex gap-2 items-start">
-                <ArrowCircleRightIcon sx={{ color: "rgb(12 197 219)" }} />
-                <span>
-                  A unique gamified pedagogy that makes you a successful leader.
+                <span className="flex gap-2 items-start">
+                  <ArrowCircleRightIcon sx={{ color: "rgb(12 197 219)" }} />
+                  <span>
+                    {" "}
+                    Learn from top{" "}
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
+                      CXO
+                    </span>
+                    ,{" "}
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
+                      MDs{" "}
+                    </span>
+                    and{" "}
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
+                      Industry{" "}
+                    </span>
+                    <span>leaders from top B-schools.</span>
+                  </span>
                 </span>
-              </span>
+                <span className="flex gap-2 items-start">
+                  <ArrowCircleRightIcon sx={{ color: "rgb(12 197 219)" }} />
+                  <span>
+                    A unique gamified pedagogy that makes you a successful
+                    leader.
+                  </span>
+                </span>
+              </div>
             </div>
           </div>
           <div className="w-full">
@@ -154,6 +149,52 @@ const SummerStartUp = () => {
                 />
               </div>
             </form>
+          </div>
+          <div className="block lg:hidden">
+            <h4 className="text-2xl font-bold my-8">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
+                Programme
+              </span>{" "}
+              Includes
+            </h4>
+            <div className="flex flex-col gap-4">
+              <span className="flex gap-2 items-start">
+                <ArrowCircleRightIcon sx={{ color: "rgb(12 197 219)" }} />{" "}
+                <span>
+                  Get exposed to{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
+                    50+
+                  </span>{" "}
+                  Careers like Product Management, Design, Innovation,
+                  Engineering research Strategy and Many More
+                </span>
+              </span>
+              <span className="flex gap-2 items-start">
+                <ArrowCircleRightIcon sx={{ color: "rgb(12 197 219)" }} />
+                <span>
+                  {" "}
+                  Learn from top{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
+                    CXO
+                  </span>
+                  ,{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
+                    MDs{" "}
+                  </span>
+                  and{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
+                    Industry{" "}
+                  </span>
+                  <span>leaders from top B-schools.</span>
+                </span>
+              </span>
+              <span className="flex gap-2 items-start">
+                <ArrowCircleRightIcon sx={{ color: "rgb(12 197 219)" }} />
+                <span>
+                  A unique gamified pedagogy that makes you a successful leader.
+                </span>
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -254,13 +295,8 @@ const SummerStartUp = () => {
                 <span>Commencement Date</span>
               </div>
               <div className="mt-2">
-                <h1 className="text-2xl font-bold">May 26,2023</h1>
-                <p
-                  style={{ visibility: "hidden" }}
-                  className="font-thin mt-2 text-sm"
-                >
-                  Opt-in Residential
-                </p>
+                <h1 className="text-2xl font-bold">July 11,2023</h1>
+                <p className="font-thin mt-2 text-sm">Limited seats only</p>
               </div>
             </div>
           </div>
