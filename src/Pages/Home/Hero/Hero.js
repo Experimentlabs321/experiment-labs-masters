@@ -108,7 +108,7 @@ const Hero = () => {
     const handleClickOpen = () => {
         ReactGA.event({
             category: "Click",
-            action: "Learn More",
+            action: "Learn More In Hero",
             label:'Submit'
         });
         setOpen(true);
@@ -125,7 +125,7 @@ const Hero = () => {
         event.preventDefault();
         ReactGA.event({
             category: "Click",
-            action: "Submit Data",
+            action: "Submit Data From Hero",
             label:'Submit Data'
         });
         const form = event.target;
