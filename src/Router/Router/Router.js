@@ -44,15 +44,15 @@ const router = createBrowserRouter([
     element: <HumanitiesPage />,
   },
   {
-    path: "/experience-union",
+    path: "/productLab-landingPage",
     element: <ExperienceUnionPage />,
   },
   {
-    path: "/experience-union-commerce",
+    path: "/businessLab-landingPage",
     element: <ExperienceUnionCommercePage />,
   },
   {
-    path: "/experience-union-humanities",
+    path: "/creativityLab-landingPage",
     element: <ExperienceUnionHumanitiesPage />,
   },
 ]);
