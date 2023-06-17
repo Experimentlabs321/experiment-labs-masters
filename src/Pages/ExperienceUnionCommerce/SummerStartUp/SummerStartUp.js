@@ -27,17 +27,9 @@ const SummerStartUp = () => {
             <h1 className="text-4xl font-bold">
               Leadership Through{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
-                Innovation
+                Business
               </span>
             </h1>
-            {/* <div className="mt-6 p-5 border rounded-lg border-dashed">
-              <h1 className="text-3xl font-bold">
-                SUMMER STARTUP WEEK FEE <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
-                  INR 19,999/-
-                </span>
-              </h1>
-            </div> */}
             <h4 className="text-2xl font-bold my-8">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
                 Programme
@@ -52,8 +44,8 @@ const SummerStartUp = () => {
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
                     50+
                   </span>{" "}
-                  Careers like Product Management, Design, Innovation,
-                  Engineering research Strategy and Many More
+                  Careers like Entrepreneurship, Consulting, Finance,
+                  Operations, Sales, Marketing and Many More
                 </span>
               </span>
               <span className="flex gap-2 items-start">
@@ -275,22 +267,21 @@ const SummerStartUp = () => {
           <h1 className="text-3xl font-semibold mt-4">
             What is{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
-              Innovation Lab?
+              Business Lab?
             </span>
           </h1>
           <p className="mt-4">
-            Innovation Lab by Experiment Labs is a unique pedagogy where you
-            explore careers and become a leader by building innovative products.
-            With exposure to over{" "}
+            Business Lab by Experiment Labs is a{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
+              unique pedagogy
+            </span>{" "}
+            where you explore careers and become a leader by building a
+            business. With exposure to over{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
               50+
             </span>{" "}
             careers and hands-on execution you build a successful career path
-            based on skills and interests. The Masters'{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
-              Union Summer Startup Week
-            </span>{" "}
-            is a highly immersive.{" "}
+            based on skills and interests.{" "}
           </p>
         </div>
         <img

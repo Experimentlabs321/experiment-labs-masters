@@ -165,7 +165,7 @@ const AllCourses = () => {
     const handleClickOpen = () => {
         ReactGA.event({
             category: "Click",
-            action: "Apply Now",
+            action: `Apply Now From Segment `+ selected,
             label:'Apply Now'
         });
         setOpen(true);
@@ -182,7 +182,7 @@ const AllCourses = () => {
         event.preventDefault();
         ReactGA.event({
             category: "Click",
-            action: "Submit Data",
+            action: "Submit Data From Segment " + selected,
             label:'Submit Data'
         });
         const form = event.target;

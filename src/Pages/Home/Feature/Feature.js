@@ -293,23 +293,23 @@ const Feature = () => {
     }
 
     return (
-        <div className='px-5 lg:px-40 mt-20' ref={containerRef}>
+        <div className='mt-20' ref={containerRef}>
 
             <div ref={stickyRef} style={{ position: `${isLargeScreen ? 'sticky' : 'block'}`, top: 75, backgroundColor: '#141414', padding: "30px 0", zIndex: '1000' }}>
-                <h1 className='text-4xl font-medium'>Envision. Experiment. Educate. Enable.</h1>
-                <h1 className='text-4xl mt-2 font-medium'>Hands-on & Placement Driven Programmes</h1>
-                <div className='parent-container lg:justify-center justify-start'>
+                <h1 className='text-4xl font-medium px-5 lg:px-40'>Envision. Experiment. Educate. Enable.</h1>
+                <h1 className='text-4xl mt-2 font-medium px-5 lg:px-40 '>Hands-on & Placement Driven Programmes</h1>
+                <div className='parent-container lg:justify-center justify-start px-5 lg:px-40'>
                     {
                         courses.map((course, index) => (
                             <div onClick={() => {
                                 ReactGA.event({
                                     category: "Click",
                                     action: course?.category,
-                                    label:course?.category
+                                    label: course?.category
                                 });
                                 setSelectedIndex(index);
-                                
-                                }} className={`courses ${selectedIndex !== index && 'bg-dark'} ${selectedIndex === index && 'bg-purple text-white'}`} key={index}>
+
+                            }} className={`courses ${selectedIndex !== index && 'bg-dark'} ${selectedIndex === index && 'bg-purple text-white'}`} key={index}>
                                 {course?.category}
                             </div>
                         ))
@@ -319,15 +319,23 @@ const Feature = () => {
 
 
 
-            {selectedIndex === 0 && <div className='hidden lg:grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 mt-8 relative px-4'>
+            {selectedIndex === 0 && <div className='hidden lg:flex overflow-x-scroll hPart gap-8 mt-8 px-5 lg:px-40 relative'>
                 {
                     courses[selectedIndex]?.details?.map((course, index) =>
-                        <Link onMouseEnter={() => setMouseEnteredIndex(index)} onMouseLeave={() => setMouseEnteredIndex(-1)} to={course?.link}>
-                            <div style={{
-                                background:"linear-gradient(360deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.12192) 25.08%, rgba(0, 0, 0, 0) 50%), #6278FF",
+                        <Link onClick={() => {
+                            ReactGA.event({
+                                category: "Click",
+                                action: course?.link,
+                                label: course?.link
+                            });
+                            window.location = course?.link
+                        }} onMouseEnter={() => setMouseEnteredIndex(index)} onMouseLeave={() => setMouseEnteredIndex(-1)}>
+                            <div className='w-[350px]' style={{
+                                background: "linear-gradient(360deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.12192) 25.08%, rgba(0, 0, 0, 0) 50%), #6278FF",
                                 borderRadius: '24px',
                                 padding: '31px 10px 40px',
-
+                                minHeight: '460px',
+                                maxHeight: '460px',
 
                             }}>
 
@@ -355,14 +363,22 @@ const Feature = () => {
                                 <img src={course?.img} alt="" />
                             </div>
 
-                            <Link to={course?.link}>
-                                <div style={{ borderRadius: '24px' }} className={`${index === mouseEnteredIndex ? 'absolute top-0 z-50 w-[25vw]' : 'hidden'} bg-[#94A4FF] pt-1 pl-1`}>
+                            <Link onClick={() => {
+                                ReactGA.event({
+                                    category: "Click",
+                                    action: course?.link,
+                                    label: course?.link
+                                });
+                                window.location = course?.link
+                            }}
+                            >
+                                <div style={{ borderRadius: '24px' }} className={`${index === mouseEnteredIndex ? 'absolute top-0 z-50 w-[350px]' : 'hidden'} bg-[#94A4FF] pt-1 pl-1`}>
                                     <div style={{
-                                        background:"linear-gradient(360deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.12192) 25.08%, rgba(0, 0, 0, 0) 50%), #6278FF",
+                                        background: "linear-gradient(360deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.12192) 25.08%, rgba(0, 0, 0, 0) 50%), #6278FF",
                                         borderRadius: '24px',
                                     }}
                                         key={index}
-                                        className='min-h-[480px] max-h-[480px]'>
+                                        className='min-h-[460px] max-h-[460px]'>
                                         <div className='w-full p-5'>
                                             <div style={{ borderBottom: "2px solid #94A4FF" }} className='pb-5'>
                                                 <h4 className='text-xl font-bold mt-3 '>{course.title}</h4>
@@ -398,14 +414,21 @@ const Feature = () => {
                 }
             </div>}
 
-            {selectedIndex !== 0 && <div className='hidden lg:block mt-8 px-4'>
+            {selectedIndex !== 0 && <div className='hidden lg:block mt-8 px-5 lg:px-40 '>
                 {
                     courses[selectedIndex]?.details?.map((course, index) =>
-                        <Link to={course?.link}>
+                        <Link onClick={() => {
+                            ReactGA.event({
+                                category: "Click",
+                                action: course?.link,
+                                label: course?.link
+                            });
+                            window.location = course?.link
+                        }}>
 
                             <div style={{ borderRadius: '24px' }} className={`bg-[#94A4FF] pt-1 pl-1`}>
                                 <div style={{
-                                    background:"linear-gradient(360deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.12192) 25.08%, rgba(0, 0, 0, 0) 50%), #6278FF",
+                                    background: "linear-gradient(360deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.12192) 25.08%, rgba(0, 0, 0, 0) 50%), #6278FF",
                                     borderRadius: '24px',
                                 }}
                                     key={index}
@@ -420,7 +443,7 @@ const Feature = () => {
                                             </div>
                                         </div>
                                         <div className='w-full px-5 py-5'>
-                                            <div style={{ borderBottom: "2px solid #94A4FF" }}  className='flex items-center justify-between gap-10 pb-10'>
+                                            <div style={{ borderBottom: "2px solid #94A4FF" }} className='flex items-center justify-between gap-10 pb-10'>
                                                 <div className='grid grid-cols-2 justify-between gap-y-4'>
                                                     <div className='flex items-center'><span className='p-[6px] rounded mr-2 bg-opacity-40'><AccessTimeRoundedIcon sx={{ color: '#94A4FF' }} /></span><span style={{ fontSize: '12px' }} className='font-bold'>{course?.data[0]}</span></div>
                                                     <div className='flex items-center'><span className='p-[6px] rounded mr-2 bg-opacity-40'><LocationOnRoundedIcon sx={{ color: '#94A4FF' }} /></span><span style={{ fontSize: '12px' }} className='font-bold'>{course?.data[1]}</span></div>
@@ -452,15 +475,22 @@ const Feature = () => {
                 }
             </div>}
 
-            <div className='block lg:hidden'>
+            <div className='block lg:hidden px-5 lg:px-40 '>
                 <div className='feature-slide-parent-container'>
                     {
                         courses[selectedIndex]?.details?.map((course, index) =>
                             <div style={{
-                                background:"linear-gradient(360deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.12192) 25.08%, rgba(0, 0, 0, 0) 50%), #6278FF",
+                                background: "linear-gradient(360deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.12192) 25.08%, rgba(0, 0, 0, 0) 50%), #6278FF",
                                 borderRadius: '24px',
                             }} key={index} className='relative feature-course'>
-                                <Link to={'/science-innovation'}>
+                                <Link onClick={() => {
+                                    ReactGA.event({
+                                        category: "Click",
+                                        action: course?.link,
+                                        label: course?.link
+                                    });
+                                    window.location = course?.link
+                                }}>
                                     <div className='w-full p-5'>
                                         <div style={{ borderBottom: "2px solid #94A4FF" }} className='pb-5'>
                                             <h4 className='text-xl font-bold mt-3 '>{course.title}</h4>

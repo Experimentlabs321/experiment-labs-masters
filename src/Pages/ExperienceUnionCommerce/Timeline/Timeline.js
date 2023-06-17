@@ -1,6 +1,6 @@
 import React from "react";
-import timeLineDesktop from "../../../assets/EnperienceUnion/DesktopProductLab.jpg";
-import timeLineMobile from "../../../assets/EnperienceUnion/MobileViewProductLab.jpg";
+import timeLineDesktop from "../../../assets/EnperienceUnion/DesktopEntrepreneurshipLab.jpg";
+import timeLineMobile from "../../../assets/EnperienceUnion/MobileViewEntrepreneurshipLab.jpg";
 
 const Timeline = () => {
   return (

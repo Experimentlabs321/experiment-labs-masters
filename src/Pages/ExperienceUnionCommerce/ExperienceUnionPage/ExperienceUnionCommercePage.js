@@ -8,7 +8,7 @@ import SummerStartUp from "../SummerStartUp/SummerStartUp";
 import Timeline from "../Timeline/Timeline";
 import EUFooter from "../EUFooter/EUFooter";
 
-const ExperienceUnionPage = () => {
+const ExperienceUnionCommercePage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -32,4 +32,4 @@ const ExperienceUnionPage = () => {
   );
 };
 
-export default ExperienceUnionPage;
+export default ExperienceUnionCommercePage;
