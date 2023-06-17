@@ -7,10 +7,16 @@ import MyHelmet from "../../../Components/MyHelmet/MyHelpmet";
 import SummerStartUp from "../SummerStartUp/SummerStartUp";
 import Timeline from "../Timeline/Timeline";
 import EUFooter from "../EUFooter/EUFooter";
+import ReactGA from "react-ga4";
 
 const ExperienceUnionCommercePage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
+    ReactGA.send({
+      hitType: "pageview",
+      page: "/businessLab-landingPage",
+      title: "Business Lab by Experiment Labs",
+    });
   }, []);
 
   return (
