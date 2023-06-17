@@ -11,8 +11,85 @@ import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import LiveTvIcon from "@mui/icons-material/LiveTv";
+import emailjs from "@emailjs/browser";
+
+import ReactGA from "react-ga4";
 
 const SummerStartUp = () => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    ReactGA.event({
+      category: "Click",
+      action: "Submit Data From Get Career In Science and Innovation",
+      label: "Submit Data",
+    });
+    const form = event.target;
+    const name = form.name.value;
+    const number = form.number.value;
+    const email = form.email.value;
+     const option = form.option.value;
+     const city = form.city.value;
+
+    const data = {
+      Name: name,
+      Number: "+91" + number,
+      Email: email,
+      Option: option,
+      City: city,
+      Time: new Date(),
+    };
+
+    console.log(data);
+
+    fetch(
+      "https://sheet.best/api/sheets/79b86141-ec12-4a0a-85ae-3e1669d63607",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    )
+      .then((data) => {
+        // The response comes here
+        console.log(data);
+      })
+      .catch((error) => {
+        // Errors are reported there
+        console.log(error);
+      });
+
+    const templateParams = {
+      from_name: name,
+      message: `
+            Name: ${name},
+            Number: ${"+91" + number},
+            Email: ${email},
+            ${option},
+            City: ${city},
+            Time: ${new Date()},
+            `,
+    };
+
+    emailjs
+      .send(
+        "service_s3bklnu",
+        "template_l0yacbb",
+        templateParams,
+        "U0g6Ht1DVmnBbENk0"
+      )
+      .then(
+        (result) => {
+          console.log(result.text);
+          // toast.success("Successfully Added Your Info");
+          event.target.reset();
+        },
+        (error) => {
+          console.log(error.text);
+        }
+      );
+  };
   return (
     <div className="text-white">
       <div
@@ -80,7 +157,7 @@ const SummerStartUp = () => {
             </div>
           </div>
           <div className="w-full">
-            <form className="bg-[#424242] p-8 rounded-md border-2 border-custom-blue border-opacity-40 w-full lg:max-w-[480px]">
+            <form onSubmit={handleSubmit} className="bg-[#424242] p-8 rounded-md border-2 border-custom-blue border-opacity-40 w-full lg:max-w-[480px]">
               <div>
                 <label>
                   Name<span className="text-red-600">*</span>
@@ -91,6 +168,7 @@ const SummerStartUp = () => {
                     className="w-full bg-transparent border-0 focus:outline-0"
                     type="text"
                     placeholder="Enter Your name"
+                    name="name"
                   />
                 </div>
               </div>
@@ -104,6 +182,7 @@ const SummerStartUp = () => {
                     className="w-full bg-transparent border-0 focus:outline-0"
                     type="email"
                     placeholder="Enter Your email"
+                    name="email"
                   />
                 </div>
               </div>
@@ -117,11 +196,45 @@ const SummerStartUp = () => {
                     className="w-full bg-transparent border-0 focus:outline-0"
                     type="text"
                     placeholder="Enter Your mobile number"
+                    name="number"
+                  />
+                </div>
+              </div>
+              <div className="mt-6">
+              <label htmlFor="option">Select One<span className="text-red-600">*</span>
+              </label>
+              <div className=" flex gap-2 mt-4 border px-3 py-3 rounded-md">
+                  <CallIcon />
+                  <select
+                required
+                className="w-full bg-[#424242] border-0 focus:outline-0"
+                name="option"
+                id="option"
+              >
+                <option className="bg" value="Student">Student</option>
+                <option value="Parent">Parent</option>
+                <option value="Counselor">Counselor</option>
+                <option value="Others">Others</option>
+              </select>
+                </div>
+             
+            </div>
+            <div className="mt-6">
+                <label>
+                 City<span className="text-red-600">*</span>
+                </label>
+                <div className="flex gap-2 mt-4 border px-3 py-3 rounded-md">
+                  <Person3Icon />
+                  <input
+                    className="w-full bg-transparent border-0 focus:outline-0"
+                    type="text"
+                    placeholder="Enter Your name"
+                    name="city"
                   />
                 </div>
               </div>
 
-              <div className="mt-6">
+              {/* <div className="mt-6">
                 <label>
                   Class<span className="text-red-600">*</span>
                 </label>
@@ -139,7 +252,7 @@ const SummerStartUp = () => {
                     <option value="Class 12">Class 12</option>
                   </select>
                 </div>
-              </div>
+              </div> */}
 
               <div className="mt-8 flex gap-2 items-start">
                 <input
