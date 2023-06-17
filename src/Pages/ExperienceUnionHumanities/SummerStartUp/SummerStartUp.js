@@ -199,7 +199,7 @@ const SummerStartUp = () => {
                 <span>Commencement Date</span>
               </div>
               <div className="mt-2">
-                <h1 className="text-2xl font-bold">May 26,2023</h1>
+                <h1 className="text-2xl font-bold">July 11, 2023</h1>
                 <p
                   style={{ visibility: "hidden" }}
                   className="font-thin mt-2 text-sm"
@@ -251,7 +251,7 @@ const SummerStartUp = () => {
                 <span>Commencement Date</span>
               </div>
               <div className="mt-2">
-                <h1 className="text-2xl font-bold">May 26,2023</h1>
+                <h1 className="text-2xl font-bold">July 11, 2023</h1>
                 <p
                   style={{ visibility: "hidden" }}
                   className="font-thin mt-2 text-sm"

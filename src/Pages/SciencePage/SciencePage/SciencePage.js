@@ -15,13 +15,16 @@ import HearFromStudents from "../HearFromStudents/HearFromStudents";
 import GetInTouch from "../GetInTouch/GetInTouch";
 import CEOChallenge from "../../Home/CEOChallenge/CEOChallenge";
 import GetCareer from "../GetCareer/GetCareer";
+import ReactGA from "react-ga4";
 
 const SciencePage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
+    ReactGA.send({ hitType: "pageview", page: "/science-innovation", title: "Science & Innovation" });
   }, []);
 
   const scrollToSection = (sectionId) => {
+    
     scroll.scrollTo(sectionId, {
       duration: 500, // Adjust the duration as needed
       smooth: "easeInOutQuart", // Adjust the easing function as needed

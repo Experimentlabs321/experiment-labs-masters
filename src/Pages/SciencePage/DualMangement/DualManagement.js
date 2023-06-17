@@ -71,9 +71,9 @@ const DualManagement = () => {
 
   return (
     <div className="mt-28 px-5 py-10 lg:px-30 xl:px-32 font" ref={containerRef}>
-      <h1 className="font-bold text-4xl font block lg:hidden mb-6 lg:mb-0">
+      {/* <h1 className="font-bold text-4xl font block lg:hidden mb-6 lg:mb-0">
         Curriculum with Dual Focus on Tech And Management
-      </h1>
+      </h1> */}
       <div
         ref={stickyRef}
         style={{
@@ -85,9 +85,9 @@ const DualManagement = () => {
         }}
         className="hidden lg:block"
       >
-        <h1 className="font-bold text-3xl">
+        {/* <h1 className="font-bold text-3xl">
           Curriculum with Dual Focus on Tech And Management
-        </h1>
+        </h1> */}
       </div>
       <div className="flex flex-col lg:flex-row gap-10 items-start w-full">
         <div
@@ -1113,7 +1113,7 @@ const DualManagement = () => {
         </div>
       </div>
 
-      <HearFromStudents />
+      {/* <HearFromStudents /> */}
     </div>
   );
 };

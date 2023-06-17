@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import img from "../../../assets/wepik-export-20230516131526jrNm.png";
 import img1 from "../../../assets/Overview/Mask group.png";
 import "./style.css";
@@ -7,8 +7,200 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import LiveTvIcon from "@mui/icons-material/LiveTv";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Slide from "@mui/material/Slide";
+import axios from "axios";
+import emailjs from "@emailjs/browser";
+import { toast } from "react-hot-toast";
+import ReactGA from "react-ga4";
+
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const Overview = () => {
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    ReactGA.event({
+      category: "Click",
+      action: "Open form from Connect With Counselor",
+      label: "Submit",
+    });
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const form = useRef();
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    ReactGA.event({
+      category: "Click",
+      action: "Submit Data From Connect With Counselor",
+      label: "Submit Data",
+    });
+    const form = event.target;
+    const name = form.name.value;
+    const number = form.number.value;
+    const email = form.email.value;
+    const option = form.option.value;
+    const city = form.city.value;
+
+    const data = {
+      Name: name,
+      Number: "+91" + number,
+      Email: email,
+      Option: option,
+      City: city,
+      Time: new Date(),
+    };
+
+    console.log(data);
+
+    fetch(
+      "https://sheet.best/api/sheets/79b86141-ec12-4a0a-85ae-3e1669d63607",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    )
+      .then((data) => {
+        // The response comes here
+        console.log(data);
+      })
+      .catch((error) => {
+        // Errors are reported there
+        console.log(error);
+      });
+
+    const templateParams = {
+      from_name: name,
+      message: `
+            Name: ${name},
+            Number: ${"+91" + number},
+            Email: ${email},
+            ${option},
+            City: ${city},
+            Time: ${new Date()},
+            `,
+    };
+
+    emailjs
+      .send(
+        "service_s3bklnu",
+        "template_l0yacbb",
+        templateParams,
+        "U0g6Ht1DVmnBbENk0"
+      )
+      .then(
+        (result) => {
+          console.log(result.text);
+          // toast.success("Successfully Added Your Info");
+          event.target.reset();
+        },
+        (error) => {
+          console.log(error.text);
+        }
+      );
+  };
+
+  const [open2, setOpen2] = React.useState(false);
+
+  const handleClickOpen2 = () => {
+    ReactGA.event({
+      category: "Click",
+      action: "Open Form for Career Handbook from Science & Innovation Hero",
+      label: 'Apply Now'
+    });
+    setOpen2(true);
+  };
+
+  const handleClose2 = () => {
+    setOpen2(false);
+  };
+
+
+  const handleSubmit2 = event => {
+    event.preventDefault();
+    ReactGA.event({
+      category: "Click",
+      action: "Download Career Handbook from Science & Innovation Hero",
+      label: 'Submit Data'
+    });
+    const form = event.target;
+    const name = form.name.value;
+    const number = form.number.value;
+    const email = form.email.value;
+    const option = form.option.value;
+    const city = form.city.value;
+
+    const data = {
+      Name: name,
+      Number: '+91' + number,
+      Email: email,
+      Option: option,
+      City: city,
+      Time: new Date(),
+    };
+
+    console.log(data);
+
+    fetch("https://sheet.best/api/sheets/79b86141-ec12-4a0a-85ae-3e1669d63607", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((data) => {
+        // The response comes here
+        console.log(data);
+      })
+      .catch((error) => {
+        // Errors are reported there
+        console.log(error);
+      });
+
+
+    const templateParams = {
+      from_name: name,
+      message: `
+            Name: ${name},
+            Number: ${'+91' + number},
+            Email: ${email},
+            ${option},
+            City: ${city},
+            Time: ${new Date()},
+            `
+    };
+
+    emailjs.send('service_s3bklnu', 'template_l0yacbb', templateParams, 'U0g6Ht1DVmnBbENk0')
+      .then((result) => {
+        console.log(result.text);
+        // toast.success("Message Sent");
+        event.target.reset();
+      }, (error) => {
+        console.log(error.text);
+      });
+
+    const a = document.createElement('a');
+    a.href = 'https://drive.google.com/uc?export=download&id=16Zpw9uP_ZyWmyjuKAeEi6h11-WXrN8sl';
+    a.download = 'HandBook.pdf'; // Set the desired file name
+    a.click();
+
+  }
   return (
     <div className="pt-40 flex items-center justify-center pb-20 font">
       <div className="px-10 lg:px-32">
@@ -51,10 +243,10 @@ const Overview = () => {
             </div>
 
             <div className="flex flex-col lg:flex-row w-full gap-8">
-              <button className=" rounded-3xl bg-[#6278FF] font-semibold hover:bg-opacity-80 hover:transition-all hover:delay-300 hover:ease-out w-full py-1">
+              <button onClick={handleClickOpen} className=" rounded-3xl bg-[#6278FF] font-semibold hover:bg-opacity-80 hover:transition-all hover:delay-300 hover:ease-out w-full py-1">
                 Connect With Counsellor
               </button>
-              <button className=" border border-[#6278FF] rounded-3xl font-semibold hover:bg-opacity-80 hover:transition-all hover:delay-300 hover:ease-out w-full py-1">
+              <button onClick={handleClickOpen2} className=" border border-[#6278FF] rounded-3xl font-semibold hover:bg-opacity-80 hover:transition-all hover:delay-300 hover:ease-out w-full py-1">
                 Download Career Report
               </button>
             </div>
@@ -121,12 +313,11 @@ const Overview = () => {
                 <span>Commencement Date</span>
               </div>
               <div className="mt-2">
-                <h1 className="text-2xl font-bold">May 26,2023</h1>
+                <h1 className="text-2xl font-bold">July 11, 2023</h1>
                 <p
-                  style={{ visibility: "hidden" }}
                   className="font-thin mt-2 text-sm"
                 >
-                  Opt-in Residential
+                  Limited seats only
                 </p>
               </div>
             </div>
@@ -173,7 +364,7 @@ const Overview = () => {
                 <span>Commencement Date</span>
               </div>
               <div className="mt-2">
-                <h1 className="text-2xl font-bold">May 26,2023</h1>
+                <h1 className="text-2xl font-bold">July 11, 2023</h1>
                 <p
                   style={{ visibility: "hidden" }}
                   className="font-thin mt-2 text-sm"
@@ -185,6 +376,145 @@ const Overview = () => {
           </div>
         </div>
       </div>
+      <Dialog
+        open={open}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleClose}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <div className="bg-dark w-full min-w-[300px] sm:min-w-[350px] lg:w-[500px] p-5 cursor-pointer">
+          <div className="w-full">
+            <h4
+              onClick={handleClose}
+              className="text-xl text-white text-right hover:text-purple"
+            >
+              x
+            </h4>
+            <h1 className="text-2xl font-semibold text-pink text-center">
+              Connect With Counsellor
+            </h1>
+          </div>
+          <form
+            ref={form}
+            onSubmit={handleSubmit}
+            autoComplete="off"
+            className="lg:px-10"
+          >
+            <div className="flex flex-col items-center mt-6 gap-1 text-white">
+              <label htmlFor="name">Enter Name</label>
+              <input
+                required
+                className="text-center w-full py-2 rounded-3xl text-black focus:outline-none"
+                placeholder="Enter your Name"
+                type="text"
+                name="name"
+                id="name"
+              />
+            </div>
+            <div className="flex flex-col items-center mt-6 gap-1 text-white">
+              <label htmlFor="number">Enter Number</label>
+              <input
+                required
+                className="text-center w-full py-2 rounded-3xl text-black focus:outline-none"
+                placeholder="Enter your number"
+                type="number"
+                name="number"
+                id="number"
+              />
+            </div>
+            <div className="flex flex-col items-center mt-6 gap-1 text-white">
+              <label htmlFor="email">Enter Email</label>
+              <input
+                required
+                className="text-center w-full py-2 rounded-3xl text-black focus:outline-none"
+                placeholder="Enter your email"
+                type="email"
+                name="email"
+                id="email"
+              />
+            </div>
+            <div className="flex flex-col items-center mt-6 gap-1 text-white">
+              <label htmlFor="option">Select One</label>
+              <select
+                required
+                className="text-center w-full py-2 rounded-3xl text-black focus:outline-none"
+                name="option"
+                id="option"
+              >
+                <option value="Student">Student</option>
+                <option value="Parent">Parent</option>
+                <option value="Counselor">Counselor</option>
+                <option value="Others">Others</option>
+              </select>
+            </div>
+            <div className="flex flex-col items-center mt-6 gap-1 text-white">
+              <label htmlFor="city">Enter City</label>
+              <input
+                required
+                className="text-center w-full py-2 rounded-3xl text-black focus:outline-none"
+                placeholder="Enter your city"
+                type="text"
+                name="city"
+                id="city"
+              />
+            </div>
+            <div className="flex flex-col items-center mt-6 gap-1 text-white">
+              <input
+                className="text-white py-2 font-bold rounded-3xl bg-pink hover:bg-purple w-1/2 text-center"
+                type="submit"
+                value={"Submit"}
+              />
+            </div>
+          </form>
+        </div>
+      </Dialog>
+      <Dialog
+        open={open2}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleClose2}
+        aria-labelledby="responsive-dialog-title"
+      >
+
+        <div className='bg-dark w-full min-w-[300px] sm:min-w-[350px] lg:w-[500px] p-5 cursor-pointer'>
+          <div className='w-full'>
+            <h4 onClick={handleClose2} className='text-xl text-white text-right hover:text-purple'>x</h4>
+            <h1 className='text-2xl font-semibold text-pink text-center'>DOWNLOAD  Career Handbook</h1>
+          </div>
+          <form onSubmit={handleSubmit2} autoComplete='off' className='lg:px-10'>
+            <div className='flex flex-col items-center mt-6 gap-1 text-white'>
+              <label htmlFor="name">Enter Name</label>
+              <input required className="text-center w-full py-2 rounded-3xl text-black focus:outline-none" placeholder='Enter your Name' type="text" name="name" id="name" />
+            </div>
+            <div className='flex flex-col items-center mt-6 gap-1 text-white'>
+              <label htmlFor="number">Enter Number</label>
+              <input required className="text-center w-full py-2 rounded-3xl text-black focus:outline-none" placeholder='Enter your number' type="number" name="number" id="number" />
+            </div>
+            <div className='flex flex-col items-center mt-6 gap-1 text-white'>
+              <label htmlFor="email">Enter Email</label>
+              <input required className="text-center w-full py-2 rounded-3xl text-black focus:outline-none" placeholder='Enter your email' type="email" name="email" id="email" />
+            </div>
+            <div className='flex flex-col items-center mt-6 gap-1 text-white'>
+              <label htmlFor="option">Select One</label>
+              <select required className="text-center w-full py-2 rounded-3xl text-black focus:outline-none" name="option" id="option">
+                <option value="Student">Student</option>
+                <option value="Parent">Parent</option>
+                <option value="Counselor">Counselor</option>
+                <option value="Others">Others</option>
+              </select>
+            </div>
+            <div className='flex flex-col items-center mt-6 gap-1 text-white'>
+              <label htmlFor="city">Enter City</label>
+              <input required className="text-center w-full py-2 rounded-3xl text-black focus:outline-none" placeholder='Enter your city' type="text" name="city" id="city" />
+            </div>
+            <div className='flex flex-col items-center mt-6 gap-1 text-white'>
+              <input className='text-white py-2 font-bold rounded-3xl bg-pink hover:bg-purple w-1/2 text-center' type="submit" value={'Download'} />
+            </div>
+          </form>
+        </div>
+
+      </Dialog>
     </div>
   );
 };

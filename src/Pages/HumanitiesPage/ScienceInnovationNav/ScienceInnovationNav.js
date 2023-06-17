@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -33,6 +33,19 @@ import {
 import { AuthContext } from "../../../contexts/AuthProvider";
 import { GoogleAuthProvider } from "firebase/auth";
 import { Dialog, useMediaQuery, useTheme } from "@mui/material";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Slide from "@mui/material/Slide";
+import axios from "axios";
+import emailjs from "@emailjs/browser";
+import { toast } from "react-hot-toast";
+import ReactGA from "react-ga4";
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const ScienceInnovationNav = (props) => {
   const [state, setState] = React.useState(false);
@@ -150,38 +163,102 @@ const ScienceInnovationNav = (props) => {
   const navItemSytle = `
     text-white hover:text-cyan hover:transition-colors hover:delay-300 hover:ease-in-out
 `;
+
+  const [formOpen, setFormOpen] = React.useState(false);
+
+  const handleClickFormOpen = () => {
+    ReactGA.event({
+      category: "Click",
+      action: "Apply Now From Navbar",
+      label: "Submit",
+    });
+    setFormOpen(true);
+  };
+
+  const handleFormClose = () => {
+    setFormOpen(false);
+  };
+
+  const form = useRef();
+
+  const handleFormSubmit = (event) => {
+    event.preventDefault();
+    ReactGA.event({
+      category: "Click",
+      action: "Submit Data From Navbar",
+      label: "Submit Data",
+    });
+    const form = event.target;
+    const name = form.name.value;
+    const number = form.number.value;
+    const email = form.email.value;
+    const option = form.option.value;
+    const city = form.city.value;
+
+    const data = {
+      Name: name,
+      Number: "+91" + number,
+      Email: email,
+      Option: option,
+      City: city,
+      Time: new Date(),
+    };
+
+    console.log(data);
+
+    fetch(
+      "https://sheet.best/api/sheets/79b86141-ec12-4a0a-85ae-3e1669d63607",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    )
+      .then((data) => {
+        // The response comes here
+        console.log(data);
+      })
+      .catch((error) => {
+        // Errors are reported there
+        console.log(error);
+      });
+
+    const templateParams = {
+      from_name: name,
+      message: `
+          Name: ${name},
+          Number: ${"+91" + number},
+          Email: ${email},
+          ${option},
+          City: ${city},
+          Time: ${new Date()},
+          `,
+    };
+
+    emailjs
+      .send(
+        "service_s3bklnu",
+        "template_l0yacbb",
+        templateParams,
+        "U0g6Ht1DVmnBbENk0"
+      )
+      .then(
+        (result) => {
+          console.log(result.text);
+          // toast.success("Successfully Added Your Info");
+          event.target.reset();
+        },
+        (error) => {
+          console.log(error.text);
+        }
+      );
+  };
+
   const navItems = [
-    !user ? (
-      <Button
-        onClick={handleClickOpen}
-        sx={{
-          bgcolor: "#FF557A",
-          borderRadius: "22.5px",
-          ":hover": { bgcolor: "#94A4FF" },
-          color: "white",
-          width: "100%",
-        }}
-        variant="contained"
-      >
-        {/* <Link to={'/login'}>Login</Link> */}Login
-      </Button>
-    ) : (
-      <Button
-        onClick={handleLogout}
-        sx={{
-          bgcolor: "#FF557A",
-          borderRadius: "22.5px",
-          ":hover": { bgcolor: "#94A4FF" },
-          color: "white",
-          width: "100%",
-        }}
-        variant="contained"
-      >
-        <Link>Log Out</Link>
-      </Button>
-    ),
     <Button
-      //   onClick={handleLogout}
+      onClick={handleClickFormOpen}
       sx={{
         bgcolor: "#FF557A",
         borderRadius: "22.5px",
@@ -193,40 +270,93 @@ const ScienceInnovationNav = (props) => {
     >
       <Link>Apply Now</Link>
     </Button>,
+    !user ? (
+      <Button
+        onClick={handleClickOpen}
+        sx={{
+          bgcolor: "#FF557A",
+          borderRadius: "22.5px",
+          ":hover": { bgcolor: "#94A4FF" },
+          color: "white",
+          width: "100%",
+        }}
+        variant="contained"
+      >
+        {/* <Link to={'/login'}>Login</Link> */}Login
+      </Button>
+    ) : (
+      <Button
+        onClick={handleLogout}
+        sx={{
+          bgcolor: "#FF557A",
+          borderRadius: "22.5px",
+          ":hover": { bgcolor: "#94A4FF" },
+          color: "white",
+          width: "100%",
+        }}
+        variant="contained"
+      >
+        <Link>Log Out</Link>
+      </Button>
+    ),
+    // <Button
+    //   onClick={handleClickFormOpen}
+    //   sx={{
+    //     bgcolor: "#FF557A",
+    //     borderRadius: "22.5px",
+    //     ":hover": { bgcolor: "#94A4FF" },
+    //     color: "white",
+    //     width: "100%",
+    //   }}
+    //   variant="contained"
+    // >
+    //   <Link>Apply Now</Link>
+    // </Button>,
   ];
 
   const navItems2 = [
+    // <Button
+    //   onClick={toggleDrawer(true)}
+    //   sx={{ color: "#fff", bgcolor: "#121212", textTransform: "initial" }}
+    //   size="medium"
+    //   variant="text"
+    // >
+    //   Admissions
+    // </Button>,
+    // <Button
+    //   onClick={toggleDrawer(true)}
+    //   sx={{ color: "#fff", bgcolor: "#121212", textTransform: "initial" }}
+    //   size="medium"
+    //   variant="text"
+    // >
+    //   Student Life
+    // </Button>,
+    // <Button
+    //   onClick={toggleDrawer(true)}
+    //   sx={{ color: "#fff", bgcolor: "#121212", textTransform: "initial" }}
+    //   size="medium"
+    //   variant="text"
+    // >
+    //   Careers
+    // </Button>,
+    // <Button
+    //   onClick={toggleDrawer(true)}
+    //   sx={{ color: "#fff", bgcolor: "#121212", textTransform: "initial" }}
+    //   size="medium"
+    //   variant="text"
+    // >
+    //   Research
+    // </Button>,
     <Button
-      onClick={toggleDrawer(true)}
-      sx={{ color: "#fff", bgcolor: "#121212", textTransform: "initial" }}
-      size="medium"
-      variant="text"
+      onClick={handleClickFormOpen}
+      sx={{
+        bgcolor: "#FF557A",
+        ":hover": { bgcolor: "#FF557A" },
+        color: "black",
+      }}
+      variant="contained"
     >
-      Admissions
-    </Button>,
-    <Button
-      onClick={toggleDrawer(true)}
-      sx={{ color: "#fff", bgcolor: "#121212", textTransform: "initial" }}
-      size="medium"
-      variant="text"
-    >
-      Student Life
-    </Button>,
-    <Button
-      onClick={toggleDrawer(true)}
-      sx={{ color: "#fff", bgcolor: "#121212", textTransform: "initial" }}
-      size="medium"
-      variant="text"
-    >
-      Careers
-    </Button>,
-    <Button
-      onClick={toggleDrawer(true)}
-      sx={{ color: "#fff", bgcolor: "#121212", textTransform: "initial" }}
-      size="medium"
-      variant="text"
-    >
-      Research
+      Apply Now
     </Button>,
     !user ? (
       <Button
@@ -257,18 +387,6 @@ const ScienceInnovationNav = (props) => {
         <Link>Log Out</Link>
       </Button>
     ),
-    <Button
-      onClick={toggleDrawer(true)}
-      sx={{
-        bgcolor: "#FF557A",
-        ":hover": { bgcolor: "#FF557A" },
-        color: "black",
-      }}
-      variant="contained"
-      endIcon={<ExpandMoreIcon />}
-    >
-      All Courses
-    </Button>,
   ];
 
   const { window } = props;
@@ -377,7 +495,7 @@ const ScienceInnovationNav = (props) => {
             graphyLogin(loginData.email, loginData.name);
             // navigate("/dashboard");
           })
-          .catch((error) => {});
+          .catch((error) => { });
       })
       .catch((error) => {
         console.log(error.message);
@@ -388,8 +506,8 @@ const ScienceInnovationNav = (props) => {
   // Login user with Email Password
   const loginUser = (email, password, location, history) => {
     signIn(email, password)
-      .then((userCredential) => {})
-      .catch((error) => {});
+      .then((userCredential) => { })
+      .catch((error) => { });
   };
 
   const handleOnChange = (e) => {
@@ -716,6 +834,99 @@ const ScienceInnovationNav = (props) => {
               </span>
             </p>
           </div>
+        </div>
+      </Dialog>
+      <Dialog
+        open={formOpen}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleFormClose}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <div className="bg-dark w-full min-w-[300px] sm:min-w-[350px] lg:w-[500px] p-5 cursor-pointer">
+          <div className="w-full">
+            <h4
+              onClick={handleFormClose}
+              className="text-xl text-white text-right hover:text-purple"
+            >
+              x
+            </h4>
+            <h1 className="text-2xl font-semibold text-pink text-center">
+              Learn More
+            </h1>
+          </div>
+          <form
+            ref={form}
+            onSubmit={handleFormSubmit}
+            autoComplete="off"
+            className="lg:px-10"
+          >
+            <div className="flex flex-col items-center mt-6 gap-1 text-white">
+              <label htmlFor="name">Enter Name</label>
+              <input
+                required
+                className="text-center w-full py-2 rounded-3xl text-black focus:outline-none"
+                placeholder="Enter your Name"
+                type="text"
+                name="name"
+                id="name"
+              />
+            </div>
+            <div className="flex flex-col items-center mt-6 gap-1 text-white">
+              <label htmlFor="number">Enter Number</label>
+              <input
+                required
+                className="text-center w-full py-2 rounded-3xl text-black focus:outline-none"
+                placeholder="Enter your number"
+                type="number"
+                name="number"
+                id="number"
+              />
+            </div>
+            <div className="flex flex-col items-center mt-6 gap-1 text-white">
+              <label htmlFor="email">Enter Email</label>
+              <input
+                required
+                className="text-center w-full py-2 rounded-3xl text-black focus:outline-none"
+                placeholder="Enter your email"
+                type="email"
+                name="email"
+                id="email"
+              />
+            </div>
+            <div className="flex flex-col items-center mt-6 gap-1 text-white">
+              <label htmlFor="option">Select One</label>
+              <select
+                required
+                className="text-center w-full py-2 rounded-3xl text-black focus:outline-none"
+                name="option"
+                id="option"
+              >
+                <option value="Student">Student</option>
+                <option value="Parent">Parent</option>
+                <option value="Counselor">Counselor</option>
+                <option value="Others">Others</option>
+              </select>
+            </div>
+            <div className="flex flex-col items-center mt-6 gap-1 text-white">
+              <label htmlFor="city">Enter City</label>
+              <input
+                required
+                className="text-center w-full py-2 rounded-3xl text-black focus:outline-none"
+                placeholder="Enter your city"
+                type="text"
+                name="city"
+                id="city"
+              />
+            </div>
+            <div className="flex flex-col items-center mt-6 gap-1 text-white">
+              <input
+                className="text-white py-2 font-bold rounded-3xl bg-pink hover:bg-purple w-1/2 text-center"
+                type="submit"
+                value={"Submit"}
+              />
+            </div>
+          </form>
         </div>
       </Dialog>
       <CssBaseline />

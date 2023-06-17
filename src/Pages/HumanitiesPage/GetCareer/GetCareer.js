@@ -3,7 +3,8 @@ import React from 'react';
 import Person3Icon from '@mui/icons-material/Person3';
 import EmailIcon from '@mui/icons-material/Email';
 import CallIcon from '@mui/icons-material/Call';
-import img from '../../../assets/GetCareer/serious-teacher-checking-assignment-two-students1.png'
+import img from '../../../assets/GetCareer/serious-teacher-checking-assignment-two-students1.png';
+import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 
 const GetCareer = () => {
     return (
@@ -16,16 +17,16 @@ const GetCareer = () => {
                         Get Career advice from your future recruiters
                     </h1>
                     <div className='lg:ml-24'>
-                        <p className='text font-light mb-8'>
-                            Take courses with top CXOs,MDs,startup founders and academicians from <br />
+                        <p className='text font-light mb-8 flex'>
+                            <PlayArrowRoundedIcon /> Take courses with top CXOs,MDs,startup founders and academicians from <br />
                             HBS,Mckinsey and more!
                         </p>
-                        <p className='text font-light mb-8 '>
-                            Get to experience what a week in the life of your preferred career<br />
+                        <p className='text font-light mb-8 flex'>
+                            <PlayArrowRoundedIcon /> Get to experience what a week in the life of your preferred career<br />
                             looks like and what it takes to become a successful leader.
                         </p>
-                        <p className='text font-light mt-3'>
-                            Get 1-1 mentorship and shadow Masters in your preferred domain
+                        <p className='text font-light mt-3 flex'>
+                            <PlayArrowRoundedIcon /> Get 1-1 mentorship and shadow Masters in your preferred domain
 
                         </p>
                     </div>

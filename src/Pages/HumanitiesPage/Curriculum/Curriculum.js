@@ -10,6 +10,20 @@ import img1 from '../../../assets/Curriculum/pexels-anil-sharma-1.png'
 import './style.css';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { ArrowBackIos } from '@mui/icons-material';
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Slide from "@mui/material/Slide";
+import axios from "axios";
+import emailjs from "@emailjs/browser";
+import { toast } from "react-hot-toast";
+import ReactGA from "react-ga4";
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const Curriculum = () => {
 
@@ -22,6 +36,98 @@ const Curriculum = () => {
     function handleScrollRight() {
         containerRef.current.scrollLeft += 300; // scroll right by 100 pixels
     }
+
+    const [open, setOpen] = React.useState(false);
+
+    const handleClickOpen = () => {
+        ReactGA.event({
+            category: "Click",
+            action: "Submit Data Form Opened From Curriculum",
+            label: "Submit",
+        });
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const form = useRef();
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        ReactGA.event({
+            category: "Click",
+            action: "Submit Data From Curriculum",
+            label: "Submit Data",
+        });
+        const form = event.target;
+        const name = form.name.value;
+        const number = form.number.value;
+        const email = form.email.value;
+        const option = form.option.value;
+        const city = form.city.value;
+
+        const data = {
+            Name: name,
+            Number: "+91" + number,
+            Email: email,
+            Option: option,
+            City: city,
+            Time: new Date(),
+        };
+
+        console.log(data);
+
+        fetch(
+            "https://sheet.best/api/sheets/79b86141-ec12-4a0a-85ae-3e1669d63607",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            }
+        )
+            .then((data) => {
+                // The response comes here
+                console.log(data);
+            })
+            .catch((error) => {
+                // Errors are reported there
+                console.log(error);
+            });
+
+        const templateParams = {
+            from_name: name,
+            message: `
+            Name: ${name},
+            Number: ${"+91" + number},
+            Email: ${email},
+            ${option},
+            City: ${city},
+            Time: ${new Date()},
+            `,
+        };
+
+        emailjs
+            .send(
+                "service_s3bklnu",
+                "template_l0yacbb",
+                templateParams,
+                "U0g6Ht1DVmnBbENk0"
+            )
+            .then(
+                (result) => {
+                    console.log(result.text);
+                    // toast.success("Successfully Added Your Info");
+                    event.target.reset();
+                },
+                (error) => {
+                    console.log(error.text);
+                }
+            );
+    };
 
     return (
         <div className='pt-40 flex flex-col justify-center pb-40 font'>
@@ -85,7 +191,7 @@ const Curriculum = () => {
                 <div className=' flex justify-between mt-5'>
                     <h1 className='text-xl'>FAQs</h1>
 
-                    <button className='px-5 py-1 bg-[#FF557A] rounded-3xl hover:bg-opacity-75'>More info</button>
+                    <button onClick={handleClickOpen} className='px-5 py-1 bg-[#FF557A] rounded-3xl hover:bg-opacity-75'>More info</button>
                 </div>
 
                 <div className='mt-16 flex flex-col lg:flex-row'>
@@ -110,93 +216,86 @@ const Curriculum = () => {
                                     >
                                         <div className='border-2  rounded-2xl border-gray-400 bg-[#7683CC] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px]'>
                                             <div className='border-gray-400 p-3'>
-                                                <h1 className='text-xl font-bold'>Building Marketing Strategies</h1>
+                                                <h1 className='text-2xl font-bold'>What is experiential learning?</h1>
                                             </div>
-                                            <div className='p-3'>
-                                                <h4 className='font-extrabold font'>Full Name</h4>
-                                                <h6 className='text-sm font-thin'>Work Role, Company</h6>
-                                                <p className='text-sm font-thin mt-2'>Teaching :</p>
-                                                <p className='text-xs font-semibold'>Full Subject Name</p>
-                                            </div>
-                                        </div>
-                                        <div className='border-2 rounded-2xl border-gray-400 bg-[#7683CC] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px]'>
-                                            <div className=' border-gray-400 p-3'>
-                                                <h1 className='text-xl font-bold'>Building Marketing Strategies</h1>
-                                            </div>
-                                            <div className='p-3'>
-                                                <h4 className='font-extrabold font'>Full Name</h4>
-                                                <h6 className='text-sm font-thin'>Work Role, Company</h6>
-                                                <p className='text-sm font-thin mt-2'>Teaching :</p>
-                                                <p className='text-xs font-semibold'>Full Subject Name</p>
+                                            <div className='p-4'>
+                                                <p className='text-xs font-semibold text-justify'>Experiential learning is a hands-on approach to education that involves learning
+                                                    through direct experience and reflection. The well crafted pedagogy will help students
+                                                    become more career aware and build leadership like a Muscle
+                                                </p>
                                             </div>
                                         </div>
                                         <div className='border-2 rounded-2xl border-gray-400 bg-[#7683CC] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px]'>
-                                            <div className=' border-gray-400 p-3'>
-                                                <h1 className='text-xl font-bold'>Building Marketing Strategies</h1>
+                                            <div className='border-gray-400 p-3'>
+                                                <h1 className='text-2xl font-bold'>What are the benefits of Experiment Labs?</h1>
                                             </div>
-                                            <div className='p-3'>
-                                                <h4 className='font-extrabold font'>Full Name</h4>
-                                                <h6 className='text-sm font-thin'>Work Role, Company</h6>
-                                                <p className='text-sm font-thin mt-2'>Teaching :</p>
-                                                <p className='text-xs font-semibold'>Full Subject Name</p>
+                                            <div className='p-4'>
+                                                <p className='text-xs font-semibold text-justify'>Experiential learning has been shown to improve retention, increase engagement,
+                                                    and develop practical skills that can be applied in real-world situations.</p>
                                             </div>
                                         </div>
                                         <div className='border-2 rounded-2xl border-gray-400 bg-[#7683CC] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px]'>
-                                            <div className=' border-gray-400 p-3'>
-                                                <h1 className='text-xl font-bold'>Building Marketing Strategies</h1>
+                                            <div className='border-gray-400 p-3'>
+                                                <h1 className='text-2xl font-bold'>Who is eligible for the experiential learning
+                                                    programme?</h1>
                                             </div>
-                                            <div className='p-3'>
-                                                <h4 className='font-extrabold font'>Full Name</h4>
-                                                <h6 className='text-sm font-thin'>Work Role, Company</h6>
-                                                <p className='text-sm font-thin mt-2'>Teaching :</p>
-                                                <p className='text-xs font-semibold'>Full Subject Name</p>
+                                            <div className='p-4'>
+                                                <p className='text-xs font-semibold text-justify'>The experiential learning programme is open to students in classes 9th to 12th.</p>
+                                            </div>
+                                        </div>
+                                        <div className='border-2 rounded-2xl border-gray-400 bg-[#7683CC] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px]'>
+                                            <div className='border-gray-400 p-3'>
+                                                <h1 className='text-2xl font-bold'>How long is the programme?
+                                                </h1>
+                                            </div>
+                                            <div className='p-4'>
+                                                <p className='text-xs font-semibold text-justify'>The programme length is 12 weeks. In these 12 weeks we cover 130 hours of which
+                                                    100 hours are practical Hands on journeys</p>
                                             </div>
                                         </div>
                                         {/* <button onClick={handleScrollRight} className='hidden lg:block' type="button">
                                         <ArrowCircleRightRoundedIcon className='opacity-80' sx={{ fontSize: '50px', color: '#397FEB', ":hover": { color: "#397FEB" } }} />
                                     </button> */}
                                         <div className='border-2 rounded-2xl border-gray-400 bg-[#7683CC] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px]'>
-                                            <div className=' border-gray-400 p-3'>
-                                                <h1 className='text-xl font-bold'>Building Marketing Strategies</h1>
+                                            <div className='border-gray-400 p-3'>
+                                                <h1 className='text-2xl font-bold'>How do I apply for the programme?</h1>
                                             </div>
-                                            <div className='p-3'>
-                                                <h4 className='font-extrabold font'>Full Name</h4>
-                                                <h6 className='text-sm font-thin'>Work Role, Company</h6>
-                                                <p className='text-sm font-thin mt-2'>Teaching :</p>
-                                                <p className='text-xs font-semibold'>Full Subject Name</p>
+                                            <div className='p-4'>
+                                                <p className='text-xs font-semibold text-justify'>Click on the apply now button on the top of the page.
+                                                </p>
                                             </div>
                                         </div>
                                         <div className='border-2 rounded-2xl border-gray-400 bg-[#7683CC] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px]'>
-                                            <div className=' border-gray-400 p-3'>
-                                                <h1 className='text-xl font-bold'>Building Marketing Strategies</h1>
+                                            <div className='border-gray-400 p-3'>
+                                                <h1 className='text-2xl font-bold'> Will I receive academic credit for participating in the
+                                                    programme?</h1>
                                             </div>
-                                            <div className='p-3'>
-                                                <h4 className='font-extrabold font'>Full Name</h4>
-                                                <h6 className='text-sm font-thin'>Work Role, Company</h6>
-                                                <p className='text-sm font-thin mt-2'>Teaching :</p>
-                                                <p className='text-xs font-semibold'>Full Subject Name</p>
-                                            </div>
-                                        </div>
-                                        <div className='border-2 rounded-2xl border-gray-400 bg-[#7683CC] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px]'>
-                                            <div className=' border-gray-400 p-3'>
-                                                <h1 className='text-xl font-bold'>Building Marketing Strategies</h1>
-                                            </div>
-                                            <div className='p-3'>
-                                                <h4 className='font-extrabold font'>Full Name</h4>
-                                                <h6 className='text-sm font-thin'>Work Role, Company</h6>
-                                                <p className='text-sm font-thin mt-2'>Teaching :</p>
-                                                <p className='text-xs font-semibold'>Full Subject Name</p>
+                                            <div className='p-4'>
+                                                <p className='text-xs font-semibold text-justify'>The academic credit for the programme will be determined by your school or
+                                                    educational institution. Please check with your teacher or school counsellor for more
+                                                    information.
+                                                </p>
                                             </div>
                                         </div>
                                         <div className='border-2 rounded-2xl border-gray-400 bg-[#7683CC] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px]'>
-                                            <div className=' border-gray-400 p-3'>
-                                                <h1 className='text-xl font-bold'>Building Marketing Strategies</h1>
+                                            <div className='border-gray-400 p-3'>
+                                                <h1 className='text-2xl font-bold'>How will the programme benefit my future career?</h1>
                                             </div>
-                                            <div className='p-3'>
-                                                <h4 className='font-extrabold font'>Full Name</h4>
-                                                <h6 className='text-sm font-thin'>Work Role, Company</h6>
-                                                <p className='text-sm font-thin mt-2'>Teaching :</p>
-                                                <p className='text-xs font-semibold'>Full Subject Name</p>
+                                            <div className='p-4'>
+                                                <p className='text-xs font-semibold text-justify'>The experiential learning programme provides opportunities for you to develop
+                                                    practical skills and gain real-world experience, which can be valuable in your future
+                                                    career. This will also help build
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className='border-2 rounded-2xl border-gray-400 bg-[#7683CC] hover:shadow-xl hover:transition-all hover:duration-200 hover:ease-out hover:shadow-custom-blue min-w-[290px] max-w-[290px]'>
+                                            <div className='border-gray-400 p-3'>
+                                                <h1 className='text-2xl font-bold'>What if I have more questions?</h1>
+                                            </div>
+                                            <div className='p-4'>
+                                                <p className='text-xs font-semibold text-justify'>Please reach out to your teacher or school counsellor for more information about the
+                                                    experiential learning programme.
+                                                </p>
                                             </div>
                                         </div>
 
@@ -216,6 +315,99 @@ const Curriculum = () => {
 
 
             </div>
+            <Dialog
+                open={open}
+                TransitionComponent={Transition}
+                keepMounted
+                onClose={handleClose}
+                aria-labelledby="responsive-dialog-title"
+            >
+                <div className="bg-dark w-full min-w-[300px] sm:min-w-[350px] lg:w-[500px] p-5 cursor-pointer">
+                    <div className="w-full">
+                        <h4
+                            onClick={handleClose}
+                            className="text-xl text-white text-right hover:text-purple"
+                        >
+                            x
+                        </h4>
+                        <h1 className="text-2xl font-semibold text-pink text-center">
+                            Learn More
+                        </h1>
+                    </div>
+                    <form
+                        ref={form}
+                        onSubmit={handleSubmit}
+                        autoComplete="off"
+                        className="lg:px-10"
+                    >
+                        <div className="flex flex-col items-center mt-6 gap-1 text-white">
+                            <label htmlFor="name">Enter Name</label>
+                            <input
+                                required
+                                className="text-center w-full py-2 rounded-3xl text-black focus:outline-none"
+                                placeholder="Enter your Name"
+                                type="text"
+                                name="name"
+                                id="name"
+                            />
+                        </div>
+                        <div className="flex flex-col items-center mt-6 gap-1 text-white">
+                            <label htmlFor="number">Enter Number</label>
+                            <input
+                                required
+                                className="text-center w-full py-2 rounded-3xl text-black focus:outline-none"
+                                placeholder="Enter your number"
+                                type="number"
+                                name="number"
+                                id="number"
+                            />
+                        </div>
+                        <div className="flex flex-col items-center mt-6 gap-1 text-white">
+                            <label htmlFor="email">Enter Email</label>
+                            <input
+                                required
+                                className="text-center w-full py-2 rounded-3xl text-black focus:outline-none"
+                                placeholder="Enter your email"
+                                type="email"
+                                name="email"
+                                id="email"
+                            />
+                        </div>
+                        <div className="flex flex-col items-center mt-6 gap-1 text-white">
+                            <label htmlFor="option">Select One</label>
+                            <select
+                                required
+                                className="text-center w-full py-2 rounded-3xl text-black focus:outline-none"
+                                name="option"
+                                id="option"
+                            >
+                                <option value="Student">Student</option>
+                                <option value="Parent">Parent</option>
+                                <option value="Counselor">Counselor</option>
+                                <option value="Others">Others</option>
+                            </select>
+                        </div>
+                        <div className="flex flex-col items-center mt-6 gap-1 text-white">
+                            <label htmlFor="city">Enter City</label>
+                            <input
+                                required
+                                className="text-center w-full py-2 rounded-3xl text-black focus:outline-none"
+                                placeholder="Enter your city"
+                                type="text"
+                                name="city"
+                                id="city"
+                            />
+                        </div>
+                        <div className="flex flex-col items-center mt-6 gap-1 text-white">
+                            <input
+                                className="text-white py-2 font-bold rounded-3xl bg-pink hover:bg-purple w-1/2 text-center"
+                                type="submit"
+                                value={"Submit"}
+                            />
+                        </div>
+                    </form>
+                </div>
+            </Dialog>
         </div>
     );
 };
