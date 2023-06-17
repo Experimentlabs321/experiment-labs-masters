@@ -9,8 +9,8 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 const Campus = () => {
     const [selected, setSelected] = useState(2);
     const [images, setImages] = useState([
-        img1,
         img2,
+        img1,
         img3,
     ]);
     return (
@@ -20,8 +20,8 @@ const Campus = () => {
             <div className='mt-6 lg:block hidden px-14'>
                 <div className='flex justify-start items-start gap-6'>
                     <img src={vector} alt="" />
-                    <button onClick={() => setSelected(2)} className={`${(selected === 2) && 'bg-purple font-bold'} border-2 border-purple rounded-3xl py-1 px-12`}>Experiment Studio</button>
-                    <button onClick={() => setSelected(1)} className={`${(selected === 1) && 'bg-purple font-bold'} border-2 border-purple rounded-3xl py-1 px-12`}>Common Area</button>
+                    <button onClick={() => setSelected(1)} className={`${(selected === 1) && 'bg-purple font-bold'} border-2 border-purple rounded-3xl py-1 px-12`}>Experiment Studio</button>
+                    <button onClick={() => setSelected(2)} className={`${(selected === 2) && 'bg-purple font-bold'} border-2 border-purple rounded-3xl py-1 px-12`}>Common Area</button>
                     <button onClick={() => setSelected(3)} className={`${(selected === 3) && 'bg-purple font-bold'} border-2 border-purple rounded-3xl py-1 px-12`}>Conference  office</button>
                 </div>
             </div>
