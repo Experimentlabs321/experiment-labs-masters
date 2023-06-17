@@ -1,6 +1,6 @@
 import React from "react";
 import background from "../../../assets/background.avif";
-import img from "../../../assets/EnperienceUnion/groupImg.png"
+import img from "../../../assets/EnperienceUnion/groupImg.png";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import darkbg from "../../../assets/darkbg.jpg";
 import Person3Icon from "@mui/icons-material/Person3";
@@ -25,8 +25,8 @@ const SummerStartUp = () => {
       >
         <div className="px-10 lg:px-32 flex flex-col lg:flex-row gap-20 justify-between items-center">
           <div className="w-full">
-            <h1 className="text-4xl font-bold">
-              Leadership Through{" "}
+            <h1 className="text-4xl lg:text-6xl font-bold">
+              Leadership through{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
                 Innovation
               </span>
@@ -207,13 +207,8 @@ const SummerStartUp = () => {
                 <span>Commencement Date</span>
               </div>
               <div className="mt-2">
-                <h1 className="text-2xl font-bold">May 26,2023</h1>
-                <p
-                  style={{ visibility: "hidden" }}
-                  className="font-thin mt-2 text-sm"
-                >
-                  Opt-in Residential
-                </p>
+                <h1 className="text-2xl font-bold">July 11,2023</h1>
+                <p className="font-thin mt-2 text-sm">Limited seats only</p>
               </div>
             </div>
           </div>
@@ -273,13 +268,13 @@ const SummerStartUp = () => {
       </div>
       <div className="bg-[#141414] flex flex-col-reverse lg:flex-row-reverse px-10 lg:px-32 py-20 justify-start lg:justify-evenly gap-y-16 lg:items-center text-white">
         <div className="max-w-[500px]">
-          <h1 className="text-3xl font-semibold mt-4">
+          <h1 className="text-3xl lg:text:5xl font-semibold mt-4">
             What is{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-green">
               Innovation Lab?
             </span>
           </h1>
-          <p className="mt-4">
+          <p className="mt-4 lg:text-xl">
             Innovation Lab by Experiment Labs is a unique pedagogy where you
             explore careers and become a leader by building innovative products.
             With exposure to over{" "}
@@ -295,11 +290,12 @@ const SummerStartUp = () => {
           </p>
         </div>
         <div className=" lg:min-w-[400px] lg:max-w-[400px] w-full">
-        <img style={{objectFit:"cover"}}
-          className=" h-full w-full  rounded-lg "
-          src={img}
-          alt=""
-        />
+          <img
+            style={{ objectFit: "cover" }}
+            className=" h-full w-full  rounded-lg "
+            src={img}
+            alt=""
+          />
         </div>
       </div>
     </div>

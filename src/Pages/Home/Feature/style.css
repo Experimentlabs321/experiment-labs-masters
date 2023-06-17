@@ -15,9 +15,10 @@
 }
 
 .hPart::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    /* width: 8px;
+    height: 8px; */
     /* Chrome, Safari, and Opera */
+    display: none;
 }
 
 
@@ -52,10 +53,10 @@
 }
 
 .feature-slide-parent-container::-webkit-scrollbar {
-    /* display: none; */
+    display: none;
     /* Chrome, Safari, and Opera */
-    width: 8px;
-    height: 8px;
+    /* width: 8px;
+    height: 8px; */
 }
 
 /* scrollbar thumb */
