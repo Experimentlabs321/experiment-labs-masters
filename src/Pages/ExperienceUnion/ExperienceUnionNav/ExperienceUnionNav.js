@@ -109,7 +109,7 @@ const ExperienceUnionNav = (props) => {
             sx={{ flexGrow: 1, color: "black" }}
           >
             <Link to={"/"}>
-              <img className="h-8 lg:h-12" src={logo} alt="icon" />
+              <img className="h-6 lg:h-8" src={logo} alt="icon" />
             </Link>
           </Typography>
 
