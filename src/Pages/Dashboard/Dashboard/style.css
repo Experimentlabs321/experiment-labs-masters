@@ -1,0 +1,38 @@
+.normalShadow{
+    box-shadow: 1.70448px 1.70448px 0px #000000;
+}
+.lockShadow{
+    box-shadow: 0px 3.40896px 3.40896px rgba(0, 0, 0, 0.25);
+    border-color: rgba(0, 0, 0, 0.25);
+}
+.levelLeft{
+    width: 95%;
+    padding: 10px 0px 10px 20px;
+    text-align: left;
+    margin-right: -62px;
+}
+.levelRight {
+    width: 95%;
+    padding: 10px 20px 10px 0px;
+    text-align: right;
+    margin-left: -62px;
+}
+.labJourneyRemoveScroll::-webkit-scrollbar {
+    display: none;
+}
+.labJourney::-webkit-scrollbar {
+    width: 3px;
+    height: 3px;
+}
+.labJourney::-webkit-scrollbar-track {
+    background: #4242421c;
+}
+.labJourney::-webkit-scrollbar-thumb {
+    /* background: linear-gradient(#686868, #1f3341); */
+    background: #63798257;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+}
