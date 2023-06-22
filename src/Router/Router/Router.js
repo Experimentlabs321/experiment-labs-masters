@@ -10,6 +10,12 @@ import CommercePage from "../../Pages/CommercePage/CommercePage/CommercePage";
 import HumanitiesPage from "../../Pages/HumanitiesPage/HumanitiesPage/HumanitiesPage";
 import ExperienceUnionCommercePage from "../../Pages/ExperienceUnionCommerce/ExperienceUnionPage/ExperienceUnionCommercePage";
 import ExperienceUnionHumanitiesPage from "../../Pages/ExperienceUnionHumanities/ExperienceUnionPage/ExperienceUnionHumanitiesPage";
+import Dashboard from "../../Pages/Dashboard/Dashboard/Dashboard";
+import LeaderBoard from "../../Pages/Dashboard/LeaderBoard/LeaderBoard";
+import Earning from "../../Pages/Dashboard/Earning/Earning";
+import Redemption from "../../Pages/Dashboard/Redemption/Redemption";
+import SkillAnalysis from "../../Pages/Dashboard/SkillAnalysis/SkillAnalysis";
+import CareerAnalysis from "../../Pages/Dashboard/CareerAnalysis/CareerAnalysis";
 
 const router = createBrowserRouter([
   {
@@ -54,6 +60,30 @@ const router = createBrowserRouter([
   {
     path: "/creativityLab-landingPage",
     element: <ExperienceUnionHumanitiesPage />,
+  },
+  {
+    path: "/dashboard",
+    element: <Dashboard />,
+  },
+  {
+    path: "/leaderBoard",
+    element: <LeaderBoard />,
+  },
+  {
+    path: "/earning",
+    element: <Earning />,
+  },
+  {
+    path: "/redemption",
+    element: <Redemption />,
+  },
+  {
+    path: "/skillAnalysis",
+    element: <SkillAnalysis />,
+  },
+  {
+    path: "/careerAnalysis",
+    element: <CareerAnalysis />,
   },
 ]);
 
