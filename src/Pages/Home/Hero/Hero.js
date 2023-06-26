@@ -280,6 +280,7 @@ const Hero = () => {
         keepMounted
         onClose={handleClose}
         aria-labelledby="responsive-dialog-title"
+        sx={{ borderRadius: "40px" }}
       >
         <div className="bg-dark w-full min-w-[300px] sm:min-w-[350px] lg:w-[500px] p-5 cursor-pointer">
           <div className="w-full">

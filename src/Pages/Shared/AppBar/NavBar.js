@@ -47,7 +47,9 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const NavBar = (props) => {
   const [state, setState] = React.useState(false);
-
+  const [role, setRole] =useState(false);
+  
+  
   const toggleDrawer = (open) => (event) => {
     if (
       event.type === "keydown" &&
@@ -179,7 +181,9 @@ const NavBar = (props) => {
   const navigate = useNavigate();
 
   const graphyLogin = async (email, displayName) => {
+    
     console.log(email, displayName);
+    saveUser(email);
     try {
       const payload = {
         name: displayName,
@@ -234,6 +238,8 @@ const NavBar = (props) => {
     }
   };
 
+
+
   //Login with google provider
   const handleGoogleSignIn = () => {
     const googleProvider = new GoogleAuthProvider();
@@ -241,6 +247,7 @@ const NavBar = (props) => {
       .then((result) => {
         const email = result?.user?.email;
         const displayName = result?.user?.displayName;
+        saveUser(email);
         // navigate("/dashboard");
         handleClose();
         if (email) {
@@ -253,6 +260,25 @@ const NavBar = (props) => {
         setError(error.message);
       });
   };
+
+
+
+console.log("ab",role)
+
+
+const handleDashboard = () => {
+         const Role = localStorage.getItem('role')
+     if(Role=='admin'){
+      
+    
+      navigate("/commerce-entrepreneurship/");
+      
+     }  
+     else {
+      navigate("/dashboard");
+      
+     }   
+}
 
   const handleOnBlur = (e) => {
     const field = e.target.name;
@@ -277,6 +303,7 @@ const NavBar = (props) => {
         })
           .then(() => {
             graphyLogin(loginData.email, loginData.name);
+            saveUser(loginData.email);
             // navigate("/dashboard");
           })
           .catch((error) => {});
@@ -289,6 +316,7 @@ const NavBar = (props) => {
 
   // Login user with Email Password
   const loginUser = (email, password, location, history) => {
+    saveUser(email);
     signIn(email, password)
       .then((userCredential) => {})
       .catch((error) => {});
@@ -312,6 +340,39 @@ const NavBar = (props) => {
       console.log(error);
     }
   };
+  const saveUser = (email) => {
+    const users = {email};
+    fetch('http://localhost:5000/login', {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/json'
+        },
+        body: JSON.stringify(users)
+
+    })
+        .then(res => res.json())
+        .then(data => {
+            
+             console.log("aaaaaaaaa",data.role)
+             
+           // setRole(data?.role);
+            localStorage.setItem('role',data?.role)
+             
+             
+             //alert(data)
+           /*  if (data.acknowledged) {
+                // setTreatment(null)
+             //   setCreateUserEmail(email)
+
+              //  alert('create successfull')
+
+            }
+            else {
+                alert(`${data.message}`)
+            } */
+
+        })
+}
 
   useEffect(() => {
     if (newLogin) {
@@ -474,7 +535,8 @@ const NavBar = (props) => {
               }}
               className="menu-hover"
             >
-              Access Dashboard
+            
+             <button onClick={handleDashboard} className=""> Access Dashboard</button>
               <span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -553,7 +615,9 @@ const NavBar = (props) => {
         }}
         variant="contained"
       >
+
         <Link>Access Dashboard</Link>
+
       </Button>
     ),
     <Button
