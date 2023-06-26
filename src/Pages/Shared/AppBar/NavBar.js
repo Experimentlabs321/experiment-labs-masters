@@ -47,9 +47,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const NavBar = (props) => {
   const [state, setState] = React.useState(false);
-  const [role, setRole] =useState(false);
-  
-  
+  const [role, setRole] = useState(false);
+
   const toggleDrawer = (open) => (event) => {
     if (
       event.type === "keydown" &&
@@ -181,7 +180,6 @@ const NavBar = (props) => {
   const navigate = useNavigate();
 
   const graphyLogin = async (email, displayName) => {
-    
     console.log(email, displayName);
     saveUser(email);
     try {
@@ -238,8 +236,6 @@ const NavBar = (props) => {
     }
   };
 
-
-
   //Login with google provider
   const handleGoogleSignIn = () => {
     const googleProvider = new GoogleAuthProvider();
@@ -261,24 +257,16 @@ const NavBar = (props) => {
       });
   };
 
+  console.log("ab", role);
 
-
-console.log("ab",role)
-
-
-const handleDashboard = () => {
-         const Role = localStorage.getItem('role')
-     if(Role=='admin'){
-      
-    
+  const handleDashboard = () => {
+    const Role = localStorage.getItem("role");
+    if (Role == "admin") {
       navigate("/commerce-entrepreneurship/");
-      
-     }  
-     else {
+    } else {
       navigate("/dashboard");
-      
-     }   
-}
+    }
+  };
 
   const handleOnBlur = (e) => {
     const field = e.target.name;
@@ -341,26 +329,23 @@ const handleDashboard = () => {
     }
   };
   const saveUser = (email) => {
-    const users = {email};
-    fetch('http://localhost:5000/login', {
-        method: 'POST',
-        headers: {
-            'content-type': 'application/json'
-        },
-        body: JSON.stringify(users)
-
+    const users = { email };
+    fetch("https://experiment-labs-master-server-rakibul58.vercel.app/login", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(users),
     })
-        .then(res => res.json())
-        .then(data => {
-            
-             console.log("aaaaaaaaa",data.role)
-             
-           // setRole(data?.role);
-            localStorage.setItem('role',data?.role)
-             
-             
-             //alert(data)
-           /*  if (data.acknowledged) {
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("aaaaaaaaa", data.role);
+
+        // setRole(data?.role);
+        localStorage.setItem("role", data?.role);
+
+        //alert(data)
+        /*  if (data.acknowledged) {
                 // setTreatment(null)
              //   setCreateUserEmail(email)
 
@@ -370,9 +355,8 @@ const handleDashboard = () => {
             else {
                 alert(`${data.message}`)
             } */
-
-        })
-}
+      });
+  };
 
   useEffect(() => {
     if (newLogin) {
@@ -535,8 +519,10 @@ const handleDashboard = () => {
               }}
               className="menu-hover"
             >
-            
-             <button onClick={handleDashboard} className=""> Access Dashboard</button>
+              <button onClick={handleDashboard} className="">
+                {" "}
+                Access Dashboard
+              </button>
               <span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -615,9 +601,7 @@ const handleDashboard = () => {
         }}
         variant="contained"
       >
-
         <Link>Access Dashboard</Link>
-
       </Button>
     ),
     <Button
