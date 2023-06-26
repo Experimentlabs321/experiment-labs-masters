@@ -207,7 +207,7 @@ const ScienceInnovationNav = (props) => {
     console.log(data);
 
     fetch(
-      "https://sheet.best/api/sheets/79b86141-ec12-4a0a-85ae-3e1669d63607",
+      "https://sheet.best/api/sheets/5c4ca56d-67bb-4f49-a538-9fdde568c68d",
       {
         method: "POST",
         headers: {
@@ -439,7 +439,7 @@ const ScienceInnovationNav = (props) => {
         .replace(/\//g, "_");
 
       // Construct the SSO URL with the JWT token
-      const ssoUrl = `https://www.experimentlabs.in/t/u/activeCourses?ssoToken=${headerBase64}.${payloadBase64}.${signatureBase64}`;
+      const ssoUrl = `https://learn.experimentlabs.in/t/u/activeCourses?ssoToken=${headerBase64}.${payloadBase64}.${signatureBase64}`;
 
       // Redirect the user to the SSO URL
       // window.location.href = ssoUrl;

@@ -119,7 +119,7 @@ const EUFooter = () => {
               </div>
               <div className="space-y-3 mt-10">
                 <div className="flex justify-start space-x-3">
-                  <Link
+                  <Link to={`https://www.instagram.com/experimentlabs.in/`}
                     rel="noopener noreferrer"
                     href="#"
                     title="Youtube"
@@ -127,7 +127,7 @@ const EUFooter = () => {
                   >
                     <InstagramIcon className="w-6 h-6 hover:text-custom-blue" />
                   </Link>
-                  <Link
+                  <Link to={`https://www.youtube.com/watch?v=lKkFKWQvaLs`}
                     rel="noopener noreferrer"
                     href="#"
                     title="Youtube"
@@ -135,7 +135,7 @@ const EUFooter = () => {
                   >
                     <YouTubeIcon className="w-6 h-6 hover:text-custom-blue" />
                   </Link>
-                  <Link
+                  <Link to={`https://www.linkedin.com/company/experiment-labs/`}
                     rel="noopener noreferrer"
                     href="#"
                     title="Youtube"
@@ -143,14 +143,14 @@ const EUFooter = () => {
                   >
                     <LinkedInIcon className="w-6 h-6 hover:text-custom-blue" />
                   </Link>
-                  <Link
+                  {/* <Link
                     rel="noopener noreferrer"
                     href="#"
                     title="Youtube"
                     className="flex items-center p-1"
                   >
                     <TwitterIcon className="w-6 h-6 hover:text-custom-blue" />
-                  </Link>
+                  </Link> */}
                 </div>
                 <div className="divider"></div>
               </div>

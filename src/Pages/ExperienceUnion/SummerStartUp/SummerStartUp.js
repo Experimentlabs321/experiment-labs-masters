@@ -43,7 +43,7 @@ const SummerStartUp = () => {
     console.log(data);
 
     fetch(
-      "https://sheet.best/api/sheets/79b86141-ec12-4a0a-85ae-3e1669d63607",
+      "https://sheet.best/api/sheets/5c4ca56d-67bb-4f49-a538-9fdde568c68d",
       {
         method: "POST",
         headers: {
@@ -166,6 +166,7 @@ const SummerStartUp = () => {
                 <div className="flex gap-2 mt-4 border px-3 py-3 rounded-md">
                   <Person3Icon />
                   <input
+                    required
                     className="w-full bg-transparent border-0 focus:outline-0"
                     type="text"
                     placeholder="Enter Your name"
@@ -180,6 +181,7 @@ const SummerStartUp = () => {
                 <div className="flex gap-2 mt-4 border px-3 py-3 rounded-md">
                   <EmailIcon />
                   <input
+                    required
                     className="w-full bg-transparent border-0 focus:outline-0"
                     type="email"
                     placeholder="Enter Your email"
@@ -194,10 +196,13 @@ const SummerStartUp = () => {
                 <div className="flex gap-2 mt-4 border px-3 py-3 rounded-md">
                   <CallIcon />
                   <input
+                    required
                     className="w-full bg-transparent border-0 focus:outline-0"
                     type="text"
                     placeholder="Enter Your mobile number"
                     name="number"
+                    minLength="10"
+                    maxLength="10"
                   />
                 </div>
               </div>
@@ -227,6 +232,7 @@ const SummerStartUp = () => {
                 <div className="flex gap-2 mt-4 border px-3 py-3 rounded-md">
                   <Person3Icon />
                   <input
+                    required
                     className="w-full bg-transparent border-0 focus:outline-0"
                     type="text"
                     placeholder="Enter Your name"
