@@ -8,6 +8,7 @@ import { AuthContext } from '../../../contexts/AuthProvider';
 import CryptoJS from 'crypto-js';
 
 const Login = () => {
+    const [createUserEmail, setCreateUserEmail] = useState('');
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -15,7 +16,7 @@ const Login = () => {
 
 
 
-
+     
 
     const { signIn, providerLogin } = useContext(AuthContext);
 
@@ -245,6 +246,7 @@ const Login = () => {
             .then(result => {
                 const email = result?.user?.email;
                 const displayName = result?.user?.displayName;
+                saveUser(email);
                 console.log(email, displayName);
                 if (email) {
                     graphyLogin(email, displayName);
@@ -257,6 +259,40 @@ const Login = () => {
                 setError(error.message)
             });
     }
+
+    const saveUser = (email) => {
+        const users = {email};
+        fetch('http://localhost:5000/login', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(users)
+
+        })
+            .then(res => res.json())
+            .then(data => {
+
+
+                // console.log(data)
+                if (data.acknowledged) {
+                    // setTreatment(null)
+                    setCreateUserEmail(email)
+
+
+                    alert('create successfull')
+
+
+                }
+                else {
+                    alert(`${data.message}`)
+                }
+
+            })
+    }
+
+
+
 
     return (
         <div className='bg-[#121212] text-white'>
