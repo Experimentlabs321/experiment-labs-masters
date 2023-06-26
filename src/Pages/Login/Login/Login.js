@@ -117,7 +117,7 @@ const Login = () => {
                 .replace(/\//g, "_");
 
             // Construct the SSO URL with the JWT token
-            const ssoUrl = `https://www.experimentlabs.in/t/u/activeCourses?ssoToken=${headerBase64}.${payloadBase64}.${signatureBase64}`;
+            const ssoUrl = `https://learn.experimentlabs.in/t/u/activeCourses?ssoToken=${headerBase64}.${payloadBase64}.${signatureBase64}`;
 
             // Redirect the user to the SSO URL
             window.location.href = ssoUrl;
