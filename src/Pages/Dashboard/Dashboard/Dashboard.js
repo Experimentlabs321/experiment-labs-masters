@@ -76,7 +76,9 @@ const Dashboard = () => {
     },
   ];
   const [viewAllLevel, setViewAllLevel] = useState(false);
-  const [length, setLength] = useState(data.length < 5 ? data.length : 5);
+  // const [length, setLength] = useState(data.length < 5 ? data.length : 5);
+  const [length, setLength] = useState(data.length);
+
   const handleViewAllLevel = () => {
     setViewAllLevel(true);
     setLength(data.length);
@@ -102,7 +104,17 @@ const Dashboard = () => {
                 Lab Journey
               </h1>
               <div className="pt-[40px] px-[30px] hidden lg:inline-block relative">
-                {viewAllLevel
+                {data.map((singleData, i) => (
+                  <Level
+                    viewAllLevel={viewAllLevel}
+                    length={length}
+                    onClick={handleCloseViewAllLevel}
+                    singleData={singleData}
+                    i={i}
+                    key={singleData?.name}
+                  />
+                ))}
+                {/* {viewAllLevel
                   ? data.map((singleData, i) => (
                       <Level
                         viewAllLevel={viewAllLevel}
@@ -124,7 +136,7 @@ const Dashboard = () => {
                           i={i}
                           key={singleData?.name}
                         />
-                      ))}
+                      ))} */}
               </div>
               <div className="mt-[20px] bg-[#D7ECFF] labJourney rounded-lg px-[10px] flex lg:hidden overflow-x-scroll h-[155px]">
                 {data.map((singleData, i) => (
