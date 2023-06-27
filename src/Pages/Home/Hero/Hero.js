@@ -140,7 +140,7 @@ const Hero = () => {
     console.log(data);
 
     fetch(
-      "https://sheet.best/api/sheets/79b86141-ec12-4a0a-85ae-3e1669d63607",
+      "https://sheet.best/api/sheets/5c4ca56d-67bb-4f49-a538-9fdde568c68d",
       {
         method: "POST",
         headers: {
@@ -280,6 +280,7 @@ const Hero = () => {
         keepMounted
         onClose={handleClose}
         aria-labelledby="responsive-dialog-title"
+        sx={{ borderRadius: "40px" }}
       >
         <div className="bg-dark w-full min-w-[300px] sm:min-w-[350px] lg:w-[500px] p-5 cursor-pointer">
           <div className="w-full">

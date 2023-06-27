@@ -47,9 +47,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const NavBar = (props) => {
   const [state, setState] = React.useState(false);
-  const [role, setRole] =useState(false);
-  
-  
+  const [role, setRole] = useState(false);
+
   const toggleDrawer = (open) => (event) => {
     if (
       event.type === "keydown" &&
@@ -180,65 +179,62 @@ const NavBar = (props) => {
 
   const navigate = useNavigate();
 
-  const graphyLogin = async (email, displayName) => {
-    
-    console.log(email, displayName);
-    saveUser(email);
-    try {
-      const payload = {
-        name: displayName,
-        email: email,
-        exp: Math.floor(Date.now() / 1000) + 60 * 60, // Set the token expiration time
-      };
+  // const graphyLogin = async (email, displayName) => {
+  //   console.log(email, displayName);
+  //   saveUser(email);
+  //   try {
+  //     const payload = {
+  //       name: displayName,
+  //       email: email,
+  //       exp: Math.floor(Date.now() / 1000) + 60 * 60, // Set the token expiration time
+  //     };
 
-      // Convert the payload to a Base64Url encoded string
-      const payloadBase64 = btoa(JSON.stringify(payload))
-        .replace(/=/g, "")
-        .replace(/\+/g, "-")
-        .replace(/\//g, "_");
+  //     // Convert the payload to a Base64Url encoded string
+  //     const payloadBase64 = btoa(JSON.stringify(payload))
+  //       .replace(/=/g, "")
+  //       .replace(/\+/g, "-")
+  //       .replace(/\//g, "_");
 
-      // Construct the header
-      const header = {
-        alg: "HS256",
-        typ: "JWT",
-      };
+  //     // Construct the header
+  //     const header = {
+  //       alg: "HS256",
+  //       typ: "JWT",
+  //     };
 
-      // Convert the header to a Base64Url encoded string
-      const headerBase64 = btoa(JSON.stringify(header))
-        .replace(/=/g, "")
-        .replace(/\+/g, "-")
-        .replace(/\//g, "_");
+  //     // Convert the header to a Base64Url encoded string
+  //     const headerBase64 = btoa(JSON.stringify(header))
+  //       .replace(/=/g, "")
+  //       .replace(/\+/g, "-")
+  //       .replace(/\//g, "_");
 
-      // Your API token obtained from Graphy
-      const apiToken = process.env.REACT_APP_key;
+  //     // Your API token obtained from Graphy
+  //     const apiToken = process.env.REACT_APP_key;
 
-      // Construct the signature
-      const signature = CryptoJS.HmacSHA256(
-        `${headerBase64}.${payloadBase64}`,
-        apiToken
-      );
+  //     // Construct the signature
+  //     const signature = CryptoJS.HmacSHA256(
+  //       `${headerBase64}.${payloadBase64}`,
+  //       apiToken
+  //     );
 
-      // Convert the signature to a Base64Url encoded string
-      const signatureBase64 = CryptoJS.enc.Base64.stringify(signature)
-        .replace(/=/g, "")
-        .replace(/\+/g, "-")
-        .replace(/\//g, "_");
+  //     // Convert the signature to a Base64Url encoded string
+  //     const signatureBase64 = CryptoJS.enc.Base64.stringify(signature)
+  //       .replace(/=/g, "")
+  //       .replace(/\+/g, "-")
+  //       .replace(/\//g, "_");
 
-      // Construct the SSO URL with the JWT token
-      const ssoUrl = `https://www.experimentlabs.in/t/u/activeCourses?ssoToken=${headerBase64}.${payloadBase64}.${signatureBase64}`;
+  //     // Construct the SSO URL with the JWT token
+  //     const ssoUrl = `https://learn.experimentlabs.in/t/u/activeCourses?ssoToken=${headerBase64}.${payloadBase64}.${signatureBase64}`;
 
-      // Redirect the user to the SSO URL
-      // window.location.href = ssoUrl;
-      const a = document.createElement("a");
-      a.href = ssoUrl;
-      a.target = "_blank";
-      a.click();
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-
+  //     // Redirect the user to the SSO URL
+  //     // window.location.href = ssoUrl;
+  //     const a = document.createElement("a");
+  //     a.href = ssoUrl;
+  //     a.target = "_blank";
+  //     a.click();
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   //Login with google provider
   const handleGoogleSignIn = () => {
@@ -250,9 +246,9 @@ const NavBar = (props) => {
         saveUser(email);
         // navigate("/dashboard");
         handleClose();
-        if (email) {
-          graphyLogin(email, displayName);
-        }
+        // if (email) {
+        //   graphyLogin(email, displayName);
+        // }
         setError("");
       })
       .catch((error) => {
@@ -261,24 +257,16 @@ const NavBar = (props) => {
       });
   };
 
+  console.log("ab", role);
 
-
-console.log("ab",role)
-
-
-const handleDashboard = () => {
-         const Role = localStorage.getItem('role')
-     if(Role=='admin'){
-      
-    
-      navigate("/commerce-entrepreneurship/");
-      
-     }  
-     else {
+  const handleDashboard = () => {
+    const Role = localStorage.getItem("role");
+    if (Role === "admin") {
+      navigate("/userManagement");
+    } else {
       navigate("/dashboard");
-      
-     }   
-}
+    }
+  };
 
   const handleOnBlur = (e) => {
     const field = e.target.name;
@@ -302,7 +290,7 @@ const handleDashboard = () => {
           displayName: loginData.name,
         })
           .then(() => {
-            graphyLogin(loginData.email, loginData.name);
+            // graphyLogin(loginData.email, loginData.name);
             saveUser(loginData.email);
             // navigate("/dashboard");
           })
@@ -341,26 +329,23 @@ const handleDashboard = () => {
     }
   };
   const saveUser = (email) => {
-    const users = {email};
-    fetch('http://localhost:5000/login', {
-        method: 'POST',
-        headers: {
-            'content-type': 'application/json'
-        },
-        body: JSON.stringify(users)
-
+    const users = { email };
+    fetch("https://experiment-labs-master-server-rakibul58.vercel.app/login", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(users),
     })
-        .then(res => res.json())
-        .then(data => {
-            
-             console.log("aaaaaaaaa",data.role)
-             
-           // setRole(data?.role);
-            localStorage.setItem('role',data?.role)
-             
-             
-             //alert(data)
-           /*  if (data.acknowledged) {
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("aaaaaaaaa", data.role);
+
+        // setRole(data?.role);
+        localStorage.setItem("role", data?.role);
+
+        //alert(data)
+        /*  if (data.acknowledged) {
                 // setTreatment(null)
              //   setCreateUserEmail(email)
 
@@ -370,17 +355,16 @@ const handleDashboard = () => {
             else {
                 alert(`${data.message}`)
             } */
+      });
+  };
 
-        })
-}
-
-  useEffect(() => {
-    if (newLogin) {
-      if (user) {
-        graphyLogin(user.email, user.displayName);
-      }
-    }
-  }, [user, newLogin]);
+  // useEffect(() => {
+  //   if (newLogin) {
+  //     if (user) {
+  //       graphyLogin(user.email, user.displayName);
+  //     }
+  //   }
+  // }, [user, newLogin]);
 
   const waitForUserData = () => {
     return new Promise((resolve, reject) => {
@@ -439,7 +423,7 @@ const handleDashboard = () => {
     console.log(data);
 
     fetch(
-      "https://sheet.best/api/sheets/79b86141-ec12-4a0a-85ae-3e1669d63607",
+      "https://sheet.best/api/sheets/5c4ca56d-67bb-4f49-a538-9fdde568c68d",
       {
         method: "POST",
         headers: {
@@ -525,7 +509,7 @@ const handleDashboard = () => {
         <div className="group relative cursor-pointer">
           <div className="flex items-center justify-between space-x-5 px-4">
             <Button
-              onClick={() => graphyLogin(user?.email, user?.displayName)}
+              // onClick={() => graphyLogin(user?.email, user?.displayName)}
               sx={{
                 bgcolor: "#94A4FF",
                 borderRadius: "22.5px",
@@ -535,8 +519,10 @@ const handleDashboard = () => {
               }}
               className="menu-hover"
             >
-            
-             <button onClick={handleDashboard} className=""> Access Dashboard</button>
+              <button onClick={handleDashboard} className="">
+                {" "}
+                Access Dashboard
+              </button>
               <span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -605,7 +591,7 @@ const handleDashboard = () => {
     ) : (
       <Button
         // onClick={handleLogout}
-        onClick={() => graphyLogin(user?.email, user?.displayName)}
+        // onClick={() => graphyLogin(user?.email, user?.displayName)}
         sx={{
           bgcolor: "#94A4FF",
           borderRadius: "22.5px",
@@ -615,9 +601,7 @@ const handleDashboard = () => {
         }}
         variant="contained"
       >
-
         <Link>Access Dashboard</Link>
-
       </Button>
     ),
     <Button
