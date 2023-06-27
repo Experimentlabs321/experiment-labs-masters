@@ -16,6 +16,8 @@ import Earning from "../../Pages/Dashboard/Earning/Earning";
 import Redemption from "../../Pages/Dashboard/Redemption/Redemption";
 import SkillAnalysis from "../../Pages/Dashboard/SkillAnalysis/SkillAnalysis";
 import CareerAnalysis from "../../Pages/Dashboard/CareerAnalysis/CareerAnalysis";
+import UserMangement from "../../Pages/Dashboard/UserManagement/UserMangement";
+import EnrollRegistration from "../../Pages/Dashboard/EnrollRegistration/EnrollRegistration";
 
 const router = createBrowserRouter([
   {
@@ -84,6 +86,14 @@ const router = createBrowserRouter([
   {
     path: "/careerAnalysis",
     element: <CareerAnalysis />,
+  },
+  {
+    path: "/userManagement",
+    element: <UserMangement/>,
+  },
+  {
+    path: "/enrollRegistration",
+    element: <EnrollRegistration/>,
   },
 ]);
 

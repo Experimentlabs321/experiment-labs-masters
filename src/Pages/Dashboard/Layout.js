@@ -384,17 +384,17 @@ const Layout = ({ children }) => {
                         <li>
                           <Link
                             style={
-                              location.pathname === "/dashboard"
+                              location.pathname === "/userManagement"
                                 ? {
                                     background:
                                       "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
                                   }
                                 : {}
                             }
-                            to="/dashboard"
+                            to="/userManagement"
                             className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
                           >
-                            {location.pathname === "/dashboard" ? (
+                            {location.pathname === "/userManagement" ? (
                               <img
                                 className=""
                                 src={DashboardIconLight}
@@ -410,7 +410,7 @@ const Layout = ({ children }) => {
 
                             <span
                               className={`${
-                                location.pathname === "/dashboard"
+                                location.pathname === "/userManagement"
                                   ? "text-white"
                                   : "text-[#8F8F8F]"
                               } ml-3 text-[18px] font-[500]`}
@@ -422,17 +422,17 @@ const Layout = ({ children }) => {
                         <li>
                           <Link
                             style={
-                              location.pathname === "/leaderBoard"
+                              location.pathname === "/enrollRegistration"
                                 ? {
                                     background:
                                       "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
                                   }
                                 : {}
                             }
-                            to="/leaderBoard"
+                            to="/enrollRegistration"
                             className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
                           >
-                            {location.pathname === "/leaderBoard" ? (
+                            {location.pathname === "/enrollRegistration" ? (
                               <img
                                 className=""
                                 src={LeaderBoardIconLight}
@@ -448,16 +448,16 @@ const Layout = ({ children }) => {
 
                             <span
                               className={`${
-                                location.pathname === "/leaderBoard"
+                                location.pathname === "/enrollRegistration"
                                   ? "text-white"
                                   : "text-[#8F8F8F]"
                               } ml-3 text-[18px] font-[500]`}
                             >
-                              Leader Board
+                              Enroll & Registration
                             </span>
                           </Link>
                         </li>
-                        <li>
+                        {/* <li>
                           <Link
                             style={
                               location.pathname === "/earning"
@@ -646,7 +646,7 @@ const Layout = ({ children }) => {
                               Course Access
                             </span>
                           </Link>
-                        </li>
+                        </li> */}
                       </ul>
                     )}
                     <div className="pt-[90px] flex items-center px-[42px]">
