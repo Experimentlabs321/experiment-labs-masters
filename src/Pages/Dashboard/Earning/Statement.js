@@ -2,6 +2,80 @@ import React from "react";
 import StatementBg from "../../../assets/Dashboard/PointsStatementBg.png";
 
 const Statement = () => {
+  const data = [
+    {
+      day: "02",
+      month: "July",
+      year: "2023",
+      monthShort: "Jul",
+      status: "Points Earned",
+      state: "Attendance",
+      statePoint: "25",
+    },
+    {
+      day: "25",
+      month: "June",
+      year: "2023",
+      monthShort: "Jun",
+      status: "Points Redeemed",
+      state: "Notion",
+      statePoint: "100",
+    },
+    {
+      day: "25",
+      month: "June",
+      year: "2023",
+      monthShort: "Jun",
+      status: "Points Redeemed",
+      state: "Attendance",
+      statePoint: "60",
+    },
+    {
+      day: "09",
+      month: "June",
+      year: "2023",
+      monthShort: "Jun",
+      status: "Points Earned",
+      state: "Delight",
+      statePoint: "10",
+    },
+    {
+      day: "09",
+      month: "June",
+      year: "2023",
+      monthShort: "Jun",
+      status: "Points Earned",
+      state: "Creativity",
+      statePoint: "30",
+    },
+    {
+      day: "09",
+      month: "June",
+      year: "2023",
+      monthShort: "Jun",
+      status: "Points Earned",
+      state: "Challenge Submission",
+      statePoint: "30",
+    },
+    {
+      day: "04",
+      month: "June",
+      year: "2023",
+      monthShort: "Jun",
+      status: "Points Redeemed",
+      state: "Canva",
+      statePoint: "120",
+    },
+    {
+      day: "02",
+      month: "June",
+      year: "2023",
+      monthShort: "Jun",
+      status: "Points Earned",
+      state: "Attendance",
+      statePoint: "25",
+    },
+  ];
   return (
     <div>
       <div className="flex justify-between mt-[40px]">
@@ -45,54 +119,55 @@ const Statement = () => {
           </select>
         </div>
       </div>
-      <div className="bg-[#B01E38] py-[57px] px-[42px]">
-        <div className="grid grid-cols-2 gap-5 justify-between">
-          <div className="overflow-hidden relative">
-            <img className=" w-fit" src={StatementBg} alt="StatementBg" />
-            <div className="w-[100px] h-full flex justify-center items-center text-center text-black text-[14px] font-semibold absolute top-0 left-[12px]">
-              02 July 2023
-            </div>
-            <div className="w-[100px] h-full flex justify-center items-center text-center text-[#00863C] bg-[#C1EDD5] text-[28px] font-semibold absolute top-0 right-0">
-              25
-            </div>
-            <div className="w-[146px] h-full flex-col justify-start items-start gap-3 inline-flex absolute top-0 left-[35%]">
-              <div className="text-right text-indigo-800 text-[22px] font-bold">
-                Points Earned
+      <div className="bg-[#B01E38] py-[24px] lg:py-[57px] px-[10px] lg:px-[42px] rounded-[12px] mt-[32px] lg:mt-[40px] mb-[40px]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 justify-between">
+          {data.map((singleData) => (
+            <div className="overflow-hidden relative w-fit justify-self-center">
+              <img className=" w-fit" src={StatementBg} alt="StatementBg" />
+              <div className="grid grid-cols-12 absolute top-0 min-w-min h-full w-full">
+                <div className="w-full h-full flex justify-center items-center text-center text-black text-[11px] lg:text-[16px] font-semibold col-span-3 px-[15px]">
+                  <h1 className="hidden lg:block">
+                    {singleData?.day} {singleData?.month}
+                    <br />
+                    {singleData?.year}
+                  </h1>
+                  <h1 className="block text-[#404040] lg:hidden">
+                    {singleData?.month}
+                    <br />
+                    <span className="text-[16px] font-bold text-black">
+                      {singleData?.day}
+                    </span>
+                    <br />
+                    {singleData?.year}
+                  </h1>
+                </div>
+                <div className="w-full h-full flex-col justify-center items-center gap-3 inline-flex col-span-6">
+                  <div>
+                    <h1 className=" text-indigo-800 text-[13px] lg:text-[22px] font-bold">
+                      {singleData?.status}
+                    </h1>
+                    <h1>
+                      <span className="text-zinc-600 text-[11px] lg:text-[15px] font-medium">
+                        {singleData?.state}:
+                      </span>{" "}
+                      <span className="text-black text-[11px] lg:text-[15px] font-semibold">
+                        {singleData?.statePoint}
+                      </span>
+                    </h1>
+                  </div>
+                </div>
+                <div
+                  className={`w-full h-full flex justify-center items-center text-center ${
+                    singleData?.status === "Points Earned"
+                      ? "text-[#00863C] bg-[#C1EDD5]"
+                      : "text-[#E53333] bg-[#FFBEBE]"
+                  }  text-[18px] lg:text-[30px] font-semibold col-span-3`}
+                >
+                  {singleData?.statePoint}
+                </div>
               </div>
-              <div>
-                <span className="text-zinc-600 text-[15px] font-medium">
-                  Attendance:
-                </span>
-                <span className="text-black text-[15px] font-medium"> </span>
-                <span className="text-black text-[15px] font-semibold">25</span>
-              </div>
             </div>
-          </div>
-          <div className="overflow-hidden">
-            <img className=" w-fit" src={StatementBg} alt="StatementBg" />
-          </div>
-          {/* <div className=" h-[100px]">
-            <div
-              style={{
-                minHeight: "150px",
-                background: `url(${StatementBg})`,
-                backgroundRepeat: "no-repeat",
-              }}
-            >
-              <h1>working on it</h1>
-            </div>
-          </div>
-          <div className=" h-[100px]">
-            <div
-              style={{
-                minHeight: "150px",
-                background: `url(${StatementBg})`,
-                backgroundRepeat: "no-repeat",
-              }}
-            >
-              <h1>working on it</h1>
-            </div>
-          </div> */}
+          ))}
         </div>
       </div>
     </div>
