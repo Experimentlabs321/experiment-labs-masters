@@ -54,7 +54,7 @@ const RedeemGifts = ({ setState, state }) => {
     const rest = items.slice(index, cheaps.length);
     const others = items.slice(0, index);
     const all = [...rest, ...others];
-    // console.log(all);
+    console.log(all);
     setItems(all);
   };
   return (
