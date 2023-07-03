@@ -26,7 +26,7 @@ const UserMangement = () => {
                     </Badge>
                 </div>
                 <div className='my-12 grid grid-cols-1 lg:grid-cols-2 gap-7 px-7'>
-                    <Link to='/enrollRegistration' className="WithMedia w-full h-fit p-6 bg-white rounded-2xl shadow flex-col justify-start items-start gap-4 inline-flex">
+                    <Link to='/gamifiedSettings' className="WithMedia w-full h-fit p-6 bg-white rounded-2xl shadow flex-col justify-start items-start gap-4 inline-flex">
                         <div className="CardTop self-stretch justify-start items-start gap-4 inline-flex">
                             <img className="Image w-40 h-44 relative rounded-lg" src={console} alt='' />
                             <div className="Content grow shrink basis-0 flex-col justify-start items-start gap-2 inline-flex">

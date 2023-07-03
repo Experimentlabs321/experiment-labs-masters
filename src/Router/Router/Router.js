@@ -92,7 +92,7 @@ const router = createBrowserRouter([
     element: <UserMangement/>,
   },
   {
-    path: "/enrollRegistration",
+    path: "/gamifiedSettings",
     element: <EnrollRegistration/>,
   },
 ]);
