@@ -70,6 +70,49 @@ const RedemptionProduct = ({ setState, state, redemptionProduct }) => {
           </button>
         )}
       </div>
+      <div className="grid grid-cols-3">
+        <div className=" col-span-2 flex items-center">
+          <div className="w-full">
+            <p className=" text-[18px] font-[500] ">Product summary (1)</p>
+            <div className="flex justify-between border-y-2 border-[#B1B8D0] lg:mr-[140px] mt-[30px] py-[30px]">
+              <div>something </div>
+              <div>something </div>
+              <div>something </div>
+            </div>
+          </div>
+        </div>
+        <div className="col-span-1">
+          <h1 className="text-[18px] font-[500] mb-[30px]">
+            Redemption summary
+          </h1>
+          <div className="border border-[#B1B8D0] p-[20px]">
+            <div className="flex justify-between text-[16px] font-[600] mb-[30px] ">
+              <p>Subtotal: </p>
+              <p>POINTS</p>
+            </div>
+            <div>
+              <p className=" text-[16px] font-[600] ">Product code:</p>
+              <input
+                className="border border-[#B1B8D0] w-full p-[10px] "
+                type="text"
+              />
+              <hr className="my-[20px] bg-[#B1B8D0] pt-[1px] " />
+            </div>
+            <div className="flex justify-between text-[16px] font-[600] mb-[30px] ">
+              <p>Total </p>
+              <p>POINTS</p>
+            </div>
+          </div>
+          <div className="flex justify-evenly mt-[27px]">
+            <button className=" w-[160px] bg-[#FF557A] rounded-[10px] py-2 text-[15px] font-[700]">
+              Back
+            </button>
+            <button className=" w-[160px] bg-[#FF557A] rounded-[10px] py-2 text-[15px] font-[700]">
+              Redeem
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

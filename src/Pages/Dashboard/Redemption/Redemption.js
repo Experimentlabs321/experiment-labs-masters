@@ -73,7 +73,7 @@ const cardsData = [
 ];
 
 const Redemption = () => {
-  const [state, setState] = useState("Redeem gifts");
+  const [state, setState] = useState("Points statistics");
   const [redemptionProduct, setRedemptionProduct] = useState();
   return (
     <div>
