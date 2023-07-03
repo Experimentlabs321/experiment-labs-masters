@@ -1,62 +1,41 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import NotificationIcon from "../../../assets/Dashboard/NotificationIcon.svg";
 import SearchIcon from "../../../assets/Dashboard/SearchIcon.png";
 import CreateYourPortfolio from "../../../assets/Dashboard/CreateYourPortfolio.png";
-
 import classNames from "classnames";
-const cheaps = [
-  "Skill support",
-  "Training",
-  "Software support",
-  "Competition",
-  "Networking events",
-  "Counselling",
-  "Domain",
-  "Get featured",
-  "Media coverage",
-  "Vouchers",
-  "Shadow internship",
-];
 
-const cardsData = [
-  {
-    image: "../../../assets/Dashboard/CreateYourPortfolio.png",
-    name: "Execution support",
-    description:
-      "Redeem an hour with our faculty for your doubts and interaction.",
-    cheap: "Skill support",
-  },
-  {
-    image: "../../../assets/Dashboard/CreateYourPortfolio.png",
-    name: "No code support",
-    description: "Redeem an hour of support for no code software",
-    cheap: "Skill support",
-  },
-  {
-    image: "../../../assets/Dashboard/CreateYourPortfolio.png",
-    name: "Sales support",
-    description:
-      "Redeem an hour with our faculty for sales support of your product",
-    cheap: "Skill support",
-  },
-  {
-    image: "../../../assets/Dashboard/CreateYourPortfolio.png",
-    name: "Presentation skill",
-    description:
-      "Redeem an hour with our faculty to build up your presentation skills",
-    cheap: "Skill support",
-  },
-];
-
-const RedeemGifts = ({ setState, state }) => {
+const RedeemGifts = ({
+  setState,
+  state,
+  cheaps,
+  cardsData,
+  setRedemptionProduct,
+}) => {
   const [items, setItems] = useState(cheaps);
+  const [displayItems, setDisplayItems] = useState(
+    cardsData?.filter((cardData) => {
+      return cardData?.cheap === items[0];
+    })
+  );
   const handleCheap = (index) => {
     const rest = items.slice(index, cheaps.length);
     const others = items.slice(0, index);
     const all = [...rest, ...others];
     // console.log(all);
     setItems(all);
+    setDisplayItems(
+      cardsData?.filter((cardData) => {
+        return cardData?.cheap === items[0];
+      })
+    );
   };
+  useEffect(() => {
+    setDisplayItems(
+      cardsData?.filter((cardData) => {
+        return cardData?.cheap === items[0];
+      })
+    );
+  }, [items]);
   return (
     <div className="py-[65px] px-4">
       <div className="flex flex-row justify-between items-center">
@@ -153,161 +132,27 @@ const RedeemGifts = ({ setState, state }) => {
       </div>
       <div className="">
         <div className="grid grid-cols-4 gap-4 mb-10">
-          <div className="text-center flex flex-col items-center">
-            <img src={CreateYourPortfolio} alt="CreateYourPortfolio" />
-            <h1 className="text-[16px] font-[700] mt-[6px] max-w-[205px]">
-              Create your portfolio
-            </h1>
-            <p className="text-[#979797] text-[11px] font-[400] max-w-[190px]">
-              Redeem an hour with our faculty for your doubts and interaction.
-            </p>
-            <button
-              className={`bg-[#F8F9FE] py-[7px] px-[15px] rounded-[32px] text-[12px] font-[700] z-[1] border border-[#E1E1E1] mt-[6px]`}
-            >
-              Redeem now
-            </button>
-          </div>
-          <div className="text-center flex flex-col items-center">
-            <img src={CreateYourPortfolio} alt="CreateYourPortfolio" />
-            <h1 className="text-[16px] font-[700] mt-[6px] max-w-[205px]">
-              Create your portfolio
-            </h1>
-            <p className="text-[#979797] text-[11px] font-[400] max-w-[190px]">
-              Redeem an hour with our faculty for your doubts and interaction.
-            </p>
-            <button
-              className={`bg-[#F8F9FE] py-[7px] px-[15px] rounded-[32px] text-[12px] font-[700] z-[1] border border-[#E1E1E1] mt-[6px]`}
-            >
-              Redeem now
-            </button>
-          </div>
-          <div className="text-center flex flex-col items-center">
-            <img src={CreateYourPortfolio} alt="CreateYourPortfolio" />
-            <h1 className="text-[16px] font-[700] mt-[6px] max-w-[205px]">
-              Create your portfolio
-            </h1>
-            <p className="text-[#979797] text-[11px] font-[400] max-w-[190px]">
-              Redeem an hour with our faculty for your doubts and interaction.
-            </p>
-            <button
-              className={`bg-[#F8F9FE] py-[7px] px-[15px] rounded-[32px] text-[12px] font-[700] z-[1] border border-[#E1E1E1] mt-[6px]`}
-            >
-              Redeem now
-            </button>
-          </div>
-          <div className="text-center flex flex-col items-center">
-            <img src={CreateYourPortfolio} alt="CreateYourPortfolio" />
-            <h1 className="text-[16px] font-[700] mt-[6px] max-w-[205px]">
-              Create your portfolio
-            </h1>
-            <p className="text-[#979797] text-[11px] font-[400] max-w-[190px]">
-              Redeem an hour with our faculty for your doubts and interaction.
-            </p>
-            <button
-              className={`bg-[#F8F9FE] py-[7px] px-[15px] rounded-[32px] text-[12px] font-[700] z-[1] border border-[#E1E1E1] mt-[6px]`}
-            >
-              Redeem now
-            </button>
-          </div>
+          {displayItems?.map((item) => (
+            <div className="text-center flex flex-col items-center">
+              <img src={CreateYourPortfolio} alt="CreateYourPortfolio" />
+              <h1 className="text-[16px] font-[700] mt-[6px] max-w-[205px]">
+                {item?.name}
+              </h1>
+              <p className="text-[#979797] text-[11px] font-[400] max-w-[190px]">
+                {item?.description}
+              </p>
+              <button
+                onClick={() => {
+                  setRedemptionProduct(item);
+                  setState("Redemption product");
+                }}
+                className={`bg-[#F8F9FE] py-[7px] px-[15px] rounded-[32px] text-[12px] font-[700] z-[1] border border-[#E1E1E1] mt-[6px]`}
+              >
+                Redeem now
+              </button>
+            </div>
+          ))}
           {/* <div className="text-center flex flex-col items-center">
-            <img src={CreateYourPortfolio} alt="CreateYourPortfolio" />
-            <h1 className="text-[16px] font-[700] mt-[6px] max-w-[205px]">
-              Create your portfolio
-            </h1>
-            <p className="text-[#979797] text-[11px] font-[400] max-w-[190px]">
-              Redeem an hour with our faculty for your doubts and interaction.
-            </p>
-            <button
-              className={`bg-[#F8F9FE] py-[7px] px-[15px] rounded-[32px] text-[12px] font-[700] z-[1] border border-[#E1E1E1] mt-[6px]`}
-            >
-              Redeem now
-            </button>
-          </div>
-          <div className="text-center flex flex-col items-center">
-            <img src={CreateYourPortfolio} alt="CreateYourPortfolio" />
-            <h1 className="text-[16px] font-[700] mt-[6px] max-w-[205px]">
-              Create your portfolio
-            </h1>
-            <p className="text-[#979797] text-[11px] font-[400] max-w-[190px]">
-              Redeem an hour with our faculty for your doubts and interaction.
-            </p>
-            <button
-              className={`bg-[#F8F9FE] py-[7px] px-[15px] rounded-[32px] text-[12px] font-[700] z-[1] border border-[#E1E1E1] mt-[6px]`}
-            >
-              Redeem now
-            </button>
-          </div>
-          <div className="text-center flex flex-col items-center">
-            <img src={CreateYourPortfolio} alt="CreateYourPortfolio" />
-            <h1 className="text-[16px] font-[700] mt-[6px] max-w-[205px]">
-              Create your portfolio
-            </h1>
-            <p className="text-[#979797] text-[11px] font-[400] max-w-[190px]">
-              Redeem an hour with our faculty for your doubts and interaction.
-            </p>
-            <button
-              className={`bg-[#F8F9FE] py-[7px] px-[15px] rounded-[32px] text-[12px] font-[700] z-[1] border border-[#E1E1E1] mt-[6px]`}
-            >
-              Redeem now
-            </button>
-          </div>
-          <div className="text-center flex flex-col items-center">
-            <img src={CreateYourPortfolio} alt="CreateYourPortfolio" />
-            <h1 className="text-[16px] font-[700] mt-[6px] max-w-[205px]">
-              Create your portfolio
-            </h1>
-            <p className="text-[#979797] text-[11px] font-[400] max-w-[190px]">
-              Redeem an hour with our faculty for your doubts and interaction.
-            </p>
-            <button
-              className={`bg-[#F8F9FE] py-[7px] px-[15px] rounded-[32px] text-[12px] font-[700] z-[1] border border-[#E1E1E1] mt-[6px]`}
-            >
-              Redeem now
-            </button>
-          </div>
-          <div className="text-center flex flex-col items-center">
-            <img src={CreateYourPortfolio} alt="CreateYourPortfolio" />
-            <h1 className="text-[16px] font-[700] mt-[6px] max-w-[205px]">
-              Create your portfolio
-            </h1>
-            <p className="text-[#979797] text-[11px] font-[400] max-w-[190px]">
-              Redeem an hour with our faculty for your doubts and interaction.
-            </p>
-            <button
-              className={`bg-[#F8F9FE] py-[7px] px-[15px] rounded-[32px] text-[12px] font-[700] z-[1] border border-[#E1E1E1] mt-[6px]`}
-            >
-              Redeem now
-            </button>
-          </div>
-          <div className="text-center flex flex-col items-center">
-            <img src={CreateYourPortfolio} alt="CreateYourPortfolio" />
-            <h1 className="text-[16px] font-[700] mt-[6px] max-w-[205px]">
-              Create your portfolio
-            </h1>
-            <p className="text-[#979797] text-[11px] font-[400] max-w-[190px]">
-              Redeem an hour with our faculty for your doubts and interaction.
-            </p>
-            <button
-              className={`bg-[#F8F9FE] py-[7px] px-[15px] rounded-[32px] text-[12px] font-[700] z-[1] border border-[#E1E1E1] mt-[6px]`}
-            >
-              Redeem now
-            </button>
-          </div>
-          <div className="text-center flex flex-col items-center">
-            <img src={CreateYourPortfolio} alt="CreateYourPortfolio" />
-            <h1 className="text-[16px] font-[700] mt-[6px] max-w-[205px]">
-              Create your portfolio
-            </h1>
-            <p className="text-[#979797] text-[11px] font-[400] max-w-[190px]">
-              Redeem an hour with our faculty for your doubts and interaction.
-            </p>
-            <button
-              className={`bg-[#F8F9FE] py-[7px] px-[15px] rounded-[32px] text-[12px] font-[700] z-[1] border border-[#E1E1E1] mt-[6px]`}
-            >
-              Redeem now
-            </button>
-          </div>
-          <div className="text-center flex flex-col items-center">
             <img src={CreateYourPortfolio} alt="CreateYourPortfolio" />
             <h1 className="text-[16px] font-[700] mt-[6px] max-w-[205px]">
               Create your portfolio
