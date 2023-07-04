@@ -92,7 +92,7 @@ const EnrollRegistration = () => {
                                 </div>
                             </div>
                         </div>
-                        <div class="mt-7">
+                        <div class="mt-16">
                             <div className='flex items-center'>
                                 <p className='font-bold text-base me-[36px]'>Points Expire On</p>
 
@@ -123,7 +123,7 @@ const EnrollRegistration = () => {
                                 </div>
                             </div>
                         </div>
-                        <div class="row-span-3 text-center lg:w-1/2 lg:mt-32 ">
+                        <div class="row-span-3 text-center lg:w-1/2 lg:mt-16 ms-20 ">
                             <div className='flex justify-center'>
                                 <img src={gameplay}></img>
                             </div>
@@ -133,7 +133,7 @@ const EnrollRegistration = () => {
                                 <button className='text-[#808080] px-2 py-4 rounded-lg  font-semibold text-base ' style={{ border: "2px solid #808080",boxShadow: "rgba(0, 0, 0, 0.75) 0px 3px 8px" }} >Discard</button>
                             </div>
                         </div>
-                        <div className="col-span-2 p-5 mx-14 border-2 rounded-2xl  text-center my-5">
+                        <div className="col-span-2 p-5  border-2 rounded-2xl  text-center my-5">
                             <h3 className='font-bold mb-3'>Payment Gateways</h3>
                             <div className='lg:flex justify-between'>
                                 <div className='flex justify-between'>
