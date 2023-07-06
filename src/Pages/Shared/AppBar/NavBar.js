@@ -179,62 +179,62 @@ const NavBar = (props) => {
 
   const navigate = useNavigate();
 
-  // const graphyLogin = async (email, displayName) => {
-  //   console.log(email, displayName);
-  //   saveUser(email);
-  //   try {
-  //     const payload = {
-  //       name: displayName,
-  //       email: email,
-  //       exp: Math.floor(Date.now() / 1000) + 60 * 60, // Set the token expiration time
-  //     };
+  const graphyLogin = async (email, displayName) => {
+    console.log(email, displayName);
+    saveUser(email);
+    try {
+      const payload = {
+        name: displayName,
+        email: email,
+        exp: Math.floor(Date.now() / 1000) + 60 * 60, // Set the token expiration time
+      };
 
-  //     // Convert the payload to a Base64Url encoded string
-  //     const payloadBase64 = btoa(JSON.stringify(payload))
-  //       .replace(/=/g, "")
-  //       .replace(/\+/g, "-")
-  //       .replace(/\//g, "_");
+      // Convert the payload to a Base64Url encoded string
+      const payloadBase64 = btoa(JSON.stringify(payload))
+        .replace(/=/g, "")
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_");
 
-  //     // Construct the header
-  //     const header = {
-  //       alg: "HS256",
-  //       typ: "JWT",
-  //     };
+      // Construct the header
+      const header = {
+        alg: "HS256",
+        typ: "JWT",
+      };
 
-  //     // Convert the header to a Base64Url encoded string
-  //     const headerBase64 = btoa(JSON.stringify(header))
-  //       .replace(/=/g, "")
-  //       .replace(/\+/g, "-")
-  //       .replace(/\//g, "_");
+      // Convert the header to a Base64Url encoded string
+      const headerBase64 = btoa(JSON.stringify(header))
+        .replace(/=/g, "")
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_");
 
-  //     // Your API token obtained from Graphy
-  //     const apiToken = process.env.REACT_APP_key;
+      // Your API token obtained from Graphy
+      const apiToken = process.env.REACT_APP_key;
 
-  //     // Construct the signature
-  //     const signature = CryptoJS.HmacSHA256(
-  //       `${headerBase64}.${payloadBase64}`,
-  //       apiToken
-  //     );
+      // Construct the signature
+      const signature = CryptoJS.HmacSHA256(
+        `${headerBase64}.${payloadBase64}`,
+        apiToken
+      );
 
-  //     // Convert the signature to a Base64Url encoded string
-  //     const signatureBase64 = CryptoJS.enc.Base64.stringify(signature)
-  //       .replace(/=/g, "")
-  //       .replace(/\+/g, "-")
-  //       .replace(/\//g, "_");
+      // Convert the signature to a Base64Url encoded string
+      const signatureBase64 = CryptoJS.enc.Base64.stringify(signature)
+        .replace(/=/g, "")
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_");
 
-  //     // Construct the SSO URL with the JWT token
-  //     const ssoUrl = `https://learn.experimentlabs.in/t/u/activeCourses?ssoToken=${headerBase64}.${payloadBase64}.${signatureBase64}`;
+      // Construct the SSO URL with the JWT token
+      const ssoUrl = `https://login.experimentlabs.in/t/u/activeCourses?ssoToken=${headerBase64}.${payloadBase64}.${signatureBase64}`;
 
-  //     // Redirect the user to the SSO URL
-  //     // window.location.href = ssoUrl;
-  //     const a = document.createElement("a");
-  //     a.href = ssoUrl;
-  //     a.target = "_blank";
-  //     a.click();
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
+      // Redirect the user to the SSO URL
+      // window.location.href = ssoUrl;
+      const a = document.createElement("a");
+      a.href = ssoUrl;
+      a.target = "_blank";
+      a.click();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   //Login with google provider
   const handleGoogleSignIn = () => {
@@ -246,9 +246,9 @@ const NavBar = (props) => {
         saveUser(email);
         // navigate("/dashboard");
         handleClose();
-        // if (email) {
-        //   graphyLogin(email, displayName);
-        // }
+        if (email) {
+          graphyLogin(email, displayName);
+        }
         setError("");
       })
       .catch((error) => {
@@ -259,13 +259,16 @@ const NavBar = (props) => {
 
   console.log("ab", role);
 
+  // const handleDashboard = () => {
+  //   const Role = localStorage.getItem("role");
+  //   if (Role === "admin") {
+  //     navigate("/userManagement");
+  //   } else {
+  //     navigate("/dashboard");
+  //   }
+  // };
   const handleDashboard = () => {
-    const Role = localStorage.getItem("role");
-    if (Role === "admin") {
-      navigate("/userManagement");
-    } else {
-      navigate("/dashboard");
-    }
+    graphyLogin(user?.email, user?.displayName);
   };
 
   const handleOnBlur = (e) => {
