@@ -46,13 +46,15 @@ const Layout = ({ children }) => {
       <div>
         <div className=" font-sansita">
           <nav
-            className={`bg-[#25282c] border-b border-gray-200 fixed z-30 w-full lg:hidden ${toggleButton ? "" : "hidden"
-              }`}
+            className={`bg-[#25282c] border-b border-gray-200 fixed z-30 w-full lg:hidden ${
+              toggleButton ? "" : "hidden"
+            }`}
           >
             <div className="px-3 py-3 lg:px-5 lg:pl-3">
               <div
-                className={`flex items-center justify-between ${toggleButton ? "" : "hidden"
-                  }`}
+                className={`flex items-center justify-between ${
+                  toggleButton ? "" : "hidden"
+                }`}
               >
                 <button
                   id="toggleSidebarMobile"
@@ -84,8 +86,9 @@ const Layout = ({ children }) => {
           <div className="flex overflow-hidden">
             <aside
               id="sidebar"
-              className={`fixed ${toggleButton ? "hidden" : ""
-                } z-20 h-full top-0 bg-[#141414] shadow-lg left-0 flex lg:flex flex-shrink-0 flex-col w-[324px] transition duration-500 ease-in-out delay-150`}
+              className={`fixed ${
+                toggleButton ? "hidden" : ""
+              } z-20 h-full top-0 bg-[#141414] shadow-lg left-0 flex lg:flex flex-shrink-0 flex-col w-[324px] transition duration-500 ease-in-out delay-150`}
               aria-label="Sidebar"
             >
               <div className=" flex-1 flex flex-col min-h-0 pt-0">
@@ -113,9 +116,9 @@ const Layout = ({ children }) => {
                             style={
                               location.pathname === "/dashboard"
                                 ? {
-                                  background:
-                                    "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                }
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
                                 : {}
                             }
                             to="/dashboard"
@@ -136,10 +139,11 @@ const Layout = ({ children }) => {
                             )}
 
                             <span
-                              className={`${location.pathname === "/dashboard"
+                              className={`${
+                                location.pathname === "/dashboard"
                                   ? "text-white"
                                   : "text-[#8F8F8F]"
-                                } ml-3 text-[18px] font-[500]`}
+                              } ml-3 text-[18px] font-[500]`}
                             >
                               Dashboard
                             </span>
@@ -150,9 +154,9 @@ const Layout = ({ children }) => {
                             style={
                               location.pathname === "/leaderBoard"
                                 ? {
-                                  background:
-                                    "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                }
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
                                 : {}
                             }
                             to="/leaderBoard"
@@ -173,10 +177,11 @@ const Layout = ({ children }) => {
                             )}
 
                             <span
-                              className={`${location.pathname === "/leaderBoard"
+                              className={`${
+                                location.pathname === "/leaderBoard"
                                   ? "text-white"
                                   : "text-[#8F8F8F]"
-                                } ml-3 text-[18px] font-[500]`}
+                              } ml-3 text-[18px] font-[500]`}
                             >
                               Leader Board
                             </span>
@@ -187,9 +192,9 @@ const Layout = ({ children }) => {
                             style={
                               location.pathname === "/earning"
                                 ? {
-                                  background:
-                                    "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                }
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
                                 : {}
                             }
                             to="/earning"
@@ -210,10 +215,11 @@ const Layout = ({ children }) => {
                             )}
 
                             <span
-                              className={`${location.pathname === "/earning"
+                              className={`${
+                                location.pathname === "/earning"
                                   ? "text-white"
                                   : "text-[#8F8F8F]"
-                                } ml-3 text-[18px] font-[500]`}
+                              } ml-3 text-[18px] font-[500]`}
                             >
                               Earning
                             </span>
@@ -224,9 +230,9 @@ const Layout = ({ children }) => {
                             style={
                               location.pathname === "/redemption"
                                 ? {
-                                  background:
-                                    "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                }
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
                                 : {}
                             }
                             to="/redemption"
@@ -247,10 +253,11 @@ const Layout = ({ children }) => {
                             )}
 
                             <span
-                              className={`${location.pathname === "/redemption"
+                              className={`${
+                                location.pathname === "/redemption"
                                   ? "text-white"
                                   : "text-[#8F8F8F]"
-                                } ml-3 text-[18px] font-[500]`}
+                              } ml-3 text-[18px] font-[500]`}
                             >
                               Redemption
                             </span>
@@ -261,9 +268,9 @@ const Layout = ({ children }) => {
                             style={
                               location.pathname === "/skillAnalysis"
                                 ? {
-                                  background:
-                                    "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                }
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
                                 : {}
                             }
                             to="/skillAnalysis"
@@ -284,10 +291,11 @@ const Layout = ({ children }) => {
                             )}
 
                             <span
-                              className={`${location.pathname === "/skillAnalysis"
+                              className={`${
+                                location.pathname === "/skillAnalysis"
                                   ? "text-white"
                                   : "text-[#8F8F8F]"
-                                } ml-3 text-[18px] font-[500]`}
+                              } ml-3 text-[18px] font-[500]`}
                             >
                               Skill Analysis
                             </span>
@@ -298,9 +306,9 @@ const Layout = ({ children }) => {
                             style={
                               location.pathname === "/careerAnalysis"
                                 ? {
-                                  background:
-                                    "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                }
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
                                 : {}
                             }
                             to="/careerAnalysis"
@@ -321,10 +329,11 @@ const Layout = ({ children }) => {
                             )}
 
                             <span
-                              className={`${location.pathname === "/careerAnalysis"
+                              className={`${
+                                location.pathname === "/careerAnalysis"
                                   ? "text-white"
                                   : "text-[#8F8F8F]"
-                                } ml-3 text-[18px] font-[500]`}
+                              } ml-3 text-[18px] font-[500]`}
                             >
                               Career Analysis
                             </span>
@@ -335,9 +344,9 @@ const Layout = ({ children }) => {
                             style={
                               location.pathname === "/courseAccess"
                                 ? {
-                                  background:
-                                    "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                }
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
                                 : {}
                             }
                             to="/courseAccess"
@@ -358,10 +367,11 @@ const Layout = ({ children }) => {
                             )}
 
                             <span
-                              className={`${location.pathname === "/courseAccess"
+                              className={`${
+                                location.pathname === "/courseAccess"
                                   ? "text-white"
                                   : "text-[#8F8F8F]"
-                                } ml-3 text-[18px] font-[500]`}
+                              } ml-3 text-[18px] font-[500]`}
                             >
                               Course Access
                             </span>
@@ -374,37 +384,39 @@ const Layout = ({ children }) => {
                         <li>
                           <Link
                             style={
-                              (location.pathname === "/userManagement" || location.pathname === '/gamifiedSettings')
+                              location.pathname === "/userManagement" ||
+                              location.pathname === "/gamifiedSettings"
                                 ? {
-                                  background:
-                                    "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF"
-                                }
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
                                 : {}
                             }
                             to="/userManagement"
                             className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
                           >
-                            {
-                              (location.pathname === "/userManagement" || location.pathname === '/gamifiedSettings')
-                                ? (
-                                  <img
-                                    className=""
-                                    src={DashboardIconLight}
-                                    alt="icon"
-                                  />
-                                ) : (
-                                  <img
-                                    className=""
-                                    src={DashboardIconDark}
-                                    alt="icon"
-                                  />
-                                )}
+                            {location.pathname === "/userManagement" ||
+                            location.pathname === "/gamifiedSettings" ? (
+                              <img
+                                className=""
+                                src={DashboardIconLight}
+                                alt="icon"
+                              />
+                            ) : (
+                              <img
+                                className=""
+                                src={DashboardIconDark}
+                                alt="icon"
+                              />
+                            )}
 
                             <span
-                              className={`${(location.pathname === "/userManagement" || location.pathname === '/gamifiedSettings')
+                              className={`${
+                                location.pathname === "/userManagement" ||
+                                location.pathname === "/gamifiedSettings"
                                   ? "text-white"
                                   : "text-[#8F8F8F]"
-                                } ml-3 text-[18px] font-[500]`}
+                              } ml-3 text-[18px] font-[500]`}
                             >
                               User Management
                             </span>

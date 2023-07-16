@@ -12,14 +12,22 @@ import Typography from "@mui/material/Typography";
 
 // Define a custom theme
 
-const DialogLayout = ({ children, open, setOpen, title, bgColor, width }) => {
+const DialogLayout = ({
+  children,
+  open,
+  setOpen,
+  title,
+  bgColor,
+  width,
+  borderRadius,
+}) => {
   const theme = createTheme({
     components: {
       MuiDialog: {
         styleOverrides: {
           paper: {
             backgroundColor: bgColor, // Set your desired background color here
-            borderRadius: "14px",
+            borderRadius: borderRadius,
             padding: "0px",
             width: width,
           },
@@ -69,7 +77,7 @@ const DialogLayout = ({ children, open, setOpen, title, bgColor, width }) => {
   };
   const DialogContentWrapper = styled(DialogContent)(({ theme }) => ({
     // width: "300px",
-    height: "300px",
+    // height: "300px",
     padding: theme.spacing(2),
   }));
   const handleClickOpen = () => {

@@ -18,6 +18,9 @@ import SkillAnalysis from "../../Pages/Dashboard/SkillAnalysis/SkillAnalysis";
 import CareerAnalysis from "../../Pages/Dashboard/CareerAnalysis/CareerAnalysis";
 import UserMangement from "../../Pages/Dashboard/UserManagement/UserMangement";
 import EnrollRegistration from "../../Pages/Dashboard/EnrollRegistration/EnrollRegistration";
+import CourseAccess from "../../Pages/Dashboard/CourseAccess/CourseAccess";
+import CourseInformation from "../../Pages/Dashboard/CourseInformation/CourseInformation";
+import Week from "../../Pages/Dashboard/Week/Layout/Week";
 
 const router = createBrowserRouter([
   {
@@ -84,16 +87,28 @@ const router = createBrowserRouter([
     element: <SkillAnalysis />,
   },
   {
+    path: "/courseAccess",
+    element: <CourseAccess />,
+  },
+  {
+    path: "/questLevels",
+    element: <CourseInformation />,
+  },
+  {
+    path: "/week",
+    element: <Week />,
+  },
+  {
     path: "/careerAnalysis",
     element: <CareerAnalysis />,
   },
   {
     path: "/userManagement",
-    element: <UserMangement/>,
+    element: <UserMangement />,
   },
   {
     path: "/gamifiedSettings",
-    element: <EnrollRegistration/>,
+    element: <EnrollRegistration />,
   },
 ]);
 
