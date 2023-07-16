@@ -147,8 +147,8 @@ const DashboardUserUpdate = () => {
             >
               <p className="bg-white">This is the dialog content.</p>
               <p>It has a width of 500px and a height of 300px.</p>
-            </DialogLayout> */}
-            {/* <Button variant="outlined" onClick={handleClickOpen}>
+            </DialogLayout>
+            <Button variant="outlined" onClick={handleClickOpen}>
               Open dialog
             </Button> */}
           </div>
