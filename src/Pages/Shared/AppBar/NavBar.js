@@ -121,6 +121,7 @@ const NavBar = (props) => {
   const [open, setOpen] = React.useState(false);
   const [open1, setOpen1] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   // const [error, setError] = React.useState("");
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -145,6 +146,14 @@ const NavBar = (props) => {
 
   const handleClose2 = () => {
     setOpen2(false);
+  };
+
+  const handleModalOpen = () => {
+    setModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setModalOpen(false);
   };
 
   const handleSubmit = (event) => {
@@ -223,7 +232,7 @@ const NavBar = (props) => {
         .replace(/\//g, "_");
 
       // Construct the SSO URL with the JWT token
-      const ssoUrl = `https://login.experimentlabs.in/t/u/activeCourses?ssoToken=${headerBase64}.${payloadBase64}.${signatureBase64}`;
+      const ssoUrl = `https://login.experimentlabs.in/s/mycourses?ssoToken=${headerBase64}.${payloadBase64}.${signatureBase64}`;
 
       // Redirect the user to the SSO URL
       // window.location.href = ssoUrl;
@@ -297,7 +306,7 @@ const NavBar = (props) => {
             saveUser(loginData.email);
             // navigate("/dashboard");
           })
-          .catch((error) => {});
+          .catch((error) => { });
       })
       .catch((error) => {
         console.log(error.message);
@@ -309,8 +318,8 @@ const NavBar = (props) => {
   const loginUser = (email, password, location, history) => {
     saveUser(email);
     signIn(email, password)
-      .then((userCredential) => {})
-      .catch((error) => {});
+      .then((userCredential) => { })
+      .catch((error) => { });
   };
 
   const handleOnChange = (e) => {
@@ -475,13 +484,26 @@ const NavBar = (props) => {
       );
   };
 
+  const location = useLocation();
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const modalQueryParam = queryParams.get('modal');
+
+    if (modalQueryParam === 'true') {
+      setModalOpen(true);
+    }
+  }, [location]);
+
+
   const navItems = [
     // <InstagramIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
     // <YouTubeIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
     // <LinkedInIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
     // <TwitterIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
     <Button
-      onClick={handleClickFormOpen}
+      // onClick={handleClickFormOpen}
+      onClick={handleModalOpen}
       sx={{
         bgcolor: "#FF557A",
         borderRadius: "22.5px",
@@ -491,7 +513,21 @@ const NavBar = (props) => {
       }}
       variant="contained"
     >
-      <Link>Apply Now</Link>
+      <Link href={`/?modal=true`}>Apply Now</Link>
+    </Button>,
+    <Button
+      onClick={handleClickFormOpen}
+      // onClick={handleModalOpen}
+      sx={{
+        bgcolor: "#FF557A",
+        borderRadius: "22.5px",
+        ":hover": { bgcolor: "#94A4FF" },
+        color: "white",
+        width: "100%",
+      }}
+      variant="contained"
+    >
+      <Link>Know More</Link>
     </Button>,
     !user ? (
       <Button
@@ -608,7 +644,8 @@ const NavBar = (props) => {
       </Button>
     ),
     <Button
-      onClick={handleClickFormOpen}
+      // onClick={handleClickFormOpen}
+      onClick={handleModalOpen}
       sx={{
         bgcolor: "#FF557A",
         borderRadius: "22.5px",
@@ -618,7 +655,21 @@ const NavBar = (props) => {
       }}
       variant="contained"
     >
-      <Link>Apply Now</Link>
+      <Link href={`/?modal=true`}>Apply Now</Link>
+    </Button>,
+    <Button
+      onClick={handleClickFormOpen}
+      // onClick={handleModalOpen}
+      sx={{
+        bgcolor: "#FF557A",
+        borderRadius: "22.5px",
+        ":hover": { bgcolor: "#94A4FF" },
+        color: "white",
+        width: "100%",
+      }}
+      variant="contained"
+    >
+      <Link>Know More</Link>
     </Button>,
   ];
 
@@ -984,7 +1035,6 @@ const NavBar = (props) => {
           </div>
         </div>
       </Dialog>
-
       <Dialog
         open={formOpen}
         TransitionComponent={Transition}
@@ -1076,6 +1126,29 @@ const NavBar = (props) => {
               />
             </div>
           </form>
+        </div>
+      </Dialog>
+
+      <Dialog
+        fullScreen={fullScreen}
+        open={modalOpen}
+        scroll="body"
+        onClose={handleModalClose}
+        aria-labelledby="responsive-dialog-title"
+        sx={{ width: "100%", borderRadius: "22px" }}
+      >
+        <div className="text-white  mx-auto border-2 border-white flex justify-center items-center  ">
+          <div className="text-center">
+            <span
+              onClick={handleModalClose}
+              className="z-50 text-dark cursor-pointer absolute top-3 right-10 text-[20px] px-2 font-bold"
+            >
+              x
+            </span>
+            <iframe
+              className="w-full lg:min-w-[550px] h-full min-h-[90vh]"
+              title="form" src="https://form.jotform.com/231913338047455" frameborder="0"></iframe>
+          </div>
         </div>
       </Dialog>
     </Box>
