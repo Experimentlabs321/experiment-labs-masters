@@ -9,11 +9,11 @@ import console from '../../../assets/userManagement/console.png';
 import man from '../../../assets/userManagement/man.png';
 import money from '../../../assets/userManagement/money.png';
 
-const UserMangement = () => {
+const PointsAndRedemptions = () => {
     return (
         <div>
             <Layout>
-           {/*      <div className='flex items-center justify-center gap-7 mt-20 lg:mt-10'>
+                <div className='flex items-center justify-center gap-7 mt-20 lg:mt-10'>
                     <div className="UserManagement origin-top-left rotate-[-0.51deg] text-zinc-500 text-[30px] font-medium">Points And Redemptions</div>
                     <div className="Input w-[425px] h-16 relative bg-slate-100 rounded-[40px] shadow-inner">
                         <input className="Search w-[329px] left-[32px] top-[12px] absolute text-zinc-500 text-[20px] font-light leading-10 bg-transparent" placeholder='Search' />
@@ -35,7 +35,7 @@ const UserMangement = () => {
                             </div>
                         </div>
                     </Link>
-                    <Link className="WithMedia w-full h-fit p-6 bg-white rounded-2xl shadow flex-col justify-start items-start gap-4 inline-flex">
+                    <Link to='/earningLogics' className="WithMedia w-full h-fit p-6 bg-white rounded-2xl shadow flex-col justify-start items-start gap-4 inline-flex">
                         <div className="CardTop self-stretch justify-start items-start gap-4 inline-flex">
                             <img className="Image w-40 h-44 relative rounded-lg" src={money} alt=''/>
                             <div className="Content grow shrink basis-0 flex-col justify-start items-start gap-2 inline-flex">
@@ -44,7 +44,7 @@ const UserMangement = () => {
                             </div>
                         </div>
                     </Link>
-                    <Link className="WithMedia w-full h-fit p-6 bg-white rounded-2xl shadow flex-col justify-start items-start gap-4 inline-flex">
+                    <Link to='/redemptionLogics' className="WithMedia w-full h-fit p-6 bg-white rounded-2xl shadow flex-col justify-start items-start gap-4 inline-flex">
                         <div className="CardTop self-stretch justify-start items-start gap-4 inline-flex">
                             <img className="Image w-40 h-44 relative rounded-lg" src={man} alt=''/>
                             <div className="Content grow shrink basis-0 flex-col justify-start items-start gap-2 inline-flex">
@@ -53,10 +53,10 @@ const UserMangement = () => {
                             </div>
                         </div>
                     </Link>
-                </div> */}
+                </div>
             </Layout>
         </div>
     );
 };
 
-export default UserMangement;
+export default PointsAndRedemptions;
