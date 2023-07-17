@@ -25,7 +25,7 @@ import SkillsManagement from "../../Pages/Dashboard/SkillsManagement/SkillsManag
 import SkillsCreations from "../../Pages/Dashboard/SkillsManagement/SkillsCreations";
 import SkillsImprovementEngine from "../../Pages/Dashboard/SkillsManagement/SkillsImprovementEngine";
 
-//import CreateCourse from "../../Pages/Dashboard/ContentManagement/CreateCourse";
+import CreateCourse from "../../Pages/Dashboard/ContentManagement/CreateCourse";
 import CourseAccess from "../../Pages/Dashboard/CourseAccess/CourseAccess";
 import CourseInformation from "../../Pages/Dashboard/CourseInformation/CourseInformation";
 import Week from "../../Pages/Dashboard/Week/Layout/Week";
@@ -116,15 +116,15 @@ const router = createBrowserRouter([
   },
   {
     path: "/pointsAndRedemptions",
-    element: <PointsAndRedemptions/>
+    element: <PointsAndRedemptions />
   },
   {
     path: "/earningLogics",
-    element: <EarningLogics/>
+    element: <EarningLogics />
   },
   {
     path: "/redemptionLogics",
-    element: <RedemptionLogics/>
+    element: <RedemptionLogics />
   },
   {
     path: "/gamifiedSettings",
@@ -132,21 +132,20 @@ const router = createBrowserRouter([
   },
   {
     path: "/skillsManagement",
-    element:<SkillsManagement/>,
+    element: <SkillsManagement />,
   },
   {
     path: "/skillsCreations",
-    element:<SkillsCreations/>,
+    element: <SkillsCreations />,
   },
   {
     path: "/skillsImprovementEngine",
-    element:<SkillsImprovementEngine/>,
+    element: <SkillsImprovementEngine />,
   },
-/* 
   {
     path: "/createCourse",
-    element:<CreateCourse/>,
-  }, */
+    element: <CreateCourse />,
+  },
 ]);
 
 export default router;
