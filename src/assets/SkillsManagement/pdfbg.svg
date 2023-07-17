@@ -1,0 +1,13 @@
+<svg width="24" height="28" viewBox="0 0 24 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Frame 2" clip-path="url(#clip0_109_114)">
+<g id="Document">
+<path id="Subtract" fill-rule="evenodd" clip-rule="evenodd" d="M1.33337 0C0.781089 0 0.333374 0.447715 0.333374 1V27C0.333374 27.5523 0.78109 28 1.33337 28H22.6667C23.219 28 23.6667 27.5523 23.6667 27V4.66667L19 0H1.33337Z" fill="#E9F0FA"/>
+<path id="Intersect" fill-rule="evenodd" clip-rule="evenodd" d="M19.0001 0V4.66667H23.6667L19.0001 0Z" fill="#C2CDDE"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_109_114">
+<rect width="23.3333" height="28" fill="white" transform="translate(0.333374)"/>
+</clipPath>
+</defs>
+</svg>

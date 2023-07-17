@@ -36,7 +36,7 @@ const CourseAccess = () => {
 
   axios
     .post(
-      "https://moodle-135099-0.cloudclusters.net/webservice/rest/server.php",
+      process.env.REACT_APP_moodle_url,
       params,
       config
     )
