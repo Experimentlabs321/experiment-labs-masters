@@ -1,8 +1,5 @@
 {
   "projects": {
-    "default": "website-3caba",
-    "Website": "website-3caba"
-  },
-  "targets": {},
-  "etags": {}
+    "default": "experiment-lab-db58b"
+  }
 }

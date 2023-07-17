@@ -32,6 +32,8 @@ const CourseAccess = () => {
     },
   };
 
+  console.log(process.env.Moodal_URL);
+
   axios
     .post(
       "https://moodle-135099-0.cloudclusters.net/webservice/rest/server.php",
