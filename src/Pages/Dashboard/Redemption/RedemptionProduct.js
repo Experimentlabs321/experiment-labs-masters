@@ -1,12 +1,14 @@
 import React from "react";
 import NotificationIcon from "../../../assets/Dashboard/NotificationIcon.svg";
+import NotificationIconMobile from "../../../assets/Dashboard/NotificationIconMobile.svg";
 import SearchIcon from "../../../assets/Dashboard/SearchIcon.png";
+import SearchIconMobile from "../../../assets/Dashboard/SearchIconMobile.svg";
 
 const RedemptionProduct = ({ setState, state, redemptionProduct }) => {
   console.log(redemptionProduct);
   return (
     <div className="py-[65px] px-4">
-      <div className="flex flex-row justify-between items-center">
+      <div className="hidden lg:flex flex-row justify-between items-center">
         <div>
           <h1 className="text-[30px] font-[700]">
             Redemption of {redemptionProduct?.name}
@@ -38,76 +40,104 @@ const RedemptionProduct = ({ setState, state, redemptionProduct }) => {
           />
         </div>
       </div>
-      <div className="mt-[50px]">
-        {state === "Points statistics" ? (
-          <button
-            style={{ boxShadow: "0px 8px 0px 0px #CA5F98" }}
-            className={`bg-[#3E4DAC] py-[15px] px-[30px] rounded-[32px] text-white text-[12px] lg:text-[18px] font-[700] z-[1] mr-[32px]`}
-          >
-            Points statistics
-          </button>
-        ) : (
-          <button
-            onClick={() => setState("Points statistics")}
-            className={`bg-[#F8F9FE] py-[15px] px-[30px] rounded-[32px] text-[12px] lg:text-[18px] font-[700] z-[1] border mr-[32px]`}
-          >
-            Points statistics
-          </button>
-        )}
-        {state === "Redemption product" ? (
-          <button
-            style={{ boxShadow: "0px 8px 0px 0px #CA5F98" }}
-            className={`bg-[#3E4DAC] py-[15px] px-[30px] rounded-[32px] text-white text-[12px] lg:text-[18px] font-[700] z-[1]`}
-          >
-            Redeem gifts
-          </button>
-        ) : (
-          <button
-            onClick={() => setState("Redeem gifts")}
-            className={`bg-[#F8F9FE] py-[15px] px-[30px] rounded-[32px] text-[12px] lg:text-[18px] font-[700] z-[1] border`}
-          >
-            Redeem gifts
-          </button>
-        )}
+      <div className="mt-[20px] lg:mt-[50px] flex justify-between items-center">
+        <div>
+          {state === "Points statistics" ? (
+            <button
+              // style={{ boxShadow: "0px 8px 0px 0px #CA5F98" }}
+              className={`bg-[#3E4DAC] py-[8px] lg:py-[15px] px-[15px] lg:px-[30px] rounded-[32px] text-white text-[8px] lg:text-[15px] font-[700] z-[1] mr-[16px] lg:mr-[32px] shadow-[0px_3px_0px_0px_#CA5F98] lg:shadow-[0px_8px_0px_0px_#CA5F98]`}
+            >
+              Points statistics
+            </button>
+          ) : (
+            <button
+              onClick={() => setState("Points statistics")}
+              className={`bg-[#F8F9FE] py-[8px] lg:py-[15px] px-[15px] lg:px-[30px] rounded-[32px] text-[8px] lg:text-[15px] font-[700] z-[1] border mr-[16px] lg:mr-[32px]`}
+            >
+              Points statistics
+            </button>
+          )}
+          {state === "Redemption product" ? (
+            <button
+              // style={{ boxShadow: "0px 8px 0px 0px #CA5F98" }}
+              className={`bg-[#3E4DAC] py-[8px] lg:py-[15px] px-[15px] lg:px-[30px] rounded-[32px] text-white text-[8px] lg:text-[15px] font-[700] z-[1] mr-[16px] lg:mr-[32px] shadow-[0px_3px_0px_0px_#CA5F98] lg:shadow-[0px_8px_0px_0px_#CA5F98]`}
+            >
+              Redeem gifts
+            </button>
+          ) : (
+            <button
+              onClick={() => setState("Redeem gifts")}
+              className={`bg-[#F8F9FE] py-[8px] lg:py-[15px] px-[15px] lg:px-[30px] rounded-[32px] text-[8px] lg:text-[15px] font-[700] z-[1] border mr-[16px] lg:mr-[32px]`}
+            >
+              Redeem gifts
+            </button>
+          )}
+        </div>
+        <div className="flex lg:hidden items-center">
+          <img
+            className="mb-[-20px]"
+            src={SearchIconMobile}
+            alt="NotificationIcon"
+          />
+          <img
+            className="mb-[-20px]"
+            src={NotificationIconMobile}
+            alt="NotificationIcon"
+          />
+        </div>
       </div>
-      <div className="grid grid-cols-3">
-        <div className=" col-span-2 flex items-center">
+      <div className="block lg:hidden my-[20px]">
+        <div>
+          <h1 className=" text-[14px] lg:text-[30px] font-[700]">
+            Redemption of {redemptionProduct?.name}
+          </h1>
+          <h1 className="text-[#AAA] text-[8px] lg:text-[15px]">
+            Use the points you have earned to redeem what you want
+          </h1>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3">
+        <div className=" lg:col-span-2 flex items-center">
           <div className="w-full">
-            <p className=" text-[18px] font-[500] ">Product summary (1)</p>
-            <div className="flex justify-between border-y-2 border-[#B1B8D0] lg:mr-[140px] mt-[30px] py-[30px]">
+            <p className="text-[14px] lg:text-[18px] font-[500] ">
+              Product summary (1)
+            </p>
+            <div className="flex justify-between border-y-2 border-[#B1B8D0] lg:mr-[140px] mt-[15px] lg:mt-[30px] py-[30px]">
               <div>something </div>
               <div>something </div>
               <div>something </div>
             </div>
           </div>
         </div>
-        <div className="col-span-1">
-          <h1 className="text-[18px] font-[500] mb-[30px]">
+        <div className="lg:col-span-1 border lg:border-none border-[#B1B8D0] rounded-[23px] mt-[30px]">
+          <h1 className="text-[12px] lg:text-[18px] font-[700] px-[20px] lg:px-0 pt-[20px] lg:pt-0 lg:mb-[30px]">
             Redemption summary
           </h1>
-          <div className="border border-[#B1B8D0] p-[20px]">
-            <div className="flex justify-between text-[16px] font-[600] mb-[30px] ">
+          <div className="lg:border border-[#B1B8D0] p-[20px]">
+            <div className="flex justify-between text-[14px] lg:text-[16px] font-[600] mb-[15px] lg:mb-[30px] ">
               <p>Subtotal: </p>
               <p>POINTS</p>
             </div>
             <div>
-              <p className=" text-[16px] font-[600] ">Product code:</p>
+              <p className="text-[14px] lg:text-[16px] font-[600] mb-[10px] lg:mb-[20px] ">
+                Product code:
+              </p>
               <input
                 className="border border-[#B1B8D0] w-full p-[10px] "
                 type="text"
               />
-              <hr className="my-[20px] bg-[#B1B8D0] pt-[1px] " />
+              <hr className="my-[15px] lg:my-[20px] bg-[#B1B8D0] pt-[1px] " />
             </div>
-            <div className="flex justify-between text-[16px] font-[600] mb-[30px] ">
+            <div className="flex justify-between text-[14px] lg:text-[16px] font-[600] mb-[15px] lg:mb-[30px] ">
               <p>Total </p>
               <p>POINTS</p>
             </div>
           </div>
-          <div className="flex justify-evenly mt-[27px]">
-            <button className=" w-[160px] bg-[#FF557A] rounded-[10px] py-2 text-[15px] font-[700]">
+          <div className="flex justify-evenly mt-0 lg:mt-[27px] mb-[20px] lg:mb-0">
+            <button className="w-[100px] lg:w-[160px] bg-[#FF557A] rounded-full lg:rounded-[10px] py-2 text-[12px] lg:text-[15px] font-[700]">
               Back
             </button>
-            <button className=" w-[160px] bg-[#FF557A] rounded-[10px] py-2 text-[15px] font-[700]">
+            <button className="w-[100px] lg:w-[160px] bg-[#FF557A] rounded-full lg:rounded-[10px] py-2 text-[12px] lg:text-[15px] font-[700]">
               Redeem
             </button>
           </div>

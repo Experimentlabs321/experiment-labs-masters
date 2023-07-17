@@ -114,29 +114,6 @@ const Dashboard = () => {
                     key={singleData?.name}
                   />
                 ))}
-                {/* {viewAllLevel
-                  ? data.map((singleData, i) => (
-                      <Level
-                        viewAllLevel={viewAllLevel}
-                        length={length}
-                        onClick={handleCloseViewAllLevel}
-                        singleData={singleData}
-                        i={i}
-                        key={singleData?.name}
-                      />
-                    ))
-                  : data
-                      .slice(0, 5)
-                      .map((singleData, i) => (
-                        <Level
-                          viewAllLevel={viewAllLevel}
-                          onClick={handleViewAllLevel}
-                          length={length}
-                          singleData={singleData}
-                          i={i}
-                          key={singleData?.name}
-                        />
-                      ))} */}
               </div>
               <div className="mt-[20px] bg-[#D7ECFF] labJourney rounded-lg px-[10px] flex lg:hidden overflow-x-scroll h-[155px]">
                 {data.map((singleData, i) => (

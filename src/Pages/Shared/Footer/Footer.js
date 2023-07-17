@@ -12,10 +12,10 @@ import './style.css';
 const Footer = () => {
     const navItems = <>
 
-        <Link className='flex items-center gap-2 mb-1'><FiberManualRecordIcon sx={{fontSize:'8px'}}/> Contact Us</Link>
-        <Link className='flex items-center gap-2 mb-1'><FiberManualRecordIcon sx={{fontSize:'8px'}}/>Terms & Conditions</Link>
-        <Link className='flex items-center gap-2 mb-1'><FiberManualRecordIcon sx={{fontSize:'8px'}}/>Code of Conduct</Link>
-        <Link className='flex items-center gap-2 mb-1'><FiberManualRecordIcon sx={{fontSize:'8px'}}/>Cookie & Privacy Policy</Link>
+        <Link target='_blank' className='flex items-center gap-2 mb-1 hover:text-purple'><FiberManualRecordIcon sx={{fontSize:'8px'}}/> Contact Us</Link>
+        <Link to={'https://login.experimentlabs.in/termsofuse'} target='_blank' className='flex items-center gap-2 mb-1 hover:text-purple'><FiberManualRecordIcon sx={{fontSize:'8px'}}/>Terms & Conditions</Link>
+        <Link to={'https://login.experimentlabs.in/refundpolicy'} target='_blank' className='flex items-center gap-2 mb-1 hover:text-purple'><FiberManualRecordIcon sx={{fontSize:'8px'}}/>Refund Policy</Link>
+        <Link to={'https://login.experimentlabs.in/privacypolicy'} target='_blank' className='flex items-center gap-2 mb-1 hover:text-purple'><FiberManualRecordIcon sx={{fontSize:'8px'}}/>Cookie & Privacy Policy</Link>
 
     </>
     return (

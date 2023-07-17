@@ -121,6 +121,7 @@ const NavBar = (props) => {
   const [open, setOpen] = React.useState(false);
   const [open1, setOpen1] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   // const [error, setError] = React.useState("");
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -145,6 +146,14 @@ const NavBar = (props) => {
 
   const handleClose2 = () => {
     setOpen2(false);
+  };
+
+  const handleModalOpen = () => {
+    setModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setModalOpen(false);
   };
 
   const handleSubmit = (event) => {
@@ -179,62 +188,62 @@ const NavBar = (props) => {
 
   const navigate = useNavigate();
 
-  // const graphyLogin = async (email, displayName) => {
-  //   console.log(email, displayName);
-  //   saveUser(email);
-  //   try {
-  //     const payload = {
-  //       name: displayName,
-  //       email: email,
-  //       exp: Math.floor(Date.now() / 1000) + 60 * 60, // Set the token expiration time
-  //     };
+  const graphyLogin = async (email, displayName) => {
+    console.log(email, displayName);
+    saveUser(email);
+    try {
+      const payload = {
+        name: displayName,
+        email: email,
+        exp: Math.floor(Date.now() / 1000) + 60 * 60, // Set the token expiration time
+      };
 
-  //     // Convert the payload to a Base64Url encoded string
-  //     const payloadBase64 = btoa(JSON.stringify(payload))
-  //       .replace(/=/g, "")
-  //       .replace(/\+/g, "-")
-  //       .replace(/\//g, "_");
+      // Convert the payload to a Base64Url encoded string
+      const payloadBase64 = btoa(JSON.stringify(payload))
+        .replace(/=/g, "")
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_");
 
-  //     // Construct the header
-  //     const header = {
-  //       alg: "HS256",
-  //       typ: "JWT",
-  //     };
+      // Construct the header
+      const header = {
+        alg: "HS256",
+        typ: "JWT",
+      };
 
-  //     // Convert the header to a Base64Url encoded string
-  //     const headerBase64 = btoa(JSON.stringify(header))
-  //       .replace(/=/g, "")
-  //       .replace(/\+/g, "-")
-  //       .replace(/\//g, "_");
+      // Convert the header to a Base64Url encoded string
+      const headerBase64 = btoa(JSON.stringify(header))
+        .replace(/=/g, "")
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_");
 
-  //     // Your API token obtained from Graphy
-  //     const apiToken = process.env.REACT_APP_key;
+      // Your API token obtained from Graphy
+      const apiToken = process.env.REACT_APP_key;
 
-  //     // Construct the signature
-  //     const signature = CryptoJS.HmacSHA256(
-  //       `${headerBase64}.${payloadBase64}`,
-  //       apiToken
-  //     );
+      // Construct the signature
+      const signature = CryptoJS.HmacSHA256(
+        `${headerBase64}.${payloadBase64}`,
+        apiToken
+      );
 
-  //     // Convert the signature to a Base64Url encoded string
-  //     const signatureBase64 = CryptoJS.enc.Base64.stringify(signature)
-  //       .replace(/=/g, "")
-  //       .replace(/\+/g, "-")
-  //       .replace(/\//g, "_");
+      // Convert the signature to a Base64Url encoded string
+      const signatureBase64 = CryptoJS.enc.Base64.stringify(signature)
+        .replace(/=/g, "")
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_");
 
-  //     // Construct the SSO URL with the JWT token
-  //     const ssoUrl = `https://learn.experimentlabs.in/t/u/activeCourses?ssoToken=${headerBase64}.${payloadBase64}.${signatureBase64}`;
+      // Construct the SSO URL with the JWT token
+      const ssoUrl = `https://login.experimentlabs.in/s/mycourses?ssoToken=${headerBase64}.${payloadBase64}.${signatureBase64}`;
 
-  //     // Redirect the user to the SSO URL
-  //     // window.location.href = ssoUrl;
-  //     const a = document.createElement("a");
-  //     a.href = ssoUrl;
-  //     a.target = "_blank";
-  //     a.click();
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
+      // Redirect the user to the SSO URL
+      // window.location.href = ssoUrl;
+      const a = document.createElement("a");
+      a.href = ssoUrl;
+      a.target = "_blank";
+      a.click();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   //Login with google provider
   const handleGoogleSignIn = () => {
@@ -246,9 +255,9 @@ const NavBar = (props) => {
         saveUser(email);
         // navigate("/dashboard");
         handleClose();
-        // if (email) {
-        //   graphyLogin(email, displayName);
-        // }
+        if (email) {
+          graphyLogin(email, displayName);
+        }
         setError("");
       })
       .catch((error) => {
@@ -259,13 +268,16 @@ const NavBar = (props) => {
 
   console.log("ab", role);
 
+  // const handleDashboard = () => {
+  //   const Role = localStorage.getItem("role");
+  //   if (Role === "admin") {
+  //     navigate("/userManagement");
+  //   } else {
+  //     navigate("/dashboard");
+  //   }
+  // };
   const handleDashboard = () => {
-    const Role = localStorage.getItem("role");
-    if (Role === "admin") {
-      navigate("/userManagement");
-    } else {
-      navigate("/dashboard");
-    }
+    graphyLogin(user?.email, user?.displayName);
   };
 
   const handleOnBlur = (e) => {
@@ -294,7 +306,7 @@ const NavBar = (props) => {
             saveUser(loginData.email);
             // navigate("/dashboard");
           })
-          .catch((error) => {});
+          .catch((error) => { });
       })
       .catch((error) => {
         console.log(error.message);
@@ -306,8 +318,8 @@ const NavBar = (props) => {
   const loginUser = (email, password, location, history) => {
     saveUser(email);
     signIn(email, password)
-      .then((userCredential) => {})
-      .catch((error) => {});
+      .then((userCredential) => { })
+      .catch((error) => { });
   };
 
   const handleOnChange = (e) => {
@@ -472,13 +484,26 @@ const NavBar = (props) => {
       );
   };
 
+  const location = useLocation();
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const modalQueryParam = queryParams.get('modal');
+
+    if (modalQueryParam === 'true') {
+      setModalOpen(true);
+    }
+  }, [location]);
+
+
   const navItems = [
     // <InstagramIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
     // <YouTubeIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
     // <LinkedInIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
     // <TwitterIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
     <Button
-      onClick={handleClickFormOpen}
+      // onClick={handleClickFormOpen}
+      onClick={handleModalOpen}
       sx={{
         bgcolor: "#FF557A",
         borderRadius: "22.5px",
@@ -488,7 +513,21 @@ const NavBar = (props) => {
       }}
       variant="contained"
     >
-      <Link>Apply Now</Link>
+      <Link href={`/?modal=true`}>Apply Now</Link>
+    </Button>,
+    <Button
+      onClick={handleClickFormOpen}
+      // onClick={handleModalOpen}
+      sx={{
+        bgcolor: "#FF557A",
+        borderRadius: "22.5px",
+        ":hover": { bgcolor: "#94A4FF" },
+        color: "white",
+        width: "100%",
+      }}
+      variant="contained"
+    >
+      <Link>Know More</Link>
     </Button>,
     !user ? (
       <Button
@@ -605,7 +644,8 @@ const NavBar = (props) => {
       </Button>
     ),
     <Button
-      onClick={handleClickFormOpen}
+      // onClick={handleClickFormOpen}
+      onClick={handleModalOpen}
       sx={{
         bgcolor: "#FF557A",
         borderRadius: "22.5px",
@@ -615,7 +655,21 @@ const NavBar = (props) => {
       }}
       variant="contained"
     >
-      <Link>Apply Now</Link>
+      <Link href={`/?modal=true`}>Apply Now</Link>
+    </Button>,
+    <Button
+      onClick={handleClickFormOpen}
+      // onClick={handleModalOpen}
+      sx={{
+        bgcolor: "#FF557A",
+        borderRadius: "22.5px",
+        ":hover": { bgcolor: "#94A4FF" },
+        color: "white",
+        width: "100%",
+      }}
+      variant="contained"
+    >
+      <Link>Know More</Link>
     </Button>,
   ];
 
@@ -981,7 +1035,6 @@ const NavBar = (props) => {
           </div>
         </div>
       </Dialog>
-
       <Dialog
         open={formOpen}
         TransitionComponent={Transition}
@@ -1073,6 +1126,29 @@ const NavBar = (props) => {
               />
             </div>
           </form>
+        </div>
+      </Dialog>
+
+      <Dialog
+        fullScreen={fullScreen}
+        open={modalOpen}
+        scroll="body"
+        onClose={handleModalClose}
+        aria-labelledby="responsive-dialog-title"
+        sx={{ width: "100%", borderRadius: "22px" }}
+      >
+        <div className="text-white  mx-auto border-2 border-white flex justify-center items-center  ">
+          <div className="text-center">
+            <span
+              onClick={handleModalClose}
+              className="z-50 text-dark cursor-pointer absolute top-3 right-10 text-[20px] px-2 font-bold"
+            >
+              x
+            </span>
+            <iframe
+              className="w-full lg:min-w-[550px] h-full min-h-[90vh]"
+              title="form" src="https://form.jotform.com/231913338047455" frameborder="0"></iframe>
+          </div>
         </div>
       </Dialog>
     </Box>
