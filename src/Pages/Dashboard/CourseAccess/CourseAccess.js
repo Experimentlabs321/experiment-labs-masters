@@ -32,9 +32,7 @@ const CourseAccess = () => {
     },
   };
 
-  const URL = process.env.REACT_APP_moodle_url;
-
-  console.log(URL);
+  console.log(process.env.Moodal_URL);
 
   axios
     .post(
