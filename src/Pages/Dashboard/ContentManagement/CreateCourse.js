@@ -20,7 +20,7 @@ const CreateCourse = () => {
     const [isOpenGeneralCourseInfo, setisOpenGeneralCourseInfo] = useState(true);
     const [isOpenCourseFormat, setisOpenCourseFormat] = useState(false);
     const [isOpenCompletionTracking, setisOpenCompletionTracking] = useState(false);
-    const [isOpenNumberofWeeksChapters, setisOpenNumberofWeeksChapters] = useState(false);
+    //const [isOpenNumberofWeeksChapters, setisOpenNumberofWeeksChapters] = useState(false);
 
     const toggleDropdownCourseSelection = () => {
         setisOpenGeneralCourseInfo(!isOpenGeneralCourseInfo);
@@ -31,12 +31,12 @@ const CreateCourse = () => {
     const toggleDropdownCompletionTracking = () => {
         setisOpenCompletionTracking(!isOpenCompletionTracking);
     };
-    const toggleDropdownNumberofWeeksChapters = () => {
+   /*  const toggleDropdownNumberofWeeksChapters = () => {
         setisOpenNumberofWeeksChapters(!isOpenNumberofWeeksChapters);
-    };
+    }; */
 
 
-    const [numberOfWeeks, setNumberOfWeeks] = useState(0);
+  /*   const [numberOfWeeks, setNumberOfWeeks] = useState(0);
     const [numberList, setNumberList] = useState([]);
 
     const handleInputChange = (event) => {
@@ -51,7 +51,7 @@ const CreateCourse = () => {
             numbers.push(i);
         }
         setNumberList(numbers);
-    };
+    }; */
 
     // addcoursecategory
     const [isOpenaddcoursecategory, setIsOpenaddcoursecategory] = useState(false);
@@ -73,7 +73,7 @@ const CreateCourse = () => {
     };
 
 ///week names
-const [formData, setFormData] = useState([]);
+/* const [formData, setFormData] = useState([]);
 
 const handleInputChangeweek = (e, number) => {
     const { name, value } = e.target;
@@ -87,7 +87,7 @@ const handleInputChangeweek = (e, number) => {
       }
       return updatedData;
     });
-  };
+  }; */
 
 
     /// handle Submit
@@ -98,22 +98,23 @@ const handleInputChangeweek = (e, number) => {
         const courseFullName = form.courseFullName?.value;
         const courseShortName = form.courseShortName?.value;
         const courseStartingDate = form.courseStartingDate?.value;
-        const courseStartingTime = form.courseStartingTime?.value;
+      //  const courseStartingTime = form.courseStartingTime?.value;
         const courseEndingDate = form.courseEndingDate?.value;
-        const courseEndingTime = form.courseEndingTime?.value;
+      //  const courseEndingTime = form.courseEndingTime?.value;
         const courseDescription = form.courseDescription?.value;
-        const courseCategory = form.courseCategory?.value;
-        const courseVisibility = form.courseVisibility?.value;
+        const courseCategory = +(form.courseCategory?.value);
+        const courseVisibility = +(form.courseVisibility?.value);
         const courseIDNumber = form.courseIDNumber?.value;
         const courseFormat = form.courseFormat?.value;
         const gradesFormat = form.gradesFormat?.value;
         const groups = form.groups?.value;
-        const showactivitydates = form.showactivitydates?.value;
+        const showactivitydates = +(form.showactivitydates?.value);
+        const numberOfWeeks = +(form.numberofWeeks?.value);
        // const weekChapterName = form.weekChapterName?.value;
-        const showactivityreports = form.showactivityreports?.value;
-        const enableCompletionTracking = form.enableCompletionTracking?.value;
-        const certificateGeneration = form.certificateGeneration?.value;
-        const showactivitycompletionconditions = form.showactivitycompletionconditions?.value;
+        const showactivityreports = +(form.showactivityreports?.value);
+        const enableCompletionTracking = +(form.enableCompletionTracking?.value);
+       // const certificateGeneration = form.certificateGeneration?.value;
+        const showactivitycompletionconditions = +(form.showactivitycompletionconditions?.value);
         //  const showGradebooktostudents = form.showGradebooktostudents.value;
 
 
@@ -121,9 +122,9 @@ const handleInputChangeweek = (e, number) => {
             courseFullName,
             courseShortName,
             courseStartingDate,
-            courseStartingTime,
+          //  courseStartingTime,
             courseEndingDate,
-            courseEndingTime,
+            //courseEndingTime,
             courseDescription,
             courseCategory,
             courseThumbnail: selectedFile,
@@ -133,11 +134,11 @@ const handleInputChangeweek = (e, number) => {
             gradesFormat,
             groups,
             showactivitydates,
-            NumberofWeeksChapters: numberOfWeeks,
-            weekChapterName: formData,
+            numberOfWeeks,
+           // weekChapterName: formData,
             showactivityreports,
             enableCompletionTracking,
-            certificateGeneration,
+           // certificateGeneration,
             showactivitycompletionconditions
             //showGradebooktostudents,
 
@@ -199,8 +200,8 @@ const handleInputChangeweek = (e, number) => {
                                         <img src={required}/>
                                     </div>
 
-                                    <input required className='mt-6 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='courseStartingDate' type="date" placeholder='Eg. Entrepreneurship Lab' />
-                                    <input required className='mt-4 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='courseStartingTime' type="time" placeholder='Eg. Entrepreneurship Lab' />
+                                    <input required className='mt-6 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='courseStartingDate' type="datetime-local" placeholder='Eg. Entrepreneurship Lab' />
+                                    {/* <input required className='mt-4 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='courseStartingTime' type="time" placeholder='Eg. Entrepreneurship Lab' /> */}
                                 </div>
                                 <div className='mt-20 flex flex-col'>
                                     <div className='flex items-center gap-4'>
@@ -208,8 +209,8 @@ const handleInputChangeweek = (e, number) => {
                                         <p className='font-bold text-lg me-[36px]'> Course Ending Date and Time </p>
                                     </div>
 
-                                    <input className='mt-6 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='courseEndingDate' type="date" placeholder='Eg. Entrepreneurship Lab' />
-                                    <input className='mt-4 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='courseEndingTime' type="time" placeholder='Eg. Entrepreneurship Lab' />
+                                    <input className='mt-6 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='courseEndingDate' type="datetime-local" placeholder='Eg. Entrepreneurship Lab' />
+                                    {/* <input className='mt-4 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='courseEndingTime' type="time" placeholder='Eg. Entrepreneurship Lab' /> */}
                                 </div>
                                 <div className='mt-20'>
                                     <div className='flex items-center gap-4'>
@@ -239,7 +240,7 @@ const handleInputChangeweek = (e, number) => {
                                         // id="option"
                                         >
 
-                                            <option className="" value="Web Development">Web Development</option>
+                                            <option className="" value="1">Web Development</option>
                                             <option value="Parent"></option>
                                             <option value="Counselor"></option>
                                             <option value="Others"></option>
@@ -309,11 +310,11 @@ const handleInputChangeweek = (e, number) => {
 
                                     <div className=" items-center flex gap-2  mt-2 ms-6  w-[319px] h-[50px] ps-2 text-[#535353] focus:outline-0 ">
                                         <div className=''>
-                                            <input type="radio" id="Show" name="courseVisibility" value="Show" />
+                                            <input type="radio" id="Show" name="courseVisibility" value="1" />
                                             <lebel> Show</lebel>
                                         </div>
                                         <div className=' ms-[55px]'>
-                                            <input type="radio" id="Hide" name="courseVisibility" value="Hide" />
+                                            <input type="radio" id="Hide" name="courseVisibility" value="0" />
                                             <lebel> Hide</lebel>
                                         </div>
 
@@ -374,7 +375,7 @@ const handleInputChangeweek = (e, number) => {
                                         //id="option"
                                         >
 
-                                            <option value="Topic Format">Topic Format</option>
+                                            <option value="weeks">Weekly format</option>
                                             <option value="Parent"></option>
                                             <option value="Counselor"></option>
                                             <option value="Others"></option>
@@ -449,11 +450,11 @@ const handleInputChangeweek = (e, number) => {
 
                                     <div className=" items-center flex gap-2  mt-2 ms-6  w-[319px] h-[50px] ps-2 text-[#535353] focus:outline-0 ">
                                         <div className=''>
-                                            <input type="radio" id="Yes" name="showactivitydates" value="Yes" />
+                                            <input type="radio" id="Yes" name="showactivitydates" value="1" />
                                             <lebel> Yes</lebel>
                                         </div>
                                         <div className=' ms-[55px]'>
-                                            <input type="radio" id="No" name="showactivitydates" value="No" />
+                                            <input type="radio" id="No" name="showactivitydates" value="0" />
                                             <lebel> No</lebel>
                                         </div>
 
@@ -472,26 +473,37 @@ const handleInputChangeweek = (e, number) => {
                                         <p className='text-[18px] font-bold'>Number of Weeks/Chapters</p>
                                     </div>
                                     <div
-                                        className='flex items-center border w-[85px] h-[50px] p-4 ms-6 mt-6'
+                                        className='flex items-center border w-[85px] h-[50px]  ms-6 mt-6'
                                         style={{
                                             borderRadius: '6px',
                                             border: '1px solid #CECECE',
                                         }}
                                     >
                                         <input
+                                          style={{
+                                            borderRadius: '6px',
+                                            border: '1px solid #CECECE',
+                                        }}
+                                            className='text-center  border w-full h-full focus:outline-0'
+                                            type='text'
+                                            placeholder='num'
+                                            name='numberofWeeks'
+                                           
+                                        />
+                                      {/*   <input
                                             className='text-center my-4 border w-1/2'
                                             type='text'
                                             placeholder='2'
                                             value={numberOfWeeks}
                                             onChange={handleInputChange}
-                                        />
-                                        <div className='select-option' onClick={toggleDropdownNumberofWeeksChapters}>
+                                        /> */}
+                                       {/*  <div className='select-option' onClick={toggleDropdownNumberofWeeksChapters}>
                                             {!isOpenNumberofWeeksChapters && <img className='w-6' src={arrowright}></img>}
                                             {isOpenNumberofWeeksChapters && <img src={arrowDown}></img>}
                                             <i className={`dropdown-arrow ${isOpenNumberofWeeksChapters ? 'open' : ''}`}></i>
-                                        </div>
+                                        </div> */}
                                     </div>
-                                    {isOpenNumberofWeeksChapters && (
+                                   {/*  {isOpenNumberofWeeksChapters && (
                                         <div className='dropdown-menu mt-[70px]'>
                                             <ul>
                                                 {numberList.map((number) => (
@@ -519,7 +531,7 @@ const handleInputChangeweek = (e, number) => {
                                                 ))}
                                             </ul>
                                         </div>
-                                    )}
+                                    )} */}
                                 </div>
 
                                 <div className='mt-20'>
@@ -530,11 +542,11 @@ const handleInputChangeweek = (e, number) => {
 
                                     <div className=" items-center flex gap-2  mt-2 ms-6  w-[319px] h-[50px] ps-2 text-[#535353] focus:outline-0 ">
                                         <div className=''>
-                                            <input type="radio" id="Yes" name="showactivityreports" value="Yes" />
+                                            <input type="radio" id="Yes" name="showactivityreports" value="1" />
                                             <lebel> Yes</lebel>
                                         </div>
                                         <div className=' ms-[55px]'>
-                                            <input type="radio" id="No" name="showactivityreports" value="No" />
+                                            <input type="radio" id="No" name="showactivityreports" value="0" />
                                             <lebel> No</lebel>
                                         </div>
 
@@ -573,11 +585,11 @@ const handleInputChangeweek = (e, number) => {
 
                                     <div className=" items-center flex gap-2  mt-2 ms-6  w-[319px] h-[50px] ps-2 text-[#535353] focus:outline-0 ">
                                         <div className=''>
-                                            <input type="radio" id="Yes" name="enableCompletionTracking" value="Yes" />
+                                            <input type="radio" id="Yes" name="enableCompletionTracking" value="1" />
                                             <lebel> Yes</lebel>
                                         </div>
                                         <div className=' ms-[55px]'>
-                                            <input type="radio" id="No" name="enableCompletionTracking" value="No" />
+                                            <input type="radio" id="No" name="enableCompletionTracking" value="0" />
                                             <lebel> No</lebel>
                                         </div>
 
@@ -629,11 +641,11 @@ const handleInputChangeweek = (e, number) => {
 
                                     <div className=" items-center flex gap-2  mt-2 ms-6  w-[319px] h-[50px] ps-2 text-[#535353] focus:outline-0 ">
                                         <div className=''>
-                                            <input type="radio" id="Yes" name="showactivitycompletionconditions" value="Yed" />
+                                            <input type="radio" id="Yes" name="showactivitycompletionconditions" value="1" />
                                             <lebel> Yes</lebel>
                                         </div>
                                         <div className=' ms-[55px]'>
-                                            <input type="radio" id="No" name="showactivitycompletionconditions" value="No" />
+                                            <input type="radio" id="No" name="showactivitycompletionconditions" value="0" />
                                             <lebel> No</lebel>
                                         </div>
 
