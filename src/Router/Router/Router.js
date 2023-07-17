@@ -143,7 +143,6 @@ const router = createBrowserRouter([
     path: "/skillsImprovementEngine",
     element: <SkillsImprovementEngine />,
   },
-
   {
     path: "/createCourse",
     element:<CreateCourse/>,
