@@ -34,7 +34,7 @@ const EnrollRegistration = () => {
         <div>
             <Layout>
 
-                <div className='flex items-center justify-center gap-7 mt-20 lg:mt-10'>
+                <div className='flex items-center justify-center gap-7 pt-20 lg:pt-10'>
                     <div className="UserManagement origin-top-left rotate-[-0.51deg] text-zinc-500 text-[30px] font-medium">Points And Redemptions</div>
                     <div className="Input w-[425px] h-16 relative bg-slate-100 rounded-[40px] shadow-inner">
                         <input className="Search w-[329px] left-[32px] top-[12px] absolute text-zinc-500 text-[20px] font-light leading-10 bg-transparent focus:outline-0" placeholder='Search' />
@@ -129,8 +129,8 @@ const EnrollRegistration = () => {
                             </div>
 
                             <div className='flex gap-4 justify-center mt-5'>
-                                <button className='bg-[#2EB0FB] px-2 py-4 rounded-lg text-[#FFFFFF] font-semibold text-base  ' style={{boxShadow: "rgba(0, 0, 0, 0.75) 0px 3px 8px"}}>Save Point</button>
-                                <button className='text-[#808080] px-2 py-4 rounded-lg  font-semibold text-base ' style={{ border: "2px solid #808080",boxShadow: "rgba(0, 0, 0, 0.75) 0px 3px 8px" }} >Discard</button>
+                                <button className='bg-[#2EB0FB] px-4 py-2 rounded-lg text-[#FFFFFF] font-semibold text-base  ' style={{boxShadow: "rgba(0, 0, 0, 0.75) 0px 3px 8px"}}>Save Point</button>
+                                <button className='text-[#808080] px-4 py-2 rounded-lg  font-semibold text-base ' style={{ border: "2px solid #808080",boxShadow: "rgba(0, 0, 0, 0.75) 0px 3px 8px" }} >Discard</button>
                             </div>
                         </div>
                         <div className="col-span-2 p-5  border-2 rounded-2xl  text-center my-5">

@@ -18,6 +18,14 @@ import SkillAnalysis from "../../Pages/Dashboard/SkillAnalysis/SkillAnalysis";
 import CareerAnalysis from "../../Pages/Dashboard/CareerAnalysis/CareerAnalysis";
 import UserMangement from "../../Pages/Dashboard/UserManagement/UserMangement";
 import EnrollRegistration from "../../Pages/Dashboard/EnrollRegistration/EnrollRegistration";
+import PointsAndRedemptions from "../../Pages/Dashboard/PointsAndRedemptions/PointsAndRedemptions";
+import EarningLogics from "../../Pages/Dashboard/PointsAndRedemptions/EarningLogics";
+import RedemptionLogics from "../../Pages/Dashboard/PointsAndRedemptions/RedemptionLogics";
+import SkillsManagement from "../../Pages/Dashboard/SkillsManagement/SkillsManagement";
+import SkillsCreations from "../../Pages/Dashboard/SkillsManagement/SkillsCreations";
+import SkillsImprovementEngine from "../../Pages/Dashboard/SkillsManagement/SkillsImprovementEngine";
+
+import CreateCourse from "../../Pages/Dashboard/ContentManagement/CreateCourse";
 
 const router = createBrowserRouter([
   {
@@ -92,8 +100,37 @@ const router = createBrowserRouter([
     element: <UserMangement/>,
   },
   {
+    path: "/pointsAndRedemptions",
+    element: <PointsAndRedemptions/>
+  },
+  {
+    path: "/earningLogics",
+    element: <EarningLogics/>
+  },
+  {
+    path: "/redemptionLogics",
+    element: <RedemptionLogics/>
+  },
+  {
     path: "/gamifiedSettings",
     element: <EnrollRegistration/>,
+  },
+  {
+    path: "/skillsManagement",
+    element:<SkillsManagement/>,
+  },
+  {
+    path: "/skillsCreations",
+    element:<SkillsCreations/>,
+  },
+  {
+    path: "/skillsImprovementEngine",
+    element:<SkillsImprovementEngine/>,
+  },
+
+  {
+    path: "/createCourse",
+    element:<CreateCourse/>,
   },
 ]);
 
