@@ -117,15 +117,15 @@ const router = createBrowserRouter([
   },
   {
     path: "/pointsAndRedemptions",
-    element: <PointsAndRedemptions/>
+    element: <PointsAndRedemptions />
   },
   {
     path: "/earningLogics",
-    element: <EarningLogics/>
+    element: <EarningLogics />
   },
   {
     path: "/redemptionLogics",
-    element: <RedemptionLogics/>
+    element: <RedemptionLogics />
   },
   {
     path: "/gamifiedSettings",
@@ -133,17 +133,16 @@ const router = createBrowserRouter([
   },
   {
     path: "/skillsManagement",
-    element:<SkillsManagement/>,
+    element: <SkillsManagement />,
   },
   {
     path: "/skillsCreations",
-    element:<SkillsCreations/>,
+    element: <SkillsCreations />,
   },
   {
     path: "/skillsImprovementEngine",
-    element:<SkillsImprovementEngine/>,
+    element: <SkillsImprovementEngine />,
   },
-
   {
     path: "/createCourse",
     element:<CreateCourse/>,

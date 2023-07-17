@@ -1,17 +1,20 @@
 import React, { useState } from "react";
-import StarLight from "../../../../assets/Dashboard/StarLight.png";
-import StarDark from "../../../../assets/Dashboard/StarDark.png";
-import WebinarsLight from "../../../../assets/Dashboard/WebinarsLight.png";
-import WebinarsDark from "../../../../assets/Dashboard/WebinarsDark.png";
-import BookmarksLight from "../../../../assets/Dashboard/BookmarksLight.png";
-import BookmarksDark from "../../../../assets/Dashboard/BookmarksDark.png";
-import DiscussionsLight from "../../../../assets/Dashboard/DiscussionsLight.png";
-import DiscussionsDark from "../../../../assets/Dashboard/DiscussionsDark.png";
-import CourseAccessIconLight from "../../../../assets/Dashboard/CourseAccessIconLight.svg";
-import CourseAccessIconDark from "../../../../assets/Dashboard/CourseAccessIconDark.svg";
-import CourseTham from "../../../../assets/Dashboard/CourseTham.png";
 import Reading from "../../../../assets/Dashboard/TaskIcon.png";
 import ReadingActive from "../../../../assets/Dashboard/TaskIconActive.png";
+import Assignment from "../../../../assets/Dashboard/Assignment.png";
+import AssignmentActive from "../../../../assets/Dashboard/AssignmentActive.png";
+import Classes from "../../../../assets/Dashboard/Classes.png";
+import ClassesActive from "../../../../assets/Dashboard/ClassesActive.png";
+import Quiz from "../../../../assets/Dashboard/Quiz.png";
+import QuizActive from "../../../../assets/Dashboard/QuizActive.png";
+import LiveTest from "../../../../assets/Dashboard/LiveTest.png";
+import LiveTestActive from "../../../../assets/Dashboard/LiveTestActive.png";
+import Video from "../../../../assets/Dashboard/Video.png";
+import VideoActive from "../../../../assets/Dashboard/VideoActive.png";
+import Audio from "../../../../assets/Dashboard/Audio.png";
+import AudioActive from "../../../../assets/Dashboard/AudioActive.png";
+import Files from "../../../../assets/Dashboard/Files.png";
+import FilesActive from "../../../../assets/Dashboard/FilesActive.png";
 import { Link, useLocation } from "react-router-dom";
 
 const data = [
@@ -41,7 +44,7 @@ const data = [
       },
       {
         taskName: "Task of topic 2",
-        type: "File",
+        type: "Files",
       },
       {
         taskName: "Task of topic 2",
@@ -146,15 +149,104 @@ const Aside = ({ toggleButton, setToggleButton }) => {
                           }  text-white font-normal flex items-center pr-[10px] py-[13px] group cursor-pointer`}
                         >
                           <div className="w-[40px] h-[40px] text-black flex items-center justify-center rounded-full ">
-                            <img
-                              className={`${
-                                openTask === task
-                                  ? "border-black"
-                                  : "border-white"
-                              }  border p-[5px] rounded-full `}
-                              src={openTask === task ? ReadingActive : Reading}
-                              alt="TaskIcon"
-                            />
+                            {task?.type === "Reading" && (
+                              <img
+                                className={`${
+                                  openTask === task
+                                    ? "border-black"
+                                    : "border-white"
+                                }  border p-[5px] rounded-full `}
+                                src={
+                                  openTask === task ? ReadingActive : Reading
+                                }
+                                alt="TaskIcon"
+                              />
+                            )}
+                            {task?.type === "Assignment" && (
+                              <img
+                                className={`${
+                                  openTask === task
+                                    ? "border-black"
+                                    : "border-white"
+                                }  border p-[5px] rounded-full `}
+                                src={
+                                  openTask === task
+                                    ? AssignmentActive
+                                    : Assignment
+                                }
+                                alt="TaskIcon"
+                              />
+                            )}
+                            {task?.type === "Classes" && (
+                              <img
+                                className={`${
+                                  openTask === task
+                                    ? "border-black"
+                                    : "border-white"
+                                }  border p-[5px] rounded-full `}
+                                src={
+                                  openTask === task ? ClassesActive : Classes
+                                }
+                                alt="TaskIcon"
+                              />
+                            )}
+                            {task?.type === "Quiz" && (
+                              <img
+                                className={`${
+                                  openTask === task
+                                    ? "border-black"
+                                    : "border-white"
+                                }  border p-[5px] rounded-full `}
+                                src={openTask === task ? QuizActive : Quiz}
+                                alt="TaskIcon"
+                              />
+                            )}
+                            {task?.type === "LiveTest" && (
+                              <img
+                                className={`${
+                                  openTask === task
+                                    ? "border-black"
+                                    : "border-white"
+                                }  border p-[5px] rounded-full `}
+                                src={
+                                  openTask === task ? LiveTestActive : LiveTest
+                                }
+                                alt="TaskIcon"
+                              />
+                            )}
+                            {task?.type === "Video" && (
+                              <img
+                                className={`${
+                                  openTask === task
+                                    ? "border-black"
+                                    : "border-white"
+                                }  border p-[5px] rounded-full `}
+                                src={openTask === task ? VideoActive : Video}
+                                alt="TaskIcon"
+                              />
+                            )}
+                            {task?.type === "Audio" && (
+                              <img
+                                className={`${
+                                  openTask === task
+                                    ? "border-black"
+                                    : "border-white"
+                                }  border p-[5px] rounded-full `}
+                                src={openTask === task ? AudioActive : Audio}
+                                alt="TaskIcon"
+                              />
+                            )}
+                            {task?.type === "Files" && (
+                              <img
+                                className={`${
+                                  openTask === task
+                                    ? "border-black"
+                                    : "border-white"
+                                }  border p-[5px] rounded-full `}
+                                src={openTask === task ? FilesActive : Files}
+                                alt="TaskIcon"
+                              />
+                            )}
                           </div>
 
                           <h1
