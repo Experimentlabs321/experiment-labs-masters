@@ -25,10 +25,11 @@ import SkillsManagement from "../../Pages/Dashboard/SkillsManagement/SkillsManag
 import SkillsCreations from "../../Pages/Dashboard/SkillsManagement/SkillsCreations";
 import SkillsImprovementEngine from "../../Pages/Dashboard/SkillsManagement/SkillsImprovementEngine";
 
-//import CreateCourse from "../../Pages/Dashboard/ContentManagement/CreateCourse";
+import CreateCourse from "../../Pages/Dashboard/ContentManagement/CreateCourse";
 import CourseAccess from "../../Pages/Dashboard/CourseAccess/CourseAccess";
 import CourseInformation from "../../Pages/Dashboard/CourseInformation/CourseInformation";
 import Week from "../../Pages/Dashboard/Week/Layout/Week";
+import ManageClasses from "../../Pages/Dashboard/ContentManagement/ManageClasses";
 
 const router = createBrowserRouter([
   {
@@ -142,11 +143,15 @@ const router = createBrowserRouter([
     path: "/skillsImprovementEngine",
     element:<SkillsImprovementEngine/>,
   },
-/* 
+
   {
     path: "/createCourse",
     element:<CreateCourse/>,
-  }, */
+  },
+  {
+    path: "/manageClasses",
+    element:<ManageClasses/>,
+  },
 ]);
 
 export default router;
