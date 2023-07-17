@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Layout from '../Layout';
 import arrowDown from '../../../assets/SkillsManagement/arrow.svg'
 import arrowright from '../../../assets/SkillsManagement/arrowright.svg'
+import required from '../../../assets/ContentManagement/required.png'
 
 import Badge from '@mui/material/Badge';
 import MailIcon from '@mui/icons-material/Mail';
@@ -176,27 +177,30 @@ const handleInputChangeweek = (e, number) => {
                                     <div className='flex items-center gap-4'>
                                         <p className='h-2 w-2 bg-black rounded-full'></p>
                                         <p className='font-bold text-lg me-[36px]'> Course Full Name</p>
+                                        <img src={required}/>
                                     </div>
 
-                                    <input className='mt-6 ms-6 border rounded-md w-[520px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='courseFullName' type="text" placeholder='Eg. Entrepreneurship Lab' />
+                                    <input required className='mt-6 ms-6 border rounded-md w-[520px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='courseFullName' type="text" placeholder='Eg. Entrepreneurship Lab' />
                                 </div>
 
                                 <div className='mt-20'>
                                     <div className='flex items-center gap-4'>
                                         <p className='h-2 w-2 bg-black rounded-full'></p>
                                         <p className='font-bold text-lg me-[36px]'> Course Short Name</p>
+                                        <img src={required}/>
                                     </div>
 
-                                    <input className='mt-6 ms-6 border rounded-md w-[520px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='courseShortName' type="text" placeholder='Eg. Entrepreneurship Lab' />
+                                    <input required className='mt-6 ms-6 border rounded-md w-[520px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='courseShortName' type="text" placeholder='Eg. Entrepreneurship Lab' />
                                 </div>
                                 <div className='mt-20 flex flex-col'>
                                     <div className='flex items-center gap-4'>
                                         <p className='h-2 w-2 bg-black rounded-full'></p>
                                         <p className='font-bold text-lg me-[36px]'> Course Starting Date and Time </p>
+                                        <img src={required}/>
                                     </div>
 
-                                    <input className='mt-6 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='courseStartingDate' type="date" placeholder='Eg. Entrepreneurship Lab' />
-                                    <input className='mt-4 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='courseStartingTime' type="time" placeholder='Eg. Entrepreneurship Lab' />
+                                    <input required className='mt-6 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='courseStartingDate' type="date" placeholder='Eg. Entrepreneurship Lab' />
+                                    <input required className='mt-4 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='courseStartingTime' type="time" placeholder='Eg. Entrepreneurship Lab' />
                                 </div>
                                 <div className='mt-20 flex flex-col'>
                                     <div className='flex items-center gap-4'>
@@ -223,6 +227,7 @@ const handleInputChangeweek = (e, number) => {
                                     <div className='flex items-center gap-4'>
                                         <p className='h-2 w-2 bg-black rounded-full'></p>
                                         <p className='font-bold text-lg me-[36px]'>Course Category</p>
+                                        <img src={required}/>
                                     </div>
 
                                     <div className=" flex gap-2  mt-6 ms-6 border rounded-md w-[381px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]  ">
@@ -578,7 +583,7 @@ const handleInputChangeweek = (e, number) => {
 
                                     </div>
                                 </div>
-                                <div className='mt-20'>
+                           {/*      <div className='mt-20'>
                                     <div className='flex items-center gap-4'>
                                         <p className='h-2 w-2 bg-black rounded-full'></p>
                                         <p className='font-bold text-lg me-[36px]'>Certificate Generation</p>
@@ -607,7 +612,7 @@ const handleInputChangeweek = (e, number) => {
                                         </select>
 
                                     </div>
-                                </div>
+                                </div> */}
 
 
 

@@ -29,6 +29,7 @@ import CreateCourse from "../../Pages/Dashboard/ContentManagement/CreateCourse";
 import CourseAccess from "../../Pages/Dashboard/CourseAccess/CourseAccess";
 import CourseInformation from "../../Pages/Dashboard/CourseInformation/CourseInformation";
 import Week from "../../Pages/Dashboard/Week/Layout/Week";
+import ManageClasses from "../../Pages/Dashboard/ContentManagement/ManageClasses";
 
 const router = createBrowserRouter([
   {
@@ -144,7 +145,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/createCourse",
-    element: <CreateCourse />,
+    element:<CreateCourse/>,
+  },
+  {
+    path: "/manageClasses",
+    element:<ManageClasses/>,
   },
 ]);
 
