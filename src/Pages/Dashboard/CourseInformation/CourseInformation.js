@@ -124,7 +124,10 @@ const CourseInformation = () => {
                           </svg>
                           <h1 className="mr-[12px]">Add Chapter</h1>
                         </button>
-                        <button className="flex items-center bg-[#3E4DAC] text-[16px] font-[700] text-white p-[16px] rounded-[20px] ">
+                        <Link
+                          to="/createCourse"
+                          className="flex items-center bg-[#3E4DAC] text-[16px] font-[700] text-white p-[16px] rounded-[20px] "
+                        >
                           <svg
                             className="mr-[16px]"
                             xmlns="http://www.w3.org/2000/svg"
@@ -139,7 +142,7 @@ const CourseInformation = () => {
                             />
                           </svg>
                           <h1 className="mr-[12px]">Edit Course</h1>
-                        </button>
+                        </Link>
                       </>
                     )}
                   </div>
