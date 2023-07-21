@@ -256,8 +256,8 @@ const CreateCourse = () => {
                         <i className={`dropdown-arrow ${isOpenGeneralCourseInfo ? 'open' : ''}`}></i>
                     </div>
                     {isOpenGeneralCourseInfo && (
-                        <div className="dropdown-menu mt-[71px] mb-[45px] flex gap-80 ">
-                            <div >
+                        <div className="dropdown-menu mt-[71px] mb-[45px] flex gap-80 border-b-2 ">
+                            <div className='mb-20'>
                                 <div className=''>
                                     <div className='flex items-center gap-4'>
                                         <p className='h-2 w-2 bg-black rounded-full'></p>
@@ -435,7 +435,7 @@ const CreateCourse = () => {
                     </div>
 
                     {isOpenCourseFormat && (
-                        <div className="dropdown-menu mt-[71px] mb-[45px] flex gap-[550px] ">
+                        <div className="dropdown-menu mt-[71px] mb-[45px] flex gap-[550px] border-b-2 ">
                             <div >
                                 <div className=''>
                                     <div className='flex items-center gap-4'>
@@ -454,7 +454,7 @@ const CreateCourse = () => {
 
                                         <select
                                             required
-                                            className='select select-bordered w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold'
+                                            className='select select-bordered w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold focus:outline-0'
                                             name="courseFormat"
                                         //id="option"
                                         >
@@ -482,15 +482,14 @@ const CreateCourse = () => {
 
                                         <select
                                             required
-                                            className='w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold'
+                                            className='w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold focus:outline-0'
                                             name="gradesFormat"
                                             id="option"
                                         >
 
                                             <option className="" value="Gamified">Gamified</option>
-                                            <option value="Parent"></option>
-                                            <option value="Counselor"></option>
-                                            <option value="Others"></option>
+                                            <option className='text-[#6A6A6A]' value="Non-Gamified">Non-Gamified</option>
+                                            
                                         </select>
 
                                     </div>
@@ -511,21 +510,21 @@ const CreateCourse = () => {
 
                                         <select
                                             required
-                                            className='w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold'
+                                            className='w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold focus:outline-0'
                                             name="groups"
                                         // id="option"
                                         >
 
                                             <option className="" value="No Groups">No Groups</option>
-                                            <option value="Parent"></option>
-                                            <option value="Counselor"></option>
-                                            <option value="Others"></option>
+                                            <option className='text-[#6A6A6A]' value="Parent">Private Groups</option>
+                                            <option className='text-[#6A6A6A]' value="Counselor">Public Groups</option>
+                                            
                                         </select>
 
                                     </div>
                                 </div>
 
-                                <div className='mt-20'>
+                                <div className='mt-20 mb-20'>
                                     <div className='flex items-center gap-4'>
                                         <p className='h-2 w-2 bg-black rounded-full'></p>
                                         <p className='font-bold text-lg me-[36px]'>Show activity dates</p>
@@ -657,7 +656,7 @@ const CreateCourse = () => {
                     </div>
 
                     {isOpenCompletionTracking && (
-                        <div className="dropdown-menu mt-[71px] mb-[45px] flex gap-[550px] ">
+                        <div className="dropdown-menu mt-[71px] mb-[45px] flex gap-[550px]  ">
                             <div >
 
                                 <div className=''>
@@ -743,7 +742,7 @@ const CreateCourse = () => {
 
 
                     <div className='flex items-center justify-center mt-20 mb-10'>
-                        <input type="submit" value='submit' className='px-[30px] py-3 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg' />
+                        <input type="submit" value='Save' className='px-[30px] py-3 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg' />
                         <input type="submit" value='Save & Display' className='px-[30px] py-3 bg-[#FF557A] text-[#fff] text-xl font-bold rounded-lg ms-20' />
                     </div>
 
