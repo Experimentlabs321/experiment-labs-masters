@@ -39,7 +39,7 @@ const Layout = ({ children }) => {
   const [windowWidth, setWindowWidth] = useState(0);
   const Role = localStorage.getItem("role");
   const createCoursePage = localStorage.getItem("createCoursePage");
-  console.log(Role);
+  //console.log(Role);
   const location = useLocation();
   useEffect(() => {
     window.addEventListener("resize", () => {

@@ -29,7 +29,11 @@ import CreateCourse from "../../Pages/Dashboard/ContentManagement/CreateCourse";
 import CourseAccess from "../../Pages/Dashboard/CourseAccess/CourseAccess";
 import CourseInformation from "../../Pages/Dashboard/CourseInformation/CourseInformation";
 import Week from "../../Pages/Dashboard/Week/Layout/Week";
-import ManageClasses from "../../Pages/Dashboard/ContentManagement/ManageClasses";
+import ManageLiveClasses from "../../Pages/Dashboard/ContentManagement/ManageLiveClasses";
+import Assignment from "../../Pages/Dashboard/ContentManagement/Assignment";
+
+import ManageReading from "../../Pages/Dashboard/ContentManagement/ManageReading";
+
 
 const router = createBrowserRouter([
   {
@@ -148,8 +152,17 @@ const router = createBrowserRouter([
     element:<CreateCourse/>,
   },
   {
-    path: "/manageClasses",
-    element:<ManageClasses/>,
+    path: "/manageLiveClasses",
+    element:<ManageLiveClasses/>,
+  },
+  {
+    path: "/assignment",
+    element:<Assignment/>,
+  },
+  
+  {
+    path: "/manageReading",
+    element:<ManageReading/>
   },
 ]);
 
