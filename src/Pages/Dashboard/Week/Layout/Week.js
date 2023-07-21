@@ -7,32 +7,53 @@ import MenuIcon from "@mui/icons-material/Menu";
 import WeekDetail from "../WeekDetail";
 import Navbar from "../../Shared/Navbar";
 
-const Week = () => {
-  const [toggleButton, setToggleButton] = useState(
-    JSON.parse(localStorage.getItem("toggleButton")) || true
-  );
-  const [screenSmall, setScreenSmall] = useState(false);
-  const [windowWidth, setWindowWidth] = useState(0);
-  const Role = localStorage.getItem("role");
-  console.log(Role);
-  useEffect(() => {
-    window.addEventListener("resize", () => {
-      setWindowWidth(window.innerWidth);
-    });
-    if (windowWidth >= 1024) {
-      setScreenSmall(false);
-    } else {
-      setScreenSmall(true);
-    }
-  }, [windowWidth]);
+const data = [
+  {
+    weekName: "Week 1",
+    lecture: [
+      {
+        name: "Topic 1",
+        tasks: [
+          {
+            taskName: "Task of topic 1",
+            type: "Reading",
+          },
+          {
+            taskName: "Task of topic 1",
+            type: "Reading",
+          },
+        ],
+      },
+      {
+        name: "Topic 2",
+        tasks: [
+          {
+            taskName: "Task of topic 2",
+            type: "Classes",
+          },
+          {
+            taskName: "Task of topic 2",
+            type: "Quiz",
+          },
+          {
+            taskName: "Task of topic 2",
+            type: "Files",
+          },
+          {
+            taskName: "Task of topic 2",
+            type: "LiveTest",
+          },
+        ],
+      },
+    ],
+  },
+];
 
-  const handleClick = () => {
-    setToggleButton(!toggleButton);
-  };
-  useEffect(() => {
-    // Save the toggleButton value to local storage
-    localStorage.setItem("toggleButton", JSON.stringify(toggleButton));
-  }, [toggleButton]);
+const Week = () => {
+  const [toggleButton, setToggleButton] = useState(true);
+  const [week, setWeek] = useState(data[0]);
+  const [openTask, setOpenTask] = useState(data[0]?.lecture[0].tasks[0]);
+  const Role = localStorage.getItem("role");
   return (
     <>
       <MyHelmet>Dashboard</MyHelmet>
@@ -41,8 +62,11 @@ const Week = () => {
           <Navbar />
           <div className="flex overflow-hidden">
             <Aside
+              openTask={openTask}
+              setOpenTask={setOpenTask}
               toggleButton={toggleButton}
               setToggleButton={setToggleButton}
+              data={week?.lecture}
             />
             <button
               onClick={() => setToggleButton(true)}
@@ -52,10 +76,6 @@ const Week = () => {
               <h1 className="ml-3 text-[12px] font-[500]">Open menu</h1>
             </button>
             <div
-              className="bg-gray-900 opacity-50 hidden fixed inset-0 z-10"
-              id="sidebarBackdrop"
-            ></div>
-            <div
               id="main-content"
               className={`h-full w-full relative ${
                 toggleButton ? "ml-[324px]" : ""
@@ -64,6 +84,10 @@ const Week = () => {
               <main className="min-h-[100vh]">
                 <div className="">
                   <WeekDetail
+                    week={week}
+                    setWeek={setWeek}
+                    data={data}
+                    openTask={openTask}
                     toggleButton={toggleButton}
                     setToggleButton={setToggleButton}
                   />
