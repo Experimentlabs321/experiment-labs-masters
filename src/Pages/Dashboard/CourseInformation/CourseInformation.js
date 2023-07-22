@@ -6,10 +6,71 @@ import TaskVideo from "../../../assets/Dashboard/TaskVideo.png";
 import Task from "../../../assets/Dashboard/Task.png";
 import Layout from "./Layout/Layout";
 import { Link } from "react-router-dom";
+import DialogLayout from "../Shared/DialogLayout";
+import ClassesTaskIcon from "../../../assets/Dashboard/Classes.png";
+import AssignmentTaskIcon from "../../../assets/Dashboard/Assignment.png";
+import ReadingTaskIcon from "../../../assets/Dashboard/TaskIcon.png";
+import QuizTaskIcon from "../../../assets/Dashboard/Quiz.png";
+import LiveTestTaskIcon from "../../../assets/Dashboard/LiveTest.png";
+import VideoTaskIcon from "../../../assets/Dashboard/Video.png";
+import AudioTaskIcon from "../../../assets/Dashboard/Audio.png";
+import FilesTaskIcon from "../../../assets/Dashboard/Files.png";
+
+const TaskTypeInfo = [
+  {
+    name: "Classes",
+    icon: ClassesTaskIcon,
+    theme: "#ED690A",
+    route: "/manageLiveClasses",
+  },
+  {
+    name: "Assignment",
+    icon: AssignmentTaskIcon,
+    theme: "#EF1164",
+    route: "/assignment",
+  },
+  {
+    name: "Reading",
+    icon: ReadingTaskIcon,
+    theme: "#8C0CF0",
+    route: "/manageReading",
+  },
+  {
+    name: "Quiz",
+    icon: QuizTaskIcon,
+    theme: "#E010BF",
+    route: "/assignment",
+  },
+  {
+    name: "Live Test",
+    icon: LiveTestTaskIcon,
+    theme: "#1AC62B",
+    route: "/assignment",
+  },
+  {
+    name: "Video",
+    icon: VideoTaskIcon,
+    theme: "#0079FF",
+    route: "/assignment",
+  },
+  {
+    name: "Audio",
+    icon: AudioTaskIcon,
+    theme: "#4539CB",
+    route: "/assignment",
+  },
+  {
+    name: "Files",
+    icon: FilesTaskIcon,
+    theme: "#001246",
+    route: "/assignment",
+  },
+];
 
 const CourseInformation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [preview, setPreview] = useState(false);
+  const [addChapterOpen, setAddChapterOpen] = useState(false);
   const Role = localStorage.getItem("role");
   const [selectedOption, setSelectedOption] = useState("Category");
   const options = ["Category name"];
@@ -31,9 +92,12 @@ const CourseInformation = () => {
               <div className="pt-[110px] border-b-2 ">
                 <div className="container mx-auto px-4 flex items-center justify-between ">
                   <div className="flex items-center pt-[30px] pb-[40px] ">
-                    <button className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline ">
+                    <Link
+                      to="/courseAccess"
+                      className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline "
+                    >
                       My Courses
-                    </button>
+                    </Link>
                     <svg
                       className="mr-[30px]"
                       xmlns="http://www.w3.org/2000/svg"
@@ -106,9 +170,41 @@ const CourseInformation = () => {
                         </svg>
                       )}
                     </div>
+                    <DialogLayout
+                      open={addChapterOpen}
+                      setOpen={setAddChapterOpen}
+                      width={600}
+                      title={
+                        <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
+                          Add Task
+                        </p>
+                      }
+                    >
+                      <div className="px-[32px] py-[24px] grid grid-cols-3 gap-[70px]">
+                        {TaskTypeInfo?.map((taskType) => (
+                          <Link
+                            to={taskType?.route}
+                            className="w-full bg-[#F6F7FF] rounded-[14px] p-[24px]"
+                          >
+                            <div
+                              style={{ background: taskType?.theme }}
+                              className={` flex items-center rounded-[12px] justify-center p-[18px]`}
+                            >
+                              <img src={taskType?.icon} alt="icon" />
+                            </div>
+                            <h1 className="text-[13px] font-[700] mt-[20px] text-center">
+                              {taskType?.name}
+                            </h1>
+                          </Link>
+                        ))}
+                      </div>
+                    </DialogLayout>
                     {!preview && (
                       <>
-                        <button className="flex items-center bg-[#FF557A] text-[16px] font-[700] text-white p-[16px] rounded-[20px] mr-[32px] ">
+                        <button
+                          onClick={() => setAddChapterOpen(true)}
+                          className="flex items-center bg-[#FF557A] text-[16px] font-[700] text-white p-[16px] rounded-[20px] mr-[32px] "
+                        >
                           <svg
                             className="mr-[16px]"
                             xmlns="http://www.w3.org/2000/svg"
