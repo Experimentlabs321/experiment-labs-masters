@@ -11,6 +11,16 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import closeCircle from '../../../assets/ContentManagement/closeCircle.svg'
 import edit from '../../../assets/ContentManagement/edit.svg'
+import PropTypes from 'prop-types';
+import Button from '@mui/material/Button';
+import { styled } from '@mui/material/styles';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import Typography from '@mui/material/Typography';
 
 
 import Badge from '@mui/material/Badge';
@@ -144,7 +154,7 @@ const Assignment = () => {
     };
 
     //SoftSkills
-    const [isOpenEvluationSoftSkills, setisOpenEvluationSoftSkills] = useState(false);
+   /*  const [isOpenEvluationSoftSkills, setisOpenEvluationSoftSkills] = useState(false);
     const [togglevaluepar1, settogglevaluepar1] = useState(false);
 
     const toggleDropdownSoftSkills = () => {
@@ -157,7 +167,7 @@ const Assignment = () => {
         setSelectedOptionSoftSkills(event.target.value);
         settogglevaluepar1(true)
 
-    }
+    } */
 
     //
     const [selectedSection, setSelectedSection] = useState(null);
@@ -170,7 +180,7 @@ const Assignment = () => {
     console.log(selectedSection)
 
     // create new earning parameter
-    const [isOpencreatenewearningparameter, setisOpencreatenewearningparameter] = useState(false);
+  /*   const [isOpencreatenewearningparameter, setisOpencreatenewearningparameter] = useState(false);
 
     const openModalacreatenewearningparameter = () => {
         setisOpencreatenewearningparameter(true);
@@ -178,7 +188,7 @@ const Assignment = () => {
 
     const closeModalcreatenewearningparameter = () => {
         setisOpencreatenewearningparameter(false);
-    };
+    }; */
 
     //
     const [SoftSkills, setSoftskill] = useState(true)
@@ -186,6 +196,102 @@ const Assignment = () => {
     const handleSoftSkill = () => {
         setSoftskill(true)
     }
+
+    ///////////////////////// new category
+    const BootstrapDialogcategory = styled(Dialog)(({ theme }) => ({
+        '& .MuiDialogContent-root': {
+            padding: theme.spacing(2),
+        },
+        '& .MuiDialogActions-root': {
+            padding: theme.spacing(1),
+        },
+    }));
+
+    function BootstrapDialogTitlecategory(props) {
+        const { children, onClose, ...other } = props;
+
+        return (
+            <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+                {children}
+                {onClose ? (
+                    <IconButton
+                        aria-label="close"
+                        onClick={onClose}
+                        sx={{
+                            position: 'absolute',
+                            right: 8,
+                            top: 8,
+                            color: (theme) => theme.palette.grey[500],
+                        }}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                ) : null}
+            </DialogTitle>
+        );
+    }
+
+    BootstrapDialogTitlecategory.propTypes = {
+        children: PropTypes.node,
+        onClose: PropTypes.func.isRequired,
+    };
+
+    const [opencategory, setOpencategory] = React.useState(false);
+
+    const handleClickOpencategory = () => {
+        setOpencategory(true);
+    };
+    const handleClosecategory = () => {
+        setOpencategory(false);
+    };
+
+    /////////////////////////  Add new Item earningparameter
+    const BootstrapDialogearningparameter = styled(Dialog)(({ theme }) => ({
+        '& .MuiDialogContent-root': {
+            padding: theme.spacing(2),
+        },
+        '& .MuiDialogActions-root': {
+            padding: theme.spacing(1),
+        },
+    }));
+
+    function BootstrapDialogTitleearningparameter(props) {
+        const { children, onClose, ...other } = props;
+
+        return (
+            <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+                {children}
+                {onClose ? (
+                    <IconButton
+                        aria-label="close"
+                        onClick={onClose}
+                        sx={{
+                            position: 'absolute',
+                            right: 8,
+                            top: 8,
+                            color: (theme) => theme.palette.grey[500],
+                        }}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                ) : null}
+            </DialogTitle>
+        );
+    }
+
+    BootstrapDialogTitleearningparameter.propTypes = {
+        children: PropTypes.node,
+        onClose: PropTypes.func.isRequired,
+    };
+
+    const [openearningparameter, setOpenearningparameter] = React.useState(false);
+
+    const handleClickOpenearningparameter = () => {
+        setOpenearningparameter(true);
+    };
+    const handleCloseearningparameter = () => {
+        setOpenearningparameter(false);
+    };
 
 
 
@@ -245,7 +351,7 @@ const Assignment = () => {
                     </div>
                     {isOpenGeneral && (
                         <div className="dropdown-menu mt-[71px] mb-[45px] border-b-2 ">
-                            <div className='flex justify-between me-[100px] mb-20'>
+                            <div className='flex justify-between me-10 mb-20'>
                                 <div>
                                     <div className=''>
                                         <div className='flex items-center gap-4'>
@@ -254,7 +360,7 @@ const Assignment = () => {
                                             <img src={required} />
                                         </div>
 
-                                        <input required className='mt-6 ms-6 border rounded-md w-[440px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] '
+                                        <input required className='mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] '
                                             name='assignmentName' type="text" placeholder='Eg. Excel with Shekhar Gupta' />
                                     </div>
 
@@ -293,7 +399,7 @@ const Assignment = () => {
                                             <img src={required} />
                                         </div>
 
-                                        <input required className='mt-6 ms-6 border rounded-md w-[440px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] '
+                                        <input required className='mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] '
                                             name='assignmentTotalPointsMarks' type="text" placeholder='Eg. 40 point' />
                                     </div>
 
@@ -312,11 +418,11 @@ const Assignment = () => {
                                     <div className='mt-12 flex flex-col'>
                                         <div className='flex items-center gap-4'>
                                             <p className='h-2 w-2 bg-black rounded-full'></p>
-                                            <p className='font-bold text-lg me-[36px]'>Additional Files </p>
+                                            <p className='font-bold text-lg '>Additional Files </p>
 
                                         </div>
 
-                                        <div className='w-[510px] h-[250px] bg-[#F6F7FF] flex flex-col items-center justify-center rounded-b-lg mt-6'
+                                        <div className='w-[500px] h-[250px] bg-[#F6F7FF] flex flex-col items-center justify-center rounded-b-lg mt-6'
                                             onDragEnter={handleDragEnter}
                                             onDragLeave={handleDragLeave}
                                             onDragOver={handleDragOver}
@@ -361,8 +467,8 @@ const Assignment = () => {
                         <i className={`dropdown-arrow ${isOpenevaluationParameter ? 'open' : ''}`}></i>
                     </div>
                     {isOpenevaluationParameter && (
-                        <div className="dropdown-menu mt-[71px] mb-[45px]   me-[100px]">
-                            <div className='flex justify-between'>
+                        <div className="dropdown-menu mt-[71px] mb-[45px] ">
+                            <div className='flex justify-between me-10'>
 
                                 <p className='flex items-center border-b-2 h-[50px] text-xl font-medium'>Skill Based Parameter</p>
                                 <div className=' flex flex-col'>
@@ -382,8 +488,8 @@ const Assignment = () => {
                                             )
                                         }
                                         <div>
-                                            <Popup
-                                                trigger={<div className='button w-[298px] bg-[#3E4DAC] text-[#fff] rounded-lg text-base px-4 py-3 font-semibold flex gap-2 justify-center items-center'>
+                                            <div>
+                                                <div variant="outlined" onClick={handleClickOpencategory} className='button w-[298px] bg-[#3E4DAC] text-[#fff] rounded-lg text-base px-4 py-3 font-semibold flex gap-2 justify-center items-center'>
                                                     <p className='text-2xl'>+</p>
                                                     <div>
                                                         <p className='w-full '>Create new skill category</p>
@@ -391,56 +497,58 @@ const Assignment = () => {
                                                     </div>
 
 
-                                                </div>}
-                                                modal
-                                                nested
-                                            >
-                                                {close => (
-                                                    <div className="modal w-[438px] h-[580px] border rounded-2xl">
-                                                        <div className='border-b flex justify-between items-center pt-6 px-10 pb-5 text-[#3E4DAC] text-[22px] font-bold'>
-                                                            <p >Add new skill category</p>
-                                                           
-                                                            <p className="close flex justify-center items-center rounded-full w-6 h-6 bg-[#A1A1A1] font-bold text-[#000000]" onClick={close}>
-                                                                &times;
-                                                            </p>
-                                                        </div>
+                                                </div>
 
-
-                                                        <div className="content">
+                                                <BootstrapDialogcategory
+                                                    onClose={handleClosecategory}
+                                                    aria-labelledby="customized-dialog-title"
+                                                    open={opencategory}
+                                                >
+                                                    <BootstrapDialogTitlecategory id="customized-dialog-title" onClose={handleClosecategory}>
+                                                        <p className='text-[22px] font-bold text-[#3E4DAC]'>Add new skill category</p>
+                                                    </BootstrapDialogTitlecategory>
+                                                    <DialogContent dividers>
+                                                        <Typography gutterBottom>
                                                             <form className='mt-6 mx-10'>
                                                                 <div className='flex items-center gap-4'>
 
                                                                     <p className='font-bold text-lg me-[36px]'>Skill Category</p>
+                                                                    <img src={required} />
+
                                                                 </div>
 
-                                                                <input className='mt-6 border rounded-md w-[358px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='itemEarningParameter1' type="text" placeholder='Eg. Entrepreneurship Lab' />
+                                                                <input required className='mt-6 border rounded-md w-[358px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='itemEarningParameter1' type="text" placeholder='Eg. Entrepreneurship Lab' />
 
                                                                 <div className='flex items-center gap-4'>
 
                                                                     <p className='font-bold text-lg me-[36px] mt-5'>Skill Name</p>
+                                                                    <img className='mt-5' src={required} />
                                                                 </div>
 
-                                                                <input className='mt-6 border rounded-md w-[358px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='itemEarningParameter1' type="text" placeholder='Eg. Entrepreneurship Lab' />
+                                                                <input required className='mt-6 border rounded-md w-[358px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='itemEarningParameter1' type="text" placeholder='Eg. Entrepreneurship Lab' />
 
                                                                 <div className='flex items-center gap-4'>
 
                                                                     <p className='font-bold text-lg me-[36px] mt-5'>Skill Parameter</p>
+                                                                    <img className='mt-5' src={required} />
                                                                 </div>
 
-                                                                <input className='mt-6 border rounded-md w-[358px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='itemEarningParameter1' type="text" placeholder='Eg. Entrepreneurship Lab' />
+                                                                <input required className='mt-6 border rounded-md w-[358px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='itemEarningParameter1' type="text" placeholder='Eg. Entrepreneurship Lab' />
 
 
                                                                 <div className='mt-12 mb-7 flex justify-center'>
-                                                                    <input className='bg-[#3E4DAC] rounded-lg px-12 py-3 text-xl font-bold text-[#fff]' type="submit" value="Add" />
+                                                                    <input autoFocus  className='bg-[#3E4DAC] rounded-lg px-12 py-3 text-xl font-bold text-[#fff]' type="submit" value="Add" />
 
                                                                 </div>
                                                             </form>
+                                                        </Typography>
 
-                                                        </div>
+                                                    </DialogContent>
 
-                                                    </div>
-                                                )}
-                                            </Popup>
+                                                </BootstrapDialogcategory>
+                                            </div>
+
+
                                         </div >
                                     </div>
 
@@ -448,16 +556,16 @@ const Assignment = () => {
                                 </div>
                             </div>
 
-                            <div className='flex justify-between mt-20'>
+                            <div className='flex me-10 justify-between mt-20'>
 
                                 <div className=''>
                                     <div className='flex items-center gap-4'>
                                         <p className='h-2 w-2 bg-black rounded-full'></p>
-                                        <p className='font-bold text-lg me-[36px]'>Skill Category</p>
+                                        <p className='font-bold text-lg '>Skill Category</p>
 
                                     </div>
 
-                                    <div className='bg-[#F6F7FF] mt-6 ms-5 custom-dropdown flex justify-between items-center gap-2  border  rounded-lg h-[40px] w-[312px] px-2 text-[#535353] font-normal '
+                                    <div className='bg-[#F6F7FF] mt-6 ms-5 custom-dropdown flex justify-between items-center gap-2  border  rounded-lg h-[40px] w-[302px] px-2 text-[#535353] font-normal '
                                         style={{
                                             borderRadius: "8px",
                                             border: "1px solid #B7B7B7"
@@ -522,7 +630,7 @@ const Assignment = () => {
                                         <p className='font-bold text-lg me-[36px]'>Skill Name</p>
 
                                     </div>
-                                    <div className="bg-[#F6F7FF] ms-5 mt-6 custom-dropdown flex justify-between items-center gap-2 h-[40px] w-[312px] px-2 text-[#535353] font-normal"
+                                    <div className="bg-[#F6F7FF] ms-5 mt-6 custom-dropdown flex justify-between items-center gap-2 h-[40px] w-[302px] px-2 text-[#535353] font-normal"
                                         style={{
                                             borderRadius: "8px",
                                             border: "1px solid #B7B7B7"
@@ -630,7 +738,7 @@ const Assignment = () => {
 
                                         </div>
 
-                                        <div className=' bg-[#F6F7FF] mt-6 ms-5 custom-dropdown flex justify-between items-center gap-2  border  rounded-lg h-[40px] w-[312px] px-2 text-[#535353] font-normal '
+                                        <div className=' bg-[#F6F7FF] mt-6 ms-5 custom-dropdown flex justify-between items-center gap-2  border  rounded-lg h-[40px] w-[302px] px-2 text-[#535353] font-normal '
                                             style={{
                                                 borderRadius: "8px",
                                                 border: "1px solid #B7B7B7"
@@ -689,6 +797,7 @@ const Assignment = () => {
                                     </div>
                                 </div>
                             </div>
+
                             <div className=' mt-[90px]  border-b-2'>
                                 <div className='flex justify-center'>
                                     {
@@ -702,14 +811,14 @@ const Assignment = () => {
 
 
                                 {
-                                    proceed && (<div className='mx-24 mt-2 rounded border mb-5'>
+                                    proceed && (<div className=' mt-2 rounded border mb-5 flex justify-center '>
 
                                         <form >
 
-                                            <div className='flex ms-10 gap-10'>
+                                            <div className='flex justify-between'>
 
 
-                                                <div className=' ms-14 me-8 mt-10'>
+                                                <div className='mx-5 mt-10'>
                                                     {/* 1 */}
                                                     <div className={`w-[205px] h-[38px] flex justify-between items-center px-4 py-2 text-sm font-medium ${SoftSkills ? 'text-[#0A98EA] ' : 'text-[black]'}`}
                                                         style={{
@@ -759,13 +868,13 @@ const Assignment = () => {
 
                                                 </div>
 
-                                                <div className='flex-1 flex gap-20'>
+                                                <div className='flex-1 flex gap-5 me-10'>
                                                     {
                                                         SoftSkills && (
                                                             <div>
                                                                 <div>
                                                                     <div
-                                                                        className={`flex text-base font-medium mt-10  w-[363px] h-[65px] justify-between rounded-md px-4 items-center ${selectedSection === 'communication' ? 'bg-[#E2F1FF]' : 'bg-[#F8F8F8]'
+                                                                        className={`flex text-base font-medium mt-10  w-full h-[65px] justify-between rounded-md px-4 items-center ${selectedSection === 'communication' ? 'bg-[#E2F1FF]' : 'bg-[#F8F8F8]'
                                                                             }`}
                                                                     >
                                                                         <p>Communication</p>
@@ -781,7 +890,7 @@ const Assignment = () => {
                                                                     </div>
 
                                                                     <div
-                                                                        className={`flex text-base font-medium mt-8  w-[363px] h-[65px] justify-between rounded-md px-4 items-center ${selectedSection === 'negotiation' ? 'bg-[#E2F1FF]' : 'bg-[#F8F8F8]'
+                                                                        className={`flex text-base font-medium mt-8  w-[353px] h-[65px] justify-between rounded-md px-4 items-center ${selectedSection === 'negotiation' ? 'bg-[#E2F1FF]' : 'bg-[#F8F8F8]'
                                                                             }`}
                                                                     >
                                                                         <p>Negotiation</p>
@@ -797,7 +906,7 @@ const Assignment = () => {
                                                                     </div>
 
                                                                     <div
-                                                                        className={`flex text-base font-medium mt-8  w-[363px] h-[65px] justify-between rounded-md px-4 items-center ${selectedSection === 'Time Management' ? 'bg-[#E2F1FF]' : 'bg-[#F8F8F8]'
+                                                                        className={`flex text-base font-medium mt-8  w-[353px] h-[65px] justify-between rounded-md px-4 items-center ${selectedSection === 'Time Management' ? 'bg-[#E2F1FF]' : 'bg-[#F8F8F8]'
                                                                             }`}
                                                                     >
                                                                         <p>Time Management</p>
@@ -826,7 +935,7 @@ const Assignment = () => {
                                                     {
                                                         selectedSection && (
                                                             <div>
-                                                                <div className='flex text-base font-medium mt-8 bg-[#E2F1FF] w-[378px] h-[65px] justify-between rounded-md px-4 items-center'>
+                                                                <div className='flex text-base font-medium mt-10 bg-[#E2F1FF] w-[378px] h-[65px] justify-between rounded-md px-4 items-center'>
                                                                     <p > Verbal Communication</p>
                                                                     <div className='flex gap-5'>
                                                                         <input className='w-[47px] h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]' name='verbalCommunication' type='text' />
@@ -983,7 +1092,7 @@ const Assignment = () => {
                             </div>
 
                             <div className=''>
-                                <div className='flex justify-between mt-10'>
+                                <div className='flex justify-between me-10 mt-10'>
                                     <p className='text-xl font-medium border-b-2 flex items-center'>Item Earning Parameter</p>
                                     <div className=''>
                                         <div className=' flex flex-col'>
@@ -1004,8 +1113,8 @@ const Assignment = () => {
 
 
                                                 <div>
-                                                    <Popup
-                                                        trigger={<div className='button w-[298px] bg-[#3E4DAC] text-[#fff] rounded-lg text-base px-4 py-3 font-semibold flex gap-2 justify-center items-center'>
+                                                    <div>
+                                                        <div variant="outlined" onClick={handleClickOpenearningparameter} className='button w-[298px] bg-[#3E4DAC] text-[#fff] rounded-lg text-base px-4 py-3 font-semibold flex gap-2 justify-center items-center'>
                                                             <p className='text-2xl'>+</p>
                                                             <div>
                                                                 <p className='w-full '>Create new earning parameter</p>
@@ -1013,40 +1122,39 @@ const Assignment = () => {
                                                             </div>
 
 
-                                                        </div>}
-                                                        modal
-                                                        nested
-                                                    >
-                                                        {close => (
-                                                            <div className="modal w-[438px] h-[345px] border rounded-2xl">
-                                                                <div className='border-b flex justify-between items-center pt-6 px-10 pb-5 text-[#3E4DAC] text-[22px] font-bold'>
-                                                                    <p >Add new earning parameter</p>
-                                                                    {/* <p className=' flex justify-center items-center rounded-full w-6 h-6 bg-[#A1A1A1] font-bold text-[#000000]'>x</p> */}
-                                                                    <p className="close flex justify-center items-center rounded-full w-6 h-6 bg-[#A1A1A1] font-bold text-[#000000]" onClick={close}>
-                                                                        &times;
-                                                                    </p>
-                                                                </div>
+                                                        </div>
 
-
-                                                                <div className="content">
+                                                        <BootstrapDialogearningparameter
+                                                            onClose={handleCloseearningparameter}
+                                                            aria-labelledby="customized-dialog-title"
+                                                            open={openearningparameter}
+                                                        >
+                                                            <BootstrapDialogTitleearningparameter id="customized-dialog-title" onClose={handleCloseearningparameter}>
+                                                                <p className='text-[22px] font-bold text-[#3E4DAC]'>Add new Item earning parameter</p>
+                                                            </BootstrapDialogTitleearningparameter>
+                                                            <DialogContent dividers>
+                                                                <Typography gutterBottom>
                                                                     <form className='mt-6 mx-10'>
                                                                         <div className='flex items-center gap-4'>
 
-                                                                            <p className='font-bold text-lg me-[36px]'>earning parameter</p>
+                                                                            <p className='font-bold text-lg me-[36px]'>Item Earning Parameter</p>
                                                                         </div>
 
                                                                         <input className='mt-6 border rounded-md w-[358px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='itemEarningParameter1' type="text" placeholder='Eg. Entrepreneurship Lab' />
+
                                                                         <div className='mt-12 mb-7 flex justify-center'>
-                                                                            <input className='bg-[#3E4DAC] rounded-lg px-12 py-3 text-xl font-bold text-[#fff]' type="submit" value="Add" />
+                                                                            <input autoFocus onClick={handleCloseearningparameter} className='bg-[#3E4DAC] rounded-lg px-12 py-3 text-xl font-bold text-[#fff]' type="submit" value="Add" />
 
                                                                         </div>
                                                                     </form>
+                                                                </Typography>
 
-                                                                </div>
+                                                            </DialogContent>
 
-                                                            </div>
-                                                        )}
-                                                    </Popup>
+                                                        </BootstrapDialogearningparameter>
+                                                    </div>
+
+
                                                 </div >
 
                                             </div>
