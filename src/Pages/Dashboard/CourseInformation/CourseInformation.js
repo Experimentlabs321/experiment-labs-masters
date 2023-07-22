@@ -26,120 +26,131 @@ const CourseInformation = () => {
     <div>
       <Layout>
         <div>
-          <div>
-            <div className="pt-[110px] border-b-2 ">
-              <div className="container mx-auto px-4 flex items-center justify-between ">
-                <div className="flex items-center pt-[30px] pb-[40px] ">
-                  <button className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline ">
-                    My Courses
-                  </button>
-                  <svg
-                    className="mr-[30px]"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="25"
-                    viewBox="0 0 24 25"
-                    fill="none"
-                  >
-                    <path
-                      d="M9 18.667L15 12.667L9 6.66699"
-                      stroke="black"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                  <button className=" font-sans mr-[30px] text-[20px] font-[400] ">
-                    Task Name
-                  </button>
-                </div>
-                <div className="flex items-center mt-[-10px] ">
-                  <div className="flex items-center text-black text-[16px] font-[600] mr-[32px] ">
-                    <h1 className="mr-[16px]">Preview Mode</h1>
-                    {preview ? (
-                      <svg
-                        className="cursor-pointer"
-                        onClick={() => setPreview(!preview)}
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="58"
-                        height="27"
-                        viewBox="0 0 58 27"
-                        fill="none"
-                      >
-                        <rect
-                          width="57.8422"
-                          height="26.7841"
-                          rx="13.392"
-                          fill="#9747FF"
-                        />
-                        <circle
-                          cx="44.4512"
-                          cy="13.3916"
-                          r="10.1153"
-                          fill="white"
-                        />
-                      </svg>
-                    ) : (
-                      <svg
-                        className="cursor-pointer"
-                        onClick={() => setPreview(!preview)}
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="58"
-                        height="28"
-                        viewBox="0 0 58 28"
-                        fill="none"
-                      >
-                        <rect
-                          y="0.608398"
-                          width="57.8422"
-                          height="26.7841"
-                          rx="13.392"
-                          fill="#A3A3A3"
-                        />
-                        <circle cx="13.3926" cy="14" r="10.1153" fill="white" />
-                      </svg>
+          {Role === "admin" && (
+            <div>
+              <div className="pt-[110px] border-b-2 ">
+                <div className="container mx-auto px-4 flex items-center justify-between ">
+                  <div className="flex items-center pt-[30px] pb-[40px] ">
+                    <button className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline ">
+                      My Courses
+                    </button>
+                    <svg
+                      className="mr-[30px]"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="25"
+                      viewBox="0 0 24 25"
+                      fill="none"
+                    >
+                      <path
+                        d="M9 18.667L15 12.667L9 6.66699"
+                        stroke="black"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    <button className=" font-sans mr-[30px] text-[20px] font-[400] ">
+                      Task Name
+                    </button>
+                  </div>
+                  <div className="flex items-center mt-[-10px] ">
+                    <div className="flex items-center text-black text-[16px] font-[600] mr-[32px] ">
+                      <h1 className="mr-[16px]">Preview Mode</h1>
+                      {preview ? (
+                        <svg
+                          className="cursor-pointer"
+                          onClick={() => setPreview(!preview)}
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="58"
+                          height="27"
+                          viewBox="0 0 58 27"
+                          fill="none"
+                        >
+                          <rect
+                            width="57.8422"
+                            height="26.7841"
+                            rx="13.392"
+                            fill="#9747FF"
+                          />
+                          <circle
+                            cx="44.4512"
+                            cy="13.3916"
+                            r="10.1153"
+                            fill="white"
+                          />
+                        </svg>
+                      ) : (
+                        <svg
+                          className="cursor-pointer"
+                          onClick={() => setPreview(!preview)}
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="58"
+                          height="28"
+                          viewBox="0 0 58 28"
+                          fill="none"
+                        >
+                          <rect
+                            y="0.608398"
+                            width="57.8422"
+                            height="26.7841"
+                            rx="13.392"
+                            fill="#A3A3A3"
+                          />
+                          <circle
+                            cx="13.3926"
+                            cy="14"
+                            r="10.1153"
+                            fill="white"
+                          />
+                        </svg>
+                      )}
+                    </div>
+                    {!preview && (
+                      <>
+                        <button className="flex items-center bg-[#FF557A] text-[16px] font-[700] text-white p-[16px] rounded-[20px] mr-[32px] ">
+                          <svg
+                            className="mr-[16px]"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="25"
+                            height="24"
+                            viewBox="0 0 25 24"
+                            fill="none"
+                          >
+                            <path
+                              d="M19.8438 11H13.8438V5H11.8438V11H5.84375V13H11.8438V19H13.8438V13H19.8438V11Z"
+                              fill="white"
+                            />
+                          </svg>
+                          <h1 className="mr-[12px]">Add Chapter</h1>
+                        </button>
+                        <Link
+                          to="/createCourse"
+                          className="flex items-center bg-[#3E4DAC] text-[16px] font-[700] text-white p-[16px] rounded-[20px] "
+                        >
+                          <svg
+                            className="mr-[16px]"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                          >
+                            <path
+                              d="M12.6267 0.665039L15.8438 3.81149L13.3913 6.21118L10.1742 3.06473L12.6267 0.665039ZM0.84375 15.3359H4.06079L11.875 7.69316L8.65795 4.54671L0.84375 12.1894V15.3359Z"
+                              fill="white"
+                            />
+                          </svg>
+                          <h1 className="mr-[12px]">Edit Course</h1>
+                        </Link>
+                      </>
                     )}
                   </div>
-                  {!preview && (
-                    <>
-                      <button className="flex items-center bg-[#FF557A] text-[16px] font-[700] text-white p-[16px] rounded-[20px] mr-[32px] ">
-                        <svg
-                          className="mr-[16px]"
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="25"
-                          height="24"
-                          viewBox="0 0 25 24"
-                          fill="none"
-                        >
-                          <path
-                            d="M19.8438 11H13.8438V5H11.8438V11H5.84375V13H11.8438V19H13.8438V13H19.8438V11Z"
-                            fill="white"
-                          />
-                        </svg>
-                        <h1 className="mr-[12px]">Add Chapter</h1>
-                      </button>
-                      <button className="flex items-center bg-[#3E4DAC] text-[16px] font-[700] text-white p-[16px] rounded-[20px] ">
-                        <svg
-                          className="mr-[16px]"
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          viewBox="0 0 16 16"
-                          fill="none"
-                        >
-                          <path
-                            d="M12.6267 0.665039L15.8438 3.81149L13.3913 6.21118L10.1742 3.06473L12.6267 0.665039ZM0.84375 15.3359H4.06079L11.875 7.69316L8.65795 4.54671L0.84375 12.1894V15.3359Z"
-                            fill="white"
-                          />
-                        </svg>
-                        <h1 className="mr-[12px]">Edit Course</h1>
-                      </button>
-                    </>
-                  )}
                 </div>
               </div>
             </div>
-          </div>
+          )}
+
           <div className="px-4">
             <div
               className={`relative inline-block ${

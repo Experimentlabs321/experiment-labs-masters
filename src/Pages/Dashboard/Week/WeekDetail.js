@@ -1,8 +1,24 @@
 import React, { useEffect, useState } from "react";
 import Layout from "./Layout/Week";
 import MenuIcon from "@mui/icons-material/Menu";
+import ClassesTask from "./ClassesTask";
+import AssignmentTask from "./AssignmentTask";
+import ReadingTask from "./ReadingTask";
+import QuizTask from "./QuizTask";
+import LiveTestTask from "./LiveTestTask";
+import VideoTask from "./VideoTask";
+import AudioTask from "./AudioTask";
+import FilesTask from "./FilesTask";
 
-const WeekDetail = ({ toggleButton, setToggleButton }) => {
+const WeekDetail = ({
+  toggleButton,
+  setToggleButton,
+  openTask,
+  data,
+  week,
+  setWeek,
+}) => {
+  console.log(openTask);
   return (
     <div>
       <div className="relative z-0 ">
@@ -48,7 +64,7 @@ const WeekDetail = ({ toggleButton, setToggleButton }) => {
                 />
               </svg>
               <button className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline ">
-                Week 1
+                {week?.weekName}
               </button>
               <svg
                 className="mr-[30px]"
@@ -67,7 +83,7 @@ const WeekDetail = ({ toggleButton, setToggleButton }) => {
                 />
               </svg>
               <button className=" font-sans mr-[30px] text-[20px] font-[400] ">
-                Task Name
+                {openTask?.taskName}
               </button>
             </div>
             <div className="flex items-center mt-[-10px] ">
@@ -110,6 +126,14 @@ const WeekDetail = ({ toggleButton, setToggleButton }) => {
             </div>
           </div>
         </div>
+        {openTask?.type === "Classes" && <ClassesTask />}
+        {openTask?.type === "Assignment" && <AssignmentTask />}
+        {openTask?.type === "Reading" && <ReadingTask />}
+        {openTask?.type === "Quiz" && <QuizTask />}
+        {openTask?.type === "LiveTest" && <LiveTestTask />}
+        {openTask?.type === "Video" && <VideoTask />}
+        {openTask?.type === "Audio" && <AudioTask />}
+        {openTask?.type === "Files" && <FilesTask />}
       </div>
     </div>
   );
