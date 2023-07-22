@@ -205,6 +205,7 @@ const CreateCourse = () => {
       },
     };
 
+
     console.log(process.env.Moodal_URL);
 
     axios
