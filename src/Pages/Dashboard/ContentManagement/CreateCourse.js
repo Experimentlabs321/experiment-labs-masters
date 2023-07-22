@@ -180,7 +180,7 @@ const CreateCourse = () => {
 
 
         const params = new URLSearchParams();
-        params.append("wstoken", "41dddfcce1f8e59ec0820ca1d47dbda3");
+        params.append("wstoken", process.env.REACT_APP_moodle_token);
         params.append("wsfunction", "core_course_create_courses");
         params.append("moodlewsrestformat", "json");
         params.append("courses[0][fullname]", courseFullName);
