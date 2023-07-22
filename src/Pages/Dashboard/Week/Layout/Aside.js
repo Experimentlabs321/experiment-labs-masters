@@ -17,46 +17,16 @@ import Files from "../../../../assets/Dashboard/Files.png";
 import FilesActive from "../../../../assets/Dashboard/FilesActive.png";
 import { Link, useLocation } from "react-router-dom";
 
-const data = [
-  {
-    name: "Topic 1",
-    tasks: [
-      {
-        taskName: "Task of topic 1",
-        type: "Reading",
-      },
-      {
-        taskName: "Task of topic 1",
-        type: "Reading",
-      },
-    ],
-  },
-  {
-    name: "Topic 2",
-    tasks: [
-      {
-        taskName: "Task of topic 2",
-        type: "Classes",
-      },
-      {
-        taskName: "Task of topic 2",
-        type: "Quiz",
-      },
-      {
-        taskName: "Task of topic 2",
-        type: "Files",
-      },
-      {
-        taskName: "Task of topic 2",
-        type: "LiveTest",
-      },
-    ],
-  },
-];
-
-const Aside = ({ toggleButton, setToggleButton }) => {
+const Aside = ({
+  toggleButton,
+  setToggleButton,
+  data,
+  openTask,
+  setOpenTask,
+}) => {
   const [openTopic, setOpenTopic] = useState(data[0]?.name);
-  const [openTask, setOpenTask] = useState(data[0]?.tasks[0]);
+  // const [openTask, setOpenTask] = useState(data[0]?.tasks[0]);
+  const Role = localStorage.getItem("role");
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("Category");
@@ -119,6 +89,22 @@ const Aside = ({ toggleButton, setToggleButton }) => {
                         className={`text-white ml-3 text-[18px] font-[500] flex items-center justify-center `}
                       >
                         <span className="mr-[22px]">{item.name}</span>
+                        {Role === "admin" && (
+                          <svg
+                            className="mr-[22px]"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="18"
+                            height="20"
+                            viewBox="0 0 18 20"
+                            fill="none"
+                          >
+                            <path
+                              d="M13.6558 0.724121L17.3789 4.64745L14.5407 7.63965L10.8176 3.71632L13.6558 0.724121ZM0.0195312 19.0173H3.74259L12.7859 9.48754L9.06284 5.5642L0.0195312 15.094V19.0173Z"
+                              fill="white"
+                            />
+                          </svg>
+                        )}
+
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="24"
@@ -146,129 +132,166 @@ const Aside = ({ toggleButton, setToggleButton }) => {
                             openTask === task
                               ? "bg-[#FFFDCF] border-[#3E4DAC] border-l-[12px] pl-[8px]"
                               : "pl-[20px]"
-                          }  text-white font-normal flex items-center pr-[10px] py-[13px] group cursor-pointer`}
+                          }  text-white font-normal flex items-center justify-between pr-[10px] py-[13px] group cursor-pointer`}
                         >
-                          <div className="w-[40px] h-[40px] text-black flex items-center justify-center rounded-full ">
-                            {task?.type === "Reading" && (
-                              <img
-                                className={`${
+                          <div className="flex items-center">
+                            <div className="w-[40px] h-[40px] text-black flex items-center justify-center rounded-full ">
+                              {task?.type === "Reading" && (
+                                <img
+                                  className={`${
+                                    openTask === task
+                                      ? "border-black"
+                                      : "border-white"
+                                  }  border p-[5px] rounded-full `}
+                                  src={
+                                    openTask === task ? ReadingActive : Reading
+                                  }
+                                  alt="TaskIcon"
+                                />
+                              )}
+                              {task?.type === "Assignment" && (
+                                <img
+                                  className={`${
+                                    openTask === task
+                                      ? "border-black"
+                                      : "border-white"
+                                  }  border p-[5px] rounded-full `}
+                                  src={
+                                    openTask === task
+                                      ? AssignmentActive
+                                      : Assignment
+                                  }
+                                  alt="TaskIcon"
+                                />
+                              )}
+                              {task?.type === "Classes" && (
+                                <img
+                                  className={`${
+                                    openTask === task
+                                      ? "border-black"
+                                      : "border-white"
+                                  }  border p-[5px] rounded-full `}
+                                  src={
+                                    openTask === task ? ClassesActive : Classes
+                                  }
+                                  alt="TaskIcon"
+                                />
+                              )}
+                              {task?.type === "Quiz" && (
+                                <img
+                                  className={`${
+                                    openTask === task
+                                      ? "border-black"
+                                      : "border-white"
+                                  }  border p-[5px] rounded-full `}
+                                  src={openTask === task ? QuizActive : Quiz}
+                                  alt="TaskIcon"
+                                />
+                              )}
+                              {task?.type === "LiveTest" && (
+                                <img
+                                  className={`${
+                                    openTask === task
+                                      ? "border-black"
+                                      : "border-white"
+                                  }  border p-[5px] rounded-full `}
+                                  src={
+                                    openTask === task
+                                      ? LiveTestActive
+                                      : LiveTest
+                                  }
+                                  alt="TaskIcon"
+                                />
+                              )}
+                              {task?.type === "Video" && (
+                                <img
+                                  className={`${
+                                    openTask === task
+                                      ? "border-black"
+                                      : "border-white"
+                                  }  border p-[5px] rounded-full `}
+                                  src={openTask === task ? VideoActive : Video}
+                                  alt="TaskIcon"
+                                />
+                              )}
+                              {task?.type === "Audio" && (
+                                <img
+                                  className={`${
+                                    openTask === task
+                                      ? "border-black"
+                                      : "border-white"
+                                  }  border p-[5px] rounded-full `}
+                                  src={openTask === task ? AudioActive : Audio}
+                                  alt="TaskIcon"
+                                />
+                              )}
+                              {task?.type === "Files" && (
+                                <img
+                                  className={`${
+                                    openTask === task
+                                      ? "border-black"
+                                      : "border-white"
+                                  }  border p-[5px] rounded-full `}
+                                  src={openTask === task ? FilesActive : Files}
+                                  alt="TaskIcon"
+                                />
+                              )}
+                            </div>
+                            <h1
+                              className={`text-white ml-3 text-[18px] font-[500] flex items-center justify-center `}
+                            >
+                              <span
+                                className={`mr-[5px] ${
                                   openTask === task
-                                    ? "border-black"
-                                    : "border-white"
-                                }  border p-[5px] rounded-full `}
-                                src={
-                                  openTask === task ? ReadingActive : Reading
-                                }
-                                alt="TaskIcon"
-                              />
-                            )}
-                            {task?.type === "Assignment" && (
-                              <img
-                                className={`${
+                                    ? "text-black"
+                                    : "text-white"
+                                } `}
+                              >
+                                Task {index + 1}:{" "}
+                              </span>{" "}
+                              <span
+                                className={`mr-[22px] ${
                                   openTask === task
-                                    ? "border-black"
-                                    : "border-white"
-                                }  border p-[5px] rounded-full `}
-                                src={
-                                  openTask === task
-                                    ? AssignmentActive
-                                    : Assignment
-                                }
-                                alt="TaskIcon"
-                              />
-                            )}
-                            {task?.type === "Classes" && (
-                              <img
-                                className={`${
-                                  openTask === task
-                                    ? "border-black"
-                                    : "border-white"
-                                }  border p-[5px] rounded-full `}
-                                src={
-                                  openTask === task ? ClassesActive : Classes
-                                }
-                                alt="TaskIcon"
-                              />
-                            )}
-                            {task?.type === "Quiz" && (
-                              <img
-                                className={`${
-                                  openTask === task
-                                    ? "border-black"
-                                    : "border-white"
-                                }  border p-[5px] rounded-full `}
-                                src={openTask === task ? QuizActive : Quiz}
-                                alt="TaskIcon"
-                              />
-                            )}
-                            {task?.type === "LiveTest" && (
-                              <img
-                                className={`${
-                                  openTask === task
-                                    ? "border-black"
-                                    : "border-white"
-                                }  border p-[5px] rounded-full `}
-                                src={
-                                  openTask === task ? LiveTestActive : LiveTest
-                                }
-                                alt="TaskIcon"
-                              />
-                            )}
-                            {task?.type === "Video" && (
-                              <img
-                                className={`${
-                                  openTask === task
-                                    ? "border-black"
-                                    : "border-white"
-                                }  border p-[5px] rounded-full `}
-                                src={openTask === task ? VideoActive : Video}
-                                alt="TaskIcon"
-                              />
-                            )}
-                            {task?.type === "Audio" && (
-                              <img
-                                className={`${
-                                  openTask === task
-                                    ? "border-black"
-                                    : "border-white"
-                                }  border p-[5px] rounded-full `}
-                                src={openTask === task ? AudioActive : Audio}
-                                alt="TaskIcon"
-                              />
-                            )}
-                            {task?.type === "Files" && (
-                              <img
-                                className={`${
-                                  openTask === task
-                                    ? "border-black"
-                                    : "border-white"
-                                }  border p-[5px] rounded-full `}
-                                src={openTask === task ? FilesActive : Files}
-                                alt="TaskIcon"
-                              />
-                            )}
+                                    ? "text-[#3E4DAC]"
+                                    : "text-[#A4B0FF]"
+                                }  `}
+                              >
+                                {task?.taskName}
+                              </span>
+                            </h1>
                           </div>
-
-                          <h1
-                            className={`text-white ml-3 text-[18px] font-[500] flex items-center justify-center `}
-                          >
-                            <span
-                              className={`mr-[5px] ${
-                                openTask === task ? "text-black" : "text-white"
-                              } `}
-                            >
-                              Task {index + 1}:{" "}
-                            </span>{" "}
-                            <span
-                              className={`mr-[22px] ${
-                                openTask === task
-                                  ? "text-[#3E4DAC]"
-                                  : "text-[#A4B0FF]"
-                              }  `}
-                            >
-                              {task?.taskName}
-                            </span>
-                          </h1>
+                          {Role === "admin" && (
+                            <>
+                              {openTask === task ? (
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="25"
+                                  height="25"
+                                  viewBox="0 0 25 25"
+                                  fill="none"
+                                >
+                                  <path
+                                    d="M12.4974 10.417C11.3516 10.417 10.4141 11.3545 10.4141 12.5003C10.4141 13.6462 11.3516 14.5837 12.4974 14.5837C13.6432 14.5837 14.5807 13.6462 14.5807 12.5003C14.5807 11.3545 13.6432 10.417 12.4974 10.417ZM12.4974 4.16699C11.3516 4.16699 10.4141 5.10449 10.4141 6.25033C10.4141 7.39616 11.3516 8.33366 12.4974 8.33366C13.6432 8.33366 14.5807 7.39616 14.5807 6.25033C14.5807 5.10449 13.6432 4.16699 12.4974 4.16699ZM12.4974 16.667C11.3516 16.667 10.4141 17.6045 10.4141 18.7503C10.4141 19.8962 11.3516 20.8337 12.4974 20.8337C13.6432 20.8337 14.5807 19.8962 14.5807 18.7503C14.5807 17.6045 13.6432 16.667 12.4974 16.667Z"
+                                    fill="black"
+                                  />
+                                </svg>
+                              ) : (
+                                <svg
+                                  className=" float-right"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="25"
+                                  height="25"
+                                  viewBox="0 0 25 25"
+                                  fill="none"
+                                >
+                                  <path
+                                    d="M12.4974 10.417C11.3516 10.417 10.4141 11.3545 10.4141 12.5003C10.4141 13.6462 11.3516 14.5837 12.4974 14.5837C13.6432 14.5837 14.5807 13.6462 14.5807 12.5003C14.5807 11.3545 13.6432 10.417 12.4974 10.417ZM12.4974 4.16699C11.3516 4.16699 10.4141 5.10449 10.4141 6.25033C10.4141 7.39616 11.3516 8.33366 12.4974 8.33366C13.6432 8.33366 14.5807 7.39616 14.5807 6.25033C14.5807 5.10449 13.6432 4.16699 12.4974 4.16699ZM12.4974 16.667C11.3516 16.667 10.4141 17.6045 10.4141 18.7503C10.4141 19.8962 11.3516 20.8337 12.4974 20.8337C13.6432 20.8337 14.5807 19.8962 14.5807 18.7503C14.5807 17.6045 13.6432 16.667 12.4974 16.667Z"
+                                    fill="white"
+                                  />
+                                </svg>
+                              )}
+                            </>
+                          )}
                         </div>
                       ))}
                     </div>
