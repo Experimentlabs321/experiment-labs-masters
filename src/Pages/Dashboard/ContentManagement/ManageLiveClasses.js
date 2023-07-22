@@ -1,0 +1,532 @@
+//ManageLiveClasses
+
+import React, { useState } from 'react';
+import Layout from '../Layout';
+import arrowDown from '../../../assets/SkillsManagement/arrow.svg'
+import arrowright from '../../../assets/SkillsManagement/arrowright.svg'
+import MyLocationIcon from '@mui/icons-material/MyLocation';
+import required from '../../../assets/ContentManagement/required.png'
+
+
+import Badge from '@mui/material/Badge';
+import MailIcon from '@mui/icons-material/Mail';
+import SearchIcon from '@mui/icons-material/Search';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import { Link } from 'react-router-dom';
+import Level from '../Dashboard/Level';
+
+
+
+const ManageLiveClasses = () => {
+    const [isOpenGeneral, setisOpenGeneral] = useState(true);
+    const [isOpenRoomSettings, setisOpenRoomSettings] = useState(false);
+    const [isOpenlockSettings, setisOpenlockSettings] = useState(false);
+    const [isOpenclassTimings, setisOpenclassTimings] = useState(false);
+    const [isOpenevaluationParameter, setisOpenevaluationParameter] = useState(false);
+
+
+    const toggleDropdownGeneral = () => {
+        setisOpenGeneral(!isOpenGeneral);
+    };
+    const toggleDropdownRoomSettings = () => {
+        setisOpenRoomSettings(!isOpenRoomSettings);
+    };
+    const toggleDropdownlockSettings = () => {
+        setisOpenlockSettings(!isOpenlockSettings);
+    };
+    const toggleDropdownclassTimings = () => {
+        setisOpenclassTimings(!isOpenclassTimings);
+    };
+    const toggleDropdownevaluationParameter = () => {
+        setisOpenevaluationParameter(!isOpenevaluationParameter);
+    };
+
+    // create new earning parameter
+    const [isOpencreatenewearningparameter, setisOpencreatenewearningparameter] = useState(false);
+
+    const openModalacreatenewearningparameter = () => {
+        setisOpencreatenewearningparameter(true);
+    };
+
+    const closeModalcreatenewearningparameter = () => {
+        setisOpencreatenewearningparameter(false);
+    };
+
+    const handleSubmit = event => {
+        event.preventDefault()
+        const form = event.target;
+
+        const className = form.className?.value;
+        const classType = form.classType?.value;
+        const instanceType = form.instanceType?.value;
+        const roomNumber = form.roomNumber?.value;
+        const sessionmayberecorded = +(form.sessionmayberecorded?.value);
+        const waitformoderator = +(form.waitformoderator?.value);
+        const disablewebcams = +(form.disablewebcams?.value);
+        const disablemicrophones = +(form.disablemicrophones?.value);
+        const disableprivatechat = +(form.disableprivatechat?.value);
+        const disablepublicchat = +(form.disablepublicchat?.value);
+        const disablesharednotes = +(form.disablesharednotes?.value);
+        const hideuserlist = +(form.hideuserlist?.value);
+        const courseStartingDateTime = form.courseStartingDateTime?.value;
+        const courseEndDateTime = form.courseEndDateTime?.value;
+        const itemEarningParameter = form.itemEarningParameter?.value;
+        const itemEarningParameter1 = form.itemEarningParameter1?.value;
+
+
+
+        const manageclass = {
+            className,
+            classType,
+            instanceType,
+            roomNumber,
+            sessionmayberecorded,
+            waitformoderator,
+            disablewebcams,
+            disablemicrophones,
+            disableprivatechat,
+            disablepublicchat,
+            disablesharednotes,
+            hideuserlist,
+            courseStartingDateTime,
+            courseEndDateTime,
+            itemEarningParameter: itemEarningParameter ? itemEarningParameter : itemEarningParameter1,
+
+        }
+
+        console.log(manageclass)
+
+
+    }
+
+    return (
+        <div>
+            <Layout>
+
+                <div className='text-[#3E4DAC] text-[26px] font-bold  py-[35px] ps-[40px]'>
+                    <p>Manage Classes in Topic 1</p>
+
+                </div>
+                <form onSubmit={handleSubmit} className='ms-[40px]  mt-12'>
+                    <div className="select-option flex items-center gap-[40px]" onClick={toggleDropdownGeneral} >
+                        <h1 className=' h-[60px] w-[60px] bg-[#E1E6FF] rounded-full flex justify-center items-center text-[25px]'>1</h1>
+                        <p className='text-[25px] font-bold'>General </p>
+                        {
+                            !isOpenGeneral && <img className='w-6' src={arrowright}></img>
+                        }
+
+                        {
+                            isOpenGeneral && <img src={arrowDown}></img>
+                        }
+
+                        <i className={`dropdown-arrow ${isOpenGeneral ? 'open' : ''}`}></i>
+                    </div>
+                    {isOpenGeneral && (
+                        <div className="dropdown-menu mt-[71px] mb-[45px] border-b-2  ">
+                            <div className='flex '>
+                                <div className=''>
+                                    <div className='flex items-center gap-4'>
+                                        <p className='h-2 w-2 bg-black rounded-full'></p>
+                                        <p className='font-bold text-lg me-[36px]'> Class Name</p>
+                                        <img src={required}/>
+                                    </div>
+
+                                    <input required className='mt-6 ms-6 border rounded-md w-[440px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] '
+                                        name='className' type="text" placeholder='Eg. Excel with Shekhar Gupta' />
+                                </div>
+
+                                <div className='ms-[137px]'>
+                                    <div className='flex items-center gap-4'>
+                                        <p className='h-2 w-2 bg-black rounded-full'></p>
+                                        <p className='font-bold text-lg me-[36px]'>Class Type</p>
+                                        <img src={required}/>
+                                    </div>
+
+                                    <div className=" flex gap-2  mt-6 ms-6 border rounded-md w-[142px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]  "
+                                        style={{ boxShadow: " 0px 2px 4px 0px rgba(0, 0, 0, 0.15)" }}
+                                    >
+
+                                        <select
+                                            required
+                                            className='w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold focus:outline-0'
+                                            name="classType"
+                                        >
+                                            <option className="" value="Online">Online</option>
+                                            <option className='text-[#6A6A6A] ' value="Offline"> Offline</option>
+                                            <option className='text-[#6A6A6A]' value="Offline"> Hybrid</option>
+
+                                        </select>
+
+                                    </div>
+
+                                </div>
+                                <div className='ms-[210px]'>
+                                    <div className='flex items-center gap-4'>
+                                        <p className='h-2 w-2 bg-black rounded-full'></p>
+                                        <p className='font-bold text-lg me-[36px]'>Instance Type</p>
+                                        <img src={required}/>
+                                    </div>
+
+                                    <div className=" flex gap-2  mt-6 ms-6 border rounded-md w-[246px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]  "
+                                        style={{ boxShadow: " 0px 2px 4px 0px rgba(0, 0, 0, 0.15)" }}
+                                    >
+
+                                        <select
+                                            required
+                                            className='w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold focus:outline-0'
+                                            name="instanceType"
+                                        >
+                                            <option className="" value="Room with recordings">Room with recordings</option>
+                                            <option className='text-[#6A6A6A]' value="Room Only"> Room Only</option>
+                                            <option className='text-[#6A6A6A]' value="Recordings Only"> Recordings Only</option>
+
+                                        </select>
+
+                                    </div>
+
+                                </div>
+
+                                <div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div className='flex justify-between mt-[116px] mb-20'>
+                                <div className=''>
+                                    <div className='flex items-center gap-4'>
+                                        <p className='h-2 w-2 bg-black rounded-full'></p>
+                                        <p className='font-bold text-lg me-[36px]'>Location (For offline & Hybrid)</p>
+                                        <img src={required}/>
+                                    </div>
+                                    <div className='flex items-center justify-between  mt-6 ms-6 border rounded-md w-[415px] h-[50px] px-5 text-[#535353]  bg-[#F6F7FF] '>
+                                        <div className='flex gap-2'>
+                                            <SearchIcon />
+                                            <input className='focus:outline-0 text-[#535353]  bg-[#F6F7FF]'
+                                                name='Location' type="text" placeholder='Search Location' />
+                                        </div>
+
+
+                                        <MyLocationIcon />
+
+                                    </div>
+
+
+                                </div>
+                                <div className='me-[250px]'>
+                                    <div className='flex items-center gap-4'>
+                                        <p className='h-2 w-2 bg-black rounded-full'></p>
+                                        <p className='font-bold text-lg me-[36px]'>Room Number</p>
+                                    </div>
+
+                                    <input className='mt-6 ms-6 border rounded-md w-[440px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] '
+                                        name='roomNumber' type="text" placeholder='Eg. Excel with Shekhar Gupta' />
+
+                                </div>
+
+
+
+
+                            </div>
+
+
+                        </div>
+                    )}
+
+                    <div className="select-option flex items-center gap-[40px] mt-12" onClick={toggleDropdownRoomSettings} >
+                        <h1 className=' h-[60px] w-[60px] bg-[#E1E6FF] rounded-full flex justify-center items-center text-[25px]'>2</h1>
+                        <p className='text-[25px] font-bold'>Room Settings</p>
+                        {
+                            !isOpenRoomSettings && <img className='w-6' src={arrowright}></img>
+                        }
+
+                        {
+                            isOpenRoomSettings && <img src={arrowDown}></img>
+                        }
+
+                        <i className={`dropdown-arrow ${isOpenRoomSettings ? 'open' : ''}`}></i>
+                    </div>
+                    {isOpenRoomSettings && (
+                        <div className="dropdown-menu mt-[71px] mb-[45px] border-b-2  ">
+                            <div className='flex justify-between mb-20'>
+                                <div className=''>
+                                    <div className='flex items-center gap-4'>
+                                        <p className='h-2 w-2 bg-black rounded-full'></p>
+                                        <p className='font-bold text-lg me-[36px]'> Welcome Message</p>
+                                    </div>
+
+                                    <input className='mt-6 ms-6 border rounded-md w-[440px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] '
+                                        name='className' type="text" placeholder='Eg. Excel with Shekhar Gupta' />
+                                </div>
+
+                                <div className='me-[200px]'>
+                                    <div className=''>
+                                        <div className='flex items-center gap-4'>
+                                            <p className='h-2 w-2 bg-black rounded-full'></p>
+                                            <p className='font-bold text-lg me-[36px]'>The session may be recorded.</p>
+                                        </div>
+
+                                        <div className=" items-center flex gap-2  mt-2 ms-6  w-[319px] h-[50px] ps-2 text-[#535353] focus:outline-0 ">
+                                            <div className=''>
+                                                <input type="radio" id="Yes" name="sessionmayberecorded" value="1" />
+                                                <lebel> Yes</lebel>
+                                            </div>
+                                            <div className=' ms-[55px]'>
+                                                <input type="radio" id="No" name="sessionmayberecorded" value="0" />
+                                                <lebel> No</lebel>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div className=''>
+                                        <div className='flex items-center gap-4'>
+                                            <p className='h-2 w-2 bg-black rounded-full'></p>
+                                            <p className='font-bold text-lg me-[36px]'>Wait for moderator</p>
+                                        </div>
+
+                                        <div className=" items-center flex gap-2  mt-2 ms-6  w-[319px] h-[50px] ps-2 text-[#535353] focus:outline-0 ">
+                                            <div className=''>
+                                                <input type="radio" id="yes" name="waitformoderator" value="1" />
+                                                <lebel> Yes</lebel>
+                                            </div>
+                                            <div className=' ms-[55px]'>
+                                                <input type="radio" id="No" name="waitformoderator" value="0" />
+                                                <lebel> No</lebel>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+
+
+
+                        </div>
+                    )}
+
+                    <div className="select-option flex items-center gap-[40px] mt-12" onClick={toggleDropdownlockSettings} >
+                        <h1 className=' h-[60px] w-[60px] bg-[#E1E6FF] rounded-full flex justify-center items-center text-[25px]'>3</h1>
+                        <p className='text-[25px] font-bold'>Lock Settings</p>
+                        {
+                            !isOpenlockSettings && <img className='w-6' src={arrowright}></img>
+                        }
+
+                        {
+                            isOpenlockSettings && <img src={arrowDown}></img>
+                        }
+
+                        <i className={`dropdown-arrow ${isOpenlockSettings ? 'open' : ''}`}></i>
+                    </div>
+
+                    {isOpenlockSettings && (
+                        <div className="dropdown-menu mt-[71px] mb-[45px] border-b-2 ">
+                            <div className='flex justify-between mb-20'>
+                                <div className=' ms-5'>
+                                    <div>
+                                        <input type="checkbox" id="disablewebcams" name="disablewebcams" value="1" />
+                                        <label className='text-base font-semibold ms-4' for="disablewebcams">Disable webcams</label>
+                                    </div>
+                                    <div className='mt-[75px]'>
+                                        <input type="checkbox" id="disablemicrophones" name="disablemicrophones" value="1" />
+                                        <label className='text-base font-semibold ms-4' for="disablemicrophones">Disable microphones</label>
+                                    </div>
+                                    <div className='mt-[75px]'>
+                                        <input type="checkbox" id="disableprivatechat" name="disableprivatechat" value="1" />
+                                        <label className='text-base font-semibold ms-4' for="disableprivatechat"> Disable private chat</label>
+                                    </div>
+
+
+                                </div>
+
+                                <div className='me-[200px]'>
+                                    <div>
+                                        <input type="checkbox" id="disablepublicchat" name="disablepublicchat" value="1" />
+                                        <label className='text-base font-semibold ms-4' for="disablepublicchat">Disable public chat</label>
+                                    </div>
+                                    <div className='mt-[75px]'>
+                                        <input type="checkbox" id="disablesharednotes" name="disablesharednotes" value="1" />
+                                        <label className='text-base font-semibold ms-4' for="disablesharednotes">Disable shared notes</label>
+                                    </div>
+                                    <div className='mt-[75px]'>
+                                        <input type="checkbox" id="hideuserlist" name="hideuserlist" value="1" />
+                                        <label className='text-base font-semibold ms-4' for="hideuserlist">Hide user list</label>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    )}
+
+                    <div className="select-option flex items-center gap-[40px] mt-12" onClick={toggleDropdownclassTimings} >
+                        <h1 className=' h-[60px] w-[60px] bg-[#E1E6FF] rounded-full flex justify-center items-center text-[25px]'>4</h1>
+                        <p className='text-[25px] font-bold'>Class Timings</p>
+                        {
+                            !isOpenclassTimings && <img className='w-6' src={arrowright}></img>
+                        }
+
+                        {
+                            isOpenclassTimings && <img src={arrowDown}></img>
+                        }
+
+                        <i className={`dropdown-arrow ${isOpenclassTimings ? 'open' : ''}`}></i>
+                    </div>
+
+                    {isOpenclassTimings && (
+                        <div className="dropdown-menu  mb-[45px] border-b-2 ">
+                            <div className='flex justify-between mb-20'>
+                                <div className=' ms-5'>
+                                    <div className='mt-20 flex flex-col'>
+                                        <div className='flex items-center gap-4'>
+                                            <p className='h-2 w-2 bg-black rounded-full'></p>
+                                            <p className='font-bold text-lg me-[36px]'> Course Starting Date and Time </p>
+                                            <img src={required} />
+                                        </div>
+
+                                        <input required className='mt-6 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='courseStartingDateTime' type="datetime-local" placeholder='Eg. Entrepreneurship Lab' />
+                                        {/* <input required className='mt-4 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='courseStartingTime' type="time" placeholder='Eg. Entrepreneurship Lab' /> */}
+                                    </div>
+
+
+                                </div>
+
+                                <div className='me-[200px]'>
+                                    <div className='mt-20 flex flex-col'>
+                                        <div className='flex items-center gap-4'>
+                                            <p className='h-2 w-2 bg-black rounded-full'></p>
+                                            <p className='font-bold text-lg me-[36px]'> Class End Date and Time </p>
+                                            <img src={required} />
+                                        </div>
+
+                                        <input required className='mt-6 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='courseEndDateTime' type="datetime-local" placeholder='Eg. Entrepreneurship Lab' />
+                                        {/* <input required className='mt-4 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='courseStartingTime' type="time" placeholder='Eg. Entrepreneurship Lab' /> */}
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+
+
+
+                        </div>
+                    )}
+
+                    <div className="select-option flex items-center gap-[40px] mt-12" onClick={toggleDropdownevaluationParameter} >
+                        <h1 className=' h-[60px] w-[60px] bg-[#E1E6FF] rounded-full flex justify-center items-center text-[25px]'>5</h1>
+                        <p className='text-[25px] font-bold'>Evaluation Parameter</p>
+                        {
+                            !isOpenevaluationParameter && <img className='w-6' src={arrowright}></img>
+                        }
+
+                        {
+                            isOpenevaluationParameter && <img src={arrowDown}></img>
+                        }
+
+                        <i className={`dropdown-arrow ${isOpenevaluationParameter ? 'open' : ''}`}></i>
+                    </div>
+
+                    {isOpenevaluationParameter && (
+                        <div className="dropdown-menu mt-[71px] mb-[45px]  ">
+                            <div className='flex justify-between'>
+
+                                <div className=''>
+                                    <div className='flex items-center gap-4'>
+                                        <p className='h-2 w-2 bg-black rounded-full'></p>
+                                        <p className='font-bold text-lg me-[36px]'>Item Earning Parameter</p>
+                                    </div>
+
+                                    <div className=" flex gap-2  mt-6 ms-6 border rounded-md w-[349px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]  "
+                                        style={{ boxShadow: " 0px 2px 4px 0px rgba(0, 0, 0, 0.15)" }}
+                                    >
+
+                                        <select
+                                            required
+                                            className='w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold focus:outline-0'
+                                            name="itemEarningParameter"
+                                        >
+                                            <option selected className="">Select Item Earning Parameter</option>
+                                            <option value="Offline"> Offline</option>
+
+                                        </select>
+
+                                    </div>
+
+                                </div>
+
+                                <div className='me-[200px]'>
+                                    <div className='mt-20 flex flex-col'>
+                                        <div onClick={openModalacreatenewearningparameter} className='w-[298px] bg-[#3E4DAC] text-[#fff] rounded-lg text-base px-4 py-3 font-semibold flex gap-2 justify-center items-center'>
+                                            <p className='text-2xl'>+</p>
+                                            <div>
+                                                <p className='w-full '>Create new earning parameter</p>
+
+                                            </div>
+
+
+                                        </div>
+                                        <div>
+                                            {isOpencreatenewearningparameter && (
+                                                <div className="modal-overla w-[438px] h-[325px] rounded-md mt-3 bg-[#fff] border">
+                                                    <div className="modal-content">
+                                                        <div className='border-b flex justify-between items-center pt-6 px-10 pb-5 text-[#3E4DAC] text-xl font-bold'>
+                                                            <p >Add new earning parameter</p>
+                                                            <p onClick={closeModalcreatenewearningparameter} className=' flex justify-center items-center rounded-full w-6 h-6 bg-[#A1A1A1] font-bold text-[#000000]'>x</p>
+                                                        </div>
+                                                        <div className='mt-6 mx-10'>
+                                                            <div className='flex items-center gap-4'>
+
+                                                                <p className='font-bold text-lg me-[36px]'>earning parameter</p>
+                                                            </div>
+
+                                                            <input className='mt-6 border rounded-md w-[358px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='itemEarningParameter1' type="text" placeholder='Eg. Entrepreneurship Lab' />
+
+                                                        </div>
+
+
+
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+
+
+
+                        </div>
+                    )}
+
+
+
+
+
+                    <div className='flex items-center justify-center mt-20 mb-10'>
+                        <input type="submit" value='submit' className='px-[30px] py-3 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg' />
+                        <input type="submit" value='Save & Display' className='px-[30px] py-3 bg-[#FF557A] text-[#fff] text-xl font-bold rounded-lg ms-20' />
+                    </div>
+
+
+
+                </form>
+
+
+            </Layout>
+        </div >
+    );
+};
+
+export default ManageLiveClasses;
