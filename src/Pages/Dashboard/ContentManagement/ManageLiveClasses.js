@@ -6,6 +6,16 @@ import arrowDown from '../../../assets/SkillsManagement/arrow.svg'
 import arrowright from '../../../assets/SkillsManagement/arrowright.svg'
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import required from '../../../assets/ContentManagement/required.png'
+import PropTypes from 'prop-types';
+import Button from '@mui/material/Button';
+import { styled } from '@mui/material/styles';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import Typography from '@mui/material/Typography';
 
 
 import Badge from '@mui/material/Badge';
@@ -41,16 +51,54 @@ const ManageLiveClasses = () => {
         setisOpenevaluationParameter(!isOpenevaluationParameter);
     };
 
-    // create new earning parameter
-    const [isOpencreatenewearningparameter, setisOpencreatenewearningparameter] = useState(false);
+    /////////////////////////  Add new Item earningparameter
+    const BootstrapDialogearningparameter = styled(Dialog)(({ theme }) => ({
+        '& .MuiDialogContent-root': {
+            padding: theme.spacing(2),
+        },
+        '& .MuiDialogActions-root': {
+            padding: theme.spacing(1),
+        },
+    }));
 
-    const openModalacreatenewearningparameter = () => {
-        setisOpencreatenewearningparameter(true);
+    function BootstrapDialogTitleearningparameter(props) {
+        const { children, onClose, ...other } = props;
+
+        return (
+            <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+                {children}
+                {onClose ? (
+                    <IconButton
+                        aria-label="close"
+                        onClick={onClose}
+                        sx={{
+                            position: 'absolute',
+                            right: 8,
+                            top: 8,
+                            color: (theme) => theme.palette.grey[500],
+                        }}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                ) : null}
+            </DialogTitle>
+        );
+    }
+
+    BootstrapDialogTitleearningparameter.propTypes = {
+        children: PropTypes.node,
+        onClose: PropTypes.func.isRequired,
     };
 
-    const closeModalcreatenewearningparameter = () => {
-        setisOpencreatenewearningparameter(false);
+    const [openearningparameter, setOpenearningparameter] = React.useState(false);
+
+    const handleClickOpenearningparameter = () => {
+        setOpenearningparameter(true);
     };
+    const handleCloseearningparameter = () => {
+        setOpenearningparameter(false);
+    };
+
 
     const handleSubmit = event => {
         event.preventDefault()
@@ -123,23 +171,23 @@ const ManageLiveClasses = () => {
                     </div>
                     {isOpenGeneral && (
                         <div className="dropdown-menu mt-[71px] mb-[45px] border-b-2  ">
-                            <div className='flex '>
+                            <div className='flex justify-between '>
                                 <div className=''>
                                     <div className='flex items-center gap-4'>
                                         <p className='h-2 w-2 bg-black rounded-full'></p>
                                         <p className='font-bold text-lg me-[36px]'> Class Name</p>
-                                        <img src={required}/>
+                                        <img src={required} />
                                     </div>
 
                                     <input required className='mt-6 ms-6 border rounded-md w-[440px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] '
                                         name='className' type="text" placeholder='Eg. Excel with Shekhar Gupta' />
                                 </div>
 
-                                <div className='ms-[137px]'>
+                                <div className=''>
                                     <div className='flex items-center gap-4'>
                                         <p className='h-2 w-2 bg-black rounded-full'></p>
                                         <p className='font-bold text-lg me-[36px]'>Class Type</p>
-                                        <img src={required}/>
+                                        <img src={required} />
                                     </div>
 
                                     <div className=" flex gap-2  mt-6 ms-6 border rounded-md w-[142px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]  "
@@ -160,11 +208,12 @@ const ManageLiveClasses = () => {
                                     </div>
 
                                 </div>
-                                <div className='ms-[210px]'>
+
+                                <div className='me-10'>
                                     <div className='flex items-center gap-4'>
                                         <p className='h-2 w-2 bg-black rounded-full'></p>
                                         <p className='font-bold text-lg me-[36px]'>Instance Type</p>
-                                        <img src={required}/>
+                                        <img src={required} />
                                     </div>
 
                                     <div className=" flex gap-2  mt-6 ms-6 border rounded-md w-[246px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]  "
@@ -186,9 +235,7 @@ const ManageLiveClasses = () => {
 
                                 </div>
 
-                                <div>
-
-                                </div>
+                                
 
                             </div>
 
@@ -198,7 +245,7 @@ const ManageLiveClasses = () => {
                                     <div className='flex items-center gap-4'>
                                         <p className='h-2 w-2 bg-black rounded-full'></p>
                                         <p className='font-bold text-lg me-[36px]'>Location (For offline & Hybrid)</p>
-                                        <img src={required}/>
+                                        <img src={required} />
                                     </div>
                                     <div className='flex items-center justify-between  mt-6 ms-6 border rounded-md w-[415px] h-[50px] px-5 text-[#535353]  bg-[#F6F7FF] '>
                                         <div className='flex gap-2'>
@@ -214,7 +261,7 @@ const ManageLiveClasses = () => {
 
 
                                 </div>
-                                <div className='me-[250px]'>
+                                <div className='me-10'>
                                     <div className='flex items-center gap-4'>
                                         <p className='h-2 w-2 bg-black rounded-full'></p>
                                         <p className='font-bold text-lg me-[36px]'>Room Number</p>
@@ -260,7 +307,7 @@ const ManageLiveClasses = () => {
                                         name='className' type="text" placeholder='Eg. Excel with Shekhar Gupta' />
                                 </div>
 
-                                <div className='me-[200px]'>
+                                <div className=' me-10'>
                                     <div className=''>
                                         <div className='flex items-center gap-4'>
                                             <p className='h-2 w-2 bg-black rounded-full'></p>
@@ -396,7 +443,7 @@ const ManageLiveClasses = () => {
 
                                 </div>
 
-                                <div className='me-[200px]'>
+                                <div className='me-10'>
                                     <div className='mt-20 flex flex-col'>
                                         <div className='flex items-center gap-4'>
                                             <p className='h-2 w-2 bg-black rounded-full'></p>
@@ -461,41 +508,50 @@ const ManageLiveClasses = () => {
 
                                 </div>
 
-                                <div className='me-[200px]'>
-                                    <div className='mt-20 flex flex-col'>
-                                        <div onClick={openModalacreatenewearningparameter} className='w-[298px] bg-[#3E4DAC] text-[#fff] rounded-lg text-base px-4 py-3 font-semibold flex gap-2 justify-center items-center'>
-                                            <p className='text-2xl'>+</p>
-                                            <div>
-                                                <p className='w-full '>Create new earning parameter</p>
+                                <div className='me-10'>
+                                    <div className=' flex flex-col'>
+                                        <div>
+                                            <div variant="outlined" onClick={handleClickOpenearningparameter} className='button w-[298px] bg-[#3E4DAC] text-[#fff] rounded-lg text-base px-4 py-3 font-semibold flex gap-2 justify-center items-center'>
+                                                <p className='text-2xl'>+</p>
+                                                <div>
+                                                    <p className='w-full '>Create new earning parameter</p>
+
+                                                </div>
+
 
                                             </div>
 
-
-                                        </div>
-                                        <div>
-                                            {isOpencreatenewearningparameter && (
-                                                <div className="modal-overla w-[438px] h-[325px] rounded-md mt-3 bg-[#fff] border">
-                                                    <div className="modal-content">
-                                                        <div className='border-b flex justify-between items-center pt-6 px-10 pb-5 text-[#3E4DAC] text-xl font-bold'>
-                                                            <p >Add new earning parameter</p>
-                                                            <p onClick={closeModalcreatenewearningparameter} className=' flex justify-center items-center rounded-full w-6 h-6 bg-[#A1A1A1] font-bold text-[#000000]'>x</p>
-                                                        </div>
-                                                        <div className='mt-6 mx-10'>
+                                            <BootstrapDialogearningparameter
+                                                onClose={handleCloseearningparameter}
+                                                aria-labelledby="customized-dialog-title"
+                                                open={openearningparameter}
+                                            >
+                                                <BootstrapDialogTitleearningparameter id="customized-dialog-title" onClose={handleCloseearningparameter}>
+                                                    <p className='text-[22px] font-bold text-[#3E4DAC] mx-10'>Add new Item earning parameter</p>
+                                                </BootstrapDialogTitleearningparameter>
+                                                <DialogContent dividers>
+                                                    <Typography gutterBottom>
+                                                        <form className='mt-6 mx-10'>
                                                             <div className='flex items-center gap-4'>
 
-                                                                <p className='font-bold text-lg me-[36px]'>earning parameter</p>
+                                                                <p className='font-bold text-lg me-[36px]'>Item Earning Parameter</p>
                                                             </div>
 
                                                             <input className='mt-6 border rounded-md w-[358px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='itemEarningParameter1' type="text" placeholder='Eg. Entrepreneurship Lab' />
 
-                                                        </div>
+                                                            <div className='mt-12 mb-7 flex justify-center'>
+                                                                <input autoFocus onClick={handleCloseearningparameter} className='bg-[#3E4DAC] rounded-lg px-12 py-3 text-xl font-bold text-[#fff]' type="submit" value="Add" />
 
+                                                            </div>
+                                                        </form>
+                                                    </Typography>
 
+                                                </DialogContent>
 
-                                                    </div>
-                                                </div>
-                                            )}
+                                            </BootstrapDialogearningparameter>
                                         </div>
+
+
 
                                     </div>
 
