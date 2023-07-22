@@ -74,8 +74,8 @@ const ManageReading = () => {
 
                 </div>
                 <form onSubmit={handleSubmit}>
-                    <div className='flex justify-between me-20 py-[35px] ps-[40px]'>
-                        <div>
+                    <div className='flex  me-20 py-[35px] ps-[40px]'>
+                        <div className='w-full'>
                             <div className=''>
                                 <div className='flex items-center gap-4'>
                                     <p className='h-2 w-2 bg-black rounded-full'></p>
@@ -83,7 +83,7 @@ const ManageReading = () => {
                                     <img src={required} />
                                 </div>
 
-                                <input required className='mt-6 ms-6 border rounded-md w-[520px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='readingTopicName' type="text" placeholder='Eg. Entrepreneurship Lab' />
+                                <input required className='mt-6 ms-6 border rounded-md w-5/6 h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='readingTopicName' type="text" placeholder='Eg. Entrepreneurship Lab' />
                             </div>
 
                             <div className='mt-12 flex flex-col'>
@@ -93,7 +93,7 @@ const ManageReading = () => {
 
                                 </div>
 
-                                <div className='w-[522px] h-[253px] bg-[#F6F7FF] flex flex-col items-center justify-center rounded-b-lg mt-6 ms-6'
+                                <div className='w-5/6 h-[253px] bg-[#F6F7FF] flex flex-col items-center justify-center rounded-b-lg mt-6 ms-6'
                                     onDragEnter={handleDragEnter}
                                     onDragLeave={handleDragLeave}
                                     onDragOver={handleDragOver}
@@ -121,14 +121,14 @@ const ManageReading = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className=''>
+                        <div className='w-full'>
                             <div className='flex items-center gap-4'>
                                 <p className='h-2 w-2 bg-black rounded-full'></p>
                                 <p className='font-bold text-lg me-[36px]'>Reading Material </p>
                                 <img src={required} />
                             </div>
 
-                            <input required className='mt-6 ms-6 border rounded-md w-[520px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] '
+                            <input required className='mt-6 ms-6 border rounded-md w-5/6 h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] '
                              name='readingMaterial' type="text" placeholder='Eg. Entrepreneurship Lab' />
                         </div>
 
@@ -142,8 +142,9 @@ const ManageReading = () => {
                 </form>
 
 
-                <div>
-
+                <div className='flex'>
+                      <div className='w-full'>1</div>
+                      <div className='w-full'>2</div>
                 </div>
             </Layout>
         </div>

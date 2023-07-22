@@ -811,16 +811,16 @@ const Assignment = () => {
 
 
                                 {
-                                    proceed && (<div className=' mt-2 rounded border mb-5 flex justify-center '>
+                                    proceed && (<div className=' mt-2 rounded border mb-5 flex me-10 '>
 
-                                        <form >
+                                        <form className='w-full'>
 
                                             <div className='flex justify-between'>
 
 
-                                                <div className='mx-5 mt-10'>
+                                                <div className='mx-10 mt-10 w-1/6 '>
                                                     {/* 1 */}
-                                                    <div className={`w-[205px] h-[38px] flex justify-between items-center px-4 py-2 text-sm font-medium ${SoftSkills ? 'text-[#0A98EA] ' : 'text-[black]'}`}
+                                                    <div className={`w-11/12  h-[38px] flex justify-between items-center px-4 py-2 text-sm font-medium ${SoftSkills ? 'text-[#0A98EA] ' : 'text-[black]'}`}
                                                         style={{
                                                             borderRadius: "8px",
 
@@ -833,7 +833,7 @@ const Assignment = () => {
 
                                                     </div>
 
-                                                    <div className='w-[205px] h-[38px] flex justify-between items-center px-4 py-2 text-sm font-medium mt-4'
+                                                    <div className='w-11/12  h-[38px] flex justify-between items-center px-4 py-2 text-sm font-medium mt-4'
                                                         style={{
                                                             borderRadius: "8px",
                                                             border: "1px solid #B7B7B7",
@@ -844,7 +844,7 @@ const Assignment = () => {
 
                                                     </div>
 
-                                                    <div className='w-[205px] h-[38px] flex justify-between items-center px-4 py-2 text-sm font-medium mt-4'
+                                                    <div className='w-11/12  h-[38px] flex justify-between items-center px-4 py-2 text-sm font-medium mt-4'
                                                         style={{
                                                             borderRadius: "8px",
                                                             border: "1px solid #B7B7B7",
@@ -855,7 +855,7 @@ const Assignment = () => {
 
                                                     </div>
 
-                                                    <div className='w-[205px] h-[38px] flex justify-between items-center px-4 py-2 text-sm font-medium mt-4'
+                                                    <div className='w-11/12 h-[38px] flex justify-between items-center px-4 py-2 text-sm font-medium mt-4'
                                                         style={{
                                                             borderRadius: "8px",
                                                             border: "1px solid #B7B7B7",
@@ -868,64 +868,58 @@ const Assignment = () => {
 
                                                 </div>
 
-                                                <div className='flex-1 flex gap-5 me-10'>
+                                                <div className='flex-1 flex   me-10'>
                                                     {
                                                         SoftSkills && (
-                                                            <div>
-                                                                <div>
+                                                            <div className='w-full flex flex-col items-center'>
+                                                                
                                                                     <div
-                                                                        className={`flex text-base font-medium mt-10  w-full h-[65px] justify-between rounded-md px-4 items-center ${selectedSection === 'communication' ? 'bg-[#E2F1FF]' : 'bg-[#F8F8F8]'
+                                                                        className={`flex text-base font-medium mt-10 w-11/12  h-[65px] justify-between rounded-md px-4 items-center ${selectedSection === 'communication' ? 'bg-[#E2F1FF]' : 'bg-[#F8F8F8]'
                                                                             }`}
                                                                     >
-                                                                        <p>Communication</p>
-                                                                        <div className='flex gap-5 items-center'>
+                                                                        <p className='w-full'>Communication</p>
+                                                                        <div className='flex justify-between ms-2 items-center w-full'>
                                                                             <input
-                                                                                className='w-[47px] h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'
+                                                                                className='w-1/3 h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'
                                                                                 name='communication'
                                                                                 type='text'
                                                                             />
-                                                                            <p className='w-[47px] h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'>%</p>
+                                                                            <p className='w-1/3 h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'>%</p>
                                                                             <ArrowForwardIcon onClick={() => handleArrowClick('communication')} />
                                                                         </div>
                                                                     </div>
 
                                                                     <div
-                                                                        className={`flex text-base font-medium mt-8  w-[353px] h-[65px] justify-between rounded-md px-4 items-center ${selectedSection === 'negotiation' ? 'bg-[#E2F1FF]' : 'bg-[#F8F8F8]'
+                                                                        className={`flex text-base font-medium mt-8  w-11/12 h-[65px] justify-between rounded-md px-4 items-center ${selectedSection === 'negotiation' ? 'bg-[#E2F1FF]' : 'bg-[#F8F8F8]'
                                                                             }`}
                                                                     >
-                                                                        <p>Negotiation</p>
-                                                                        <div className='flex gap-5 items-center'>
+                                                                        <p className='w-full'>Negotiation</p>
+                                                                        <div className='flex justify-between ms-2 items-center w-full'>
                                                                             <input
-                                                                                className='w-[47px] h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'
+                                                                                className='w-1/3 h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'
                                                                                 name='negotiation'
                                                                                 type='text'
                                                                             />
-                                                                            <p className='w-[47px] h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'>%</p>
+                                                                            <p className='w-1/3 h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'>%</p>
                                                                             <ArrowForwardIcon onClick={() => handleArrowClick('negotiation')} />
                                                                         </div>
                                                                     </div>
 
                                                                     <div
-                                                                        className={`flex text-base font-medium mt-8  w-[353px] h-[65px] justify-between rounded-md px-4 items-center ${selectedSection === 'Time Management' ? 'bg-[#E2F1FF]' : 'bg-[#F8F8F8]'
+                                                                        className={`flex  text-base font-medium mt-8 w-11/12 h-[65px] justify-between rounded-md px-4 items-center ${selectedSection === 'Time Management' ? 'bg-[#E2F1FF]' : 'bg-[#F8F8F8]'
                                                                             }`}
                                                                     >
-                                                                        <p>Time Management</p>
-                                                                        <div className='flex gap-5 items-center'>
+                                                                        <p className='w-full'>Time Management</p>
+                                                                        <div className='flex justify-between ms-2 items-center w-full'>
                                                                             <input
-                                                                                className='w-[47px] h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'
+                                                                                className='w-1/3 h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'
                                                                                 name='Time Management'
                                                                                 type='text'
                                                                             />
-                                                                            <p className='w-[47px] h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'>%</p>
+                                                                            <p className='w-1/3 h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'>%</p>
                                                                             <ArrowForwardIcon onClick={() => handleArrowClick('Time Management')} />
                                                                         </div>
                                                                     </div>
-
-
-                                                                </div>
-
-
-
 
                                                             </div>
 
@@ -934,29 +928,29 @@ const Assignment = () => {
                                                     }
                                                     {
                                                         selectedSection && (
-                                                            <div>
-                                                                <div className='flex text-base font-medium mt-10 bg-[#E2F1FF] w-[378px] h-[65px] justify-between rounded-md px-4 items-center'>
-                                                                    <p > Verbal Communication</p>
-                                                                    <div className='flex gap-5'>
-                                                                        <input className='w-[47px] h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]' name='verbalCommunication' type='text' />
-                                                                        <p className='w-[47px] h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'>%</p>
+                                                            <div className='w-full flex flex-col items-center'>
+                                                                <div className='flex text-base font-medium mt-10 bg-[#E2F1FF] w-11/12 h-[65px] justify-between rounded-md px-4 items-center'>
+                                                                    <p className='w-full' > Verbal Communication</p>
+                                                                    <div className='flex justify-between ms-2 items-center w-full'>
+                                                                        <input className='w-1/3 h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]' name='verbalCommunication' type='text' />
+                                                                        <p className='w-1/3 h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'>%</p>
                                                                     </div>
 
 
                                                                 </div>
-                                                                <div className='flex text-base font-medium mt-8 bg-[#E2F1FF] w-[378px] h-[65px] justify-between rounded-md px-4 items-center'>
-                                                                    <p >Non- Verbal Communication</p>
-                                                                    <div className='flex gap-5'>
-                                                                        <input className='w-[47px] h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]' name='verbalCommunication' type='text' />
-                                                                        <p className='w-[47px] h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'>%</p>
+                                                                <div className='flex text-base font-medium mt-8 bg-[#E2F1FF] w-11/12 h-[65px] justify-between rounded-md px-4 items-center'>
+                                                                    <p className='w-full'>Non- Verbal Communication</p>
+                                                                    <div className='flex justify-between ms-2 items-center w-full'>
+                                                                        <input className='w-1/3 h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]' name='verbalCommunication' type='text' />
+                                                                        <p className='w-1/3 h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'>%</p>
                                                                     </div>
 
                                                                 </div>
-                                                                <div className='flex text-base font-medium mt-8 bg-[#E2F1FF] w-[378px] h-[65px] justify-between rounded-md px-4 items-center'>
-                                                                    <p >Active Listening</p>
-                                                                    <div className='flex gap-5'>
-                                                                        <input className='w-[47px] h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]' name='verbalCommunication' type='text' />
-                                                                        <p className='w-[47px] h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'>%</p>
+                                                                <div className='flex text-base font-medium mt-8 bg-[#E2F1FF] w-11/12 h-[65px] justify-between rounded-md px-4 items-center'>
+                                                                    <p className='w-full'>Active Listening</p>
+                                                                    <div className='flex justify-between ms-2 items-center w-full'>
+                                                                        <input className='w-1/3 h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]' name='verbalCommunication' type='text' />
+                                                                        <p className='w-1/3 h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'>%</p>
                                                                     </div>
 
                                                                 </div>
@@ -964,7 +958,6 @@ const Assignment = () => {
                                                             </div>
                                                         )
                                                     }
-
 
 
                                                 </div>
@@ -979,7 +972,7 @@ const Assignment = () => {
                                 }
                                 {
                                     parametersection && (
-                                        <div className='flex  justify-between px-10 py-6 mt-[63px]'
+                                        <div className='flex  justify-between px-10 py-6 mb-5 me-10 '
                                             style={{
                                                 borderRadius: "10px",
                                                 border: "1px solid #939393"
