@@ -311,7 +311,7 @@ const CourseInformation = () => {
                   </svg>
                 </button>
               </div>
-              {Role === "admin" && !preview && (
+              {Role === "admin" && (
                 <>
                   <button className="bg-black rounded-full">
                     <svg
@@ -365,7 +365,7 @@ const CourseInformation = () => {
                     </div>
                     <h1 className="text-[23px] font-[700] ml-[40px] ">
                       Topic 1{" "}
-                      {Role === "admin" && !preview && (
+                      {Role === "admin" && (
                         <button className="ml-[24px]">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -412,7 +412,7 @@ const CourseInformation = () => {
                       </div>
                     </div>
                   </div>
-                  {Role === "admin" && !preview && (
+                  {Role === "admin" && (
                     <button className=" mr-[25px] ">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -458,7 +458,7 @@ const CourseInformation = () => {
                       </div>
                     </div>
                   </div>
-                  {Role === "admin" && !preview && (
+                  {Role === "admin" && (
                     <button className=" mr-[25px] ">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -517,7 +517,7 @@ const CourseInformation = () => {
                     </div>
                     <h1 className="text-[23px] font-[700] ml-[40px] ">
                       Topic 2{" "}
-                      {Role === "admin" && !preview && (
+                      {Role === "admin" && (
                         <button className="ml-[24px]">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
