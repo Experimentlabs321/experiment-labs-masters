@@ -71,6 +71,7 @@ const CourseInformation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [preview, setPreview] = useState(false);
   const [addChapterOpen, setAddChapterOpen] = useState(false);
+  const [addTaskOpen, setAddTaskOpen] = useState(false);
   const Role = localStorage.getItem("role");
   const [selectedOption, setSelectedOption] = useState("Category");
   const options = ["Category name"];
@@ -171,8 +172,8 @@ const CourseInformation = () => {
                       )}
                     </div>
                     <DialogLayout
-                      open={addChapterOpen}
-                      setOpen={setAddChapterOpen}
+                      open={addTaskOpen}
+                      setOpen={setAddTaskOpen}
                       width={600}
                       title={
                         <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
@@ -197,6 +198,32 @@ const CourseInformation = () => {
                             </h1>
                           </Link>
                         ))}
+                      </div>
+                    </DialogLayout>
+                    <DialogLayout
+                      open={addChapterOpen}
+                      setOpen={setAddChapterOpen}
+                      width={440}
+                      title={
+                        <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
+                          Add Chapter
+                        </p>
+                      }
+                    >
+                      <div className="px-[32px] py-[24px] ">
+                        <h1 className=" text-[18px] font-[700] mb-[24px] ">
+                          Chapter Name
+                        </h1>
+                        <input
+                          type="text"
+                          placeholder="Eg. Onboarding"
+                          className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+                        />
+                        <div className="w-full flex items-center justify-center mt-[40px]">
+                          <button className="py-[20px] px-[48px] text-[20px] font-[700] rounded-[8px] bg-[#3E4DAC] text-white ">
+                            Add
+                          </button>
+                        </div>
                       </div>
                     </DialogLayout>
                     {!preview && (
@@ -460,6 +487,27 @@ const CourseInformation = () => {
                       </Link>
                     </div>
                   )}
+                </div>
+              </div>
+              <div
+                onClick={() => setAddTaskOpen(true)}
+                className="py-[32px] cursor-pointer px-[40px] bg-[#FFFEE8] mb-[45px] rounded-[15px] "
+              >
+                <div className="flex items-center">
+                  <svg
+                    className=" bg-[#FF557A] rounded-full w-[38px] h-[38px] mr-[24px] "
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="25"
+                    viewBox="0 0 24 25"
+                    fill="none"
+                  >
+                    <path
+                      d="M19 11.5H13V5.5H11V11.5H5V13.5H11V19.5H13V13.5H19V11.5Z"
+                      fill="white"
+                    />
+                  </svg>
+                  <h1 className="text-[20px] font-[600]"> Add Task</h1>
                 </div>
               </div>
               <hr />
