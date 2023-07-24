@@ -226,48 +226,46 @@ const CourseInformation = () => {
                         </div>
                       </div>
                     </DialogLayout>
-                    {!preview && (
-                      <>
-                        <button
-                          onClick={() => setAddChapterOpen(true)}
-                          className="flex items-center bg-[#FF557A] text-[16px] font-[700] text-white p-[16px] rounded-[20px] mr-[32px] "
+                    <>
+                      <button
+                        onClick={() => setAddChapterOpen(true)}
+                        className="flex items-center bg-[#FF557A] text-[16px] font-[700] text-white p-[16px] rounded-[20px] mr-[32px] "
+                      >
+                        <svg
+                          className="mr-[16px]"
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="25"
+                          height="24"
+                          viewBox="0 0 25 24"
+                          fill="none"
                         >
-                          <svg
-                            className="mr-[16px]"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="25"
-                            height="24"
-                            viewBox="0 0 25 24"
-                            fill="none"
-                          >
-                            <path
-                              d="M19.8438 11H13.8438V5H11.8438V11H5.84375V13H11.8438V19H13.8438V13H19.8438V11Z"
-                              fill="white"
-                            />
-                          </svg>
-                          <h1 className="mr-[12px]">Add Chapter</h1>
-                        </button>
-                        <Link
-                          to="/createCourse"
-                          className="flex items-center bg-[#3E4DAC] text-[16px] font-[700] text-white p-[16px] rounded-[20px] "
+                          <path
+                            d="M19.8438 11H13.8438V5H11.8438V11H5.84375V13H11.8438V19H13.8438V13H19.8438V11Z"
+                            fill="white"
+                          />
+                        </svg>
+                        <h1 className="mr-[12px]">Add Chapter</h1>
+                      </button>
+                      <Link
+                        to="/createCourse"
+                        className="flex items-center bg-[#3E4DAC] text-[16px] font-[700] text-white p-[16px] rounded-[20px] "
+                      >
+                        <svg
+                          className="mr-[16px]"
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 16 16"
+                          fill="none"
                         >
-                          <svg
-                            className="mr-[16px]"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 16 16"
-                            fill="none"
-                          >
-                            <path
-                              d="M12.6267 0.665039L15.8438 3.81149L13.3913 6.21118L10.1742 3.06473L12.6267 0.665039ZM0.84375 15.3359H4.06079L11.875 7.69316L8.65795 4.54671L0.84375 12.1894V15.3359Z"
-                              fill="white"
-                            />
-                          </svg>
-                          <h1 className="mr-[12px]">Edit Course</h1>
-                        </Link>
-                      </>
-                    )}
+                          <path
+                            d="M12.6267 0.665039L15.8438 3.81149L13.3913 6.21118L10.1742 3.06473L12.6267 0.665039ZM0.84375 15.3359H4.06079L11.875 7.69316L8.65795 4.54671L0.84375 12.1894V15.3359Z"
+                            fill="white"
+                          />
+                        </svg>
+                        <h1 className="mr-[12px]">Edit Course</h1>
+                      </Link>
+                    </>
                   </div>
                 </div>
               </div>
