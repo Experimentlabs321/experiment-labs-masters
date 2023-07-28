@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Layout from "../Layout";
 import arrowDown from "../../../assets/SkillsManagement/arrow.svg";
 import arrowright from "../../../assets/SkillsManagement/arrowright.svg";
@@ -19,6 +19,7 @@ import { Link } from "react-router-dom";
 import Level from "../Dashboard/Level";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { AuthContext } from "../../../contexts/AuthProvider";
 
 // const client = new S3Client({
 //   region: "eu-north-1",
@@ -101,6 +102,10 @@ const CreateCourse = () => {
         });
       }; */
 
+  const {user} = useContext(AuthContext);
+
+  console.log(user)
+
   /// handle Submit
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -128,12 +133,12 @@ const CreateCourse = () => {
     const showactivitycompletionconditions =
       +form.showactivitycompletionconditions?.value;
     //  const showGradebooktostudents = form.showGradebooktostudents.value;
-    const newCourseStartingDate = Math.floor(
-      new Date(courseStartingDate).getTime() / 1000
-    );
-    const newCourseEndingDate = Math.floor(
-      new Date(courseEndingDate).getTime() / 1000
-    );
+    // const newCourseStartingDate = Math.floor(
+    //   new Date(courseStartingDate).getTime() / 1000
+    // );
+    // const newCourseEndingDate = Math.floor(
+    //   new Date(courseEndingDate).getTime() / 1000
+    // );
 
     const addCourse = {
       courseFullName,
@@ -141,10 +146,10 @@ const CreateCourse = () => {
       courseStartingDate,
       //  courseStartingTime,
       courseEndingDate,
-      //courseEndingTime,
+      // courseEndingTime,
       courseDescription,
       courseCategory,
-      courseThumbnail: selectedFile,
+      courseThumbnail: '',
       courseVisibility,
       courseIDNumber,
       courseFormat,
@@ -158,11 +163,23 @@ const CreateCourse = () => {
       // certificateGeneration,
       showactivitycompletionconditions,
       //showGradebooktostudents,
-      newCourseEndingDate,
-      newCourseStartingDate,
+      // newCourseEndingDate,
+      // newCourseStartingDate,
+      creator: {
+        name: user?.displayName,
+        email: user?.email,
+        photoURL: user?.photoURL
+      }
     };
 
-    console.log(addCourse);
+    const course = await axios.post(`${process.env.REACT_APP_BACKEND_API}/courses`,addCourse);
+
+    if(course?.data?.acknowledged){
+      toast.success("Course added Successfully");
+      form.reset();
+    }
+
+    console.log("Add Course----->",addCourse);
 
     // const input = {
     //     "Body": selectedFile,
@@ -178,51 +195,51 @@ const CreateCourse = () => {
     //     console.error(error)
     // }
 
-        const params = new URLSearchParams();
-        params.append("wstoken", process.env.REACT_APP_moodle_token);
-        params.append("wsfunction", "core_course_create_courses");
-        params.append("moodlewsrestformat", "json");
-        params.append("courses[0][fullname]", courseFullName);
-        params.append("courses[0][shortname]", courseShortName);
-        params.append("courses[0][categoryid]", courseCategory);
-        params.append("courses[0][idnumber]", courseIDNumber);
-        params.append("courses[0][summary]", courseDescription);
-        params.append("courses[0][summaryformat]",1);
-        params.append("courses[0][format]",courseFormat);
-        params.append("courses[0][showgrades]",1);
-        params.append("courses[0][newsitems]",1);
-        params.append("courses[0][startdate]",newCourseStartingDate);
-        params.append("courses[0][enddate]",newCourseEndingDate);
-        params.append("courses[0][numsections]",numberOfWeeks);
-        // params.append("courses[0][maxbytes]",);
-        params.append("courses[0][showreports]",showactivityreports);
-        params.append("courses[0][visible]",courseVisibility);
+    //     const params = new URLSearchParams();
+    //     params.append("wstoken", process.env.REACT_APP_moodle_token);
+    //     params.append("wsfunction", "core_course_create_courses");
+    //     params.append("moodlewsrestformat", "json");
+    //     params.append("courses[0][fullname]", courseFullName);
+    //     params.append("courses[0][shortname]", courseShortName);
+    //     params.append("courses[0][categoryid]", courseCategory);
+    //     params.append("courses[0][idnumber]", courseIDNumber);
+    //     params.append("courses[0][summary]", courseDescription);
+    //     params.append("courses[0][summaryformat]",1);
+    //     params.append("courses[0][format]",courseFormat);
+    //     params.append("courses[0][showgrades]",1);
+    //     params.append("courses[0][newsitems]",1);
+    //     params.append("courses[0][startdate]",newCourseStartingDate);
+    //     params.append("courses[0][enddate]",newCourseEndingDate);
+    //     params.append("courses[0][numsections]",numberOfWeeks);
+    //     // params.append("courses[0][maxbytes]",);
+    //     params.append("courses[0][showreports]",showactivityreports);
+    //     params.append("courses[0][visible]",courseVisibility);
 
 
-    const config = {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    };
+    // const config = {
+    //   headers: {
+    //     "Content-Type": "application/x-www-form-urlencoded",
+    //   },
+    // };
 
 
-    console.log(process.env.Moodal_URL);
+    // console.log(process.env.Moodal_URL);
 
-    axios
-      .post(process.env.REACT_APP_moodle_url, params, config)
-      .then((result) => {
-        // Do somthing
-        console.log(result?.data);
-        if (result?.data?.exception) {
-          toast.error(result?.data?.message);
-        } else {
-          toast.success("Course Created Successfully");
-          form.reset();
-        }
-      })
-      .catch((err) => {
-        // Do somthing
-      });
+    // axios
+    //   .post(process.env.REACT_APP_moodle_url, params, config)
+    //   .then((result) => {
+    //     // Do somthing
+    //     console.log(result?.data);
+    //     if (result?.data?.exception) {
+    //       toast.error(result?.data?.message);
+    //     } else {
+    //       toast.success("Course Created Successfully");
+    //       form.reset();
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     // Do somthing
+    //   });
   };
 
   return (

@@ -268,17 +268,17 @@ const NavBar = (props) => {
 
   console.log("ab", role);
 
-  // const handleDashboard = () => {
-  //   const Role = localStorage.getItem("role");
-  //   if (Role === "admin") {
-  //     navigate("/userManagement");
-  //   } else {
-  //     navigate("/dashboard");
-  //   }
-  // };
   const handleDashboard = () => {
-    graphyLogin(user?.email, user?.displayName);
+    const Role = localStorage.getItem("role");
+    if (Role === "admin") {
+      navigate("/userManagement");
+    } else {
+      navigate("/dashboard");
+    }
   };
+  // const handleDashboard = () => {
+  //   graphyLogin(user?.email, user?.displayName);
+  // };
 
   const handleOnBlur = (e) => {
     const field = e.target.name;
