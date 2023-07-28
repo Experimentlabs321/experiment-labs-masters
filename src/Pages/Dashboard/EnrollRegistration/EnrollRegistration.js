@@ -46,16 +46,16 @@ const EnrollRegistration = () => {
                         <NotificationsIcon color="action" />
                     </Badge>
                 </div>
-                <div className='lg:ms-20 mt-20'>
-                    <div class="lg:grid grid-cols-3 gap-2">
+                <form className='lg:ms-20 mt-20'>
+                    <div class="lg:grid grid-cols-3 gap-5">
                         <div class="">
                             <div className='flex  items-center'>
                                 <p className='font-bold text-base me-[53px]'>Point Name</p>
-                                <input className='border rounded-lg w-[300px] h-[40px] ps-2 text-[#535353] focus:outline-0' type="text" placeholder='Point Name' ></input>
+                                <input className='border rounded-lg w-[50%] h-[40px] ps-2 text-[#535353] focus:outline-0' type="text" placeholder='Point Name' ></input>
                             </div>
                             <div className='mt-6 flex  items-center'>
                                 <p className='font-bold text-base me-[36px]'>Point Start On</p>
-                                <input className='border rounded-lg w-[300px] h-[40px] ps-2 text-[#535353] focus:outline-0 ' type="date" ></input>
+                                <input className='border rounded-lg w-[50%] h-[40px] ps-2 text-[#535353] focus:outline-0 ' type="date" ></input>
                             </div>
                             <div className='mt-6 flex  items-center '>
                                 <p className='font-bold text-base me-[30px]'>Point Currency</p>
@@ -75,93 +75,103 @@ const EnrollRegistration = () => {
                                     </select>
                                 </div>
                             </div>
-                            <div className='flex mt-6 items-center'>
-                                <p className='font-bold text-base me-[67px]'>Max Researchable Point</p>
-                                <div className="text-[18px]  h-[40px] flex  ">
-                                    <button style={{ boxShadow: " 0px 0px 16px -2px rgba(0, 0, 0, 0.50)" }} className=' border w-[55px] text-[#000000] rounded-s-full text-center' onClick={() => setMaxResearchablePoint(maxResearchablePoint - 1)}>-</button>
-                                    <span className='w-[38px] flex justify-center items-center'> {maxResearchablePoint} </span>
-                                    <button style={{ boxShadow: " 0px 0px 16px -2px rgba(0, 0, 0, 0.50)" }} className='border w-[55px] text-[#000000] rounded-e-full text-center' onClick={() => setMaxResearchablePoint(maxResearchablePoint + 1)}>+</button>
+                            <div className='flex justify-between w-full mt-6 items-center'>
+                                <p className='font-bold text-base me-5'>Max Researchable Point</p>
+                                <div className="text-[18px] w-[40%]  h-[40px] flex  ">
+                                    <button style={{ boxShadow: " 0px 0px 16px -2px rgba(0, 0, 0, 0.50)" }} className=' border w-[50%] text-[#000000] rounded-s-full text-center' onClick={() => setMaxResearchablePoint(maxResearchablePoint - 1)}>-</button>
+                                    <span className='w-[40%] flex justify-center items-center'> {maxResearchablePoint} </span>
+                                    <button style={{ boxShadow: " 0px 0px 16px -2px rgba(0, 0, 0, 0.50)" }} className='border w-[50%] text-[#000000] rounded-e-full text-center' onClick={() => setMaxResearchablePoint(maxResearchablePoint + 1)}>+</button>
                                 </div>
                             </div>
-                            <div className='flex mt-6 items-center'>
-                                <p className='font-bold text-base me-[71px]'>Min Researchable Point</p>
-                                <div className="text-[18px]  h-[40px] flex ">
-                                    <button style={{ boxShadow: " 0px 0px 16px -2px rgba(0, 0, 0, 0.50)" }} className=' border w-[55px] text-[#000000] rounded-s-full text-center' onClick={() => setMinResearchablePoint(minResearchablePoint - 1)}>-</button>
-                                    <span className='w-[38px] flex justify-center items-center'> {minResearchablePoint} </span>
-                                    <button style={{ boxShadow: " 0px 0px 16px -2px rgba(0, 0, 0, 0.50)" }} className=' border w-[55px] text-[#000000] rounded-e-full text-center' onClick={() => setMinResearchablePoint(minResearchablePoint + 1)}>+</button>
+                            <div className='flex justify-between mt-6 items-center'>
+                                <p className='font-bold text-base me-5'>Min Researchable Point</p>
+                                <div className="text-[18px]  w-[40%]  h-[40px] flex ">
+                                    <button style={{ boxShadow: " 0px 0px 16px -2px rgba(0, 0, 0, 0.50)" }} className=' border w-[50%] text-[#000000] rounded-s-full text-center' onClick={() => setMinResearchablePoint(minResearchablePoint - 1)}>-</button>
+                                    <span className=' w-[40%]  flex justify-center items-center'> {minResearchablePoint} </span>
+                                    <button style={{ boxShadow: " 0px 0px 16px -2px rgba(0, 0, 0, 0.50)" }} className=' border w-[50%] text-[#000000] rounded-e-full text-center' onClick={() => setMinResearchablePoint(minResearchablePoint + 1)}>+</button>
                                 </div>
                             </div>
                         </div>
+
                         <div class="mt-16">
-                            <div className='flex items-center'>
+                            <div className='flex justify-between items-center'>
                                 <p className='font-bold text-base me-[36px]'>Points Expire On</p>
 
-                                <input className='border rounded-lg w-[300px] h-[40px] ps-2 text-[#535353] focus:outline-0' type="date" ></input>
+                                <input className='border rounded-lg w-[50%]  h-[40px] ps-2 text-[#535353] focus:outline-0' type="date" ></input>
                             </div>
-                            <div className='flex mt-6 items-center'>
-                                <p className='font-bold text-base me-[185px]'>Point Value</p>
-                                <div className="text-[18px]  h-[40px] flex ">
-                                    <button style={{ boxShadow: " 0px 0px 16px -2px rgba(0, 0, 0, 0.50)" }} className=' border w-[55px] text-[#000000] rounded-s-full text-center' onClick={() => setpointValue(pointValue - 1)}>-</button>
-                                    <span className='w-[38px] flex justify-center items-center'> {pointValue} </span>
-                                    <button style={{ boxShadow: " 0px 0px 16px -2px rgba(0, 0, 0, 0.50)" }} className=' border w-[55px] text-[#000000] rounded-e-full text-center' onClick={() => setpointValue(pointValue + 1)}>+</button>
+                            <div className='flex mt-6 justify-between items-center'>
+                                <p className='font-bold text-base me-5'>Point Value</p>
+                                <div className="text-[18px] w-[40%] h-[40px] flex ">
+                                    <button style={{ boxShadow: " 0px 0px 16px -2px rgba(0, 0, 0, 0.50)" }} className=' border w-[50%] text-[#000000] rounded-s-full text-center' onClick={() => setpointValue(pointValue - 1)}>-</button>
+                                    <span className='w-[40%] flex justify-center items-center'> {pointValue} </span>
+                                    <button style={{ boxShadow: " 0px 0px 16px -2px rgba(0, 0, 0, 0.50)" }} className=' border w-[50%] text-[#000000] rounded-e-full text-center' onClick={() => setpointValue(pointValue + 1)}>+</button>
                                 </div>
                             </div>
-                            <div className='flex mt-6 items-center'>
-                                <p className='font-bold text-base me-[88px]'>Max Redeemable Points</p>
-                                <div className="text-[18px]  h-[40px] flex ">
-                                    <button style={{ boxShadow: " 0px 0px 16px -2px rgba(0, 0, 0, 0.50)" }} className=' border w-[55px] text-[#000000] rounded-s-full text-center' onClick={() => setmaxRedeemablePoints(maxRedeemablePoints - 1)}>-</button>
-                                    <span className='w-[38px] flex justify-center items-center'> {maxRedeemablePoints} </span>
-                                    <button style={{ boxShadow: " 0px 0px 16px -2px rgba(0, 0, 0, 0.50)" }} className=' border w-[55px] text-[#000000] rounded-e-full text-center' onClick={() => setmaxRedeemablePoints(maxRedeemablePoints + 1)}>+</button>
+                            <div className='flex justify-between mt-6 items-center'>
+                                <p className='font-bold text-base '>Max Redeemable Points</p>
+                                <div className="text-[18px] w-[40%] h-[40px] flex ">
+                                    <button style={{ boxShadow: " 0px 0px 16px -2px rgba(0, 0, 0, 0.50)" }} className=' border w-[50%] text-[#000000] rounded-s-full text-center' onClick={() => setmaxRedeemablePoints(maxRedeemablePoints - 1)}>-</button>
+                                    <span className='w-[40%] flex justify-center items-center'> {maxRedeemablePoints} </span>
+                                    <button style={{ boxShadow: " 0px 0px 16px -2px rgba(0, 0, 0, 0.50)" }} className=' border w-[50%] text-[#000000] rounded-e-full text-center' onClick={() => setmaxRedeemablePoints(maxRedeemablePoints + 1)}>+</button>
                                 </div>
                             </div>
-                            <div className='flex mt-6 items-center'>
-                                <p className='font-bold text-base me-[71px]'>Min Points for Redemption</p>
-                                <div className="text-[18px]  h-[40px] flex ">
-                                    <button style={{ boxShadow: " 0px 0px 16px -2px rgba(0, 0, 0, 0.50)" }} className=' border w-[55px] text-[#000000] rounded-s-full text-center' onClick={() => setminRedeemablePoints(minRedeemablePoints - 1)}>-</button>
-                                    <span className='w-[38px] flex justify-center items-center'> {minRedeemablePoints} </span>
-                                    <button style={{ boxShadow: " 0px 0px 16px -2px rgba(0, 0, 0, 0.50)" }} className=' border w-[55px] text-[#000000] rounded-e-full text-center' onClick={() => setminRedeemablePoints(minRedeemablePoints + 1)}>+</button>
+                            <div className='flex justify-between mt-6 items-center'>
+                                <p className='font-bold text-base '>Min Points for Redemption</p>
+                                <div className="text-[18px] w-[40%]  h-[40px] flex ">
+                                    <button style={{ boxShadow: " 0px 0px 16px -2px rgba(0, 0, 0, 0.50)" }} className=' border w-[50%] text-[#000000] rounded-s-full text-center' onClick={() => setminRedeemablePoints(minRedeemablePoints - 1)}>-</button>
+                                    <span className='w-[40%] flex justify-center items-center'> {minRedeemablePoints} </span>
+                                    <button style={{ boxShadow: " 0px 0px 16px -2px rgba(0, 0, 0, 0.50)" }} className=' border w-[50%] text-[#000000] rounded-e-full text-center' onClick={() => setminRedeemablePoints(minRedeemablePoints + 1)}>+</button>
                                 </div>
                             </div>
                         </div>
-                        <div class="row-span-3 text-center lg:w-1/2 lg:mt-16 ms-20 ">
+                        <div class="row-span-3  flex flex-col lg:w-[70%] lg:mt-16 ">
                             <div className='flex justify-center'>
                                 <img src={gameplay}></img>
                             </div>
+                            <div className='flex gap-5 justify-center mt-5'>
+                                <input className='bg-[#2EB0FB] px-4 py-2 rounded-lg text-[#FFFFFF] font-semibold text-base' style={{boxShadow: "rgba(0, 0, 0, 0.75) 0px 3px 8px"}} type='submit' /> 
+                                <p className='text-[#808080] px-4 py-2 rounded-lg  font-semibold text-base ' style={{ border: "2px solid #808080",boxShadow: "rgba(0, 0, 0, 0.75) 0px 3px 8px" }} >discord</p>                               
+                            </div>
 
-                            <div className='flex gap-4 justify-center mt-5'>
+                           {/*  <div className='flex gap-4 w-full justify-center mt-5'>
                                 <button className='bg-[#2EB0FB] px-4 py-2 rounded-lg text-[#FFFFFF] font-semibold text-base  ' style={{boxShadow: "rgba(0, 0, 0, 0.75) 0px 3px 8px"}}>Save Point</button>
                                 <button className='text-[#808080] px-4 py-2 rounded-lg  font-semibold text-base ' style={{ border: "2px solid #808080",boxShadow: "rgba(0, 0, 0, 0.75) 0px 3px 8px" }} >Discard</button>
-                            </div>
+                            </div> */}
                         </div>
-                        <div className="col-span-2 p-5  border-2 rounded-2xl  text-center my-5">
+
+                        <div className="col-span-3 p-5 w-[80%]  border-2 rounded-2xl  text-center my-5">
                             <h3 className='font-bold mb-3'>Payment Gateways</h3>
                             <div className='lg:flex justify-between'>
-                                <div className='flex justify-between'>
+                               {/*  <div className='flex justify-between'>
                                     <input type="checkbox" id="" name="" value="" />
+                                    
+                                </div> */}
+                                <div className='flex '>
+                                    <input className='' type="checkbox" checked={checkedOption === 'ApplePay'} onChange={() => handleCheckboxChange('ApplePay')} id="" name="" value="" />
                                     <img src={ApplePay}></img>
                                 </div>
                                 <div className='flex '>
-                                    <input className='mx-2' type="checkbox" checked={checkedOption === 'Visa'} onChange={() => handleCheckboxChange('Visa')} id="" name="" value="" />
+                                    <input className='' type="checkbox" checked={checkedOption === 'Visa'} onChange={() => handleCheckboxChange('Visa')} id="" name="" value="" />
                                     <img src={Visa}></img>
                                 </div>
                                 <div className='flex justify-between'>
-                                    <input className='mx-2' type="checkbox" checked={checkedOption === 'GooglePay'} onChange={() => handleCheckboxChange('GooglePay')} id="" name="" value="" />
+                                    <input className='' type="checkbox" checked={checkedOption === 'GooglePay'} onChange={() => handleCheckboxChange('GooglePay')} id="" name="" value="" />
                                     <img src={GooglePay}></img>
                                 </div>
                                 <div className='flex justify-between'>
-                                    <input className='mx-2' type="checkbox" checked={checkedOption === 'Paypal'} onChange={() => handleCheckboxChange('Paypal')} id="" name="" value="" />
+                                    <input className='' type="checkbox" checked={checkedOption === 'Paypal'} onChange={() => handleCheckboxChange('Paypal')} id="" name="" value="" />
                                     <img src={Paypal}></img>
                                 </div>
                                 <div className='flex justify-between'>
-                                    <input className='mx-2' type="checkbox" checked={checkedOption === 'SamsungPay'} onChange={() => handleCheckboxChange('SamsungPay')} id="" name="" value="" />
+                                    <input className='' type="checkbox" checked={checkedOption === 'SamsungPay'} onChange={() => handleCheckboxChange('SamsungPay')} id="" name="" value="" />
                                     <img src={SamsungPay}></img>
                                 </div>
                                 <div className='flex justify-between'>
-                                    <input className='mx-2' type="checkbox" checked={checkedOption === 'AmazonPay'} onChange={() => handleCheckboxChange('AmazonPay')} id="" name="" value="" />
+                                    <input className='' type="checkbox" checked={checkedOption === 'AmazonPay'} onChange={() => handleCheckboxChange('AmazonPay')} id="" name="" value="" />
                                     <img src={AmazonPay}></img>
                                 </div>
                                 <div className='flex '>
-                                    <input className='mx-2' type="checkbox" checked={checkedOption === 'Maestro'} onChange={() => handleCheckboxChange('Maestro')} id="" name="" value="" />
+                                    <input className='' type="checkbox" checked={checkedOption === 'Maestro'} onChange={() => handleCheckboxChange('Maestro')} id="" name="" value="" />
                                     <img src={Maestro}></img>
                                 </div>
                             </div>
@@ -171,7 +181,7 @@ const EnrollRegistration = () => {
                     </div>
 
 
-                </div>
+                </form>
 
 
             </Layout>

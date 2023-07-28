@@ -113,8 +113,6 @@ const SkillsCreations = () => {
         <div>
             <Layout>
 
-
-
                 <div className='flex items-center justify-center gap-7 pt-20 lg:pt-10 '>
                     <div className="UserManagement origin-top-left rotate-[-0.51deg] text-zinc-500 text-[30px] font-medium">Skills Management</div>
                     <div className="Input w-[425px] h-16 relative bg-slate-100 rounded-[40px] shadow-inner">
@@ -132,7 +130,7 @@ const SkillsCreations = () => {
                     <img src={undo} ></img>
 
                 </div>
-                <div className='flex justify-between mx-[75px]'>
+                <div className='flex justify-between mx-10'>
 
                     <div className='flex justify-between items-center '>
                         <input className='me-2 text-[#737373] h-[20px] w-[20px]' type="checkbox" id="" name="" value="" />
@@ -141,7 +139,7 @@ const SkillsCreations = () => {
 
                     <div className='flex items-center '>
                         <button onClick={handlecreatenewClick} className='font-semibold bg-[#009CE4] rounded-lg text-[#fff] px-4 py-2'>Create New</button>
-                        <div className=" ms-6 flex gap-2  border  rounded-lg h-[40px] w-[300px] px-2 text-[#535353] ">
+                        <div className=" ms-6 flex gap-2  border  rounded-lg h-[40px]  px-2 text-[#535353] ">
 
                             <input value={newCat}
                                 onChange={handleChange} className=' focus:outline-0 ' type="text" placeholder='Enter New Category' ></input>

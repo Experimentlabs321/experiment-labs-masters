@@ -129,7 +129,7 @@ const EarningLogics = () => {
                     <img src={undo} ></img>
 
                 </div>
-                <div className='flex justify-between mx-[75px]'>
+                <div className='flex justify-between mx-10'>
 
                     <div className='flex justify-between items-center '>
                         <input className='me-2 text-[#737373] h-[20px] w-[20px]' type="checkbox" id="" name="" value="" />
@@ -137,11 +137,11 @@ const EarningLogics = () => {
                     </div>
 
                     <div className='flex items-center '>
-                        <button onClick={handlecreatenewClick} className='font-semibold bg-[#009CE4] rounded-lg text-[#fff] px-4 py-2'>Create New</button>
-                        <div className=" ms-6 flex gap-2  border  rounded-lg h-[40px] w-[300px] px-2 text-[#535353] ">
+                        <p onClick={handlecreatenewClick} className='font-semibold bg-[#009CE4] rounded-lg text-[#fff] px-4 py-2'>Create New</p>
+                        <div className=" ms-6 flex gap-2  border  rounded-lg h-[40px]  px-2 text-[#535353] ">
 
-                            <input value={newCat}
-                                onChange={handleChange} className=' focus:outline-0 ' type="text" placeholder='Enter New Category' ></input>
+                            <input  value={newCat}
+                                onChange={handleChange} className='  focus:outline-0 ' type="text" placeholder='Enter New Category' ></input>
                         </div>
                     </div>
                     <div className='flex gap-5 items-center '>

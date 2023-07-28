@@ -310,10 +310,10 @@ const SkillsImprovementEngine = () => {
                     </Badge>
                 </div>
 
-                <div className='mx-20  mt-14 ' style={{ border: "1px solid #B7B7B7", borderRadius: "8px" }}>
+                <div className='mx-12  mt-14 ' style={{ border: "1px solid #B7B7B7", borderRadius: "8px" }}>
                     <div className='ms-[28px]  '>
                         <p className='font-semibold text-[#000000]  py-2'>Course Selection</p>
-                        <div className="custom-dropdown flex justify-between items-center gap-2  h-[40px] w-[300px] px-2 text-[#535353] font-normal"
+                        <div className="custom-dropdown flex justify-between items-center gap-2  h-[40px] w-[23%] px-2 text-[#535353] font-normal"
                             style={{
                                 borderRadius: "8px",
                                 border: "1px solid #B7B7B7"
@@ -336,7 +336,7 @@ const SkillsImprovementEngine = () => {
 
                         </div>
                         {isOpenEvluationCourseSelection && (
-                            <div className="dropdown-menu w-[300px] mt-2 "
+                            <div className="dropdown-menu w-[23%] mt-2 "
                                 style={{
                                     borderRadius: "8px",
                                     border: "1px solid #B7B7B7"
@@ -407,10 +407,10 @@ const SkillsImprovementEngine = () => {
                         )}
 
                     </div>
-                    <div className='flex ms-[26px] items-center  '>
-                        <div>
+                    <div className='flex mx-6 items-center  '>
+                        <div className='w-full'>
                             <p className='font-semibold text-[#000000]  py-2'>Skill Category</p>
-                            <div className=" flex gap-2 h-[40px] w-[300px] px-2 text-[#535353] "
+                            <div className=" flex gap-2 h-[40px] w-[100%] px-2 text-[#535353] "
                              style={{
                                 borderRadius: "8px",
                                 border: "1px solid #B7B7B7"
@@ -431,9 +431,9 @@ const SkillsImprovementEngine = () => {
                                 </select>
                             </div>
                         </div>
-                        <div className=' ms-[26px]  '>
+                        <div className=' w-full ms-[26px]  '>
                             <p className='font-semibold text-[#000000]  py-2'>Skill Name</p>
-                            <div className="custom-dropdown flex justify-between items-center gap-2 h-[40px] w-[300px] px-2 text-[#535353] font-normal"
+                            <div className="custom-dropdown flex justify-between items-center gap-2 h-[40px] w-[100%] px-2 text-[#535353] font-normal"
                              style={{
                                 borderRadius: "8px",
                                 border: "1px solid #B7B7B7"
@@ -457,7 +457,7 @@ const SkillsImprovementEngine = () => {
 
                             </div>
                             {isOpenEvluationSubskill && (
-                                <div className="dropdown-menu w-[300px] mt-2"
+                                <div className="dropdown-menu w-[100%] mt-2"
                                 style={{
                                     borderRadius: "8px",
                                     border: "1px solid #B7B7B7"
@@ -529,9 +529,9 @@ const SkillsImprovementEngine = () => {
 
                         </div>
 
-                        <div className=' ms-[26px] '>
+                        <div className=' w-full ms-[26px] '>
                             <p className='font-semibold text-[#000000]  py-2'> Skill Parameters</p>
-                            <div className="custom-dropdown flex justify-between items-center gap-2 h-[40px] w-[300px] px-2 text-[#535353] font-normal"
+                            <div className="custom-dropdown flex justify-between items-center gap-2 h-[40px] w-[100%] px-2 text-[#535353] font-normal"
                              style={{
                                 borderRadius: "8px",
                                 border: "1px solid #B7B7B7"
@@ -555,7 +555,7 @@ const SkillsImprovementEngine = () => {
 
                             </div>
                             {isOpenEvluationParameters && (
-                                <div className="dropdown-menu w-[300px] mt-2"
+                                <div className="dropdown-menu w-full mt-2"
                                 style={{
                                     borderRadius: "8px",
                                     border: "1px solid #B7B7B7"
