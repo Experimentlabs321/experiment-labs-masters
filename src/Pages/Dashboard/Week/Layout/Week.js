@@ -19,7 +19,7 @@ const data = [
             type: "Reading",
           },
           {
-            taskName: "Task of topic 1",
+            taskName: "Task of topics 1",
             type: "Reading",
           },
         ],
@@ -37,7 +37,7 @@ const data = [
           },
           {
             taskName: "Task of topic 2",
-            type: "Files",
+            type: "Assignment",
           },
           {
             taskName: "Task of topic 2",
@@ -52,7 +52,12 @@ const data = [
 const Week = () => {
   const [toggleButton, setToggleButton] = useState(true);
   const [week, setWeek] = useState(data[0]);
-  const [openTask, setOpenTask] = useState(data[0]?.lecture[0].tasks[0]);
+  const [lectureNo, setLectureNo] = useState(0);
+  const [tasksNo, setTasksNo] = useState(0);
+  const [openTopic, setOpenTopic] = useState(data[0]?.lecture[0]?.name);
+  const [openTask, setOpenTask] = useState(
+    data[0]?.lecture[lectureNo].tasks[tasksNo]
+  );
   const Role = localStorage.getItem("role");
   return (
     <>
@@ -62,6 +67,8 @@ const Week = () => {
           <Navbar />
           <div className="flex overflow-hidden">
             <Aside
+              openTopic={openTopic}
+              setOpenTopic={setOpenTopic}
               openTask={openTask}
               setOpenTask={setOpenTask}
               toggleButton={toggleButton}
@@ -84,12 +91,18 @@ const Week = () => {
               <main className="min-h-[100vh]">
                 <div className="">
                   <WeekDetail
+                    lectureNo={lectureNo}
+                    setLectureNo={setLectureNo}
+                    tasksNo={tasksNo}
+                    setTasksNo={setTasksNo}
                     week={week}
                     setWeek={setWeek}
                     data={data}
                     openTask={openTask}
                     toggleButton={toggleButton}
                     setToggleButton={setToggleButton}
+                    setOpenTask={setOpenTask}
+                    setOpenTopic={setOpenTopic}
                   />
                 </div>
               </main>

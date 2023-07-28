@@ -154,20 +154,20 @@ const Assignment = () => {
     };
 
     //SoftSkills
-   /*  const [isOpenEvluationSoftSkills, setisOpenEvluationSoftSkills] = useState(false);
-    const [togglevaluepar1, settogglevaluepar1] = useState(false);
-
-    const toggleDropdownSoftSkills = () => {
-        setisOpenEvluationSoftSkills(!isOpenEvluationSoftSkills);
-    };
-    const [selectedOptionSoftSkills, setSelectedOptionSoftSkills] = useState(null);
-
-    const handleOptionChangeSoftSkills = (event) => {
-
-        setSelectedOptionSoftSkills(event.target.value);
-        settogglevaluepar1(true)
-
-    } */
+    /*  const [isOpenEvluationSoftSkills, setisOpenEvluationSoftSkills] = useState(false);
+     const [togglevaluepar1, settogglevaluepar1] = useState(false);
+ 
+     const toggleDropdownSoftSkills = () => {
+         setisOpenEvluationSoftSkills(!isOpenEvluationSoftSkills);
+     };
+     const [selectedOptionSoftSkills, setSelectedOptionSoftSkills] = useState(null);
+ 
+     const handleOptionChangeSoftSkills = (event) => {
+ 
+         setSelectedOptionSoftSkills(event.target.value);
+         settogglevaluepar1(true)
+ 
+     } */
 
     //
     const [selectedSection, setSelectedSection] = useState(null);
@@ -180,15 +180,15 @@ const Assignment = () => {
     console.log(selectedSection)
 
     // create new earning parameter
-  /*   const [isOpencreatenewearningparameter, setisOpencreatenewearningparameter] = useState(false);
-
-    const openModalacreatenewearningparameter = () => {
-        setisOpencreatenewearningparameter(true);
-    };
-
-    const closeModalcreatenewearningparameter = () => {
-        setisOpencreatenewearningparameter(false);
-    }; */
+    /*   const [isOpencreatenewearningparameter, setisOpencreatenewearningparameter] = useState(false);
+  
+      const openModalacreatenewearningparameter = () => {
+          setisOpencreatenewearningparameter(true);
+      };
+  
+      const closeModalcreatenewearningparameter = () => {
+          setisOpencreatenewearningparameter(false);
+      }; */
 
     //
     const [SoftSkills, setSoftskill] = useState(true)
@@ -415,34 +415,57 @@ const Assignment = () => {
                                         {/* <input required className='mt-4 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='courseStartingTime' type="time" placeholder='Eg. Entrepreneurship Lab' /> */}
                                     </div>
 
-                                    <div className='mt-12 flex flex-col'>
-                                        <div className='flex items-center gap-4'>
-                                            <p className='h-2 w-2 bg-black rounded-full'></p>
-                                            <p className='font-bold text-lg '>Additional Files </p>
+                                    <div className='w-full mt-12'>
+                                        <div className=' flex flex-col'>
+                                            <div className='flex items-center gap-4'>
+                                                <p className='h-2 w-2 bg-black rounded-full'></p>
+                                                <p className='font-bold text-lg me-[36px]'>Upload Files</p>
 
-                                        </div>
+                                            </div>
 
-                                        <div className='w-[500px] h-[250px] bg-[#F6F7FF] flex flex-col items-center justify-center rounded-b-lg mt-6'
-                                            onDragEnter={handleDragEnter}
-                                            onDragLeave={handleDragLeave}
-                                            onDragOver={handleDragOver}
-                                            onDrop={handleDrop}
+                                            <div className='w-3/4 h-[253px] bg-[#F6F7FF] flex flex-col items-center justify-center rounded-b-lg mt-6 ms-6'
+                                                onDragEnter={handleDragEnter}
+                                                onDragLeave={handleDragLeave}
+                                                onDragOver={handleDragOver}
+                                                onDrop={handleDrop}
+                                                style={{
+                                                    border: "0.917px dashed #000",
+                                                    background: "#F6F7FF"
+                                                }}
 
-                                        >
-                                            {dragActive ? (<>
-                                                <CloudUploadIcon />
-                                                <p className='text-[17px] font-semibold'>Drag and drop </p>
-                                                <p className='text-sm font-medium'>Or</p>
-                                            </>
-                                            ) : (
-                                                selectedFile && <p>Selected file: {selectedFile.name}</p>
-                                            )}
-                                            {
-                                                !selectedFile && (
-                                                    <input type="file" id="input-file-upload" onChange={handleFileChange} />
-                                                )
-                                            }
+                                            >
+                                                {dragActive ? (<>
+                                                    <CloudUploadIcon />
+                                                    <p className='text-[17px] font-semibold mb-3 mt-3'>Drag and drop </p>
+                                                    <p className='text-sm font-medium mb-3'>Or</p>
+                                                </>
+                                                ) : (
+                                                    selectedFile && <p>Selected file: {selectedFile.name}</p>
+                                                )}
+                                                {
+                                                    !selectedFile && (
+                                                        <>
+                                                            <div className='flex gap-2 justify-center w-full'>
+                                                                <label className='flex items-center px-5 py-2 rounded-lg bg-[#FFDB70] text-xs font-bold' htmlFor="input-file-upload">Browser</label>
+                                                                <input
+                                                                    className='w-[1%]'
+                                                                    style={{ fontSize: "0", opacity: "0" }}
+                                                                    type="file"
+                                                                    accept=".jpg, .jpeg, .png"
+                                                                    name='input-file-upload'
+                                                                    id="input-file-upload"
+                                                                    onChange={handleFileChange}
+                                                                    multiple
 
+                                                                />
+
+                                                            </div>
+                                                        </>
+                                                        // <input type="file" id="input-file-upload" onChange={handleFileChange} />
+                                                    )
+                                                }
+
+                                            </div>
                                         </div>
                                     </div>
 
@@ -537,7 +560,7 @@ const Assignment = () => {
 
 
                                                                 <div className='mt-12 mb-7 flex justify-center'>
-                                                                    <input autoFocus  className='bg-[#3E4DAC] rounded-lg px-12 py-3 text-xl font-bold text-[#fff]' type="submit" value="Add" />
+                                                                    <input autoFocus className='bg-[#3E4DAC] rounded-lg px-12 py-3 text-xl font-bold text-[#fff]' type="submit" value="Add" />
 
                                                                 </div>
                                                             </form>
@@ -565,7 +588,7 @@ const Assignment = () => {
 
                                     </div>
 
-                                    <div className='bg-[#F6F7FF] mt-6 ms-5 custom-dropdown flex justify-between items-center gap-2  border  rounded-lg h-[40px] w-[302px] px-2 text-[#535353] font-normal '
+                                    <div className='bg-[#F6F7FF] mt-6 ms-5 custom-dropdown flex justify-between items-center gap-2  border  rounded-lg h-[40px] w-[100%] px-2 text-[#535353] font-normal '
                                         style={{
                                             borderRadius: "8px",
                                             border: "1px solid #B7B7B7"
@@ -630,7 +653,7 @@ const Assignment = () => {
                                         <p className='font-bold text-lg me-[36px]'>Skill Name</p>
 
                                     </div>
-                                    <div className="bg-[#F6F7FF] ms-5 mt-6 custom-dropdown flex justify-between items-center gap-2 h-[40px] w-[302px] px-2 text-[#535353] font-normal"
+                                    <div className="bg-[#F6F7FF] ms-5 mt-6 custom-dropdown flex justify-between items-center gap-2 h-[40px] w-[100%] px-2 text-[#535353] font-normal"
                                         style={{
                                             borderRadius: "8px",
                                             border: "1px solid #B7B7B7"
@@ -738,7 +761,7 @@ const Assignment = () => {
 
                                         </div>
 
-                                        <div className=' bg-[#F6F7FF] mt-6 ms-5 custom-dropdown flex justify-between items-center gap-2  border  rounded-lg h-[40px] w-[302px] px-2 text-[#535353] font-normal '
+                                        <div className=' bg-[#F6F7FF] mt-6 ms-5 custom-dropdown flex justify-between items-center gap-2  border  rounded-lg h-[40px] w-[100%] px-2 text-[#535353] font-normal '
                                             style={{
                                                 borderRadius: "8px",
                                                 border: "1px solid #B7B7B7"
@@ -811,16 +834,16 @@ const Assignment = () => {
 
 
                                 {
-                                    proceed && (<div className=' mt-2 rounded border mb-5 flex justify-center '>
+                                    proceed && (<div className=' mt-2 rounded border mb-5 flex me-10 '>
 
-                                        <form >
+                                        <form className='w-full'>
 
                                             <div className='flex justify-between'>
 
 
-                                                <div className='mx-5 mt-10'>
+                                                <div className='mx-10 mt-10 w-1/6 '>
                                                     {/* 1 */}
-                                                    <div className={`w-[205px] h-[38px] flex justify-between items-center px-4 py-2 text-sm font-medium ${SoftSkills ? 'text-[#0A98EA] ' : 'text-[black]'}`}
+                                                    <div className={`w-11/12  h-[38px] flex justify-between items-center px-4 py-2 text-sm font-medium ${SoftSkills ? 'text-[#0A98EA] ' : 'text-[black]'}`}
                                                         style={{
                                                             borderRadius: "8px",
 
@@ -833,7 +856,7 @@ const Assignment = () => {
 
                                                     </div>
 
-                                                    <div className='w-[205px] h-[38px] flex justify-between items-center px-4 py-2 text-sm font-medium mt-4'
+                                                    <div className='w-11/12  h-[38px] flex justify-between items-center px-4 py-2 text-sm font-medium mt-4'
                                                         style={{
                                                             borderRadius: "8px",
                                                             border: "1px solid #B7B7B7",
@@ -844,7 +867,7 @@ const Assignment = () => {
 
                                                     </div>
 
-                                                    <div className='w-[205px] h-[38px] flex justify-between items-center px-4 py-2 text-sm font-medium mt-4'
+                                                    <div className='w-11/12  h-[38px] flex justify-between items-center px-4 py-2 text-sm font-medium mt-4'
                                                         style={{
                                                             borderRadius: "8px",
                                                             border: "1px solid #B7B7B7",
@@ -855,7 +878,7 @@ const Assignment = () => {
 
                                                     </div>
 
-                                                    <div className='w-[205px] h-[38px] flex justify-between items-center px-4 py-2 text-sm font-medium mt-4'
+                                                    <div className='w-11/12 h-[38px] flex justify-between items-center px-4 py-2 text-sm font-medium mt-4'
                                                         style={{
                                                             borderRadius: "8px",
                                                             border: "1px solid #B7B7B7",
@@ -868,64 +891,58 @@ const Assignment = () => {
 
                                                 </div>
 
-                                                <div className='flex-1 flex gap-5 me-10'>
+                                                <div className='flex-1 flex   me-10'>
                                                     {
                                                         SoftSkills && (
-                                                            <div>
-                                                                <div>
-                                                                    <div
-                                                                        className={`flex text-base font-medium mt-10  w-full h-[65px] justify-between rounded-md px-4 items-center ${selectedSection === 'communication' ? 'bg-[#E2F1FF]' : 'bg-[#F8F8F8]'
-                                                                            }`}
-                                                                    >
-                                                                        <p>Communication</p>
-                                                                        <div className='flex gap-5 items-center'>
-                                                                            <input
-                                                                                className='w-[47px] h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'
-                                                                                name='communication'
-                                                                                type='text'
-                                                                            />
-                                                                            <p className='w-[47px] h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'>%</p>
-                                                                            <ArrowForwardIcon onClick={() => handleArrowClick('communication')} />
-                                                                        </div>
+                                                            <div className='w-full flex flex-col items-center'>
+
+                                                                <div
+                                                                    className={`flex text-base font-medium mt-10 w-11/12  h-[65px] justify-between rounded-md px-4 items-center ${selectedSection === 'communication' ? 'bg-[#E2F1FF]' : 'bg-[#F8F8F8]'
+                                                                        }`}
+                                                                >
+                                                                    <p className='w-full'>Communication</p>
+                                                                    <div className='flex justify-between ms-2 items-center w-full'>
+                                                                        <input
+                                                                            className='w-1/3 h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'
+                                                                            name='communication'
+                                                                            type='text'
+                                                                        />
+                                                                        <p className='w-1/3 h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'>%</p>
+                                                                        <ArrowForwardIcon onClick={() => handleArrowClick('communication')} />
                                                                     </div>
-
-                                                                    <div
-                                                                        className={`flex text-base font-medium mt-8  w-[353px] h-[65px] justify-between rounded-md px-4 items-center ${selectedSection === 'negotiation' ? 'bg-[#E2F1FF]' : 'bg-[#F8F8F8]'
-                                                                            }`}
-                                                                    >
-                                                                        <p>Negotiation</p>
-                                                                        <div className='flex gap-5 items-center'>
-                                                                            <input
-                                                                                className='w-[47px] h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'
-                                                                                name='negotiation'
-                                                                                type='text'
-                                                                            />
-                                                                            <p className='w-[47px] h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'>%</p>
-                                                                            <ArrowForwardIcon onClick={() => handleArrowClick('negotiation')} />
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div
-                                                                        className={`flex text-base font-medium mt-8  w-[353px] h-[65px] justify-between rounded-md px-4 items-center ${selectedSection === 'Time Management' ? 'bg-[#E2F1FF]' : 'bg-[#F8F8F8]'
-                                                                            }`}
-                                                                    >
-                                                                        <p>Time Management</p>
-                                                                        <div className='flex gap-5 items-center'>
-                                                                            <input
-                                                                                className='w-[47px] h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'
-                                                                                name='Time Management'
-                                                                                type='text'
-                                                                            />
-                                                                            <p className='w-[47px] h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'>%</p>
-                                                                            <ArrowForwardIcon onClick={() => handleArrowClick('Time Management')} />
-                                                                        </div>
-                                                                    </div>
-
-
                                                                 </div>
 
+                                                                <div
+                                                                    className={`flex text-base font-medium mt-8  w-11/12 h-[65px] justify-between rounded-md px-4 items-center ${selectedSection === 'negotiation' ? 'bg-[#E2F1FF]' : 'bg-[#F8F8F8]'
+                                                                        }`}
+                                                                >
+                                                                    <p className='w-full'>Negotiation</p>
+                                                                    <div className='flex justify-between ms-2 items-center w-full'>
+                                                                        <input
+                                                                            className='w-1/3 h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'
+                                                                            name='negotiation'
+                                                                            type='text'
+                                                                        />
+                                                                        <p className='w-1/3 h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'>%</p>
+                                                                        <ArrowForwardIcon onClick={() => handleArrowClick('negotiation')} />
+                                                                    </div>
+                                                                </div>
 
-
+                                                                <div
+                                                                    className={`flex  text-base font-medium mt-8 w-11/12 h-[65px] justify-between rounded-md px-4 items-center ${selectedSection === 'Time Management' ? 'bg-[#E2F1FF]' : 'bg-[#F8F8F8]'
+                                                                        }`}
+                                                                >
+                                                                    <p className='w-full'>Time Management</p>
+                                                                    <div className='flex justify-between ms-2 items-center w-full'>
+                                                                        <input
+                                                                            className='w-1/3 h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'
+                                                                            name='Time Management'
+                                                                            type='text'
+                                                                        />
+                                                                        <p className='w-1/3 h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'>%</p>
+                                                                        <ArrowForwardIcon onClick={() => handleArrowClick('Time Management')} />
+                                                                    </div>
+                                                                </div>
 
                                                             </div>
 
@@ -934,29 +951,29 @@ const Assignment = () => {
                                                     }
                                                     {
                                                         selectedSection && (
-                                                            <div>
-                                                                <div className='flex text-base font-medium mt-10 bg-[#E2F1FF] w-[378px] h-[65px] justify-between rounded-md px-4 items-center'>
-                                                                    <p > Verbal Communication</p>
-                                                                    <div className='flex gap-5'>
-                                                                        <input className='w-[47px] h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]' name='verbalCommunication' type='text' />
-                                                                        <p className='w-[47px] h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'>%</p>
+                                                            <div className='w-full flex flex-col items-center'>
+                                                                <div className='flex text-base font-medium mt-10 bg-[#E2F1FF] w-11/12 h-[65px] justify-between rounded-md px-4 items-center'>
+                                                                    <p className='w-full' > Verbal Communication</p>
+                                                                    <div className='flex justify-between ms-2 items-center w-full'>
+                                                                        <input className='w-1/3 h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]' name='verbalCommunication' type='text' />
+                                                                        <p className='w-1/3 h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'>%</p>
                                                                     </div>
 
 
                                                                 </div>
-                                                                <div className='flex text-base font-medium mt-8 bg-[#E2F1FF] w-[378px] h-[65px] justify-between rounded-md px-4 items-center'>
-                                                                    <p >Non- Verbal Communication</p>
-                                                                    <div className='flex gap-5'>
-                                                                        <input className='w-[47px] h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]' name='verbalCommunication' type='text' />
-                                                                        <p className='w-[47px] h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'>%</p>
+                                                                <div className='flex text-base font-medium mt-8 bg-[#E2F1FF] w-11/12 h-[65px] justify-between rounded-md px-4 items-center'>
+                                                                    <p className='w-full'>Non- Verbal Communication</p>
+                                                                    <div className='flex justify-between ms-2 items-center w-full'>
+                                                                        <input className='w-1/3 h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]' name='verbalCommunication' type='text' />
+                                                                        <p className='w-1/3 h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'>%</p>
                                                                     </div>
 
                                                                 </div>
-                                                                <div className='flex text-base font-medium mt-8 bg-[#E2F1FF] w-[378px] h-[65px] justify-between rounded-md px-4 items-center'>
-                                                                    <p >Active Listening</p>
-                                                                    <div className='flex gap-5'>
-                                                                        <input className='w-[47px] h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]' name='verbalCommunication' type='text' />
-                                                                        <p className='w-[47px] h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'>%</p>
+                                                                <div className='flex text-base font-medium mt-8 bg-[#E2F1FF] w-11/12 h-[65px] justify-between rounded-md px-4 items-center'>
+                                                                    <p className='w-full'>Active Listening</p>
+                                                                    <div className='flex justify-between ms-2 items-center w-full'>
+                                                                        <input className='w-1/3 h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]' name='verbalCommunication' type='text' />
+                                                                        <p className='w-1/3 h-[32px] border border-black rounded-lg flex items-center justify-center bg-[#fff]'>%</p>
                                                                     </div>
 
                                                                 </div>
@@ -964,7 +981,6 @@ const Assignment = () => {
                                                             </div>
                                                         )
                                                     }
-
 
 
                                                 </div>
@@ -979,7 +995,7 @@ const Assignment = () => {
                                 }
                                 {
                                     parametersection && (
-                                        <div className='flex  justify-between px-10 py-6 mt-[63px]'
+                                        <div className='flex  justify-between px-10 py-6 mb-5 me-10 '
                                             style={{
                                                 borderRadius: "10px",
                                                 border: "1px solid #939393"

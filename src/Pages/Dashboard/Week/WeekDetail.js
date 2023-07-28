@@ -9,6 +9,7 @@ import LiveTestTask from "./LiveTestTask";
 import VideoTask from "./VideoTask";
 import AudioTask from "./AudioTask";
 import FilesTask from "./FilesTask";
+import { Link } from "react-router-dom";
 
 const WeekDetail = ({
   toggleButton,
@@ -17,17 +18,62 @@ const WeekDetail = ({
   data,
   week,
   setWeek,
+  lectureNo,
+  setLectureNo,
+  tasksNo,
+  setTasksNo,
+  setOpenTask,
+  setOpenTopic,
 }) => {
-  console.log(openTask);
+  const handleNext = () => {
+    if (week?.lecture[lectureNo]?.tasks?.length === tasksNo + 1) {
+      if (week?.lecture?.length === lectureNo + 1) {
+      } else {
+        setOpenTask(week?.lecture[lectureNo + 1]?.tasks[0]);
+        setOpenTopic(week?.lecture[lectureNo + 1]?.name);
+        setLectureNo(lectureNo + 1);
+        setTasksNo(0);
+      }
+    } else {
+      setOpenTask(week?.lecture[lectureNo]?.tasks[tasksNo + 1]);
+      setTasksNo(tasksNo + 1);
+      console.log(tasksNo);
+    }
+    console.log(openTask);
+  };
+  const handlePrevious = () => {
+    if (tasksNo - 1 < 0) {
+      if (lectureNo - 1 < 0) {
+      } else {
+        setOpenTask(
+          week?.lecture[lectureNo - 1]?.tasks[
+            week?.lecture[lectureNo - 1]?.tasks?.length - 1
+          ]
+        );
+        setOpenTopic(week?.lecture[lectureNo - 1]?.name);
+        setLectureNo(lectureNo - 1);
+        setTasksNo(week?.lecture[lectureNo - 1]?.tasks?.length - 1);
+      }
+    } else {
+      setOpenTask(week?.lecture[lectureNo]?.tasks[tasksNo - 1]);
+      setTasksNo(tasksNo - 1);
+      console.log(tasksNo);
+    }
+    // setOpenTask(week?.lecture[lectureNo]?.tasks[tasksNo]);
+    console.log(openTask);
+  };
   return (
     <div>
       <div className="relative z-0 ">
         <div className="pt-[110px] border-b-2 ">
           <div className="container mx-auto px-4 flex items-center justify-between ">
             <div className="flex items-center pt-[30px] pb-[40px] ">
-              <button className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline ">
+              <Link
+                to="/courseAccess"
+                className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline "
+              >
                 My Courses
-              </button>
+              </Link>
               <svg
                 className="mr-[30px]"
                 xmlns="http://www.w3.org/2000/svg"
@@ -44,9 +90,12 @@ const WeekDetail = ({
                   stroke-linejoin="round"
                 />
               </svg>
-              <button className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline ">
+              <Link
+                to="/questLevels"
+                className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline "
+              >
                 Quest Levels
-              </button>
+              </Link>
               <svg
                 className="mr-[30px]"
                 xmlns="http://www.w3.org/2000/svg"
@@ -63,9 +112,12 @@ const WeekDetail = ({
                   stroke-linejoin="round"
                 />
               </svg>
-              <button className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline ">
+              <Link
+                to="/week"
+                className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline "
+              >
                 {week?.weekName}
-              </button>
+              </Link>
               <svg
                 className="mr-[30px]"
                 xmlns="http://www.w3.org/2000/svg"
@@ -87,7 +139,10 @@ const WeekDetail = ({
               </button>
             </div>
             <div className="flex items-center mt-[-10px] ">
-              <button className="flex items-center text-[#3E4DAC] text-[18px] font-[700] mr-[80px] ">
+              <button
+                onClick={handlePrevious}
+                className="flex items-center text-[#3E4DAC] text-[18px] font-[700] mr-[80px] "
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="20"
@@ -105,7 +160,10 @@ const WeekDetail = ({
                 </svg>
                 <h1 className="ml-[12px]">Previous</h1>
               </button>
-              <button className="flex items-center bg-[#3E4DAC] text-[18px] font-[700] text-white px-[24px] py-[12px] rounded-[8px] ">
+              <button
+                onClick={handleNext}
+                className="flex items-center bg-[#3E4DAC] text-[18px] font-[700] text-white px-[24px] py-[12px] rounded-[8px] "
+              >
                 <h1 className="mr-[12px]">Next</h1>{" "}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

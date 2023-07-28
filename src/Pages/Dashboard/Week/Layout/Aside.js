@@ -23,8 +23,10 @@ const Aside = ({
   data,
   openTask,
   setOpenTask,
+  openTopic,
+  setOpenTopic,
 }) => {
-  const [openTopic, setOpenTopic] = useState(data[0]?.name);
+  // const [openTopic, setOpenTopic] = useState(data[0]?.name);
   // const [openTask, setOpenTask] = useState(data[0]?.tasks[0]);
   const Role = localStorage.getItem("role");
   const location = useLocation();
@@ -41,7 +43,7 @@ const Aside = ({
     setIsOpen(false);
   };
 
-  console.log(toggleButton);
+  console.log(openTopic);
   return (
     <aside
       id="sidebar"

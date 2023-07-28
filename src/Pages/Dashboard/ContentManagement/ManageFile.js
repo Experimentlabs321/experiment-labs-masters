@@ -6,7 +6,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
 
 
-const ManageReading = () => {
+const ManageFile = () => {
 
     // upload file
     const [dragActive, setDragActive] = useState(true);
@@ -54,13 +54,13 @@ const ManageReading = () => {
 
 
 
-        const manageReading = {
+        const ManageFile = {
             readingTopicName,
             additionalFiles: selectedFile,
 
         }
 
-        console.log(manageReading)
+        console.log(ManageFile)
 
 
     }
@@ -70,7 +70,7 @@ const ManageReading = () => {
         <div>
             <Layout>
                 <div className='text-[#3E4DAC] text-[26px] font-bold  py-[35px] ps-[40px]'>
-                    <p>Manage Reading in Topic 1</p>
+                    <p>Manage File in Topic 1</p>
 
                 </div>
                 <form onSubmit={handleSubmit}>
@@ -79,17 +79,20 @@ const ManageReading = () => {
                             <div className=''>
                                 <div className='flex items-center gap-4'>
                                     <p className='h-2 w-2 bg-black rounded-full'></p>
-                                    <p className='font-bold text-lg me-[36px]'>Reading Topic Name</p>
+                                    <p className='font-bold text-lg me-[36px]'>File Name</p>
                                     <img src={required} />
                                 </div>
 
                                 <input required className='mt-6 ms-6 border rounded-md w-3/4 h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='readingTopicName' type="text" placeholder='Eg. Entrepreneurship Lab' />
                             </div>
 
-                            <div className='mt-12 flex flex-col'>
+
+                        </div>
+                        <div className='w-full'>
+                            <div className=' flex flex-col'>
                                 <div className='flex items-center gap-4'>
                                     <p className='h-2 w-2 bg-black rounded-full'></p>
-                                    <p className='font-bold text-lg me-[36px]'>Additional Files </p>
+                                    <p className='font-bold text-lg me-[36px]'>Upload Files</p>
 
                                 </div>
 
@@ -106,7 +109,7 @@ const ManageReading = () => {
                                 >
                                     {dragActive ? (<>
                                         <CloudUploadIcon />
-                                        <p className='text-[17px] font-semibold mt-3 mb-3'>Drag and drop </p>
+                                        <p className='text-[17px] font-semibold mb-3 mt-3'>Drag and drop </p>
                                         <p className='text-sm font-medium mb-3'>Or</p>
                                     </>
                                     ) : (
@@ -115,37 +118,28 @@ const ManageReading = () => {
                                     {
                                         !selectedFile && (
                                             <>
-                                                <div className='flex gap-2 justify-center w-full'>
-                                                    <label className='flex items-center px-5 py-2 rounded-lg bg-[#FFDB70] text-xs font-bold' htmlFor="input-file-upload">Browser</label>
-                                                    <input
-                                                        className='w-[1%]'
-                                                        style={{ fontSize: "0", opacity: "0" }}
-                                                        type="file"
-                                                        accept=".jpg, .jpeg, .png"
-                                                        name='input-file-upload'
-                                                        id="input-file-upload"
-                                                        onChange={handleFileChange}
-                                                        multiple
+                                                 <div className='flex gap-2 justify-center w-full'>
+                                                <label className='flex items-center px-5 py-2 rounded-lg bg-[#FFDB70] text-xs font-bold' htmlFor="input-file-upload">Browser</label>
+                                                <input
+                                                    className='w-[1%]'
+                                                    style={{ fontSize: "0", opacity: "0" }}
+                                                    type="file"
+                                                    accept=".jpg, .jpeg, .png"
+                                                    name='input-file-upload'
+                                                    id="input-file-upload"
+                                                    onChange={handleFileChange}
+                                                    multiple
 
-                                                    />
-
-                                                </div>
+                                                />
+                                               
+                                            </div>
                                             </>
+                                            // <input type="file" id="input-file-upload" onChange={handleFileChange} />
                                         )
                                     }
 
                                 </div>
                             </div>
-                        </div>
-                        <div className='w-full'>
-                            <div className='flex items-center gap-4'>
-                                <p className='h-2 w-2 bg-black rounded-full'></p>
-                                <p className='font-bold text-lg me-[36px]'>Reading Material </p>
-                                <img src={required} />
-                            </div>
-
-                            <input required className='mt-6 ms-6 border rounded-md w-3/4 h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] '
-                                name='readingMaterial' type="text" placeholder='Eg. Entrepreneurship Lab' />
                         </div>
 
                     </div>
@@ -158,14 +152,11 @@ const ManageReading = () => {
                 </form>
 
 
-                {/* <div className='flex'>
-                      <div className='w-full'>1</div>
-                      <div className='w-full'>2</div>
-                </div> */}
+
             </Layout>
         </div>
     )
 };
 
 
-export default ManageReading;
+export default ManageFile;

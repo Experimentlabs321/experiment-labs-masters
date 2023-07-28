@@ -11,9 +11,9 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
 import Slide from "@mui/material/Slide";
-import CongratulationsLeft from "../../../assets/Dashboard/CongratulationsLeft.png";
-import CongratulationsRight from "../../../assets/Dashboard/CongratulationsRight.png";
-import CongratulationsBatch from "../../../assets/Dashboard/CongratulationsBatch.png";
+import CongratulationsLeft from "../../../../../assets/Dashboard/CongratulationsLeft.png";
+import CongratulationsRight from "../../../../../assets/Dashboard/CongratulationsRight.png";
+import CongratulationsBatch from "../../../../../assets/Dashboard/CongratulationsBatch.png";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -113,7 +113,7 @@ const questions = [
   },
 ];
 
-const QuizTask = () => {
+const StartTest = () => {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -169,8 +169,10 @@ const QuizTask = () => {
               <CloseIcon />
             </IconButton>
             <div className="text-center text-[21px] font-[600] w-full py-[20px] ">
-              <h1 className="text-white">Figma</h1>
-              <p className="text-[#8595FF]">Quiz - 48 Total points</p>
+              <div>
+                <h1 className="text-white">Figma</h1>
+                <p className="text-[#8595FF]">Quiz - 48 Total points</p>
+              </div>
             </div>
           </Toolbar>
         </AppBar>
@@ -332,9 +334,16 @@ const QuizTask = () => {
             >
               <CloseIcon />
             </IconButton>
-            <div className="text-center text-[21px] font-[600] w-full py-[20px] ">
-              <h1 className="text-white">Figma</h1>
-              <p className="text-[#8595FF]">Quiz - 48 Total points</p>
+            <div className="text-center  w-full py-[20px] flex ">
+              <div className="text-[21px] font-[600] mx-[100px]">
+                <h1 className="text-white">Figma</h1>
+                <p className="text-[#8595FF]">Quiz - 48 Total points</p>
+              </div>
+              <div className=" border-[8px] py-[5px] px-[17px] mx-auto border-[#FF557A] rounded-md ">
+                <h1 className="text-[30px] font-[700] text-red-700 ">
+                  01 : 00
+                </h1>
+              </div>
             </div>
           </Toolbar>
         </AppBar>
@@ -344,7 +353,7 @@ const QuizTask = () => {
               <h1 className="text-[#FF557A] text-center h-[50px] text-[22px] font-[700] ">
                 Question {question.id}
               </h1>
-              <div className="bg-[#FFFCDE] rounded-[8px] w-full px-[20px] py-[30px] relative">
+              <div className="bg-[#EFFBFF] rounded-[8px] w-full px-[20px] py-[30px] relative">
                 <svg
                   className="absolute top-0 right-0"
                   xmlns="http://www.w3.org/2000/svg"
@@ -438,7 +447,7 @@ const QuizTask = () => {
               </div>
             </div>
             <div className="w-[500px]">
-              <div className="bg-[#ECF4F7] rounded-[8px] mt-[50px]">
+              <div className="bg-[#EEE4F9] rounded-[8px] mt-[50px]">
                 <h1 className=" text-[#282828] text-[18px] font-[700] text-center py-[30px] ">
                   Question Bank
                 </h1>
@@ -467,4 +476,4 @@ const QuizTask = () => {
   );
 };
 
-export default QuizTask;
+export default StartTest;

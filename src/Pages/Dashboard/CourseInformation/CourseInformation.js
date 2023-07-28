@@ -6,10 +6,72 @@ import TaskVideo from "../../../assets/Dashboard/TaskVideo.png";
 import Task from "../../../assets/Dashboard/Task.png";
 import Layout from "./Layout/Layout";
 import { Link } from "react-router-dom";
+import DialogLayout from "../Shared/DialogLayout";
+import ClassesTaskIcon from "../../../assets/Dashboard/Classes.png";
+import AssignmentTaskIcon from "../../../assets/Dashboard/Assignment.png";
+import ReadingTaskIcon from "../../../assets/Dashboard/TaskIcon.png";
+import QuizTaskIcon from "../../../assets/Dashboard/Quiz.png";
+import LiveTestTaskIcon from "../../../assets/Dashboard/LiveTest.png";
+import VideoTaskIcon from "../../../assets/Dashboard/Video.png";
+import AudioTaskIcon from "../../../assets/Dashboard/Audio.png";
+import FilesTaskIcon from "../../../assets/Dashboard/Files.png";
+
+const TaskTypeInfo = [
+  {
+    name: "Classes",
+    icon: ClassesTaskIcon,
+    theme: "#ED690A",
+    route: "/manageLiveClasses",
+  },
+  {
+    name: "Assignment",
+    icon: AssignmentTaskIcon,
+    theme: "#EF1164",
+    route: "/assignment",
+  },
+  {
+    name: "Reading",
+    icon: ReadingTaskIcon,
+    theme: "#8C0CF0",
+    route: "/manageReading",
+  },
+  {
+    name: "Quiz",
+    icon: QuizTaskIcon,
+    theme: "#E010BF",
+    route: "/assignment",
+  },
+  {
+    name: "Live Test",
+    icon: LiveTestTaskIcon,
+    theme: "#1AC62B",
+    route: "/assignment",
+  },
+  {
+    name: "Video",
+    icon: VideoTaskIcon,
+    theme: "#0079FF",
+    route: "/assignment",
+  },
+  {
+    name: "Audio",
+    icon: AudioTaskIcon,
+    theme: "#4539CB",
+    route: "/assignment",
+  },
+  {
+    name: "Files",
+    icon: FilesTaskIcon,
+    theme: "#001246",
+    route: "/assignment",
+  },
+];
 
 const CourseInformation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [preview, setPreview] = useState(false);
+  const [addChapterOpen, setAddChapterOpen] = useState(false);
+  const [addTaskOpen, setAddTaskOpen] = useState(false);
   const Role = localStorage.getItem("role");
   const [selectedOption, setSelectedOption] = useState("Category");
   const options = ["Category name"];
@@ -31,9 +93,12 @@ const CourseInformation = () => {
               <div className="pt-[110px] border-b-2 ">
                 <div className="container mx-auto px-4 flex items-center justify-between ">
                   <div className="flex items-center pt-[30px] pb-[40px] ">
-                    <button className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline ">
+                    <Link
+                      to="/courseAccess"
+                      className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline "
+                    >
                       My Courses
-                    </button>
+                    </Link>
                     <svg
                       className="mr-[30px]"
                       xmlns="http://www.w3.org/2000/svg"
@@ -106,45 +171,101 @@ const CourseInformation = () => {
                         </svg>
                       )}
                     </div>
-                    {!preview && (
-                      <>
-                        <button className="flex items-center bg-[#FF557A] text-[16px] font-[700] text-white p-[16px] rounded-[20px] mr-[32px] ">
-                          <svg
-                            className="mr-[16px]"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="25"
-                            height="24"
-                            viewBox="0 0 25 24"
-                            fill="none"
+                    <DialogLayout
+                      open={addTaskOpen}
+                      setOpen={setAddTaskOpen}
+                      width={600}
+                      title={
+                        <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
+                          Add Task
+                        </p>
+                      }
+                    >
+                      <div className="px-[32px] py-[24px] grid grid-cols-3 gap-[70px]">
+                        {TaskTypeInfo?.map((taskType) => (
+                          <Link
+                            to={taskType?.route}
+                            className="w-full bg-[#F6F7FF] rounded-[14px] p-[24px]"
                           >
-                            <path
-                              d="M19.8438 11H13.8438V5H11.8438V11H5.84375V13H11.8438V19H13.8438V13H19.8438V11Z"
-                              fill="white"
-                            />
-                          </svg>
-                          <h1 className="mr-[12px]">Add Chapter</h1>
-                        </button>
-                        <Link
-                          to="/createCourse"
-                          className="flex items-center bg-[#3E4DAC] text-[16px] font-[700] text-white p-[16px] rounded-[20px] "
+                            <div
+                              style={{ background: taskType?.theme }}
+                              className={` flex items-center rounded-[12px] justify-center p-[18px]`}
+                            >
+                              <img src={taskType?.icon} alt="icon" />
+                            </div>
+                            <h1 className="text-[13px] font-[700] mt-[20px] text-center">
+                              {taskType?.name}
+                            </h1>
+                          </Link>
+                        ))}
+                      </div>
+                    </DialogLayout>
+                    <DialogLayout
+                      open={addChapterOpen}
+                      setOpen={setAddChapterOpen}
+                      width={440}
+                      title={
+                        <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
+                          Add Chapter
+                        </p>
+                      }
+                    >
+                      <div className="px-[32px] py-[24px] ">
+                        <h1 className=" text-[18px] font-[700] mb-[24px] ">
+                          Chapter Name
+                        </h1>
+                        <input
+                          type="text"
+                          placeholder="Eg. Onboarding"
+                          className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+                        />
+                        <div className="w-full flex items-center justify-center mt-[40px]">
+                          <button className="py-[20px] px-[48px] text-[20px] font-[700] rounded-[8px] bg-[#3E4DAC] text-white ">
+                            Add
+                          </button>
+                        </div>
+                      </div>
+                    </DialogLayout>
+                    <>
+                      <button
+                        onClick={() => setAddChapterOpen(true)}
+                        className="flex items-center bg-[#FF557A] text-[16px] font-[700] text-white p-[16px] rounded-[20px] mr-[32px] "
+                      >
+                        <svg
+                          className="mr-[16px]"
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="25"
+                          height="24"
+                          viewBox="0 0 25 24"
+                          fill="none"
                         >
-                          <svg
-                            className="mr-[16px]"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 16 16"
-                            fill="none"
-                          >
-                            <path
-                              d="M12.6267 0.665039L15.8438 3.81149L13.3913 6.21118L10.1742 3.06473L12.6267 0.665039ZM0.84375 15.3359H4.06079L11.875 7.69316L8.65795 4.54671L0.84375 12.1894V15.3359Z"
-                              fill="white"
-                            />
-                          </svg>
-                          <h1 className="mr-[12px]">Edit Course</h1>
-                        </Link>
-                      </>
-                    )}
+                          <path
+                            d="M19.8438 11H13.8438V5H11.8438V11H5.84375V13H11.8438V19H13.8438V13H19.8438V11Z"
+                            fill="white"
+                          />
+                        </svg>
+                        <h1 className="mr-[12px]">Add Chapter</h1>
+                      </button>
+                      <Link
+                        to="/createCourse"
+                        className="flex items-center bg-[#3E4DAC] text-[16px] font-[700] text-white p-[16px] rounded-[20px] "
+                      >
+                        <svg
+                          className="mr-[16px]"
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 16 16"
+                          fill="none"
+                        >
+                          <path
+                            d="M12.6267 0.665039L15.8438 3.81149L13.3913 6.21118L10.1742 3.06473L12.6267 0.665039ZM0.84375 15.3359H4.06079L11.875 7.69316L8.65795 4.54671L0.84375 12.1894V15.3359Z"
+                            fill="white"
+                          />
+                        </svg>
+                        <h1 className="mr-[12px]">Edit Course</h1>
+                      </Link>
+                    </>
                   </div>
                 </div>
               </div>
@@ -190,7 +311,7 @@ const CourseInformation = () => {
                   </svg>
                 </button>
               </div>
-              {Role === "admin" && !preview && (
+              {Role === "admin" && (
                 <>
                   <button className="bg-black rounded-full">
                     <svg
@@ -244,7 +365,7 @@ const CourseInformation = () => {
                     </div>
                     <h1 className="text-[23px] font-[700] ml-[40px] ">
                       Topic 1{" "}
-                      {Role === "admin" && !preview && (
+                      {Role === "admin" && (
                         <button className="ml-[24px]">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -291,7 +412,7 @@ const CourseInformation = () => {
                       </div>
                     </div>
                   </div>
-                  {Role === "admin" && !preview && (
+                  {Role === "admin" && (
                     <button className=" mr-[25px] ">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -337,7 +458,7 @@ const CourseInformation = () => {
                       </div>
                     </div>
                   </div>
-                  {Role === "admin" && !preview && (
+                  {Role === "admin" && (
                     <button className=" mr-[25px] ">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -366,6 +487,29 @@ const CourseInformation = () => {
                   )}
                 </div>
               </div>
+              {Role === "admin" && (
+                <div
+                  onClick={() => setAddTaskOpen(true)}
+                  className="py-[32px] cursor-pointer px-[40px] bg-[#FFFEE8] mb-[45px] rounded-[15px] "
+                >
+                  <div className="flex items-center">
+                    <svg
+                      className=" bg-[#FF557A] rounded-full w-[38px] h-[38px] mr-[24px] "
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="25"
+                      viewBox="0 0 24 25"
+                      fill="none"
+                    >
+                      <path
+                        d="M19 11.5H13V5.5H11V11.5H5V13.5H11V19.5H13V13.5H19V11.5Z"
+                        fill="white"
+                      />
+                    </svg>
+                    <h1 className="text-[20px] font-[600]"> Add Task</h1>
+                  </div>
+                </div>
+              )}
               <hr />
               <div className="relative">
                 <div className="flex items-center justify-between mt-[60px]">
@@ -375,7 +519,7 @@ const CourseInformation = () => {
                     </div>
                     <h1 className="text-[23px] font-[700] ml-[40px] ">
                       Topic 2{" "}
-                      {Role === "admin" && !preview && (
+                      {Role === "admin" && (
                         <button className="ml-[24px]">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"

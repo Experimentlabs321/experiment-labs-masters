@@ -33,6 +33,10 @@ import ManageLiveClasses from "../../Pages/Dashboard/ContentManagement/ManageLiv
 import Assignment from "../../Pages/Dashboard/ContentManagement/Assignment";
 
 import ManageReading from "../../Pages/Dashboard/ContentManagement/ManageReading";
+import ManageFile from "../../Pages/Dashboard/ContentManagement/ManageFile";
+import ManageVideo from "../../Pages/Dashboard/ContentManagement/ManageVideo";
+import ManageAudio from "../../Pages/Dashboard/ContentManagement/ManageAudio";
+import ManageQuiz from "../../Pages/Dashboard/ContentManagement/ManageQuiz";
 
 
 const router = createBrowserRouter([
@@ -162,7 +166,23 @@ const router = createBrowserRouter([
   
   {
     path: "/manageReading",
-    element:<ManageReading/>
+    element:<ManageReading/>,
+  },
+  {
+    path: "/manageFile",
+    element:<ManageFile/>,
+  },
+  {
+    path: "/manageVideo",
+    element:<ManageVideo/>,
+  },
+  {
+    path: "/manageAudio",
+    element:<ManageAudio/>,
+  },
+  {
+    path: "/manageQuiz",
+    element:<ManageQuiz/>,
   },
 ]);
 
