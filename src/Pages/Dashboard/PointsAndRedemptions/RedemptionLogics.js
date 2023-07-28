@@ -107,16 +107,16 @@ const RedemptionLogics = () => {
                     <img src={undo} ></img>
 
                 </div>
-                <div className='flex justify-between mx-[75px]'>
+                <div className='flex justify-between mx-10'>
 
                     <div className='flex justify-between items-center '>
-                        <input className='me-2 text-[#737373] h-[20px] w-[20px]' type="checkbox" id="" name="" value="" />
+                        <input className='me-2 text-[#737373] h-[20px] ' type="checkbox" id="" name="" value="" />
                         <p className='font-semibold text-[#000000]'>Select All</p>
                     </div>
 
                     <div className='flex items-center '>
                         <p className='font-semibold  text-[#000000] px-4 py-2'>Select Category</p>
-                        <div className=" flex gap-2  border  rounded-lg h-[40px] w-[300px] px-2 ms-5 text-[#535353] ">
+                        <div className=" flex gap-2  border  rounded-lg h-[40px]  px-2 ms-5 text-[#535353] ">
 
                             <select
                                 required
