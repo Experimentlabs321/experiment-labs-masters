@@ -487,27 +487,29 @@ const CourseInformation = () => {
                   )}
                 </div>
               </div>
-              <div
-                onClick={() => setAddTaskOpen(true)}
-                className="py-[32px] cursor-pointer px-[40px] bg-[#FFFEE8] mb-[45px] rounded-[15px] "
-              >
-                <div className="flex items-center">
-                  <svg
-                    className=" bg-[#FF557A] rounded-full w-[38px] h-[38px] mr-[24px] "
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="25"
-                    viewBox="0 0 24 25"
-                    fill="none"
-                  >
-                    <path
-                      d="M19 11.5H13V5.5H11V11.5H5V13.5H11V19.5H13V13.5H19V11.5Z"
-                      fill="white"
-                    />
-                  </svg>
-                  <h1 className="text-[20px] font-[600]"> Add Task</h1>
+              {Role === "admin" && (
+                <div
+                  onClick={() => setAddTaskOpen(true)}
+                  className="py-[32px] cursor-pointer px-[40px] bg-[#FFFEE8] mb-[45px] rounded-[15px] "
+                >
+                  <div className="flex items-center">
+                    <svg
+                      className=" bg-[#FF557A] rounded-full w-[38px] h-[38px] mr-[24px] "
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="25"
+                      viewBox="0 0 24 25"
+                      fill="none"
+                    >
+                      <path
+                        d="M19 11.5H13V5.5H11V11.5H5V13.5H11V19.5H13V13.5H19V11.5Z"
+                        fill="white"
+                      />
+                    </svg>
+                    <h1 className="text-[20px] font-[600]"> Add Task</h1>
+                  </div>
                 </div>
-              </div>
+              )}
               <hr />
               <div className="relative">
                 <div className="flex items-center justify-between mt-[60px]">

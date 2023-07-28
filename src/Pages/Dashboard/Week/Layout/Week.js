@@ -37,7 +37,7 @@ const data = [
           },
           {
             taskName: "Task of topic 2",
-            type: "Files",
+            type: "Assignment",
           },
           {
             taskName: "Task of topic 2",
