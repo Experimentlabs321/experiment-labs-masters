@@ -21,13 +21,13 @@ const CourseAccess = () => {
     setIsOpen(false);
   };
 
-
-  axios.get(`${process.env.REACT_APP_BACKEND_API}/courses`)
-  .then(response =>{
-    // console.log(response);
-    setCourses(response?.data)
-  })
-  .catch(error=>console.error(error));
+  axios
+    .get(`${process.env.REACT_APP_BACKEND_API}/courses`)
+    .then((response) => {
+      // console.log(response);
+      setCourses(response?.data);
+    })
+    .catch((error) => console.error(error));
 
   console.log(courses);
 
@@ -202,7 +202,7 @@ const CourseAccess = () => {
                     src={CourseTham}
                     alt="CourseTham"
                   />
-                  <Link to="/questLevels">
+                  <Link to={`/questLevels/${course?._id}`}>
                     <h1 className="text-[#3E4DAC] text-[16px] font-[800] mt-[16px] mb-[12px] ">
                       {course?.courseFullName}
                     </h1>
@@ -211,12 +211,9 @@ const CourseAccess = () => {
                     Course Description
                   </p>
                   <div className="flex items-center justify-between">
-                    <Link
-                      to="/questLevels"
-                      className="bg-[#E1D7FF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] "
-                    >
+                    <p className="bg-[#E1D7FF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
                       Course Category
-                    </Link>
+                    </p>
                     <button className="bg-[#CEDBFF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
                       Starting Date
                     </button>
