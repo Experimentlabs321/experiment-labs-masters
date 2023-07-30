@@ -38,7 +38,6 @@ import ManageVideo from "../../Pages/Dashboard/ContentManagement/ManageVideo";
 import ManageAudio from "../../Pages/Dashboard/ContentManagement/ManageAudio";
 import ManageQuiz from "../../Pages/Dashboard/ContentManagement/ManageQuiz";
 
-
 const router = createBrowserRouter([
   {
     path: "/",
@@ -108,7 +107,7 @@ const router = createBrowserRouter([
     element: <CourseAccess />,
   },
   {
-    path: "/questLevels",
+    path: "/questLevels/:id",
     element: <CourseInformation />,
   },
   {
@@ -125,15 +124,15 @@ const router = createBrowserRouter([
   },
   {
     path: "/pointsAndRedemptions",
-    element: <PointsAndRedemptions />
+    element: <PointsAndRedemptions />,
   },
   {
     path: "/earningLogics",
-    element: <EarningLogics />
+    element: <EarningLogics />,
   },
   {
     path: "/redemptionLogics",
-    element: <RedemptionLogics />
+    element: <RedemptionLogics />,
   },
   {
     path: "/gamifiedSettings",
@@ -153,36 +152,36 @@ const router = createBrowserRouter([
   },
   {
     path: "/createCourse",
-    element:<CreateCourse/>,
+    element: <CreateCourse />,
   },
   {
     path: "/manageLiveClasses",
-    element:<ManageLiveClasses/>,
+    element: <ManageLiveClasses />,
   },
   {
     path: "/assignment",
-    element:<Assignment/>,
+    element: <Assignment />,
   },
-  
+
   {
     path: "/manageReading",
-    element:<ManageReading/>,
+    element: <ManageReading />,
   },
   {
     path: "/manageFile",
-    element:<ManageFile/>,
+    element: <ManageFile />,
   },
   {
     path: "/manageVideo",
-    element:<ManageVideo/>,
+    element: <ManageVideo />,
   },
   {
     path: "/manageAudio",
-    element:<ManageAudio/>,
+    element: <ManageAudio />,
   },
   {
     path: "/manageQuiz",
-    element:<ManageQuiz/>,
+    element: <ManageQuiz />,
   },
 ]);
 
