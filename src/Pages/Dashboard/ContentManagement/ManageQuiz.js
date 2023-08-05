@@ -8,6 +8,8 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import QuizGeneralInformation from './QuizGeneralInformation';
 import QuizResult from './QuizResult';
 import QuizEvaluationParameter from './QuizEvaluationParameter';
+import ManageQuestionBank from './ManageQuestionBank';
+import ManageQuestion from './ManageQuestion';
 
 
 
@@ -89,6 +91,16 @@ const ManageQuiz = () => {
                 {
                     selectedTab === 'Evaluation Parameter' &&(
                         <QuizEvaluationParameter/>
+                    )
+                }
+                {
+                    selectedTab === 'Question Bank' &&(
+                        <ManageQuestionBank/>
+                    )
+                }
+                {
+                    selectedTab === 'Questions' &&(
+                        <ManageQuestion/>
                     )
                 }
 
