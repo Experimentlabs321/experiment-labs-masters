@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Layout from "../Layout";
 import SearchIcon from "../../../assets/Dashboard/SearchIcon.png";
 import CourseTham from "../../../assets/Dashboard/CourseTham.png";
@@ -7,7 +7,7 @@ import axios from "axios";
 
 const CourseAccess = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [courses, setCourses] = useState();
+  const [courses, setCourses] = useState([]);
   const [selectedOption, setSelectedOption] = useState("Category");
   const options = ["Category name"];
   const Role = localStorage.getItem("role");
@@ -21,32 +21,42 @@ const CourseAccess = () => {
     setIsOpen(false);
   };
 
-  const params = new URLSearchParams();
-  params.append("wstoken", process.env.REACT_APP_moodle_token);
-  params.append("wsfunction", "core_course_get_courses");
-  params.append("moodlewsrestformat", "json");
-
-  const config = {
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-  };
-
-  // console.log(process.env.Moodal_URL);
-
   axios
-    .post(
-      process.env.REACT_APP_moodle_url,
-      params,
-      config
-    )
-    .then((result) => {
-      // Do somthing
-      setCourses(result?.data);
+    .get(`${process.env.REACT_APP_BACKEND_API}/courses`)
+    .then((response) => {
+      // console.log(response);
+      setCourses(response?.data);
     })
-    .catch((err) => {
-      // Do somthing
-    });
+    .catch((error) => console.error(error));
+
+  console.log(courses);
+
+  // const params = new URLSearchParams();
+  // params.append("wstoken", process.env.REACT_APP_moodle_token);
+  // params.append("wsfunction", "core_course_get_courses");
+  // params.append("moodlewsrestformat", "json");
+
+  // const config = {
+  //   headers: {
+  //     "Content-Type": "application/x-www-form-urlencoded",
+  //   },
+  // };
+
+  // // console.log(process.env.Moodal_URL);
+
+  // axios
+  //   .post(
+  //     process.env.REACT_APP_moodle_url,
+  //     params,
+  //     config
+  //   )
+  //   .then((result) => {
+  //     // Do somthing
+  //     setCourses(result?.data);
+  //   })
+  //   .catch((err) => {
+  //     // Do somthing
+  //   });
   // console.log(courses[0].timecreated);
   return (
     <div>
@@ -192,21 +202,18 @@ const CourseAccess = () => {
                     src={CourseTham}
                     alt="CourseTham"
                   />
-                  <Link to="/questLevels">
+                  <Link to={`/questLevels/${course?._id}`}>
                     <h1 className="text-[#3E4DAC] text-[16px] font-[800] mt-[16px] mb-[12px] ">
-                      {course?.displayname}
+                      {course?.courseFullName}
                     </h1>
                   </Link>
                   <p className="text-[#7A7A7A] text-[12px] font-[500] mb-[16px] ">
                     Course Description
                   </p>
                   <div className="flex items-center justify-between">
-                    <Link
-                      to="/questLevels"
-                      className="bg-[#E1D7FF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] "
-                    >
+                    <p className="bg-[#E1D7FF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
                       Course Category
-                    </Link>
+                    </p>
                     <button className="bg-[#CEDBFF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
                       Starting Date
                     </button>
