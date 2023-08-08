@@ -53,7 +53,6 @@ import MentorAssignments from "../../Pages/Dashboard/MentorAssignments/MentorAss
 import AssignmentEvaluation1 from "../../Pages/Dashboard/MentorAssignments/AssignmentEvaluation1";
 import AssignmentEvaluation2 from "../../Pages/Dashboard/MentorAssignments/AssignmentEvaluation2";
 
-
 const router = createBrowserRouter([
   {
     path: "/",
@@ -201,59 +200,59 @@ const router = createBrowserRouter([
   }, */
   {
     path: "/quizGeneralInfo",
-    element:<QuizGeneralInformation/>,
+    element: <QuizGeneralInformation />,
   },
   {
     path: "/quizResult",
-    element:<QuizResult/>,
+    element: <QuizResult />,
   },
   {
     path: "/quizEvaluationParameter",
-    element:<QuizEvaluationParameter/>,
+    element: <QuizEvaluationParameter />,
   },
   {
     path: "/manageQuestionBank",
-    element:<ManageQuestionBank/>,
+    element: <ManageQuestionBank />,
   },
   {
     path: "/manageQuestion",
-    element:<ManageQuestion/>,
+    element: <ManageQuestion />,
   },
   {
     path: "/addingEditingCalQues",
-    element:<AddingEditingCalQues/>,
+    element: <AddingEditingCalQues />,
   },
   {
     path: "/addingEditingMultiChoQues",
-    element:<AddingEditingMultiChoQues/>,
+    element: <AddingEditingMultiChoQues />,
   },
   {
     path: "/addingEditingEssayQues",
-    element:<AddingEditingEssayQues/>,
+    element: <AddingEditingEssayQues />,
   },
   {
     path: "/addingEditingMatchingQues",
-    element:<AddingEditingMatchingQues/>,
+    element: <AddingEditingMatchingQues />,
   },
   {
     path: "/addingEditingSelectMissingQues",
-    element:<AddingEditingSelectMissingQues/>,
+    element: <AddingEditingSelectMissingQues />,
   },
   {
     path: "/addingEditingTrueFalseQues",
-    element:<AddingEditingTrueFalseQues/>,
+    element: <AddingEditingTrueFalseQues />,
   },
   {
     path: "/mentorAssignments",
-    element:<MentorAssignments/>,
+    element: <MentorAssignments />,
   },
   {
     path: "/assignmentEvaluation1",
-    element:<AssignmentEvaluation1/>,
+    element: <AssignmentEvaluation1 />,
   },
   {
     path: "/assignmentEvaluation2",
-    element:<AssignmentEvaluation2/>,
+    element: <AssignmentEvaluation2 />,
   },
 ]);
 
