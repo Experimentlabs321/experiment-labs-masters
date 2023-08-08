@@ -20,6 +20,7 @@ const DialogLayout = ({
   bgColor,
   width,
   borderRadius,
+  close,
 }) => {
   const theme = createTheme({
     components: {
@@ -51,22 +52,26 @@ const DialogLayout = ({
     return (
       <DialogTitle sx={{ m: 0, p: 0 }} {...other}>
         {children}
-        {onClose ? (
-          <IconButton
-            aria-label="close"
-            onClick={onClose}
-            sx={{
-              position: "absolute",
-              right: 20,
-              top: 20,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <div className="bg-white rounded-full w-[35px] h-[35px] flex items-center justify-center">
-              <CloseIcon />
-            </div>
-          </IconButton>
-        ) : null}
+        {!close && (
+          <>
+            {onClose ? (
+              <IconButton
+                aria-label="close"
+                onClick={onClose}
+                sx={{
+                  position: "absolute",
+                  right: 20,
+                  top: 20,
+                  color: (theme) => theme.palette.grey[500],
+                }}
+              >
+                <div className="bg-white rounded-full w-[35px] h-[35px] flex items-center justify-center">
+                  <CloseIcon />
+                </div>
+              </IconButton>
+            ) : null}
+          </>
+        )}
       </DialogTitle>
     );
   }
@@ -98,19 +103,23 @@ const DialogLayout = ({
           </BootstrapDialogTitle>
         )}
         {!title && (
-          <IconButton
-            aria-label="close"
-            onClick={handleClose}
-            sx={{
-              position: "absolute",
-              top: 2,
-              right: 2,
-            }}
-          >
-            <div className="bg-white rounded-full w-[35px] h-[35px] flex items-center justify-center">
-              <CloseIcon />
-            </div>
-          </IconButton>
+          <>
+            {!close && (
+              <IconButton
+                aria-label="close"
+                onClick={handleClose}
+                sx={{
+                  position: "absolute",
+                  top: 2,
+                  right: 2,
+                }}
+              >
+                <div className="bg-white rounded-full w-[35px] h-[35px] flex items-center justify-center">
+                  <CloseIcon />
+                </div>
+              </IconButton>
+            )}
+          </>
         )}
         <DialogContentWrapper>{children}</DialogContentWrapper>
       </BootstrapDialog>

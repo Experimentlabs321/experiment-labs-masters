@@ -54,7 +54,6 @@ import AssignmentEvaluation1 from "../../Pages/Dashboard/MentorAssignments/Assig
 import AssignmentEvaluation2 from "../../Pages/Dashboard/MentorAssignments/AssignmentEvaluation2";
 
 
-
 const router = createBrowserRouter([
   {
     path: "/",
@@ -176,7 +175,7 @@ const router = createBrowserRouter([
     element: <ManageLiveClasses />,
   },
   {
-    path: "/assignment",
+    path: "/assignment/:id",
     element: <Assignment />,
   },
 
@@ -256,9 +255,6 @@ const router = createBrowserRouter([
     path: "/assignmentEvaluation2",
     element:<AssignmentEvaluation2/>,
   },
- 
- 
- 
 ]);
 
 export default router;

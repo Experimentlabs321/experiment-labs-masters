@@ -13,18 +13,10 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import YouTubeIcon from "@mui/icons-material/YouTube";
-import InstagramIcon from "@mui/icons-material/Instagram";
-import LinkedInIcon from "@mui/icons-material/LinkedIn";
-import TwitterIcon from "@mui/icons-material/Twitter";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import logo from "../../../assets/Frame 155 1.png";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import { Dialog, useMediaQuery, useTheme } from "@mui/material";
-// import GoogleLogo from "../../../assets/icons/googleIcon.png";
-import qs from "qs";
-import axios from "axios";
 import {
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
@@ -32,13 +24,8 @@ import {
 import CryptoJS from "crypto-js";
 import MailIcon from "@mui/icons-material/Mail";
 import GoogleLogo from "../../../assets/icons/googleIcon.png";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import emailjs from "@emailjs/browser";
-import { toast } from "react-hot-toast";
 import ReactGA from "react-ga4";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -67,39 +54,11 @@ const NavBar = (props) => {
       onClick={toggleDrawer(false)}
       onKeyDown={toggleDrawer(false)}
     >
-      {/* <List>
-                {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                    <ListItem key={text} disablePadding>
-                        <ListItemButton>
-                            <ListItemIcon>
-                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                            </ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
-            </List>
-            <Divider />
-            <List>
-                {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                    <ListItem key={text} disablePadding>
-                        <ListItemButton>
-                            <ListItemIcon>
-                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                            </ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
-            </List> */}
       <h1 className="text-4xl mt-20 mx-auto w-80">Will be added later</h1>
     </Box>
   );
 
   const drawerWidth = 240;
-  const navItemSytle = `
-    bg-gray-400 p-[3px] rounded-full hover:bg-cyan hover:transition-colors hover:delay-300 hover:ease-in-out
-`;
   const { user, logOut } = useContext(AuthContext);
 
   const handleLogout = () => {
@@ -306,7 +265,7 @@ const NavBar = (props) => {
             saveUser(loginData.email);
             // navigate("/dashboard");
           })
-          .catch((error) => { });
+          .catch((error) => {});
       })
       .catch((error) => {
         console.log(error.message);
@@ -318,8 +277,8 @@ const NavBar = (props) => {
   const loginUser = (email, password, location, history) => {
     saveUser(email);
     signIn(email, password)
-      .then((userCredential) => { })
-      .catch((error) => { });
+      .then((userCredential) => {})
+      .catch((error) => {});
   };
 
   const handleOnChange = (e) => {
@@ -488,13 +447,12 @@ const NavBar = (props) => {
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
-    const modalQueryParam = queryParams.get('modal');
+    const modalQueryParam = queryParams.get("modal");
 
-    if (modalQueryParam === 'true') {
+    if (modalQueryParam === "true") {
       setModalOpen(true);
     }
   }, [location]);
-
 
   const navItems = [
     // <InstagramIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
@@ -1147,7 +1105,10 @@ const NavBar = (props) => {
             </span>
             <iframe
               className="w-full lg:min-w-[550px] h-full min-h-[90vh]"
-              title="form" src="https://form.jotform.com/231913338047455" frameborder="0"></iframe>
+              title="form"
+              src="https://form.jotform.com/231913338047455"
+              frameborder="0"
+            ></iframe>
           </div>
         </div>
       </Dialog>
