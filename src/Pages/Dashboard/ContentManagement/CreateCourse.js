@@ -295,7 +295,7 @@ const CreateCourse = () => {
         <div className="text-[#3E4DAC] text-[26px] font-bold border-b border-b-[#A4A4A4] py-[35px] ps-[40px]">
           <p>Create/Edit Course </p>
         </div>
-        <form onSubmit={handleSubmit} className="ms-[40px]  mt-12">
+        <form onSubmit={handleSubmit} className=" ms-10  mt-12">
           <div
             className="select-option flex items-center gap-[40px]"
             onClick={toggleDropdownCourseSelection}
@@ -317,7 +317,7 @@ const CreateCourse = () => {
             ></i>
           </div>
           {isOpenGeneralCourseInfo && (
-            <div className="dropdown-menu mt-[71px] mb-[45px] flex gap-80 ">
+            <div className="dropdown-menu mt-[71px] mb-[45px] flex justify-between me-10">
               <div>
                 <div className="">
                   <div className="flex items-center gap-4">
@@ -331,7 +331,7 @@ const CreateCourse = () => {
 
                   <input
                     required
-                    className="mt-6 ms-6 border rounded-md w-[520px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                    className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                     name="courseFullName"
                     type="text"
                     placeholder="Eg. Entrepreneurship Lab"
@@ -350,7 +350,7 @@ const CreateCourse = () => {
 
                   <input
                     required
-                    className="mt-6 ms-6 border rounded-md w-[520px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                    className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                     name="courseShortName"
                     type="text"
                     placeholder="Eg. Entrepreneurship Lab"
@@ -401,7 +401,7 @@ const CreateCourse = () => {
                   </div>
 
                   <input
-                    className="mt-6 ms-6 border rounded-md w-[520px] h-[97px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                    className="mt-6 ms-6 border rounded-md w-[90%] h-[97px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                     name="courseDescription"
                     type="text"
                     placeholder="Eg. This Lab will teach you about...."
@@ -571,7 +571,7 @@ const CreateCourse = () => {
           </div>
 
           {isOpenCourseFormat && (
-            <div className="dropdown-menu mt-[71px] mb-[45px] flex gap-[550px] ">
+            <div className="dropdown-menu mt-[71px] mb-[45px] flex justify-between me-10">
               <div>
                 <div className="">
                   <div className="flex items-center gap-4">
@@ -691,7 +691,7 @@ const CreateCourse = () => {
               </div>
 
               <div className="">
-                <div className="bg-[#F4F4F4] px-4 py-8 rounded-md w-[445px]">
+                <div className="bg-[#F4F4F4] px-4 py-8 rounded-md w-[90%]">
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
                     <p className="text-[18px] font-bold">
@@ -814,7 +814,7 @@ const CreateCourse = () => {
           </div>
 
           {isOpenCompletionTracking && (
-            <div className="dropdown-menu mt-[71px] mb-[45px] flex gap-[550px] ">
+            <div className="dropdown-menu mt-[71px] mb-[45px] flex justify-between ms-10">
               <div>
                 <div className="">
                   <div className="flex items-center gap-4">

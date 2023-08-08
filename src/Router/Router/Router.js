@@ -37,7 +37,22 @@ import ManageFile from "../../Pages/Dashboard/ContentManagement/ManageFile";
 import ManageVideo from "../../Pages/Dashboard/ContentManagement/ManageVideo";
 import ManageAudio from "../../Pages/Dashboard/ContentManagement/ManageAudio";
 import ManageQuiz from "../../Pages/Dashboard/ContentManagement/ManageQuiz";
-import Skill from "../../Pages/Dashboard/SkillsManagement/Skill";
+import QuizGeneralInformation from "../../Pages/Dashboard/ContentManagement/QuizGeneralInformation";
+import QuizResult from "../../Pages/Dashboard/ContentManagement/QuizResult";
+import QuizEvaluationParameter from "../../Pages/Dashboard/ContentManagement/QuizEvaluationParameter";
+import ManageQuestionBank from "../../Pages/Dashboard/ContentManagement/ManageQuestionBank";
+import ManageQuestion from "../../Pages/Dashboard/ContentManagement/ManageQuestion";
+import AddingEditingCalQues from "../../Pages/Dashboard/ContentManagement/AddingEditingCalQues";
+import AddingEditingMultiChoQues from "../../Pages/Dashboard/ContentManagement/AddingEditingMultiChoQues";
+import AddingEditingEssayQues from "../../Pages/Dashboard/ContentManagement/AddingEditingEssayQues";
+import AddingEditingMatchingQues from "../../Pages/Dashboard/ContentManagement/AddingEditingMatchingQues";
+import AddingEditingSelectMissingQues from "../../Pages/Dashboard/ContentManagement/AddingEditingSelectMissingQues";
+import AddingEditingTrueFalseQues from "../../Pages/Dashboard/ContentManagement/AddingEditingTrueFalseQues";
+import AssignmentsAssignment from "../../Pages/Dashboard/MentorAssignments/MentorAssignments";
+import MentorAssignments from "../../Pages/Dashboard/MentorAssignments/MentorAssignments";
+import AssignmentEvaluation1 from "../../Pages/Dashboard/MentorAssignments/AssignmentEvaluation1";
+import AssignmentEvaluation2 from "../../Pages/Dashboard/MentorAssignments/AssignmentEvaluation2";
+
 
 const router = createBrowserRouter([
   {
@@ -180,13 +195,65 @@ const router = createBrowserRouter([
     path: "/manageAudio",
     element: <ManageAudio />,
   },
-  {
+  /* {
     path: "/manageQuiz",
-    element: <ManageQuiz />,
+    element:<ManageQuiz/>,
+  }, */
+  {
+    path: "/quizGeneralInfo",
+    element:<QuizGeneralInformation/>,
   },
   {
-    path: "/skill",
-    element: <Skill />,
+    path: "/quizResult",
+    element:<QuizResult/>,
+  },
+  {
+    path: "/quizEvaluationParameter",
+    element:<QuizEvaluationParameter/>,
+  },
+  {
+    path: "/manageQuestionBank",
+    element:<ManageQuestionBank/>,
+  },
+  {
+    path: "/manageQuestion",
+    element:<ManageQuestion/>,
+  },
+  {
+    path: "/addingEditingCalQues",
+    element:<AddingEditingCalQues/>,
+  },
+  {
+    path: "/addingEditingMultiChoQues",
+    element:<AddingEditingMultiChoQues/>,
+  },
+  {
+    path: "/addingEditingEssayQues",
+    element:<AddingEditingEssayQues/>,
+  },
+  {
+    path: "/addingEditingMatchingQues",
+    element:<AddingEditingMatchingQues/>,
+  },
+  {
+    path: "/addingEditingSelectMissingQues",
+    element:<AddingEditingSelectMissingQues/>,
+  },
+  {
+    path: "/addingEditingTrueFalseQues",
+    element:<AddingEditingTrueFalseQues/>,
+  },
+  {
+    path: "/mentorAssignments",
+    element:<MentorAssignments/>,
+  },
+  {
+    path: "/assignmentEvaluation1",
+    element:<AssignmentEvaluation1/>,
+  },
+  {
+    path: "/assignmentEvaluation2",
+    element:<AssignmentEvaluation2/>,
   },
 ]);
 
