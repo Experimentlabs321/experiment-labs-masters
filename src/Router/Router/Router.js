@@ -37,6 +37,7 @@ import ManageFile from "../../Pages/Dashboard/ContentManagement/ManageFile";
 import ManageVideo from "../../Pages/Dashboard/ContentManagement/ManageVideo";
 import ManageAudio from "../../Pages/Dashboard/ContentManagement/ManageAudio";
 import ManageQuiz from "../../Pages/Dashboard/ContentManagement/ManageQuiz";
+import Skill from "../../Pages/Dashboard/SkillsManagement/Skill";
 
 const router = createBrowserRouter([
   {
@@ -159,7 +160,7 @@ const router = createBrowserRouter([
     element: <ManageLiveClasses />,
   },
   {
-    path: "/assignment",
+    path: "/assignment/:id",
     element: <Assignment />,
   },
 
@@ -182,6 +183,10 @@ const router = createBrowserRouter([
   {
     path: "/manageQuiz",
     element: <ManageQuiz />,
+  },
+  {
+    path: "/skill",
+    element: <Skill />,
   },
 ]);
 

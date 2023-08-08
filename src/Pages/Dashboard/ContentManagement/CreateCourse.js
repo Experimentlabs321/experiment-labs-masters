@@ -102,9 +102,9 @@ const CreateCourse = () => {
         });
       }; */
 
-  const {user} = useContext(AuthContext);
+  const { user, userInfo } = useContext(AuthContext);
 
-  console.log(user)
+  console.log(userInfo);
 
   /// handle Submit
   const handleSubmit = async (event) => {
@@ -118,7 +118,7 @@ const CreateCourse = () => {
     const courseEndingDate = form.courseEndingDate?.value;
     //  const courseEndingTime = form.courseEndingTime?.value;
     const courseDescription = form.courseDescription?.value;
-    const courseCategory = +form.courseCategory?.value;
+    const courseCategory = form.courseCategory?.value;
     const courseVisibility = +form.courseVisibility?.value;
     const courseIDNumber = form.courseIDNumber?.value;
     const courseFormat = form.courseFormat?.value;
@@ -144,12 +144,10 @@ const CreateCourse = () => {
       courseFullName,
       courseShortName,
       courseStartingDate,
-      //  courseStartingTime,
       courseEndingDate,
-      // courseEndingTime,
       courseDescription,
       courseCategory,
-      courseThumbnail: '',
+      courseThumbnail: "",
       courseVisibility,
       courseIDNumber,
       courseFormat,
@@ -168,18 +166,63 @@ const CreateCourse = () => {
       creator: {
         name: user?.displayName,
         email: user?.email,
-        photoURL: user?.photoURL
-      }
+        photoURL: user?.photoURL,
+      },
+      organization: {
+        organizationId: userInfo?.organizationId,
+        organizationName: userInfo?.organizationName,
+      },
     };
 
-    const course = await axios.post(`${process.env.REACT_APP_BACKEND_API}/courses`,addCourse);
+    // const item = [
+    //   {
+    //     orgId: id1,
+    //     cats: [
+    //       {
+    //         name: name,
+    //         skills: [
+    //           {
+    //             name: skill name,
+    //             pramitars: [
+    //               "",
+    //             ],
+    //           },
+    //           {},
+    //         ],
+    //       },
+    //       {},
+    //     ],
+    //   },
+    //   {
+    //     orgId: id2,
+    //     cats: [
+    //       {
+    //         name: name,
+    //         skills: [
+    //           {
+    //             pre: preName,
+    //           },
+    //           {},
+    //         ],
+    //       },
+    //       {},
+    //     ],
+    //   },
+    // ];
 
-    if(course?.data?.acknowledged){
+    const newCourse = await axios.post(
+      `${process.env.REACT_APP_BACKEND_API}/courses`,
+      addCourse
+    );
+    console.log("new course --> ", newCourse);
+    console.log(newCourse?.data?.course?.acknowledged);
+
+    if (newCourse?.data?.course?.acknowledged) {
       toast.success("Course added Successfully");
       form.reset();
     }
 
-    console.log("Add Course----->",addCourse);
+    console.log("Add Course----->", addCourse);
 
     // const input = {
     //     "Body": selectedFile,
@@ -215,13 +258,11 @@ const CreateCourse = () => {
     //     params.append("courses[0][showreports]",showactivityreports);
     //     params.append("courses[0][visible]",courseVisibility);
 
-
     // const config = {
     //   headers: {
     //     "Content-Type": "application/x-www-form-urlencoded",
     //   },
     // };
-
 
     // console.log(process.env.Moodal_URL);
 
@@ -385,12 +426,12 @@ const CreateCourse = () => {
                       name="courseCategory"
                       // id="option"
                     >
-                      <option className="" value="1">
+                      <option className="" value="Web Development">
                         Web Development
                       </option>
-                      <option value="Parent"></option>
+                      {/* <option value="Parent"></option>
                       <option value="Counselor"></option>
-                      <option value="Others"></option>
+                      <option value="Others"></option> */}
                     </select>
                     <div
                       onClick={openModaladdcoursecategory}
