@@ -1,11 +1,11 @@
 import axios from "axios";
 import React, { useContext, useState } from "react";
-import { AuthContext } from "../../../contexts/AuthProvider";
 import { toast } from "react-hot-toast";
 import Swal from "sweetalert2";
-import DialogLayout from "../Shared/DialogLayout";
+import { AuthContext } from "../../../../../contexts/AuthProvider";
+import DialogLayout from "../../../Shared/DialogLayout";
 
-const SelectSkillCategory = ({
+const SelectEarningCategory = ({
   skillCategories,
   selectedSkillCategory,
   setSelectedSkillCategory,
@@ -203,7 +203,7 @@ const SelectSkillCategory = ({
       </DialogLayout>
       {/* Edit category name end */}
       <h1 className=" text-[#737373] text-[24px] font-[500] mt-5 mb-2 ">
-        Select Skill Category
+        Earning Category
       </h1>
       <div className="flex flex-wrap gap-y-2 items-center">
         {skillCategories?.map((item, index) => (
@@ -285,4 +285,4 @@ const SelectSkillCategory = ({
   );
 };
 
-export default SelectSkillCategory;
+export default SelectEarningCategory;
