@@ -128,7 +128,7 @@ const EditSkillForm = ({
               <div className="pl-5  ">
                 <input
                   type="submit"
-                  value="Proceed"
+                  value="Update"
                   className="bg-[#2EB0FB] rounded-lg h-[30px] w-[95px] font-semibold text-[#fff]"
                 />
               </div>

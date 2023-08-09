@@ -52,6 +52,7 @@ import AssignmentsAssignment from "../../Pages/Dashboard/MentorAssignments/Mento
 import MentorAssignments from "../../Pages/Dashboard/MentorAssignments/MentorAssignments";
 import AssignmentEvaluation1 from "../../Pages/Dashboard/MentorAssignments/AssignmentEvaluation1";
 import AssignmentEvaluation2 from "../../Pages/Dashboard/MentorAssignments/AssignmentEvaluation2";
+import Skill from "../../Pages/Dashboard/SkillsManagement/Skill";
 
 const router = createBrowserRouter([
   {
@@ -253,6 +254,10 @@ const router = createBrowserRouter([
   {
     path: "/assignmentEvaluation2",
     element: <AssignmentEvaluation2 />,
+  },
+  {
+    path: "/skill",
+    element: <Skill />,
   },
 ]);
 
