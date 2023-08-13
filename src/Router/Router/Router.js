@@ -48,10 +48,19 @@ import AddingEditingEssayQues from "../../Pages/Dashboard/ContentManagement/Addi
 import AddingEditingMatchingQues from "../../Pages/Dashboard/ContentManagement/AddingEditingMatchingQues";
 import AddingEditingSelectMissingQues from "../../Pages/Dashboard/ContentManagement/AddingEditingSelectMissingQues";
 import AddingEditingTrueFalseQues from "../../Pages/Dashboard/ContentManagement/AddingEditingTrueFalseQues";
-import AssignmentsAssignment from "../../Pages/Dashboard/MentorAssignments/MentorAssignments";
-import MentorAssignments from "../../Pages/Dashboard/MentorAssignments/MentorAssignments";
-import AssignmentEvaluation1 from "../../Pages/Dashboard/MentorAssignments/AssignmentEvaluation1";
-import AssignmentEvaluation2 from "../../Pages/Dashboard/MentorAssignments/AssignmentEvaluation2";
+import AssignmentsAssignment from "../../Pages/Dashboard/ExecutionMentorAssignments/MentorAssignments";
+import MentorAssignments from "../../Pages/Dashboard/ExecutionMentorAssignments/MentorAssignments";
+import AssignmentEvaluation1 from "../../Pages/Dashboard/ExecutionMentorAssignments/AssignmentEvaluation1";
+import AssignmentEvaluation2 from "../../Pages/Dashboard/ExecutionMentorAssignments/AssignmentEvaluation2";
+import OnGoingClasses from "../../Pages/Dashboard/ExecutionMentorLiveClasses/OnGoingClasses";
+import UpComingClasses from "../../Pages/Dashboard/ExecutionMentorLiveClasses/UpComingClasses";
+import ExecutionMentorSchedule from "../../Pages/Dashboard/ExecutionMentorSchedule/ExecutionMentorSchedule";
+import ExecutionMentorDashboard from "../../Pages/Dashboard/ExecutionMentorDashboard/ExecutionMentorDashboard";
+import PerformanceFeedback from "../../Pages/Dashboard/ExecutionMentorDashboard/PerformanceFeedback";
+import Students from "../../Pages/Dashboard/ExecutionMentorDashboard/Students";
+import StudentsWhoNeedMoreGuidance from "../../Pages/Dashboard/ExecutionMentorDashboard/StudentsWhoNeedMoreGuidance";
+import StudentFeedback from "../../Pages/Dashboard/ExecutionMentorDashboard/StudentFeedback";
+import DepartmentEvaluation from "../../Pages/Dashboard/ExecutionMentorDashboard/DepartmentEvaluation";
 
 
 
@@ -255,6 +264,42 @@ const router = createBrowserRouter([
   {
     path: "/assignmentEvaluation2",
     element:<AssignmentEvaluation2/>,
+  },
+  {
+    path: "/liveClasses",
+    element:<OnGoingClasses/>,
+  },
+  {
+    path: "/upcomingClasses",
+    element:<UpComingClasses/>,
+  },
+  {
+    path: "/schedule",
+    element:<ExecutionMentorSchedule/>,
+  },
+  {
+    path: "/executionMentorDashboard",
+    element:<ExecutionMentorDashboard/>,
+  },
+  {
+    path: "/performanceFeedback",
+    element:<PerformanceFeedback/>,
+  },
+  {
+    path: "/students",
+    element:<Students/>,
+  },
+  {
+    path: "/studentsWhoNeedMoreGuidance",
+    element:<StudentsWhoNeedMoreGuidance/>,
+  },
+  {
+    path: "/studentFeedback",
+    element:<StudentFeedback/>,
+  },
+  {
+    path: "/departmentEvaluation",
+    element:<DepartmentEvaluation/>,
   },
  
  
