@@ -4,10 +4,11 @@ import React, { useContext, useState } from "react";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
-import Polygon from '../../../assets/Assignments/Polygon.svg'
-import prize1 from '../../../assets/Assignments/prize1.svg'
-import Prize2 from '../../../assets/Assignments/Prize2.svg'
-import prize3 from '../../../assets/Assignments/prize3.svg'
+import Polygon from '../../../assets/ExecutionMentor/Polygon.svg'
+import prize1 from '../../../assets/ExecutionMentor/prize1.svg'
+import Prize2 from '../../../assets/ExecutionMentor/Prize2.svg'
+import prize3 from '../../../assets/ExecutionMentor/prize3.svg'
+import { Link } from "react-router-dom";
 
 
 
@@ -52,9 +53,9 @@ const AssignmentRightNev = () => {
             <div className="ms-8 mt-5">
                 <div className="flex justify-between items-center">
                     <p className="text-[15px] font-bold">Top Performing Student</p>
-                    <p className="flex gap-2 items-center text-[#8A8A8A] text-sm font-bold">View all
+                    <Link to='/students' className="flex gap-2 items-center text-[#8A8A8A] text-sm font-bold">View all
                         <img src={Polygon} alt='' />
-                    </p>
+                    </Link>
 
                 </div>
 
