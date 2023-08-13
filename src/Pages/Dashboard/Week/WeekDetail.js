@@ -11,6 +11,89 @@ import AudioTask from "./AudioTask";
 import FilesTask from "./FilesTask";
 import { Link } from "react-router-dom";
 
+const skillsCategories = [
+  {
+    objectId: 1,
+    categories: [
+      {
+        categoryName: "category 1",
+        skills: [
+          {
+            skillName: "skill 1",
+            parameters: ["Parameter 1", "Parameter 2"],
+            courses: ["courseId-1", "courseId-2"],
+          },
+          {
+            skillName: "skill 2",
+            parameters: ["Parameter 1", "Parameter 2"],
+            courses: ["courseId-1", "courseId-2"],
+          },
+        ],
+      },
+      {
+        categoryName: "category 2",
+        skills: [
+          {
+            skillName: "skill 1",
+            parameters: ["Parameter 1", "Parameter 2"],
+            courses: ["courseId-1", "courseId-2"],
+          },
+          {
+            skillName: "skill 2",
+            parameters: ["Parameter 1", "Parameter 2"],
+            courses: ["courseId-1", "courseId-2"],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    objectId: 1,
+    categories: [
+      {
+        categoryName: "category 1",
+        skills: [
+          {
+            skillName: "skill 1",
+            parameters: ["Parameter 1", "Parameter 2"],
+            courses: ["courseId-1", "courseId-2"],
+          },
+          {
+            skillName: "skill 2",
+            parameters: ["Parameter 1", "Parameter 2"],
+            courses: ["courseId-1", "courseId-2"],
+          },
+        ],
+      },
+      {
+        categoryName: "category 2",
+        skills: [
+          {
+            skillName: "skill 1",
+            parameters: ["Parameter 1", "Parameter 2"],
+            courses: ["courseId-1", "courseId-2"],
+          },
+          {
+            skillName: "skill 2",
+            parameters: ["Parameter 1", "Parameter 2"],
+            courses: ["courseId-1", "courseId-2"],
+          },
+        ],
+      },
+    ],
+  },
+];
+
+const item = {
+  organizationId: 1,
+  categoryName: "category 1",
+  skill: {
+    skillName: "skill 1",
+    parameters: ["Parameter 1", "Parameter 2"],
+    courses: ["courseId-1", "courseId-2"],
+  },
+};
+
 const WeekDetail = ({
   toggleButton,
   setToggleButton,

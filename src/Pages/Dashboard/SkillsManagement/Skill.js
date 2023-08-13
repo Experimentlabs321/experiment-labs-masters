@@ -7,12 +7,10 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import axios from "axios";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import AddSharpIcon from "@mui/icons-material/AddSharp";
-import Parameters from "./Parameters";
 import Swal from "sweetalert2";
-import SelectSkillCategory from "./SelectSkillCategory";
-import { toast } from "react-hot-toast";
-import AddSkillForm from "./AddSkillForm";
 import EditSkillForm from "./EditSkillForm";
+import SelectEarningCategory from "../PointsAndRedemptions/Components/EarningLogics/SelectEarningCategory";
+import AddEarningPointItemForm from "../PointsAndRedemptions/Components/EarningLogics/AddEarningPointItemForm";
 
 const Skill = () => {
   const { userInfo } = useContext(AuthContext);
@@ -91,7 +89,7 @@ const Skill = () => {
       <Layout>
         <div className="flex items-center justify-between container mx-auto px-4 gap-7 pt-20 lg:pt-10 ">
           <div className="UserManagement origin-top-left rotate-[-0.51deg] text-zinc-500 text-[30px] font-medium">
-            Skills Management
+            Earning Logics
           </div>
           <div className="Input w-[425px] h-16 relative bg-slate-100 rounded-[40px] shadow-inner">
             <input
@@ -134,7 +132,7 @@ const Skill = () => {
               ))}
             </div>
           </div>
-          <SelectSkillCategory
+          <SelectEarningCategory
             setSkillCategories={setSkillCategories}
             skillCategories={skillCategories}
             selectedSkillCategory={selectedSkillCategory}
@@ -245,7 +243,7 @@ const Skill = () => {
           ))}
         </div>
         {isOpenSkillAddForm && (
-          <AddSkillForm
+          <AddEarningPointItemForm
             setIsOpenSkillAddForm={setIsOpenSkillAddForm}
             UploadingImg={UploadingImg}
             selectedSkillCategory={selectedSkillCategory}

@@ -8,6 +8,7 @@ import axios from "axios";
 const CourseAccess = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [courses, setCourses] = useState([]);
+  const [clickedCourse, setClickedCourse] = useState();
   const [selectedOption, setSelectedOption] = useState("Category");
   const options = ["Category name"];
   const Role = localStorage.getItem("role");
@@ -20,44 +21,16 @@ const CourseAccess = () => {
     setSelectedOption(option);
     setIsOpen(false);
   };
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_BACKEND_API}/courses`)
+      .then((response) => {
+        // console.log(response);
+        setCourses(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, []);
 
-  axios
-    .get(`${process.env.REACT_APP_BACKEND_API}/courses`)
-    .then((response) => {
-      // console.log(response);
-      setCourses(response?.data);
-    })
-    .catch((error) => console.error(error));
-
-  console.log(courses);
-
-  // const params = new URLSearchParams();
-  // params.append("wstoken", process.env.REACT_APP_moodle_token);
-  // params.append("wsfunction", "core_course_get_courses");
-  // params.append("moodlewsrestformat", "json");
-
-  // const config = {
-  //   headers: {
-  //     "Content-Type": "application/x-www-form-urlencoded",
-  //   },
-  // };
-
-  // // console.log(process.env.Moodal_URL);
-
-  // axios
-  //   .post(
-  //     process.env.REACT_APP_moodle_url,
-  //     params,
-  //     config
-  //   )
-  //   .then((result) => {
-  //     // Do somthing
-  //     setCourses(result?.data);
-  //   })
-  //   .catch((err) => {
-  //     // Do somthing
-  //   });
-  // console.log(courses[0].timecreated);
   return (
     <div>
       <Layout>
@@ -79,7 +52,10 @@ const CourseAccess = () => {
               </div>
               {Role === "admin" && (
                 <div className="">
-                  <button className="w-[206.40px] ml-[100px] h-[46.40px] px-4 py-3 bg-[#3E4DAC] rounded-[8.86px] justify-start items-center gap-2 inline-flex">
+                  <Link
+                    to="/createCourse"
+                    className="w-[206.40px] ml-[100px] h-[46.40px] px-4 py-3 bg-[#3E4DAC] rounded-[8.86px] justify-start items-center gap-2 inline-flex"
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="23"
@@ -95,7 +71,7 @@ const CourseAccess = () => {
                     <h1 className="text-white text-base font-bold">
                       Create new course
                     </h1>
-                  </button>
+                  </Link>
                 </div>
               )}
             </div>
@@ -114,61 +90,6 @@ const CourseAccess = () => {
               <button className="pr-[60px] text-[18px] font-[500] ">
                 Completed
               </button>
-            </div>
-            <div>
-              {/* <div className="relative min-w-fit inline-flex border border-[#FF557A]">
-                <svg
-                  className=" absolute top-1 lg:top-2 right-0"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                >
-                  <path
-                    d="M5 7.5L10 12.5L15 7.5"
-                    stroke="#3D3D3D"
-                    stroke-width="2.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-                <h1 className="text-[14px] font-[500] min-w-fit ">Sort By: </h1>
-                <select
-                  required
-                  className=" text-[10px] lg:text-[16px] font-[600] w-full rounded-[14px] text-blue focus:outline-none appearance-none bg-transparent pr-[12px] lg:pr-[20px]"
-                  name="option"
-                  id="option"
-                >
-                  <option className="hidden" value="">
-                    Points
-                  </option>
-                  <option className="text-center  " value="500">
-                    500
-                  </option>
-                  <option className="text-center" value="800">
-                    800
-                  </option>
-                  <option className="text-center" value="1000">
-                    1000
-                  </option>
-                  <option className="text-center" value="1200">
-                    1200
-                  </option>
-                  <option className="text-center" value="1400">
-                    1400
-                  </option>
-                  <option className="text-center" value="1600">
-                    1600
-                  </option>
-                  <option className="text-center" value="1800">
-                    1800
-                  </option>
-                  <option className="text-center" value="2000">
-                    2000
-                  </option>
-                </select>
-              </div> */}
             </div>
             <div className="relative inline-block">
               <div
@@ -218,8 +139,18 @@ const CourseAccess = () => {
                       Starting Date
                     </button>
                   </div>
-                  <div className={`${Role === "admin" ? "block" : "hidden"}`}>
-                    <button className="bg-black mt-[24px] p-[3px] rounded-full float-right ">
+                  <div
+                    className={`${
+                      Role === "admin" ? "block" : "hidden"
+                    } relative `}
+                  >
+                    <button
+                      onClick={() => {
+                        if (clickedCourse === course) setClickedCourse(null);
+                        else setClickedCourse(course);
+                      }}
+                      className="bg-black relative mt-[24px] p-[3px] rounded-full float-right "
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="20"
@@ -232,6 +163,22 @@ const CourseAccess = () => {
                           fill="white"
                         />
                       </svg>
+                      {clickedCourse === course && (
+                        <ul className="absolute right-0 bottom-[17px] w-max border  bg-[#141414] border-t-0 p-2 rounded-[8px] mt-1 transform translate-y-[-10px] shadow-[0px_2px_4px_0px_#00000026]">
+                          <li
+                            className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600] "
+                            onClick={() => console.log("Edit Course Details")}
+                          >
+                            Edit Course Details
+                          </li>
+                          <li
+                            className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600] "
+                            onClick={() => console.log("Edit Course Contents")}
+                          >
+                            Edit Course Contents
+                          </li>
+                        </ul>
+                      )}
                     </button>
                   </div>
                 </div>

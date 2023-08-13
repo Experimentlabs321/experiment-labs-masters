@@ -15,6 +15,7 @@ import CongratulationsLeft from "../../../../../assets/Dashboard/Congratulations
 import CongratulationsRight from "../../../../../assets/Dashboard/CongratulationsRight.png";
 import CongratulationsBatch from "../../../../../assets/Dashboard/CongratulationsBatch.png";
 import TimeCounter from "./Component/TimeCounter";
+import DialogLayout from "../../../Shared/DialogLayout";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -238,6 +239,7 @@ const StartTest = () => {
     setAnswered(0);
     setScore(0);
     setIsCounting(false);
+    setOpenConfirmationDialog(false);
   };
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -245,6 +247,7 @@ const StartTest = () => {
   const [score, setScore] = useState(0);
   const [point, setPoint] = useState(0);
   const [answered, setAnswered] = useState(0);
+  const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
 
   const handleOptionChange = (e) => {
     setSelectedOption(e.target.value);
@@ -393,12 +396,48 @@ const StartTest = () => {
         onClose={handleClose}
         TransitionComponent={Transition}
       >
+        {/* Dialog for confirmation start */}
+        <DialogLayout
+          open={openConfirmationDialog}
+          width={500}
+          bgColor="#3E4DAC"
+          borderRadius={10}
+          close={true}
+        >
+          <div className=" py-[56px] px-[40px] ">
+            <h1 className=" text-[#F0E823] text-[22px] font-[700] w-[332px] mx-auto text-center ">
+              Are you sure you want to close the live test you will lose your
+              progress ?
+            </h1>
+            <div className="mt-[64px] flex items-center justify-between ">
+              <button
+                onClick={() => handleClose()}
+                className=" py-[16px] px-[64px] rounded-[20px] border-[3px] text-[21px] font-[600] border-[#FFF] text-white  "
+              >
+                Yes
+              </button>
+              <button
+                onClick={() => {
+                  setOpenConfirmationDialog(false);
+                  setIsCounting(true);
+                }}
+                className=" py-[16px] px-[64px] rounded-[20px] border-[3px] text-[21px] font-[600] border-[#FF557A] bg-[#FF557A]  "
+              >
+                No
+              </button>
+            </div>
+          </div>
+        </DialogLayout>
+        {/* Dialog for confirmation end */}
         <AppBar sx={{ backgroundColor: "#151718", position: "relative" }}>
           <Toolbar>
             <IconButton
               edge="start"
               color="inherit"
-              onClick={handleClose}
+              onClick={() => {
+                setOpenConfirmationDialog(true);
+                setIsCounting(false);
+              }}
               aria-label="close"
             >
               <CloseIcon />

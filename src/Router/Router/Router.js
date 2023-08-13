@@ -48,10 +48,6 @@ import AddingEditingEssayQues from "../../Pages/Dashboard/ContentManagement/Addi
 import AddingEditingMatchingQues from "../../Pages/Dashboard/ContentManagement/AddingEditingMatchingQues";
 import AddingEditingSelectMissingQues from "../../Pages/Dashboard/ContentManagement/AddingEditingSelectMissingQues";
 import AddingEditingTrueFalseQues from "../../Pages/Dashboard/ContentManagement/AddingEditingTrueFalseQues";
-import AssignmentsAssignment from "../../Pages/Dashboard/ExecutionMentorAssignments/MentorAssignments";
-import MentorAssignments from "../../Pages/Dashboard/ExecutionMentorAssignments/MentorAssignments";
-import AssignmentEvaluation1 from "../../Pages/Dashboard/ExecutionMentorAssignments/AssignmentEvaluation1";
-import AssignmentEvaluation2 from "../../Pages/Dashboard/ExecutionMentorAssignments/AssignmentEvaluation2";
 import OnGoingClasses from "../../Pages/Dashboard/ExecutionMentorLiveClasses/OnGoingClasses";
 import UpComingClasses from "../../Pages/Dashboard/ExecutionMentorLiveClasses/UpComingClasses";
 import ExecutionMentorSchedule from "../../Pages/Dashboard/ExecutionMentorSchedule/ExecutionMentorSchedule";
@@ -61,8 +57,10 @@ import Students from "../../Pages/Dashboard/ExecutionMentorDashboard/Students";
 import StudentsWhoNeedMoreGuidance from "../../Pages/Dashboard/ExecutionMentorDashboard/StudentsWhoNeedMoreGuidance";
 import StudentFeedback from "../../Pages/Dashboard/ExecutionMentorDashboard/StudentFeedback";
 import DepartmentEvaluation from "../../Pages/Dashboard/ExecutionMentorDashboard/DepartmentEvaluation";
-
-
+import MentorAssignments from "../../Pages/Dashboard/ExecutionMentorAssignments/MentorAssignments";
+import AssignmentEvaluation1 from "../../Pages/Dashboard/ExecutionMentorAssignments/AssignmentEvaluation1";
+import AssignmentEvaluation2 from "../../Pages/Dashboard/ExecutionMentorAssignments/AssignmentEvaluation2";
+import Skill from "../../Pages/Dashboard/SkillsManagement/Skill";
 
 const router = createBrowserRouter([
   {
@@ -185,7 +183,7 @@ const router = createBrowserRouter([
     element: <ManageLiveClasses />,
   },
   {
-    path: "/assignment",
+    path: "/assignment/:id",
     element: <Assignment />,
   },
 
@@ -211,59 +209,63 @@ const router = createBrowserRouter([
   }, */
   {
     path: "/quizGeneralInfo",
-    element:<QuizGeneralInformation/>,
+    element: <QuizGeneralInformation />,
   },
   {
     path: "/quizResult",
-    element:<QuizResult/>,
+    element: <QuizResult />,
   },
   {
     path: "/quizEvaluationParameter",
-    element:<QuizEvaluationParameter/>,
+    element: <QuizEvaluationParameter />,
   },
   {
     path: "/manageQuestionBank",
-    element:<ManageQuestionBank/>,
+    element: <ManageQuestionBank />,
   },
   {
     path: "/manageQuestion",
-    element:<ManageQuestion/>,
+    element: <ManageQuestion />,
   },
   {
     path: "/addingEditingCalQues",
-    element:<AddingEditingCalQues/>,
+    element: <AddingEditingCalQues />,
   },
   {
     path: "/addingEditingMultiChoQues",
-    element:<AddingEditingMultiChoQues/>,
+    element: <AddingEditingMultiChoQues />,
   },
   {
     path: "/addingEditingEssayQues",
-    element:<AddingEditingEssayQues/>,
+    element: <AddingEditingEssayQues />,
   },
   {
     path: "/addingEditingMatchingQues",
-    element:<AddingEditingMatchingQues/>,
+    element: <AddingEditingMatchingQues />,
   },
   {
     path: "/addingEditingSelectMissingQues",
-    element:<AddingEditingSelectMissingQues/>,
+    element: <AddingEditingSelectMissingQues />,
   },
   {
     path: "/addingEditingTrueFalseQues",
-    element:<AddingEditingTrueFalseQues/>,
+    element: <AddingEditingTrueFalseQues />,
   },
   {
     path: "/mentorAssignments",
-    element:<MentorAssignments/>,
+    element: <MentorAssignments />,
   },
   {
     path: "/assignmentEvaluation1",
-    element:<AssignmentEvaluation1/>,
+    element: <AssignmentEvaluation1 />,
   },
   {
     path: "/assignmentEvaluation2",
-    element:<AssignmentEvaluation2/>,
+    element: <AssignmentEvaluation2 />,
+  },
+  {
+    path: "/skill",
+    element: <Skill />,
   },
   {
     path: "/liveClasses",
