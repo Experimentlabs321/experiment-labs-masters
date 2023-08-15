@@ -4,7 +4,7 @@ import Layout from "../Layout";
 import { Link } from "react-router-dom";
 import AssignmentUpNev from "./AssignmentUpNev";
 import AssignmentRightNev from "./AssignmentRightNev";
-import eye from '../../../assets/Assignments/eye.svg'
+
 
 
 

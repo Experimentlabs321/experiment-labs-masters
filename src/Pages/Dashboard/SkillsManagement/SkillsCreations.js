@@ -86,6 +86,50 @@ const Skill = () => {
     setIsOpenSkillAddForm(false);
   };
 
+  const handleSkillDelete = async (name) => {
+    const deleteData = {
+      organizationId: userInfo?.organizationId,
+      categoryName: selectedSkillCategory?.categoryName,
+      courseId: selectedCourse?._id,
+      skillName: name,
+    };
+    await Swal.fire({
+      title: "Are you sure?",
+      text: "Once deleted, the skill will not recover!",
+      icon: "warning",
+      buttons: true,
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Delete",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        fetch(`${process.env.REACT_APP_BACKEND_API}/deleteSkill`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(deleteData),
+        })
+          .then((result) => {
+            if (result?.ok) {
+              toast.success("Skill Deleted Successfully!");
+              const remainingSkills = selectedSkillCategory?.skills?.filter(
+                (skill) => skill?.skillName !== name
+              );
+              setSelectedSkillCategory({
+                categoryName: selectedSkillCategory?.categoryName,
+                skills: remainingSkills,
+              });
+            }
+          })
+          .catch((error) => {
+            console.error("Fetch error:", error);
+            // Handle error, display a message to the user, etc.
+          });
+      }
+    });
+  };
+
   return (
     <div>
       <Layout>
@@ -144,7 +188,7 @@ const Skill = () => {
             selectedCourse={selectedCourse}
           />
         </div>
-        <div className="px-4 mt-[40px] grid grid-cols-6 gap-4">
+        <div className="px-4 mt-[40px] mb-[20px] grid grid-cols-6 gap-4">
           <div
             onClick={() => {
               if (!skillCategories[0]) {
@@ -156,6 +200,8 @@ const Skill = () => {
                 return;
               }
               setIsOpenSkillAddForm(true);
+              setIsOpenSkillEditForm(false);
+              setParameters([]);
             }}
             className=" bg-[#DBDBDB] border w-full flex flex-col justify-center items-center mt-2 rounded-2xl cursor-pointer z-0"
             style={{ boxShadow: " 0px 4px 4px 0px rgba(0, 0, 0, 0.25)" }}
@@ -209,13 +255,14 @@ const Skill = () => {
                       onMouseDown={() => {
                         setSelectedSkill(item);
                         setIsOpenSkillEditForm(true);
+                        setIsOpenSkillAddForm(false);
                       }}
                     >
                       Edit Skill
                     </li>
                     <li
                       className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
-                      onClick={() => console.log("Edit Course Contents")}
+                      onMouseDown={() => handleSkillDelete(item?.skillName)}
                     >
                       Delete Skill
                     </li>
@@ -247,6 +294,7 @@ const Skill = () => {
         {isOpenSkillAddForm && (
           <AddSkillForm
             setIsOpenSkillAddForm={setIsOpenSkillAddForm}
+            setIsOpenSkillEditForm={setIsOpenSkillEditForm}
             UploadingImg={UploadingImg}
             selectedSkillCategory={selectedSkillCategory}
             skillCategories={skillCategories}

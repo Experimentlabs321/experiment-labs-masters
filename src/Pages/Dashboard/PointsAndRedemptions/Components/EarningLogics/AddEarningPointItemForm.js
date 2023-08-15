@@ -2,85 +2,96 @@ import React, { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { toast } from "react-hot-toast";
-import Parameters from "../../../SkillsManagement/Parameters";
 
 const AddEarningPointItemForm = ({
-  setIsOpenSkillAddForm,
+  setIsOpenEarningItemAddForm,
   UploadingImg,
-  selectedSkillCategory,
-  skillCategories,
-  parameters,
-  setParameters,
-  allParameters,
-  setSelectedSkillCategory,
-  setSkillCategories,
+  selectedEarningCategory,
+  earningCategories,
+  setSelectedEarningCategory,
+  setEarningCategories,
   selectedCourse,
   userInfo,
 }) => {
   const [itemValue, setItemValue] = useState(0);
+  const [selectedItemEarningOption, setSelectedItemEarningOption] =
+    useState("Automated");
+  const handleItemEarningOptionChange = (event) => {
+    setSelectedItemEarningOption(event.target.value);
+  };
   const handleAddSkill = async (event) => {
     event.preventDefault();
+    console.log({
+      organizationId: userInfo?.organizationId,
+      categoryName: selectedEarningCategory?.categoryName,
+      courseId: selectedCourse?._id,
+      earningItem: {
+        earningItemName: event?.target?.earningItemName?.value,
+        itemEarningValue: selectedItemEarningOption,
+        itemValue: event?.target?.itemValue?.value,
+      },
+    });
     if (
-      selectedSkillCategory?.skills?.find(
-        (item) => item?.skillName === event?.target?.skillName?.value
+      selectedEarningCategory?.earningItems?.find(
+        (item) =>
+          item?.earningItemName === event?.target?.earningItemName?.value
       )
     ) {
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "The skill name is already exist!",
+        text: "The item name is already exist!",
       });
       return;
     }
 
-    const newSkill = await axios.post(
-      `${process.env.REACT_APP_BACKEND_API}/skills`,
+    const newItem = await axios.post(
+      `${process.env.REACT_APP_BACKEND_API}/earningPointItems`,
       {
         organizationId: userInfo?.organizationId,
-        categoryName: selectedSkillCategory?.categoryName,
+        categoryName: selectedEarningCategory?.categoryName,
         courseId: selectedCourse?._id,
-        skill: {
-          skillName: event?.target?.skillName?.value,
-          parameters: [...parameters],
-          description: event?.target?.description?.value,
+        earningItem: {
+          earningItemName: event?.target?.earningItemName?.value,
+          itemEarningValue: selectedItemEarningOption,
+          itemValue: event?.target?.itemValue?.value,
         },
       }
     );
 
-    if (newSkill?.data?.acknowledged) {
-      toast.success("Skill added Successfully");
-      const selectedCategorySkills = selectedSkillCategory?.skills
+    if (newItem?.data?.acknowledged) {
+      toast.success("Item added Successfully");
+      const selectedCategoryItems = selectedEarningCategory?.earningItems
         ? [
-            ...selectedSkillCategory?.skills,
+            ...selectedEarningCategory?.earningItems,
             {
-              skillName: event?.target?.skillName?.value,
-              parameters: [...parameters],
-              description: event?.target?.description?.value,
+              earningItemName: event?.target?.earningItemName?.value,
+              itemEarningValue: selectedItemEarningOption,
+              itemValue: event?.target?.itemValue?.value,
             },
           ]
         : [
             {
-              skillName: event?.target?.skillName?.value,
-              parameters: [...parameters],
-              description: event?.target?.description?.value,
+              earningItemName: event?.target?.earningItemName?.value,
+              itemEarningValue: selectedItemEarningOption,
+              itemValue: event?.target?.itemValue?.value,
             },
           ];
-      setSelectedSkillCategory({
-        categoryName: selectedSkillCategory?.categoryName,
-        skills: selectedCategorySkills,
+      setSelectedEarningCategory({
+        categoryName: selectedEarningCategory?.categoryName,
+        earningItems: selectedCategoryItems,
       });
-      const otherCategories = skillCategories?.filter(
-        (item) => selectedSkillCategory?.categoryName !== item?.categoryName
+      const otherCategories = earningCategories?.filter(
+        (item) => selectedEarningCategory?.categoryName !== item?.categoryName
       );
-      setSkillCategories([
+      setEarningCategories([
         {
-          categoryName: selectedSkillCategory?.categoryName,
-          skills: selectedCategorySkills,
+          categoryName: selectedEarningCategory?.categoryName,
+          earningItems: selectedCategoryItems,
         },
         ...otherCategories,
       ]);
-      setParameters([]);
-      setIsOpenSkillAddForm(false);
+      setIsOpenEarningItemAddForm(false);
       event.target.reset();
     }
   };
@@ -90,7 +101,7 @@ const AddEarningPointItemForm = ({
         <div className=" border-[#B7B7B7] relative border p-8 rounded-lg ">
           <div className="absolute top-2 right-2 ">
             <button
-              onClick={() => setIsOpenSkillAddForm(false)}
+              onClick={() => setIsOpenEarningItemAddForm(false)}
               className="flex justify-center items-center rounded-full w-6 h-6 bg-[#A1A1A1] font-bold text-[#000000]"
             >
               x
@@ -122,26 +133,26 @@ const AddEarningPointItemForm = ({
                     </label>
                     <select
                       onChange={(e) =>
-                        setSelectedSkillCategory(
-                          skillCategories?.find(
+                        setSelectedEarningCategory(
+                          earningCategories?.find(
                             (category) =>
                               category?.categoryName === e.target.value
                           )
                         )
                       }
-                      name="skillCategory"
-                      id="skillCategory"
+                      name="earningCategory"
+                      id="earningCategory"
                       className="block w-full px-2 py-2 mt-2 bg-white rounded-md border border-[#B7B7B7] focus:border-blue-500 focus:outline-none focus:ring"
                     >
-                      <option value={selectedSkillCategory?.categoryName}>
-                        {selectedSkillCategory?.categoryName}
+                      <option value={selectedEarningCategory?.categoryName}>
+                        {selectedEarningCategory?.categoryName}
                       </option>
-                      {skillCategories?.map((skillCategory) => (
+                      {earningCategories?.map((earningCategory) => (
                         <>
-                          {skillCategory?.categoryName !==
-                            selectedSkillCategory?.categoryName && (
-                            <option value={skillCategory?.categoryName}>
-                              {skillCategory?.categoryName}
+                          {earningCategory?.categoryName !==
+                            selectedEarningCategory?.categoryName && (
+                            <option value={earningCategory?.categoryName}>
+                              {earningCategory?.categoryName}
                             </option>
                           )}
                         </>
@@ -153,8 +164,8 @@ const AddEarningPointItemForm = ({
                       Earning Point Item
                     </label>
                     <input
-                      id="earningPointItem"
-                      name="earningPointItem"
+                      id="earningItemName"
+                      name="earningItemName"
                       placeholder="Earning Point Item"
                       className="block w-full p-2 mt-2 rounded-md bg-white border border-[#B7B7B7] focus:border-blue-500 focus:outline-none focus:ring"
                     />
@@ -170,7 +181,9 @@ const AddEarningPointItemForm = ({
                           className="peer/draft me-2 "
                           type="radio"
                           name="status"
-                          checked
+                          value="Automated"
+                          checked={selectedItemEarningOption === "Automated"}
+                          onChange={handleItemEarningOptionChange}
                         />
                         <label
                           for="draft"
@@ -186,6 +199,9 @@ const AddEarningPointItemForm = ({
                           class="peer/published me-2"
                           type="radio"
                           name="status"
+                          value="Manual"
+                          checked={selectedItemEarningOption === "Manual"}
+                          onChange={handleItemEarningOptionChange}
                         />
                         <label
                           for="published"
@@ -214,6 +230,8 @@ const AddEarningPointItemForm = ({
                         onChange={(e) => setItemValue(parseInt(e.target.value))}
                         className="w-[60%] focus:outline-none flex justify-center items-center text-center font-sans"
                         type="number"
+                        name="itemValue"
+                        id="itemValue"
                       />
                       <button
                         type="button"
@@ -232,7 +250,7 @@ const AddEarningPointItemForm = ({
                   <input
                     type="submit"
                     value="Proceed"
-                    className="bg-[#2EB0FB] hover:btn-goest rounded-lg p-2 font-semibold text-[#fff]"
+                    className="bg-[#2EB0FB] cursor-pointer rounded-lg p-2 font-semibold text-[#fff]"
                   />
                 </div>
               </div>

@@ -7,7 +7,7 @@ import Layout from "../Layout";
 import { Link } from "react-router-dom";
 import AssignmentUpNev from "./AssignmentUpNev";
 import AssignmentRightNev from "./AssignmentRightNev";
-import arrowRight from '../../../assets/Assignments/arrowRight.svg'
+import arrowRight from '../../../assets/ExecutionMentor/arrowRight.svg'
 
 
 

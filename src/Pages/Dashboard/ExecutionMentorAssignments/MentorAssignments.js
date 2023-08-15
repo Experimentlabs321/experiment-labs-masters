@@ -4,7 +4,7 @@ import Layout from "../Layout";
 import { Link } from "react-router-dom";
 import AssignmentUpNev from "./AssignmentUpNev";
 import AssignmentRightNev from "./AssignmentRightNev";
-import eye from '../../../assets/Assignments/eye.svg'
+import eye from '../../../assets/ExecutionMentor/eye.svg'
 
 
 
@@ -26,7 +26,7 @@ const MentorAssignments = () => {
 
                 <div className=''>
 
-                    <AssignmentUpNev />
+                    <AssignmentUpNev page={'assignment'} />
 
                 </div>
 
@@ -38,8 +38,8 @@ const MentorAssignments = () => {
                                 <Link to='/mentorAssignments'
                                     onClick={() => handleTabClick('Assignments')}
                                     style={{
-                                        fontWeight: selectedTab === 'mentorAssignments' ? 'bold' : 'normal',
-                                        borderBottom: selectedTab === 'mentorAssignments' ? '2px solid black' : 'none'
+                                        fontWeight: selectedTab === 'Assignments' || 'mentorAssignments' ? 'bold' : 'normal',
+                                        borderBottom: selectedTab === 'Assignments' || 'mentorAssignments' ? '2px solid black' : 'none'
                                     }}
                                 >
                                     Assignments
