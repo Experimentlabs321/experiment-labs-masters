@@ -21,6 +21,7 @@ import General from "./Components/Assignment/General";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import SkillBasedParameter from "./Components/Shared/SkillBasedParameter";
 import ItemEarningParameter from "./Components/Shared/ItemEarningParameter";
+import uploadFileToS3 from "../../UploadComponent/s3Uploader";
 
 const Assignment = () => {
   const [isOpenGeneral, setisOpenGeneral] = useState(true);
@@ -263,27 +264,33 @@ const Assignment = () => {
     const AssignmentEndingDateTime = form.AssignmentEndingDateTime?.value;
     const assignmentTotalPointsMarks = +form.assignmentTotalPointsMarks?.value;
 
+    const fileUrl = await uploadFileToS3(selectedFile);
+
+    console.log(fileUrl);
+
     const manageAssignment = {
       assignmentName,
       AssignmentStartingDateTime,
       assignmentTotalPointsMarks,
       AssignmentEndingDateTime,
-      selectedFile,
+      file: fileUrl,
       skillParameterData: skillParameterData,
       earningParameterData: earningParameterData,
     };
 
-    const newAssignment = await axios.post(
-      `${process.env.REACT_APP_BACKEND_API}/assignments/${id}`,
-      manageAssignment
-    );
+    if (fileUrl) {
+      const newAssignment = await axios.post(
+        `${process.env.REACT_APP_BACKEND_API}/assignments/${id}`,
+        manageAssignment
+      );
 
-    if (newAssignment?.data?.result?.acknowledged) {
-      toast.success("Assignment added Successfully");
-      event.target.reset();
+      if (newAssignment?.data?.result?.acknowledged) {
+        toast.success("Assignment added Successfully");
+        event.target.reset();
+      }
+
+      console.log(manageAssignment);
     }
-
-    console.log(manageAssignment);
   };
 
   return (
@@ -328,9 +335,8 @@ const Assignment = () => {
             {isOpenEvaluationParameter && <img src={arrowDown} alt="arrow" />}
 
             <i
-              className={`dropdown-arrow ${
-                isOpenEvaluationParameter ? "open" : ""
-              }`}
+              className={`dropdown-arrow ${isOpenEvaluationParameter ? "open" : ""
+                }`}
             ></i>
           </div>
           {isOpenEvaluationParameter && (
