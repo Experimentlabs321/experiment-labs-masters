@@ -257,6 +257,9 @@ const Assignment = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    const fileUrl = await uploadFileToS3(selectedFile);
+    console.log(selectedFile);
+
     const form = event.target;
 
     const assignmentName = form.assignmentName?.value;
@@ -264,9 +267,7 @@ const Assignment = () => {
     const AssignmentEndingDateTime = form.AssignmentEndingDateTime?.value;
     const assignmentTotalPointsMarks = +form.assignmentTotalPointsMarks?.value;
 
-    const fileUrl = await uploadFileToS3(selectedFile);
-
-    console.log(fileUrl);
+    
 
     const manageAssignment = {
       assignmentName,
