@@ -3,10 +3,10 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import required from "../../../../../assets/ContentManagement/required.png";
 import TextEditor from "../../../../Shared/TextEditor/TextEditor";
 
-const General = () => {
+const General = ({selectedFile, setSelectedFile}) => {
   // upload file
   const [dragActive, setDragActive] = useState(true);
-  const [selectedFile, setSelectedFile] = useState(null);
+  // const [selectedFile, setSelectedFile] = useState(null);
   const [instructions, setInstructions] = useState("");
 
   const handleDragEnter = (e) => {
