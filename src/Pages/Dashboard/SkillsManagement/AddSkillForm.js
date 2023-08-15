@@ -89,7 +89,10 @@ const AddSkillForm = ({
         <div className=" border-[#B7B7B7] relative border p-8 rounded-lg ">
           <div className="absolute top-2 right-2 ">
             <button
-              onClick={() => setIsOpenSkillAddForm(false)}
+              onClick={() => {
+                setIsOpenSkillAddForm(false);
+                setParameters([]);
+              }}
               className="flex justify-center items-center rounded-full w-6 h-6 bg-[#A1A1A1] font-bold text-[#000000]"
             >
               x

@@ -188,19 +188,19 @@ const router = createBrowserRouter([
   },
 
   {
-    path: "/manageReading",
+    path: "/manageReading/:id",
     element: <ManageReading />,
   },
   {
-    path: "/manageFile",
+    path: "/manageFile/:id",
     element: <ManageFile />,
   },
   {
-    path: "/manageVideo",
+    path: "/manageVideo/:id",
     element: <ManageVideo />,
   },
   {
-    path: "/manageAudio",
+    path: "/manageAudio/:id",
     element: <ManageAudio />,
   },
   /* {
