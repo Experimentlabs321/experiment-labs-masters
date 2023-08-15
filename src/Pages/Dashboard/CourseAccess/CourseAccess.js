@@ -31,6 +31,8 @@ const CourseAccess = () => {
       .catch((error) => console.error(error));
   }, []);
 
+  console.log(courses);
+
   return (
     <div>
       <Layout>
@@ -120,7 +122,7 @@ const CourseAccess = () => {
                 <div className="bg-[#F6F7FF] rounded-[20px] p-[20px] max-w-[340px] shadow-[4px_4px_4px_0px_#0000001a]">
                   <img
                     className="w-full rounded-lg"
-                    src={CourseTham}
+                    src={course?.courseThumbnail ? course?.courseThumbnail : CourseTham}
                     alt="CourseTham"
                   />
                   <Link to={`/questLevels/${course?._id}`}>
