@@ -8,38 +8,27 @@ import axios from "axios";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import AddSharpIcon from "@mui/icons-material/AddSharp";
 import Swal from "sweetalert2";
-import EditSkillForm from "./EditSkillForm";
 import SelectEarningCategory from "../PointsAndRedemptions/Components/EarningLogics/SelectEarningCategory";
 import AddEarningPointItemForm from "../PointsAndRedemptions/Components/EarningLogics/AddEarningPointItemForm";
+import { toast } from "react-hot-toast";
+import EditEarningPointItemForm from "../PointsAndRedemptions/Components/EarningLogics/EditEarningPointItemForm";
 
 const Skill = () => {
   const { userInfo } = useContext(AuthContext);
   const [courses, setCourses] = useState([]);
-  const [orgSkills, setOrgSkills] = useState([]);
+  const [orgEarningLogics, setOrgEarningLogics] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(
     courses?.length > 0 ? courses[0] : {}
   );
-  const [skillCategories, setSkillCategories] = useState([]);
-  const [selectedSkillCategory, setSelectedSkillCategory] = useState({});
+  const [earningCategories, setEarningCategories] = useState([]);
+  const [selectedEarningCategory, setSelectedEarningCategory] = useState({});
   const [categoryThreeDot, setCategoryThreeDot] = useState(false);
-  const [skillThreeDot, setSkillThreeDot] = useState(false);
-  const [selectedSkill, setSelectedSkill] = useState({});
-  const [allParameters, setAllParameters] = useState([]);
-  const [parameters, setParameters] = useState([]);
-  const [isOpenSkillAddForm, setIsOpenSkillAddForm] = useState(false);
-  const [isOpenSkillEditForm, setIsOpenSkillEditForm] = useState(false);
-
-  useEffect(() => {
-    let newParameters = [];
-    skillCategories?.forEach((category) => {
-      category?.skills?.forEach((skill) => {
-        newParameters = newParameters.concat(skill?.parameters);
-      });
-    });
-    // Use a Set to ensure unique values and convert it back to an array
-    const uniqueParameters = Array.from(new Set(newParameters));
-    setAllParameters(uniqueParameters);
-  }, [skillCategories]);
+  const [earningThreeDot, setEarningThreeDot] = useState(false);
+  const [selectedEarningLogic, setSelectedEarningLogic] = useState({});
+  const [isOpenEarningItemAddForm, setIsOpenEarningItemAddForm] =
+    useState(false);
+  const [isOpenEarningItemEditForm, setIsOpenEarningItemEditForm] =
+    useState(false);
 
   useEffect(() => {
     axios
@@ -56,32 +45,79 @@ const Skill = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_API}/skill_categories/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_BACKEND_API}/earning_categories/${userInfo?.organizationId}`
       )
       .then((response) => {
-        setOrgSkills(response?.data?.courses);
+        setOrgEarningLogics(response?.data?.courses);
         const findCategories = response?.data?.courses?.find(
           (course) => course?.courseId === selectedCourse?._id
         );
-        setSkillCategories([...findCategories?.categories]);
-        setSelectedSkillCategory({ ...findCategories?.categories[0] });
+        setEarningCategories([...findCategories?.categories]);
+        setSelectedEarningCategory({ ...findCategories?.categories[0] });
       })
       .catch((error) => console.error(error));
   }, [userInfo, selectedCourse]);
 
   const handleSelectCourse = (item) => {
     setSelectedCourse(item);
-    const findCategories = orgSkills?.find(
+    const findCategories = orgEarningLogics?.find(
       (course) => course?.courseId === item?._id
     );
     if (findCategories) {
-      setSkillCategories(findCategories?.categories);
-      setSelectedSkillCategory(findCategories?.categories[0]);
+      setEarningCategories(findCategories?.categories);
+      setSelectedEarningCategory(findCategories?.categories[0]);
     } else {
-      setSkillCategories([]);
-      setSelectedSkillCategory({});
+      setEarningCategories([]);
+      setSelectedEarningCategory({});
     }
-    setIsOpenSkillAddForm(false);
+    setIsOpenEarningItemAddForm(false);
+  };
+
+  const handleItemDelete = async (name) => {
+    const deleteData = {
+      organizationId: userInfo?.organizationId,
+      categoryName: selectedEarningCategory?.categoryName,
+      courseId: selectedCourse?._id,
+      earningItemName: name,
+    };
+    console.log(deleteData);
+    await Swal.fire({
+      title: "Are you sure?",
+      text: "Once deleted, the item will not recover!",
+      icon: "warning",
+      buttons: true,
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Delete",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        fetch(`${process.env.REACT_APP_BACKEND_API}/deleteItem`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(deleteData),
+        })
+          .then((result) => {
+            console.log(result);
+            if (result?.ok) {
+              toast.success("Item Deleted Successfully!");
+              const remainingItems =
+                selectedEarningCategory?.earningItems?.filter(
+                  (item) => item?.earningItemName !== name
+                );
+              setSelectedEarningCategory({
+                categoryName: selectedEarningCategory?.categoryName,
+                earningItems: remainingItems,
+              });
+            }
+          })
+          .catch((error) => {
+            console.error("Fetch error:", error);
+            // Handle error, display a message to the user, etc.
+          });
+      }
+    });
   };
 
   return (
@@ -133,19 +169,19 @@ const Skill = () => {
             </div>
           </div>
           <SelectEarningCategory
-            setSkillCategories={setSkillCategories}
-            skillCategories={skillCategories}
-            selectedSkillCategory={selectedSkillCategory}
-            setSelectedSkillCategory={setSelectedSkillCategory}
+            setEarningCategories={setEarningCategories}
+            earningCategories={earningCategories}
+            selectedEarningCategory={selectedEarningCategory}
+            setSelectedEarningCategory={setSelectedEarningCategory}
             setCategoryThreeDot={setCategoryThreeDot}
             categoryThreeDot={categoryThreeDot}
             selectedCourse={selectedCourse}
           />
         </div>
-        <div className="px-4 mt-[40px] grid grid-cols-6 gap-4">
+        <div className="px-4 mt-[40px] mb-[20px] grid grid-cols-6 gap-4">
           <div
             onClick={() => {
-              if (!skillCategories[0]) {
+              if (!earningCategories[0]) {
                 Swal.fire({
                   icon: "error",
                   title: "Oops...",
@@ -153,7 +189,8 @@ const Skill = () => {
                 });
                 return;
               }
-              setIsOpenSkillAddForm(true);
+              setIsOpenEarningItemAddForm(true);
+              setIsOpenEarningItemEditForm(false);
             }}
             className=" bg-[#DBDBDB] border w-full flex flex-col justify-center items-center mt-2 rounded-2xl cursor-pointer z-0"
             style={{ boxShadow: " 0px 4px 4px 0px rgba(0, 0, 0, 0.25)" }}
@@ -165,17 +202,17 @@ const Skill = () => {
               Add Details
             </div>
           </div>
-          {selectedSkillCategory?.skills?.map((item) => (
+          {selectedEarningCategory?.earningItems?.map((item) => (
             <div
               className=" bg-[#fff] w-full flex flex-col justify-between items-center mt-2 min-h-[210px] rounded-2xl cursor-pointer border relative "
               style={{ boxShadow: " 0px 4px 4px 0px rgba(0, 0, 0, 0.25)" }}
             >
               <button
                 onClick={() => {
-                  setSkillThreeDot(!skillThreeDot);
-                  setSelectedSkill(item);
+                  setEarningThreeDot(!earningThreeDot);
+                  setSelectedEarningLogic(item);
                 }}
-                onBlur={() => setSkillThreeDot(false)}
+                onBlur={() => setEarningThreeDot(false)}
                 className="absolute top-[2px] right-[2px] px-3 py-2 rounded-full hover:bg-slate-100"
               >
                 <svg
@@ -199,28 +236,32 @@ const Skill = () => {
                   />
                 </svg>
               </button>
-              {selectedSkill?.skillName === item?.skillName &&
-                skillThreeDot && (
+              {selectedEarningLogic?.earningItemName ===
+                item?.earningItemName &&
+                earningThreeDot && (
                   <ul className="absolute right-0 top-[40px] w-max border  bg-white p-2 rounded-[8px] mt-1 transform translate-y-[-10px] shadow-[0px_2px_4px_0px_#00000026] z-10 ">
                     <li
                       className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
                       onMouseDown={() => {
-                        setSelectedSkill(item);
-                        setIsOpenSkillEditForm(true);
+                        setSelectedEarningLogic(item);
+                        setIsOpenEarningItemEditForm(true);
+                        setIsOpenEarningItemAddForm(false);
                       }}
                     >
-                      Edit Skill
+                      Edit Item
                     </li>
                     <li
                       className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
-                      onClick={() => console.log("Edit Course Contents")}
+                      onMouseDown={() =>
+                        handleItemDelete(item?.earningItemName)
+                      }
                     >
-                      Delete Skill
+                      Delete Item
                     </li>
                   </ul>
                 )}
-              <h1 className=" text-[#737373] text-[16px] font-[500] mt-[18px] px-5 text-center ">
-                {item?.skillName}
+              <h1 className=" text-[#737373] text-[16px] font-[700] mt-[18px] px-5 text-center ">
+                {item?.earningItemName}
               </h1>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -236,40 +277,34 @@ const Skill = () => {
                   fill="#0551E6"
                 />
               </svg>
-              <p className="mb-[15px] px-[15px] text-center text-[#8F8F8F] text-xs font-[500] ">
-                {item?.description}
+              <p className="mb-[15px] px-[15px] text-center text-[#8F8F8F] text-sm font-[500] ">
+                {item?.itemEarningValue}
               </p>
             </div>
           ))}
         </div>
-        {isOpenSkillAddForm && (
+        {isOpenEarningItemAddForm && (
           <AddEarningPointItemForm
-            setIsOpenSkillAddForm={setIsOpenSkillAddForm}
+            setIsOpenEarningItemAddForm={setIsOpenEarningItemAddForm}
             UploadingImg={UploadingImg}
-            selectedSkillCategory={selectedSkillCategory}
-            skillCategories={skillCategories}
-            parameters={parameters}
-            setParameters={setParameters}
-            allParameters={allParameters}
-            setSelectedSkillCategory={setSelectedSkillCategory}
-            setSkillCategories={setSkillCategories}
+            selectedEarningCategory={selectedEarningCategory}
+            earningCategories={earningCategories}
+            setSelectedEarningCategory={setSelectedEarningCategory}
+            setEarningCategories={setEarningCategories}
             selectedCourse={selectedCourse}
             userInfo={userInfo}
           />
         )}
-        {isOpenSkillEditForm && selectedSkill?.skillName && (
-          <EditSkillForm
-            selectedSkill={selectedSkill}
-            setIsOpenSkillEditForm={setIsOpenSkillEditForm}
-            setIsOpenSkillAddForm={setIsOpenSkillAddForm}
+        {isOpenEarningItemEditForm && selectedEarningLogic?.earningItemName && (
+          <EditEarningPointItemForm
+            selectedEarningLogic={selectedEarningLogic}
+            setIsOpenEarningItemEditForm={setIsOpenEarningItemEditForm}
+            setIsOpenEarningItemAddForm={setIsOpenEarningItemAddForm}
             UploadingImg={UploadingImg}
-            selectedSkillCategory={selectedSkillCategory}
-            skillCategories={skillCategories}
-            parameters={parameters}
-            setParameters={setParameters}
-            allParameters={allParameters}
-            setSelectedSkillCategory={setSelectedSkillCategory}
-            setSkillCategories={setSkillCategories}
+            selectedEarningCategory={selectedEarningCategory}
+            earningCategories={earningCategories}
+            setSelectedEarningCategory={setSelectedEarningCategory}
+            setEarningCategories={setEarningCategories}
             selectedCourse={selectedCourse}
             userInfo={userInfo}
           />

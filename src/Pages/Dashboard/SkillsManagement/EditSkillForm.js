@@ -1,5 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Parameters from "./Parameters";
+import Swal from "sweetalert2";
+import { toast } from "react-hot-toast";
+import axios from "axios";
 
 const EditSkillForm = ({
   setIsOpenSkillAddForm,
@@ -16,15 +19,165 @@ const EditSkillForm = ({
   selectedSkill,
   setIsOpenSkillEditForm,
 }) => {
-  setParameters(selectedSkill?.parameters);
-  const handleEditSkill = () => {};
+  useEffect(() => {
+    setParameters(selectedSkill?.parameters);
+  }, []);
+
+  const handleEditSkill = async (event) => {
+    event.preventDefault();
+    const data = {
+      organizationId: userInfo?.organizationId,
+      categoryName: event?.target?.skillCategory?.value,
+      courseId: selectedCourse?._id,
+      oldSkillName: selectedSkill?.skillName,
+      skill: {
+        skillName: event?.target?.skillName?.value,
+        parameters: [...parameters],
+        description: event?.target?.description?.value,
+      },
+    };
+    console.log(data);
+    if (data?.categoryName === selectedSkillCategory?.categoryName) {
+      // if (
+      //   selectedSkillCategory?.skills?.find(
+      //     (item) => item?.skillName === event?.target?.skillName?.value
+      //   )
+      // ) {
+      //   setIsOpenSkillEditForm(false);
+      //   Swal.fire({
+      //     icon: "error",
+      //     title: "Skill already exist!",
+      //     text: "Please enter an unique skill name!",
+      //   });
+      //   return;
+      // }
+      const updatedSkill = await axios.put(
+        `${process.env.REACT_APP_BACKEND_API}/editSkill`,
+        data
+      );
+      if (updatedSkill?.data?.acknowledged) {
+        toast.success("Skill Updated Successfully");
+        const updateSkillsArray = [...selectedSkillCategory?.skills];
+        const selectedSkillIndex = updateSkillsArray?.findIndex(
+          (skill) => skill?.skillName === selectedSkill?.skillName
+        );
+        updateSkillsArray[selectedSkillIndex] = data?.skill;
+        const updatedCategoriesArray = [...skillCategories];
+        const selectedIndex = updatedCategoriesArray.findIndex(
+          (category) =>
+            category.categoryName === selectedSkillCategory.categoryName
+        );
+        updatedCategoriesArray[selectedIndex].skills = updateSkillsArray;
+        setSkillCategories(updatedCategoriesArray);
+        setSelectedSkillCategory(updatedCategoriesArray[selectedIndex]);
+        setIsOpenSkillEditForm(false);
+        event.target.reset();
+      }
+    } else {
+      let currentCategory = skillCategories?.find(
+        (item) => item?.categoryName === data?.categoryName
+      );
+      // if (
+      //   currentCategory?.skills?.find(
+      //     (item) => item?.skillName === event?.target?.skillName?.value
+      //   )
+      // ) {
+      //   setIsOpenSkillEditForm(false);
+      //   Swal.fire({
+      //     icon: "error",
+      //     title: "Skill already exist!",
+      //     text: "Please enter an unique skill name!",
+      //   });
+      //   return;
+      // }
+      const newSkill = await axios.post(
+        `${process.env.REACT_APP_BACKEND_API}/skills`,
+        {
+          organizationId: userInfo?.organizationId,
+          categoryName: currentCategory?.categoryName,
+          courseId: selectedCourse?._id,
+          skill: {
+            skillName: event?.target?.skillName?.value,
+            parameters: [...parameters],
+            description: event?.target?.description?.value,
+          },
+        }
+      );
+      if (newSkill?.data?.acknowledged) {
+        fetch(`${process.env.REACT_APP_BACKEND_API}/deleteSkill`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            organizationId: userInfo?.organizationId,
+            categoryName: selectedSkillCategory?.categoryName,
+            courseId: selectedCourse?._id,
+            skillName: selectedSkill?.skillName,
+          }),
+        })
+          .then((result) => {
+            if (result?.ok) {
+              const remainingSkills = selectedSkillCategory?.skills?.filter(
+                (skill) => skill?.skillName !== selectedSkill?.skillName
+              );
+              setSelectedSkillCategory({
+                categoryName: selectedSkillCategory?.categoryName,
+                skills: remainingSkills,
+              });
+              const selectedCategorySkills = currentCategory?.skills
+                ? [
+                    ...currentCategory?.skills,
+                    {
+                      skillName: event?.target?.skillName?.value,
+                      parameters: [...parameters],
+                      description: event?.target?.description?.value,
+                    },
+                  ]
+                : [
+                    {
+                      skillName: event?.target?.skillName?.value,
+                      parameters: [...parameters],
+                      description: event?.target?.description?.value,
+                    },
+                  ];
+              setSelectedSkillCategory({
+                categoryName: currentCategory?.categoryName,
+                skills: selectedCategorySkills,
+              });
+              const otherCategories = skillCategories?.filter(
+                (item) => currentCategory?.categoryName !== item?.categoryName
+              );
+              setSkillCategories([
+                {
+                  categoryName: currentCategory?.categoryName,
+                  skills: selectedCategorySkills,
+                },
+                ...otherCategories,
+              ]);
+              setParameters([]);
+              setIsOpenSkillEditForm(false);
+              event.target.reset();
+              toast.success("Skill Updated Successfully!");
+            }
+          })
+          .catch((error) => {
+            console.error("Fetch error:", error);
+            // Handle error, display a message to the user, etc.
+          });
+      }
+    }
+  };
   return (
     <>
       <div className="px-4 my-[40px]">
         <div className=" border-[#B7B7B7] relative border p-8 rounded-lg ">
           <div className="absolute top-2 right-2 ">
             <button
-              onClick={() => setIsOpenSkillEditForm(false)}
+              onClick={() => {
+                setIsOpenSkillEditForm(false);
+                setParameters([]);
+              }}
               className="flex justify-center items-center rounded-full w-6 h-6 bg-[#A1A1A1] font-bold text-[#000000]"
             >
               x
@@ -55,14 +208,6 @@ const EditSkillForm = ({
                       Skill Category
                     </label>
                     <select
-                      onChange={(e) =>
-                        setSelectedSkillCategory(
-                          skillCategories?.find(
-                            (category) =>
-                              category?.categoryName === e.target.value
-                          )
-                        )
-                      }
                       defaultValue={selectedSkillCategory?.categoryName}
                       name="skillCategory"
                       id="skillCategory"

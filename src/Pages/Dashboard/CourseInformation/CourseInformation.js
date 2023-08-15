@@ -56,7 +56,7 @@ const CourseInformation = () => {
       name: "Reading",
       icon: ReadingTaskIcon,
       theme: "#8C0CF0",
-      route: "/manageReading",
+      route: `/manageReading/${chapterData?._id}`,
     },
     {
       name: "Quiz",
@@ -74,19 +74,19 @@ const CourseInformation = () => {
       name: "Video",
       icon: VideoTaskIcon,
       theme: "#0079FF",
-      route: "/assignment",
+      route: `/manageVideo/${chapterData?._id}`,
     },
     {
       name: "Audio",
       icon: AudioTaskIcon,
       theme: "#4539CB",
-      route: "/assignment",
+      route: `/manageAudio/${chapterData?._id}`,
     },
     {
       name: "Files",
       icon: FilesTaskIcon,
       theme: "#001246",
-      route: "/assignment",
+      route: `/manageFile/${chapterData?._id}`,
     },
   ];
 

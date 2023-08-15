@@ -69,20 +69,15 @@ const SelectSkillCategory = ({
       organizationId: userInfo?.organizationId,
       oldCategoryName: selectedSkillCategory?.categoryName,
       newCategoryName: event?.target?.categoryName?.value,
-      courseId: selectedCourse?.courseId,
+      courseId: selectedCourse?._id,
     };
-    console.log({
-      organizationId: userInfo?.organizationId,
-      oldCategoryName: selectedSkillCategory?.categoryName,
-      newCategoryName: event?.target?.categoryName?.value,
-      courseId: selectedCourse?.courseId,
-    });
     const updatedCategory = await axios.put(
-      `${process.env.REACT_APP_BACKEND_API}/updateCategoryName`,
+      `${process.env.REACT_APP_BACKEND_API}/skill_categories/updateCategoryName`,
       update
     );
+    console.log(updatedCategory);
 
-    if (updatedCategory?.data?.acknowledged) {
+    if (updatedCategory?.status === 200) {
       toast.success("Week Updated Successfully");
       const updatedCategoriesArray = [...skillCategories];
       const selectedIndex = updatedCategoriesArray.findIndex(
@@ -98,6 +93,11 @@ const SelectSkillCategory = ({
   };
 
   const handleCategoryDelete = async (name) => {
+    const deleteData = {
+      organizationId: userInfo?.organizationId,
+      categoryName: name,
+      courseId: selectedCourse?._id,
+    };
     await Swal.fire({
       title: "Are you sure?",
       text: "Once deleted, the category will not recover!",
@@ -108,38 +108,12 @@ const SelectSkillCategory = ({
       confirmButtonText: "Delete",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        console.log({
-          organizationId: userInfo?.organizationId,
-          categoryName: name,
-          courseId: selectedCourse?._id,
-        });
-        // await axios
-        //   .put(`${process.env.REACT_APP_BACKEND_API}/deleteCategory`, {
-        //     organizationId: "" + userInfo?.organizationId,
-        //     categoryName: "" + name,
-        //     courseId: "" + selectedCourse?.courseId,
-        //   })
-        // fetch(`${process.env.REACT_APP_BACKEND_API}/deleteCategory`, {
-        //   method: "DELETE",
-        //   headers: {
-        //     "content-type": "application/json",
-        //   },
-        //   body: JSON.stringify({
-        //     organizationId: userInfo?.organizationId,
-        //     categoryName: name,
-        //     courseId: selectedCourse?.courseId,
-        //   }),
-        // })
         fetch(`${process.env.REACT_APP_BACKEND_API}/deleteCategory`, {
-          method: "DELETE",
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            organizationId: userInfo?.organizationId,
-            categoryName: name,
-            courseId: selectedCourse?.courseId,
-          }),
+          body: JSON.stringify(deleteData),
         })
           .then((response) => {
             if (!response.ok) {
@@ -148,7 +122,7 @@ const SelectSkillCategory = ({
             return response.json();
           })
           .then((result) => {
-            if (result?.data?.deletedCount > 0) {
+            if (result?.acknowledged) {
               toast.success("Category Deleted Successfully!");
               const remainingCategories = skillCategories.filter(
                 (category) => category?.categoryName !== name

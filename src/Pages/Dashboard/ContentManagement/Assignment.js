@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Layout from "../Layout";
 import arrowDown from "../../../assets/SkillsManagement/arrow.svg";
 import arrowright from "../../../assets/SkillsManagement/arrowright.svg";
@@ -18,6 +18,9 @@ import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import General from "./Components/Assignment/General";
+import { AuthContext } from "../../../contexts/AuthProvider";
+import SkillBasedParameter from "./Components/Shared/SkillBasedParameter";
+import ItemEarningParameter from "./Components/Shared/ItemEarningParameter";
 
 const Assignment = () => {
   const [isOpenGeneral, setisOpenGeneral] = useState(true);
@@ -217,6 +220,40 @@ const Assignment = () => {
     setOpenearningparameter(false);
   };
 
+  // ----   code by shihab   ----
+  const { user, userInfo } = useContext(AuthContext);
+  const [chapter, setChapter] = useState({});
+  const [skillCategories, setSkillCategories] = useState([]);
+  const [earningCategories, setEarningCategories] = useState([]);
+  const [skillParameterData, setSkillParameterData] = useState([]);
+  const [earningParameterData, setEarningParameterData] = useState([]);
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
+      .then((response) => {
+        setChapter(response?.data);
+        const fetchData = {
+          organizationId: userInfo?.organizationId,
+          courseId: response?.data?.courseId,
+        };
+        axios
+          .post(
+            `${process.env.REACT_APP_BACKEND_API}/skillCategoriesByCourseId`,
+            fetchData
+          )
+          .then((res) => setSkillCategories(res?.data))
+          .catch((error) => console.error(error));
+        axios
+          .post(
+            `${process.env.REACT_APP_BACKEND_API}/itemCategoryByCourseId`,
+            fetchData
+          )
+          .then((res) => setEarningCategories(res?.data))
+          .catch((error) => console.error(error));
+      })
+      .catch((error) => console.error(error));
+  }, [id, userInfo, userInfo?.email]);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.target;
@@ -225,7 +262,6 @@ const Assignment = () => {
     const AssignmentStartingDateTime = form.AssignmentStartingDateTime?.value;
     const AssignmentEndingDateTime = form.AssignmentEndingDateTime?.value;
     const assignmentTotalPointsMarks = +form.assignmentTotalPointsMarks?.value;
-    const skillCategory = form.selectskillcategory?.value;
 
     const manageAssignment = {
       assignmentName,
@@ -233,7 +269,8 @@ const Assignment = () => {
       assignmentTotalPointsMarks,
       AssignmentEndingDateTime,
       selectedFile,
-      skillCategory,
+      skillParameterData: skillParameterData,
+      earningParameterData: earningParameterData,
     };
 
     const newAssignment = await axios.post(
@@ -298,7 +335,7 @@ const Assignment = () => {
           </div>
           {isOpenEvaluationParameter && (
             <div className="dropdown-menu mt-[71px] mb-[45px] ">
-              <div className="flex justify-between me-10">
+              {/* <div className="flex justify-between me-10">
                 <p className="flex items-center border-b-2 h-[50px] text-xl font-medium">
                   Skill Based Parameter
                 </p>
@@ -402,9 +439,14 @@ const Assignment = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
+              <SkillBasedParameter
+                selectedData={skillParameterData}
+                setSelectedData={setSkillParameterData}
+                categories={skillCategories}
+              />
 
-              <div className="flex me-10 justify-between mt-20">
+              {/* <div className="flex me-10 justify-between mt-20">
                 <div className="">
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
@@ -713,9 +755,9 @@ const Assignment = () => {
                     )}
                   </div>
                 </div>
-              </div>
+              </div> */}
 
-              <div className=" mt-[90px]  border-b-2">
+              {/* <div className=" mt-[90px]  border-b-2">
                 <div className="flex justify-center">
                   {!parametersection && (
                     <p
@@ -732,7 +774,6 @@ const Assignment = () => {
                     <form className="w-full">
                       <div className="flex justify-between">
                         <div className="mx-10 mt-10 w-1/6 ">
-                          {/* 1 */}
                           <div
                             className={`w-11/12  h-[38px] flex justify-between items-center px-4 py-2 text-sm font-medium ${
                               SoftSkills ? "text-[#0A98EA] " : "text-[black]"
@@ -1002,9 +1043,14 @@ const Assignment = () => {
                     </div>
                   </div>
                 )}
-              </div>
+              </div> */}
 
-              <div className="">
+              <ItemEarningParameter
+                selectedData={earningParameterData}
+                setSelectedData={setEarningParameterData}
+                categories={earningCategories}
+              />
+              {/* <div className="">
                 <div className="flex justify-between me-10 mt-10">
                   <p className="text-xl font-medium border-b-2 flex items-center">
                     Item Earning Parameter
@@ -1183,7 +1229,7 @@ const Assignment = () => {
                     </div>
                   )}
                 </div>
-              </div>
+              </div> */}
             </div>
           )}
 
