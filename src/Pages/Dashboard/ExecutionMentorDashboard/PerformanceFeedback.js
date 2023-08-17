@@ -9,28 +9,15 @@ import exportData from '../../../assets/ExecutionMentor/exportData.svg';
 import mingcute from '../../../assets/ExecutionMentor/mingcute.svg';
 import eye1 from '../../../assets/ExecutionMentor/eye1.svg';
 import arrowBack from '../../../assets/ExecutionMentor/arrow-back.svg';
-import arrowDown from '../../../assets/ExecutionMentor/arrowDown.svg';
-import arrowRight from '../../../assets/ExecutionMentor/arrowRight.svg';
-import arrowRight1 from '../../../assets/ExecutionMentor/arrowRight1.svg';
 
-import { CircularProgressbar } from "react-circular-progressbar";
+
+
 import "react-circular-progressbar/dist/styles.css";
 
-import { Line } from 'react-chartjs-2';
-import Chart from 'chart.js/auto';
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
-Chart.register({
-    id: 'category',
-    afterUpdate(scale) {
-        const maxTicks = scale._maxTicks;
-        const maxTicksLimit = scale.options.maxTicksLimit;
+import ReactApexChart from 'react-apexcharts';
 
-        if (maxTicks && maxTicks !== maxTicksLimit) {
-            scale.options.ticks.stepSize = Math.ceil(maxTicks / maxTicksLimit);
-        }
-    },
-});
+
 
 
 const PerformanceFeedback = () => {
@@ -44,7 +31,15 @@ const PerformanceFeedback = () => {
 
     ////////
 
-    const Monthly = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+    const series = [
+        {
+            name: 'series1',
+            data: [2.8, 2, 3.5, 3.2 , 3 , 2.8 , 2.5, 2.3, 2]
+        },
+
+    ];
+
+    const Monthly = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul' , 'Aug' , 'Sep'];
     const Weekly = ['Sat', 'Sun', 'Mon', 'Tus', 'Wed', 'Thu', 'Fri'];
     const Daily = ['Sat', 'Sun', 'Mon', 'Tus', 'Wed', 'Thu', 'Fri'];
 
@@ -59,32 +54,24 @@ const PerformanceFeedback = () => {
         labels = Daily;
     }
 
-    const data = {
-
-        labels: labels,
-        datasets: [
-            {
-                label: '',
-                data: [2.8, 0.5, 1, 5, 2, 2.5, 3, 3.5, 4],
-                fill: true,
-                borderColor: 'rgb(75, 192, 192)',
-                tension: 0.1,
-
-            },
-        ],
-    };
-
-    const config = {
-        type: 'line',
-        data: data,
-        options: {
-            scales: {
-                x: {
-                    type: 'category', // Use the 'category' scale for the x-axis
-                },
-            },
+    const options = {
+        chart: {
+            height: 350,
+            type: 'area'
         },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            curve: 'smooth'
+        },
+        xaxis: {
+            type: 'text',
+            categories: labels
+        },
+       
     };
+
 
 
 
@@ -111,20 +98,7 @@ const PerformanceFeedback = () => {
                         <div className="w-full ">
                             <div className="flex justify-between items-center mb-5">
                                 <Link to='/executionMentorDashboard' className="text-[20px] font-bold flex items-center gap-2"><span><img src={arrowBack} alt="icon" /></span> Performance</Link>
-                                {/*   <p>  <FormControl sx={{ m: 1, minWidth: 80 }} size="small">
-                                        <InputLabel id="demo-select-small-label">Overall</InputLabel>
-                                        <Select
-                                            labelId="demo-select-small-label"
-                                            id="demo-select-small"
-                                            value={day}
-                                            label="day"
-                                            onChange={handleChange}
-                                        >
-                                            <MenuItem value={'Daily'}>Daily</MenuItem>
-                                            <MenuItem value={'Weekly'}>Weekly</MenuItem>
-                                            <MenuItem value={'Monthly'}>Monthly</MenuItem>
-                                        </Select>
-                                    </FormControl></p> */}
+
                                 <div className="flex gap-5 ">
                                     <p className="flex items-center gap-2 bg-[#F0F7FF] p-2 rounded-md text-base font-normal"><img src={filter1} alt="icon" />Filter</p>
                                     <p className="flex items-center gap-2 bg-[#001246] p-2 rounded-md text-base font-normal text-[#fff]"><img src={exportData} alt="icon" />Export Data</p>
@@ -132,12 +106,10 @@ const PerformanceFeedback = () => {
 
 
                             </div>
-
-                            <Line
-                                style={{ width: '100%'}}
-                                data={config.data}
-                                options={config.options}
-                            />
+                            <div id="chart">
+                                <ReactApexChart options={options} series={series} type="area" height={350} />
+                            </div>
+                         
 
                         </div>
 

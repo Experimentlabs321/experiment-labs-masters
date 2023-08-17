@@ -13,21 +13,10 @@ import arrowRight1 from '../../../assets/ExecutionMentor/arrowRight1.svg';
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
-import { Line } from 'react-chartjs-2';
-import Chart from 'chart.js/auto';
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import ReactApexChart from 'react-apexcharts';
 
-Chart.register({
-    id: 'category',
-    afterUpdate(scale) {
-        const maxTicks = scale._maxTicks;
-        const maxTicksLimit = scale.options.maxTicksLimit;
 
-        if (maxTicks && maxTicks !== maxTicksLimit) {
-            scale.options.ticks.stepSize = Math.ceil(maxTicks / maxTicksLimit);
-        }
-    },
-});
 
 
 
@@ -42,6 +31,14 @@ const ExecutionMentorDashboard = () => {
     };
 
     ////////
+
+    const series = [
+        {
+            name: 'series1',
+            data: [2.8, 2, 3.5, 2]
+        },
+
+    ];
 
     const Monthly = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
     const Weekly = ['Sat', 'Sun', 'Mon', 'Tus', 'Wed', 'Thu', 'Fri'];
@@ -58,32 +55,27 @@ const ExecutionMentorDashboard = () => {
         labels = Daily;
     }
 
-    const data = {
-
-        labels: labels,
-        datasets: [
-            {
-                label: '',
-                data: [2.8, 0.5, 1, 5, 2, 2.5, 3, 3.5, 4],
-                fill: true,
-                borderColor: 'rgb(75, 192, 192)',
-                tension: 0.1,
-
-            },
-        ],
-    };
-
-    const config = {
-        type: 'line',
-        data: data,
-        options: {
-            scales: {
-                x: {
-                    type: 'category', // Use the 'category' scale for the x-axis
-                },
-            },
+    const options = {
+        chart: {
+            height: 350,
+            type: 'area'
         },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            curve: 'smooth'
+        },
+        xaxis: {
+            type: 'text',
+            categories: labels
+        },
+       
     };
+
+
+
+    
 
 
 
@@ -142,28 +134,15 @@ const ExecutionMentorDashboard = () => {
                                             <MenuItem value={'Monthly'}>Monthly</MenuItem>
                                         </Select>
                                     </FormControl></p>
-                                    {/* <p className="flex items-center gap-2 text-[13px] font-bold text-[#8A8A8A]">Overall <span><img src={arrowDown} alt="arrowDown" /></span></p> */}
+                                 
                                 </div>
 
-                                <Line
-                                    style={{ width: '100%' }}
-                                    data={config.data}
-                                    options={config.options} />
+                              
 
+                                <div id="chart">
+                                    <ReactApexChart options={options} series={series} type="area" height={350} />
+                                </div>
 
-
-                                {/*  <LineChart
-                                    style={chartStyle}
-                                    xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
-                                    series={[
-                                        {
-                                            data: [2, 5.5, 2, 8.5, 1.5, 5],
-                                            area: true,
-                                        },
-                                    ]}
-                                    // width={700}
-                                    height={355}
-                                /> */}
                             </div>
 
                             <div className="w-[50%]">
@@ -284,7 +263,7 @@ const ExecutionMentorDashboard = () => {
                         </div>
                         <div className="flex justify-between items-center my-10">
                             <p className="text-[15px] font-bold">Students who need more guidance and attention</p>
-                            <Link  to='/studentsWhoNeedMoreGuidance' className="flex items-center gap-2 text-[13px] font-bold text-[#8A8A8A]">View all <span><img src={arrowDown} alt="arrowDown" /></span></Link>
+                            <Link to='/studentsWhoNeedMoreGuidance' className="flex items-center gap-2 text-[13px] font-bold text-[#8A8A8A]">View all <span><img src={arrowDown} alt="arrowDown" /></span></Link>
                         </div>
 
                         <div className="flex gap-5 w-full">

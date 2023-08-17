@@ -231,7 +231,17 @@ const NavBar = (props) => {
     const Role = localStorage.getItem("role");
     if (Role === "admin") {
       navigate("/userManagement");
-    } else {
+    }
+   else if (Role === "execution mentor") {
+      navigate("/executionMentorDashboard");
+    }
+   else if (Role === "unpaid student") {
+      navigate("/unpaidStudentDashboard");
+    }
+   else if (Role === "expert mentor") {
+      navigate("/expertMentorDashboard");
+    }
+     else {
       navigate("/dashboard");
     }
   };
@@ -253,32 +263,67 @@ const NavBar = (props) => {
   // };
 
   // Register user with Email Password
-  const registerUser = (e) => {
-    createUser(loginData.email, loginData.password)
+  const registerUser = (e) =>{
+    e.preventDefault();
+    const form = e?.target;
+    const name = form.name.value;
+    const email = form.email.value;
+    const password = form.password.value;
+    console.log(email,name,password)
+    
+    createUser(email, password)
+   
+
+    .then(result => {
+      const user = result?.user;
+      console.log(user);
+
+      alert('Register successfull')
+      setOpen2(false);
+
+      updateUserProfile({
+        displayName: name,
+      })
+      saveUser(email);
+      form.reset();
+      
+  })
+  .catch(err => console.error(err));
+    
+ 
+  }
+
+
+
+ /*  const registerUser = (e) => {
+    console.log(e)
+    createUser(e.email, e.password)
+
       .then((userCredential) => {
         // sent name to firebase
+        alert("Create Successfull");
         updateUserProfile({
-          displayName: loginData.name,
+          displayName: e.name,
         })
           .then(() => {
             // graphyLogin(loginData.email, loginData.name);
-            saveUser(loginData.email);
+            saveUser(e.email);
             // navigate("/dashboard");
           })
-          .catch((error) => {});
+          .catch((error) => { });
       })
       .catch((error) => {
         console.log(error.message);
       });
     e.preventDefault();
-  };
+  }; */
 
   // Login user with Email Password
   const loginUser = (email, password, location, history) => {
     saveUser(email);
     signIn(email, password)
-      .then((userCredential) => {})
-      .catch((error) => {});
+      .then((userCredential) => { })
+      .catch((error) => { });
   };
 
   const handleOnChange = (e) => {
@@ -291,26 +336,27 @@ const NavBar = (props) => {
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
+    
+    const form = e?.target;
+    const email = form.email.value;
+
     try {
       await signIn(loginDataMain.email, loginDataMain.password).then(() => {
         setNewLogin(true);
+        setOpen1(false);
+        saveUser(email);
+
       });
     } catch (error) {
       console.log(error);
     }
   };
-  const saveUser = (email) => {
+  const saveUser = async(email) => {
     const users = { email };
-    fetch("https://experiment-labs-master-server-rakibul58.vercel.app/login", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(users),
-    })
+    fetch(`https://experiment-labs-master-server-rakibul58.vercel.app/users?email=${email}`)
       .then((res) => res.json())
       .then((data) => {
-        console.log("aaaaaaaaa", data.role);
+        console.log("aaaaaaaaa", data);
 
         // setRole(data?.role);
         localStorage.setItem("role", data?.role);

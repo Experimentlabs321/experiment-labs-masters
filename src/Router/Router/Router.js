@@ -61,6 +61,10 @@ import MentorAssignments from "../../Pages/Dashboard/ExecutionMentorAssignments/
 import AssignmentEvaluation1 from "../../Pages/Dashboard/ExecutionMentorAssignments/AssignmentEvaluation1";
 import AssignmentEvaluation2 from "../../Pages/Dashboard/ExecutionMentorAssignments/AssignmentEvaluation2";
 import Skill from "../../Pages/Dashboard/SkillsManagement/Skill";
+import UnpaidStudentDashboard from "../../Pages/Dashboard/UnpaidStudentDashboard/UnpaidStudentDashboard";
+import StudentControlDashboard from "../../Pages/Dashboard/StudentControl/StudentControlDashboard";
+import UnpaidDashboard from "../../Pages/Dashboard/StudentControl/UnpaidDashboard";
+import ExpertMentorDashboard from "../../Pages/Dashboard/ExpertMentorDashboard/ExpertMentorDashboard";
 
 const router = createBrowserRouter([
   {
@@ -302,6 +306,22 @@ const router = createBrowserRouter([
   {
     path: "/departmentEvaluation",
     element:<DepartmentEvaluation/>,
+  },
+  {
+    path: "/unpaidStudentDashboard",
+    element:<UnpaidStudentDashboard/>,
+  },
+  {
+    path: "/studentControl",
+    element:<StudentControlDashboard/>,
+  },
+  {
+    path: "/unpaidDashboard",
+    element:<UnpaidDashboard/>,
+  },
+  {
+    path: "/expertMentorDashboard",
+    element:<ExpertMentorDashboard/>,
   },
  
  
