@@ -222,6 +222,12 @@ const SkillBasedParameter = ({ categories, selectedData, setSelectedData }) => {
       skillValue: skill?.skillValue,
       parameters: newParameters,
     });
+    setSelectedData([
+      ...selectedData?.filter(
+        (item) => item?.categoryName !== selectedCategory?.categoryName
+      ),
+      selectedCategory,
+    ]);
   };
   const handleParameterValue = (parameter, e) => {
     const findParameter = selectedSkill?.parameters?.find(
@@ -236,7 +242,6 @@ const SkillBasedParameter = ({ categories, selectedData, setSelectedData }) => {
         newParameters?.push(findParameter);
       }
     });
-    console.log(newParameters, e.target.value);
     setSelectedSkill({
       skillName: selectedSkill?.skillName,
       skillValue: selectedSkill?.skillValue,
@@ -258,6 +263,12 @@ const SkillBasedParameter = ({ categories, selectedData, setSelectedData }) => {
       categoryName: selectedCategory?.categoryName,
       skills: newSkills,
     });
+    setSelectedData([
+      ...selectedData?.filter(
+        (item) => item?.categoryName !== selectedCategory?.categoryName
+      ),
+      selectedCategory,
+    ]);
   };
 
   const [proceed, setProceed] = useState(false);
@@ -634,7 +645,7 @@ const SkillBasedParameter = ({ categories, selectedData, setSelectedData }) => {
         </div>
         {proceed && (
           <div className=" mt-2 rounded border mb-5 flex me-10 ">
-            <form onSubmit={() => console.log("data")} className="w-full">
+            <form className="w-full">
               <div className="grid grid-cols-12 gap-4 2xl:gap-6 p-8">
                 <div className=" col-span-4 ">
                   {categories?.map((category) => (
@@ -644,14 +655,14 @@ const SkillBasedParameter = ({ categories, selectedData, setSelectedData }) => {
                       ) && (
                         <div
                           onClick={() => {
-                            setSelectedData([
-                              ...selectedData?.filter(
-                                (item) =>
-                                  item?.categoryName !==
-                                  selectedCategory?.categoryName
-                              ),
-                              selectedCategory,
-                            ]);
+                            // setSelectedData([
+                            //   ...selectedData?.filter(
+                            //     (item) =>
+                            //       item?.categoryName !==
+                            //       selectedCategory?.categoryName
+                            //   ),
+                            //   selectedCategory,
+                            // ]);
                             setSelectedCategory(
                               selectedData?.find(
                                 (item) =>

@@ -44,7 +44,7 @@ const CourseInformation = () => {
       name: "Classes",
       icon: ClassesTaskIcon,
       theme: "#ED690A",
-      route: "/manageLiveClasses",
+      route: `/manageLiveClasses/${chapterData?._id}`,
     },
     {
       name: "Assignment",
@@ -266,7 +266,7 @@ const CourseInformation = () => {
       })
       .catch((error) => console.error(error));
   }, [currentWeek]);
-  console.log(chapters);
+  console.log(courseData);
   return (
     <div>
       <Layout>
@@ -299,7 +299,7 @@ const CourseInformation = () => {
                       />
                     </svg>
                     <button className=" font-sans mr-[30px] text-[20px] font-[400] ">
-                      Course Name
+                      {courseData?.courseFullName}
                     </button>
                   </div>
                   <div className="flex items-center mt-[-10px] ">
@@ -775,9 +775,12 @@ const CourseInformation = () => {
                                 alt="Task"
                               />
                               <div className="">
-                                <h1 className="text-[#3E4DAC] text-[22px] font-[700] ">
+                                <Link
+                                  to={`/${task?.taskType}/${task?.taskId}`}
+                                  className="text-[#3E4DAC] text-[22px] font-[700] "
+                                >
                                   Task 1
-                                </h1>
+                                </Link>
                                 <p className="text-[#626262] text-[18px] font-[500] ">
                                   {task?.taskType}
                                 </p>

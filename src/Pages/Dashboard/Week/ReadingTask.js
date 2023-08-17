@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Document from "react-pdf-js";
 // import pdf from ".";
 
-const ReadingTask = () => {
+const ReadingTask = ({ readingData }) => {
   const pdfURL = "../../../assets/Dashboard/ExperimentalLabs.pdf";
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
@@ -80,7 +80,7 @@ const ReadingTask = () => {
       <div className="h-full flex items-center justify-center ">
         <object
           className="  border-x-[30px] mt-[40px] border-t-[30px] border-b-[50px] rounded-lg border-[#292929]"
-          data="https://docs.google.com/document/d/1owsRdgY17IIgEyBMeaxwUHsUNmjWpKPIOgaFcwXgPzk/edit?usp=sharing"
+          data={readingData?.additionalFiles}
           type="application/pdf"
           width="865px"
           height="500px"
