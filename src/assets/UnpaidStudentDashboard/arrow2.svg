@@ -1,0 +1,19 @@
+<svg width="67" height="67" viewBox="0 0 67 67" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="dashicons:arrow-up">
+<g id="Vector" filter="url(#filter0_d_4615_24721)">
+<path d="M23.4492 30.1508L43.5492 43.5508V16.7508L23.4492 30.1508Z" fill="white"/>
+</g>
+</g>
+<defs>
+<filter id="filter0_d_4615_24721" x="17.4492" y="10.75" width="40.1016" height="46.8008" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dx="4" dy="4"/>
+<feGaussianBlur stdDeviation="5"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_4615_24721"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_4615_24721" result="shape"/>
+</filter>
+</defs>
+</svg>
