@@ -6,12 +6,12 @@ import { AuthContext } from "../../../../../contexts/AuthProvider";
 import DialogLayout from "../../../Shared/DialogLayout";
 
 const SelectEarningCategory = ({
-  skillCategories,
-  selectedSkillCategory,
-  setSelectedSkillCategory,
+  setEarningCategories,
+  earningCategories,
+  selectedEarningCategory,
+  setSelectedEarningCategory,
   setCategoryThreeDot,
   categoryThreeDot,
-  setSkillCategories,
   selectedCourse,
 }) => {
   const { userInfo } = useContext(AuthContext);
@@ -26,23 +26,23 @@ const SelectEarningCategory = ({
       });
       return;
     }
-    const newChapter = await axios.post(
-      `${process.env.REACT_APP_BACKEND_API}/skill_categories`,
+    const newCategory = await axios.post(
+      `${process.env.REACT_APP_BACKEND_API}/earning_categories`,
       {
-        categoryName: `category ${skillCategories?.length + 1}`,
+        categoryName: `category ${earningCategories?.length + 1}`,
         courseId: selectedCourse?._id,
         organizationId: userInfo?.organizationId,
       }
     );
 
-    if (newChapter?.data?.acknowledged) {
-      toast.success("Chapter added Successfully");
-      setSkillCategories([
-        ...skillCategories,
-        { categoryName: `category ${skillCategories?.length + 1}` },
+    if (newCategory?.data?.acknowledged) {
+      toast.success("Category added Successfully");
+      setEarningCategories([
+        ...earningCategories,
+        { categoryName: `category ${earningCategories?.length + 1}` },
       ]);
-      setSelectedSkillCategory({
-        categoryName: `category ${skillCategories?.length + 1}`,
+      setSelectedEarningCategory({
+        categoryName: `category ${earningCategories?.length + 1}`,
       });
     }
   };
@@ -53,7 +53,7 @@ const SelectEarningCategory = ({
       categoryName: event?.target?.categoryName?.value,
     };
     if (
-      skillCategories?.find(
+      earningCategories?.find(
         (item) => item?.categoryName === category?.categoryName
       )
     ) {
@@ -67,31 +67,31 @@ const SelectEarningCategory = ({
     }
     const update = {
       organizationId: userInfo?.organizationId,
-      oldCategoryName: selectedSkillCategory?.categoryName,
+      oldCategoryName: selectedEarningCategory?.categoryName,
       newCategoryName: event?.target?.categoryName?.value,
-      courseId: selectedCourse?.courseId,
+      courseId: selectedCourse?._id,
     };
     console.log({
       organizationId: userInfo?.organizationId,
-      oldCategoryName: selectedSkillCategory?.categoryName,
+      oldCategoryName: selectedEarningCategory?.categoryName,
       newCategoryName: event?.target?.categoryName?.value,
-      courseId: selectedCourse?.courseId,
+      courseId: selectedCourse?._id,
     });
     const updatedCategory = await axios.put(
-      `${process.env.REACT_APP_BACKEND_API}/updateCategoryName`,
+      `${process.env.REACT_APP_BACKEND_API}/earning_categories/categoryName`,
       update
     );
 
     if (updatedCategory?.data?.acknowledged) {
-      toast.success("Week Updated Successfully");
-      const updatedCategoriesArray = [...skillCategories];
+      toast.success("Category Updated Successfully");
+      const updatedCategoriesArray = [...earningCategories];
       const selectedIndex = updatedCategoriesArray.findIndex(
         (category) =>
-          category.categoryName === selectedSkillCategory.categoryName
+          category.categoryName === selectedEarningCategory.categoryName
       );
       updatedCategoriesArray[selectedIndex].categoryName =
         category.categoryName;
-      setSkillCategories(updatedCategoriesArray);
+      setEarningCategories(updatedCategoriesArray);
       setEditCategoryOpen(false);
       event.target.reset();
     }
@@ -113,32 +113,15 @@ const SelectEarningCategory = ({
           categoryName: name,
           courseId: selectedCourse?._id,
         });
-        // await axios
-        //   .put(`${process.env.REACT_APP_BACKEND_API}/deleteCategory`, {
-        //     organizationId: "" + userInfo?.organizationId,
-        //     categoryName: "" + name,
-        //     courseId: "" + selectedCourse?.courseId,
-        //   })
-        // fetch(`${process.env.REACT_APP_BACKEND_API}/deleteCategory`, {
-        //   method: "DELETE",
-        //   headers: {
-        //     "content-type": "application/json",
-        //   },
-        //   body: JSON.stringify({
-        //     organizationId: userInfo?.organizationId,
-        //     categoryName: name,
-        //     courseId: selectedCourse?.courseId,
-        //   }),
-        // })
-        fetch(`${process.env.REACT_APP_BACKEND_API}/deleteCategory`, {
-          method: "DELETE",
+        fetch(`${process.env.REACT_APP_BACKEND_API}/earning/deleteCategory`, {
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
             organizationId: userInfo?.organizationId,
             categoryName: name,
-            courseId: selectedCourse?.courseId,
+            courseId: selectedCourse?._id,
           }),
         })
           .then((response) => {
@@ -148,13 +131,14 @@ const SelectEarningCategory = ({
             return response.json();
           })
           .then((result) => {
-            if (result?.data?.deletedCount > 0) {
+            console.log(result);
+            if (result?.acknowledged) {
               toast.success("Category Deleted Successfully!");
-              const remainingCategories = skillCategories.filter(
+              const remainingCategories = earningCategories.filter(
                 (category) => category?.categoryName !== name
               );
-              setSkillCategories(remainingCategories);
-              setSelectedSkillCategory(remainingCategories[0]);
+              setEarningCategories(remainingCategories);
+              setSelectedEarningCategory(remainingCategories[0]);
             }
           })
           .catch((error) => {
@@ -188,7 +172,7 @@ const SelectEarningCategory = ({
             type="text"
             id="categoryName"
             name="categoryName"
-            defaultValue={selectedSkillCategory?.categoryName}
+            defaultValue={selectedEarningCategory?.categoryName}
             placeholder="Category"
             className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
           />
@@ -206,15 +190,15 @@ const SelectEarningCategory = ({
         Earning Category
       </h1>
       <div className="flex flex-wrap gap-y-2 items-center">
-        {skillCategories?.map((item, index) => (
+        {earningCategories?.map((item, index) => (
           <button
             key={index}
             className={`px-2 py-3 relative text-base border rounded-md font-semibold flex items-center min-w-[150px] justify-between gap-6 mr-1 ${
-              selectedSkillCategory?.categoryName === item?.categoryName
+              selectedEarningCategory?.categoryName === item?.categoryName
                 ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
                 : "text-[#949494]"
             }`}
-            onClick={() => setSelectedSkillCategory(item)}
+            onClick={() => setSelectedEarningCategory(item)}
           >
             {item?.categoryName}
             <button
@@ -243,7 +227,7 @@ const SelectEarningCategory = ({
                 />
               </svg>
             </button>
-            {selectedSkillCategory?.categoryName === item?.categoryName &&
+            {selectedEarningCategory?.categoryName === item?.categoryName &&
               categoryThreeDot && (
                 <ul className="absolute right-0 top-[53px] w-max border  bg-white p-2 rounded-[8px] mt-1 transform translate-y-[-10px] shadow-[0px_2px_4px_0px_#00000026] z-10 ">
                   <li
@@ -258,7 +242,9 @@ const SelectEarningCategory = ({
                   <li
                     className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
                     onMouseDown={() => {
-                      handleCategoryDelete(selectedSkillCategory?.categoryName);
+                      handleCategoryDelete(
+                        selectedEarningCategory?.categoryName
+                      );
                     }}
                   >
                     Delete Category
@@ -267,7 +253,7 @@ const SelectEarningCategory = ({
               )}
           </button>
         ))}
-        {!skillCategories[0] && (
+        {!earningCategories[0] && (
           <div
             className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
           >

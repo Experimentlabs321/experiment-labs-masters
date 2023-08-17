@@ -1,9 +1,11 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { toast } from "react-hot-toast";
+import axios from "axios";
 
-const AddEarningPointItemForm = ({
+const EditEarningPointItemForm = ({
+  selectedEarningLogic,
+  setIsOpenEarningItemEditForm,
   setIsOpenEarningItemAddForm,
   UploadingImg,
   selectedEarningCategory,
@@ -13,86 +15,164 @@ const AddEarningPointItemForm = ({
   selectedCourse,
   userInfo,
 }) => {
-  const [itemValue, setItemValue] = useState(0);
-  const [selectedItemEarningOption, setSelectedItemEarningOption] =
-    useState("Automated");
+  const [itemValue, setItemValue] = useState(
+    parseInt(selectedEarningLogic?.itemValue)
+  );
+  const [selectedItemEarningOption, setSelectedItemEarningOption] = useState(
+    selectedEarningLogic?.itemEarningValue
+  );
   const handleItemEarningOptionChange = (event) => {
     setSelectedItemEarningOption(event.target.value);
   };
-  const handleAddSkill = async (event) => {
+
+  const handleEditSkill = async (event) => {
     event.preventDefault();
-    console.log({
+    const data = {
       organizationId: userInfo?.organizationId,
-      categoryName: selectedEarningCategory?.categoryName,
+      categoryName: event?.target?.earningCategory?.value,
       courseId: selectedCourse?._id,
-      earningItem: {
+      oldItemName: selectedEarningLogic?.earningItemName,
+      item: {
         earningItemName: event?.target?.earningItemName?.value,
         itemEarningValue: selectedItemEarningOption,
         itemValue: event?.target?.itemValue?.value,
       },
-    });
-    if (
-      selectedEarningCategory?.earningItems?.find(
-        (item) =>
-          item?.earningItemName === event?.target?.earningItemName?.value
-      )
-    ) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "The item name is already exist!",
-      });
-      return;
-    }
-
-    const newItem = await axios.post(
-      `${process.env.REACT_APP_BACKEND_API}/earningPointItems`,
-      {
-        organizationId: userInfo?.organizationId,
-        categoryName: selectedEarningCategory?.categoryName,
-        courseId: selectedCourse?._id,
-        earningItem: {
-          earningItemName: event?.target?.earningItemName?.value,
-          itemEarningValue: selectedItemEarningOption,
-          itemValue: event?.target?.itemValue?.value,
-        },
-      }
-    );
-
-    if (newItem?.data?.acknowledged) {
-      toast.success("Item added Successfully");
-      const selectedCategoryItems = selectedEarningCategory?.earningItems
-        ? [
-            ...selectedEarningCategory?.earningItems,
-            {
-              earningItemName: event?.target?.earningItemName?.value,
-              itemEarningValue: selectedItemEarningOption,
-              itemValue: event?.target?.itemValue?.value,
-            },
-          ]
-        : [
-            {
-              earningItemName: event?.target?.earningItemName?.value,
-              itemEarningValue: selectedItemEarningOption,
-              itemValue: event?.target?.itemValue?.value,
-            },
-          ];
-      setSelectedEarningCategory({
-        categoryName: selectedEarningCategory?.categoryName,
-        earningItems: selectedCategoryItems,
-      });
-      const otherCategories = earningCategories?.filter(
-        (item) => selectedEarningCategory?.categoryName !== item?.categoryName
+    };
+    console.log(data);
+    if (data?.categoryName === selectedEarningCategory?.categoryName) {
+      // if (
+      //   selectedEarningCategory?.earningItems?.find(
+      //     (item) =>
+      //       item?.earningItemName === event?.target?.earningItemName?.value
+      //   )
+      // ) {
+      //   setIsOpenEarningItemEditForm(false);
+      //   Swal.fire({
+      //     icon: "error",
+      //     title: "Item already exist!",
+      //     text: "Please enter an unique item name!",
+      //   });
+      //   return;
+      // }
+      const updatedItem = await axios.put(
+        `${process.env.REACT_APP_BACKEND_API}/editItem`,
+        data
       );
-      setEarningCategories([
+      if (updatedItem?.data?.acknowledged) {
+        toast.success("Item Updated Successfully");
+        const updateItemsArray = [...selectedEarningCategory?.earningItems];
+        const selectedEarningLogicIndex = updateItemsArray?.findIndex(
+          (item) =>
+            item?.earningItemName === selectedEarningLogic?.earningItemName
+        );
+        updateItemsArray[selectedEarningLogicIndex] = data?.item;
+        const updatedCategoriesArray = [...earningCategories];
+        const selectedIndex = updatedCategoriesArray.findIndex(
+          (category) =>
+            category.categoryName === selectedEarningCategory.categoryName
+        );
+        updatedCategoriesArray[selectedIndex].earningItems = updateItemsArray;
+        setEarningCategories(updatedCategoriesArray);
+        setSelectedEarningCategory(updatedCategoriesArray[selectedIndex]);
+        setIsOpenEarningItemEditForm(false);
+        event.target.reset();
+      }
+    } else {
+      let currentCategory = earningCategories?.find(
+        (item) => item?.categoryName === data?.categoryName
+      );
+      if (
+        currentCategory?.earningItems?.find(
+          (item) =>
+            item?.earningItemName === event?.target?.earningItemName?.value
+        )
+      ) {
+        setIsOpenEarningItemEditForm(false);
+        Swal.fire({
+          icon: "error",
+          title: "Item already exist!",
+          text: "Please enter an unique item name!",
+        });
+        return;
+      }
+      const newItem = await axios.post(
+        `${process.env.REACT_APP_BACKEND_API}/earningPointItems`,
         {
-          categoryName: selectedEarningCategory?.categoryName,
-          earningItems: selectedCategoryItems,
-        },
-        ...otherCategories,
-      ]);
-      setIsOpenEarningItemAddForm(false);
-      event.target.reset();
+          organizationId: userInfo?.organizationId,
+          categoryName: currentCategory?.categoryName,
+          courseId: selectedCourse?._id,
+          item: {
+            earningItemName: event?.target?.earningItemName?.value,
+            itemEarningValue: selectedItemEarningOption,
+            itemValue: event?.target?.itemValue?.value,
+          },
+        }
+      );
+      if (newItem?.data?.acknowledged) {
+        fetch(`${process.env.REACT_APP_BACKEND_API}/deleteItem`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            organizationId: userInfo?.organizationId,
+            categoryName: selectedEarningCategory?.categoryName,
+            courseId: selectedCourse?._id,
+            earningItemName: selectedEarningLogic?.earningItemName,
+          }),
+        })
+          .then((result) => {
+            if (result?.ok) {
+              const remainingItems =
+                selectedEarningCategory?.earningItems?.filter(
+                  (item) =>
+                    item?.earningItemName !==
+                    selectedEarningLogic?.earningItemName
+                );
+              setSelectedEarningCategory({
+                categoryName: selectedEarningCategory?.categoryName,
+                earningItems: remainingItems,
+              });
+              const selectedCategoryItems = currentCategory?.earningItems
+                ? [
+                    ...currentCategory?.earningItems,
+                    {
+                      earningItemName: event?.target?.earningItemName?.value,
+                      itemEarningValue: selectedItemEarningOption,
+                      itemValue: event?.target?.itemValue?.value,
+                    },
+                  ]
+                : [
+                    {
+                      earningItemName: event?.target?.earningItemName?.value,
+                      itemEarningValue: selectedItemEarningOption,
+                      itemValue: event?.target?.itemValue?.value,
+                    },
+                  ];
+              setSelectedEarningCategory({
+                categoryName: currentCategory?.categoryName,
+                earningItems: selectedCategoryItems,
+              });
+              const otherCategories = earningCategories?.filter(
+                (item) => currentCategory?.categoryName !== item?.categoryName
+              );
+              setEarningCategories([
+                {
+                  categoryName: currentCategory?.categoryName,
+                  earningItems: selectedCategoryItems,
+                },
+                ...otherCategories,
+              ]);
+              setIsOpenEarningItemEditForm(false);
+              event.target.reset();
+              toast.success("Item Updated Successfully!");
+            }
+          })
+          .catch((error) => {
+            console.error("Fetch error:", error);
+            // Handle error, display a message to the user, etc.
+          });
+      }
     }
   };
   return (
@@ -101,13 +181,13 @@ const AddEarningPointItemForm = ({
         <div className=" border-[#B7B7B7] relative border p-8 rounded-lg ">
           <div className="absolute top-2 right-2 ">
             <button
-              onClick={() => setIsOpenEarningItemAddForm(false)}
+              onClick={() => setIsOpenEarningItemEditForm(false)}
               className="flex justify-center items-center rounded-full w-6 h-6 bg-[#A1A1A1] font-bold text-[#000000]"
             >
               x
             </button>
           </div>
-          <form onSubmit={handleAddSkill} className="w-full">
+          <form onSubmit={handleEditSkill} className="w-full">
             <div className="flex">
               <div
                 style={{
@@ -132,14 +212,7 @@ const AddEarningPointItemForm = ({
                       Earning Point Category
                     </label>
                     <select
-                      onChange={(e) =>
-                        setSelectedEarningCategory(
-                          earningCategories?.find(
-                            (category) =>
-                              category?.categoryName === e.target.value
-                          )
-                        )
-                      }
+                      defaultValue={selectedEarningCategory?.categoryName}
                       name="earningCategory"
                       id="earningCategory"
                       className="block w-full px-2 py-2 mt-2 bg-white rounded-md border border-[#B7B7B7] focus:border-blue-500 focus:outline-none focus:ring"
@@ -167,6 +240,7 @@ const AddEarningPointItemForm = ({
                       id="earningItemName"
                       name="earningItemName"
                       placeholder="Earning Point Item"
+                      defaultValue={selectedEarningLogic?.earningItemName}
                       className="block w-full p-2 mt-2 rounded-md bg-white border border-[#B7B7B7] focus:border-blue-500 focus:outline-none focus:ring"
                     />
                   </div>
@@ -249,7 +323,7 @@ const AddEarningPointItemForm = ({
                 <div className=" mt-5  ">
                   <input
                     type="submit"
-                    value="Proceed"
+                    value="Update"
                     className="bg-[#2EB0FB] cursor-pointer rounded-lg p-2 font-semibold text-[#fff]"
                   />
                 </div>
@@ -263,4 +337,4 @@ const AddEarningPointItemForm = ({
   );
 };
 
-export default AddEarningPointItemForm;
+export default EditEarningPointItemForm;

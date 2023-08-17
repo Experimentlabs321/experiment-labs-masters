@@ -1,11 +1,17 @@
 import React, { useState } from "react";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import required from "../../../../../assets/ContentManagement/required.png";
+import TextEditor from "../../../../Shared/TextEditor/TextEditor";
 
-const General = () => {
+const General = ({
+  selectedFile,
+  setSelectedFile,
+  instructions,
+  setInstructions,
+}) => {
   // upload file
   const [dragActive, setDragActive] = useState(true);
-  const [selectedFile, setSelectedFile] = useState(null);
+
   const handleDragEnter = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -87,13 +93,14 @@ const General = () => {
                 <img src={required} alt="required" />
               </div>
 
-              <input
-                required
-                className="mt-6 ms-6 border rounded-md w-[440px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                name="assignmentInstructions"
-                type="text"
-                placeholder="Eg. Excel with Shekhar Gupta"
-              />
+              {/* Text editor */}
+              <div className="py-4">
+                <div className="bg-white text-black">
+                  <TextEditor setValue={setInstructions} />
+                </div>
+              </div>
+              {/* <p>{instructions}</p>
+              <div dangerouslySetInnerHTML={{ __html: instructions }} /> */}
             </div>
           </div>
 

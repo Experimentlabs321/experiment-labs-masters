@@ -183,7 +183,7 @@ const router = createBrowserRouter([
     element: <CreateCourse />,
   },
   {
-    path: "/manageLiveClasses",
+    path: "/manageLiveClasses/:id",
     element: <ManageLiveClasses />,
   },
   {
@@ -192,19 +192,19 @@ const router = createBrowserRouter([
   },
 
   {
-    path: "/manageReading",
+    path: "/manageReading/:id",
     element: <ManageReading />,
   },
   {
-    path: "/manageFile",
+    path: "/manageFile/:id",
     element: <ManageFile />,
   },
   {
-    path: "/manageVideo",
+    path: "/manageVideo/:id",
     element: <ManageVideo />,
   },
   {
-    path: "/manageAudio",
+    path: "/manageAudio/:id",
     element: <ManageAudio />,
   },
   /* {
@@ -273,39 +273,39 @@ const router = createBrowserRouter([
   },
   {
     path: "/liveClasses",
-    element:<OnGoingClasses/>,
+    element: <OnGoingClasses />,
   },
   {
     path: "/upcomingClasses",
-    element:<UpComingClasses/>,
+    element: <UpComingClasses />,
   },
   {
     path: "/schedule",
-    element:<ExecutionMentorSchedule/>,
+    element: <ExecutionMentorSchedule />,
   },
   {
     path: "/executionMentorDashboard",
-    element:<ExecutionMentorDashboard/>,
+    element: <ExecutionMentorDashboard />,
   },
   {
     path: "/performanceFeedback",
-    element:<PerformanceFeedback/>,
+    element: <PerformanceFeedback />,
   },
   {
     path: "/students",
-    element:<Students/>,
+    element: <Students />,
   },
   {
     path: "/studentsWhoNeedMoreGuidance",
-    element:<StudentsWhoNeedMoreGuidance/>,
+    element: <StudentsWhoNeedMoreGuidance />,
   },
   {
     path: "/studentFeedback",
-    element:<StudentFeedback/>,
+    element: <StudentFeedback />,
   },
   {
     path: "/departmentEvaluation",
-    element:<DepartmentEvaluation/>,
+    element: <DepartmentEvaluation />,
   },
   {
     path: "/unpaidStudentDashboard",

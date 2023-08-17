@@ -3,14 +3,16 @@ import Instructions from "./SubFile/AssignmentTask/Instructions";
 import Submission from "./SubFile/AssignmentTask/Submission";
 import ReviewSubmission from "./SubFile/AssignmentTask/ReviewSubmission";
 
-const AssignmentTask = () => {
+const AssignmentTask = ({ assignmentData }) => {
   const [view, setView] = useState("Instructions");
   return (
     <div>
       <div className="px-4">
         <h1 className=" text-[30px] font-[500] mt-[40px] ">
           Assignment Instructions:{" "}
-          <span className="text-[#3E4DAC]">Build a Platform</span>
+          <span className="text-[#3E4DAC]">
+            {assignmentData?.assignmentName}
+          </span>
         </h1>
       </div>
       <div className=" border-b-[1px] mt-[50px] ">
@@ -42,9 +44,15 @@ const AssignmentTask = () => {
         </div>
       </div>
       <div>
-        {view === "Instructions" && <Instructions />}
-        {view === "Submission" && <Submission />}
-        {view === "Review Submission" && <ReviewSubmission />}
+        {view === "Instructions" && (
+          <Instructions instructions={assignmentData?.instructions} />
+        )}
+        {view === "Submission" && (
+          <Submission assignmentData={assignmentData} />
+        )}
+        {view === "Review Submission" && (
+          <ReviewSubmission assignmentData={assignmentData} />
+        )}
       </div>
     </div>
   );

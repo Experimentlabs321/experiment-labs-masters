@@ -20,6 +20,7 @@ import Level from "../Dashboard/Level";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { AuthContext } from "../../../contexts/AuthProvider";
+import uploadFileToS3 from "../../UploadComponent/s3Uploader";
 
 // const client = new S3Client({
 //   region: "eu-north-1",
@@ -85,6 +86,8 @@ const CreateCourse = () => {
     setSelectedFile(file);
   };
 
+  const [url, setUrl] = useState("");
+
   ///week names
   /* const [formData, setFormData] = useState([]);
     
@@ -140,6 +143,11 @@ const CreateCourse = () => {
     //   new Date(courseEndingDate).getTime() / 1000
     // );
 
+
+    const fileUrl = await uploadFileToS3(selectedFile);
+
+    console.log(fileUrl);
+
     const addCourse = {
       courseFullName,
       courseShortName,
@@ -147,7 +155,7 @@ const CreateCourse = () => {
       courseEndingDate,
       courseDescription,
       courseCategory,
-      courseThumbnail: "",
+      courseThumbnail: fileUrl,
       courseVisibility,
       courseIDNumber,
       courseFormat,
@@ -210,19 +218,21 @@ const CreateCourse = () => {
     //   },
     // ];
 
-    const newCourse = await axios.post(
-      `${process.env.REACT_APP_BACKEND_API}/courses`,
-      addCourse
-    );
-    console.log("new course --> ", newCourse);
-    console.log(newCourse?.data?.course?.acknowledged);
+    if (fileUrl) {
+      const newCourse = await axios.post(
+        `${process.env.REACT_APP_BACKEND_API}/courses`,
+        addCourse
+      );
+      console.log("new course --> ", newCourse);
+      console.log(newCourse?.data?.course?.acknowledged);
 
-    if (newCourse?.data?.course?.acknowledged) {
-      toast.success("Course added Successfully");
-      form.reset();
+      if (newCourse?.data?.course?.acknowledged) {
+        toast.success("Course added Successfully");
+        form.reset();
+      }
+
+      console.log("Add Course----->", addCourse);
     }
-
-    console.log("Add Course----->", addCourse);
 
     // const input = {
     //     "Body": selectedFile,
@@ -311,9 +321,8 @@ const CreateCourse = () => {
             {isOpenGeneralCourseInfo && <img src={arrowDown} alt=""></img>}
 
             <i
-              className={`dropdown-arrow ${
-                isOpenGeneralCourseInfo ? "open" : ""
-              }`}
+              className={`dropdown-arrow ${isOpenGeneralCourseInfo ? "open" : ""
+                }`}
             ></i>
           </div>
           {isOpenGeneralCourseInfo && (
@@ -424,7 +433,7 @@ const CreateCourse = () => {
                       required
                       className="w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold focus:outline-0"
                       name="courseCategory"
-                      // id="option"
+                    // id="option"
                     >
                       <option className="" value="Web Development">
                         Web Development
@@ -591,7 +600,7 @@ const CreateCourse = () => {
                       required
                       className="select select-bordered w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold"
                       name="courseFormat"
-                      //id="option"
+                    //id="option"
                     >
                       <option value="weeks">Weekly format</option>
                       <option value="Parent"></option>
@@ -647,7 +656,7 @@ const CreateCourse = () => {
                       required
                       className="w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold"
                       name="groups"
-                      // id="option"
+                    // id="option"
                     >
                       <option className="" value="No Groups">
                         No Groups
@@ -807,9 +816,8 @@ const CreateCourse = () => {
             {isOpenCompletionTracking && <img src={arrowDown} alt=""></img>}
 
             <i
-              className={`dropdown-arrow ${
-                isOpenCompletionTracking ? "open" : ""
-              }`}
+              className={`dropdown-arrow ${isOpenCompletionTracking ? "open" : ""
+                }`}
             ></i>
           </div>
 

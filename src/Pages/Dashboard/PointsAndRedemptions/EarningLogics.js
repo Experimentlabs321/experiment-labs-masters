@@ -1,107 +1,129 @@
-//PointsRedemptions.js
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import UploadingImg from "../../../assets/PointsRedemptions/uploadimg.png";
 import Layout from "../Layout";
 import Badge from "@mui/material/Badge";
 import SearchIcon from "@mui/icons-material/Search";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import updateimg from "../../../assets/PointsRedemptions/Upload.svg";
-import editimg from "../../../assets/PointsRedemptions/edit.svg";
-import deleteimg from "../../../assets/PointsRedemptions/delete.svg";
-import Filterimg from "../../../assets/PointsRedemptions/Filter.svg";
-import undo from "../../../assets/PointsRedemptions/Sync-retry.svg";
-
-import EarningCategory from "./EarningCategory";
+import axios from "axios";
+import { AuthContext } from "../../../contexts/AuthProvider";
+import AddSharpIcon from "@mui/icons-material/AddSharp";
+import Swal from "sweetalert2";
+import { toast } from "react-hot-toast";
+import SelectEarningCategory from "./Components/EarningLogics/SelectEarningCategory";
+import AddEarningPointItemForm from "./Components/EarningLogics/AddEarningPointItemForm";
+import EditEarningPointItemForm from "./Components/EarningLogics/EditEarningPointItemForm";
 
 const EarningLogics = () => {
-  const [category, setCategory] = useState(null);
-  const [buttonCount, setButtonCount] = useState(1);
-  const [buttonnum, setbuttonnum] = useState(0);
-  const [newCat, setNewCategory] = useState("");
-
-  const handleClickCategory = (selectedCategory) => {
-    setCategory(selectedCategory === category ? null : selectedCategory);
-  };
-  const handlecreatenewClick = () => {
-    const buttonnum = localStorage.getItem("earningbuttonnum") || 0;
-
-    const newButtonCount = parseInt(buttonnum) + 1;
-
-    /* setbuttonnum(newButtonCount); */
-    localStorage.setItem("earningbuttonnum", newButtonCount);
-    const newCategory = newCat;
-
-    // Check if the category already exists
-    const storedCategories =
-      JSON.parse(localStorage.getItem("earningcategories")) || [];
-    const categoryExists = storedCategories.includes(newCategory);
-
-    if (categoryExists) {
-      // Category already exists, handle accordingly (e.g., show an error message)
-      console.log("Category already exists");
-      return;
-    }
-    setButtonCount(newButtonCount);
-
-    // Update local storage
-    storedCategories.push(newCategory);
-    localStorage.setItem("earningcategories", JSON.stringify(storedCategories));
-
-    setCategory(newCategory);
-
-    setNewCategory("");
-  };
-  const handleChange = (e) => {
-    setNewCategory(e.target.value);
-  };
-
-  const handleClick = () => {
-    const buttonnum = localStorage.getItem("earningbuttonnum") || 0;
-
-    const newButtonCount = parseInt(buttonnum) + 1;
-
-    /* setbuttonnum(newButtonCount); */
-    localStorage.setItem("earningbuttonnum", newButtonCount);
-    const newCategory = `Category${newButtonCount}`;
-
-    // Check if the category already exists
-    const storedCategories =
-      JSON.parse(localStorage.getItem("earningcategories")) || [];
-    const categoryExists = storedCategories.includes(newCategory);
-
-    if (categoryExists) {
-      // Category already exists, handle accordingly (e.g., show an error message)
-      console.log("Category already exists");
-      return;
-    }
-    setButtonCount(newButtonCount);
-
-    // Update local storage
-    storedCategories.push(newCategory);
-    localStorage.setItem("earningcategories", JSON.stringify(storedCategories));
-
-    setCategory(newCategory);
-  };
+  const { userInfo } = useContext(AuthContext);
+  const [courses, setCourses] = useState([]);
+  const [orgEarningLogics, setOrgEarningLogics] = useState([]);
+  const [selectedCourse, setSelectedCourse] = useState(
+    courses?.length > 0 ? courses[0] : {}
+  );
+  const [earningCategories, setEarningCategories] = useState([]);
+  const [selectedEarningCategory, setSelectedEarningCategory] = useState({});
+  const [categoryThreeDot, setCategoryThreeDot] = useState(false);
+  const [earningThreeDot, setEarningThreeDot] = useState(false);
+  const [selectedEarningLogic, setSelectedEarningLogic] = useState({});
+  const [isOpenEarningItemAddForm, setIsOpenEarningItemAddForm] =
+    useState(false);
+  const [isOpenEarningItemEditForm, setIsOpenEarningItemEditForm] =
+    useState(false);
 
   useEffect(() => {
-    const storedButtonCount = localStorage.getItem("earningbuttonnum");
-    if (storedButtonCount) {
-      setButtonCount(parseInt(storedButtonCount, 10));
+    axios
+      .get(
+        `${process.env.REACT_APP_BACKEND_API}/courses/organizations/${userInfo?.organizationId}`
+      )
+      .then((response) => {
+        setCourses(response?.data);
+        setSelectedCourse(response?.data[0]);
+      })
+      .catch((error) => console.error(error));
+  }, [userInfo]);
+
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_BACKEND_API}/earning_categories/${userInfo?.organizationId}`
+      )
+      .then((response) => {
+        setOrgEarningLogics(response?.data?.courses);
+        const findCategories = response?.data?.courses?.find(
+          (course) => course?.courseId === selectedCourse?._id
+        );
+        setEarningCategories([...findCategories?.categories]);
+        setSelectedEarningCategory({ ...findCategories?.categories[0] });
+      })
+      .catch((error) => console.error(error));
+  }, [userInfo, selectedCourse]);
+
+  const handleSelectCourse = (item) => {
+    setSelectedCourse(item);
+    const findCategories = orgEarningLogics?.find(
+      (course) => course?.courseId === item?._id
+    );
+    if (findCategories) {
+      setEarningCategories(findCategories?.categories);
+      setSelectedEarningCategory(findCategories?.categories[0]);
+    } else {
+      setEarningCategories([]);
+      setSelectedEarningCategory({});
     }
-    const storedCategories = localStorage.getItem("earningcategories");
-    if (storedCategories) {
-      const parsedCategories = JSON.parse(storedCategories);
-      if (parsedCategories.length > 0) {
-        setCategory(parsedCategories[0]);
+    setIsOpenEarningItemAddForm(false);
+  };
+
+  const handleItemDelete = async (name) => {
+    const deleteData = {
+      organizationId: userInfo?.organizationId,
+      categoryName: selectedEarningCategory?.categoryName,
+      courseId: selectedCourse?._id,
+      earningItemName: name,
+    };
+    console.log(deleteData);
+    await Swal.fire({
+      title: "Are you sure?",
+      text: "Once deleted, the item will not recover!",
+      icon: "warning",
+      buttons: true,
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Delete",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        fetch(`${process.env.REACT_APP_BACKEND_API}/deleteItem`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(deleteData),
+        })
+          .then((result) => {
+            console.log(result);
+            if (result?.ok) {
+              toast.success("Item Deleted Successfully!");
+              const remainingItems =
+                selectedEarningCategory?.earningItems?.filter(
+                  (item) => item?.earningItemName !== name
+                );
+              setSelectedEarningCategory({
+                categoryName: selectedEarningCategory?.categoryName,
+                earningItems: remainingItems,
+              });
+            }
+          })
+          .catch((error) => {
+            console.error("Fetch error:", error);
+            // Handle error, display a message to the user, etc.
+          });
       }
-    }
-  }, []);
-  const allcategorie = localStorage.getItem("earningcategories");
-  const allcategories = JSON.parse(allcategorie);
+    });
+  };
 
   return (
     <div>
       <Layout>
-        <div className="flex items-center justify-center gap-7 pt-20 lg:pt-10 ">
+        <div className="flex items-center justify-between container mx-auto px-4 gap-7 pt-20 lg:pt-10 ">
           <div className="UserManagement origin-top-left rotate-[-0.51deg] text-zinc-500 text-[30px] font-medium">
             Earning Logics
           </div>
@@ -114,125 +136,179 @@ const EarningLogics = () => {
               <SearchIcon className="Search1 w-6 h-6 left-[8px] top-[8px] absolute text-white" />
             </div>
           </div>
-          <Badge badgeContent={1} color="error">
+          <Badge className="mr-4" badgeContent={1} color="error">
             <NotificationsIcon color="action" />
           </Badge>
         </div>
-        <div className="flex justify-end mx-[75px] my-9">
-          <img src={undo}></img>
-        </div>
-        <div className="flex justify-between mx-10">
-          <div className="flex justify-between items-center ">
-            <input
-              className="me-2 text-[#737373] h-[20px] w-[20px]"
-              type="checkbox"
-              id=""
-              name=""
-              value=""
-            />
-            <p className="font-semibold text-[#000000]">Select All</p>
-          </div>
-
-          <div className="flex items-center ">
-            <p
-              onClick={handlecreatenewClick}
-              className="font-semibold bg-[#009CE4] rounded-lg text-[#fff] px-4 py-2"
-            >
-              Create New
-            </p>
-            <div className=" ms-6 flex gap-2  border  rounded-lg h-[40px]  px-2 text-[#535353] ">
-              <input
-                value={newCat}
-                onChange={handleChange}
-                className="  focus:outline-0 "
-                type="text"
-                placeholder="Enter New Category"
-              ></input>
-            </div>
-          </div>
-          <div className="flex gap-5 items-center ">
-            <p className="font-semibold text-[#000000]">Upload</p>
-            <img className="h-[70px] w-[70px]" src={updateimg}></img>
-            <p className="font-semibold text-[#000000] me-3">Edit</p>
-            <img
-              className="h-[35px] w-[35px] bg-[#404040] rounded-full p-1"
-              src={editimg}
-            ></img>
-            <p className="font-semibold text-[#000000] me-3">Delete</p>
-            <img
-              className="h-[35px] w-[35px] bg-[#E70000] rounded-full p-1 "
-              src={deleteimg}
-            ></img>
-          </div>
-        </div>
-
-        <div className="lg:flex justify-center items-center mt-5 ">
-          <div className="flex-1 justify-center items-center lg:flex gap-4 px-10">
-            <button
-              className={`px-6 py-3 text-base border rounded-md font-semibold ${
-                category === "Category"
-                  ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
-                  : "text-[#949494]"
-              }`}
-              onClick={() => handleClickCategory("Category")}
-            >
-              Category
-            </button>
-
-            {allcategories?.map((cat) => (
-              <>
+        <div className="px-4 mt-[40px]">
+          <div>
+            <h1 className=" text-[#737373] text-[24px] font-[500] mb-2 ">
+              Select Course
+            </h1>
+            <div className="flex flex-wrap">
+              {!courses[0] && (
+                <div
+                  className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
+                >
+                  No course added yet!
+                </div>
+              )}
+              {courses?.map((item, index) => (
                 <button
-                  /* key={index} */
-                  className={`px-6 py-3 text-base border rounded-md font-semibold ${
-                    category === cat
+                  key={index}
+                  className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 ${
+                    selectedCourse?._id === item?._id
                       ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
                       : "text-[#949494]"
                   }`}
-                  onClick={() => handleClickCategory(cat)}
+                  onClick={() => handleSelectCourse(item)}
                 >
-                  {cat}
+                  {item?.courseFullName}
                 </button>
-              </>
-            ))}
-
-            <button
-              onClick={handleClick}
-              className="w-6 h-6 flex justify-center items-center bg-[#D9D9D9] text-[#737373] text-4xl rounded-full"
+              ))}
+            </div>
+          </div>
+          <SelectEarningCategory
+            setEarningCategories={setEarningCategories}
+            earningCategories={earningCategories}
+            selectedEarningCategory={selectedEarningCategory}
+            setSelectedEarningCategory={setSelectedEarningCategory}
+            setCategoryThreeDot={setCategoryThreeDot}
+            categoryThreeDot={categoryThreeDot}
+            selectedCourse={selectedCourse}
+          />
+        </div>
+        <div className="px-4 mt-[40px] mb-[20px] grid grid-cols-6 gap-4">
+          <div
+            onClick={() => {
+              if (!earningCategories[0]) {
+                Swal.fire({
+                  icon: "error",
+                  title: "Oops...",
+                  text: "Please add at least one category!",
+                });
+                return;
+              }
+              setIsOpenEarningItemAddForm(true);
+              setIsOpenEarningItemEditForm(false);
+            }}
+            className=" bg-[#DBDBDB] border w-full flex flex-col justify-center items-center mt-2 rounded-2xl cursor-pointer z-0"
+            style={{ boxShadow: " 0px 4px 4px 0px rgba(0, 0, 0, 0.25)" }}
+          >
+            <div className=" flex justify-center items-center text-[250px] font-thin text-[#ffffff] py-3">
+              <AddSharpIcon sx={{ fontSize: 150 }} />
+            </div>
+            <div className="text-[#8F8F8F] pb-5  mt-[-10px] font-medium text-base">
+              Add Details
+            </div>
+          </div>
+          {selectedEarningCategory?.earningItems?.map((item) => (
+            <div
+              className=" bg-[#fff] w-full flex flex-col justify-between items-center mt-2 min-h-[210px] rounded-2xl cursor-pointer border relative "
+              style={{ boxShadow: " 0px 4px 4px 0px rgba(0, 0, 0, 0.25)" }}
             >
-              +
-            </button>
-          </div>
-
-          {/*  <div>
-                        
-                            {allcategories?.length ? (
-                                <>
-                                    <button
-                                        onClick={handleClick}
-                                        className='w-6 h-6 flex justify-center items-center bg-[#D9D9D9] text-[#737373] text-4xl rounded-full'
-                                    >
-                                        +
-                                    </button>
-                                </>
-                            ) : null}
-                    
-                    </div> */}
-
-          <div className="px-32">
-            <img src={Filterimg}></img>
-          </div>
+              <button
+                onClick={() => {
+                  setEarningThreeDot(!earningThreeDot);
+                  setSelectedEarningLogic(item);
+                }}
+                onBlur={() => setEarningThreeDot(false)}
+                className="absolute top-[2px] right-[2px] px-3 py-2 rounded-full hover:bg-slate-100"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="5"
+                  height="18"
+                  viewBox="0 0 5 18"
+                  fill="none"
+                >
+                  <path
+                    d="M4.31777 2.88577C4.31777 4.09795 3.35121 5.08061 2.15889 5.08061C0.966567 5.08061 0 4.09795 0 2.88577C0 1.67358 0.966567 0.690918 2.15889 0.690918C3.35121 0.690918 4.31777 1.67358 4.31777 2.88577Z"
+                    fill="#8F8F8F"
+                  />
+                  <path
+                    d="M4.31777 9.15676C4.31777 10.3689 3.35121 11.3516 2.15889 11.3516C0.966567 11.3516 0 10.3689 0 9.15676C0 7.94458 0.966567 6.96191 2.15889 6.96191C3.35121 6.96191 4.31777 7.94458 4.31777 9.15676Z"
+                    fill="#8F8F8F"
+                  />
+                  <path
+                    d="M4.31777 15.1142C4.31777 16.3264 3.35121 17.309 2.15889 17.309C0.966567 17.309 0 16.3264 0 15.1142C0 13.902 0.966567 12.9194 2.15889 12.9194C3.35121 12.9194 4.31777 13.902 4.31777 15.1142Z"
+                    fill="#8F8F8F"
+                  />
+                </svg>
+              </button>
+              {selectedEarningLogic?.earningItemName ===
+                item?.earningItemName &&
+                earningThreeDot && (
+                  <ul className="absolute right-0 top-[40px] w-max border  bg-white p-2 rounded-[8px] mt-1 transform translate-y-[-10px] shadow-[0px_2px_4px_0px_#00000026] z-10 ">
+                    <li
+                      className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
+                      onMouseDown={() => {
+                        setSelectedEarningLogic(item);
+                        setIsOpenEarningItemEditForm(true);
+                        setIsOpenEarningItemAddForm(false);
+                      }}
+                    >
+                      Edit Item
+                    </li>
+                    <li
+                      className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
+                      onMouseDown={() =>
+                        handleItemDelete(item?.earningItemName)
+                      }
+                    >
+                      Delete Item
+                    </li>
+                  </ul>
+                )}
+              <h1 className=" text-[#737373] text-[16px] font-[700] mt-[18px] px-5 text-center ">
+                {item?.earningItemName}
+              </h1>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="53"
+                height="41"
+                viewBox="0 0 53 41"
+                fill="none"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M28.1417 12.2969H45.1646C49.0548 12.2969 52.2085 15.5032 52.2085 19.4582V33.7808C52.2085 37.7359 49.0548 40.9421 45.1646 40.9421H7.59691C3.70665 40.9421 0.552979 37.7359 0.552979 33.7808V19.4582C0.552979 15.5032 3.70665 12.2969 7.59691 12.2969H24.6197V7.40338C24.6197 5.09626 26.4594 3.22596 28.7287 3.22596C29.0529 3.22596 29.3157 2.95878 29.3157 2.62919C29.3157 1.64042 30.1041 0.838867 31.0767 0.838867C32.0493 0.838867 32.8377 1.64042 32.8377 2.62919C32.8377 3.73711 32.4048 4.79965 31.6342 5.58307C30.8636 6.36649 29.8185 6.80661 28.7287 6.80661C28.4045 6.80661 28.1417 7.07379 28.1417 7.40338V12.2969ZM16.4018 28.4098H19.3368C20.3094 28.4098 21.0978 27.6083 21.0978 26.6195C21.0978 25.6307 20.3094 24.8292 19.3368 24.8292H16.4018V21.8453C16.4018 20.8566 15.6134 20.055 14.6408 20.055C13.6683 20.055 12.8799 20.8566 12.8799 21.8453V24.8292H9.94489C8.97232 24.8292 8.18391 25.6307 8.18391 26.6195C8.18391 27.6083 8.97232 28.4098 9.94489 28.4098H12.8799V31.3937C12.8799 32.3825 13.6683 33.184 14.6408 33.184C15.6134 33.184 16.4018 32.3825 16.4018 31.3937V28.4098ZM35.7726 19.4582C37.0694 19.4582 38.1206 20.527 38.1206 21.8453C38.1206 23.1637 37.0694 24.2324 35.7726 24.2324C34.4759 24.2324 33.4247 23.1637 33.4247 21.8453C33.4247 20.527 34.4759 19.4582 35.7726 19.4582ZM28.7287 26.6195C28.7287 27.9379 29.7799 29.0066 31.0767 29.0066C32.3734 29.0066 33.4247 27.9379 33.4247 26.6195C33.4247 25.3012 32.3734 24.2324 31.0767 24.2324C29.7799 24.2324 28.7287 25.3012 28.7287 26.6195ZM35.7726 33.7808C34.4759 33.7808 33.4247 32.7121 33.4247 31.3937C33.4247 30.0753 34.4759 29.0066 35.7726 29.0066C37.0694 29.0066 38.1206 30.0753 38.1206 31.3937C38.1206 32.7121 37.0694 33.7808 35.7726 33.7808ZM38.1206 26.6195C38.1206 27.9379 39.1718 29.0066 40.4686 29.0066C41.7654 29.0066 42.8166 27.9379 42.8166 26.6195C42.8166 25.3012 41.7654 24.2324 40.4686 24.2324C39.1718 24.2324 38.1206 25.3012 38.1206 26.6195Z"
+                  fill="#0551E6"
+                />
+              </svg>
+              <p className="mb-[15px] px-[15px] text-center text-[#8F8F8F] text-sm font-[500] ">
+                {item?.itemEarningValue}
+              </p>
+            </div>
+          ))}
         </div>
-
-        <div>
-          <EarningCategory />
-
-          {/*  {
-                        category && <>
-                            <EarningCategory />
-                            
-                        </>
-                    } */}
-        </div>
+        {isOpenEarningItemAddForm && (
+          <AddEarningPointItemForm
+            setIsOpenEarningItemAddForm={setIsOpenEarningItemAddForm}
+            UploadingImg={UploadingImg}
+            selectedEarningCategory={selectedEarningCategory}
+            earningCategories={earningCategories}
+            setSelectedEarningCategory={setSelectedEarningCategory}
+            setEarningCategories={setEarningCategories}
+            selectedCourse={selectedCourse}
+            userInfo={userInfo}
+          />
+        )}
+        {isOpenEarningItemEditForm && selectedEarningLogic?.earningItemName && (
+          <EditEarningPointItemForm
+            selectedEarningLogic={selectedEarningLogic}
+            setIsOpenEarningItemEditForm={setIsOpenEarningItemEditForm}
+            setIsOpenEarningItemAddForm={setIsOpenEarningItemAddForm}
+            UploadingImg={UploadingImg}
+            selectedEarningCategory={selectedEarningCategory}
+            earningCategories={earningCategories}
+            setSelectedEarningCategory={setSelectedEarningCategory}
+            setEarningCategories={setEarningCategories}
+            selectedCourse={selectedCourse}
+            userInfo={userInfo}
+          />
+        )}
       </Layout>
     </div>
   );
