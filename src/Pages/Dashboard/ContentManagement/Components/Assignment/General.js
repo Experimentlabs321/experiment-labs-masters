@@ -3,11 +3,14 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import required from "../../../../../assets/ContentManagement/required.png";
 import TextEditor from "../../../../Shared/TextEditor/TextEditor";
 
-const General = ({selectedFile, setSelectedFile}) => {
+const General = ({
+  selectedFile,
+  setSelectedFile,
+  instructions,
+  setInstructions,
+}) => {
   // upload file
   const [dragActive, setDragActive] = useState(true);
-  // const [selectedFile, setSelectedFile] = useState(null);
-  const [instructions, setInstructions] = useState("");
 
   const handleDragEnter = (e) => {
     e.preventDefault();
@@ -96,16 +99,8 @@ const General = ({selectedFile, setSelectedFile}) => {
                   <TextEditor setValue={setInstructions} />
                 </div>
               </div>
-              {/* <p>{value}</p>
-            <div dangerouslySetInnerHTML={{ __html: value }} /> */}
-              {/* Add Tags */}
-              {/* <input
-                required
-                className="mt-6 ms-6 border rounded-md w-[440px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                name="assignmentInstructions"
-                type="text"
-                placeholder="Eg. Excel with Shekhar Gupta"
-              /> */}
+              {/* <p>{instructions}</p>
+              <div dangerouslySetInnerHTML={{ __html: instructions }} /> */}
             </div>
           </div>
 
