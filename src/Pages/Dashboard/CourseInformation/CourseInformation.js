@@ -266,7 +266,7 @@ const CourseInformation = () => {
       })
       .catch((error) => console.error(error));
   }, [currentWeek]);
-  console.log(courseData);
+  console.log(currentWeek);
   return (
     <div>
       <Layout>
@@ -467,7 +467,7 @@ const CourseInformation = () => {
           <div className="px-4">
             <div
               className={`relative inline-block ${
-                Role === "user" ? "mt-[130px]" : "mt-[40px]"
+                Role === "admin" ? "mt-[40px]" : "mt-[140px]"
               }  w-[400px] mb-[10px] flex items-center gap-[32px] `}
             >
               <div className="">
