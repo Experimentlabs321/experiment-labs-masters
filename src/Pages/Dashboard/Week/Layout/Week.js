@@ -6,6 +6,8 @@ import Aside from "./Aside";
 import MenuIcon from "@mui/icons-material/Menu";
 import WeekDetail from "../WeekDetail";
 import Navbar from "../../Shared/Navbar";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const data = [
   {
@@ -50,15 +52,29 @@ const data = [
 ];
 
 const Week = () => {
+  const { id } = useParams();
   const [toggleButton, setToggleButton] = useState(true);
   const [week, setWeek] = useState(data[0]);
   const [lectureNo, setLectureNo] = useState(0);
   const [tasksNo, setTasksNo] = useState(0);
-  const [openTopic, setOpenTopic] = useState(data[0]?.lecture[0]?.name);
   const [openTask, setOpenTask] = useState(
     data[0]?.lecture[lectureNo].tasks[tasksNo]
   );
+  const [chapters, setChapters] = useState([]);
+  const [openTopic, setOpenTopic] = useState(chapters[0]?.chapterName);
   const Role = localStorage.getItem("role");
+
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_BACKEND_API}/chapters/${id}`)
+      .then((response) => {
+        setChapters(response?.data);
+        setOpenTopic(response?.data[0]?.chapterName);
+      })
+      .catch((error) => console.error(error));
+  }, [id]);
+  console.log(chapters);
+
   return (
     <>
       <MyHelmet>Dashboard</MyHelmet>
@@ -73,6 +89,7 @@ const Week = () => {
               setOpenTask={setOpenTask}
               toggleButton={toggleButton}
               setToggleButton={setToggleButton}
+              chapters={chapters}
               data={week?.lecture}
             />
             <button

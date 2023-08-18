@@ -25,6 +25,7 @@ const Aside = ({
   setOpenTask,
   openTopic,
   setOpenTopic,
+  chapters,
 }) => {
   // const [openTopic, setOpenTopic] = useState(data[0]?.name);
   // const [openTask, setOpenTask] = useState(data[0]?.tasks[0]);
@@ -76,11 +77,11 @@ const Aside = ({
                   <h1 className="ml-3 text-[18px] font-[500]">Hide menu</h1>
                 </button>
               </li>
-              {data?.map((item, index) => (
+              {chapters?.map((item, index) => (
                 <li>
                   <div>
                     <div
-                      onClick={() => setOpenTopic(item?.name)}
+                      onClick={() => setOpenTopic(item?.chapterName)}
                       className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px] cursor-pointer group`}
                     >
                       <div className="w-[42px] h-[42px] bg-[#D7DDFF] text-black flex items-center justify-center rounded-full ">
@@ -90,7 +91,7 @@ const Aside = ({
                       <h1
                         className={`text-white ml-3 text-[18px] font-[500] flex items-center justify-center `}
                       >
-                        <span className="mr-[22px]">{item.name}</span>
+                        <span className="mr-[22px]">{item?.chapterName}</span>
                         {Role === "admin" && (
                           <svg
                             className="mr-[22px]"
@@ -106,7 +107,6 @@ const Aside = ({
                             />
                           </svg>
                         )}
-
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="24"
@@ -125,7 +125,9 @@ const Aside = ({
                       </h1>
                     </div>
                     <div
-                      className={`${openTopic === item?.name ? "" : "hidden"}`}
+                      className={`${
+                        openTopic === item?.chapterName ? "" : "hidden"
+                      }`}
                     >
                       {item?.tasks?.map((task, index) => (
                         <div
@@ -151,7 +153,7 @@ const Aside = ({
                                   alt="TaskIcon"
                                 />
                               )}
-                              {task?.type === "Assignment" && (
+                              {task?.type === "assignments" && (
                                 <img
                                   className={`${
                                     openTask === task
@@ -166,7 +168,7 @@ const Aside = ({
                                   alt="TaskIcon"
                                 />
                               )}
-                              {task?.type === "Classes" && (
+                              {task?.type === "classes" && (
                                 <img
                                   className={`${
                                     openTask === task
@@ -179,7 +181,7 @@ const Aside = ({
                                   alt="TaskIcon"
                                 />
                               )}
-                              {task?.type === "Quiz" && (
+                              {task?.type === "quiz" && (
                                 <img
                                   className={`${
                                     openTask === task
@@ -190,7 +192,7 @@ const Aside = ({
                                   alt="TaskIcon"
                                 />
                               )}
-                              {task?.type === "LiveTest" && (
+                              {task?.type === "liveTests" && (
                                 <img
                                   className={`${
                                     openTask === task
@@ -205,7 +207,7 @@ const Aside = ({
                                   alt="TaskIcon"
                                 />
                               )}
-                              {task?.type === "Video" && (
+                              {task?.type === "video" && (
                                 <img
                                   className={`${
                                     openTask === task
@@ -216,7 +218,7 @@ const Aside = ({
                                   alt="TaskIcon"
                                 />
                               )}
-                              {task?.type === "Audio" && (
+                              {task?.type === "audio" && (
                                 <img
                                   className={`${
                                     openTask === task
@@ -227,7 +229,7 @@ const Aside = ({
                                   alt="TaskIcon"
                                 />
                               )}
-                              {task?.type === "Files" && (
+                              {task?.type === "files" && (
                                 <img
                                   className={`${
                                     openTask === task
