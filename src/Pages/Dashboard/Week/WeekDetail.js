@@ -10,6 +10,7 @@ import VideoTask from "./VideoTask";
 import AudioTask from "./AudioTask";
 import FilesTask from "./FilesTask";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const skillsCategories = [
   {
@@ -107,7 +108,12 @@ const WeekDetail = ({
   setTasksNo,
   setOpenTask,
   setOpenTopic,
+  chapters,
 }) => {
+  const [currentWeek, setCurrentWeek] = useState(
+    JSON.parse(localStorage.getItem("currentWeek"))
+  );
+  const [taskData, setTaskData] = useState({});
   const handleNext = () => {
     if (week?.lecture[lectureNo]?.tasks?.length === tasksNo + 1) {
       if (week?.lecture?.length === lectureNo + 1) {
@@ -145,6 +151,50 @@ const WeekDetail = ({
     // setOpenTask(week?.lecture[lectureNo]?.tasks[tasksNo]);
     console.log(openTask);
   };
+
+  useEffect(() => {
+    let taskTypeForAPI;
+    console.log(openTask?.taskType);
+    switch (openTask?.taskType) {
+      case "Assignment":
+        taskTypeForAPI = "assignments";
+        break;
+      case "Class":
+        taskTypeForAPI = "classes";
+        break;
+      case "Reading":
+        taskTypeForAPI = "readings";
+        break;
+      case "Quiz":
+        taskTypeForAPI = "quizes";
+        break;
+      case "Live Test":
+        taskTypeForAPI = "liveTests";
+        break;
+      case "Video":
+        taskTypeForAPI = "videos";
+        break;
+      case "Audio":
+        taskTypeForAPI = "audios";
+        break;
+      case "Files":
+        taskTypeForAPI = "files";
+        break;
+      default:
+        console.error({ error: "Invalid task type" });
+    }
+
+    axios
+      .get(
+        `${process.env.REACT_APP_BACKEND_API}/tasks/${taskTypeForAPI}?id=${openTask?.taskId}`
+      )
+      .then((response) => {
+        setTaskData(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [openTask, openTask?.taskType]);
+  console.log(taskData);
+
   return (
     <div>
       <div className="relative z-0 ">
@@ -174,7 +224,7 @@ const WeekDetail = ({
                 />
               </svg>
               <Link
-                to="/questLevels"
+                to={`/questLevels/${currentWeek?.courseId}`}
                 className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline "
               >
                 Quest Levels
@@ -196,10 +246,10 @@ const WeekDetail = ({
                 />
               </svg>
               <Link
-                to="/week"
+                to={`/questLevels/${currentWeek?.courseId}`}
                 className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline "
               >
-                {week?.weekName}
+                {currentWeek?.weekName}
               </Link>
               <svg
                 className="mr-[30px]"
@@ -267,14 +317,22 @@ const WeekDetail = ({
             </div>
           </div>
         </div>
-        {openTask?.type === "Classes" && <ClassesTask />}
-        {openTask?.type === "Assignment" && <AssignmentTask />}
-        {openTask?.type === "Reading" && <ReadingTask />}
-        {openTask?.type === "Quiz" && <QuizTask />}
-        {openTask?.type === "LiveTest" && <LiveTestTask />}
-        {openTask?.type === "Video" && <VideoTask />}
-        {openTask?.type === "Audio" && <AudioTask />}
-        {openTask?.type === "Files" && <FilesTask />}
+        {openTask?.taskType === "Classes" && (
+          <ClassesTask taskData={taskData} />
+        )}
+        {openTask?.taskType === "Assignment" && (
+          <AssignmentTask taskData={taskData} />
+        )}
+        {openTask?.taskType === "Reading" && (
+          <ReadingTask taskData={taskData} />
+        )}
+        {openTask?.taskType === "Quiz" && <QuizTask taskData={taskData} />}
+        {openTask?.taskType === "LiveTests" && (
+          <LiveTestTask taskData={taskData} />
+        )}
+        {openTask?.taskType === "Video" && <VideoTask taskData={taskData} />}
+        {openTask?.taskType === "Audio" && <AudioTask taskData={taskData} />}
+        {openTask?.taskType === "Files" && <FilesTask taskData={taskData} />}
       </div>
     </div>
   );

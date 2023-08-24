@@ -25,6 +25,8 @@ const EditEarningPointItemForm = ({
     setSelectedItemEarningOption(event.target.value);
   };
 
+  console.log(selectedEarningLogic);
+
   const handleEditSkill = async (event) => {
     event.preventDefault();
     const data = {

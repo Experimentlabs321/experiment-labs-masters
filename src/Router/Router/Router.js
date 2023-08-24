@@ -71,6 +71,7 @@ import ExpertMentorResourceCentre from "../../Pages/Dashboard/ExpertMentorDashbo
 import StudentProgressOverallBatchPerformance from "../../Pages/Dashboard/ExpertMentorDashboard/ExpertMentorStudentProgress/StudentProgressOverallBatchPerformance";
 import ExpertMentorShowcasePage from "../../Pages/Dashboard/ExpertMentorDashboard/ShowcasePage/ExpertMentorShowcasePage";
 
+import EditTasks from "../../Pages/Dashboard/ContentManagement/EditTasks/EditTasks";
 
 const router = createBrowserRouter([
   {
@@ -145,7 +146,7 @@ const router = createBrowserRouter([
     element: <CourseInformation />,
   },
   {
-    path: "/week",
+    path: "/week/:id",
     element: <Week />,
   },
   {
@@ -196,7 +197,10 @@ const router = createBrowserRouter([
     path: "/assignment/:id",
     element: <Assignment />,
   },
-
+  {
+    path: "/editTask/:id",
+    element: <EditTasks />,
+  },
   {
     path: "/manageReading/:id",
     element: <ManageReading />,
@@ -315,19 +319,19 @@ const router = createBrowserRouter([
   },
   {
     path: "/unpaidStudentDashboard",
-    element:<UnpaidStudentDashboard/>,
+    element: <UnpaidStudentDashboard />,
   },
   {
     path: "/studentControl",
-    element:<StudentControlDashboard/>,
+    element: <StudentControlDashboard />,
   },
   {
     path: "/unpaidDashboard",
-    element:<UnpaidDashboard/>,
+    element: <UnpaidDashboard />,
   },
   {
     path: "/expertMentorDashboard",
-    element:<ExpertMentorDashboard/>,
+    element: <ExpertMentorDashboard />,
   },
   {
     path: "/expertMentorStudentProgress",

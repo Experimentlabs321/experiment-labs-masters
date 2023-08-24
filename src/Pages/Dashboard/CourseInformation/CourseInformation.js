@@ -3,7 +3,7 @@ import Completed from "../../../assets/Dashboard/Completed.png";
 import InProgress from "../../../assets/Dashboard/InProgress.png";
 import Task from "../../../assets/Dashboard/Task.png";
 import Layout from "./Layout/Layout";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import DialogLayout from "../Shared/DialogLayout";
 import ClassesTaskIcon from "../../../assets/Dashboard/Classes.png";
 import AssignmentTaskIcon from "../../../assets/Dashboard/Assignment.png";
@@ -32,12 +32,14 @@ const CourseInformation = () => {
   const [weeks, setWeeks] = useState([]);
   const [courseData, setCourseData] = useState();
   const [currentWeek, setCurrentWeek] = useState(weeks[0]);
+  const [clickedTask, setClickedTask] = useState({});
   const Role = localStorage.getItem("role");
   const [selectedOption, setSelectedOption] = useState("Category");
   const options = ["Category name"];
   const { user, userInfo } = useContext(AuthContext);
 
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const TaskTypeInfo = [
     {
@@ -241,6 +243,86 @@ const CourseInformation = () => {
       .catch((error) => console.error(error));
   };
 
+  const handleTaskDelete = async (task, chapter) => {
+    await Swal.fire({
+      title: "Are you sure?",
+      text: "Once deleted, the task will not recover!",
+      icon: "warning",
+      buttons: true,
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Delete",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        console.log("Delete functionality...", task);
+        let taskTypeForAPI;
+        switch (task?.taskType) {
+          case "Assignment":
+            taskTypeForAPI = "assignments";
+            break;
+          case "Class":
+            taskTypeForAPI = "classes";
+            break;
+          case "Reading":
+            taskTypeForAPI = "readings";
+            break;
+          case "Quiz":
+            taskTypeForAPI = "quizes";
+            break;
+          case "Live Test":
+            taskTypeForAPI = "liveTests";
+            break;
+          case "Video":
+            taskTypeForAPI = "videos";
+            break;
+          case "Audio":
+            taskTypeForAPI = "audios";
+            break;
+          case "Files":
+            taskTypeForAPI = "files";
+            break;
+          default:
+            console.error({ error: "Invalid task type" });
+        }
+        fetch(
+          `${process.env.REACT_APP_BACKEND_API}/tasks/${taskTypeForAPI}/${task?.taskId}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+          .then((result) => {
+            console.log(result);
+            if (result?.ok) {
+              toast.success("Item Deleted Successfully!");
+              let filterChapter = [];
+              chapters?.forEach((item) => {
+                if (item?._id === chapter?._id) {
+                  const filteredTask = [];
+                  item?.tasks?.forEach((i) => {
+                    if (i?.taskId !== task?.taskId) {
+                      filteredTask.push(i);
+                    }
+                  });
+                  item["tasks"] = filteredTask;
+                  filterChapter?.push(item);
+                } else {
+                  filterChapter?.push(item);
+                }
+              });
+              setChapters(filterChapter);
+            }
+          })
+          .catch((error) => {
+            console.error("Fetch error:", error);
+            // Handle error, display a message to the user, etc.
+          });
+      }
+    });
+  };
+
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACKEND_API}/courses/${id}`)
@@ -266,7 +348,6 @@ const CourseInformation = () => {
       })
       .catch((error) => console.error(error));
   }, [currentWeek]);
-  console.log(courseData);
   return (
     <div>
       <Layout>
@@ -467,7 +548,7 @@ const CourseInformation = () => {
           <div className="px-4">
             <div
               className={`relative inline-block ${
-                Role === "user" ? "mt-[130px]" : "mt-[40px]"
+                Role === "admin" ? "mt-[40px]" : "mt-[140px]"
               }  w-[400px] mb-[10px] flex items-center gap-[32px] `}
             >
               <div className="">
@@ -776,10 +857,24 @@ const CourseInformation = () => {
                               />
                               <div className="">
                                 <Link
-                                  to={`/${task?.taskType}/${task?.taskId}`}
+                                  onClick={() => {
+                                    localStorage.setItem(
+                                      "chapter",
+                                      chapter?.chapterName
+                                    );
+                                    localStorage.setItem(
+                                      "task",
+                                      JSON.stringify(task)
+                                    );
+                                    localStorage.setItem(
+                                      "currentWeek",
+                                      JSON.stringify(currentWeek)
+                                    );
+                                  }}
+                                  to={`/week/${currentWeek?._id}`}
                                   className="text-[#3E4DAC] text-[22px] font-[700] "
                                 >
-                                  Task 1
+                                  {task?.taskName}
                                 </Link>
                                 <p className="text-[#626262] text-[18px] font-[500] ">
                                   {task?.taskType}
@@ -788,20 +883,66 @@ const CourseInformation = () => {
                             </div>
                           </div>
                           {Role === "admin" && (
-                            <button className=" mr-[25px] ">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="30"
-                                height="31"
-                                viewBox="0 0 30 31"
-                                fill="none"
+                            <div className="relative">
+                              <button
+                                onClick={() => {
+                                  if (clickedTask === task)
+                                    setClickedTask(null);
+                                  else setClickedTask(task);
+                                }}
+                                onBlur={() => setClickedTask(null)}
+                                className=" mr-[25px] "
                               >
-                                <path
-                                  d="M15.0166 12.6104C13.6432 12.6104 12.5195 13.734 12.5195 15.1074C12.5195 16.4808 13.6432 17.6045 15.0166 17.6045C16.39 17.6045 17.5137 16.4808 17.5137 15.1074C17.5137 13.734 16.39 12.6104 15.0166 12.6104ZM15.0166 5.11914C13.6432 5.11914 12.5195 6.24282 12.5195 7.61621C12.5195 8.9896 13.6432 10.1133 15.0166 10.1133C16.39 10.1133 17.5137 8.9896 17.5137 7.61621C17.5137 6.24282 16.39 5.11914 15.0166 5.11914ZM15.0166 20.1016C13.6432 20.1016 12.5195 21.2252 12.5195 22.5986C12.5195 23.972 13.6432 25.0957 15.0166 25.0957C16.39 25.0957 17.5137 23.972 17.5137 22.5986C17.5137 21.2252 16.39 20.1016 15.0166 20.1016Z"
-                                  fill="black"
-                                />
-                              </svg>
-                            </button>
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="30"
+                                  height="31"
+                                  viewBox="0 0 30 31"
+                                  fill="none"
+                                >
+                                  <path
+                                    d="M15.0166 12.6104C13.6432 12.6104 12.5195 13.734 12.5195 15.1074C12.5195 16.4808 13.6432 17.6045 15.0166 17.6045C16.39 17.6045 17.5137 16.4808 17.5137 15.1074C17.5137 13.734 16.39 12.6104 15.0166 12.6104ZM15.0166 5.11914C13.6432 5.11914 12.5195 6.24282 12.5195 7.61621C12.5195 8.9896 13.6432 10.1133 15.0166 10.1133C16.39 10.1133 17.5137 8.9896 17.5137 7.61621C17.5137 6.24282 16.39 5.11914 15.0166 5.11914ZM15.0166 20.1016C13.6432 20.1016 12.5195 21.2252 12.5195 22.5986C12.5195 23.972 13.6432 25.0957 15.0166 25.0957C16.39 25.0957 17.5137 23.972 17.5137 22.5986C17.5137 21.2252 16.39 20.1016 15.0166 20.1016Z"
+                                    fill="black"
+                                  />
+                                </svg>
+                              </button>
+                              {clickedTask === task && (
+                                <ul className="absolute right-5 top-[35px] w-max border  bg-[#141414] border-t-0 p-2 rounded-[8px] mt-1 transform translate-y-[-10px] shadow-[0px_2px_4px_0px_#00000026]">
+                                  <li
+                                    onMouseDown={() => {
+                                      localStorage.setItem(
+                                        "chapter",
+                                        chapter?.chapterName
+                                      );
+                                      localStorage.setItem(
+                                        "task",
+                                        JSON.stringify(task)
+                                      );
+                                      localStorage.setItem(
+                                        "course",
+                                        courseData?.courseFullName
+                                      );
+                                      localStorage.setItem(
+                                        "currentWeek",
+                                        JSON.stringify(currentWeek)
+                                      );
+                                      navigate(`/editTask/${currentWeek?._id}`);
+                                    }}
+                                    className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600] "
+                                  >
+                                    Edit Task
+                                  </li>
+                                  <li
+                                    className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600] "
+                                    onMouseDown={() =>
+                                      handleTaskDelete(task, chapter)
+                                    }
+                                  >
+                                    Delete Task
+                                  </li>
+                                </ul>
+                              )}
+                            </div>
                           )}
                         </div>
                         {chapter?.tasks?.length - 1 !== taskIndex && (

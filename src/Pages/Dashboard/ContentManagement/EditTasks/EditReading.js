@@ -1,17 +1,18 @@
-import Layout from "../Layout";
-import required from "../../../assets/ContentManagement/required.png";
+import required from "../../../../assets/ContentManagement/required.png";
 import { useContext, useEffect, useState } from "react";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { AuthContext } from "../../../contexts/AuthProvider";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
-import SkillBasedParameter from "./Components/Shared/SkillBasedParameter";
-import ItemEarningParameter from "./Components/Shared/ItemEarningParameter";
-import uploadFileToS3 from "../../UploadComponent/s3Uploader";
 import { toast } from "react-hot-toast";
-import FilesTask from "../Week/FilesTask";
+import { AuthContext } from "../../../../contexts/AuthProvider";
+import uploadFileToS3 from "../../../UploadComponent/s3Uploader";
+import Layout from "../../Layout";
+import ReadingTask from "../../Week/ReadingTask";
+import TextEditor from "../../../Shared/TextEditor/TextEditor";
+import SkillBasedParameter from "../Components/Shared/SkillBasedParameter";
+import ItemEarningParameter from "../Components/Shared/ItemEarningParameter";
 
-const ManageFile = () => {
+const EditReading = () => {
   // upload file
   const [dragActive, setDragActive] = useState(true);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -55,76 +56,87 @@ const ManageFile = () => {
   const [earningCategories, setEarningCategories] = useState([]);
   const [skillParameterData, setSkillParameterData] = useState([]);
   const [earningParameterData, setEarningParameterData] = useState([]);
+  const [readingMaterial, setReadingMaterial] = useState("");
   const [course, setCourse] = useState({});
   const [preview, setPreview] = useState(false);
   const [submitPermission, setSubmitPermission] = useState(false);
-  const [fileData, setFileData] = useState({});
+  const [readingData, setReadingData] = useState({});
+  const [openTask, setOpenTask] = useState(
+    JSON.parse(localStorage.getItem("task"))
+  );
+  const [currentWeek, setCurrentWeek] = useState(
+    JSON.parse(localStorage.getItem("currentWeek"))
+  );
   useEffect(() => {
+    const fetchData = {
+      organizationId: currentWeek?.organization?.organizationId,
+      courseId: currentWeek?.courseId,
+    };
     axios
-      .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
-      .then((response) => {
-        setChapter(response?.data);
-        const fetchData = {
-          organizationId: userInfo?.organizationId,
-          courseId: response?.data?.courseId,
-        };
-        axios
-          .post(
-            `${process.env.REACT_APP_BACKEND_API}/skillCategoriesByCourseId`,
-            fetchData
-          )
-          .then((res) => setSkillCategories(res?.data))
-          .catch((error) => console.error(error));
-        axios
-          .post(
-            `${process.env.REACT_APP_BACKEND_API}/itemCategoryByCourseId`,
-            fetchData
-          )
-          .then((res) => setEarningCategories(res?.data))
-          .catch((error) => console.error(error));
-      })
+      .post(
+        `${process.env.REACT_APP_BACKEND_API}/skillCategoriesByCourseId`,
+        fetchData
+      )
+      .then((res) => setSkillCategories(res?.data))
       .catch((error) => console.error(error));
-  }, [id, userInfo, userInfo?.email]);
+    axios
+      .post(
+        `${process.env.REACT_APP_BACKEND_API}/itemCategoryByCourseId`,
+        fetchData
+      )
+      .then((res) => setEarningCategories(res?.data))
+      .catch((error) => console.error(error));
+  }, [currentWeek]);
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACKEND_API}/courses/${chapter?.courseId}`)
+      .get(
+        `${process.env.REACT_APP_BACKEND_API}/tasks/readings?id=${openTask?.taskId}`
+      )
       .then((response) => {
-        setCourse(response?.data);
+        setReadingData(response?.data);
+        setReadingMaterial(response?.data?.readingMaterial);
+        setSelectedFile(response?.data?.additionalFiles);
+        setSkillParameterData(response?.data?.skillParameterData);
+        setEarningParameterData(response?.data?.earningParameterData);
       });
-  }, [chapter]);
+  }, [openTask]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    const form = event.target;
     let fileUrl = "";
     if (selectedFile) fileUrl = await uploadFileToS3(selectedFile);
-    const form = event.target;
-    const fileName = form.fileName?.value;
+    const readingTopicName = form.readingTopicName?.value;
 
-    const ManageFile = {
-      fileName,
-      taskName: fileName,
+    const manageReading = {
+      readingTopicName,
+      taskName: readingTopicName,
       additionalFiles: fileUrl,
       skillParameterData: skillParameterData,
       earningParameterData: earningParameterData,
+      readingMaterial: readingMaterial,
       chapterId: id,
     };
 
-    setFileData(ManageFile);
+    setReadingData(manageReading);
 
     if (submitPermission) {
       const newTask = await axios.post(
-        `${process.env.REACT_APP_BACKEND_API}/tasks/files`,
-        ManageFile
+        `${process.env.REACT_APP_BACKEND_API}/tasks/readings`,
+        manageReading
       );
+      console.log(newTask);
 
       if (newTask?.data?.acknowledged) {
-        toast.success("File added Successfully");
+        toast.success("Reading material added Successfully!");
         event.target.reset();
       }
 
-      console.log(ManageFile);
+      console.log(manageReading);
     }
   };
+
+  console.log(readingData);
 
   return (
     <div>
@@ -156,10 +168,10 @@ const ManageFile = () => {
                   />
                 </svg>
                 <Link
-                  to={`/questLevels/${course?._id}`}
+                  to={`/questLevels/${currentWeek?.courseId}`}
                   className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline "
                 >
-                  {course?.courseFullName}
+                  {localStorage.getItem("course")}
                 </Link>
                 <svg
                   className="mr-[30px]"
@@ -178,7 +190,7 @@ const ManageFile = () => {
                   />
                 </svg>
                 <button className=" font-sans mr-[30px] text-[20px] font-[400] ">
-                  {chapter?.chapterName}
+                  {localStorage.getItem("chapter")}
                 </button>
               </div>
               <div className="flex items-center mt-[-10px] ">
@@ -233,11 +245,11 @@ const ManageFile = () => {
           </div>
         </div>
         <div className={`${preview ? "block" : "hidden"}`}>
-          <FilesTask fileData={fileData} />
+          <ReadingTask taskData={readingData} />
         </div>
         <div className={`${preview ? "hidden" : "block"}`}>
           <div className="text-[#3E4DAC] text-[26px] font-bold  py-[35px] ps-[40px]">
-            <p>Manage File in {chapter?.chapterName}</p>
+            <p>Manage Reading in {localStorage.getItem("chapter")}</p>
           </div>
           <form onSubmit={handleSubmit}>
             <div className="flex  me-20 py-[35px] ps-[40px]">
@@ -245,24 +257,30 @@ const ManageFile = () => {
                 <div className="">
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
-                    <p className="font-bold text-lg me-[36px]">File Name</p>
+                    <p className="font-bold text-lg me-[36px]">
+                      Reading Topic Name
+                    </p>
                     <img src={required} alt="required" />
                   </div>
 
                   <input
                     required
+                    defaultValue={
+                      readingData ? readingData?.readingTopicName : ""
+                    }
                     className="mt-6 ms-6 border rounded-md w-3/4 h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                    name="fileName"
+                    name="readingTopicName"
                     type="text"
                     placeholder="Eg. Entrepreneurship Lab"
                   />
                 </div>
-              </div>
-              <div className="w-full">
-                <div className=" flex flex-col">
+
+                <div className="mt-12 flex flex-col">
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
-                    <p className="font-bold text-lg me-[36px]">Upload Files</p>
+                    <p className="font-bold text-lg me-[36px]">
+                      Additional Files{" "}
+                    </p>
                   </div>
 
                   <div
@@ -279,7 +297,7 @@ const ManageFile = () => {
                     {dragActive ? (
                       <>
                         <CloudUploadIcon />
-                        <p className="text-[17px] font-semibold mb-3 mt-3">
+                        <p className="text-[17px] font-semibold mt-3 mb-3">
                           Drag and drop{" "}
                         </p>
                         <p className="text-sm font-medium mb-3">Or</p>
@@ -300,7 +318,10 @@ const ManageFile = () => {
                             className="w-[1%]"
                             style={{ fontSize: "0", opacity: "0" }}
                             type="file"
-                            accept=".jpg, .jpeg, .png"
+                            defaultValue={
+                              readingData ? readingData?.additionalFiles : ""
+                            }
+                            // accept=".jpg, .jpeg, .png"
                             name="input-file-upload"
                             id="input-file-upload"
                             onChange={handleFileChange}
@@ -308,27 +329,51 @@ const ManageFile = () => {
                           />
                         </div>
                       </>
-                      // <input type="file" id="input-file-upload" onChange={handleFileChange} />
                     )}
                   </div>
                 </div>
               </div>
+              <div className="w-full">
+                <div className="flex items-center gap-4">
+                  <p className="h-2 w-2 bg-black rounded-full"></p>
+                  <p className="font-bold text-lg me-[36px]">
+                    Reading Material{" "}
+                  </p>
+                  <img src={required} alt="required" />
+                </div>
+
+                {/* Text editor */}
+                <div className="py-4">
+                  <div className="bg-white text-black">
+                    <TextEditor
+                      value={readingMaterial}
+                      setValue={setReadingMaterial}
+                    />
+                  </div>
+                </div>
+                {/* <p>{instructions}</p>
+              <div dangerouslySetInnerHTML={{ __html: instructions }} /> */}
+              </div>
             </div>
+
             <div className="px-4 my-10">
               <p className="text-[25px] font-bold mb-10">
                 Evaluation Parameter
               </p>
               <SkillBasedParameter
+                forEdit={true}
                 selectedData={skillParameterData}
                 setSelectedData={setSkillParameterData}
                 categories={skillCategories}
               />
               <ItemEarningParameter
+                forEdit={true}
                 selectedData={earningParameterData}
                 setSelectedData={setEarningParameterData}
                 categories={earningCategories}
               />
             </div>
+
             <div className="flex items-center justify-center mt-20 mb-10">
               <input
                 type="submit"
@@ -349,4 +394,4 @@ const ManageFile = () => {
   );
 };
 
-export default ManageFile;
+export default EditReading;
