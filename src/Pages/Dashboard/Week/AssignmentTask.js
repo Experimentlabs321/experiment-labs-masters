@@ -3,19 +3,29 @@ import Instructions from "./SubFile/AssignmentTask/Instructions";
 import Submission from "./SubFile/AssignmentTask/Submission";
 import ReviewSubmission from "./SubFile/AssignmentTask/ReviewSubmission";
 
-const AssignmentTask = ({ assignmentData }) => {
+const AssignmentTask = ({ taskData }) => {
   const [view, setView] = useState("Instructions");
   return (
     <div>
       <div className="px-4">
-        <h1 className=" text-[30px] font-[500] mt-[40px] ">
+        <h1 className=" text-[30px] font-[500] mt-[30px] ">
           Assignment Instructions:{" "}
-          <span className="text-[#3E4DAC]">
-            {assignmentData?.assignmentName}
-          </span>
+          <span className="text-[#3E4DAC]">{taskData?.assignmentName}</span>
         </h1>
       </div>
-      <div className=" border-b-[1px] mt-[50px] ">
+      {taskData?.file && (
+        <div className="p-4 mt-[15px]">
+          <a
+            className="p-4 bg-blue rounded-lg text-white font-bold"
+            id="downloadButton"
+            href={taskData?.file}
+            download
+          >
+            Download Additional File
+          </a>
+        </div>
+      )}
+      <div className=" border-b-[1px] mt-[40px] ">
         <div className="px-4">
           <button
             onClick={() => setView("Instructions")}
@@ -45,13 +55,11 @@ const AssignmentTask = ({ assignmentData }) => {
       </div>
       <div>
         {view === "Instructions" && (
-          <Instructions instructions={assignmentData?.instructions} />
+          <Instructions instructions={taskData?.instructions} />
         )}
-        {view === "Submission" && (
-          <Submission assignmentData={assignmentData} />
-        )}
+        {view === "Submission" && <Submission taskData={taskData} />}
         {view === "Review Submission" && (
-          <ReviewSubmission assignmentData={assignmentData} />
+          <ReviewSubmission taskData={taskData} />
         )}
       </div>
     </div>

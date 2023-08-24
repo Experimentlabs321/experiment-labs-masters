@@ -1,30 +1,18 @@
 import React, { useContext, useEffect, useState } from "react";
-import Layout from "../Layout";
-import arrowDown from "../../../assets/SkillsManagement/arrow.svg";
-import arrowright from "../../../assets/SkillsManagement/arrowright.svg";
-import required from "../../../assets/ContentManagement/required.png";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import closeCircle from "../../../assets/ContentManagement/closeCircle.svg";
-import edit from "../../../assets/ContentManagement/edit.svg";
-import PropTypes from "prop-types";
-import { styled } from "@mui/material/styles";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
-import Typography from "@mui/material/Typography";
+import arrowDown from "../../../../assets/SkillsManagement/arrow.svg";
+import arrowright from "../../../../assets/SkillsManagement/arrowright.svg";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import General from "./Components/Assignment/General";
-import { AuthContext } from "../../../contexts/AuthProvider";
-import SkillBasedParameter from "./Components/Shared/SkillBasedParameter";
-import ItemEarningParameter from "./Components/Shared/ItemEarningParameter";
-import uploadFileToS3 from "../../UploadComponent/s3Uploader";
-import AssignmentTask from "../Week/AssignmentTask";
+import Layout from "../../Layout";
+import { AuthContext } from "../../../../contexts/AuthProvider";
+import uploadFileToS3 from "../../../UploadComponent/s3Uploader";
+import AssignmentTask from "../../Week/AssignmentTask";
+import SkillBasedParameter from "../Components/Shared/SkillBasedParameter";
+import ItemEarningParameter from "../Components/Shared/ItemEarningParameter";
+import General from "../Components/Assignment/General";
 
-const Assignment = () => {
+const EditAssignment = () => {
   const [isOpenGeneral, setisOpenGeneral] = useState(true);
 
   const [isOpenEvaluationParameter, setisOpenEvaluationParameter] =
@@ -41,188 +29,8 @@ const Assignment = () => {
     setisOpenEvaluationParameter(!isOpenEvaluationParameter);
   };
 
-  // create new category
-  // const [isOpencreatenewskillcategory, setisOpencreatenewskillcategory] =
-  //   useState(false);
-
-  // const openModalacreatenewskillcategory = () => {
-  //   setisOpencreatenewskillcategory(true);
-  // };
-
-  // const closeModalcreatenewskillcategory = () => {
-  //   setisOpencreatenewskillcategory(false);
-  // };
-
-  // // skill category
-  // const [isOpenEvluationSkillCategory, setisOpenEvluationSkillCategory] =
-  //   useState(false);
-  // const [selectedOptionskillName, setselectedOptionskillName] = useState([]);
-
-  // const toggleDropdownSkillCategory = () => {
-  //   setisOpenEvluationSkillCategory(!isOpenEvluationSkillCategory);
-  // };
-
-  // // skill Parameter
-  // const [isOpenEvluationSkillParameter, setisOpenEvluationSkillParameter] =
-  //   useState(false);
-  // const [selectedOptionskillParameter, setselectedOptionskillParameter] =
-  //   useState([]);
-
-  // const toggleDropdownSkillParameter = () => {
-  //   setisOpenEvluationSkillParameter(!isOpenEvluationSkillParameter);
-  // };
-
-  // //skill name
-  // const [isOpenSkillName, setisOpenSkillName] = useState(false);
-  // const toggleDropdownSkillName = () => {
-  //   setisOpenSkillName(!isOpenSkillName);
-  // };
-  // const handleOptionChangeSkillName = (event) => {
-  //   const optionValue = event.target.value;
-  //   const isChecked = event.target.checked;
-
-  //   if (isChecked) {
-  //     setselectedOptionskillName([...selectedOptionskillName, optionValue]);
-  //   } else {
-  //     setselectedOptionskillName(
-  //       selectedOptionskillName.filter((option) => option !== optionValue)
-  //     );
-  //   }
-  // };
-
-  // const handleSelectAllskillName = (event) => {
-  //   const isChecked = event.target.checked;
-
-  //   if (isChecked) {
-  //     setselectedOptionskillName(["Student", "Parent", "Counselor", "Others"]);
-  //   } else {
-  //     setselectedOptionskillName([]);
-  //   }
-  // };
-
-  //proceed
-  // const [proceed, setproceed] = useState(false);
-  // const handleproceed = () => {
-  //   setproceed(true);
-  // };
-  // //Parametersection
-  // const [parametersection, setparametersection] = useState(false);
-  // const handleparametersection = () => {
-  //   setparametersection(true);
-  //   setproceed(false);
-  // };
-
-  // const [selectedSection, setSelectedSection] = useState(null);
-
-  // const handleArrowClick = (category) => {
-  //   setSelectedSection(category);
-  // };
-  // console.log(selectedSection);
-
-  // const [SoftSkills, setSoftskill] = useState(true);
-
-  // const handleSoftSkill = () => {
-  //   setSoftskill(true);
-  // };
-
-  // ///////////////////////// new category
-  // const BootstrapDialogcategory = styled(Dialog)(({ theme }) => ({
-  //   "& .MuiDialogContent-root": {
-  //     padding: theme.spacing(2),
-  //   },
-  //   "& .MuiDialogActions-root": {
-  //     padding: theme.spacing(1),
-  //   },
-  // }));
-
-  // function BootstrapDialogTitlecategory(props) {
-  //   const { children, onClose, ...other } = props;
-
-  //   return (
-  //     <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
-  //       {children}
-  //       {onClose ? (
-  //         <IconButton
-  //           aria-label="close"
-  //           onClick={onClose}
-  //           sx={{
-  //             position: "absolute",
-  //             right: 8,
-  //             top: 8,
-  //             color: (theme) => theme.palette.grey[500],
-  //           }}
-  //         >
-  //           <CloseIcon />
-  //         </IconButton>
-  //       ) : null}
-  //     </DialogTitle>
-  //   );
-  // }
-
-  // BootstrapDialogTitlecategory.propTypes = {
-  //   children: PropTypes.node,
-  //   onClose: PropTypes.func.isRequired,
-  // };
-
-  // const [opencategory, setOpencategory] = React.useState(false);
-
-  // const handleClickOpencategory = () => {
-  //   setOpencategory(true);
-  // };
-  // const handleClosecategory = () => {
-  //   setOpencategory(false);
-  // };
-
-  // /////////////////////////  Add new Item earningparameter
-  // const BootstrapDialogearningparameter = styled(Dialog)(({ theme }) => ({
-  //   "& .MuiDialogContent-root": {
-  //     padding: theme.spacing(2),
-  //   },
-  //   "& .MuiDialogActions-root": {
-  //     padding: theme.spacing(1),
-  //   },
-  // }));
-
-  // function BootstrapDialogTitleearningparameter(props) {
-  //   const { children, onClose, ...other } = props;
-
-  //   return (
-  //     <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
-  //       {children}
-  //       {onClose ? (
-  //         <IconButton
-  //           aria-label="close"
-  //           onClick={onClose}
-  //           sx={{
-  //             position: "absolute",
-  //             right: 8,
-  //             top: 8,
-  //             color: (theme) => theme.palette.grey[500],
-  //           }}
-  //         >
-  //           <CloseIcon />
-  //         </IconButton>
-  //       ) : null}
-  //     </DialogTitle>
-  //   );
-  // }
-
-  // BootstrapDialogTitleearningparameter.propTypes = {
-  //   children: PropTypes.node,
-  //   onClose: PropTypes.func.isRequired,
-  // };
-
-  // const [openearningparameter, setOpenearningparameter] = React.useState(false);
-
-  // const handleClickOpenearningparameter = () => {
-  //   setOpenearningparameter(true);
-  // };
-  // const handleCloseearningparameter = () => {
-  //   setOpenearningparameter(false);
-  // };
-
   // ----   code by shihab   ----
-  const { user, userInfo } = useContext(AuthContext);
+  const { userInfo } = useContext(AuthContext);
   const [chapter, setChapter] = useState({});
   const [skillCategories, setSkillCategories] = useState([]);
   const [earningCategories, setEarningCategories] = useState([]);
@@ -233,34 +41,41 @@ const Assignment = () => {
   const [preview, setPreview] = useState(false);
   const [submitPermission, setSubmitPermission] = useState(false);
   const [assignmentData, setAssignmentData] = useState({});
+
+  const [openTask, setOpenTask] = useState(
+    JSON.parse(localStorage.getItem("task"))
+  );
+  const [currentWeek, setCurrentWeek] = useState(
+    JSON.parse(localStorage.getItem("currentWeek"))
+  );
   useEffect(() => {
+    // axios
+    //   .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
+    //   .then((response) => {
+    //     setChapter(response?.data);
+    //   })
+    //   .then(() => {
+    const fetchData = {
+      organizationId: currentWeek?.organization?.organizationId,
+      courseId: currentWeek?.courseId,
+    };
     axios
-      .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
-      .then((response) => {
-        setChapter(response?.data);
-      })
-      .then(() => {
-        const fetchData = {
-          organizationId: userInfo?.organizationId,
-          courseId: chapter?.courseId,
-        };
-        axios
-          .post(
-            `${process.env.REACT_APP_BACKEND_API}/skillCategoriesByCourseId`,
-            fetchData
-          )
-          .then((res) => setSkillCategories(res?.data))
-          .catch((error) => console.error(error));
-        axios
-          .post(
-            `${process.env.REACT_APP_BACKEND_API}/itemCategoryByCourseId`,
-            fetchData
-          )
-          .then((res) => setEarningCategories(res?.data))
-          .catch((error) => console.error(error));
-      })
+      .post(
+        `${process.env.REACT_APP_BACKEND_API}/skillCategoriesByCourseId`,
+        fetchData
+      )
+      .then((res) => setSkillCategories(res?.data))
       .catch((error) => console.error(error));
-  }, [id, userInfo, userInfo?.email]);
+    axios
+      .post(
+        `${process.env.REACT_APP_BACKEND_API}/itemCategoryByCourseId`,
+        fetchData
+      )
+      .then((res) => setEarningCategories(res?.data))
+      .catch((error) => console.error(error));
+    // })
+    // .catch((error) => console.error(error));
+  }, [currentWeek]);
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACKEND_API}/courses/${chapter?.courseId}`)
@@ -268,6 +83,19 @@ const Assignment = () => {
         setCourse(response?.data);
       });
   }, [chapter]);
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_BACKEND_API}/tasks/assignments?id=${openTask?.taskId}`
+      )
+      .then((response) => {
+        setAssignmentData(response?.data);
+        setInstructions(response?.data?.instructions);
+        setSelectedFile(response?.data?.file);
+        setSkillParameterData(response?.data?.skillParameterData);
+        setEarningParameterData(response?.data?.earningParameterData);
+      });
+  }, [openTask]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -298,13 +126,13 @@ const Assignment = () => {
     console.log(manageAssignment);
 
     if (submitPermission) {
-      const newAssignment = await axios.post(
-        `${process.env.REACT_APP_BACKEND_API}/tasks/assignments`,
+      const newAssignment = await axios.put(
+        `${process.env.REACT_APP_BACKEND_API}/tasks/assignments/${assignmentData?._id}`,
         manageAssignment
       );
-
-      if (newAssignment?.data?.acknowledged) {
-        toast.success("Assignment added Successfully");
+      console.log(newAssignment);
+      if (newAssignment?.data?.result?.acknowledged) {
+        toast.success("Assignment edited Successfully");
         event.target.reset();
       }
 
@@ -342,10 +170,10 @@ const Assignment = () => {
                   />
                 </svg>
                 <Link
-                  to={`/questLevels/${course?._id}`}
+                  to={`/questLevels/${currentWeek?.courseId}`}
                   className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline "
                 >
-                  {course?.courseFullName}
+                  {localStorage.getItem("course")}
                 </Link>
                 <svg
                   className="mr-[30px]"
@@ -364,7 +192,7 @@ const Assignment = () => {
                   />
                 </svg>
                 <button className=" font-sans mr-[30px] text-[20px] font-[400] ">
-                  {chapter?.chapterName}
+                  {localStorage.getItem("chapter")}
                 </button>
               </div>
               <div className="flex items-center mt-[-10px] ">
@@ -423,7 +251,7 @@ const Assignment = () => {
         </div>
         <div className={`${preview ? "hidden" : "block"}`}>
           <div className="text-[#3E4DAC] text-[26px] font-bold  py-[35px] ps-[40px]">
-            <p>Manage Assignment in {chapter?.chapterName}</p>
+            <p>Manage Assignment in {localStorage.getItem("chapter")}</p>
           </div>
           <form onSubmit={handleSubmit} className="ms-[40px]  mt-12">
             <div
@@ -446,6 +274,7 @@ const Assignment = () => {
             </div>
             {isOpenGeneral && (
               <General
+                assignmentData={assignmentData}
                 instructions={instructions}
                 setInstructions={setInstructions}
                 selectedFile={selectedFile}
@@ -475,12 +304,14 @@ const Assignment = () => {
             {isOpenEvaluationParameter && (
               <div className="dropdown-menu mt-[71px] mb-[45px] ">
                 <SkillBasedParameter
+                  forEdit={true}
                   selectedData={skillParameterData}
                   setSelectedData={setSkillParameterData}
                   categories={skillCategories}
                 />
 
                 <ItemEarningParameter
+                  forEdit={true}
                   selectedData={earningParameterData}
                   setSelectedData={setEarningParameterData}
                   categories={earningCategories}
@@ -508,4 +339,4 @@ const Assignment = () => {
   );
 };
 
-export default Assignment;
+export default EditAssignment;

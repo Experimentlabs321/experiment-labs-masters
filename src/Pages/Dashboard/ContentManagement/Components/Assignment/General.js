@@ -8,6 +8,7 @@ const General = ({
   setSelectedFile,
   instructions,
   setInstructions,
+  assignmentData,
 }) => {
   // upload file
   const [dragActive, setDragActive] = useState(true);
@@ -42,6 +43,8 @@ const General = ({
     const file = e.target.files[0];
     setSelectedFile(file);
   };
+
+  console.log(assignmentData);
   return (
     <div>
       <div className="dropdown-menu mt-[71px] mb-[45px] border-b-2 ">
@@ -56,6 +59,9 @@ const General = ({
 
               <input
                 required
+                defaultValue={
+                  assignmentData ? assignmentData?.assignmentName : ""
+                }
                 className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                 name="assignmentName"
                 type="text"
@@ -75,6 +81,9 @@ const General = ({
 
               <input
                 required
+                defaultValue={
+                  assignmentData ? assignmentData?.AssignmentEndingDateTime : ""
+                }
                 className="mt-6 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                 name="AssignmentStartingDateTime"
                 type="datetime-local"
@@ -96,7 +105,7 @@ const General = ({
               {/* Text editor */}
               <div className="py-4">
                 <div className="bg-white text-black">
-                  <TextEditor setValue={setInstructions} />
+                  <TextEditor value={instructions} setValue={setInstructions} />
                 </div>
               </div>
               {/* <p>{instructions}</p>
@@ -116,6 +125,11 @@ const General = ({
 
               <input
                 required
+                defaultValue={
+                  assignmentData
+                    ? assignmentData?.assignmentTotalPointsMarks
+                    : ""
+                }
                 className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                 name="assignmentTotalPointsMarks"
                 type="text"
@@ -135,6 +149,11 @@ const General = ({
 
               <input
                 required
+                defaultValue={
+                  assignmentData
+                    ? assignmentData?.AssignmentStartingDateTime
+                    : ""
+                }
                 className="mt-6 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                 name="AssignmentEndingDateTime"
                 type="datetime-local"
@@ -185,7 +204,10 @@ const General = ({
                           className="w-[1%]"
                           style={{ fontSize: "0", opacity: "0" }}
                           type="file"
-                          accept=".jpg, .jpeg, .png"
+                          defaultValue={
+                            assignmentData ? assignmentData?.file : ""
+                          }
+                          // accept=".jpg, .jpeg, .png"
                           name="input-file-upload"
                           id="input-file-upload"
                           onChange={handleFileChange}

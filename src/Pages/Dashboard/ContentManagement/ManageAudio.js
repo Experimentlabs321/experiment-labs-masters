@@ -100,11 +100,12 @@ const ManageAudio = () => {
     let fileUrl = "";
     if (selectedFile) fileUrl = await uploadFileToS3(selectedFile);
     const form = event.target;
-    console.log(form.readingTopicName);
-    const readingTopicName = form.readingTopicName?.value;
+    console.log(form.audioTopicName);
+    const audioTopicName = form.audioTopicName?.value;
 
     const ManageAudio = {
-      readingTopicName,
+      audioTopicName,
+      taskName: audioTopicName,
       additionalFiles: fileUrl,
       skillParameterData: skillParameterData,
       earningParameterData: earningParameterData,
@@ -257,7 +258,7 @@ const ManageAudio = () => {
                   <input
                     required
                     className="mt-6 ms-6 border rounded-md w-3/4 h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                    name="readingTopicName"
+                    name="audioTopicName"
                     type="text"
                     placeholder="Eg. Entrepreneurship Lab"
                   />
