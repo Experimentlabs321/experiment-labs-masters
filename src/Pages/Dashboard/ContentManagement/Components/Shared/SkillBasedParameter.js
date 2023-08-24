@@ -7,7 +7,12 @@ import { AuthContext } from "../../../../../contexts/AuthProvider";
 import axios from "axios";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
-const SkillBasedParameter = ({ categories, selectedData, setSelectedData }) => {
+const SkillBasedParameter = ({
+  categories,
+  selectedData,
+  setSelectedData,
+  forEdit,
+}) => {
   const { id } = useParams();
   const { user, userInfo } = useContext(AuthContext);
 
@@ -19,6 +24,17 @@ const SkillBasedParameter = ({ categories, selectedData, setSelectedData }) => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState({});
   const [selectedSkills, setSelectedSkills] = useState([]);
+  useEffect(() => {
+    if (selectedData[0] && forEdit) {
+      setSelectedCategories(selectedData);
+      let filterSkills = [];
+      selectedData?.forEach((item) => {
+        filterSkills.push(...item?.skills);
+      });
+      setSelectedSkills(filterSkills);
+    }
+  }, [forEdit, selectedData]);
+
   // const [selectedData, setSelectedData] = useState([]);
   const [openSelectedSkillParameters, setOpenSelectedSkillParameters] =
     useState(false);
@@ -354,6 +370,9 @@ const SkillBasedParameter = ({ categories, selectedData, setSelectedData }) => {
                       }}
                       value={category?.categoryName}
                       className=" mb-1"
+                      defaultChecked={selectedData?.find(
+                        (item) => item?.categoryName === category?.categoryName
+                      )}
                     />
                     <div className="flex mb-1 items-center">
                       <label className="ms-4" htmlFor="communication">
@@ -510,17 +529,17 @@ const SkillBasedParameter = ({ categories, selectedData, setSelectedData }) => {
                         (item) => item?.categoryName === category?.categoryName
                       ) && (
                         <>
-                          {category?.skills?.map((skill) => (
-                            <>
-                              {selectedData
-                                ?.find(
-                                  (item) =>
-                                    item?.categoryName ===
-                                    category?.categoryName
-                                )
-                                ?.skills?.find(
-                                  (item) => item?.skillName === skill?.skillName
-                                ) && (
+                          {category?.skills?.map((skill, index) => {
+                            const currentSkill = selectedData
+                              ?.find(
+                                (item) =>
+                                  item?.categoryName === category?.categoryName
+                              )
+                              ?.skills?.find(
+                                (item) => item?.skillName === skill?.skillName
+                              );
+                            if (currentSkill) {
+                              return (
                                 <>
                                   {skill?.parameters?.map((parameter) => (
                                     <li
@@ -554,6 +573,13 @@ const SkillBasedParameter = ({ categories, selectedData, setSelectedData }) => {
                                             e
                                           )
                                         }
+                                        defaultChecked={
+                                          forEdit &&
+                                          currentSkill?.parameters?.find(
+                                            (param) =>
+                                              param?.parameterName === parameter
+                                          )
+                                        }
                                         className=" mb-1"
                                       />
                                       <div className="flex mb-1 items-center">
@@ -567,9 +593,9 @@ const SkillBasedParameter = ({ categories, selectedData, setSelectedData }) => {
                                     </li>
                                   ))}
                                 </>
-                              )}
-                            </>
-                          ))}
+                              );
+                            }
+                          })}
                         </>
                       )}
                       {/* {selectedCategories?.find(

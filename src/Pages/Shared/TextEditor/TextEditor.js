@@ -1,12 +1,20 @@
 import JoditEditor from "jodit-react";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import "./style.css";
 
-const TextEditor = ({ setValue }) => {
+const TextEditor = ({ setValue, value }) => {
   const editor = useRef(null);
+  const [editStart, setEditStart] = useState(!value ? true : false);
   return (
     <div>
-      <JoditEditor ref={editor} onChange={(content) => setValue(content)} />
+      <JoditEditor
+        value={editStart ? value : null}
+        ref={editor}
+        onChange={(content) => {
+          setValue(content);
+          setEditStart(false);
+        }}
+      />
     </div>
   );
 };

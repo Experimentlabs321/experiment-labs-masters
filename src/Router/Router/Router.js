@@ -65,6 +65,7 @@ import UnpaidStudentDashboard from "../../Pages/Dashboard/UnpaidStudentDashboard
 import StudentControlDashboard from "../../Pages/Dashboard/StudentControl/StudentControlDashboard";
 import UnpaidDashboard from "../../Pages/Dashboard/StudentControl/UnpaidDashboard";
 import ExpertMentorDashboard from "../../Pages/Dashboard/ExpertMentorDashboard/ExpertMentorDashboard";
+import EditTasks from "../../Pages/Dashboard/ContentManagement/EditTasks/EditTasks";
 
 const router = createBrowserRouter([
   {
@@ -190,7 +191,10 @@ const router = createBrowserRouter([
     path: "/assignment/:id",
     element: <Assignment />,
   },
-
+  {
+    path: "/editTask/:id",
+    element: <EditTasks />,
+  },
   {
     path: "/manageReading/:id",
     element: <ManageReading />,
@@ -309,23 +313,20 @@ const router = createBrowserRouter([
   },
   {
     path: "/unpaidStudentDashboard",
-    element:<UnpaidStudentDashboard/>,
+    element: <UnpaidStudentDashboard />,
   },
   {
     path: "/studentControl",
-    element:<StudentControlDashboard/>,
+    element: <StudentControlDashboard />,
   },
   {
     path: "/unpaidDashboard",
-    element:<UnpaidDashboard/>,
+    element: <UnpaidDashboard />,
   },
   {
     path: "/expertMentorDashboard",
-    element:<ExpertMentorDashboard/>,
+    element: <ExpertMentorDashboard />,
   },
- 
- 
- 
 ]);
 
 export default router;

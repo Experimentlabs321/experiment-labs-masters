@@ -1,33 +1,10 @@
-import React, { useState } from "react";
-// import { Document, Page } from "react-pdf";
-import Document from "react-pdf-js";
-// import pdf from ".";
+// import mammoth from "mammoth";
+import React from "react";
 
-const ReadingTask = ({ readingData }) => {
-  const pdfURL = "../../../assets/Dashboard/ExperimentalLabs.pdf";
-  const [numPages, setNumPages] = useState(null);
-  const [pageNumber, setPageNumber] = useState(1);
-  const [isOpen, setIsOpen] = useState(false);
-
-  const [selectedOption, setSelectedOption] = useState("Category");
-  const options = ["Category name"];
-
-  const toggleOptions = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const selectOption = (option) => {
-    setSelectedOption(option);
-    setIsOpen(false);
-  };
-
-  const onDocumentLoadSuccess = ({ numPages }) => {
-    setNumPages(numPages);
-    setPageNumber(1);
-  };
+const ReadingTask = ({ taskData }) => {
   return (
     <div>
-      <div
+      {/* <div
         className={`relative  w-[400px] mt-[40px] px-4 mb-[10px] flex items-center gap-[32px] `}
       >
         <div className=" " onClick={toggleOptions}>
@@ -76,11 +53,12 @@ const ReadingTask = ({ readingData }) => {
             ))}
           </ul>
         )}
-      </div>
-      <div className="h-full flex items-center justify-center ">
+      </div> */}
+      {/* <div className="h-full flex items-center justify-center ">
         <object
           className="  border-x-[30px] mt-[40px] border-t-[30px] border-b-[50px] rounded-lg border-[#292929]"
-          data={readingData?.additionalFiles}
+          // data={taskData?.additionalFiles}
+          data={`https://docs.google.com/viewer?url=${taskData?.additionalFiles}&embedded=true`}
           type="application/pdf"
           width="865px"
           height="500px"
@@ -92,6 +70,17 @@ const ReadingTask = ({ readingData }) => {
             </a>
           </p>
         </object>
+      </div> */}
+      <div className="h-[70vh] mb-[60px] ">
+        {taskData?.additionalFiles && (
+          <iframe
+            className="h-[68vh] mx-auto border-x-[30px] mt-[40px] border-t-[30px] border-b-[50px] rounded-lg border-[#292929]"
+            src={`https://docs.google.com/viewer?url=${taskData?.additionalFiles}&embedded=true`}
+            width="90%"
+            height="80vh"
+            title="W3Schools Free Online Web Tutorials"
+          ></iframe>
+        )}
       </div>
     </div>
   );

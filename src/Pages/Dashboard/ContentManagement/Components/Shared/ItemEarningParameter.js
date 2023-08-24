@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import arrowDown from "../../../../../assets/SkillsManagement/arrow.svg";
 import arrowRight from "../../../../../assets/SkillsManagement/arrowright.svg";
 
@@ -6,6 +6,7 @@ const ItemEarningParameter = ({
   categories,
   selectedData,
   setSelectedData,
+  forEdit,
 }) => {
   const [isOpenEvaluationEarningCategory, setIsOpenEvaluationEarningCategory] =
     useState(false);
@@ -111,6 +112,17 @@ const ItemEarningParameter = ({
       earningItems: newItems,
     });
   };
+  useEffect(() => {
+    if (selectedData[0] && forEdit) {
+      setSelectedCategories(selectedData);
+      let filterItems = [];
+      selectedData?.forEach((item) => {
+        filterItems.push(...item?.earningItems);
+      });
+      setSelectedItems(filterItems);
+    }
+  }, [forEdit, selectedData]);
+  console.log(selectedCategories, selectedItems);
   return (
     <div>
       <div className="">
@@ -235,6 +247,10 @@ const ItemEarningParameter = ({
                           handleOptionChangeCategory(category, e);
                         }}
                         value={category?.categoryName}
+                        defaultChecked={selectedData?.find(
+                          (item) =>
+                            item?.categoryName === category?.categoryName
+                        )}
                         className=" mb-1"
                       />
                       <div className="flex mb-1 items-center">
