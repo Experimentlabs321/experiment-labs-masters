@@ -915,8 +915,7 @@ const DualManagement = () => {
                       UI/ UX - The design thinking
                     </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
-                      Lectus iaculis orci metus vitae ligula dictum per. Nisl
-                      per nullam taciti at adipiscing est.{" "}
+                    Immerse yourself in the world of UI/UX - The Design Thinking. Gain a fresh perspective and ignite a new vision in user-centric design.{" "}
                     </p>
                   </div>
                   {/*  <div className="w-full border rounded-lg">

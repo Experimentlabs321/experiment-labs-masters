@@ -45,10 +45,15 @@ import redemption1 from "../../assets/UnpaidStudentDashboard/redemption1.svg";
 import courseAccess from "../../assets/UnpaidStudentDashboard/courseAccess.svg";
 import courseAccess1 from "../../assets/UnpaidStudentDashboard/courseAccess1.svg";
 import resourceCenter from "../../assets/ExpertMentorDashboard/resourceCenter.svg";
+import resourceCenter1 from "../../assets/ExpertMentorDashboard/resourceCenter1.svg";
 import ShowcasePage from "../../assets/ExpertMentorDashboard/ShowcasePage.svg";
+import ShowcasePage1 from "../../assets/ExpertMentorDashboard/ShowcasePage1.svg";
 import Feedback from "../../assets/ExpertMentorDashboard/Feedback.svg";
+import Feedback1 from "../../assets/ExpertMentorDashboard/Feedback1.svg";
 import MentorClub from "../../assets/ExpertMentorDashboard/MentorClub.svg";
 import incomeGateway from "../../assets/ExpertMentorDashboard/IncomeGateway.svg";
+import StudentProgress from "../../assets/ExpertMentorDashboard/StudentProgress.svg";
+import StudentProgress1 from "../../assets/ExpertMentorDashboard/StudentProgress1.svg";
 import back from "../../assets/ContentManagement/back.svg";
 import ArrowLeftIcon from "../../assets/Dashboard/dashboard_arrow-left.png";
 import { Badge } from "@mui/material";
@@ -1540,20 +1545,20 @@ const Layout = ({ children }) => {
                           <li>
                             <Link
                               style={
-                                (location.pathname === "/resourceCentre")
+                                (location.pathname === "/expertMentorResourceCentre")
                                   ? {
                                     background:
                                       "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
                                   }
                                   : {}
                               }
-                              to="/resourceCentre"
+                              to="/expertMentorResourceCentre"
                               className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
                             >
-                              {(location.pathname === "/resourceCentre") ? (
+                              {(location.pathname === "/expertMentorResourceCentre") ? (
                                 <img
                                   className=""
-                                  src={redemption1}
+                                  src={resourceCenter1}
                                   alt="icon"
                                 />
                               ) : (
@@ -1565,12 +1570,49 @@ const Layout = ({ children }) => {
                               )}
 
                               <span
-                                className={`${(location.pathname === "/resourceCentre")
+                                className={`${(location.pathname === "/expertMentorResourceCentre")
                                   ? "text-white"
                                   : "text-[#8F8F8F]"
                                   } ml-3 text-[18px] font-[500]`}
                               >
                                 Resource Centre
+                              </span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              style={
+                                (location.pathname === "/expertMentorStudentProgress")
+                                  ? {
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
+                                  : {}
+                              }
+                              to="/expertMentorStudentProgress"
+                              className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
+                            >
+                              {(location.pathname === "/expertMentorStudentProgress") ? (
+                                <img
+                                  className=""
+                                  src={StudentProgress1}
+                                  alt="icon"
+                                />
+                              ) : (
+                                <img
+                                  className=""
+                                  src={StudentProgress}
+                                  alt="icon"
+                                />
+                              )}
+
+                              <span
+                                className={`${(location.pathname === "/expertMentorStudentProgress")
+                                  ? "text-white"
+                                  : "text-[#8F8F8F]"
+                                  } ml-3 text-[18px] font-[500]`}
+                              >
+                                Student Progress
                               </span>
                             </Link>
                           </li>
@@ -1590,7 +1632,7 @@ const Layout = ({ children }) => {
                               {location.pathname === "/showcasePage" ? (
                                 <img
                                   className=""
-                                  src={courseAccess1}
+                                  src={ShowcasePage1}
                                   alt="icon"
                                 />
                               ) : (
@@ -1614,20 +1656,20 @@ const Layout = ({ children }) => {
                           <li>
                             <Link
                               style={
-                                location.pathname === "/feedback"
+                                location.pathname === "/expertMentorStudentFeedback"
                                   ? {
                                     background:
                                       "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
                                   }
                                   : {}
                               }
-                              to="/feedback"
+                              to="/expertMentorStudentFeedback"
                               className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
                             >
-                              {location.pathname === "/feedback" ? (
+                              {location.pathname === "/expertMentorStudentFeedback" ? (
                                 <img
                                   className=""
-                                  src={courseAccess1}
+                                  src={Feedback1}
                                   alt="icon"
                                 />
                               ) : (
@@ -1639,7 +1681,7 @@ const Layout = ({ children }) => {
                               )}
 
                               <span
-                                className={`${location.pathname === "/feedback"
+                                className={`${location.pathname === "/expertMentorStudentFeedback"
                                   ? "text-white"
                                   : "text-[#8F8F8F]"
                                   } ml-3 text-[18px] font-[500]`}
