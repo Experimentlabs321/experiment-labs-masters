@@ -221,7 +221,7 @@ const Overview = () => {
                   <PlayArrowRoundedIcon sx={{ color: "#FFFFFF" }} />
                 </span>
                 <span style={{ fontWeight: "500" }}>
-                  Discover Discover various career options in
+                  Discover various career options in
                   Engineering,Product Management,Design, Research and 40+
                   fields.
                 </span>

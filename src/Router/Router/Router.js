@@ -65,6 +65,12 @@ import UnpaidStudentDashboard from "../../Pages/Dashboard/UnpaidStudentDashboard
 import StudentControlDashboard from "../../Pages/Dashboard/StudentControl/StudentControlDashboard";
 import UnpaidDashboard from "../../Pages/Dashboard/StudentControl/UnpaidDashboard";
 import ExpertMentorDashboard from "../../Pages/Dashboard/ExpertMentorDashboard/ExpertMentorDashboard";
+import ExpertMentorStudentProgress from "../../Pages/Dashboard/ExpertMentorDashboard/ExpertMentorStudentProgress";
+import ExpertMentorStudentFeedback from "../../Pages/Dashboard/ExpertMentorDashboard/ExpertMentorStudentFeedback";
+import ExpertMentorResourceCentre from "../../Pages/Dashboard/ExpertMentorDashboard/ExpertMentorResourceCentre/ExpertMentorResourceCenter";
+import StudentProgressOverallBatchPerformance from "../../Pages/Dashboard/ExpertMentorDashboard/ExpertMentorStudentProgress/StudentProgressOverallBatchPerformance";
+import ExpertMentorShowcasePage from "../../Pages/Dashboard/ExpertMentorDashboard/ShowcasePage/ExpertMentorShowcasePage";
+
 import EditTasks from "../../Pages/Dashboard/ContentManagement/EditTasks/EditTasks";
 
 const router = createBrowserRouter([
@@ -327,6 +333,30 @@ const router = createBrowserRouter([
     path: "/expertMentorDashboard",
     element: <ExpertMentorDashboard />,
   },
+  {
+    path: "/expertMentorStudentProgress",
+    element:<ExpertMentorStudentProgress/>,
+  },
+  {
+    path: "/expertMentorStudentFeedback",
+    element:<ExpertMentorStudentFeedback/>,
+  },
+  {
+    path: "/expertMentorResourceCentre",
+    element:<ExpertMentorResourceCentre/>,
+  },
+  {
+    path: "/studentProgressOverallBatchPerformance",
+    element:<StudentProgressOverallBatchPerformance/>,
+  },
+ 
+  {
+    path: "/showcasePage",
+    element:<ExpertMentorShowcasePage/>,
+  },
+ 
+ 
+ 
 ]);
 
 export default router;

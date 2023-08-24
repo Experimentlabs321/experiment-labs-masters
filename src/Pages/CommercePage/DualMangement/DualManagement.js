@@ -134,7 +134,7 @@ const DualManagement = () => {
                   Understanding financial modeling
                 </span>
               </div>
-              
+
               <div className="flex flex-row items-start lg:ml-8 gap-1">
                 {/*                                 <span><PlayArrowRoundedIcon sx={{ color: '#FFFFFF' }} /></span>
                  */}{" "}
@@ -151,7 +151,7 @@ const DualManagement = () => {
                 </span>
                 <span className="text-sm font-light">Critical Thinking</span>
               </div>
-             
+
               <div className="flex flex-row items-start gap-1">
                 <span>
                   <PlayArrowRoundedIcon sx={{ color: "#FFFFFF" }} />
@@ -805,11 +805,11 @@ const DualManagement = () => {
 
                   <div className="w-full border rounded-2xl">
                     <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
-                      Introduction - Why this lab?
+                    Introduction - Why this lab? Thinking Big
                     </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
-                      Unlock your next milestone with our Develop product sense
-                      and gain Practical skills for success in the real world
+                     Explore the Introduction - Why This Lab? Apply academics,
+                      aspire, and think big to unleash your potential
                     </p>
                   </div>
                   {/* <div className="w-full border rounded-lg">
@@ -830,12 +830,12 @@ const DualManagement = () => {
 
                   <div className="w-full border rounded-lg">
                     <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
-                      Approach to Problem Identification
+                    Approach to Idea Finding
                     </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
-                      Unlocking Solutions through Empathy: Our approach to
-                      problem identification involves deep empathy, validating
-                      challenges, and understanding diverse perspectives.{" "}
+                      Explore the Art of Idea Finding: Embrace structured
+                      thinking and unleash creativity by taking calculated risks
+                      in learning.{" "}
                     </p>
                   </div>
                   {/* <div className="w-full border rounded-lg">
@@ -856,11 +856,12 @@ const DualManagement = () => {
 
                   <div className="w-full border rounded-lg">
                     <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
-                      Problem Validation - Discovery
+                    Finalizing the Problem and building solutions
                     </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
-                      Eliminate doubts, validate ideas, and embrace acceptance
-                      on your educational journey.
+                      Master the art of critical thinking and humility in
+                      problem-solving. Eliminate obstacles with effective
+                      solutions in our comprehensive course.
                     </p>
                   </div>
                   {/*  <div className="w-full border rounded-lg">
@@ -881,13 +882,12 @@ const DualManagement = () => {
 
                   <div className="w-full border rounded-lg">
                     <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
-                      Problem Solving
+                    Product development and technology 101
                     </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
-                      Enhance critical thinking skills and practical
-                      implementation through our problem-solving courses. Gain
-                      the ability to analyze complex issues and solutions for
-                      real-world challenges{" "}
+                      Master the essentials of Product Development and
+                      Technology 101. Develop an engineering mindset and hone
+                      critical thinking skills for innovation.{" "}
                     </p>
                   </div>
                   {/*  <div className="w-full border rounded-lg">
@@ -908,11 +908,12 @@ const DualManagement = () => {
 
                   <div className="w-full border rounded-lg">
                     <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
-                      UI/ UX - The design thinking
+                      Team building,Impact measurement & strategy
                     </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
-                      Lectus iaculis orci metus vitae ligula dictum per. Nisl
-                      per nullam taciti at adipiscing est.{" "}
+                      Master the art of team building, impact measurement, and
+                      strategy for vision to implementation. Unleash fast
+                      mathematics, principles, and gain a strategic perspective.{" "}
                     </p>
                   </div>
                   {/*  <div className="w-full border rounded-lg">
@@ -933,12 +934,12 @@ const DualManagement = () => {
 
                   <div className="w-full border rounded-lg">
                     <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
-                      Impact Measurement
+                    Getting your first users/customers
                     </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
-                      Gain insights and perform a reality check with Impact
-                      Measurement and Analytics. Evaluate the effectiveness of
-                      educational initiatives with data-driven analysis.
+                      Master the art of getting your first users/customers
+                      through effective communication, networking, and
+                      continuous learning and unlearning.
                     </p>
                   </div>
                   {/*   <div className="w-full border rounded-lg">
@@ -959,13 +960,11 @@ const DualManagement = () => {
 
                   <div className="w-full border rounded-lg">
                     <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
-                      Technology 101 for PMs
+                    Learning from feedback and getting sales
                     </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
-                      Develop a tech mindset and thrive in the new era with
-                      Technology 101 for PMs. Gain essential knowledge to
-                      navigate the intersection of technology and project
-                      management.{" "}
+                    Master the art of negotiation and embrace retry
+                      persistence for continuous learning and sales success.{" "}
                     </p>
                   </div>
                   {/* <div className="w-full border rounded-lg">
@@ -986,12 +985,11 @@ const DualManagement = () => {
 
                   <div className="w-full border rounded-lg">
                     <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
-                      Product roadmap & execution
+                    Financial modeling
                     </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
-                      Navigate your educational journey with Product Roadmap &
-                      Execution. Master the art of documentation and build a
-                      strategic mindset for success.
+                    Master financial modeling with Excel and sharpen your
+                      observation skills for accurate data analysis.
                     </p>
                   </div>
                   {/* <div className="w-full border rounded-lg">
@@ -1012,12 +1010,12 @@ const DualManagement = () => {
 
                   <div className="w-full border rounded-lg">
                     <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
-                      Getting your first customers -Acquisition
+                    Operations
                     </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
-                      Master the art of acquiring your first customers through
-                      networking, learning, and unlearning. Build a strong
-                      customer base and propel your business forward.
+                    Master the art of multi-tasking and relationship building
+                      with Operations. Enhance your organizational skills and
+                      optimize processes for educational success.
                     </p>
                   </div>
                   {/* <div className="w-full border rounded-lg">
@@ -1038,12 +1036,12 @@ const DualManagement = () => {
 
                   <div className="w-full border rounded-lg">
                     <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
-                      Case studies & Analysis
+                    Pitching Business Models
                     </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
-                      Explore the world of Case Studies & Analysis for
-                      insightful learning, net practice, and unlearning and
-                      relearning methodologies
+                    Master the art of pitching business models with expert
+                      techniques in creating compelling presentations and
+                      effective time management strategies.
                     </p>
                   </div>
                   {/* <div className="w-full border rounded-lg">
@@ -1064,12 +1062,11 @@ const DualManagement = () => {
 
                   <div className="w-full border rounded-lg">
                     <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
-                      Product Interviews/ Strategies
+                    Revisiting the deck - Adding Proof of work
                     </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
-                      Master Product Interviews and Strategies through effective
-                      communication and hands-on practice. Boost your skills and
-                      excel in the competitive market
+                    Revisit your deck with confidence, adding proof of work
+                      through documentation and leadership expertise
                     </p>
                   </div>
                   {/* <div className="w-full border rounded-lg">
@@ -1088,12 +1085,12 @@ const DualManagement = () => {
 
                   <div className="w-full border rounded-lg">
                     <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
-                      Demo Day
+                    Demo Day
                     </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
-                      Master Product Interviews and Strategies through effective
-                      communication and hands-on practice. Boost your skills and
-                      excel in the competitive market
+                      Experience the thrill of Demo Day, where students showcase
+                      their projects with confidence, presentation skills, and
+                      embrace the journey of learning from failure
                     </p>
                   </div>
                   {/* <div className="w-full border rounded-lg">

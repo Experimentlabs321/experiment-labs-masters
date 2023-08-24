@@ -75,25 +75,20 @@ const StudentFeedback = () => {
 
                         </div>
 
-                        <div>
-                            <FormControl sx={{ m: 1, minWidth: 150 }} size="small">
-                                <InputLabel id="demo-select-small-label">Product lab</InputLabel>
-                                <Select
-                                    labelId="demo-select-small-label"
-                                    id="demo-select-small"
-                                    value={age}
-                                    label="Age"
-                                    onChange={handleChange}
-                                >
-                                    <MenuItem value="">
-
-                                    </MenuItem>
-                                    <MenuItem selected value={10}>Product lab</MenuItem>
-                                    <MenuItem value={20}>Twenty</MenuItem>
-                                    <MenuItem value={30}>Thirty</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </div>
+                        <p>
+                        <select className="my-10 py-3 px-5 text-[#676767] text-lg font-semibold" name="" id=""
+                            style={{
+                                borderRadius: "8px",
+                                background: "#F8F9FE",
+                                boxShadow: "2px 2px 10px 0px rgba(149, 156, 225, 0.50)"
+                            }}
+                        >
+                            <option value="Product lab">Product lab </option>
+                            <option value="saab">Saab</option>
+                            <option value="opel">Opel</option>
+                            <option value="audi">Audi</option>
+                        </select>
+                    </p>
 
                         <div className="mt-10  ">
                             <p className="text-[#081765] text-[20px] font-bold">Curriculum With Dual Focus On Tech And Management</p>
