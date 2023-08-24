@@ -227,27 +227,27 @@ const NavBar = (props) => {
 
   console.log("ab", role);
 
-  const handleDashboard = () => {
-    const Role = localStorage.getItem("role");
-    if (Role === "admin") {
-      navigate("/userManagement");
-    }
-   else if (Role === "execution mentor") {
-      navigate("/executionMentorDashboard");
-    }
-   else if (Role === "unpaid student") {
-      navigate("/unpaidStudentDashboard");
-    }
-   else if (Role === "expert mentor") {
-      navigate("/expertMentorDashboard");
-    }
-     else {
-      navigate("/dashboard");
-    }
-  };
   // const handleDashboard = () => {
-  //   graphyLogin(user?.email, user?.displayName);
+  //   const Role = localStorage.getItem("role");
+  //   if (Role === "admin") {
+  //     navigate("/userManagement");
+  //   }
+  //  else if (Role === "execution mentor") {
+  //     navigate("/executionMentorDashboard");
+  //   }
+  //  else if (Role === "unpaid student") {
+  //     navigate("/unpaidStudentDashboard");
+  //   }
+  //  else if (Role === "expert mentor") {
+  //     navigate("/expertMentorDashboard");
+  //   }
+  //    else {
+  //     navigate("/dashboard");
+  //   }
   // };
+  const handleDashboard = () => {
+    graphyLogin(user?.email, user?.displayName);
+  };
 
   const handleOnBlur = (e) => {
     const field = e.target.name;
