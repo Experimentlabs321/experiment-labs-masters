@@ -797,11 +797,10 @@ const DualManagement = () => {
 
                   <div className="w-full border rounded-2xl">
                     <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
-                      Introduction - Why this lab?
+                    what is Film Making?
                     </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
-                      Unlock your next milestone with our Develop product sense
-                      and gain Practical skills for success in the real world
+                    Explore the captivating world of film making – from production techniques to leadership roles.{" "}
                     </p>
                   </div>
                   {/* <div className="w-full border rounded-lg">
@@ -822,12 +821,10 @@ const DualManagement = () => {
 
                   <div className="w-full border rounded-lg">
                     <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
-                      Approach to Problem Identification
+                    Screenwriting
                     </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
-                      Unlocking Solutions through Empathy: Our approach to
-                      problem identification involves deep empathy, validating
-                      challenges, and understanding diverse perspectives.{" "}
+                     Master the art of screenwriting, harnessing the power of observation to bring compelling stories to life.{" "}
                     </p>
                   </div>
                   {/* <div className="w-full border rounded-lg">
@@ -848,11 +845,10 @@ const DualManagement = () => {
 
                   <div className="w-full border rounded-lg">
                     <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
-                      Problem Validation - Discovery
+                    Directing
                     </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
-                      Eliminate doubts, validate ideas, and embrace acceptance
-                      on your educational journey.
+                    Master the art of directing, from pitching captivating ideas to fostering empathy-driven storytelling.{" "}
                     </p>
                   </div>
                   {/*  <div className="w-full border rounded-lg">
@@ -873,13 +869,10 @@ const DualManagement = () => {
 
                   <div className="w-full border rounded-lg">
                     <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
-                      Problem Solving
+                    Cinematography
                     </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
-                      Enhance critical thinking skills and practical
-                      implementation through our problem-solving courses. Gain
-                      the ability to analyze complex issues and solutions for
-                      real-world challenges{" "}
+                    Master the art of Cinematography: Explore camera knowledge and capture emotional context with precision
                     </p>
                   </div>
                   {/*  <div className="w-full border rounded-lg">
@@ -900,11 +893,10 @@ const DualManagement = () => {
 
                   <div className="w-full border rounded-lg">
                     <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
-                      UI/ UX - The design thinking
+                    Lightning
                     </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
-                      Lectus iaculis orci metus vitae ligula dictum per. Nisl
-                      per nullam taciti at adipiscing est.{" "}
+                    Unleash your potential with Lightning: Gaffing the Power of Understanding Mood. Experience accelerated learning and enhance your comprehension abilities with Lightning's innovative approach.
                     </p>
                   </div>
                   {/*  <div className="w-full border rounded-lg">
@@ -925,12 +917,10 @@ const DualManagement = () => {
 
                   <div className="w-full border rounded-lg">
                     <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
-                      Impact Measurement
+                    Sound
                     </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
-                      Gain insights and perform a reality check with Impact
-                      Measurement and Analytics. Evaluate the effectiveness of
-                      educational initiatives with data-driven analysis.
+                    Dive into the world of Sound: Master sound mixing, recording, and understanding clarity for immersive experiences.{" "}
                     </p>
                   </div>
                   {/*   <div className="w-full border rounded-lg">
@@ -951,13 +941,10 @@ const DualManagement = () => {
 
                   <div className="w-full border rounded-lg">
                     <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
-                      Technology 101 for PMs
+                    Editing
                     </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
-                      Develop a tech mindset and thrive in the new era with
-                      Technology 101 for PMs. Gain essential knowledge to
-                      navigate the intersection of technology and project
-                      management.{" "}
+                    Master the art of Editing: Seamlessly blend video and audio, while understanding the art of flow.{" "}
                     </p>
                   </div>
                   {/* <div className="w-full border rounded-lg">
@@ -978,12 +965,10 @@ const DualManagement = () => {
 
                   <div className="w-full border rounded-lg">
                     <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
-                      Product roadmap & execution
+                    HMU+ Art Direction
                     </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
-                      Navigate your educational journey with Product Roadmap &
-                      Execution. Master the art of documentation and build a
-                      strategic mindset for success.
+                    Explore the transformative power of Art Direction and unleash the beauty and impact of creative decor
                     </p>
                   </div>
                   {/* <div className="w-full border rounded-lg">
@@ -1004,12 +989,10 @@ const DualManagement = () => {
 
                   <div className="w-full border rounded-lg">
                     <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
-                      Getting your first customers -Acquisition
+                    Film Business + Festivals
                     </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
-                      Master the art of acquiring your first customers through
-                      networking, learning, and unlearning. Build a strong
-                      customer base and propel your business forward.
+                    Explore the world of Film Business + Festivals, promoting your film with perseverance and success.
                     </p>
                   </div>
                   {/* <div className="w-full border rounded-lg">
@@ -1030,12 +1013,10 @@ const DualManagement = () => {
 
                   <div className="w-full border rounded-lg">
                     <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
-                      Case studies & Analysis
+                    Film Preparation
                     </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
-                      Explore the world of Case Studies & Analysis for
-                      insightful learning, net practice, and unlearning and
-                      relearning methodologies
+                    Master the art of film preparation through pre-production and planning. Learn the essential steps to bring your creative vision to life on the big screen.
                     </p>
                   </div>
                   {/* <div className="w-full border rounded-lg">
@@ -1056,12 +1037,10 @@ const DualManagement = () => {
 
                   <div className="w-full border rounded-lg">
                     <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
-                      Product Interviews/ Strategies
+                    Live Edit Support
                     </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
-                      Master Product Interviews and Strategies through effective
-                      communication and hands-on practice. Boost your skills and
-                      excel in the competitive market
+                    Experience post-production excellence with Live Edit Support. Enhance your skills and understand criticism for flawless content creation.
                     </p>
                   </div>
                   {/* <div className="w-full border rounded-lg">
@@ -1080,12 +1059,10 @@ const DualManagement = () => {
 
                   <div className="w-full border rounded-lg">
                     <p className="px-4 py-6 focus:outline-none focus-visible:ring-cyan-600">
-                      Demo Day
+                    Demo Day
                     </p>
                     <p className="px-4 py-6 pt-0 ml-4 -mt-4">
-                      Master Product Interviews and Strategies through effective
-                      communication and hands-on practice. Boost your skills and
-                      excel in the competitive market
+                    Experience the excitement of Demo Day, where debut filmmakers showcase their work with confidence and passion.
                     </p>
                   </div>
                   {/* <div className="w-full border rounded-lg">

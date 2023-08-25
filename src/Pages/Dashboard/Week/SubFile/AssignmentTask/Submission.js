@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Submission = ({ assignmentData }) => {
+const Submission = ({ taskData }) => {
   const [fileLoading, setFileLoading] = useState(false);
   const [fileName, setFileName] = useState();
   const dragOver = (e) => {
@@ -56,7 +56,7 @@ const Submission = ({ assignmentData }) => {
             />
           </svg>
           <h1 className=" text-[20px] font-[600] mt-[-44px] text-white ">
-            {assignmentData?.assignmentTotalPointsMarks} Points
+            {taskData?.assignmentTotalPointsMarks} Points
           </h1>
         </div>
       </div>

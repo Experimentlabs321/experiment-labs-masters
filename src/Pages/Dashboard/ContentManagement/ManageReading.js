@@ -105,6 +105,7 @@ const ManageReading = () => {
 
     const manageReading = {
       readingTopicName,
+      taskName: readingTopicName,
       additionalFiles: fileUrl,
       skillParameterData: skillParameterData,
       earningParameterData: earningParameterData,

@@ -98,10 +98,11 @@ const ManageFile = () => {
     let fileUrl = "";
     if (selectedFile) fileUrl = await uploadFileToS3(selectedFile);
     const form = event.target;
-    const readingTopicName = form.readingTopicName?.value;
+    const fileName = form.fileName?.value;
 
     const ManageFile = {
-      readingTopicName,
+      fileName,
+      taskName: fileName,
       additionalFiles: fileUrl,
       skillParameterData: skillParameterData,
       earningParameterData: earningParameterData,
@@ -251,7 +252,7 @@ const ManageFile = () => {
                   <input
                     required
                     className="mt-6 ms-6 border rounded-md w-3/4 h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                    name="readingTopicName"
+                    name="fileName"
                     type="text"
                     placeholder="Eg. Entrepreneurship Lab"
                   />

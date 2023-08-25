@@ -25,6 +25,7 @@ const Aside = ({
   setOpenTask,
   openTopic,
   setOpenTopic,
+  chapters,
 }) => {
   // const [openTopic, setOpenTopic] = useState(data[0]?.name);
   // const [openTask, setOpenTask] = useState(data[0]?.tasks[0]);
@@ -42,8 +43,6 @@ const Aside = ({
     setSelectedOption(option);
     setIsOpen(false);
   };
-
-  console.log(openTopic);
   return (
     <aside
       id="sidebar"
@@ -76,11 +75,11 @@ const Aside = ({
                   <h1 className="ml-3 text-[18px] font-[500]">Hide menu</h1>
                 </button>
               </li>
-              {data?.map((item, index) => (
+              {chapters?.map((item, index) => (
                 <li>
                   <div>
                     <div
-                      onClick={() => setOpenTopic(item?.name)}
+                      onClick={() => setOpenTopic(item?.chapterName)}
                       className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px] cursor-pointer group`}
                     >
                       <div className="w-[42px] h-[42px] bg-[#D7DDFF] text-black flex items-center justify-center rounded-full ">
@@ -90,7 +89,7 @@ const Aside = ({
                       <h1
                         className={`text-white ml-3 text-[18px] font-[500] flex items-center justify-center `}
                       >
-                        <span className="mr-[22px]">{item.name}</span>
+                        <span className="mr-[22px]">{item?.chapterName}</span>
                         {Role === "admin" && (
                           <svg
                             className="mr-[22px]"
@@ -106,7 +105,6 @@ const Aside = ({
                             />
                           </svg>
                         )}
-
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="24"
@@ -125,116 +123,138 @@ const Aside = ({
                       </h1>
                     </div>
                     <div
-                      className={`${openTopic === item?.name ? "" : "hidden"}`}
+                      className={`${
+                        openTopic === item?.chapterName ? "" : "hidden"
+                      }`}
                     >
                       {item?.tasks?.map((task, index) => (
                         <div
                           onClick={() => setOpenTask(task)}
                           className={`${
-                            openTask === task
+                            openTask?.taskId === task?.taskId
                               ? "bg-[#FFFDCF] border-[#3E4DAC] border-l-[12px] pl-[8px]"
                               : "pl-[20px]"
                           }  text-white font-normal flex items-center justify-between pr-[10px] py-[13px] group cursor-pointer`}
                         >
                           <div className="flex items-center">
                             <div className="w-[40px] h-[40px] text-black flex items-center justify-center rounded-full ">
-                              {task?.type === "Reading" && (
+                              {task?.taskType === "Reading" && (
                                 <img
                                   className={`${
-                                    openTask === task
+                                    openTask?.taskId === task?.taskId
                                       ? "border-black"
                                       : "border-white"
                                   }  border p-[5px] rounded-full `}
                                   src={
-                                    openTask === task ? ReadingActive : Reading
+                                    openTask?.taskId === task?.taskId
+                                      ? ReadingActive
+                                      : Reading
                                   }
                                   alt="TaskIcon"
                                 />
                               )}
-                              {task?.type === "Assignment" && (
+                              {task?.taskType === "Assignment" && (
                                 <img
                                   className={`${
-                                    openTask === task
+                                    openTask?.taskId === task?.taskId
                                       ? "border-black"
                                       : "border-white"
                                   }  border p-[5px] rounded-full `}
                                   src={
-                                    openTask === task
+                                    openTask?.taskId === task?.taskId
                                       ? AssignmentActive
                                       : Assignment
                                   }
                                   alt="TaskIcon"
                                 />
                               )}
-                              {task?.type === "Classes" && (
+                              {task?.taskType === "Classes" && (
                                 <img
                                   className={`${
-                                    openTask === task
+                                    openTask?.taskId === task?.taskId
                                       ? "border-black"
                                       : "border-white"
                                   }  border p-[5px] rounded-full `}
                                   src={
-                                    openTask === task ? ClassesActive : Classes
+                                    openTask?.taskId === task?.taskId
+                                      ? ClassesActive
+                                      : Classes
                                   }
                                   alt="TaskIcon"
                                 />
                               )}
-                              {task?.type === "Quiz" && (
+                              {task?.taskType === "Quiz" && (
                                 <img
                                   className={`${
-                                    openTask === task
-                                      ? "border-black"
-                                      : "border-white"
-                                  }  border p-[5px] rounded-full `}
-                                  src={openTask === task ? QuizActive : Quiz}
-                                  alt="TaskIcon"
-                                />
-                              )}
-                              {task?.type === "LiveTest" && (
-                                <img
-                                  className={`${
-                                    openTask === task
+                                    openTask?.taskId === task?.taskId
                                       ? "border-black"
                                       : "border-white"
                                   }  border p-[5px] rounded-full `}
                                   src={
-                                    openTask === task
+                                    openTask?.taskId === task?.taskId
+                                      ? QuizActive
+                                      : Quiz
+                                  }
+                                  alt="TaskIcon"
+                                />
+                              )}
+                              {task?.taskType === "Live Test" && (
+                                <img
+                                  className={`${
+                                    openTask?.taskId === task?.taskId
+                                      ? "border-black"
+                                      : "border-white"
+                                  }  border p-[5px] rounded-full `}
+                                  src={
+                                    openTask?.taskId === task?.taskId
                                       ? LiveTestActive
                                       : LiveTest
                                   }
                                   alt="TaskIcon"
                                 />
                               )}
-                              {task?.type === "Video" && (
+                              {task?.taskType === "Video" && (
                                 <img
                                   className={`${
-                                    openTask === task
+                                    openTask?.taskId === task?.taskId
                                       ? "border-black"
                                       : "border-white"
                                   }  border p-[5px] rounded-full `}
-                                  src={openTask === task ? VideoActive : Video}
+                                  src={
+                                    openTask?.taskId === task?.taskId
+                                      ? VideoActive
+                                      : Video
+                                  }
                                   alt="TaskIcon"
                                 />
                               )}
-                              {task?.type === "Audio" && (
+                              {task?.taskType === "Audio" && (
                                 <img
                                   className={`${
-                                    openTask === task
+                                    openTask?.taskId === task?.taskId
                                       ? "border-black"
                                       : "border-white"
                                   }  border p-[5px] rounded-full `}
-                                  src={openTask === task ? AudioActive : Audio}
+                                  src={
+                                    openTask?.taskId === task?.taskId
+                                      ? AudioActive
+                                      : Audio
+                                  }
                                   alt="TaskIcon"
                                 />
                               )}
-                              {task?.type === "Files" && (
+                              {task?.taskType === "Files" && (
                                 <img
                                   className={`${
-                                    openTask === task
+                                    openTask?.taskId === task?.taskId
                                       ? "border-black"
                                       : "border-white"
                                   }  border p-[5px] rounded-full `}
-                                  src={openTask === task ? FilesActive : Files}
+                                  src={
+                                    openTask?.taskId === task?.taskId
+                                      ? FilesActive
+                                      : Files
+                                  }
                                   alt="TaskIcon"
                                 />
                               )}
@@ -244,7 +264,7 @@ const Aside = ({
                             >
                               <span
                                 className={`mr-[5px] ${
-                                  openTask === task
+                                  openTask?.taskId === task?.taskId
                                     ? "text-black"
                                     : "text-white"
                                 } `}
@@ -253,7 +273,7 @@ const Aside = ({
                               </span>{" "}
                               <span
                                 className={`mr-[22px] ${
-                                  openTask === task
+                                  openTask?.taskId === task?.taskId
                                     ? "text-[#3E4DAC]"
                                     : "text-[#A4B0FF]"
                                 }  `}
@@ -264,7 +284,7 @@ const Aside = ({
                           </div>
                           {Role === "admin" && (
                             <>
-                              {openTask === task ? (
+                              {openTask?.taskId === task?.taskId ? (
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
                                   width="25"

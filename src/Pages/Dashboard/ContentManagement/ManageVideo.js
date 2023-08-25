@@ -12,6 +12,7 @@ import { Link, useParams } from "react-router-dom";
 import uploadFileToS3 from "../../UploadComponent/s3Uploader";
 import { toast } from "react-hot-toast";
 import VideoTask from "../Week/VideoTask";
+import DialogLayout from "../Shared/DialogLayout";
 
 const ManageVideo = () => {
   // upload file
@@ -61,6 +62,8 @@ const ManageVideo = () => {
   const [preview, setPreview] = useState(false);
   const [submitPermission, setSubmitPermission] = useState(false);
   const [videoData, setVideoData] = useState({});
+  const [openAddYoutubeLink, setOpenAddYoutubeLink] = useState(false);
+  const [youtubeVideoLink, setYoutubeVideoLink] = useState(null);
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
@@ -98,17 +101,22 @@ const ManageVideo = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     let fileUrl = "";
+    console.log(selectedFile);
     if (selectedFile) fileUrl = await uploadFileToS3(selectedFile);
+    else if (youtubeVideoLink) fileUrl = youtubeVideoLink;
     const form = event.target;
     const videoTopicName = form.videoTopicName?.value;
 
     const ManageVideo = {
       videoTopicName,
+      taskName: videoTopicName,
       additionalFiles: fileUrl,
       skillParameterData: skillParameterData,
       earningParameterData: earningParameterData,
       chapterId: id,
     };
+
+    console.log(ManageVideo);
 
     setVideoData(ManageVideo);
 
@@ -126,6 +134,12 @@ const ManageVideo = () => {
 
       console.log(ManageVideo);
     }
+  };
+
+  const handleAddYoutubeLink = (e) => {
+    e.preventDefault();
+    setYoutubeVideoLink(e.target.youtubeLink.value);
+    setOpenAddYoutubeLink(false);
   };
 
   return (
@@ -235,12 +249,42 @@ const ManageVideo = () => {
           </div>
         </div>
         <div className={`${preview ? "block" : "hidden"}`}>
-          <VideoTask videoData={videoData} />
+          <VideoTask taskData={videoData} />
         </div>
         <div className={`${preview ? "hidden" : "block"}`}>
           <div className="text-[#3E4DAC] text-[26px] font-bold  py-[35px] ps-[40px]">
             <p>Manage Video in {chapter?.chapterName}</p>
           </div>
+          <DialogLayout
+            open={openAddYoutubeLink}
+            setOpen={setOpenAddYoutubeLink}
+            width={440}
+            borderRadius="15px"
+            title={
+              <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
+                Add Youtube Link
+              </p>
+            }
+          >
+            <form
+              onSubmit={handleAddYoutubeLink}
+              className="px-[32px] py-[24px] "
+            >
+              <h1 className=" text-[18px] font-[700] mb-[20px] ">Link</h1>
+              <input
+                type="text"
+                name="youtubeLink"
+                className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+              />
+              <div className="w-full flex items-center justify-center mt-[40px]">
+                <input
+                  type="submit"
+                  value="Add"
+                  className="py-[15px] px-[48px] cursor-pointer text-[20px] font-[700] rounded-[8px] bg-[#3E4DAC] text-white "
+                />
+              </div>
+            </form>
+          </DialogLayout>
           <form onSubmit={handleSubmit}>
             <div className="flex  me-20 py-[35px] ps-[40px]">
               <div className="w-full">
@@ -252,11 +296,10 @@ const ManageVideo = () => {
                     </p>
                     <img src={required} alt="required" />
                   </div>
-
                   <input
                     required
                     className="mt-6 ms-6 border rounded-md w-3/4 h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                    name="readingTopicName"
+                    name="videoTopicName"
                     type="text"
                     placeholder="Eg. Entrepreneurship Lab"
                   />
@@ -268,7 +311,6 @@ const ManageVideo = () => {
                     <p className="h-2 w-2 bg-black rounded-full"></p>
                     <p className="font-bold text-lg me-[36px]">Upload Video</p>
                   </div>
-
                   <div
                     className="w-3/4 h-[253px] bg-[#F6F7FF] flex flex-col items-center justify-center rounded-b-lg mt-6 ms-6"
                     onDragEnter={handleDragEnter}
@@ -282,7 +324,7 @@ const ManageVideo = () => {
                   >
                     {dragActive ? (
                       <>
-                        <img src={videoplay} />
+                        <img src={videoplay} alt="videoPlay" />
                         <p className="text-[17px] font-semibold mb-5">
                           Drag and drop{" "}
                         </p>
@@ -311,8 +353,11 @@ const ManageVideo = () => {
                             multiple
                           />
                           <div className="">
-                            <div className="flex items-center px-3 py-2 rounded-lg bg-[#D21B1B] text-xs font-bold text-[#fff]">
-                              <img src={youtube} />
+                            <div
+                              onClick={() => setOpenAddYoutubeLink(true)}
+                              className="flex items-center px-3 py-2 rounded-lg bg-[#D21B1B] text-xs font-bold text-[#fff]"
+                            >
+                              <img src={youtube} alt="youtube" />
                               <p className="">Youtube</p>
                             </div>
                           </div>

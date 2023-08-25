@@ -283,6 +283,7 @@ const Assignment = () => {
 
     const manageAssignment = {
       assignmentName,
+      taskName: assignmentName,
       AssignmentStartingDateTime,
       assignmentTotalPointsMarks,
       AssignmentEndingDateTime,
@@ -418,7 +419,7 @@ const Assignment = () => {
           </div>
         </div>
         <div className={`${preview ? "block" : "hidden"}`}>
-          <AssignmentTask assignmentData={assignmentData} />
+          <AssignmentTask taskData={assignmentData} />
         </div>
         <div className={`${preview ? "hidden" : "block"}`}>
           <div className="text-[#3E4DAC] text-[26px] font-bold  py-[35px] ps-[40px]">

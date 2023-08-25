@@ -65,6 +65,14 @@ import UnpaidStudentDashboard from "../../Pages/Dashboard/UnpaidStudentDashboard
 import StudentControlDashboard from "../../Pages/Dashboard/StudentControl/StudentControlDashboard";
 import UnpaidDashboard from "../../Pages/Dashboard/StudentControl/UnpaidDashboard";
 import ExpertMentorDashboard from "../../Pages/Dashboard/ExpertMentorDashboard/ExpertMentorDashboard";
+import ExpertMentorStudentProgress from "../../Pages/Dashboard/ExpertMentorDashboard/ExpertMentorStudentProgress";
+import ExpertMentorStudentFeedback from "../../Pages/Dashboard/ExpertMentorDashboard/ExpertMentorStudentFeedback";
+import ExpertMentorResourceCentre from "../../Pages/Dashboard/ExpertMentorDashboard/ExpertMentorResourceCentre/ExpertMentorResourceCenter";
+import StudentProgressOverallBatchPerformance from "../../Pages/Dashboard/ExpertMentorDashboard/ExpertMentorStudentProgress/StudentProgressOverallBatchPerformance";
+import ExpertMentorShowcasePage from "../../Pages/Dashboard/ExpertMentorDashboard/ShowcasePage/ExpertMentorShowcasePage";
+
+import EditTasks from "../../Pages/Dashboard/ContentManagement/EditTasks/EditTasks";
+import ZoomIntegration from "../../Pages/Tester/ZoomIntegration";
 
 const router = createBrowserRouter([
   {
@@ -139,7 +147,7 @@ const router = createBrowserRouter([
     element: <CourseInformation />,
   },
   {
-    path: "/week",
+    path: "/week/:id",
     element: <Week />,
   },
   {
@@ -190,7 +198,10 @@ const router = createBrowserRouter([
     path: "/assignment/:id",
     element: <Assignment />,
   },
-
+  {
+    path: "/editTask/:id",
+    element: <EditTasks />,
+  },
   {
     path: "/manageReading/:id",
     element: <ManageReading />,
@@ -309,21 +320,45 @@ const router = createBrowserRouter([
   },
   {
     path: "/unpaidStudentDashboard",
-    element:<UnpaidStudentDashboard/>,
+    element: <UnpaidStudentDashboard />,
   },
   {
     path: "/studentControl",
-    element:<StudentControlDashboard/>,
+    element: <StudentControlDashboard />,
   },
   {
     path: "/unpaidDashboard",
-    element:<UnpaidDashboard/>,
+    element: <UnpaidDashboard />,
   },
   {
     path: "/expertMentorDashboard",
-    element:<ExpertMentorDashboard/>,
+    element: <ExpertMentorDashboard />,
+  },
+  {
+    path: "/expertMentorStudentProgress",
+    element:<ExpertMentorStudentProgress/>,
+  },
+  {
+    path: "/expertMentorStudentFeedback",
+    element:<ExpertMentorStudentFeedback/>,
+  },
+  {
+    path: "/expertMentorResourceCentre",
+    element:<ExpertMentorResourceCentre/>,
+  },
+  {
+    path: "/studentProgressOverallBatchPerformance",
+    element:<StudentProgressOverallBatchPerformance/>,
   },
  
+  {
+    path: "/showcasePage",
+    element:<ExpertMentorShowcasePage/>,
+  },
+  {
+    path:'/test',
+    element:<ZoomIntegration/>
+  }
  
  
 ]);
