@@ -30,7 +30,7 @@ const Home = () => {
 
     return (
         <div style={{ width: '100%' }} className='bg-dark text-white'>
-            <MyHelmet>Home</MyHelmet>
+            <MyHelmet>Experiment Labs | Career Counselling | Sell Online courses</MyHelmet>
             <div className='mt-[3rem]'>
                 <Hero />
             </div>

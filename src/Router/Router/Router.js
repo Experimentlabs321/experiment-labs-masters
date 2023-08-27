@@ -72,6 +72,7 @@ import StudentProgressOverallBatchPerformance from "../../Pages/Dashboard/Expert
 import ExpertMentorShowcasePage from "../../Pages/Dashboard/ExpertMentorDashboard/ShowcasePage/ExpertMentorShowcasePage";
 
 import EditTasks from "../../Pages/Dashboard/ContentManagement/EditTasks/EditTasks";
+import ZoomIntegration from "../../Pages/Tester/ZoomIntegration";
 
 const router = createBrowserRouter([
   {
@@ -354,6 +355,10 @@ const router = createBrowserRouter([
     path: "/showcasePage",
     element: <ExpertMentorShowcasePage />,
   },
+  {
+    path:'/test',
+    element:<ZoomIntegration/>
+  }
 ]);
 
 export default router;
