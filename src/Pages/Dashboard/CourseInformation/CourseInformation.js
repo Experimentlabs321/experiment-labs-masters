@@ -64,7 +64,7 @@ const CourseInformation = () => {
       name: "Quiz",
       icon: QuizTaskIcon,
       theme: "#E010BF",
-      route: "/assignment",
+      route: `/quizGeneralInfo/${chapterData?._id}`,
     },
     {
       name: "Live Test",

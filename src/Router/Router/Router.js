@@ -217,28 +217,28 @@ const router = createBrowserRouter([
     path: "/manageAudio/:id",
     element: <ManageAudio />,
   },
-  /* {
-    path: "/manageQuiz",
-    element:<ManageQuiz/>,
-  }, */
+  // {
+  //   path: "/manageQuiz/:id",
+  //   element: <ManageQuiz />,
+  // },
   {
-    path: "/quizGeneralInfo",
+    path: "/quizGeneralInfo/:id",
     element: <QuizGeneralInformation />,
   },
   {
-    path: "/quizResult",
+    path: "/quizResult/:id",
     element: <QuizResult />,
   },
   {
-    path: "/quizEvaluationParameter",
+    path: "/quizEvaluationParameter/:id",
     element: <QuizEvaluationParameter />,
   },
   {
-    path: "/manageQuestionBank",
+    path: "/manageQuestionBank/:id",
     element: <ManageQuestionBank />,
   },
   {
-    path: "/manageQuestion",
+    path: "/manageQuestion/:id",
     element: <ManageQuestion />,
   },
   {
@@ -335,28 +335,25 @@ const router = createBrowserRouter([
   },
   {
     path: "/expertMentorStudentProgress",
-    element:<ExpertMentorStudentProgress/>,
+    element: <ExpertMentorStudentProgress />,
   },
   {
     path: "/expertMentorStudentFeedback",
-    element:<ExpertMentorStudentFeedback/>,
+    element: <ExpertMentorStudentFeedback />,
   },
   {
     path: "/expertMentorResourceCentre",
-    element:<ExpertMentorResourceCentre/>,
+    element: <ExpertMentorResourceCentre />,
   },
   {
     path: "/studentProgressOverallBatchPerformance",
-    element:<StudentProgressOverallBatchPerformance/>,
+    element: <StudentProgressOverallBatchPerformance />,
   },
- 
+
   {
     path: "/showcasePage",
-    element:<ExpertMentorShowcasePage/>,
+    element: <ExpertMentorShowcasePage />,
   },
- 
- 
- 
 ]);
 
 export default router;
