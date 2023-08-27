@@ -356,9 +356,9 @@ const router = createBrowserRouter([
     element: <ExpertMentorShowcasePage />,
   },
   {
-    path:'/test',
-    element:<ZoomIntegration/>
-  }
+    path: "/test",
+    element: <ZoomIntegration />,
+  },
 ]);
 
 export default router;
