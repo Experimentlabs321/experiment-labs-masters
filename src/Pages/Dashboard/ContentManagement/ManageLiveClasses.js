@@ -340,10 +340,57 @@ const ManageLiveClasses = () => {
                   />
                 </div>
               </div>
+
+              <div className="flex justify-between mt-[116px] mb-20">
+                <div className="">
+                  <div className="flex items-center gap-4">
+                    <p className="h-2 w-2 bg-black rounded-full"></p>
+                    <p className="font-bold text-lg me-[36px]">
+                      Agenda
+                    </p>
+                    <img src={required} />
+                  </div>
+                  <div className="flex items-center justify-between  mt-6 ms-6 border rounded-md w-[415px] h-[50px] px-5 text-[#535353]  bg-[#F6F7FF] ">
+                    <div className="flex gap-2">
+                      
+                      <input
+                        className="focus:outline-0 text-[#535353]  bg-[#F6F7FF]"
+                        name=" Agenda"
+                        type="text"
+                        placeholder=" Agenda"
+                      />
+                    </div>
+
+                   
+                  </div>
+                </div>
+                
+
+
+                <div className="me-10">
+                  <div className="flex items-center gap-4">
+                    <p className="h-2 w-2 bg-black rounded-full"></p>
+                    <p className="font-bold text-lg me-[36px]">Password</p>
+                    <img src={required} />
+                  </div>
+
+                  <input
+                  required
+                    className="mt-6 ms-6 border rounded-md w-[440px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                    name="Password"
+                    type="text"
+                    placeholder="Password"
+                  />
+                </div>
+
+
+              </div>
+
+
             </div>
           )}
 
-          <div
+        {/*   <div
             className="select-option flex items-center gap-[40px] mt-12"
             onClick={toggleDropdownRoomSettings}
           >
@@ -443,9 +490,9 @@ const ManageLiveClasses = () => {
                 </div>
               </div>
             </div>
-          )}
+          )} */}
 
-          <div
+        {/*   <div
             className="select-option flex items-center gap-[40px] mt-12"
             onClick={toggleDropdownlockSettings}
           >
@@ -559,14 +606,14 @@ const ManageLiveClasses = () => {
                 </div>
               </div>
             </div>
-          )}
+          )} */}
 
           <div
             className="select-option flex items-center gap-[40px] mt-12"
             onClick={toggleDropdownclassTimings}
           >
             <h1 className=" h-[60px] w-[60px] bg-[#E1E6FF] rounded-full flex justify-center items-center text-[25px]">
-              4
+              2
             </h1>
             <p className="text-[25px] font-bold">Class Timings</p>
             {!isOpenclassTimings && (
@@ -589,7 +636,7 @@ const ManageLiveClasses = () => {
                       <p className="h-2 w-2 bg-black rounded-full"></p>
                       <p className="font-bold text-lg me-[36px]">
                         {" "}
-                        Course Starting Date and Time{" "}
+                        Class Starting Date and Time{" "}
                       </p>
                       <img src={required} />
                     </div>
@@ -611,18 +658,24 @@ const ManageLiveClasses = () => {
                       <p className="h-2 w-2 bg-black rounded-full"></p>
                       <p className="font-bold text-lg me-[36px]">
                         {" "}
-                        Class End Date and Time{" "}
+                        Duration{" "}
                       </p>
                       <img src={required} />
                     </div>
-
                     <input
+                    className="mt-6 ms-6 border rounded-md w-[440px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                    name="Duration"
+                    type="text"
+                    placeholder="time"
+                  />
+
+                 {/*    <input
                       required
                       className="mt-6 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                       name="courseEndDateTime"
                       type="datetime-local"
                       placeholder="Eg. Entrepreneurship Lab"
-                    />
+                    /> */}
                     {/* <input required className='mt-4 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='courseStartingTime' type="time" placeholder='Eg. Entrepreneurship Lab' /> */}
                   </div>
                 </div>
@@ -635,7 +688,7 @@ const ManageLiveClasses = () => {
             onClick={toggleDropdownevaluationParameter}
           >
             <h1 className=" h-[60px] w-[60px] bg-[#E1E6FF] rounded-full flex justify-center items-center text-[25px]">
-              5
+              3
             </h1>
             <p className="text-[25px] font-bold">Evaluation Parameter</p>
             {!isOpenevaluationParameter && (
