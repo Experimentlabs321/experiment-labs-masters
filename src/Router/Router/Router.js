@@ -72,6 +72,29 @@ import StudentProgressOverallBatchPerformance from "../../Pages/Dashboard/Expert
 import ExpertMentorShowcasePage from "../../Pages/Dashboard/ExpertMentorDashboard/ShowcasePage/ExpertMentorShowcasePage";
 
 import EditTasks from "../../Pages/Dashboard/ContentManagement/EditTasks/EditTasks";
+import LoginPage from "../../Pages/Dashboard/LoginPage/LoginPage";
+import SelectProfile from "../../Pages/Dashboard/LoginPage/SelectProfile";
+import StudentSignUp from "../../Pages/Dashboard/LoginPage/student/StudentSignUp";
+import StudentSignUpAcademicDetails from "../../Pages/Dashboard/LoginPage/student/StudentSignUpAcademicDetails";
+import StudentSignUpUserDetails from "../../Pages/Dashboard/LoginPage/student/StudentSignUpUserDetails";
+import StudentSignUpSelectCourses from "../../Pages/Dashboard/LoginPage/student/StudentSignUpSelectCourses";
+import StudentSignUpPricePlans from "../../Pages/Dashboard/LoginPage/student/StudentSignUpPricePlans";
+import OrganizationType from "../../Pages/Dashboard/LoginPage/Organization/OrganizationType";
+import OrganizationName from "../../Pages/Dashboard/LoginPage/Organization/OrganizationName";
+import OrganizationCompanyDetails from "../../Pages/Dashboard/LoginPage/Organization/OrganizationCompanyDetails";
+import AboutOrganization from "../../Pages/Dashboard/LoginPage/Organization/AboutOrganization";
+import OrganizationServices from "../../Pages/Dashboard/LoginPage/Organization/OrganizationServices";
+import OrganizationSignup from "../../Pages/Dashboard/LoginPage/Organization/OrganizationSignup";
+import MentorType from "../../Pages/Dashboard/LoginPage/Mentor/MentorType";
+import MentorName from "../../Pages/Dashboard/LoginPage/Mentor/MentorName";
+import AboutSkillsExpertise from "../../Pages/Dashboard/LoginPage/Mentor/AboutSkillsExpertise";
+import MentorSignUp from "../../Pages/Dashboard/LoginPage/Mentor/MentorSignUp";
+import AffiliateType from "../../Pages/Dashboard/LoginPage/Affiliate/AffiliateType";
+import Planning from "../../Pages/Dashboard/LoginPage/Affiliate/Planning";
+import AffiliateName from "../../Pages/Dashboard/LoginPage/Affiliate/AffiliateName";
+import AffiliateSignUp from "../../Pages/Dashboard/LoginPage/Affiliate/AffiliateSignUp";
+
+
 import ZoomIntegration from "../../Pages/Tester/ZoomIntegration";
 
 const router = createBrowserRouter([
@@ -359,6 +382,97 @@ const router = createBrowserRouter([
     path: "/test",
     element: <ZoomIntegration />,
   },
+  {
+    path: "/loginPage",
+    element:<LoginPage/>,
+  },
+  {
+    path: "/selectProfile",
+    element:<SelectProfile/>,
+  },
+ 
+  {
+    path: "/studentSignup",
+    element:<StudentSignUp/>,
+  },
+  {
+    path: "/studentSignUpAcademicDetails",
+    element:<StudentSignUpAcademicDetails/>,
+  },
+  {
+    path: "/studentSignUpUserDetails",
+    element:<StudentSignUpUserDetails/>,
+  },
+  {
+    path: "/studentSignUpSelectCourses",
+    element:<StudentSignUpSelectCourses/>,
+  },
+  {
+    path: "/studentSignUpPricePlans",
+    element:<StudentSignUpPricePlans/>,
+  },
+  {
+    path: "/organizationType",
+    element:<OrganizationType/>,
+  },
+  {
+    path: "/organizationName",
+    element:<OrganizationName/>,
+  },
+ 
+  {
+    path: "/organizationCompanyDetails",
+    element:<OrganizationCompanyDetails/>,
+  },
+  {
+    path: "/aboutOrganization",
+    element:<AboutOrganization/>,
+  },
+  {
+    path: "/organizationServices",
+    element:<OrganizationServices/>,
+  },
+  {
+    path: "/organizationSignup",
+    element:<OrganizationSignup/>,
+  },
+  {
+    path: "/mentorType",
+    element:<MentorType/>,
+  },
+  {
+    path: "/mentorName",
+    element:<MentorName/>,
+  },
+  {
+    path: "/aboutSkillsExpertise",
+    element:<AboutSkillsExpertise/>,
+  },
+  {
+    path: "/mentorSignUp",
+    element:<MentorSignUp/>,
+  },
+  {
+    path: "/affiliateType",
+    element:<AffiliateType/>,
+  },
+  {
+    path: "/planning",
+    element:<Planning/>,
+  },
+  {
+    path: "/affiliateName",
+    element:<AffiliateName/>,
+  },
+ 
+  {
+    path: "/affiliateSignUp",
+    element:<AffiliateSignUp/>,
+  },
+ 
+ 
+ 
+ 
 ]);
 
 export default router;
