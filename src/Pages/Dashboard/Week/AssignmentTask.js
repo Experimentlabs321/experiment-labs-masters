@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Instructions from "./SubFile/AssignmentTask/Instructions";
 import Submission from "./SubFile/AssignmentTask/Submission";
 import ReviewSubmission from "./SubFile/AssignmentTask/ReviewSubmission";
+import MySubmission from "./SubFile/AssignmentTask/MySubmission";
+import { AuthContext } from "../../../contexts/AuthProvider";
 
 const AssignmentTask = ({ taskData }) => {
+  const { userInfo } = useContext(AuthContext);
   const [view, setView] = useState("Instructions");
   return (
     <div>
@@ -21,7 +24,7 @@ const AssignmentTask = ({ taskData }) => {
             href={taskData?.file}
             download
           >
-            Download Additional File
+            Download Template File
           </a>
         </div>
       )}
@@ -51,6 +54,16 @@ const AssignmentTask = ({ taskData }) => {
           >
             Review Submission
           </button>
+          <button
+            onClick={() => setView("My Submission")}
+            className={`${
+              view === "My Submission" && "border-b-2 border-black"
+            } text-[22px] font-[500] pb-[10px]`}
+          >
+            {userInfo?.role === "admin"
+              ? "Assignment Template"
+              : "My Submission"}
+          </button>
         </div>
       </div>
       <div>
@@ -61,6 +74,7 @@ const AssignmentTask = ({ taskData }) => {
         {view === "Review Submission" && (
           <ReviewSubmission taskData={taskData} />
         )}
+        {view === "My Submission" && <MySubmission taskData={taskData} />}
       </div>
     </div>
   );
