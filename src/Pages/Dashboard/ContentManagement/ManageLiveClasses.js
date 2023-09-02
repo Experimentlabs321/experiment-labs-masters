@@ -382,6 +382,21 @@ const ManageLiveClasses = () => {
                     placeholder="Password"
                   />
                 </div>
+                <div className="me-10">
+                  <div className="flex items-center gap-4">
+                    <p className="h-2 w-2 bg-black rounded-full"></p>
+                    <p className="font-bold text-lg me-[36px]">Email</p>
+                    <img src={required} />
+                  </div>
+
+                  <input
+                  required
+                    className="mt-6 ms-6 border rounded-md w-[440px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                    name="Email"
+                    type="email"
+                    placeholder="Email"
+                  />
+                </div>
 
 
               </div>
