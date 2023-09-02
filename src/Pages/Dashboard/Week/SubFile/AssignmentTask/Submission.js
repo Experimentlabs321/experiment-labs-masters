@@ -1,30 +1,71 @@
 import React, { useState } from "react";
+import uploadFileToS3 from "../../../../UploadComponent/s3Uploader";
+import { toast } from "react-hot-toast";
+import axios from "axios";
+import { useContext } from "react";
+import { AuthContext } from "../../../../../contexts/AuthProvider";
 
 const Submission = ({ taskData }) => {
   const [fileLoading, setFileLoading] = useState(false);
-  const [fileName, setFileName] = useState();
-  const dragOver = (e) => {
+  const [selectedFile, setSelectedFile] = useState();
+  // upload file
+  const [dragActive, setDragActive] = useState(true);
+  const { userInfo } = useContext(AuthContext);
+
+  const handleDragEnter = (e) => {
     e.preventDefault();
+    e.stopPropagation();
+    setDragActive(true);
   };
 
-  const dragEnter = (e) => {
+  const handleDragLeave = (e) => {
     e.preventDefault();
+    e.stopPropagation();
+    //setDragActive(false);
   };
 
-  const dragLeave = (e) => {
+  const handleDragOver = (e) => {
     e.preventDefault();
+    e.stopPropagation();
   };
 
-  const fileDrop = async (e) => {
-    console.log(e.dataTransfer.files[0].name);
-    setFileName(e.dataTransfer.files[0].name);
+  const handleDrop = (e) => {
     e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+
+    const file = e.dataTransfer.files[0];
+    setSelectedFile(file);
   };
-  const uploadFile = async (e) => {
-    const files = e.target.files;
-    console.log(e.target.files[0].name);
-    setFileName(e.target.files[0].name);
-    e.preventDefault();
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setSelectedFile(file);
+  };
+
+  const handleSubmit = async () => {
+    let fileUrl = "";
+    if (selectedFile) fileUrl = await uploadFileToS3(selectedFile);
+
+    const manageAssignment = {
+      taskId: taskData?._id,
+      taskName: taskData?.taskName,
+      fileUrl: fileUrl,
+      submitter: userInfo,
+    };
+
+    if (manageAssignment) {
+      const newAssignment = await axios.post(
+        `${process.env.REACT_APP_BACKEND_API}/submitAssignment`,
+        manageAssignment
+      );
+
+      if (newAssignment?.data?.acknowledged) {
+        toast.success("Assignment Submitted Successfully");
+      }
+
+      console.log(manageAssignment);
+    }
   };
 
   return (
@@ -64,10 +105,10 @@ const Submission = ({ taskData }) => {
         <div className="rounded-lg mt-[85px] border-2 border-dashed border-[#1530DB] max-w-[950px] mx-auto p-3 text-center bg-[#F1F3FF] ">
           <label>
             <div
-              onDragOver={dragOver}
-              onDragEnter={dragEnter}
-              onDragLeave={dragLeave}
-              onDrop={fileDrop}
+              onDragOver={handleDragOver}
+              onDragEnter={handleDragEnter}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
             >
               <div className="">
                 {fileLoading && (
@@ -118,9 +159,10 @@ const Submission = ({ taskData }) => {
                       Drag & Drop Files or{" "}
                       <span className=" text-[#3E4DAC] underline ">Browse</span>
                     </p>
-                    {fileName && (
+                    {selectedFile && (
                       <p className="text-[18px] font-[700] mb-[30px] ">
-                        File: <span className="font-[500]">{fileName}</span>
+                        File:{" "}
+                        <span className="font-[500]">{selectedFile?.name}</span>
                       </p>
                     )}
                   </div>
@@ -137,14 +179,14 @@ const Submission = ({ taskData }) => {
               type="file"
               name="file"
               placeholder="upload"
-              onChange={uploadFile}
+              onChange={handleFileChange}
             />
           </label>
         </div>
       </div>
       <div className="my-[80px] flex items-center justify-center ">
         <button
-          //   onClick={handleClickOpen}
+          onClick={handleSubmit}
           className={`bg-[#3E4DAC] text-white px-4 h-[50px] text-[16px] font-[600] text-center rounded-[8px] z-[1] shadow-[0px_4px_0px_0px_#CA5F98] lg:shadow-[0px_8px_0px_0px_#CA5F98]`}
         >
           Submit assignment
