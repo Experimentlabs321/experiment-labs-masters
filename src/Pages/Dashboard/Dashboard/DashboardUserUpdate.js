@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import Vector from "../../../assets/Dashboard/Vector.png";
 import VectorMobile from "../../../assets/Dashboard/VectorMobile.png";
 import Person from "../../../assets/Dashboard/person.png";
@@ -21,6 +21,7 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import DialogLayout from "../Shared/DialogLayout";
+import { AuthContext } from "../../../contexts/AuthProvider";
 
 // Define a custom theme
 const theme = createTheme({
@@ -82,6 +83,7 @@ const DialogContentWrapper = styled(DialogContent)(({ theme }) => ({
 
 const DashboardUserUpdate = () => {
   const [open, setOpen] = React.useState(false);
+  const { userInfo } = useContext(AuthContext);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -93,7 +95,7 @@ const DashboardUserUpdate = () => {
     <div>
       <div className=" relative w-fit">
         <h1 className="text-[22px] lg:text-[40px] font-[700]">
-          Good morning, Akash
+          Welcome, {userInfo?.name}
         </h1>
         <img
           className=" absolute top-10 right-0 left-72 hidden lg:block"

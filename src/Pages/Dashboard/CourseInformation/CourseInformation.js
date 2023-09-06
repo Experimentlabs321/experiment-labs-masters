@@ -168,6 +168,8 @@ const CourseInformation = () => {
     const week = {
       courseId: id,
       weekName: event?.target?.weekName?.value,
+      weekStartDate: event?.target?.weekStartDate?.value,
+      weekEndDate: event?.target?.weekEndDate?.value,
       creator: {
         name: user?.displayName,
         email: user?.email,
@@ -199,6 +201,8 @@ const CourseInformation = () => {
     event.preventDefault();
     const week = {
       weekName: event?.target?.weekName?.value,
+      weekStartDate: event?.target?.weekStartDate?.value,
+      weekEndDate: event?.target?.weekEndDate?.value,
     };
     const newWeek = await axios.put(
       `${process.env.REACT_APP_BACKEND_API}/weeks/${currentWeek?._id}`,
@@ -633,6 +637,26 @@ const CourseInformation = () => {
                         placeholder="Eg. Onboarding"
                         className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
                       />
+                      <h1 className=" text-[18px] font-[700] my-[24px] ">
+                        Week Starting Date
+                      </h1>
+                      <input
+                        required
+                        className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+                        name="weekStartDate"
+                        type="date"
+                        placeholder="Eg. Entrepreneurship Lab"
+                      />
+                      <h1 className=" text-[18px] font-[700] my-[24px] ">
+                        Week Ending Date
+                      </h1>
+                      <input
+                        required
+                        className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+                        name="weekEndDate"
+                        type="date"
+                        placeholder="Eg. Entrepreneurship Lab"
+                      />
                       <div className="w-full flex items-center justify-center mt-[40px]">
                         <input
                           type="submit"
@@ -685,6 +709,28 @@ const CourseInformation = () => {
                         defaultValue={currentWeek?.weekName}
                         placeholder="Eg. Onboarding"
                         className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+                      />
+                      <h1 className=" text-[18px] font-[700] my-[24px] ">
+                        Week Starting Date
+                      </h1>
+                      <input
+                        required
+                        className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+                        defaultValue={currentWeek?.weekStartDate}
+                        name="weekStartDate"
+                        type="date"
+                        placeholder="Eg. Entrepreneurship Lab"
+                      />
+                      <h1 className=" text-[18px] font-[700] my-[24px] ">
+                        Week Ending Date
+                      </h1>
+                      <input
+                        required
+                        className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+                        defaultValue={currentWeek?.weekEndDate}
+                        name="weekEndDate"
+                        type="date"
+                        placeholder="Eg. Entrepreneurship Lab"
                       />
                       <div className="w-full flex items-center justify-center mt-[40px]">
                         <input
