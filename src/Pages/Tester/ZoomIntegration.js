@@ -39,57 +39,34 @@ const ZoomIntegration = () => {
 
     const connectZoom = async (event) => {
         event.preventDefault();
-        const form = event.target;
-        const clientIdValue = form.clientId.value;
-        const clientSecretValue = form.clientSecret.value;
-        console.log(clientIdValue);
-        console.log(clientSecretValue);
-        localStorage.setItem('clientId', JSON.stringify(clientIdValue));
-        localStorage.setItem('clientSecret', JSON.stringify(clientSecretValue));
-        if (clientIdValue && clientSecretValue) {
-            // const clientID = 'e_FuOBgNQwC1bQu3AJT5yg';
-            const redirectURI = 'http://localhost:3000/test'; // Make sure it matches the URI registered in your Zoom app
+        const clientIdValue = process.env.REACT_APP_zoom_clientId;
+        const redirectURI = process.env.REACT_APP_zoom_redirectUri; // Make sure it matches the URI registered in your Zoom app
+        console.log("Clicked", clientIdValue);
+        window.location.href = `https://zoom.us/oauth/authorize?response_type=code&client_id=${clientIdValue}&redirect_uri=${redirectURI}`;
 
-            window.location.href = `https://zoom.us/oauth/authorize?response_type=code&client_id=${clientIdValue}&redirect_uri=${redirectURI}`;
-        }
 
     };
 
     const exchangeCodeForToken = async (code) => {
-        const clientId = JSON.parse(localStorage.getItem('clientId'));
-        const clientSecret = JSON.parse(localStorage.getItem('clientSecret'));
-        console.log('From Local Storage: ', clientId);
-        console.log('From Local Storage: ', clientSecret);
         try {
-            const response = await axios.post('http://localhost:5000/createMeeting', {
-                authCode: code,
-                clientId,
-                clientSecret
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_API}/createMeeting`, {
+                authCode: code
             });
 
             setIsConnected(true);
-            console.log('Meeting created:', response.data);
+            console.log('Meeting created:', response.data.meeting);
+            localStorage.setItem("refresh_token", response.data.tokenResponse.refresh_token);
         } catch (error) {
             console.error('Error creating meeting:', error);
         }
     };
 
+
+
     return (
         <div className='p-20'>
             {!isConnected ? (
                 <form onSubmit={connectZoom}>
-                    <input
-                        type='text'
-                        className='border-2 rounded-md p-2 mr-2'
-                        placeholder='Client ID'
-                        name='clientId'
-                    />
-                    <input
-                        type='text'
-                        className='border-2 rounded-md p-2 mr-2'
-                        placeholder='Client Secret'
-                        name='clientSecret'
-                    />
                     <input
                         className='p-2 mt-24 bg-slate-500 text-white m-10 rounded-md'
                         type='submit'

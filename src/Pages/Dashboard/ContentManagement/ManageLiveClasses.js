@@ -21,14 +21,16 @@ import Badge from "@mui/material/Badge";
 import MailIcon from "@mui/icons-material/Mail";
 import SearchIcon from "@mui/icons-material/Search";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import Level from "../Dashboard/Level";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
 import SkillBasedParameter from "./Components/Shared/SkillBasedParameter";
 import ItemEarningParameter from "./Components/Shared/ItemEarningParameter";
+import toast from "react-hot-toast";
 
 const ManageLiveClasses = () => {
+  const { id } = useParams();
   const [isOpenGeneral, setisOpenGeneral] = useState(true);
   const [isOpenRoomSettings, setisOpenRoomSettings] = useState(false);
   const [isOpenlockSettings, setisOpenlockSettings] = useState(false);
@@ -100,6 +102,66 @@ const ManageLiveClasses = () => {
     setOpenearningparameter(false);
   };
 
+  //zoom part
+
+  const location = useLocation();
+  const [isConnected, setIsConnected] = useState(false);
+
+  useEffect(() => {
+    console.log(id);
+    const queryParams = new URLSearchParams(location.search);
+    const code = queryParams.get('code');
+    console.log(code);
+    if (code) {
+      exchangeCodeForToken(code);
+    }
+
+  }, [location.search]);
+
+  const connectZoom = async () => {
+
+    const clientIdValue = process.env.REACT_APP_zoom_clientId;
+    const redirectURI = process.env.REACT_APP_zoom_redirectUri; // Make sure it matches the URI registered in your Zoom app
+    console.log("Clicked", clientIdValue);
+    window.location.href = `https://zoom.us/oauth/authorize?response_type=code&client_id=${clientIdValue}&redirect_uri=${redirectURI}`;
+
+  };
+
+  const exchangeCodeForToken = async (code) => {
+    let manageClass = JSON.parse(localStorage.getItem('manageClass'));
+    console.log(manageClass);
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_API}/createMeeting`, {
+        authCode: code,
+        manageClass: {
+          topic: manageClass?.agenda,
+          start_time: manageClass?.courseStartingDateTime,
+          duration: manageClass?.duration,
+          password: manageClass?.password,
+          type: 2
+        }
+      });
+
+      setIsConnected(true);
+      console.log('Meeting created:', response.data.meeting);
+      const meetingData = response.data.meeting;
+      manageClass = {...manageClass, meetingData: meetingData};
+      const newClass = await axios.post(
+        `${process.env.REACT_APP_BACKEND_API}/tasks/classes`,
+        manageClass
+      );
+
+      if (newClass?.data?.acknowledged) {
+        toast.success("Class added Successfully");
+      }
+
+
+      localStorage.setItem("refresh_token", response.data.tokenResponse.refresh_token);
+    } catch (error) {
+      console.error('Error creating meeting:', error);
+    }
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const form = event.target;
@@ -108,44 +170,56 @@ const ManageLiveClasses = () => {
     const classType = form.classType?.value;
     const instanceType = form.instanceType?.value;
     const roomNumber = form.roomNumber?.value;
-    const sessionmayberecorded = +form.sessionmayberecorded?.value;
-    const waitformoderator = +form.waitformoderator?.value;
-    const disablewebcams = +form.disablewebcams?.value;
-    const disablemicrophones = +form.disablemicrophones?.value;
-    const disableprivatechat = +form.disableprivatechat?.value;
-    const disablepublicchat = +form.disablepublicchat?.value;
-    const disablesharednotes = +form.disablesharednotes?.value;
-    const hideuserlist = +form.hideuserlist?.value;
+    const location = form.location?.value;
+    const agenda = form.agenda?.value;
+    const password = form.password?.value;
+    const email = form.email?.value;
+    const duration = +form.duration?.value;
+    // const sessionmayberecorded = +form.sessionmayberecorded?.value;
+    // const waitformoderator = +form.waitformoderator?.value;
+    // const disablewebcams = +form.disablewebcams?.value;
+    // const disablemicrophones = +form.disablemicrophones?.value;
+    // const disableprivatechat = +form.disableprivatechat?.value;
+    // const disablepublicchat = +form.disablepublicchat?.value;
+    // const disablesharednotes = +form.disablesharednotes?.value;
+    // const hideuserlist = +form.hideuserlist?.value;
     const courseStartingDateTime = form.courseStartingDateTime?.value;
-    const courseEndDateTime = form.courseEndDateTime?.value;
-    const itemEarningParameter = form.itemEarningParameter?.value;
-    const itemEarningParameter1 = form.itemEarningParameter1?.value;
-
-    const manageclass = {
+    // const courseEndDateTime = form.courseEndDateTime?.value;
+    // const itemEarningParameter = form.itemEarningParameter?.value;
+    // const itemEarningParameter1 = form.itemEarningParameter1?.value;
+    const manageClass = {
       className,
       classType,
       instanceType,
       roomNumber,
-      sessionmayberecorded,
-      waitformoderator,
-      disablewebcams,
-      disablemicrophones,
-      disableprivatechat,
-      disablepublicchat,
-      disablesharednotes,
-      hideuserlist,
+      location,
+      agenda,
+      taskName: agenda,
+      taskType: 'Classes',
+      password,
+      email,
+      duration,
+      // sessionmayberecorded,
+      // waitformoderator,
+      // disablewebcams,
+      // disablemicrophones,
+      // disableprivatechat,
+      // disablepublicchat,
+      // disablesharednotes,
+      // hideuserlist,
       courseStartingDateTime,
-      courseEndDateTime,
       skillParameterData: skillParameterData,
       earningParameterData: earningParameterData,
+      chapterId: id,
     };
 
-    console.log(manageclass);
+    localStorage.setItem('manageClass', JSON.stringify(manageClass));
+    // console.log(JSON.parse(localStorage.getItem('manageClass')));
+    connectZoom();
   };
 
   // ----   code by shihab   ----
   const { user, userInfo } = useContext(AuthContext);
-  const { id } = useParams();
   const [chapter, setChapter] = useState({});
   const [skillCategories, setSkillCategories] = useState([]);
   const [earningCategories, setEarningCategories] = useState([]);
@@ -157,41 +231,43 @@ const ManageLiveClasses = () => {
   const [submitPermission, setSubmitPermission] = useState(false);
   const [classesData, setClassesData] = useState({});
 
-  useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
-      .then((response) => {
-        setChapter(response?.data);
-      })
-      .then(() => {
-        const fetchData = {
-          organizationId: userInfo?.organizationId,
-          courseId: chapter?.courseId,
-        };
-        axios
-          .post(
-            `${process.env.REACT_APP_BACKEND_API}/skillCategoriesByCourseId`,
-            fetchData
-          )
-          .then((res) => setSkillCategories(res?.data))
-          .catch((error) => console.error(error));
-        axios
-          .post(
-            `${process.env.REACT_APP_BACKEND_API}/itemCategoryByCourseId`,
-            fetchData
-          )
-          .then((res) => setEarningCategories(res?.data))
-          .catch((error) => console.error(error));
-      })
-      .catch((error) => console.error(error));
-  }, [id, userInfo, userInfo?.email, isOpenevaluationParameter]);
-  useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_BACKEND_API}/courses/${chapter?.courseId}`)
-      .then((response) => {
-        setCourse(response?.data);
-      });
-  }, [chapter, isOpenevaluationParameter]);
+  // useEffect(() => {
+  //   axios
+  //     .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
+  //     .then((response) => {
+  //       setChapter(response?.data);
+  //     })
+  //     .then(() => {
+  //       const fetchData = {
+  //         organizationId: userInfo?.organizationId,
+  //         courseId: chapter?.courseId,
+  //       };
+  //       axios
+  //         .post(
+  //           `${process.env.REACT_APP_BACKEND_API}/skillCategoriesByCourseId`,
+  //           fetchData
+  //         )
+  //         .then((res) => setSkillCategories(res?.data))
+  //         .catch((error) => console.error(error));
+  //       axios
+  //         .post(
+  //           `${process.env.REACT_APP_BACKEND_API}/itemCategoryByCourseId`,
+  //           fetchData
+  //         )
+  //         .then((res) => setEarningCategories(res?.data))
+  //         .catch((error) => console.error(error));
+  //     })
+  //     .catch((error) => console.error(error));
+  // }, [id, userInfo, userInfo?.email, isOpenevaluationParameter]);
+  // useEffect(() => {
+  //   axios
+  //     .get(`${process.env.REACT_APP_BACKEND_API}/courses/${chapter?.courseId}`)
+  //     .then((response) => {
+  //       setCourse(response?.data);
+  //     });
+  // }, [chapter, isOpenevaluationParameter]);
+
+
 
   return (
     <div>
@@ -317,7 +393,7 @@ const ManageLiveClasses = () => {
                       <SearchIcon />
                       <input
                         className="focus:outline-0 text-[#535353]  bg-[#F6F7FF]"
-                        name="Location"
+                        name="location"
                         type="text"
                         placeholder="Search Location"
                       />
@@ -352,19 +428,19 @@ const ManageLiveClasses = () => {
                   </div>
                   <div className="flex items-center justify-between  mt-6 ms-6 border rounded-md w-[415px] h-[50px] px-5 text-[#535353]  bg-[#F6F7FF] ">
                     <div className="flex gap-2">
-                      
+
                       <input
                         className="focus:outline-0 text-[#535353]  bg-[#F6F7FF]"
-                        name=" Agenda"
+                        name="agenda"
                         type="text"
                         placeholder=" Agenda"
                       />
                     </div>
 
-                   
+
                   </div>
                 </div>
-                
+
 
 
                 <div className="me-10">
@@ -375,10 +451,10 @@ const ManageLiveClasses = () => {
                   </div>
 
                   <input
-                  required
+                    required
                     className="mt-6 ms-6 border rounded-md w-[440px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                    name="Password"
-                    type="text"
+                    name="password"
+                    type="password"
                     placeholder="Password"
                   />
                 </div>
@@ -390,9 +466,9 @@ const ManageLiveClasses = () => {
                   </div>
 
                   <input
-                  required
+                    required
                     className="mt-6 ms-6 border rounded-md w-[440px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                    name="Email"
+                    name="email"
                     type="email"
                     placeholder="Email"
                   />
@@ -405,7 +481,7 @@ const ManageLiveClasses = () => {
             </div>
           )}
 
-        {/*   <div
+          {/*   <div
             className="select-option flex items-center gap-[40px] mt-12"
             onClick={toggleDropdownRoomSettings}
           >
@@ -507,7 +583,7 @@ const ManageLiveClasses = () => {
             </div>
           )} */}
 
-        {/*   <div
+          {/*   <div
             className="select-option flex items-center gap-[40px] mt-12"
             onClick={toggleDropdownlockSettings}
           >
@@ -678,13 +754,13 @@ const ManageLiveClasses = () => {
                       <img src={required} />
                     </div>
                     <input
-                    className="mt-6 ms-6 border rounded-md w-[440px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                    name="Duration"
-                    type="text"
-                    placeholder="time"
-                  />
+                      className="mt-6 ms-6 border rounded-md w-[440px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                      name="duration"
+                      type="text"
+                      placeholder="time"
+                    />
 
-                 {/*    <input
+                    {/*    <input
                       required
                       className="mt-6 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                       name="courseEndDateTime"
@@ -713,9 +789,8 @@ const ManageLiveClasses = () => {
             {isOpenevaluationParameter && <img src={arrowDown}></img>}
 
             <i
-              className={`dropdown-arrow ${
-                isOpenevaluationParameter ? "open" : ""
-              }`}
+              className={`dropdown-arrow ${isOpenevaluationParameter ? "open" : ""
+                }`}
             ></i>
           </div>
 
