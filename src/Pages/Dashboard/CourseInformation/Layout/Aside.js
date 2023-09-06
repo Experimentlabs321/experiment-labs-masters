@@ -20,9 +20,27 @@ import DiscussionsDark from "../../../../assets/Dashboard/DiscussionsDark.png";
 import CourseAccessIconLight from "../../../../assets/Dashboard/CourseAccessIconLight.svg";
 import CourseAccessIconDark from "../../../../assets/Dashboard/CourseAccessIconDark.svg";
 import CourseTham from "../../../../assets/Dashboard/CourseTham.png";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
+import { useEffect } from "react";
+import axios from "axios";
 
 const Aside = ({ toggleButton }) => {
+  const [isCourseFullName, setCourseFullName] = useState('');
+  const [isCourseDescription, setCourseDescription] = useState('');
+  const [isCourseThumbnail, setCourseThumbnail] = useState('');
+  const { id } = useParams();
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_BACKEND_API}/courses/${id}`)
+      .then((response) => {
+       // setCourseData(response?.data);
+        console.log(response?.data);
+        setCourseFullName(response?.data.courseFullName);
+        setCourseDescription(response?.data.courseDescription);
+        setCourseThumbnail(response?.data.courseThumbnail)
+      })
+      .catch((error) => console.error(error));
+  }, [id]);
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("Category");
@@ -53,7 +71,7 @@ const Aside = ({ toggleButton }) => {
                     onClick={toggleOptions}
                   >
                     <button className="cursor-pointer bg-[#FF557A] text-[15px] font-[700] py-3 px-4 rounded-full flex items-center justify-center shadow-[0px_2px_4px_0px_#00000026]">
-                      Course Name{" "}
+                      {isCourseFullName}{" "}
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -89,16 +107,17 @@ const Aside = ({ toggleButton }) => {
               </li>
               <li>
                 <div className="bg-[#09463F] py-[15px] px-[20px] rounded-[15px] mb-[15px] ">
-                  <img src={CourseTham} alt="CourseTham" />
+                  <img src={isCourseThumbnail} alt="CourseThem" />
                   <div className=" py-[15px] ">
                     <h1 className="text-[#FFDB70] text-[15px] font-[700] ">
-                      Course Name
+                      {isCourseFullName} 
                     </h1>
                     <p className="text-[#DFDFDF] text-[10px] font-[500] ">
-                      Course Description
+                      {isCourseDescription}
                     </p>
                   </div>
-                  <div>
+
+                {/*   <div>
                     <div className="w-full">
                       <small className="text-[#AEB9FF] pb-[10px] font-[600]">
                         20% Completed
@@ -239,8 +258,10 @@ const Aside = ({ toggleButton }) => {
                         6 Live Test left
                       </h1>
                     </div>
-                  </div>
+                  </div> */}
+
                 </div>
+
               </li>
               <li>
                 <Link

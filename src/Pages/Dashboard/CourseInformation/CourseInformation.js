@@ -328,6 +328,7 @@ const CourseInformation = () => {
       .get(`${process.env.REACT_APP_BACKEND_API}/courses/${id}`)
       .then((response) => {
         setCourseData(response?.data);
+       
       })
       .catch((error) => console.error(error));
   }, [id]);
@@ -336,6 +337,7 @@ const CourseInformation = () => {
       .get(`${process.env.REACT_APP_BACKEND_API}/weeks/${id}`)
       .then((response) => {
         setWeeks(response?.data);
+        
         setCurrentWeek(response?.data[0]);
       })
       .catch((error) => console.error(error));
@@ -345,6 +347,7 @@ const CourseInformation = () => {
       .get(`${process.env.REACT_APP_BACKEND_API}/chapters/${currentWeek?._id}`)
       .then((response) => {
         setChapters(response?.data);
+        
       })
       .catch((error) => console.error(error));
   }, [currentWeek]);
