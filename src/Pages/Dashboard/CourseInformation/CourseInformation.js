@@ -332,7 +332,6 @@ const CourseInformation = () => {
       .get(`${process.env.REACT_APP_BACKEND_API}/courses/${id}`)
       .then((response) => {
         setCourseData(response?.data);
-       
       })
       .catch((error) => console.error(error));
   }, [id]);
@@ -341,8 +340,17 @@ const CourseInformation = () => {
       .get(`${process.env.REACT_APP_BACKEND_API}/weeks/${id}`)
       .then((response) => {
         setWeeks(response?.data);
-        
-        setCurrentWeek(response?.data[0]);
+        const currentDateTime = new Date();
+        response?.data?.forEach((element) => {
+          const weekStartDate = new Date(element?.weekStartDate);
+          const weekEndDate = new Date(element?.weekEndDate);
+          if (
+            weekStartDate <= currentDateTime &&
+            weekEndDate >= currentDateTime
+          ) {
+            setCurrentWeek(element);
+          }
+        });
       })
       .catch((error) => console.error(error));
   }, [id]);
@@ -351,7 +359,6 @@ const CourseInformation = () => {
       .get(`${process.env.REACT_APP_BACKEND_API}/chapters/${currentWeek?._id}`)
       .then((response) => {
         setChapters(response?.data);
-        
       })
       .catch((error) => console.error(error));
   }, [currentWeek]);
