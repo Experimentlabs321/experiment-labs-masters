@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Vector from "../../../assets/Dashboard/Vector.png";
 import VectorMobile from "../../../assets/Dashboard/VectorMobile.png";
 import Person from "../../../assets/Dashboard/person.png";
@@ -21,6 +21,8 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import DialogLayout from "../Shared/DialogLayout";
+import { AuthContext } from "../../../contexts/AuthProvider";
+import { Link } from "react-router-dom";
 
 // Define a custom theme
 const theme = createTheme({
@@ -80,20 +82,32 @@ const DialogContentWrapper = styled(DialogContent)(({ theme }) => ({
   padding: theme.spacing(2),
 }));
 
-const DashboardUserUpdate = () => {
-  const [open, setOpen] = React.useState(false);
+const DashboardUserUpdate = ({
+  setIsOpen,
+  isOpen,
+  courses,
+  setSelectedCourse,
+  selectedCourse,
+  weeks,
+}) => {
+  const { userInfo } = useContext(AuthContext);
+  const [currentWeek, setCurrentWeek] = useState({});
+  useEffect(() => {
+    const currentDateTime = new Date();
+    weeks?.forEach((element) => {
+      const weekStartDate = new Date(element?.weekStartDate);
+      const weekEndDate = new Date(element?.weekEndDate);
+      if (weekStartDate <= currentDateTime && weekEndDate >= currentDateTime) {
+        setCurrentWeek(element);
+      }
+    });
+  }, [weeks]);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
   return (
     <div>
       <div className=" relative w-fit">
         <h1 className="text-[22px] lg:text-[40px] font-[700]">
-          Good morning, Akash
+          Welcome, {userInfo?.name}
         </h1>
         <img
           className=" absolute top-10 right-0 left-72 hidden lg:block"
@@ -105,6 +119,44 @@ const DashboardUserUpdate = () => {
           src={VectorMobile}
           alt="vector"
         />
+      </div>
+      <div className="relative inline-block w-full mb-[10px]">
+        <div
+          className="flex items-center justify-right mt-5 w-full "
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          <button className="cursor-pointer bg-[#FF557A] text-[15px] font-[700] py-3 px-4 rounded-full flex items-center justify-center shadow-[0px_2px_4px_0px_#00000026]">
+            {selectedCourse?.courseFullName}{" "}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path
+                d="M8.71484 17.9847L14.5187 12.1808L8.71484 6.37695"
+                stroke="white"
+                stroke-width="1.93462"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+        </div>
+        {isOpen && (
+          <ul className="absolute top-full left-0 w-full bg-gray-200 border border-gray-300 py-1 px-4 rounded mt-1 transition-opacity duration-300 ease-in-out delay-100 z-10 ">
+            {courses?.map((option, index) => (
+              <li
+                key={index}
+                className="cursor-pointer py-2 text-[#6A6A6A] text-[14px] font-[400] "
+                onClick={() => setSelectedCourse(option)}
+              >
+                {option?.courseFullName}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
       <div>
         <div
@@ -125,15 +177,14 @@ const DashboardUserUpdate = () => {
           />
           <div className="flex flex-col lg:flex-row items-center justify-center gap-3 lg:justify-around h-full">
             <h1 className="lg:text-[26px] text-[15px] font-[600] text-white text-center z-[1]">
-              Your course is <span className="text-[#FFDB70]">35%</span>{" "}
-              complete
+              Your course is <span className="text-[#FFDB70]">0%</span> complete
             </h1>
-            <DashboardPrimaryButton
+            {/* <DashboardPrimaryButton
               bgColor="#FFDB70"
               shadow="0px 7.50435px 0px #F08323"
             >
               Open Feedback
-            </DashboardPrimaryButton>
+            </DashboardPrimaryButton> */}
             {/* <DialogLayout
               title={
                 <p className="bg-[#6278FF] h-[69px] lg:h-[95px] text-center text-[18px] lg:text-[25px] font-[700] flex items-center justify-center text-white py-5">
@@ -197,21 +248,24 @@ const DashboardUserUpdate = () => {
           </div>
           <div className="flex flex-col gap-3">
             <h1 className="text-white text-[13px] lg:text-[22px] font-[700] text-center lg:text-left">
-              Week 4: Product development
+              {currentWeek?.weekName}
             </h1>
             <DashboardPrimaryButton
               bgColor="#FFDB70"
               shadow="0px 7.50435px 0px #F08323"
               classes="mb-[12px]"
             >
-              <p className="flex items-center justify-center ">
+              <Link
+                to={`/questLevels/${selectedCourse?._id}`}
+                className="flex items-center justify-center "
+              >
                 Join Quest{" "}
                 <img
                   className="pl-1 w-[21px] lg:w-[32px]"
                   src={RightArrowBlack}
                   alt="RightArrowBlack"
                 />
-              </p>
+              </Link>
             </DashboardPrimaryButton>
           </div>
         </div>

@@ -149,7 +149,6 @@ const WeekDetail = ({
       console.log(tasksNo);
     }
     // setOpenTask(week?.lecture[lectureNo]?.tasks[tasksNo]);
-    console.log(openTask);
   };
 
   useEffect(() => {
@@ -159,7 +158,7 @@ const WeekDetail = ({
       case "Assignment":
         taskTypeForAPI = "assignments";
         break;
-      case "Class":
+      case "Classes":
         taskTypeForAPI = "classes";
         break;
       case "Reading":
@@ -193,7 +192,6 @@ const WeekDetail = ({
       })
       .catch((error) => console.error(error));
   }, [openTask, openTask?.taskType]);
-  console.log(taskData);
 
   return (
     <div>

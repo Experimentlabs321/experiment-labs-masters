@@ -1,10 +1,32 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Lock from "../../../assets/Dashboard/lock.png";
 import DownArrow from "../../../assets/Dashboard/dashboard_arrow-down.png";
 import UpArrow from "../../../assets/Dashboard/dashboard_arrow-up.png";
 import "./style.css";
 
 const Level = ({ singleData, i, length, onClick, viewAllLevel }) => {
+  const [status, setStatus] = useState("");
+  const weekStartDate = new Date(singleData?.weekStartDate);
+  const weekEndDate = new Date(singleData?.weekEndDate);
+  const currentDateTime = new Date(); // Get the current date and time
+
+  // Calculate the time difference in milliseconds
+  const timeDifferenceInMilliseconds = weekStartDate - currentDateTime;
+  const daysDifference = Math.floor(
+    timeDifferenceInMilliseconds / (1000 * 60 * 60 * 24)
+  );
+  useEffect(() => {
+    if (singleData) {
+      if (weekStartDate <= currentDateTime && weekEndDate >= currentDateTime) {
+        setStatus("Ongoing");
+      } else if (weekStartDate > currentDateTime) {
+        setStatus("Locked");
+      } else {
+        setStatus("Completed");
+      }
+    }
+  }, []);
+
   return (
     <div
       className={`${
@@ -20,36 +42,32 @@ const Level = ({ singleData, i, length, onClick, viewAllLevel }) => {
       >
         <h1
           className={`underline underline-offset-2 rounded-[9px] z-0 text-[15px] font-[500] hidden lg:block ${
-            singleData?.status === "Completed" && "bg-[#9CAAFF]"
-          } ${singleData?.status === "Ongoing" && "bg-[#FFC13D]"} ${
-            singleData?.status === "Locked" && "bg-[#D9D9D9]"
+            status === "Completed" && "bg-[#9CAAFF]"
+          } ${status === "Ongoing" && "bg-[#FFC13D]"} ${
+            status === "Locked" && "bg-[#D9D9D9]"
           } ${i % 2 === 0 ? "levelLeft" : "levelRight"}`}
         >
-          Level - {i + 1}
+          {singleData?.weekName}
         </h1>
         <div
           // style={[{ boxShadow: "1.70448px 1.70448px 0px #000000" }]}
           className={`rounded-[50%] w-[71px] h-[69px] flex flex-col items-center justify-center text-[17px] font-[700] underline underline-offset-4 z-[1] ${
-            singleData?.status === "Completed" &&
+            status === "Completed" &&
             " decoration-white text-white bg-[#3E4DAC]"
-          } ${singleData?.status === "Ongoing" && "  bg-[#FFDB70]"} ${
-            singleData?.status === "Locked"
+          } ${status === "Ongoing" && "  bg-[#FFDB70]"} ${
+            status === "Locked"
               ? "lockShadow border-x-4 border-y-4 bg-[#D9D9D9] text-[#706F6F]"
               : "normalShadow"
           }`}
         >
-          {singleData?.status === "Ongoing" && (
-            <h1 className="text-[13px]">Ongoing</h1>
-          )}
-          {singleData?.status === "Locked" && <img src={Lock} alt="lock" />}
+          {status === "Ongoing" && <h1 className="text-[13px]">Ongoing</h1>}
+          {status === "Locked" && <img src={Lock} alt="lock" />}
           <h1
             className={`${singleData?.status !== "Completed" && "text-[13px]"}`}
           >
             {singleData?.score}
           </h1>
-          {singleData?.status === "Completed" && (
-            <h1>{singleData?.expression}</h1>
-          )}
+          {status === "Completed" && <h1>{singleData?.expression}</h1>}
         </div>
         <div
           onClick={onClick}
