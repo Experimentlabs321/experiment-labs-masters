@@ -145,18 +145,18 @@ const ManageLiveClasses = () => {
       setIsConnected(true);
       console.log('Meeting created:', response.data.meeting);
       const meetingData = response.data.meeting;
-      manageClass = {...manageClass, meetingData: meetingData};
+      manageClass = { ...manageClass, meetingData: meetingData };
       const newClass = await axios.post(
         `${process.env.REACT_APP_BACKEND_API}/tasks/classes`,
         manageClass
       );
 
-      if (newClass?.data?.acknowledged) {
+      console.log(newClass);
+
+      if (newClass?.data?.result?.acknowledged) {
         toast.success("Class added Successfully");
       }
 
-
-      localStorage.setItem("refresh_token", response.data.tokenResponse.refresh_token);
     } catch (error) {
       console.error('Error creating meeting:', error);
     }
