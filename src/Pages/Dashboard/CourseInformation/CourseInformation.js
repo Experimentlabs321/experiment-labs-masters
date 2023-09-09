@@ -349,6 +349,10 @@ const CourseInformation = () => {
             weekEndDate >= currentDateTime
           ) {
             setCurrentWeek(element);
+            return;
+          }
+          if (!currentWeek) {
+            setCurrentWeek(response?.data[0]);
           }
         });
       })
