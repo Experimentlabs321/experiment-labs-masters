@@ -50,11 +50,14 @@ const Submission = ({ taskData }) => {
     const manageAssignment = {
       taskId: taskData?._id,
       taskName: taskData?.taskName,
+      chapterName: localStorage.getItem("chapter"),
+      courseName: localStorage.getItem("course"),
+      weekName: JSON.parse(localStorage.getItem("currentWeek"))?.weekName,
       fileUrl: fileUrl,
       submitter: userInfo,
     };
 
-    if (manageAssignment) {
+    if (manageAssignment && fileUrl) {
       const newAssignment = await axios.post(
         `${process.env.REACT_APP_BACKEND_API}/submitAssignment`,
         manageAssignment
