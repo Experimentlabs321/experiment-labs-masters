@@ -1,13 +1,14 @@
 //AssignmentEvaluation2.js
 
 
-
 import React, { useContext, useState } from "react";
 import Layout from "../Layout";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import AssignmentUpNev from "./AssignmentUpNev";
 import AssignmentRightNev from "./AssignmentRightNev";
 import arrowRight from '../../../assets/ExecutionMentor/arrowRight.svg'
+import { useEffect } from "react";
+import axios from "axios";
 
 
 
@@ -19,6 +20,30 @@ const AssignmentEvaluation2 = () => {
     };
     ///
     const [pointGiven, setPointGiven] = useState(false);
+
+
+    const { id } = useParams();
+    console.log(id)
+
+    const [assignment, setAssignment] = useState();
+
+    //const {userInfo} = useContext(AuthContext);
+
+
+    useEffect(() => {
+        axios
+            .get(`${process.env.REACT_APP_BACKEND_API}/getSingleSubmitAssignment/${id}`)
+            .then((response) => {
+
+                setAssignment(response?.data)
+                console.log(response?.data.taskName)
+
+
+            })
+            .catch((error) => console.error(error));
+    }, [id]);
+
+    console.log(assignment?.fileUrl)
 
 
 
@@ -75,10 +100,32 @@ const AssignmentEvaluation2 = () => {
 
 
 
-                        <div className="ms-10 bg-[#F0F7FF] rounded-[20px] h-[300px] my-5 p-5">
-                            <p>
+                        <div className="ms-10 bg-[#F0F7FF] rounded-[20px]  my-5 p-5">
+                            {/*  <p>
                                 PDF/MOV
-                            </p>
+                            </p> */}
+                            {assignment?.fileUrl && (<>
+                                <p>
+                                    PDF/MOV
+                                </p>
+                                <iframe
+                                    className="h-[68vh] mx-auto border-x-[30px] mt-[40px] border-t-[30px] border-b-[50px] rounded-lg border-[#292929]"
+                                    src={`https://docs.google.com/viewer?url=${assignment?.fileUrl}&embedded=true`}
+                                    width="90%"
+                                    height="80vh"
+                                    title="W3Schools Free Online Web Tutorials"
+                                ></iframe>
+                            </>
+
+                            )}
+                            {!assignment?.fileUrl && (<>
+                                <p className="text-3xl text-center font-bold">
+                                    PDF NOT FOUND
+                                </p>
+
+                            </>
+
+                            )}
                         </div>
 
 

@@ -15,6 +15,7 @@ import "react-circular-progressbar/dist/styles.css";
 
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import ReactApexChart from 'react-apexcharts';
+import { AuthContext } from "../../../contexts/AuthProvider";
 
 
 
@@ -74,6 +75,11 @@ const ExecutionMentorDashboard = () => {
     };
 
 
+    
+    const {userInfo,user} = useContext(AuthContext);
+
+    console.log(user.photoURL)
+
 
     
 
@@ -103,7 +109,7 @@ const ExecutionMentorDashboard = () => {
                             }}
                         >
                             <div className="p-5 ">
-                                <p className="flex gap-5 text-[35px] font-bold">Welcome back, Shekhar <span><img src={hand} alt=" " /></span> </p>
+                                <p className="flex gap-5 text-[35px] font-bold">Welcome back, {userInfo.name}  <span><img src={hand} alt=" " /></span> </p>
                                 <p className="text-[15px] font-normal">You’re on the right track and work through all of your feedbacks to keep yourself up to date.<Link to='/performanceFeedback' className="border-b font-bold"> View all</Link></p>
                             </div>
                             <div className="">

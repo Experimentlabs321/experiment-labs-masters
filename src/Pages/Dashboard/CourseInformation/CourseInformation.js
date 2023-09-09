@@ -18,6 +18,7 @@ import { AuthContext } from "../../../contexts/AuthProvider";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 
+
 const CourseInformation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [preview, setPreview] = useState(false);

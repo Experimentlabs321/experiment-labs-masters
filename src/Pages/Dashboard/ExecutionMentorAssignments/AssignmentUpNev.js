@@ -5,6 +5,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import ChatIcon from '../../../assets/ExecutionMentor/ChatIcon.svg'
 import Rectangle5 from '../../../assets/ExecutionMentor/Rectangle5.svg'
 import notification from '../../../assets/ExecutionMentor/notification.svg'
+import { AuthContext } from "../../../contexts/AuthProvider";
 
 
 
@@ -12,6 +13,10 @@ import notification from '../../../assets/ExecutionMentor/notification.svg'
 const AssignmentUpNev = (props) => {
     console.log(props.page)
     const page = props.page;
+
+    const {userInfo,user} = useContext(AuthContext);
+
+    console.log(user.photoURL)
    
 
     return (
@@ -56,11 +61,11 @@ const AssignmentUpNev = (props) => {
                 }
                  <div className="flex items-center gap-4">
                     <div>
-                        <img src={Rectangle5} alt="Rectangle5"/>
+                        <img className="w-[62px] h-[46px]" src={user.photoURL} alt="Profile"/>
                     </div>
                     <div>
-                        <p className="text-lg font-medium">Shekhar Yadav</p>
-                        <p className="text-[#9D9D9D] text-base font-medium">Mentor</p>
+                        <p className="text-lg font-medium">{userInfo.name}</p>
+                        <p className="text-[#9D9D9D] text-base font-medium">{userInfo.role}</p>
                     </div>
                  </div>
                  <div>

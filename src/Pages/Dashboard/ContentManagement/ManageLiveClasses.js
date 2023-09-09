@@ -251,7 +251,7 @@ const ManageLiveClasses = () => {
           </div>
           {isOpenGeneral && (
             <div className="dropdown-menu mt-[71px] mb-[45px] border-b-2  ">
-              <div className="flex justify-between ">
+              <div className="flex justify-between">
                 <div className="">
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
@@ -261,10 +261,10 @@ const ManageLiveClasses = () => {
 
                   <input
                     required
-                    className="mt-6 ms-6 border rounded-md w-[440px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                    className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                     name="className"
                     type="text"
-                    placeholder="Eg. Excel with Shekhar Gupta"
+                    placeholder="Class name"
                   />
                 </div>
 
@@ -276,7 +276,7 @@ const ManageLiveClasses = () => {
                   </div>
 
                   <div
-                    className=" flex gap-2  mt-6 ms-6 border rounded-md w-[142px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]  "
+                    className=" flex gap-2  mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]  "
                     style={{
                       boxShadow: " 0px 2px 4px 0px rgba(0, 0, 0, 0.15)",
                     }}
@@ -301,7 +301,7 @@ const ManageLiveClasses = () => {
                   </div>
                 </div>
 
-                <div className="me-10">
+                <div className="me-20">
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
                     <p className="font-bold text-lg me-[36px]">Instance Type</p>
@@ -309,7 +309,7 @@ const ManageLiveClasses = () => {
                   </div>
 
                   <div
-                    className=" flex gap-2  mt-6 ms-6 border rounded-md w-[246px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]  "
+                    className=" flex gap-2  mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]  "
                     style={{
                       boxShadow: " 0px 2px 4px 0px rgba(0, 0, 0, 0.15)",
                     }}
@@ -347,7 +347,7 @@ const ManageLiveClasses = () => {
                     </p>
                     <img src={required} />
                   </div>
-                  <div className="flex items-center justify-between  mt-6 ms-6 border rounded-md w-[415px] h-[50px] px-5 text-[#535353]  bg-[#F6F7FF] ">
+                  <div className="flex items-center justify-between  mt-6 ms-6 border rounded-md w-[100%] h-[50px] px-5 text-[#535353]  bg-[#F6F7FF] ">
                     <div className="flex gap-2">
                       <SearchIcon />
                       <input
@@ -361,17 +361,17 @@ const ManageLiveClasses = () => {
                     <MyLocationIcon />
                   </div>
                 </div>
-                <div className="me-10">
+                <div className="me-20">
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
                     <p className="font-bold text-lg me-[36px]">Room Number</p>
                   </div>
 
                   <input
-                    className="mt-6 ms-6 border rounded-md w-[440px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                    className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                     name="roomNumber"
                     type="text"
-                    placeholder="Eg. Excel with Shekhar Gupta"
+                    placeholder="Number"
                   />
                 </div>
               </div>
@@ -383,7 +383,7 @@ const ManageLiveClasses = () => {
                     <p className="font-bold text-lg me-[36px]">Agenda</p>
                     <img src={required} />
                   </div>
-                  <div className="flex items-center justify-between  mt-6 ms-6 border rounded-md w-[415px] h-[50px] px-5 text-[#535353]  bg-[#F6F7FF] ">
+                  <div className="flex items-center justify-between  mt-6 ms-6 border rounded-md w-[100%] h-[50px] px-5 text-[#535353]  bg-[#F6F7FF] ">
                     <div className="flex gap-2">
                       <input
                         className="focus:outline-0 text-[#535353]  bg-[#F6F7FF]"
@@ -403,14 +403,14 @@ const ManageLiveClasses = () => {
                   </div>
 
                   <input
-                    required
-                    className="mt-6 ms-6 border rounded-md w-[440px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                    name="password"
-                    type="password"
+                  required
+                    className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                    name="Password"
+                    type="text"
                     placeholder="Password"
                   />
                 </div>
-                <div className="me-10">
+                <div className="me-20">
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
                     <p className="font-bold text-lg me-[36px]">Email</p>
@@ -418,9 +418,9 @@ const ManageLiveClasses = () => {
                   </div>
 
                   <input
-                    required
-                    className="mt-6 ms-6 border rounded-md w-[440px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                    name="email"
+                  required
+                    className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                    name="Email"
                     type="email"
                     placeholder="Email"
                   />
@@ -464,7 +464,7 @@ const ManageLiveClasses = () => {
 
                     <input
                       required
-                      className="mt-6 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                      className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                       name="courseStartingDateTime"
                       type="datetime-local"
                       placeholder="Eg. Entrepreneurship Lab"
@@ -473,7 +473,7 @@ const ManageLiveClasses = () => {
                   </div>
                 </div>
 
-                <div className="me-10">
+                <div className="me-20">
                   <div className="mt-20 flex flex-col">
                     <div className="flex items-center gap-4">
                       <p className="h-2 w-2 bg-black rounded-full"></p>
@@ -481,11 +481,11 @@ const ManageLiveClasses = () => {
                       <img src={required} />
                     </div>
                     <input
-                      className="mt-6 ms-6 border rounded-md w-[440px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                      name="duration"
-                      type="text"
-                      placeholder="time"
-                    />
+                    className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                    name="Duration"
+                    type="text"
+                    placeholder="time"
+                  />
 
                     {/*    <input
                       required

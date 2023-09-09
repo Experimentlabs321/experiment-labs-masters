@@ -118,6 +118,7 @@ const CourseAccess = () => {
               )}
             </div>
           </div>
+                
           <div className="my-[60px] ">
             <div className="flex flex-wrap justify-between gap-x-2 gap-y-5 ">
               {courses?.map((course) => {
