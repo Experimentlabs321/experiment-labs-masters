@@ -67,7 +67,7 @@ const Level = ({ singleData, i, length, onClick, viewAllLevel }) => {
           >
             {singleData?.score}
           </h1>
-          {status === "Completed" && <h1>{singleData?.expression}</h1>}
+          {status === "Completed" && <h1 className="text-[12px]">Completed</h1>}
         </div>
         <div
           onClick={onClick}

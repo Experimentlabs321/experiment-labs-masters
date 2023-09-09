@@ -128,16 +128,18 @@ const ManageLiveClasses = () => {
     let manageClass = JSON.parse(localStorage.getItem("manageClass"));
     console.log(manageClass);
     try {
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_API}/createMeeting`, {
-        authCode: code,
-        manageClass: {
-          topic: manageClass?.agenda,
-          // start_time: manageClass?.courseStartingDateTime,
-          duration: manageClass?.duration,
-          password: manageClass?.password,
-          type: 1
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_API}/createMeeting`,
+        {
+          authCode: code,
+          manageClass: {
+            topic: manageClass?.agenda,
+            // start_time: manageClass?.courseStartingDateTime,
+            duration: manageClass?.duration,
+            password: manageClass?.password,
+            type: 1,
+          },
         }
-      }
       );
 
       setIsConnected(true);
@@ -403,7 +405,7 @@ const ManageLiveClasses = () => {
                   </div>
 
                   <input
-                  required
+                    required
                     className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                     name="Password"
                     type="text"
@@ -418,7 +420,7 @@ const ManageLiveClasses = () => {
                   </div>
 
                   <input
-                  required
+                    required
                     className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                     name="Email"
                     type="email"
@@ -481,11 +483,11 @@ const ManageLiveClasses = () => {
                       <img src={required} />
                     </div>
                     <input
-                    className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                    name="Duration"
-                    type="text"
-                    placeholder="time"
-                  />
+                      className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                      name="Duration"
+                      type="text"
+                      placeholder="time"
+                    />
 
                     {/*    <input
                       required
@@ -516,8 +518,9 @@ const ManageLiveClasses = () => {
             {isOpenevaluationParameter && <img src={arrowDown}></img>}
 
             <i
-              className={`dropdown-arrow ${isOpenevaluationParameter ? "open" : ""
-                }`}
+              className={`dropdown-arrow ${
+                isOpenevaluationParameter ? "open" : ""
+              }`}
             ></i>
           </div>
 
