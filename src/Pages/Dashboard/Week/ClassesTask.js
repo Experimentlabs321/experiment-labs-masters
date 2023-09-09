@@ -16,7 +16,7 @@ const ClassesTask = ({ taskData }) => {
     setSelectedOption(option);
     setIsOpen(false);
   };
-  const providedDateTimeString = taskData?.meetingData?.start_time;
+  const providedDateTimeString = taskData?.courseStartingDateTime;
   const providedDateTime = new Date(providedDateTimeString); // Parse the provided date string
 
   const currentDateTime = new Date(); // Get the current date and time
@@ -29,7 +29,7 @@ const ClassesTask = ({ taskData }) => {
   const minutes = Math.floor(timeDifferenceInSeconds / 60); // Calculate minutes
   const seconds = Math.floor(timeDifferenceInSeconds % 60); // Calculate remaining seconds
 
-  console.log(minutes);
+  console.log(taskData?.meetingData?.join_url);
 
   return (
     <div>
@@ -72,11 +72,13 @@ const ClassesTask = ({ taskData }) => {
                 </div>
               </div>
               <div>
-                <button
-                  className={`bg-[#3E4DAC] text-white w-[150px] h-[50px] text-[16px] font-[600] text-center rounded-[8px] z-[1] shadow-[0px_4px_0px_0px_#CA5F98] lg:shadow-[0px_8px_0px_0px_#CA5F98]`}
+                <a
+                  href={taskData?.meetingData?.join_url}
+                  target="_blank"
+                  className={`bg-[#3E4DAC] cursor-pointer px-8 py-4 text-white w-[150px] h-[50px] text-[16px] font-[600] text-center rounded-[8px] z-[1] shadow-[0px_4px_0px_0px_#CA5F98] lg:shadow-[0px_8px_0px_0px_#CA5F98]`}
                 >
                   Join
-                </button>
+                </a>
               </div>
             </>
           )}

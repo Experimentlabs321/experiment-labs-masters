@@ -110,40 +110,59 @@ const ManageLiveClasses = () => {
   useEffect(() => {
     console.log(id);
     const queryParams = new URLSearchParams(location.search);
-    const code = queryParams.get('code');
+    const code = queryParams.get("code");
     console.log(code);
     if (code) {
       exchangeCodeForToken(code);
     }
-
   }, [location.search]);
 
   const connectZoom = async () => {
-
     const clientIdValue = process.env.REACT_APP_zoom_clientId;
     const redirectURI = process.env.REACT_APP_zoom_redirectUri; // Make sure it matches the URI registered in your Zoom app
     console.log("Clicked", clientIdValue);
     window.location.href = `https://zoom.us/oauth/authorize?response_type=code&client_id=${clientIdValue}&redirect_uri=${redirectURI}`;
-
   };
 
   const exchangeCodeForToken = async (code) => {
-    let manageClass = JSON.parse(localStorage.getItem('manageClass'));
+    let manageClass = JSON.parse(localStorage.getItem("manageClass"));
     console.log(manageClass);
     try {
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_API}/createMeeting`, {
-        authCode: code,
-        manageClass: {
-          topic: manageClass?.agenda,
-          start_time: manageClass?.courseStartingDateTime,
-          duration: manageClass?.duration,
-          password: manageClass?.password,
-          type: 2
+      // Convert the input date time to a Date object
+      const inputDate = new Date(manageClass?.courseStartingDateTime);
+
+      const zoomDateTime = `${inputDate.getUTCFullYear()}-${(
+        inputDate.getUTCMonth() + 1
+      )
+        .toString()
+        .padStart(2, "0")}-${inputDate
+        .getUTCDate()
+        .toString()
+        .padStart(2, "0")}T${inputDate
+        .getUTCHours()
+        .toString()
+        .padStart(2, "0")}:${inputDate
+        .getUTCMinutes()
+        .toString()
+        .padStart(2, "0")}:${inputDate
+        .getUTCSeconds()
+        .toString()
+        .padStart(2, "0")}Z`;
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_API}/createMeeting`,
+        {
+          authCode: code,
+          manageClass: {
+            topic: manageClass?.agenda,
+            duration: manageClass?.duration,
+            password: manageClass?.password,
+            type: 1,
+          },
         }
-      });
+      );
 
       setIsConnected(true);
-      console.log('Meeting created:', response.data.meeting);
+      console.log("Meeting created:", response.data.meeting);
       const meetingData = response.data.meeting;
       manageClass = { ...manageClass, meetingData: meetingData };
       const newClass = await axios.post(
@@ -156,9 +175,8 @@ const ManageLiveClasses = () => {
       if (newClass?.data?.result?.acknowledged) {
         toast.success("Class added Successfully");
       }
-
     } catch (error) {
-      console.error('Error creating meeting:', error);
+      console.error("Error creating meeting:", error);
     }
   };
 
@@ -195,7 +213,7 @@ const ManageLiveClasses = () => {
       location,
       agenda,
       taskName: agenda,
-      taskType: 'Classes',
+      taskType: "Classes",
       password,
       email,
       duration,
@@ -213,7 +231,7 @@ const ManageLiveClasses = () => {
       chapterId: id,
     };
 
-    localStorage.setItem('manageClass', JSON.stringify(manageClass));
+    localStorage.setItem("manageClass", JSON.stringify(manageClass));
     // console.log(JSON.parse(localStorage.getItem('manageClass')));
     connectZoom();
   };
@@ -230,44 +248,6 @@ const ManageLiveClasses = () => {
   const [preview, setPreview] = useState(false);
   const [submitPermission, setSubmitPermission] = useState(false);
   const [classesData, setClassesData] = useState({});
-
-  // useEffect(() => {
-  //   axios
-  //     .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
-  //     .then((response) => {
-  //       setChapter(response?.data);
-  //     })
-  //     .then(() => {
-  //       const fetchData = {
-  //         organizationId: userInfo?.organizationId,
-  //         courseId: chapter?.courseId,
-  //       };
-  //       axios
-  //         .post(
-  //           `${process.env.REACT_APP_BACKEND_API}/skillCategoriesByCourseId`,
-  //           fetchData
-  //         )
-  //         .then((res) => setSkillCategories(res?.data))
-  //         .catch((error) => console.error(error));
-  //       axios
-  //         .post(
-  //           `${process.env.REACT_APP_BACKEND_API}/itemCategoryByCourseId`,
-  //           fetchData
-  //         )
-  //         .then((res) => setEarningCategories(res?.data))
-  //         .catch((error) => console.error(error));
-  //     })
-  //     .catch((error) => console.error(error));
-  // }, [id, userInfo, userInfo?.email, isOpenevaluationParameter]);
-  // useEffect(() => {
-  //   axios
-  //     .get(`${process.env.REACT_APP_BACKEND_API}/courses/${chapter?.courseId}`)
-  //     .then((response) => {
-  //       setCourse(response?.data);
-  //     });
-  // }, [chapter, isOpenevaluationParameter]);
-
-
 
   return (
     <div>
@@ -421,14 +401,11 @@ const ManageLiveClasses = () => {
                 <div className="">
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
-                    <p className="font-bold text-lg me-[36px]">
-                      Agenda
-                    </p>
+                    <p className="font-bold text-lg me-[36px]">Agenda</p>
                     <img src={required} />
                   </div>
                   <div className="flex items-center justify-between  mt-6 ms-6 border rounded-md w-[415px] h-[50px] px-5 text-[#535353]  bg-[#F6F7FF] ">
                     <div className="flex gap-2">
-
                       <input
                         className="focus:outline-0 text-[#535353]  bg-[#F6F7FF]"
                         name="agenda"
@@ -436,12 +413,8 @@ const ManageLiveClasses = () => {
                         placeholder=" Agenda"
                       />
                     </div>
-
-
                   </div>
                 </div>
-
-
 
                 <div className="me-10">
                   <div className="flex items-center gap-4">
@@ -473,231 +446,9 @@ const ManageLiveClasses = () => {
                     placeholder="Email"
                   />
                 </div>
-
-
               </div>
-
-
             </div>
           )}
-
-          {/*   <div
-            className="select-option flex items-center gap-[40px] mt-12"
-            onClick={toggleDropdownRoomSettings}
-          >
-            <h1 className=" h-[60px] w-[60px] bg-[#E1E6FF] rounded-full flex justify-center items-center text-[25px]">
-              2
-            </h1>
-            <p className="text-[25px] font-bold">Room Settings</p>
-            {!isOpenRoomSettings && (
-              <img className="w-6" src={arrowright}></img>
-            )}
-
-            {isOpenRoomSettings && <img src={arrowDown}></img>}
-
-            <i
-              className={`dropdown-arrow ${isOpenRoomSettings ? "open" : ""}`}
-            ></i>
-          </div>
-          {isOpenRoomSettings && (
-            <div className="dropdown-menu mt-[71px] mb-[45px] border-b-2  ">
-              <div className="flex justify-between mb-20">
-                <div className="">
-                  <div className="flex items-center gap-4">
-                    <p className="h-2 w-2 bg-black rounded-full"></p>
-                    <p className="font-bold text-lg me-[36px]">
-                      {" "}
-                      Welcome Message
-                    </p>
-                  </div>
-
-                  <input
-                    className="mt-6 ms-6 border rounded-md w-[440px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                    name="className"
-                    type="text"
-                    placeholder="Eg. Excel with Shekhar Gupta"
-                  />
-                </div>
-
-                <div className=" me-10">
-                  <div className="">
-                    <div className="flex items-center gap-4">
-                      <p className="h-2 w-2 bg-black rounded-full"></p>
-                      <p className="font-bold text-lg me-[36px]">
-                        The session may be recorded.
-                      </p>
-                    </div>
-
-                    <div className=" items-center flex gap-2  mt-2 ms-6  w-[319px] h-[50px] ps-2 text-[#535353] focus:outline-0 ">
-                      <div className="">
-                        <input
-                          type="radio"
-                          id="Yes"
-                          name="sessionmayberecorded"
-                          value="1"
-                        />
-                        <lebel> Yes</lebel>
-                      </div>
-                      <div className=" ms-[55px]">
-                        <input
-                          type="radio"
-                          id="No"
-                          name="sessionmayberecorded"
-                          value="0"
-                        />
-                        <lebel> No</lebel>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="">
-                    <div className="flex items-center gap-4">
-                      <p className="h-2 w-2 bg-black rounded-full"></p>
-                      <p className="font-bold text-lg me-[36px]">
-                        Wait for moderator
-                      </p>
-                    </div>
-
-                    <div className=" items-center flex gap-2  mt-2 ms-6  w-[319px] h-[50px] ps-2 text-[#535353] focus:outline-0 ">
-                      <div className="">
-                        <input
-                          type="radio"
-                          id="yes"
-                          name="waitformoderator"
-                          value="1"
-                        />
-                        <lebel> Yes</lebel>
-                      </div>
-                      <div className=" ms-[55px]">
-                        <input
-                          type="radio"
-                          id="No"
-                          name="waitformoderator"
-                          value="0"
-                        />
-                        <lebel> No</lebel>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )} */}
-
-          {/*   <div
-            className="select-option flex items-center gap-[40px] mt-12"
-            onClick={toggleDropdownlockSettings}
-          >
-            <h1 className=" h-[60px] w-[60px] bg-[#E1E6FF] rounded-full flex justify-center items-center text-[25px]">
-              3
-            </h1>
-            <p className="text-[25px] font-bold">Lock Settings</p>
-            {!isOpenlockSettings && (
-              <img className="w-6" src={arrowright}></img>
-            )}
-
-            {isOpenlockSettings && <img src={arrowDown}></img>}
-
-            <i
-              className={`dropdown-arrow ${isOpenlockSettings ? "open" : ""}`}
-            ></i>
-          </div>
-
-          {isOpenlockSettings && (
-            <div className="dropdown-menu mt-[71px] mb-[45px] border-b-2 ">
-              <div className="flex justify-between mb-20">
-                <div className=" ms-5">
-                  <div>
-                    <input
-                      type="checkbox"
-                      id="disablewebcams"
-                      name="disablewebcams"
-                      value="1"
-                    />
-                    <label
-                      className="text-base font-semibold ms-4"
-                      for="disablewebcams"
-                    >
-                      Disable webcams
-                    </label>
-                  </div>
-                  <div className="mt-[75px]">
-                    <input
-                      type="checkbox"
-                      id="disablemicrophones"
-                      name="disablemicrophones"
-                      value="1"
-                    />
-                    <label
-                      className="text-base font-semibold ms-4"
-                      for="disablemicrophones"
-                    >
-                      Disable microphones
-                    </label>
-                  </div>
-                  <div className="mt-[75px]">
-                    <input
-                      type="checkbox"
-                      id="disableprivatechat"
-                      name="disableprivatechat"
-                      value="1"
-                    />
-                    <label
-                      className="text-base font-semibold ms-4"
-                      for="disableprivatechat"
-                    >
-                      {" "}
-                      Disable private chat
-                    </label>
-                  </div>
-                </div>
-
-                <div className="me-[200px]">
-                  <div>
-                    <input
-                      type="checkbox"
-                      id="disablepublicchat"
-                      name="disablepublicchat"
-                      value="1"
-                    />
-                    <label
-                      className="text-base font-semibold ms-4"
-                      for="disablepublicchat"
-                    >
-                      Disable public chat
-                    </label>
-                  </div>
-                  <div className="mt-[75px]">
-                    <input
-                      type="checkbox"
-                      id="disablesharednotes"
-                      name="disablesharednotes"
-                      value="1"
-                    />
-                    <label
-                      className="text-base font-semibold ms-4"
-                      for="disablesharednotes"
-                    >
-                      Disable shared notes
-                    </label>
-                  </div>
-                  <div className="mt-[75px]">
-                    <input
-                      type="checkbox"
-                      id="hideuserlist"
-                      name="hideuserlist"
-                      value="1"
-                    />
-                    <label
-                      className="text-base font-semibold ms-4"
-                      for="hideuserlist"
-                    >
-                      Hide user list
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )} */}
 
           <div
             className="select-option flex items-center gap-[40px] mt-12"
@@ -747,10 +498,7 @@ const ManageLiveClasses = () => {
                   <div className="mt-20 flex flex-col">
                     <div className="flex items-center gap-4">
                       <p className="h-2 w-2 bg-black rounded-full"></p>
-                      <p className="font-bold text-lg me-[36px]">
-                        {" "}
-                        Duration{" "}
-                      </p>
+                      <p className="font-bold text-lg me-[36px]"> Duration </p>
                       <img src={required} />
                     </div>
                     <input
@@ -789,8 +537,9 @@ const ManageLiveClasses = () => {
             {isOpenevaluationParameter && <img src={arrowDown}></img>}
 
             <i
-              className={`dropdown-arrow ${isOpenevaluationParameter ? "open" : ""
-                }`}
+              className={`dropdown-arrow ${
+                isOpenevaluationParameter ? "open" : ""
+              }`}
             ></i>
           </div>
 

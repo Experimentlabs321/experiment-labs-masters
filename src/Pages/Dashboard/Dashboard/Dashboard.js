@@ -10,6 +10,7 @@ import "./style.css";
 import Lock from "../../../assets/Dashboard/lock.png";
 import axios from "axios";
 import { AuthContext } from "../../../contexts/AuthProvider";
+// import SendEvent from "./SendEvent";
 
 const Dashboard = () => {
   const data = [
@@ -129,6 +130,7 @@ const Dashboard = () => {
                 selectedCourse={selectedCourse}
                 weeks={weeks}
               />
+              {/* <SendEvent /> */}
             </div>
             <div
               className={`lg:border-b-2 lg:border-l-2 lg:border-[#E8E8E8] pt-10 pb-10 px-4 text-center lg:max-h-[732px] overflow-x-scroll lg:overflow-y-scroll ${
