@@ -1,9 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Layout from "../Layout";
 import SearchIcon from "../../../assets/Dashboard/SearchIcon.png";
 import CourseTham from "../../../assets/Dashboard/CourseTham.png";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { AuthContext } from "../../../contexts/AuthProvider";
 
 const CourseAccess = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,6 +13,8 @@ const CourseAccess = () => {
   const [selectedOption, setSelectedOption] = useState("Category");
   const options = ["Category name"];
   const Role = localStorage.getItem("role");
+  const { userInfo } = useContext(AuthContext);
+  console.log(userInfo);
 
   const toggleOptions = () => {
     setIsOpen(!isOpen);
@@ -23,15 +26,14 @@ const CourseAccess = () => {
   };
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACKEND_API}/courses`)
+      .get(
+        `${process.env.REACT_APP_BACKEND_API}/courses/organizations/${userInfo?.organizationId}`
+      )
       .then((response) => {
-        // console.log(response);
         setCourses(response?.data);
       })
       .catch((error) => console.error(error));
   }, []);
-
-  console.log(courses);
 
   return (
     <div>
@@ -119,73 +121,87 @@ const CourseAccess = () => {
                 
           <div className="my-[60px] ">
             <div className="flex flex-wrap justify-between gap-x-2 gap-y-5 ">
-              {courses?.map((course) => (
-                <div className="bg-[#F6F7FF] rounded-[20px] p-[20px] max-w-[340px] shadow-[4px_4px_4px_0px_#0000001a]">
-                  <img
-                    className="w-full rounded-lg"
-                    src={course?.courseThumbnail ? course?.courseThumbnail : CourseTham}
-                    alt="CourseTham"
-                  />
-                  <Link to={`/questLevels/${course?._id}`}>
-                    <h1 className="text-[#3E4DAC] text-[16px] font-[800] mt-[16px] mb-[12px] ">
-                      {course?.courseFullName}
-                    </h1>
-                  </Link>
-                  <p className="text-[#7A7A7A] text-[12px] font-[500] mb-[16px] ">
-                    Course Description
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <p className="bg-[#E1D7FF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
-                      Course Category
+              {courses?.map((course) => {
+                const date = new Date(course?.courseStartingDate);
+                const options = {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                };
+                return (
+                  <div className="bg-[#F6F7FF] rounded-[20px] p-[20px] max-w-[340px] shadow-[4px_4px_4px_0px_#0000001a]">
+                    <img
+                      className="w-full rounded-lg"
+                      src={
+                        course?.courseThumbnail
+                          ? course?.courseThumbnail
+                          : CourseTham
+                      }
+                      alt="CourseTham"
+                    />
+                    <Link to={`/questLevels/${course?._id}`}>
+                      <h1 className="text-[#3E4DAC] text-[16px] font-[800] mt-[16px] mb-[12px] ">
+                        {course?.courseFullName}
+                      </h1>
+                    </Link>
+                    <p className="text-[#7A7A7A] text-[12px] font-[500] mb-[16px] ">
+                      {course?.courseDescription}
                     </p>
-                    <button className="bg-[#CEDBFF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
-                      Starting Date
-                    </button>
-                  </div>
-                  <div
-                    className={`${
-                      Role === "admin" ? "block" : "hidden"
-                    } relative `}
-                  >
-                    <button
-                      onClick={() => {
-                        if (clickedCourse === course) setClickedCourse(null);
-                        else setClickedCourse(course);
-                      }}
-                      className="bg-black relative mt-[24px] p-[3px] rounded-full float-right "
+                    <div className="flex items-center justify-between">
+                      <p className="bg-[#E1D7FF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
+                        {course?.courseCategory}
+                      </p>
+                      <button className="bg-[#CEDBFF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
+                        {date?.toLocaleDateString("en-US", options)}
+                      </button>
+                    </div>
+                    <div
+                      className={`${
+                        Role === "admin" ? "block" : "hidden"
+                      } relative `}
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 20 20"
-                        fill="none"
+                      <button
+                        onClick={() => {
+                          if (clickedCourse === course) setClickedCourse(null);
+                          else setClickedCourse(course);
+                        }}
+                        className="bg-black relative mt-[24px] p-[3px] rounded-full float-right "
                       >
-                        <path
-                          d="M9.9987 8.33301C9.08203 8.33301 8.33203 9.08301 8.33203 9.99967C8.33203 10.9163 9.08203 11.6663 9.9987 11.6663C10.9154 11.6663 11.6654 10.9163 11.6654 9.99967C11.6654 9.08301 10.9154 8.33301 9.9987 8.33301ZM9.9987 3.33301C9.08203 3.33301 8.33203 4.08301 8.33203 4.99967C8.33203 5.91634 9.08203 6.66634 9.9987 6.66634C10.9154 6.66634 11.6654 5.91634 11.6654 4.99967C11.6654 4.08301 10.9154 3.33301 9.9987 3.33301ZM9.9987 13.333C9.08203 13.333 8.33203 14.083 8.33203 14.9997C8.33203 15.9163 9.08203 16.6663 9.9987 16.6663C10.9154 16.6663 11.6654 15.9163 11.6654 14.9997C11.6654 14.083 10.9154 13.333 9.9987 13.333Z"
-                          fill="white"
-                        />
-                      </svg>
-                      {clickedCourse === course && (
-                        <ul className="absolute right-0 bottom-[17px] w-max border  bg-[#141414] border-t-0 p-2 rounded-[8px] mt-1 transform translate-y-[-10px] shadow-[0px_2px_4px_0px_#00000026]">
-                          <li
-                            className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600] "
-                            onClick={() => console.log("Edit Course Details")}
-                          >
-                            Edit Course Details
-                          </li>
-                          <li
-                            className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600] "
-                            onClick={() => console.log("Edit Course Contents")}
-                          >
-                            Edit Course Contents
-                          </li>
-                        </ul>
-                      )}
-                    </button>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                        >
+                          <path
+                            d="M9.9987 8.33301C9.08203 8.33301 8.33203 9.08301 8.33203 9.99967C8.33203 10.9163 9.08203 11.6663 9.9987 11.6663C10.9154 11.6663 11.6654 10.9163 11.6654 9.99967C11.6654 9.08301 10.9154 8.33301 9.9987 8.33301ZM9.9987 3.33301C9.08203 3.33301 8.33203 4.08301 8.33203 4.99967C8.33203 5.91634 9.08203 6.66634 9.9987 6.66634C10.9154 6.66634 11.6654 5.91634 11.6654 4.99967C11.6654 4.08301 10.9154 3.33301 9.9987 3.33301ZM9.9987 13.333C9.08203 13.333 8.33203 14.083 8.33203 14.9997C8.33203 15.9163 9.08203 16.6663 9.9987 16.6663C10.9154 16.6663 11.6654 15.9163 11.6654 14.9997C11.6654 14.083 10.9154 13.333 9.9987 13.333Z"
+                            fill="white"
+                          />
+                        </svg>
+                        {clickedCourse === course && (
+                          <ul className="absolute right-0 bottom-[17px] w-max border  bg-[#141414] border-t-0 p-2 rounded-[8px] mt-1 transform translate-y-[-10px] shadow-[0px_2px_4px_0px_#00000026]">
+                            <li
+                              className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600] "
+                              onClick={() => console.log("Edit Course Details")}
+                            >
+                              Edit Course Details
+                            </li>
+                            <li
+                              className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600] "
+                              onClick={() =>
+                                console.log("Edit Course Contents")
+                              }
+                            >
+                              Edit Course Contents
+                            </li>
+                          </ul>
+                        )}
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>

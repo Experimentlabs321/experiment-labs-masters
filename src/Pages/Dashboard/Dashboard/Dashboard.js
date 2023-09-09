@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Layout from "../Layout";
 import Level from "./Level";
 import DashboardUserUpdate from "./DashboardUserUpdate";
@@ -8,6 +8,9 @@ import RightArrowBlack from "../../../assets/Dashboard/RightArrowBlack.png";
 import DashboardPrimaryButton from "../Shared/DashboardPrimaryButton";
 import "./style.css";
 import Lock from "../../../assets/Dashboard/lock.png";
+import axios from "axios";
+import { AuthContext } from "../../../contexts/AuthProvider";
+// import SendEvent from "./SendEvent";
 
 const Dashboard = () => {
   const data = [
@@ -78,6 +81,11 @@ const Dashboard = () => {
   const [viewAllLevel, setViewAllLevel] = useState(false);
   // const [length, setLength] = useState(data.length < 5 ? data.length : 5);
   const [length, setLength] = useState(data.length);
+  const [courses, setCourses] = useState([]);
+  const { userInfo, user } = useContext(AuthContext);
+  const [selectedCourse, setSelectedCourse] = useState({});
+  const [isOpen, setIsOpen] = useState(false);
+  const [weeks, setWeeks] = useState([]);
 
   const handleViewAllLevel = () => {
     setViewAllLevel(true);
@@ -87,13 +95,42 @@ const Dashboard = () => {
     setViewAllLevel(false);
     setLength(data.length < 5 ? data.length : 5);
   };
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_BACKEND_API}/courses/organizations/${userInfo?.organizationId}`
+      )
+      .then((response) => {
+        setCourses(response?.data);
+        setSelectedCourse(response?.data[0]);
+      })
+      .catch((error) => console.error(error));
+  }, [userInfo]);
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_BACKEND_API}/weeks/${selectedCourse?._id}`)
+      .then((response) => {
+        setWeeks(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [selectedCourse]);
+
+  console.log(userInfo, user);
   return (
     <div>
       <Layout>
         <div className="">
           <div className="grid grid-col-1 lg:grid-cols-3 gap-2">
             <div className="lg:col-span-2 pt-20 lg:pt-10 px-4">
-              <DashboardUserUpdate />
+              <DashboardUserUpdate
+                setIsOpen={setIsOpen}
+                isOpen={isOpen}
+                courses={courses}
+                setSelectedCourse={setSelectedCourse}
+                selectedCourse={selectedCourse}
+                weeks={weeks}
+              />
+              {/* <SendEvent /> */}
             </div>
             <div
               className={`lg:border-b-2 lg:border-l-2 lg:border-[#E8E8E8] pt-10 pb-10 px-4 text-center lg:max-h-[732px] overflow-x-scroll lg:overflow-y-scroll ${
@@ -104,14 +141,14 @@ const Dashboard = () => {
                 Lab Journey
               </h1>
               <div className="pt-[40px] px-[30px] hidden lg:inline-block relative">
-                {data.map((singleData, i) => (
+                {weeks.map((singleData, i) => (
                   <Level
                     viewAllLevel={viewAllLevel}
                     length={length}
                     onClick={handleCloseViewAllLevel}
                     singleData={singleData}
                     i={i}
-                    key={singleData?.name}
+                    key={singleData?._id}
                   />
                 ))}
               </div>

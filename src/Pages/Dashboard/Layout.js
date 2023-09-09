@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import MyHelmet from "../../Components/MyHelmet/MyHelpmet";
 import { Link, useLocation, useParams } from "react-router-dom";
 import logo from "../../assets/Logos/Group 2859890.png";
@@ -58,6 +58,7 @@ import back from "../../assets/ContentManagement/back.svg";
 import ArrowLeftIcon from "../../assets/Dashboard/dashboard_arrow-left.png";
 import { Badge } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import { AuthContext } from "../../contexts/AuthProvider";
 
 const Layout = ({ children }) => {
   const [toggleButton, setToggleButton] = useState(true);
@@ -65,6 +66,7 @@ const Layout = ({ children }) => {
   const [windowWidth, setWindowWidth] = useState(0);
   const Role = localStorage.getItem("role");
   const createCoursePage = localStorage.getItem("createCoursePage");
+  const { userInfo } = useContext(AuthContext);
   //console.log(Role);
   const location = useLocation();
   useEffect(() => {
@@ -195,7 +197,7 @@ const Layout = ({ children }) => {
                             </span>
                           </Link>
                         </li>
-                        <li>
+                        {/* <li>
                           <Link
                             style={
                               location.pathname === "/leaderBoard"
@@ -384,7 +386,7 @@ const Layout = ({ children }) => {
                               Career Analysis
                             </span>
                           </Link>
-                        </li>
+                        </li> */}
                         <li>
                           <Link
                             style={
@@ -1682,12 +1684,17 @@ const Layout = ({ children }) => {
                         alt="user"
                       />
                       <div>
-                        <h2 className="text-white text-[16px]">Akash Tiwari</h2>
+                        <h2 className="text-white font-bold text-[16px]">
+                          {userInfo?.name}
+                        </h2>
                         <p className="text-[#747475] text-[14px]">
-                          atiwari@gmail.com
+                          {userInfo?.email}
                         </p>
                       </div>
                     </div>
+                    <button className="p-2 text-center w-full text-white rounded-lg text-[18px]  ">
+                      Logout
+                    </button>
                   </div>
                 </div>
               </div>

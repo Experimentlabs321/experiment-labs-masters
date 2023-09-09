@@ -30,7 +30,7 @@ import uploadFileToS3 from "../../UploadComponent/s3Uploader";
 //   },
 // });
 
-const CreateCourse = () => {
+const EditCourse = () => {
   const [isOpenGeneralCourseInfo, setisOpenGeneralCourseInfo] = useState(true);
   const [isOpenCourseFormat, setisOpenCourseFormat] = useState(false);
   const [isOpenCompletionTracking, setisOpenCompletionTracking] =
@@ -837,4 +837,4 @@ const CreateCourse = () => {
   );
 };
 
-export default CreateCourse;
+export default EditCourse;
