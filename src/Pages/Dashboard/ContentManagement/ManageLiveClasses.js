@@ -135,10 +135,10 @@ const ManageLiveClasses = () => {
         authCode: code,
         manageClass: {
           topic: manageClass?.agenda,
-          start_time: manageClass?.courseStartingDateTime,
+          // start_time: manageClass?.courseStartingDateTime,
           duration: manageClass?.duration,
           password: manageClass?.password,
-          type: 2
+          type: 1
         }
       });
 
