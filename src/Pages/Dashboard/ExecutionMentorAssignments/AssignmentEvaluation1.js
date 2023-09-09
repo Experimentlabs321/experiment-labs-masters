@@ -1,9 +1,11 @@
 
 import React, { useContext, useState } from "react";
 import Layout from "../Layout";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import AssignmentUpNev from "./AssignmentUpNev";
 import AssignmentRightNev from "./AssignmentRightNev";
+import axios from "axios";
+import { useEffect } from "react";
 
 
 
@@ -15,8 +17,27 @@ const AssignmentEvaluation1 = () => {
         setSelectedTab(tab);
     };
     ///
+    const { id } = useParams();
+    
 
+    const [assignment, setAssignment] = useState();
 
+    //const {userInfo} = useContext(AuthContext);
+    
+
+    useEffect(() => {
+        axios
+            .get(`${process.env.REACT_APP_BACKEND_API}/getSingleSubmitAssignment/${id}`)
+            .then((response) => {
+                
+                setAssignment(response?.data)
+               
+                 
+            })
+            .catch((error) => console.error(error));
+    }, [id]);
+
+  
 
     return (
         <div>
@@ -69,7 +90,7 @@ const AssignmentEvaluation1 = () => {
                         </div>
 
 
-                        <div className="flex ms-10 justify-between items-center text-lg font-bold mt-10 mb-7">
+                      {/*   <div className="flex ms-10 justify-between items-center text-lg font-bold mt-10 mb-7">
                             <div className="flex items-center gap-4">
                                 <p className="h-2 w-2 bg-black rounded-full"></p>
                                 <p className="">
@@ -79,12 +100,12 @@ const AssignmentEvaluation1 = () => {
 
                             </div>
                             <p>Total weighted marks of the Assignment</p>
-                        </div>
-                        <div className="ms-10">
+                        </div> */}
+                      {/*   <div className="ms-10">
                             <p>
                                 Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an
                             </p>
-                        </div>
+                        </div> */}
 
                         <div className="flex justify-between items-center ms-10 mt-10 text-lg font-bold">
                             <p>Grade method</p>
@@ -102,10 +123,10 @@ const AssignmentEvaluation1 = () => {
                                 <p className="ms-5 ">
                                     PDF/MOV
                                 </p>
-                                <p>Topic</p>
+                                <p>{assignment?.taskName}</p>
                             </div>
 
-                            <Link to='/assignmentEvaluation2' className=" bg-[#081765] text-[#fff] px-5 py-1 rounded-md text-base font-medium ">
+                            <Link to={`/assignmentEvaluation2/${id}`} className=" bg-[#081765] text-[#fff] px-5 py-1 rounded-md text-base font-medium ">
                               View now
                             </Link>
 

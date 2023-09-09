@@ -294,11 +294,11 @@ const router = createBrowserRouter([
     element: <MentorAssignments />,
   },
   {
-    path: "/assignmentEvaluation1",
+    path: "/assignmentEvaluation1/:id",
     element: <AssignmentEvaluation1 />,
   },
   {
-    path: "/assignmentEvaluation2",
+    path: "/assignmentEvaluation2/:id",
     element: <AssignmentEvaluation2 />,
   },
   {

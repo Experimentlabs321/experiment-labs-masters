@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import MyHelmet from "../../Components/MyHelmet/MyHelpmet";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import logo from "../../assets/Logos/Group 2859890.png";
 import users from "../../assets/PointsRedemptions/users.svg";
 import enroll from "../../assets/PointsRedemptions/enroll.svg";
@@ -81,6 +81,9 @@ const Layout = ({ children }) => {
   const handleClick = () => {
     setToggleButton(!toggleButton);
   };
+
+  const { id } = useParams();
+  console.log(id)
 
   return (
     <>
@@ -1185,8 +1188,8 @@ const Layout = ({ children }) => {
                               style={
                                 location.pathname === "/mentorAssignments" ||
                                 location.pathname ===
-                                  "/assignmentEvaluation1" ||
-                                location.pathname === "/assignmentEvaluation2"
+                                  `/assignmentEvaluation1/${id}` ||
+                                location.pathname === `/assignmentEvaluation2/${id}`
                                   ? {
                                       background:
                                         "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
@@ -1197,8 +1200,8 @@ const Layout = ({ children }) => {
                               className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
                             >
                               {location.pathname === "/mentorAssignments" ||
-                              location.pathname === "/assignmentEvaluation1" ||
-                              location.pathname === "/assignmentEvaluation2" ? (
+                              location.pathname === `/assignmentEvaluation1/${id}` ||
+                              location.pathname === `/assignmentEvaluation2/${id}` ? (
                                 <img
                                   className=""
                                   src={Assignments}
@@ -1216,8 +1219,8 @@ const Layout = ({ children }) => {
                                 className={`${
                                   location.pathname === "/mentorAssignments" ||
                                   location.pathname ===
-                                    "/assignmentEvaluation1" ||
-                                  location.pathname === "/assignmentEvaluation2"
+                                  `/assignmentEvaluation1/${id}` ||
+                                  location.pathname === `/assignmentEvaluation2/${id}`
                                     ? "text-white"
                                     : "text-[#8F8F8F]"
                                 } ml-3 text-[18px] font-[500]`}

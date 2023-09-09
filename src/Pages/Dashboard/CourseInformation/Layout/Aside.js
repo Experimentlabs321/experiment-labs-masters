@@ -34,6 +34,7 @@ const Aside = ({ toggleButton }) => {
       .get(`${process.env.REACT_APP_BACKEND_API}/courses/${id}`)
       .then((response) => {
        // setCourseData(response?.data);
+       
         console.log(response?.data);
         setCourseFullName(response?.data.courseFullName);
         setCourseDescription(response?.data.courseDescription);
