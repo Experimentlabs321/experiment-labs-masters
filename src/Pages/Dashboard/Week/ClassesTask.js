@@ -139,4 +139,4 @@ const ClassesTask = ({ taskData }) => {
   );
 };
 
-export default ClassesTask;
+export default ClassesTask;

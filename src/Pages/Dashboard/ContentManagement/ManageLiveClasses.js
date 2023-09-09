@@ -128,37 +128,16 @@ const ManageLiveClasses = () => {
     let manageClass = JSON.parse(localStorage.getItem("manageClass"));
     console.log(manageClass);
     try {
-      // Convert the input date time to a Date object
-      const inputDate = new Date(manageClass?.courseStartingDateTime);
-
-      const zoomDateTime = `${inputDate.getUTCFullYear()}-${(
-        inputDate.getUTCMonth() + 1
-      )
-        .toString()
-        .padStart(2, "0")}-${inputDate
-        .getUTCDate()
-        .toString()
-        .padStart(2, "0")}T${inputDate
-        .getUTCHours()
-        .toString()
-        .padStart(2, "0")}:${inputDate
-        .getUTCMinutes()
-        .toString()
-        .padStart(2, "0")}:${inputDate
-        .getUTCSeconds()
-        .toString()
-        .padStart(2, "0")}Z`;
-      const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND_API}/createMeeting`,
-        {
-          authCode: code,
-          manageClass: {
-            topic: manageClass?.agenda,
-            duration: manageClass?.duration,
-            password: manageClass?.password,
-            type: 1,
-          },
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_API}/createMeeting`, {
+        authCode: code,
+        manageClass: {
+          topic: manageClass?.agenda,
+          // start_time: manageClass?.courseStartingDateTime,
+          duration: manageClass?.duration,
+          password: manageClass?.password,
+          type: 1
         }
+      }
       );
 
       setIsConnected(true);
@@ -537,9 +516,8 @@ const ManageLiveClasses = () => {
             {isOpenevaluationParameter && <img src={arrowDown}></img>}
 
             <i
-              className={`dropdown-arrow ${
-                isOpenevaluationParameter ? "open" : ""
-              }`}
+              className={`dropdown-arrow ${isOpenevaluationParameter ? "open" : ""
+                }`}
             ></i>
           </div>
 
