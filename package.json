@@ -55,9 +55,11 @@
     "react-router-dom": "^6.11.1",
     "react-scripts": "5.0.1",
     "react-scroll": "^1.8.9",
+    "react-sortablejs": "^6.1.4",
     "react-vertical-timeline-component": "^3.6.0",
     "reactjs-popup": "^2.0.5",
     "recharts": "^2.7.3",
+    "sortablejs": "^1.15.0",
     "stream": "^0.0.2",
     "styled-components": "^5.3.11",
     "sweetalert2": "^11.7.20",
@@ -89,6 +91,7 @@
     ]
   },
   "devDependencies": {
+    "@types/sortablejs": "^1.15.2",
     "tailwindcss": "^3.3.2"
   }
 }

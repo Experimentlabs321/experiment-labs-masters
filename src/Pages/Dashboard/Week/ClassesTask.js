@@ -29,7 +29,7 @@ const ClassesTask = ({ taskData }) => {
   const minutes = Math.floor(timeDifferenceInSeconds / 60); // Calculate minutes
   const seconds = Math.floor(timeDifferenceInSeconds % 60); // Calculate remaining seconds
 
-  console.log(taskData?.meetingData?.join_url);
+  console.log(minutes, -1 * taskData?.duration);
 
   return (
     <div>
@@ -56,7 +56,7 @@ const ClassesTask = ({ taskData }) => {
           width="865px"
           height="500px"
         >
-          {minutes <= 10 && minutes >= 0 && (
+          {minutes <= 10 && minutes >= -1 * taskData?.duration && (
             <>
               <div className="w-[298.63px] h-[61.49px] px-[23.42px] py-[11.71px] bg-red-600 rounded-lg justify-start items-center gap-[8.71px] inline-flex mb-[50px]">
                 <div className="w-[38.06px] h-[38.06px] relative">
@@ -101,7 +101,7 @@ const ClassesTask = ({ taskData }) => {
               </button>
             </div>
           )}
-          {minutes < -1 * taskData?.meetingData?.duration && (
+          {minutes < -1 * (taskData?.duration + 10) && (
             <div>
               <video
                 width="90%"
@@ -139,4 +139,4 @@ const ClassesTask = ({ taskData }) => {
   );
 };
 
-export default ClassesTask;
+export default ClassesTask;

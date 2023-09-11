@@ -135,7 +135,7 @@ const ManageLiveClasses = () => {
           manageClass: {
             topic: manageClass?.agenda,
             // start_time: manageClass?.courseStartingDateTime,
-            duration: manageClass?.duration,
+            duration: +manageClass?.duration,
             password: manageClass?.password,
             type: 1,
           },
@@ -407,7 +407,7 @@ const ManageLiveClasses = () => {
                   <input
                     required
                     className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                    name="Password"
+                    name="password"
                     type="text"
                     placeholder="Password"
                   />
@@ -422,7 +422,7 @@ const ManageLiveClasses = () => {
                   <input
                     required
                     className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                    name="Email"
+                    name="email"
                     type="email"
                     placeholder="Email"
                   />
@@ -484,7 +484,7 @@ const ManageLiveClasses = () => {
                     </div>
                     <input
                       className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                      name="Duration"
+                      name="duration"
                       type="text"
                       placeholder="time"
                     />
