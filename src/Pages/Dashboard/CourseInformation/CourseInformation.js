@@ -395,48 +395,48 @@ const CourseInformation = () => {
       ],
     },
   ]);
-  const containerRef = useRef(null);
-  let sortable;
+  // const containerRef = useRef(null);
+  // let sortable;
 
-  useEffect(() => {
-    const containerElement = containerRef.current;
+  // useEffect(() => {
+  //   const containerElement = containerRef.current;
 
-    if (!containerElement) {
-      return;
-    }
+  //   if (!containerElement) {
+  //     return;
+  //   }
 
-    // Initialize the main Sortable
-    sortable = new Sortable(containerElement, {
-      animation: 150,
-      group: "nested",
-      onEnd: (event) => {
-        console.log(event);
-        console.log(`Moved from index ${event.oldIndex} to ${event.newIndex}`);
-      },
-    });
+  //   // Initialize the main Sortable
+  //   sortable = new Sortable(containerElement, {
+  //     animation: 150,
+  //     group: "nested",
+  //     onEnd: (event) => {
+  //       console.log(event);
+  //       console.log(`Moved from index ${event.oldIndex} to ${event.newIndex}`);
+  //     },
+  //   });
 
-    // Initialize Sortable for all tasks
-    const allTasksContainers = document.querySelectorAll(".sub-items");
-    allTasksContainers.forEach((tasksContainer) => {
-      if (tasksContainer) {
-        new Sortable(tasksContainer, {
-          animation: 150,
-          group: "nested",
-          onEnd: (event) => {
-            console.log(event);
-            console.log(
-              `Moved from index ${event.oldIndex} to ${event.newIndex}`
-            );
-          },
-        });
-      }
-    });
+  //   // Initialize Sortable for all tasks
+  //   const allTasksContainers = document.querySelectorAll(".sub-items");
+  //   allTasksContainers.forEach((tasksContainer) => {
+  //     if (tasksContainer) {
+  //       new Sortable(tasksContainer, {
+  //         animation: 150,
+  //         group: "nested",
+  //         onEnd: (event) => {
+  //           console.log(event);
+  //           console.log(
+  //             `Moved from index ${event.oldIndex} to ${event.newIndex}`
+  //           );
+  //         },
+  //       });
+  //     }
+  //   });
 
-    return () => {
-      sortable.destroy();
-      // Also, make sure to destroy all the task Sortables here if needed.
-    };
-  }, [chapters]);
+  //   return () => {
+  //     sortable.destroy();
+  //     // Also, make sure to destroy all the task Sortables here if needed.
+  //   };
+  // }, [chapters]);
   return (
     <div>
       <Layout>
@@ -942,7 +942,7 @@ const CourseInformation = () => {
               </DialogLayout>
               {/* Edit chapter name end */}
               {/* If you want to allow tasks to be moved from one chapter to another, but you still want to ensure that each task remains under at least one chapter, */}
-              <WeekDetails
+              {/* <WeekDetails
                 chapters={chapters}
                 setChapters={setChapters}
                 Role={Role}
@@ -955,8 +955,8 @@ const CourseInformation = () => {
                 courseData={courseData}
                 navigate={navigate}
                 handleTaskDelete={handleTaskDelete}
-              />
-              {/* <div ref={containerRef}>
+              /> */}
+              <div>
                 {chapters?.map((chapter, index) => (
                   <div className=" sortable-chapter">
                     <div key={chapter?._id} className="relative">
@@ -1010,9 +1010,9 @@ const CourseInformation = () => {
                             <div className="flex items-center justify-between my-[60px] relative z-10 ">
                               <div className="flex items-center">
                                 <div className="w-[85px] flex items-center justify-center ">
-                                  {Role === "user" && (
+                                  {/* {Role === "user" && (
                                     <img src={Completed} alt="Completed" />
-                                  )}
+                                  )} */}
                                 </div>
                                 <div className="flex items-center">
                                   <img
@@ -1118,65 +1118,65 @@ const CourseInformation = () => {
                           </div>
                         ))}
                       </div>
-                      <div className="relative">
-                      <div className="flex items-center justify-between my-[60px] ">
-                        <div className="flex items-center">
-                          <div className="w-[85px] flex items-center justify-center ">
-                            {Role === "user" && (
-                              <img src={InProgress} alt="InProgress" />
-                            )}
-                          </div>
+                      {/* <div className="relative">
+                        <div className="flex items-center justify-between my-[60px] ">
                           <div className="flex items-center">
-                            <div className="relative ">
-                              <img
-                                className="ml-[60px] mr-[30px] relative z-10 "
-                                src={Task}
-                                alt="Task"
-                              />
+                            <div className="w-[85px] flex items-center justify-center ">
                               {Role === "user" && (
-                                <div className="w-[80.16px] h-[79.10px] rounded-[14.77px] border-4 border-emerald-500 absolute top-1 right-[20.5px] z-0 " />
+                                <img src={InProgress} alt="InProgress" />
                               )}
                             </div>
-                            <div className="">
-                              <h1 className="text-[#3E4DAC] text-[22px] font-[700] ">
-                                Task 2
-                              </h1>
-                              <p className="text-[#626262] text-[18px] font-[500] ">
-                                Reading
-                              </p>
+                            <div className="flex items-center">
+                              <div className="relative ">
+                                <img
+                                  className="ml-[60px] mr-[30px] relative z-10 "
+                                  src={Task}
+                                  alt="Task"
+                                />
+                                {Role === "user" && (
+                                  <div className="w-[80.16px] h-[79.10px] rounded-[14.77px] border-4 border-emerald-500 absolute top-1 right-[20.5px] z-0 " />
+                                )}
+                              </div>
+                              <div className="">
+                                <h1 className="text-[#3E4DAC] text-[22px] font-[700] ">
+                                  Task 2
+                                </h1>
+                                <p className="text-[#626262] text-[18px] font-[500] ">
+                                  Reading
+                                </p>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                        {Role === "admin" && (
-                          <button className=" mr-[25px] ">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="30"
-                              height="31"
-                              viewBox="0 0 30 31"
-                              fill="none"
-                            >
-                              <path
-                                d="M15.0166 12.6104C13.6432 12.6104 12.5195 13.734 12.5195 15.1074C12.5195 16.4808 13.6432 17.6045 15.0166 17.6045C16.39 17.6045 17.5137 16.4808 17.5137 15.1074C17.5137 13.734 16.39 12.6104 15.0166 12.6104ZM15.0166 5.11914C13.6432 5.11914 12.5195 6.24282 12.5195 7.61621C12.5195 8.9896 13.6432 10.1133 15.0166 10.1133C16.39 10.1133 17.5137 8.9896 17.5137 7.61621C17.5137 6.24282 16.39 5.11914 15.0166 5.11914ZM15.0166 20.1016C13.6432 20.1016 12.5195 21.2252 12.5195 22.5986C12.5195 23.972 13.6432 25.0957 15.0166 25.0957C16.39 25.0957 17.5137 23.972 17.5137 22.5986C17.5137 21.2252 16.39 20.1016 15.0166 20.1016Z"
-                                fill="black"
-                              />
-                            </svg>
-                          </button>
-                        )}
-                        {Role === "user" && (
-                          <div>
-                            <Link to="/week">
-                              <button
-                                className={`bg-[#3E4DAC] text-white w-[150px] h-[50px] text-[16px] font-[600] text-center rounded-[8px] z-[1] shadow-[0px_4px_0px_0px_#CA5F98] lg:shadow-[0px_8px_0px_0px_#CA5F98]`}
+                          {Role === "admin" && (
+                            <button className=" mr-[25px] ">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="30"
+                                height="31"
+                                viewBox="0 0 30 31"
+                                fill="none"
                               >
-                                Resume
-                              </button>
-                            </Link>
-                          </div>
-                        )}
-                      </div>
-                      <hr className="w-[2px] pt-[150px] bg-[#C7C7C7] absolute bottom-[-100px] left-[174px] " />
-                    </div>
+                                <path
+                                  d="M15.0166 12.6104C13.6432 12.6104 12.5195 13.734 12.5195 15.1074C12.5195 16.4808 13.6432 17.6045 15.0166 17.6045C16.39 17.6045 17.5137 16.4808 17.5137 15.1074C17.5137 13.734 16.39 12.6104 15.0166 12.6104ZM15.0166 5.11914C13.6432 5.11914 12.5195 6.24282 12.5195 7.61621C12.5195 8.9896 13.6432 10.1133 15.0166 10.1133C16.39 10.1133 17.5137 8.9896 17.5137 7.61621C17.5137 6.24282 16.39 5.11914 15.0166 5.11914ZM15.0166 20.1016C13.6432 20.1016 12.5195 21.2252 12.5195 22.5986C12.5195 23.972 13.6432 25.0957 15.0166 25.0957C16.39 25.0957 17.5137 23.972 17.5137 22.5986C17.5137 21.2252 16.39 20.1016 15.0166 20.1016Z"
+                                  fill="black"
+                                />
+                              </svg>
+                            </button>
+                          )}
+                          {Role === "user" && (
+                            <div>
+                              <Link to="/week">
+                                <button
+                                  className={`bg-[#3E4DAC] text-white w-[150px] h-[50px] text-[16px] font-[600] text-center rounded-[8px] z-[1] shadow-[0px_4px_0px_0px_#CA5F98] lg:shadow-[0px_8px_0px_0px_#CA5F98]`}
+                                >
+                                  Resume
+                                </button>
+                              </Link>
+                            </div>
+                          )}
+                        </div>
+                        <hr className="w-[2px] pt-[150px] bg-[#C7C7C7] absolute bottom-[-100px] left-[174px] " />
+                      </div> */}
                     </div>
                     {Role === "admin" && (
                       <div
@@ -1207,7 +1207,7 @@ const CourseInformation = () => {
                     {index !== chapters?.length - 1 && <hr />}
                   </div>
                 ))}
-              </div> */}
+              </div>
               {/* <div className="relative">
                 <div className="flex items-center justify-between mt-[60px]">
                   <div className="flex items-center ">
