@@ -27,59 +27,6 @@ const events = [
 ];
 
 const ExecutionMentorSchedule = () => {
-  const { user } = useContext(AuthContext);
-  const calendarID = "shihab77023@gmail.com";
-  const clientID =
-    "344492096403-ktib1l5g2dv5u4otjah2o55bdlq4h3vb.apps.googleusercontent.com";
-  const apiKey = "AIzaSyCJJvQ5Wv03kDc5ydrJYbJuW15WiIe2fvY";
-
-  const [events, setEvents] = useState([]);
-
-  const fetchEvents = () => {
-    const refreshToken =
-      "1//048mgfX-fTbLpCgYIARAAGAQSNwF-L9IrsxBnTsUMrD7ziecm_ab44jpCvKMRbSb7SHtWRNtkBFO27dc7EEoKLbgRnYRdz2FueGw";
-
-    fetch("https://oauth2.googleapis.com/token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: `grant_type=refresh_token&refresh_token=${refreshToken}&client_id=344492096403-ktib1l5g2dv5u4otjah2o55bdlq4h3vb.apps.googleusercontent.com&client_secret=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`,
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        const newAccessToken = data.access_token;
-        console.log(newAccessToken);
-
-        gapi.client
-          .request({
-            path: `https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events`,
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${newAccessToken}`,
-            },
-          })
-          .then(
-            (response) => {
-              console.log("Fetched events:", response.result.items);
-              setEvents(response.result.items);
-            },
-            (err) => {
-              console.error("Error fetching events:", err);
-            }
-          );
-      })
-      .catch((error) => {
-        console.error("Token refresh error:", error);
-      });
-  };
-
-  useEffect(() => {
-    fetchEvents();
-  }, []);
-
-  console.log(events);
-
   return (
     <div>
       <Layout>

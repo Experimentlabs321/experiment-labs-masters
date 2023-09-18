@@ -2,6 +2,14 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import Completed from "../../../assets/Dashboard/Completed.png";
 import InProgress from "../../../assets/Dashboard/InProgress.png";
 import Task from "../../../assets/Dashboard/Task.png";
+import ReadingTask from "../../../assets/Dashboard/ReadingTask.png";
+import ClassesTask from "../../../assets/Dashboard/ClassesTask.png";
+import AssignmentTask from "../../../assets/Dashboard/AssignmentTask.png";
+import QuizTask from "../../../assets/Dashboard/QuizTask.png";
+import LiveTestTask from "../../../assets/Dashboard/LiveTestTask.png";
+import VideoTask from "../../../assets/Dashboard/VideoTask.png";
+import AudioTask from "../../../assets/Dashboard/AudioTask.png";
+import FilesTask from "../../../assets/Dashboard/FilesTask.png";
 import Layout from "./Layout/Layout";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import DialogLayout from "../Shared/DialogLayout";
@@ -1015,11 +1023,62 @@ const CourseInformation = () => {
                                   )} */}
                                 </div>
                                 <div className="flex items-center">
-                                  <img
-                                    className="ml-[60px] mr-[30px] "
-                                    src={Task}
-                                    alt="Task"
-                                  />
+                                  {task?.taskType === "Reading" && (
+                                    <img
+                                      className="ml-[60px] mr-[30px] "
+                                      src={ReadingTask}
+                                      alt="Task"
+                                    />
+                                  )}
+                                  {task?.taskType === "Classes" && (
+                                    <img
+                                      className="ml-[60px] mr-[30px] "
+                                      src={ClassesTask}
+                                      alt="Task"
+                                    />
+                                  )}
+                                  {task?.taskType === "Assignment" && (
+                                    <img
+                                      className="ml-[60px] mr-[30px] "
+                                      src={AssignmentTask}
+                                      alt="Task"
+                                    />
+                                  )}
+                                  {task?.taskType === "Quiz" && (
+                                    <img
+                                      className="ml-[60px] mr-[30px] "
+                                      src={QuizTask}
+                                      alt="Task"
+                                    />
+                                  )}
+                                  {task?.taskType === "Live Test" && (
+                                    <img
+                                      className="ml-[60px] mr-[30px] "
+                                      src={LiveTestTask}
+                                      alt="Task"
+                                    />
+                                  )}
+                                  {task?.taskType === "Video" && (
+                                    <img
+                                      className="ml-[60px] mr-[30px] "
+                                      src={VideoTask}
+                                      alt="Task"
+                                    />
+                                  )}
+                                  {task?.taskType === "Audio" && (
+                                    <img
+                                      className="ml-[60px] mr-[30px] "
+                                      src={AudioTask}
+                                      alt="Task"
+                                    />
+                                  )}
+                                  {task?.taskType === "Files" && (
+                                    <img
+                                      className="ml-[60px] mr-[30px] "
+                                      src={FilesTask}
+                                      alt="Task"
+                                    />
+                                  )}
                                   <div className="">
                                     <Link
                                       onClick={() => {
