@@ -75,6 +75,15 @@ const AssignmentEvaluation2 = () => {
     const handleClose = () => {
         setOpen(false);
     };
+    ///
+    const [open1, setOpen1] = React.useState(false);
+
+    const handleClickOpen1 = () => {
+        setOpen1(true);
+    };
+    const handleClose1 = () => {
+        setOpen1(false);
+    };
 
 
     // Event handler to update the textarea value when the user types
@@ -315,6 +324,40 @@ const AssignmentEvaluation2 = () => {
         return () => clearInterval(intervalId);
     }, []);
 
+    const handleSubmitFeedback1 = async (event) => {
+        event.preventDefault();
+        const feedback = event.target.feedback.value;
+
+        const manageFeedback = {
+            feedback,
+            resultSubmitterName: user.displayName,
+            resultSubmitterPhotoURL: user.photoURL,
+            dateAndTime: curDT
+
+        };
+
+        console.log(manageFeedback)
+
+
+
+        const addFeedback = await axios.post(
+            `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${id}/addResult`,
+            manageFeedback
+        );
+
+
+        if (addFeedback?.data?.acknowledged) {
+            toast.success("Feedback added Successfully");
+            //  event.target.reset();
+        }
+        else {
+            toast.error("Feedback not added");
+            //  event.target.reset();
+        }
+
+
+
+    };
     const handleSubmitFeedback = async (event) => {
         event.preventDefault();
         const feedback = event.target.feedback.value;
@@ -398,12 +441,20 @@ const AssignmentEvaluation2 = () => {
                                     Live Test
                                 </Link>
                             </div>
-                            {feedback && (
+                            {(feedback) && (
                                 <div className="mt-10 ">
                                     <button variant="outlined" onClick={handleClickOpen} className="bg-[#FFEAE9] text-base font-bold px-3 py-1 rounded-md"> <span className="me-3 ">+</span>Add additional feedback</button>
                                 </div>
                             )
 
+
+                            }
+                            {
+                                ( (!mainAssignments?.skillParameterData.length)) && (
+                                    <div className="mt-10 ">
+                                        <button variant="outlined" onClick={handleClickOpen1} className="bg-[#FFEAE9] text-base font-bold px-3 py-1 rounded-md"> <span className="me-3 ">+</span>Add additional feedback</button>
+                                    </div>
+                                )
 
                             }
 
@@ -461,6 +512,55 @@ const AssignmentEvaluation2 = () => {
                             </BootstrapDialog>
                         </div>
 
+                        <div>
+
+                            <BootstrapDialog
+                                onClose={handleClose1}
+                                aria-labelledby="customized-dialog-title"
+                                open={open1}
+                            >
+                                <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+                                    {assignment?.taskName}
+                                </DialogTitle>
+                                <IconButton
+                                    aria-label="close"
+                                    onClick={handleClose1}
+                                    sx={{
+                                        position: 'absolute',
+                                        right: 8,
+                                        top: 8,
+                                        color: (theme) => theme.palette.grey[500],
+                                    }}
+                                >
+                                    <CloseIcon />
+                                </IconButton>
+
+
+                                <form className=" m-5" onSubmit={handleSubmitFeedback1}>
+                                    <div >
+
+                                        <textarea
+                                            className="p-5 border rounded-xl m-5"
+                                            rows="6"
+                                            cols="50"
+                                            placeholder="Write feedback"
+
+                                            name="feedback"
+
+                                        />
+                                    </div>
+
+                                    <div className="flex justify-center">
+                                        <button className="bg-[#3E4DAC] text-[#fff] p-2 text-xl font-bold rounded-lg" type="submit">Submit</button>
+                                    </div>
+
+                                </form>
+
+
+
+                            </BootstrapDialog>
+                        </div>
+
 
 
                         <div className="ms-10 bg-[#F0F7FF] rounded-[20px]  my-5 p-5">
@@ -491,7 +591,7 @@ const AssignmentEvaluation2 = () => {
                             )}
                         </div>
                         {
-                            (!assignment?.submitter.result) && (
+                            (!assignment?.submitter.result ) && (
                                 <form onSubmit={handleSubmit}>
                                     <div className=" ms-10 my-10">
 

@@ -52,7 +52,13 @@ const ReviewSubmission = (taskData) => {
       .catch((error) => console.error(error));
   }, [userInfo._id]);
 
-  const review = submittedResult?.submitter?.result?.review
+  
+    const review = submittedResult?.submitter?.result?.review
+  
+   
+   
+  
+  
  // console.log(submittedResult?.submitter?.result);
   const colorData = [
     { progressBarColor: '#F0E823' },
@@ -104,7 +110,7 @@ const ReviewSubmission = (taskData) => {
       // Initialize an empty object to store category sums
       const categorySumMap = {};
 
-      submittedResult.submitter.result?.skillParameterData.forEach((item) => {
+      submittedResult.submitter.result?.skillParameterData?.forEach((item) => {
         const categoryName = item.categoryName;
         const skillSum = item.skills.reduce((sum, skill) => sum + skill.skillValue, 0);
 
@@ -126,7 +132,7 @@ const ReviewSubmission = (taskData) => {
      // Initialize an empty object to store category sums
      const categorySumMap = {};
 
-     submittedResult.submitter.result?.earningParameterData.forEach((item) => {
+     submittedResult.submitter.result?.earningParameterData?.forEach((item) => {
        const categoryName = item.categoryName;
        const skillSum = item.earningItems.reduce((sum, skill) => sum + skill.itemValue, 0);
 
@@ -238,28 +244,59 @@ useEffect(() => {
         (submittedResult?.submitter?.result) && (
           <div className=" grid grid-cols-12 ">
           <div className=" col-span-8 px-4 py-[45px] ">
-            <div className=" shadow-lg mb-[45px] ">
-              <div className=" p-[33px] bg-[#F1F3FF] text-[16px] font-[400] rounded-t-[5px] ">
-                <p>
-                 {review?.feedback}
-                </p>
-              </div>
-              <div className=" py-[16px] px-[25px] flex items-center gap-[20px] ">
-                <img
-                  className=" w-[42px] h-[42px] rounded-full object-cover "
-                  src={review?.resultSubmitterPhotoURL}
-                  alt="Person"
-                />
-                <div>
-                  <h1 className=" text-[18px] font-[600] ">{review?.resultSubmitterName}</h1>
-                  <h2 className=" text-[#7C7C7C] text-[16] font-[400] ">
-                   {
-                    review?.dateAndTime
-                   }
-                  </h2>
+            {
+              (submittedResult?.submitter?.result?.review) && (
+                <div className=" shadow-lg mb-[45px] ">
+                <div className=" p-[33px] bg-[#F1F3FF] text-[16px] font-[400] rounded-t-[5px] ">
+                  <p>
+                   {review?.feedback}
+                  </p>
+                </div>
+                <div className=" py-[16px] px-[25px] flex items-center gap-[20px] ">
+                  <img
+                    className=" w-[42px] h-[42px] rounded-full object-cover "
+                    src={review?.resultSubmitterPhotoURL}
+                    alt="Person"
+                  />
+                  <div>
+                    <h1 className=" text-[18px] font-[600] ">{review?.resultSubmitterName}</h1>
+                    <h2 className=" text-[#7C7C7C] text-[16] font-[400] ">
+                     {
+                      review?.dateAndTime
+                     }
+                    </h2>
+                  </div>
                 </div>
               </div>
-            </div>
+              )
+            }
+             {
+              (!submittedResult?.submitter?.result?.review) && (
+                <div className=" shadow-lg mb-[45px] ">
+                <div className=" p-[33px] bg-[#F1F3FF] text-[16px] font-[400] rounded-t-[5px] ">
+                  <p>
+                   {submittedResult?.submitter?.result?.feedback}
+                  </p>
+                </div>
+                <div className=" py-[16px] px-[25px] flex items-center gap-[20px] ">
+                  <img
+                    className=" w-[42px] h-[42px] rounded-full object-cover "
+                    src={submittedResult?.submitter?.result?.resultSubmitterPhotoURL}
+                    alt="Person"
+                  />
+                  <div>
+                    <h1 className=" text-[18px] font-[600] ">{submittedResult?.submitter?.result?.resultSubmitterName}</h1>
+                    <h2 className=" text-[#7C7C7C] text-[16] font-[400] ">
+                     {
+                      submittedResult?.submitter?.result?.dateAndTime
+                     }
+                    </h2>
+                  </div>
+                </div>
+              </div>
+              )
+            }
+          
            {/* z */}
           </div>
           <div className=" col-span-4 pl-6 2xl:pl-10 ">
@@ -299,7 +336,7 @@ useEffect(() => {
                 </div>
                 <div className=" w-[230px] mx-auto ">
                   <h1 className="text-[16px] font-[600] ">Total Points Earned</h1>
-                  {submittedResult?.submitter?.result?.earningParameterData.map((item, index) => (
+                  {submittedResult?.submitter?.result?.earningParameterData?.map((item, index) => (
   
                     <div className="flex items-center justify-between text-[15] font-[500] key={index} ">
                       <div className="flex items-center gap-[12px] ">
@@ -384,7 +421,7 @@ useEffect(() => {
                     />
                   </svg>
                 </h1>
-                {submittedResult?.submitter?.result?.skillParameterData.map((item, index) => (
+                {submittedResult?.submitter?.result?.skillParameterData?.map((item, index) => (
                   <div className="w-full mt-[24px]" key={index}>
                     <h1 className="text-[15] pb-[10px] flex items-center justify-between font-[500]">
                       {item.categoryName}{' '}
