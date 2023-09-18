@@ -1,10 +1,137 @@
-import React from "react";
+import React, { useState } from "react";
 import Challenges from "../../../assets/Dashboard/Challenges.png";
 import RightArrowBlack from "../../../assets/Dashboard/RightArrowBlack.png";
 import RightArrowWhite from "../../../assets/Dashboard/RightArrowWhite.png";
 import DashboardPrimaryButton from "../Shared/DashboardPrimaryButton";
+import { gapi } from "gapi-script";
 
 const TechnicalUpdate = () => {
+  const [date, setDate] = useState(""); // State for the date
+  const [time, setTime] = useState(""); // State for the time
+
+  // Update the date state when the date input changes
+  const handleDateChange = (event) => {
+    setDate(event.target.value);
+  };
+
+  // Update the time state when the time input changes
+  const handleTimeChange = (event) => {
+    setTime(event.target.value);
+  };
+
+  // Function to combine date and time into a single variable
+  const combineDateTime = () => {
+    if (date && time) {
+      const combinedDateTime = new Date(`${date}T${time}`);
+      const endDateTime = new Date(
+        new Date(`${date}T${time}`).setMinutes(
+          new Date(`${date}T${time}`).getMinutes() + 30
+        )
+      );
+      console.log(
+        "Combined Date and Time:",
+        combinedDateTime.toISOString(),
+        endDateTime.toISOString()
+      );
+      // You can now use combinedDateTime as needed
+    } else {
+      console.error("Both date and time must be selected.");
+    }
+  };
+
+  const calendarID = process.env.REACT_APP_calendarID;
+
+  const addEvent = () => {
+    const refreshToken = process.env.REACT_APP_refreshToken;
+
+    fetch("https://oauth2.googleapis.com/token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: `grant_type=refresh_token&refresh_token=${refreshToken}&client_id=${process.env.REACT_APP_google_clientId}&client_secret=${process.env.REACT_APP_google_clientSecret}`,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (date && time) {
+          const combinedDateTime = new Date(`${date}T${time}`);
+          const endDateTime = new Date(
+            new Date(`${date}T${time}`).setMinutes(
+              new Date(`${date}T${time}`).getMinutes() + 30
+            )
+          );
+          // setStartTime(combinedDateTime.toISOString());
+          // setEndTime(endDateTime.toISOString());
+          console.log(
+            "Combined Date and Time:",
+            combinedDateTime.toISOString(),
+            endDateTime.toISOString()
+          );
+          // You can now use combinedDateTime as needed
+          var event = {
+            summary: "Testing again",
+            location: "",
+            start: {
+              dateTime: combinedDateTime.toISOString(),
+              timeZone: "UTC",
+            },
+            end: {
+              dateTime: endDateTime.toISOString(),
+              timeZone: "UTC",
+            },
+            // recurrence: ["RRULE:FREQ=DAILY;COUNT=2"],
+            attendees: [
+              { email: "naman.j@experimentlabs.in" },
+              { email: "shihab9448@gmail.com" },
+            ],
+            reminders: {
+              useDefault: true,
+            },
+            conferenceDataVersion: 1,
+            conferenceData: {
+              createRequest: {
+                conferenceSolutionKey: {
+                  type: "hangoutsMeet",
+                },
+                requestId: `meeting-${Date.now()}`,
+              },
+            },
+          };
+          console.log(event);
+          // Handle the new access token and possibly a new refresh token
+          const newAccessToken = data.access_token;
+          function initiate() {
+            gapi.client
+              .request({
+                path: `https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events?conferenceDataVersion=1`,
+                method: "POST",
+                body: event,
+                headers: {
+                  "Content-type": "application/json",
+                  Authorization: `Bearer ${newAccessToken}`,
+                },
+              })
+              .then(
+                (response) => {
+                  console.log(response);
+                  return [true, response];
+                },
+                function (err) {
+                  console.log(err);
+                  return [false, err];
+                }
+              );
+          }
+          gapi.load("client", initiate);
+        } else {
+          console.error("Both date and time must be selected.");
+        }
+      })
+      .catch((error) => {
+        // Handle errors, e.g., refresh token has expired
+        console.error("Token refresh error:", error);
+      });
+  };
   return (
     <div className="flex flex-row md:justify-around md:flex-row-reverse gap-4 overflow-x-scroll lg:overflow-x-visible h-[450px] lg:h-[630px]">
       <div className="w-[250px] lg:w-[355px] min-w-[250px] lg:min-w-min h-[370px] lg:h-[515px]">
@@ -28,7 +155,7 @@ const TechnicalUpdate = () => {
               Date
             </p>
             <div className="relative inline-flex w-full">
-              <svg
+              {/* <svg
                 className="w-[18px] h-[12px] absolute top-2 right-1 m-4"
                 width="11"
                 height="8"
@@ -40,8 +167,16 @@ const TechnicalUpdate = () => {
                   d="M1.30406 0.892914L5.16539 4.74584L9.02673 0.892914L10.2129 2.07908L5.16539 7.12657L0.117895 2.07908L1.30406 0.892914Z"
                   fill="#222222"
                 />
-              </svg>
-              <select
+              </svg> */}
+              <input
+                required
+                onChange={handleDateChange}
+                className=" text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
+                name="date"
+                id="date"
+                type="date"
+              />
+              {/* <select
                 required
                 className=" text-[18px] font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
                 name="option"
@@ -51,13 +186,21 @@ const TechnicalUpdate = () => {
                 <option value="15th June 2023">15th June 2023</option>
                 <option value="16th June 2023">16th June 2023</option>
                 <option value="17th June 2023">17th June 2023</option>
-              </select>
+              </select> */}
             </div>
             <p className="text-[#C0C0C0] text-[18px] font-[600] py-[18px]">
               Time
             </p>
             <div className="relative inline-flex w-full">
-              <svg
+              <input
+                required
+                onChange={handleTimeChange}
+                className=" text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
+                name="time"
+                id="time"
+                type="time"
+              />
+              {/* <svg
                 className="w-[18px] h-[12px] absolute top-2 right-1 m-4"
                 width="11"
                 height="8"
@@ -80,13 +223,14 @@ const TechnicalUpdate = () => {
                 <option value="11.00 - 12.00">11.00 - 12.00</option>
                 <option value="12.00 - 1.00">12.00 - 1.00</option>
                 <option value="1.00 - 2.00">1.00 - 2.00</option>
-              </select>
+              </select> */}
             </div>
           </div>
           <DashboardPrimaryButton
             bgColor="#3E4DAC"
             shadow="0px 6.32482px 0px #CA5F98"
             width="full"
+            onClick={addEvent}
           >
             <p className="flex items-center justify-center text-white">
               Set availability{" "}
