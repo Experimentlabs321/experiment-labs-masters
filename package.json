@@ -10,11 +10,14 @@
     "@emotion/styled": "^11.11.0",
     "@fontsource/inter": "^5.0.8",
     "@fontsource/roboto": "^4.5.8",
+    "@google-cloud/firestore": "^6.7.0",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.14.5",
     "@mui/styled-engine-sc": "^5.12.0",
     "@mui/x-charts": "^6.0.0-alpha.6",
     "@mui/x-date-pickers": "^6.10.2",
+    "@supabase/auth-helpers-react": "^0.4.2",
+    "@supabase/supabase-js": "^2.33.2",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -29,6 +32,7 @@
     "dayjs": "^1.11.9",
     "dotenv": "^16.1.1",
     "firebase": "^9.21.0",
+    "gapi-script": "^1.2.0",
     "google-api-client": "^2.1.0",
     "googleapis": "^126.0.1",
     "http-proxy-middleware": "^2.0.6",
@@ -39,12 +43,15 @@
     "qs": "^6.11.2",
     "react": "^18.2.0",
     "react-apexcharts": "^1.4.1",
+    "react-auth-library": "^5.0.1",
     "react-big-calendar": "^1.8.1",
     "react-calendar": "^4.6.0",
     "react-chartjs-2": "^5.2.0",
     "react-circular-progressbar": "^2.1.0",
+    "react-datetime-picker": "^5.5.1",
     "react-dom": "^18.2.0",
     "react-ga4": "^2.1.0",
+    "react-google-calendar-api": "^2.3.0",
     "react-google-charts": "^4.0.1",
     "react-helmet": "^6.1.0",
     "react-hook-form": "^7.45.1",
@@ -55,13 +62,16 @@
     "react-router-dom": "^6.11.1",
     "react-scripts": "5.0.1",
     "react-scroll": "^1.8.9",
+    "react-sortablejs": "^6.1.4",
     "react-vertical-timeline-component": "^3.6.0",
     "reactjs-popup": "^2.0.5",
     "recharts": "^2.7.3",
+    "sortablejs": "^1.15.0",
     "stream": "^0.0.2",
     "styled-components": "^5.3.11",
     "sweetalert2": "^11.7.20",
     "swiper": "^9.2.4",
+    "util": "^0.12.5",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -89,6 +99,7 @@
     ]
   },
   "devDependencies": {
+    "@types/sortablejs": "^1.15.2",
     "tailwindcss": "^3.3.2"
   }
 }

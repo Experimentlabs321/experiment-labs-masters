@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Completed from "../../../assets/Dashboard/Completed.png";
 import InProgress from "../../../assets/Dashboard/InProgress.png";
 import Task from "../../../assets/Dashboard/Task.png";
@@ -17,7 +17,9 @@ import axios from "axios";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
-
+import { ReactSortable } from "react-sortablejs";
+import Sortable from "sortablejs";
+import WeekDetails from "./WeekDetails";
 
 const CourseInformation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -265,7 +267,7 @@ const CourseInformation = () => {
           case "Assignment":
             taskTypeForAPI = "assignments";
             break;
-          case "Class":
+          case "Classes":
             taskTypeForAPI = "classes";
             break;
           case "Reading":
@@ -367,6 +369,74 @@ const CourseInformation = () => {
       })
       .catch((error) => console.error(error));
   }, [currentWeek]);
+  const [items, setItems] = useState([
+    {
+      id: 1,
+      name: "Item 1",
+      subItems: [
+        { subItemId: 1, subItemName: "Subitem 1" },
+        { subItemId: 2, subItemName: "Subitem 2" },
+      ],
+    },
+    {
+      id: 2,
+      name: "Item 2",
+      subItems: [
+        { subItemId: 1, subItemName: "Subitem 1" },
+        { subItemId: 2, subItemName: "Subitem 2" },
+      ],
+    },
+    {
+      id: 3,
+      name: "Item 3",
+      subItems: [
+        { subItemId: 1, subItemName: "Subitem 1" },
+        { subItemId: 2, subItemName: "Subitem 2" },
+      ],
+    },
+  ]);
+  // const containerRef = useRef(null);
+  // let sortable;
+
+  // useEffect(() => {
+  //   const containerElement = containerRef.current;
+
+  //   if (!containerElement) {
+  //     return;
+  //   }
+
+  //   // Initialize the main Sortable
+  //   sortable = new Sortable(containerElement, {
+  //     animation: 150,
+  //     group: "nested",
+  //     onEnd: (event) => {
+  //       console.log(event);
+  //       console.log(`Moved from index ${event.oldIndex} to ${event.newIndex}`);
+  //     },
+  //   });
+
+  //   // Initialize Sortable for all tasks
+  //   const allTasksContainers = document.querySelectorAll(".sub-items");
+  //   allTasksContainers.forEach((tasksContainer) => {
+  //     if (tasksContainer) {
+  //       new Sortable(tasksContainer, {
+  //         animation: 150,
+  //         group: "nested",
+  //         onEnd: (event) => {
+  //           console.log(event);
+  //           console.log(
+  //             `Moved from index ${event.oldIndex} to ${event.newIndex}`
+  //           );
+  //         },
+  //       });
+  //     }
+  //   });
+
+  //   return () => {
+  //     sortable.destroy();
+  //     // Also, make sure to destroy all the task Sortables here if needed.
+  //   };
+  // }, [chapters]);
   return (
     <div>
       <Layout>
@@ -564,6 +634,20 @@ const CourseInformation = () => {
               </div>
             </div>
           )}
+          {/* <div ref={containerRef}>
+            {items.map((item, index) => (
+              <div key={item.id}>
+                <div className="item">{item.name}</div>
+                <div className="sub-items">
+                  {item.subItems.map((subItem) => (
+                    <div key={subItem.subItemId} className="sub-item">
+                      {subItem.subItemName}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div> */}
           <div className="px-4">
             <div
               className={`relative inline-block ${
@@ -857,249 +941,273 @@ const CourseInformation = () => {
                 </form>
               </DialogLayout>
               {/* Edit chapter name end */}
-              {chapters?.map((chapter, index) => (
-                <>
-                  <div className="relative">
-                    <div className="flex items-center justify-between mt-[60px]">
-                      <div className="flex items-center ">
-                        <div className="w-[85px] rounded-full flex items-center justify-center h-[85px] bg-[#E1E6FF] ">
-                          <h1 className="text-[35px] font-[600] ">
-                            {index + 1}
+              {/* If you want to allow tasks to be moved from one chapter to another, but you still want to ensure that each task remains under at least one chapter, */}
+              {/* <WeekDetails
+                chapters={chapters}
+                setChapters={setChapters}
+                Role={Role}
+                currentWeek={currentWeek}
+                setAddTaskOpen={setAddTaskOpen}
+                setChapterData={setChapterData}
+                setEditChapterOpen={setEditChapterOpen}
+                clickedTask={clickedTask}
+                setClickedTask={setClickedTask}
+                courseData={courseData}
+                navigate={navigate}
+                handleTaskDelete={handleTaskDelete}
+              /> */}
+              <div>
+                {chapters?.map((chapter, index) => (
+                  <div className=" sortable-chapter">
+                    <div key={chapter?._id} className="relative">
+                      <div className="flex items-center justify-between mt-[60px]">
+                        <div className="flex items-center ">
+                          <div className="w-[85px] rounded-full flex items-center justify-center h-[85px] bg-[#E1E6FF] ">
+                            <h1 className="text-[35px] font-[600] ">
+                              {index + 1}
+                            </h1>
+                          </div>
+                          <h1 className="text-[23px] font-[700] ml-[40px] ">
+                            {chapter?.chapterName}{" "}
+                            {Role === "admin" && (
+                              <>
+                                <button
+                                  onClick={() => {
+                                    setEditChapterOpen(true);
+                                    setChapterData({
+                                      ...chapter,
+                                      index: index,
+                                    });
+                                  }}
+                                  className="ml-[24px]"
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="18"
+                                    height="20"
+                                    viewBox="0 0 18 20"
+                                    fill="none"
+                                  >
+                                    <path
+                                      d="M13.648 0.961914L17.3711 4.88525L14.5329 7.87744L10.8098 3.95411L13.648 0.961914ZM0.0117188 19.2551H3.73478L12.7781 9.72533L9.05502 5.802L0.0117188 15.3318V19.2551Z"
+                                      fill="#282828"
+                                    />
+                                  </svg>
+                                </button>
+                              </>
+                            )}
                           </h1>
                         </div>
-                        <h1 className="text-[23px] font-[700] ml-[40px] ">
-                          {chapter?.chapterName}{" "}
-                          {Role === "admin" && (
-                            <>
-                              <button
-                                onClick={() => {
-                                  setEditChapterOpen(true);
-                                  setChapterData({ ...chapter, index: index });
-                                }}
-                                className="ml-[24px]"
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="18"
-                                  height="20"
-                                  viewBox="0 0 18 20"
-                                  fill="none"
-                                >
-                                  <path
-                                    d="M13.648 0.961914L17.3711 4.88525L14.5329 7.87744L10.8098 3.95411L13.648 0.961914ZM0.0117188 19.2551H3.73478L12.7781 9.72533L9.05502 5.802L0.0117188 15.3318V19.2551Z"
-                                    fill="#282828"
-                                  />
-                                </svg>
-                              </button>
-                            </>
-                          )}
-                        </h1>
+                        {Role === "user" && (
+                          <button className="bg-[#E1E6FF] w-[150px] h-[50px] text-[16px] font-[600] text-center rounded-[8px] ">
+                            In Progress
+                          </button>
+                        )}
                       </div>
-                      {Role === "user" && (
-                        <button className="bg-[#E1E6FF] w-[150px] h-[50px] text-[16px] font-[600] text-center rounded-[8px] ">
-                          In Progress
-                        </button>
-                      )}
-                    </div>
-                    {chapter?.tasks?.map((task, taskIndex) => (
-                      <div className="relative">
-                        <div className="flex items-center justify-between my-[60px] relative z-10 ">
+                      <div className="sub-items">
+                        {chapter?.tasks?.map((task, taskIndex) => (
+                          <div key={task?.taskId} className="relative">
+                            <div className="flex items-center justify-between my-[60px] relative z-10 ">
+                              <div className="flex items-center">
+                                <div className="w-[85px] flex items-center justify-center ">
+                                  {/* {Role === "user" && (
+                                    <img src={Completed} alt="Completed" />
+                                  )} */}
+                                </div>
+                                <div className="flex items-center">
+                                  <img
+                                    className="ml-[60px] mr-[30px] "
+                                    src={Task}
+                                    alt="Task"
+                                  />
+                                  <div className="">
+                                    <Link
+                                      onClick={() => {
+                                        localStorage.setItem(
+                                          "chapter",
+                                          chapter?.chapterName
+                                        );
+                                        localStorage.setItem(
+                                          "task",
+                                          JSON.stringify(task)
+                                        );
+                                        localStorage.setItem(
+                                          "currentWeek",
+                                          JSON.stringify(currentWeek)
+                                        );
+                                      }}
+                                      to={`/week/${currentWeek?._id}`}
+                                      className="text-[#3E4DAC] text-[22px] font-[700] "
+                                    >
+                                      {task?.taskName}
+                                    </Link>
+                                    <p className="text-[#626262] text-[18px] font-[500] ">
+                                      {task?.taskType}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                              {Role === "admin" && (
+                                <div className="relative">
+                                  <button
+                                    onClick={() => {
+                                      if (clickedTask === task)
+                                        setClickedTask(null);
+                                      else setClickedTask(task);
+                                    }}
+                                    onBlur={() => setClickedTask(null)}
+                                    className=" mr-[25px] "
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="30"
+                                      height="31"
+                                      viewBox="0 0 30 31"
+                                      fill="none"
+                                    >
+                                      <path
+                                        d="M15.0166 12.6104C13.6432 12.6104 12.5195 13.734 12.5195 15.1074C12.5195 16.4808 13.6432 17.6045 15.0166 17.6045C16.39 17.6045 17.5137 16.4808 17.5137 15.1074C17.5137 13.734 16.39 12.6104 15.0166 12.6104ZM15.0166 5.11914C13.6432 5.11914 12.5195 6.24282 12.5195 7.61621C12.5195 8.9896 13.6432 10.1133 15.0166 10.1133C16.39 10.1133 17.5137 8.9896 17.5137 7.61621C17.5137 6.24282 16.39 5.11914 15.0166 5.11914ZM15.0166 20.1016C13.6432 20.1016 12.5195 21.2252 12.5195 22.5986C12.5195 23.972 13.6432 25.0957 15.0166 25.0957C16.39 25.0957 17.5137 23.972 17.5137 22.5986C17.5137 21.2252 16.39 20.1016 15.0166 20.1016Z"
+                                        fill="black"
+                                      />
+                                    </svg>
+                                  </button>
+                                  {clickedTask === task && (
+                                    <ul className="absolute right-5 top-[35px] w-max border  bg-[#141414] border-t-0 p-2 rounded-[8px] mt-1 transform translate-y-[-10px] shadow-[0px_2px_4px_0px_#00000026]">
+                                      <li
+                                        onMouseDown={() => {
+                                          localStorage.setItem(
+                                            "chapter",
+                                            chapter?.chapterName
+                                          );
+                                          localStorage.setItem(
+                                            "task",
+                                            JSON.stringify(task)
+                                          );
+                                          localStorage.setItem(
+                                            "course",
+                                            courseData?.courseFullName
+                                          );
+                                          localStorage.setItem(
+                                            "currentWeek",
+                                            JSON.stringify(currentWeek)
+                                          );
+                                          navigate(
+                                            `/editTask/${currentWeek?._id}`
+                                          );
+                                        }}
+                                        className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600] "
+                                      >
+                                        Edit Task
+                                      </li>
+                                      <li
+                                        className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600] "
+                                        onMouseDown={() =>
+                                          handleTaskDelete(task, chapter)
+                                        }
+                                      >
+                                        Delete Task
+                                      </li>
+                                    </ul>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                            {chapter?.tasks?.length - 1 !== taskIndex && (
+                              <hr className="w-[2px] pt-[150px] bg-[#C7C7C7] absolute bottom-[-100px] left-[174px] " />
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                      {/* <div className="relative">
+                        <div className="flex items-center justify-between my-[60px] ">
                           <div className="flex items-center">
                             <div className="w-[85px] flex items-center justify-center ">
                               {Role === "user" && (
-                                <img src={Completed} alt="Completed" />
+                                <img src={InProgress} alt="InProgress" />
                               )}
                             </div>
                             <div className="flex items-center">
-                              <img
-                                className="ml-[60px] mr-[30px] "
-                                src={Task}
-                                alt="Task"
-                              />
+                              <div className="relative ">
+                                <img
+                                  className="ml-[60px] mr-[30px] relative z-10 "
+                                  src={Task}
+                                  alt="Task"
+                                />
+                                {Role === "user" && (
+                                  <div className="w-[80.16px] h-[79.10px] rounded-[14.77px] border-4 border-emerald-500 absolute top-1 right-[20.5px] z-0 " />
+                                )}
+                              </div>
                               <div className="">
-                                <Link
-                                  onClick={() => {
-                                    localStorage.setItem(
-                                      "chapter",
-                                      chapter?.chapterName
-                                    );
-                                    localStorage.setItem(
-                                      "task",
-                                      JSON.stringify(task)
-                                    );
-                                    localStorage.setItem(
-                                      "currentWeek",
-                                      JSON.stringify(currentWeek)
-                                    );
-                                  }}
-                                  to={`/week/${currentWeek?._id}`}
-                                  className="text-[#3E4DAC] text-[22px] font-[700] "
-                                >
-                                  {task?.taskName}
-                                </Link>
+                                <h1 className="text-[#3E4DAC] text-[22px] font-[700] ">
+                                  Task 2
+                                </h1>
                                 <p className="text-[#626262] text-[18px] font-[500] ">
-                                  {task?.taskType}
+                                  Reading
                                 </p>
                               </div>
                             </div>
                           </div>
                           {Role === "admin" && (
-                            <div className="relative">
-                              <button
-                                onClick={() => {
-                                  if (clickedTask === task)
-                                    setClickedTask(null);
-                                  else setClickedTask(task);
-                                }}
-                                onBlur={() => setClickedTask(null)}
-                                className=" mr-[25px] "
+                            <button className=" mr-[25px] ">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="30"
+                                height="31"
+                                viewBox="0 0 30 31"
+                                fill="none"
                               >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="30"
-                                  height="31"
-                                  viewBox="0 0 30 31"
-                                  fill="none"
+                                <path
+                                  d="M15.0166 12.6104C13.6432 12.6104 12.5195 13.734 12.5195 15.1074C12.5195 16.4808 13.6432 17.6045 15.0166 17.6045C16.39 17.6045 17.5137 16.4808 17.5137 15.1074C17.5137 13.734 16.39 12.6104 15.0166 12.6104ZM15.0166 5.11914C13.6432 5.11914 12.5195 6.24282 12.5195 7.61621C12.5195 8.9896 13.6432 10.1133 15.0166 10.1133C16.39 10.1133 17.5137 8.9896 17.5137 7.61621C17.5137 6.24282 16.39 5.11914 15.0166 5.11914ZM15.0166 20.1016C13.6432 20.1016 12.5195 21.2252 12.5195 22.5986C12.5195 23.972 13.6432 25.0957 15.0166 25.0957C16.39 25.0957 17.5137 23.972 17.5137 22.5986C17.5137 21.2252 16.39 20.1016 15.0166 20.1016Z"
+                                  fill="black"
+                                />
+                              </svg>
+                            </button>
+                          )}
+                          {Role === "user" && (
+                            <div>
+                              <Link to="/week">
+                                <button
+                                  className={`bg-[#3E4DAC] text-white w-[150px] h-[50px] text-[16px] font-[600] text-center rounded-[8px] z-[1] shadow-[0px_4px_0px_0px_#CA5F98] lg:shadow-[0px_8px_0px_0px_#CA5F98]`}
                                 >
-                                  <path
-                                    d="M15.0166 12.6104C13.6432 12.6104 12.5195 13.734 12.5195 15.1074C12.5195 16.4808 13.6432 17.6045 15.0166 17.6045C16.39 17.6045 17.5137 16.4808 17.5137 15.1074C17.5137 13.734 16.39 12.6104 15.0166 12.6104ZM15.0166 5.11914C13.6432 5.11914 12.5195 6.24282 12.5195 7.61621C12.5195 8.9896 13.6432 10.1133 15.0166 10.1133C16.39 10.1133 17.5137 8.9896 17.5137 7.61621C17.5137 6.24282 16.39 5.11914 15.0166 5.11914ZM15.0166 20.1016C13.6432 20.1016 12.5195 21.2252 12.5195 22.5986C12.5195 23.972 13.6432 25.0957 15.0166 25.0957C16.39 25.0957 17.5137 23.972 17.5137 22.5986C17.5137 21.2252 16.39 20.1016 15.0166 20.1016Z"
-                                    fill="black"
-                                  />
-                                </svg>
-                              </button>
-                              {clickedTask === task && (
-                                <ul className="absolute right-5 top-[35px] w-max border  bg-[#141414] border-t-0 p-2 rounded-[8px] mt-1 transform translate-y-[-10px] shadow-[0px_2px_4px_0px_#00000026]">
-                                  <li
-                                    onMouseDown={() => {
-                                      localStorage.setItem(
-                                        "chapter",
-                                        chapter?.chapterName
-                                      );
-                                      localStorage.setItem(
-                                        "task",
-                                        JSON.stringify(task)
-                                      );
-                                      localStorage.setItem(
-                                        "course",
-                                        courseData?.courseFullName
-                                      );
-                                      localStorage.setItem(
-                                        "currentWeek",
-                                        JSON.stringify(currentWeek)
-                                      );
-                                      navigate(`/editTask/${currentWeek?._id}`);
-                                    }}
-                                    className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600] "
-                                  >
-                                    Edit Task
-                                  </li>
-                                  <li
-                                    className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600] "
-                                    onMouseDown={() =>
-                                      handleTaskDelete(task, chapter)
-                                    }
-                                  >
-                                    Delete Task
-                                  </li>
-                                </ul>
-                              )}
+                                  Resume
+                                </button>
+                              </Link>
                             </div>
                           )}
                         </div>
-                        {chapter?.tasks?.length - 1 !== taskIndex && (
-                          <hr className="w-[2px] pt-[150px] bg-[#C7C7C7] absolute bottom-[-100px] left-[174px] " />
-                        )}
-                      </div>
-                    ))}
-                    {/* <div className="relative">
-                      <div className="flex items-center justify-between my-[60px] ">
-                        <div className="flex items-center">
-                          <div className="w-[85px] flex items-center justify-center ">
-                            {Role === "user" && (
-                              <img src={InProgress} alt="InProgress" />
-                            )}
-                          </div>
-                          <div className="flex items-center">
-                            <div className="relative ">
-                              <img
-                                className="ml-[60px] mr-[30px] relative z-10 "
-                                src={Task}
-                                alt="Task"
-                              />
-                              {Role === "user" && (
-                                <div className="w-[80.16px] h-[79.10px] rounded-[14.77px] border-4 border-emerald-500 absolute top-1 right-[20.5px] z-0 " />
-                              )}
-                            </div>
-                            <div className="">
-                              <h1 className="text-[#3E4DAC] text-[22px] font-[700] ">
-                                Task 2
-                              </h1>
-                              <p className="text-[#626262] text-[18px] font-[500] ">
-                                Reading
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                        {Role === "admin" && (
-                          <button className=" mr-[25px] ">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="30"
-                              height="31"
-                              viewBox="0 0 30 31"
-                              fill="none"
-                            >
-                              <path
-                                d="M15.0166 12.6104C13.6432 12.6104 12.5195 13.734 12.5195 15.1074C12.5195 16.4808 13.6432 17.6045 15.0166 17.6045C16.39 17.6045 17.5137 16.4808 17.5137 15.1074C17.5137 13.734 16.39 12.6104 15.0166 12.6104ZM15.0166 5.11914C13.6432 5.11914 12.5195 6.24282 12.5195 7.61621C12.5195 8.9896 13.6432 10.1133 15.0166 10.1133C16.39 10.1133 17.5137 8.9896 17.5137 7.61621C17.5137 6.24282 16.39 5.11914 15.0166 5.11914ZM15.0166 20.1016C13.6432 20.1016 12.5195 21.2252 12.5195 22.5986C12.5195 23.972 13.6432 25.0957 15.0166 25.0957C16.39 25.0957 17.5137 23.972 17.5137 22.5986C17.5137 21.2252 16.39 20.1016 15.0166 20.1016Z"
-                                fill="black"
-                              />
-                            </svg>
-                          </button>
-                        )}
-                        {Role === "user" && (
-                          <div>
-                            <Link to="/week">
-                              <button
-                                className={`bg-[#3E4DAC] text-white w-[150px] h-[50px] text-[16px] font-[600] text-center rounded-[8px] z-[1] shadow-[0px_4px_0px_0px_#CA5F98] lg:shadow-[0px_8px_0px_0px_#CA5F98]`}
-                              >
-                                Resume
-                              </button>
-                            </Link>
-                          </div>
-                        )}
-                      </div>
-                      <hr className="w-[2px] pt-[150px] bg-[#C7C7C7] absolute bottom-[-100px] left-[174px] " />
-                    </div> */}
-                  </div>
-                  {Role === "admin" && (
-                    <div
-                      onClick={() => {
-                        setAddTaskOpen(true);
-                        setChapterData(chapter);
-                      }}
-                      className="py-[32px] cursor-pointer px-[40px] bg-[#FFFEE8] my-[45px] rounded-[15px] "
-                    >
-                      <div className="flex items-center">
-                        <svg
-                          className=" bg-[#FF557A] rounded-full w-[38px] h-[38px] mr-[24px] "
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="25"
-                          viewBox="0 0 24 25"
-                          fill="none"
-                        >
-                          <path
-                            d="M19 11.5H13V5.5H11V11.5H5V13.5H11V19.5H13V13.5H19V11.5Z"
-                            fill="white"
-                          />
-                        </svg>
-                        <h1 className="text-[20px] font-[600]"> Add Task</h1>
-                      </div>
+                        <hr className="w-[2px] pt-[150px] bg-[#C7C7C7] absolute bottom-[-100px] left-[174px] " />
+                      </div> */}
                     </div>
-                  )}
-                  {index !== chapters?.length - 1 && <hr />}
-                </>
-              ))}
+                    {Role === "admin" && (
+                      <div
+                        onClick={() => {
+                          setAddTaskOpen(true);
+                          setChapterData(chapter);
+                        }}
+                        className="py-[32px] cursor-pointer px-[40px] bg-[#FFFEE8] my-[45px] rounded-[15px] "
+                      >
+                        <div className="flex items-center">
+                          <svg
+                            className=" bg-[#FF557A] rounded-full w-[38px] h-[38px] mr-[24px] "
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="25"
+                            viewBox="0 0 24 25"
+                            fill="none"
+                          >
+                            <path
+                              d="M19 11.5H13V5.5H11V11.5H5V13.5H11V19.5H13V13.5H19V11.5Z"
+                              fill="white"
+                            />
+                          </svg>
+                          <h1 className="text-[20px] font-[600]"> Add Task</h1>
+                        </div>
+                      </div>
+                    )}
+                    {index !== chapters?.length - 1 && <hr />}
+                  </div>
+                ))}
+              </div>
               {/* <div className="relative">
                 <div className="flex items-center justify-between mt-[60px]">
                   <div className="flex items-center ">

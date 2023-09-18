@@ -1,24 +1,43 @@
-import { google } from "googleapis";
+import { useEffect } from "react";
+// import { useAuth } from "./AuthContext"; // Assuming you have an AuthContext for Firebase authentication.
 
-const googleAuth = new google.auth.OAuth2(
-  "86204309404-6ho5ctphbjl4srupk2t845cmmu6ntvur.apps.googleusercontent.com",
-  "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",
-  "http://localhost:3000/dashboard"
-);
+const useGoogleApiAuth = () => {
+  useEffect(() => {
+    const initClient = async () => {
+      await new Promise((resolve, reject) => {
+        window.gapi.load("client", () => {
+          console.log("loaded client");
 
-// Generate the URL for user consent
-export const getAuthUrl = () => {
-  const scopes = ["https://www.googleapis.com/auth/calendar"];
+          window.gapi.client
+            .init({
+              apiKey: "AIzaSyAbucJgm11j4203pv_Rj7W4En13IprwidQ",
+              clientId:
+                "431307232577-aqa7kc8dsamc8hofr0dacl7nljkcq3n7.apps.googleusercontent.com",
+              discoveryDocs: [
+                "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
+              ],
+              scope: "https://www.googleapis.com/auth/calendar",
+            })
+            .then(() => {
+              console.log("initialized client");
+              resolve();
+            })
+            .catch((error) => {
+              console.error("Error initializing client:", error);
+              reject(error);
+            });
+        });
+      });
 
-  return googleAuth.generateAuthUrl({
-    access_type: "offline",
-    scope: scopes,
-  });
+      // After initializing the client, you can manage the authentication as needed.
+
+      // For example, you can use the useAuth hook (from your AuthContext) to handle Firebase authentication.
+    };
+
+    initClient();
+  }, []);
+
+  return null; // This hook doesn't render anything.
 };
 
-// Exchange the authorization code for an access token
-export const getToken = async (code) => {
-  const { tokens } = await googleAuth.getToken(code);
-  googleAuth.setCredentials(tokens);
-  return tokens;
-};
+export default useGoogleApiAuth;
