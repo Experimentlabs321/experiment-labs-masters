@@ -103,15 +103,28 @@ const ClassesTask = ({ taskData }) => {
           )}
           {minutes < -1 * (taskData?.duration + 10) && (
             <div>
-              <video
+              {/* <video
                 width="90%"
                 height="80vh"
                 controls
                 controlsList="nodownload"
               >
                 <source
+                  src={taskData?.recording}
+                  // src="https://www.youtube.com/embed/0OK91ijimIU"
+                  type="video/mp4"
+                />
+              </video> */}
+              <video
+                width="100%"
+                // height="80vh"
+                // height="100%"
+                controls
+                controlsList="nodownload"
+              >
+                <source
                   // src={taskData?.additionalFiles}
-                  src="https://www.youtube.com/embed/0OK91ijimIU"
+                  src={taskData?.recording}
                   type="video/mp4"
                 />
               </video>
