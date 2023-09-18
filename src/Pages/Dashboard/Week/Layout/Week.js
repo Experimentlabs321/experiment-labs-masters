@@ -73,7 +73,7 @@ const Week = () => {
       })
       .catch((error) => console.error(error));
   }, [id]);
-
+   console.log(chapters)
   return (
     <>
       <MyHelmet>Dashboard</MyHelmet>

@@ -9,6 +9,9 @@ import { AuthContext } from "../../../contexts/AuthProvider";
 
 const MentorAssignments = () => {
   const [selectedTab, setSelectedTab] = useState("mentorAssignments");
+  const [pendingEvaluations, setPendingEvaluations] = useState();
+  const [countSubmittedResult, setCountSubmittedResult] = useState(0);
+
 
   const handleTabClick = (tab) => {
     setSelectedTab(tab);
@@ -18,7 +21,7 @@ const MentorAssignments = () => {
 
   const { userInfo } = useContext(AuthContext);
 
-  console.log(userInfo);
+  //console.log(userInfo);
 
   useEffect(() => {
     axios
@@ -27,10 +30,22 @@ const MentorAssignments = () => {
       )
       .then((response) => {
         setAssignments(response?.data);
-        console.log(response?.data[0]);
+        //console.log(response?.data[0]);
+        const ass = response?.data
+
+       // setPendingEvaluations(ass.length)
+        
+      
       })
       .catch((error) => console.error(error));
   }, [userInfo]);
+  console.log(userInfo.organizationId)
+
+  const filteredData = assignments.filter(item => (!item?.submitter.result));
+  //setPendingEvaluations(filteredData.length)
+  console.log(filteredData.length)
+  console.log(pendingEvaluations)
+ // console.log(countSubmittedResult)
 
   return (
     <div>
@@ -83,7 +98,7 @@ const MentorAssignments = () => {
                 </Link>
               </div>
               <div className="mt-10 text-[#F50000] text-lg font-medium">
-                <p>Pending evaluations - 22</p>
+                <p>Pending evaluations - {filteredData.length}</p>
               </div>
             </div>
 
@@ -104,6 +119,7 @@ const MentorAssignments = () => {
                             </p>
                         </div> */}
 
+
             <div className="flex justify-between items-center ms-10 mt-10 text-lg font-bold">
               <p>Grade method</p>
               <p>Name of the Lab</p>
@@ -121,6 +137,13 @@ const MentorAssignments = () => {
                   <p className="text-[15px] font-medium">
                     {assignment?.weekName}
                   </p>
+                  {
+                    (assignment?.submitter.result) && (
+                      <p className="text-[10px] text-[blue] ">Result submitted</p>
+                    )
+                  }
+                 
+                 
                   <p className="text-[15px] font-bold">{assignment.taskName}</p>
                   <div className="flex gap-3 mt-5">
                     <p className="text-[15px] font-semibold text-[#038400] border-b border-b-[#038400]">
@@ -136,6 +159,7 @@ const MentorAssignments = () => {
                   >
                     <img src={eye} alt="eye" />
                     <p className="text-base font-normal">View assignment</p>
+
                   </Link>
                 </div>
               ))}

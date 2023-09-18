@@ -1,9 +1,24 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useContext } from "react";
 import Person from "../../../../../assets/Dashboard/ReviewSubmissionPerson.png";
 import { Pie } from "react-chartjs-2";
 import { Chart, PieController, ArcElement, Tooltip } from "chart.js";
+import { AuthContext } from "../../../../../contexts/AuthProvider";
+import axios from "axios";
 
-const ReviewSubmission = () => {
+
+const ReviewSubmission = (taskData) => {
+  const { userInfo } = useContext(AuthContext);
+  const [submittedResult, setSubmittedResult] = useState();
+  const [CategoryResultSum, setCategoryResultSum] = useState({});
+  const [earningItemResultSum, setEarningItemResultSum] = useState({});
+ 
+
+ 
+  console.log(userInfo._id)
+
+ // console.log(taskData.taskData.skillParameterData)
+
+
   const chartRef = useRef(null);
   const [chartInstance, setChartInstance] = useState(null);
 
@@ -15,284 +30,442 @@ const ReviewSubmission = () => {
       }
     };
   }, [chartInstance]);
+ 
+  const newDataValues = Object.values(earningItemResultSum);
+  const newDataLabels = Object.keys(earningItemResultSum);
+  const totalSum = newDataValues.reduce((sum, value) => sum + value, 0);
+
+
+
+  //
+  ///
+
+  const [value, setvalue] = useState();
+   useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_BACKEND_API}/getSubmitAssignment/submitter/${userInfo._id}/${taskData.taskData._id}`)
+      .then((response) => {
+
+        setSubmittedResult(response?.data)
+
+      })
+      .catch((error) => console.error(error));
+  }, [userInfo._id]);
+
+  const review = submittedResult?.submitter?.result?.review
+ // console.log(submittedResult?.submitter?.result);
+  const colorData = [
+    { progressBarColor: '#F0E823' },
+    { progressBarColor: '#23F050' },
+    { progressBarColor: '#F023DB' },
+    { progressBarColor: '#3E4DAC' },
+    { progressBarColor: '#B380DC' },
+    { progressBarColor: '#D86D6D' },
+    { progressBarColor: '#86CF63' },
+    // Add more color objects as needed
+  ];
+  const colorDataChart = [
+    { Color: '#86CF63' },
+    { Color: '#D86D6D' },
+    { Color: '#B380DC' },
+    { Color: '#3E4DAC' },
+    { Color: '#23F050' },
+    { Color: '#F0E823' },
+
+    // Add more color objects as needed
+  ];
+  const [CategoryMainSum, setCategoryMainSum] = useState({});
 
   useEffect(() => {
-    // Register the required chart elements and controllers
-    Chart.register(PieController, ArcElement, Tooltip);
+    if (taskData) {
+      // Initialize an empty object to store category sums
+      const categorySumMap = {};
 
-    // Sample data for the chart
-    const data = {
-      labels: ["Delight", "Creativity", "Challenge Submission"],
-      datasets: [
-        {
-          data: [5, 25, 40],
-          backgroundColor: ["#86CF63", "#D86D6D", "#B380DC"],
-        },
-      ],
-    };
+      taskData?.taskData?.skillParameterData?.forEach((item) => {
+        const categoryName = item.categoryName;
+        const skillSum = item.skills.reduce((sum, skill) => sum + (+skill.skillValue), 0);
 
-    // Create a new chart instance
-    const newChartInstance = new Chart(chartRef.current, {
-      type: "pie",
-      data: data,
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        hover: false, // Turn off the hover effect
-        tooltips: {
-          callbacks: {
-            // Remove the data label when hovering
-            label: function (context) {
-              return "";
-            },
-          },
-        },
-        plugins: {
-          legend: {
-            display: false, // Hide the legend
-          },
-          tooltip: {
-            enabled: false, // Disable the default tooltip behavior
-          },
-        },
-        elements: {
-          arc: {
-            borderWidth: 0, // Remove the border
-          },
-        },
-        layout: {
-          padding: {
-            left: 50,
-            right: 50,
+        // Assign the sum to the category name
+        categorySumMap[categoryName] = skillSum;
+      });
+
+      // Set the state with the category sums
+      setCategoryMainSum(categorySumMap);
+    }
+  }, [taskData]);
+
+  //console.log(CategoryMainSum)
+
+
+ 
+
+  useEffect(() => {
+    if (submittedResult) {
+      // Initialize an empty object to store category sums
+      const categorySumMap = {};
+
+      submittedResult.submitter.result?.skillParameterData.forEach((item) => {
+        const categoryName = item.categoryName;
+        const skillSum = item.skills.reduce((sum, skill) => sum + skill.skillValue, 0);
+
+        // Assign the sum to the category name
+        categorySumMap[categoryName] = skillSum;
+      });
+
+      // Set the state with the category sums
+      setCategoryResultSum(categorySumMap);
+    }
+  }, [submittedResult]);
+
+ // console.log(CategoryResultSum)
+
+ 
+
+ useEffect(() => {
+   if (submittedResult) {
+     // Initialize an empty object to store category sums
+     const categorySumMap = {};
+
+     submittedResult.submitter.result?.earningParameterData.forEach((item) => {
+       const categoryName = item.categoryName;
+       const skillSum = item.earningItems.reduce((sum, skill) => sum + skill.itemValue, 0);
+
+       // Assign the sum to the category name
+       categorySumMap[categoryName] = skillSum;
+     });
+
+     // Set the state with the category sums
+     setEarningItemResultSum(categorySumMap);
+   }
+ }, [submittedResult]);
+
+//console.log(earningItemResultSum)
+
+const [earningMainSum, setEarningMainSum] = useState({});
+
+useEffect(() => {
+  if (taskData) {
+    // Initialize an empty object to store category sums
+    const categorySumMap = {};
+
+    taskData?.taskData?.earningParameterData?.forEach((item) => {
+      const categoryName = item.categoryName;
+      const skillSum = item.earningItems.reduce((sum, skill) => sum + (+skill.itemValue), 0);
+
+      // Assign the sum to the category name
+      categorySumMap[categoryName] = skillSum;
+    });
+
+    // Set the state with the category sums
+    setEarningMainSum(categorySumMap);
+  }
+}, [taskData]);
+
+//console.log(earningMainSum)
+
+useEffect(() => {
+  // Register the required chart elements and controllers
+  Chart.register(PieController, ArcElement, Tooltip);
+
+  // Sample data for the chart
+  const data = {
+    labels: newDataLabels,
+    datasets: [
+      {
+        data: newDataValues,
+        backgroundColor: ["#86CF63", "#D86D6D", "#B380DC","#F0E823","#23F050","#3E4DAC"],
+      },
+    ],
+  };
+  
+
+
+  // Create a new chart instance
+  const newChartInstance = new Chart(chartRef.current, {
+    type: "pie",
+    data: data,
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      hover: false, // Turn off the hover effect
+      tooltips: {
+        callbacks: {
+          // Remove the data label when hovering
+          label: function (context) {
+            return "";
           },
         },
       },
-    });
+      plugins: {
+        legend: {
+          display: false, // Hide the legend
+        },
+        tooltip: {
+          enabled: false, // Disable the default tooltip behavior
+        },
+      },
+      elements: {
+        arc: {
+          borderWidth: 0, // Remove the border
+        },
+      },
+      layout: {
+        padding: {
+          left: 50,
+          right: 50,
+        },
+      },
+    },
+  });
 
-    // Save the new chart instance in state
-    setChartInstance(newChartInstance);
+  // Save the new chart instance in state
+  setChartInstance(newChartInstance);
 
-    // Clean up the chart instance on component unmount
-    return () => {
-      newChartInstance.destroy();
-    };
-  }, []);
+  // Clean up the chart instance on component unmount
+  return () => {
+    newChartInstance.destroy();
+  };
+}, [taskData,totalSum]);
+
+  console.log(newDataValues)
+  console.log(newDataLabels)
+ console.log(submittedResult)
+ 
+
   return (
     <div>
-      <div className=" grid grid-cols-12 ">
-        <div className=" col-span-8 px-4 py-[45px] ">
-          <div className=" shadow-lg mb-[45px] ">
-            <div className=" p-[33px] bg-[#F1F3FF] text-[16px] font-[400] rounded-t-[5px] ">
-              <p>
-                Lorem ipsum dolor sit amet consectetur. Fermentum nibh amet dui
-                diam nullam. Dignissim consectetur felis rhoncus at urna quis.
-                Commodo ornare arcu sodales tempus enim nulla quisque id. Varius
-                odio nulla vestibulum diam adipiscing. Tortor ipsum mollis
-                elementum eleifend dui fringilla suspendisse integer
-                condimentum. Consectetur non in ultricies sapien aliquam.Commodo
-                ornare arcu sodales tempus enim nulla quisque id. Varius odio
-                nulla vestibulum diam adipiscing. Tortor ipsum mollis elementum
-                eleifend dui fringilla suspendisse integer condimentum.
-                Consectetur non in ultricies sapien aliquam.
-              </p>
-            </div>
-            <div className=" py-[16px] px-[25px] flex items-center gap-[20px] ">
-              <img
-                className=" w-[42px] h-[42px] rounded-full object-cover "
-                src={Person}
-                alt="Person"
-              />
-              <div>
-                <h1 className=" text-[18px] font-[600] ">Bimil Joseph</h1>
-                <h2 className=" text-[#7C7C7C] text-[16] font-[400] ">
-                  21st July 11:03 am
-                </h2>
+      {
+        (submittedResult?.submitter?.result) && (
+          <div className=" grid grid-cols-12 ">
+          <div className=" col-span-8 px-4 py-[45px] ">
+            <div className=" shadow-lg mb-[45px] ">
+              <div className=" p-[33px] bg-[#F1F3FF] text-[16px] font-[400] rounded-t-[5px] ">
+                <p>
+                 {review?.feedback}
+                </p>
+              </div>
+              <div className=" py-[16px] px-[25px] flex items-center gap-[20px] ">
+                <img
+                  className=" w-[42px] h-[42px] rounded-full object-cover "
+                  src={review?.resultSubmitterPhotoURL}
+                  alt="Person"
+                />
+                <div>
+                  <h1 className=" text-[18px] font-[600] ">{review?.resultSubmitterName}</h1>
+                  <h2 className=" text-[#7C7C7C] text-[16] font-[400] ">
+                   {
+                    review?.dateAndTime
+                   }
+                  </h2>
+                </div>
               </div>
             </div>
+           {/* z */}
           </div>
-          <div className=" shadow-lg mb-[45px] ">
-            <div className=" p-[33px] bg-[#F1F3FF] text-[16px] font-[400] rounded-t-[5px] ">
-              <p>
-                Lorem ipsum dolor sit amet consectetur. Fermentum nibh amet dui
-                diam nullam. Dignissim consectetur felis rhoncus at urna quis.
-                Commodo ornare arcu sodales tempus enim nulla quisque id. Varius
-                odio nulla vestibulum diam adipiscing. Tortor ipsum mollis
-                elementum eleifend dui fringilla suspendisse integer
-                condimentum. Consectetur non in ultricies sapien aliquam.Commodo
-                ornare arcu sodales tempus enim nulla quisque id. Varius odio
-                nulla vestibulum diam adipiscing. Tortor ipsum mollis elementum
-                eleifend dui fringilla suspendisse integer condimentum.
-                Consectetur non in ultricies sapien aliquam.
-              </p>
-            </div>
-            <div className=" py-[16px] px-[25px] flex items-center gap-[20px] ">
-              <img
-                className=" w-[42px] h-[42px] rounded-full object-cover "
-                src={Person}
-                alt="Person"
-              />
-              <div>
-                <h1 className=" text-[18px] font-[600] ">Bimil Joseph</h1>
-                <h2 className=" text-[#7C7C7C] text-[16] font-[400] ">
-                  21st July 11:03 am
-                </h2>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className=" col-span-4 pl-6 2xl:pl-10 ">
-          <div className=" py-[28px] w-full h-full shadow-lg ">
-            <div className="pb-[40px] border-b-[1px] px-[24px] ">
-              <h1 className="flex items-center gap-[16px] text-[#3E4DAC] text-[18px] font-[700] ">
-                Item Earning Parameter{" "}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
+          <div className=" col-span-4 pl-6 2xl:pl-10 ">
+            <div className=" py-[28px] w-full h-full shadow-lg ">
+              <div className="pb-[40px] border-b-[1px] px-[24px] ">
+                <h1 className="flex items-center gap-[16px] text-[#3E4DAC] text-[18px] font-[700] ">
+                  Item Earning Parameter{" "}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                  >
+                    <path
+                      d="M4.83333 7.25122L9.66667 12.0846L14.5 7.25122"
+                      stroke="#282828"
+                      stroke-width="1.61111"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </h1>
+                <div
+                  className="flex items-center justify-center mx-auto"
+                  style={{ width: "250px", height: "200px" }}
                 >
-                  <path
-                    d="M4.83333 7.25122L9.66667 12.0846L14.5 7.25122"
-                    stroke="#282828"
-                    stroke-width="1.61111"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </h1>
-              <div
-                className="flex items-center justify-center mx-auto"
-                style={{ width: "250px", height: "200px" }}
-              >
-                <canvas ref={chartRef} />
+                  <canvas ref={chartRef} />
+                </div>
+                <div className="flex items-center justify-center">
+                  <div className="bg-white w-[115px] h-[115px] mt-[-198px] text-center rounded-full flex flex-col items-center justify-center  ">
+                    <h1 className="text-[#3E4DAC] text-[27px] font-[700] ">{totalSum}</h1>
+                    <h1 className=" text-[#717171] text-[12px] font-[500] ">
+                      Points
+                    </h1>
+                  </div>
+                </div>
+                <div className=" w-[230px] mx-auto ">
+                  <h1 className="text-[16px] font-[600] ">Total Points Earned</h1>
+                  {submittedResult?.submitter?.result?.earningParameterData.map((item, index) => (
+  
+                    <div className="flex items-center justify-between text-[15] font-[500] key={index} ">
+                      <div className="flex items-center gap-[12px] ">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="7"
+                          height="7"
+                          viewBox="0 0 7 7"
+                          fill="none"
+                        >
+                          <circle cx="3.5" cy="3.5" r="3.5" fill={`${colorDataChart[index].Color}`} />
+                        </svg>
+                        <h1>{item.categoryName}</h1>
+                      </div>
+                    
+                      <h1 className="text-[#3E4DAC]">{earningItemResultSum[item.categoryName]}</h1>
+                    </div>
+                  ))}
+                  {/* <div className="flex items-center justify-between text-[15] font-[500] ">
+                    <div className="flex items-center gap-[12px] ">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="7"
+                        height="7"
+                        viewBox="0 0 7 7"
+                        fill="none"
+                      >
+                        <circle cx="3.5" cy="3.5" r="3.5" fill="#B380DC" />
+                      </svg>
+                      <h1>Challenge Submission</h1>
+                    </div>
+                    <h1 className="text-[#3E4DAC]">40</h1>
+                  </div> */}
+                  {/*   <div className="flex items-center justify-between text-[15] font-[500] ">
+                    <div className="flex items-center gap-[12px] ">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="7"
+                        height="7"
+                        viewBox="0 0 7 7"
+                        fill="none"
+                      >
+                        <circle cx="3.5" cy="3.5" r="3.5" fill="#D86D6D" />
+                      </svg>
+                      <h1>Creativity</h1>
+                    </div>
+                    <h1 className="text-[#3E4DAC]">25</h1>
+                  </div>
+                  <div className="flex items-center justify-between text-[15] font-[500] ">
+                    <div className="flex items-center gap-[12px] ">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="7"
+                        height="7"
+                        viewBox="0 0 7 7"
+                        fill="none"
+                      >
+                        <circle cx="3.5" cy="3.5" r="3.5" fill="#86CF63" />
+                      </svg>
+                      <h1>Delight</h1>
+                    </div>
+                    <h1 className="text-[#3E4DAC]">5</h1>
+                  </div> */}
+                </div>
               </div>
-              <div className="flex items-center justify-center">
-                <div className="bg-white w-[115px] h-[115px] mt-[-198px] text-center rounded-full flex flex-col items-center justify-center  ">
-                  <h1 className="text-[#3E4DAC] text-[27px] font-[700] ">70</h1>
-                  <h1 className=" text-[#717171] text-[12px] font-[500] ">
-                    Points
+              <div className=" px-[24px] pt-[30px]">
+                <h1 className="flex items-center gap-[16px] mb-[10px] text-[#3E4DAC] text-[18px] font-[700] ">
+                  Skill Based Parameter{" "}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                  >
+                    <path
+                      d="M4.83333 7.25122L9.66667 12.0846L14.5 7.25122"
+                      stroke="#282828"
+                      stroke-width="1.61111"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </h1>
+                {submittedResult?.submitter?.result?.skillParameterData.map((item, index) => (
+                  <div className="w-full mt-[24px]" key={index}>
+                    <h1 className="text-[15] pb-[10px] flex items-center justify-between font-[500]">
+                      {item.categoryName}{' '}
+                      {
+                      
+                        
+                       
+                      }
+                      <span className="text-[#3E4DAC]">{100*CategoryResultSum[item.categoryName]/CategoryMainSum[item.categoryName]} %</span>
+                    </h1>
+                    <div className={`w-full bg-[#EEEEEE] rounded-lg h-2`}>
+                      <div
+                        className={`bg-[${colorData[index].progressBarColor}] h-2 rounded-lg`}
+  
+                        style={{ width: `${100 * (CategoryResultSum[item.categoryName] / CategoryMainSum[item.categoryName])}%` }}
+  
+                      >
+  
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                {/*  <div className="w-full mt-[24px]">
+                  <h1 className=" text-[15] pb-[10px] flex items-center justify-between font-[500]">
+                    Verbal Communication{" "}
+                    <span className="text-[#3E4DAC]">25%</span>
                   </h1>
-                </div>
-              </div>
-              <div className=" w-[230px] mx-auto ">
-                <h1 className="text-[16px] font-[600] ">Total Points Earned</h1>
-                <div className="flex items-center justify-between text-[15] font-[500] ">
-                  <div className="flex items-center gap-[12px] ">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="7"
-                      height="7"
-                      viewBox="0 0 7 7"
-                      fill="none"
-                    >
-                      <circle cx="3.5" cy="3.5" r="3.5" fill="#B380DC" />
-                    </svg>
-                    <h1>Challenge Submission</h1>
-                  </div>
-                  <h1 className="text-[#3E4DAC]">40</h1>
-                </div>
-                <div className="flex items-center justify-between text-[15] font-[500] ">
-                  <div className="flex items-center gap-[12px] ">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="7"
-                      height="7"
-                      viewBox="0 0 7 7"
-                      fill="none"
-                    >
-                      <circle cx="3.5" cy="3.5" r="3.5" fill="#D86D6D" />
-                    </svg>
-                    <h1>Creativity</h1>
-                  </div>
-                  <h1 className="text-[#3E4DAC]">25</h1>
-                </div>
-                <div className="flex items-center justify-between text-[15] font-[500] ">
-                  <div className="flex items-center gap-[12px] ">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="7"
-                      height="7"
-                      viewBox="0 0 7 7"
-                      fill="none"
-                    >
-                      <circle cx="3.5" cy="3.5" r="3.5" fill="#86CF63" />
-                    </svg>
-                    <h1>Delight</h1>
-                  </div>
-                  <h1 className="text-[#3E4DAC]">5</h1>
-                </div>
-              </div>
-            </div>
-            <div className=" px-[24px] pt-[30px]">
-              <h1 className="flex items-center gap-[16px] mb-[10px] text-[#3E4DAC] text-[18px] font-[700] ">
-                Skill Based Parameter{" "}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                >
-                  <path
-                    d="M4.83333 7.25122L9.66667 12.0846L14.5 7.25122"
-                    stroke="#282828"
-                    stroke-width="1.61111"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </h1>
-              <div className="w-full mt-[24px]">
-                <h1 className=" text-[15] pb-[10px] flex items-center justify-between font-[500]">
-                  Verbal Communication{" "}
-                  <span className="text-[#3E4DAC]">25%</span>
-                </h1>
-                <div className="relative w-full">
-                  <div className="w-full bg-[#EEEEEE] rounded-lg h-2">
-                    <div
-                      className="bg-[#F0E823] h-2 rounded-lg"
-                      // className="bg-cyan-600 h-2 rounded-sm"
-                      // style={{ width: `${p}%` }}
-                      style={{ width: "25%" }}
-                    ></div>
+                  <div className="relative w-full">
+                    <div className="w-full bg-[#EEEEEE] rounded-lg h-2">
+                      <div
+                        className="bg-[#F0E823] h-2 rounded-lg"
+                        // className="bg-cyan-600 h-2 rounded-sm"
+                        // style={{ width: `${p}%` }}
+                        style={{ width: "25%" }}
+                      ></div>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="w-full mt-[24px]">
-                <h1 className=" text-[15] pb-[10px] flex items-center justify-between font-[500]">
-                  Leadership <span className="text-[#3E4DAC]">25%</span>
-                </h1>
-                <div className="relative w-full">
-                  <div className="w-full bg-[#EEEEEE] rounded-lg h-2">
-                    <div
-                      className="bg-[#23F050] h-2 rounded-lg"
-                      // className="bg-cyan-600 h-2 rounded-sm"
-                      // style={{ width: `${p}%` }}
-                      style={{ width: "25%" }}
-                    ></div>
+                <div className="w-full mt-[24px]">
+                  <h1 className=" text-[15] pb-[10px] flex items-center justify-between font-[500]">
+                    Leadership <span className="text-[#3E4DAC]">25%</span>
+                  </h1>
+                  <div className="relative w-full">
+                    <div className="w-full bg-[#EEEEEE] rounded-lg h-2">
+                      <div
+                        className="bg-[#23F050] h-2 rounded-lg"
+                        // className="bg-cyan-600 h-2 rounded-sm"
+                        // style={{ width: `${p}%` }}
+                        style={{ width: "25%" }}
+                      ></div>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="w-full mt-[24px]">
-                <h1 className=" text-[15] pb-[10px] flex items-center justify-between font-[500]">
-                  Active Listening <span className="text-[#3E4DAC]">25%</span>
-                </h1>
-                <div className="relative w-full">
-                  <div className="w-full bg-[#EEEEEE] rounded-lg h-2">
-                    <div
-                      className="bg-[#F023DB] h-2 rounded-lg"
-                      // className="bg-cyan-600 h-2 rounded-sm"
-                      // style={{ width: `${p}%` }}
-                      style={{ width: "25%" }}
-                    ></div>
+                <div className="w-full mt-[24px]">
+                  <h1 className=" text-[15] pb-[10px] flex items-center justify-between font-[500]">
+                    Active Listening <span className="text-[#3E4DAC]">25%</span>
+                  </h1>
+                  <div className="relative w-full">
+                    <div className="w-full bg-[#EEEEEE] rounded-lg h-2">
+                      <div
+                        className="bg-[#F023DB] h-2 rounded-lg"
+                        // className="bg-cyan-600 h-2 rounded-sm"
+                        // style={{ width: `${p}%` }}
+                        style={{ width: "25%" }}
+                      ></div>
+                    </div>
                   </div>
-                </div>
+                </div> */}
+  
               </div>
             </div>
           </div>
         </div>
-      </div>
+        )
+      }
+      {
+        (!submittedResult?.submitter?.result) && (
+          <p className=" text-3xl font-bold text-center mt-12">Result not submit</p>
+        )
+      }
+     
     </div>
   );
 };

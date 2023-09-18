@@ -331,7 +331,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/studentsWhoNeedMoreGuidance",
-    element: <StudentsWhoNeedMoreGuidance />,
+    element: <StudentsWhoNeedMoreGuidance/>,
   },
   {
     path: "/studentFeedback",

@@ -183,6 +183,7 @@ const WeekDetail = ({
         console.error({ error: "Invalid task type" });
     }
 
+    
     axios
       .get(
         `${process.env.REACT_APP_BACKEND_API}/tasks/${taskTypeForAPI}?id=${openTask?.taskId}`
