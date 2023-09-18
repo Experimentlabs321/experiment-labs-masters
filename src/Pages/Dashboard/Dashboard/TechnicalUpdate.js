@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Challenges from "../../../assets/Dashboard/Challenges.png";
 import RightArrowBlack from "../../../assets/Dashboard/RightArrowBlack.png";
 import RightArrowWhite from "../../../assets/Dashboard/RightArrowWhite.png";
 import DashboardPrimaryButton from "../Shared/DashboardPrimaryButton";
 import { gapi } from "gapi-script";
+import { AuthContext } from "../../../contexts/AuthProvider";
 
 const TechnicalUpdate = () => {
+  const { user, userInfo } = useContext(AuthContext);
+  console.log(userInfo);
   const [date, setDate] = useState(""); // State for the date
   const [time, setTime] = useState(""); // State for the time
 
@@ -69,7 +72,7 @@ const TechnicalUpdate = () => {
           );
           // You can now use combinedDateTime as needed
           var event = {
-            summary: "Testing again",
+            summary: `${userInfo?.name} <> Experiment Labs`,
             location: "",
             start: {
               dateTime: combinedDateTime.toISOString(),
@@ -82,7 +85,8 @@ const TechnicalUpdate = () => {
             // recurrence: ["RRULE:FREQ=DAILY;COUNT=2"],
             attendees: [
               { email: "naman.j@experimentlabs.in" },
-              { email: "shihab9448@gmail.com" },
+              { email: "gaurav@experimentlabs.in" },
+              { email: user?.email },
             ],
             reminders: {
               useDefault: true,
