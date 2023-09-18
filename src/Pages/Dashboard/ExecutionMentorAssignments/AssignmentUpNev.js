@@ -11,12 +11,12 @@ import { AuthContext } from "../../../contexts/AuthProvider";
 
 
 const AssignmentUpNev = (props) => {
-    console.log(props.page)
+    //console.log(props.page)
     const page = props.page;
 
     const {userInfo,user} = useContext(AuthContext);
 
-    console.log(user.photoURL)
+  //  console.log(user.photoURL)
    
 
     return (
