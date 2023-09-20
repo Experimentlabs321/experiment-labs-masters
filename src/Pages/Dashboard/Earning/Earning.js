@@ -4,6 +4,7 @@ import LabPoints from "./LabPoints";
 import Statement from "./Statement";
 import HelpAndSupport from "./HelpAndSupport";
 
+
 const Earning = () => {
   const [active, setActive] = useState("Lab points");
   return (

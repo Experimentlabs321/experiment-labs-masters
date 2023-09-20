@@ -275,7 +275,7 @@ const EditResult = (submittedAssignment) => {
 
 
                         <div className="">
-                            {Assignment?.skillParameterData.map((mainAssignment) => (
+                            {Assignment?.skillParameterData?.map((mainAssignment) => (
                                 <div className={` p-3 flex gap-2 items-center justify-between rounded-md h-[60px] mb-5 ${selectedCategoryName === mainAssignment.categoryName ? 'bg-[#F0F7FF]' : ' border'}`}>
                                     <div className="">
                                         <p>{mainAssignment.categoryName}</p>
@@ -294,14 +294,14 @@ const EditResult = (submittedAssignment) => {
 
                         <div className=" ms-5">
 
-                            {Assignment?.skillParameterData.map((data) => (
+                            {Assignment?.skillParameterData?.map((data) => (
                                 <>
 
                                     {
                                         data?.categoryName === selectedCategoryName && (
                                             <>
                                                 {
-                                                    data?.skills.map((skill) => (
+                                                    data?.skills?.map((skill) => (
 
                                                         <>
                                                             <div className={`flex items-center justify-between p-2 mb-5  w-[100%] h-[60px] ${selectedSkillName === skill.skillName ? 'bg-[#F0F7FF]' : ''}`}
@@ -353,21 +353,21 @@ const EditResult = (submittedAssignment) => {
 
 
                         <div className=" ms-5">
-                            {Assignment?.skillParameterData.map((data) => (
+                            {Assignment?.skillParameterData?.map((data) => (
                                 <>
 
                                     {
                                         data?.categoryName === selectedCategoryName && (
                                             <>
                                                 {
-                                                    data?.skills.map((skill) => (
+                                                    data?.skills?.map((skill) => (
 
                                                         <>
                                                             {
                                                                 skill.skillName === selectedSkillName && (
                                                                     <>
                                                                         {
-                                                                            skill?.parameters.map((parameter) => (
+                                                                            skill?.parameters?.map((parameter) => (
                                                                                 <>
                                                                                     <div className={`flex items-center justify-between p-2 mb-5  w-[100%] h-[60px] ${selectedSkillName === skill.skillName ? 'bg-[#F0F7FF]' : ''}`}
                                                                                         style={{
@@ -436,7 +436,7 @@ const EditResult = (submittedAssignment) => {
 
                         <div className="">
 
-                            {Assignment?.earningParameterData.map((mainAssignment) => (
+                            {Assignment?.earningParameterData?.map((mainAssignment) => (
                                 <div className={` p-3 flex gap-2 items-center justify-between rounded-md h-[60px] mb-5 ${selectedEarningCategoryCategoryName === mainAssignment.categoryName ? 'bg-[#F0F7FF]' : ' border'}`}>
                                     <div className="">
                                         <p>{mainAssignment.categoryName}</p>
@@ -456,14 +456,14 @@ const EditResult = (submittedAssignment) => {
 
 
 
-                            {Assignment?.earningParameterData.map((data) => (
+                            {Assignment?.earningParameterData?.map((data) => (
                                 <>
 
                                     {
                                         data?.categoryName === selectedEarningCategoryCategoryName && (
                                             <>
                                                 {
-                                                    data?.earningItems.map((earningItem) => (
+                                                    data?.earningItems?.map((earningItem) => (
 
                                                         <>
                                                             <div className={`flex items-center justify-between p-2 mb-5  w-[100%] h-[60px] ${selectedEarningCategoryCategoryName === data?.categoryName ? 'bg-[#F0F7FF]' : ' border'}`}

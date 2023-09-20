@@ -62,7 +62,7 @@ const AssignmentEvaluation2 = () => {
     const [error3, setError3] = useState(false);
     const [feedback, setFeedback] = useState(false);
 
-
+    //console.log(mainAssignments.skillParameterData)
     const handleTabClick = (tab) => {
         setSelectedTab(tab);
     };
@@ -125,31 +125,35 @@ const AssignmentEvaluation2 = () => {
         axios
             .get(`${process.env.REACT_APP_BACKEND_API}/tasks/assignments/?id=${assignment?.taskId}`)
             .then((response) => {
+                if((mainAssignments?.skillParameterData) || (mainAssignments?.earningParameterData))
+                {
+                    const newAssignmentUp = (response?.data)
 
-                const newAssignmentUp = (response?.data)
-
-                newAssignmentUp?.skillParameterData.map((a) => (
-                    a?.skills.map((skill) => (
-
-                        skill.skillValue = 0
-                    ))))
-
-                newAssignmentUp?.skillParameterData.map((a) => (
-                    a?.skills.map((skill) => (
-                        skill?.parameters.map((par) => (
-                            par.parameterValue = 0
+                    newAssignmentUp?.skillParameterData?.map((a) => (
+                        a?.skills?.map((skill) => (
+    
+                            skill.skillValue = 0
+                        ))))
+    
+                    newAssignmentUp?.skillParameterData?.map((a) => (
+                        a?.skills?.map((skill) => (
+                            skill?.parameters?.map((par) => (
+                                par.parameterValue = 0
+                            ))
                         ))
                     ))
-                ))
-                newAssignmentUp?.earningParameterData.map((a) => (
-                    a?.earningItems.map((skill) => (
-                        skill.itemValue = 0
+                    newAssignmentUp?.earningParameterData?.map((a) => (
+                        a?.earningItems?.map((skill) => (
+                            skill.itemValue = 0
+                        ))
                     ))
-                ))
+    
+    
+                    // setMainAssignments(ass)
+                    setNewValueAssignment(newAssignmentUp)
 
+                }
 
-                // setMainAssignments(ass)
-                setNewValueAssignment(newAssignmentUp)
 
 
 
@@ -181,20 +185,25 @@ const AssignmentEvaluation2 = () => {
         setSelectedSkillName(skillName);
         console.log(skillName)
         console.log(changeCategoryName)
-        if (changeCategoryName === skillName) {
-            console.log("aaaaaaaaaa")
-            const categoryName = newValueAssignment?.skillParameterData.find((item) => item?.categoryName === selectedCategoryName)
-            const skillsName = categoryName.skills.find((item) => item?.skillName === skillName)
-            console.log(skillsName)
-            //  const parameters = skillsName.parameters.map((item) => item?.parameterName === parameter?.parameterName)
-            skillsName?.parameters.map((par) => (
-                par.parameterValue = (categoryValue / (skillsName?.parameters.length))
+        if((mainAssignments?.skillParameterData) || (mainAssignments?.earningParameterData))
+        {
+            if (changeCategoryName === skillName) {
+            ///    console.log("aaaaaaaaaa")
+                const categoryName = newValueAssignment?.skillParameterData.find((item) => item?.categoryName === selectedCategoryName)
+                const skillsName = categoryName.skills.find((item) => item?.skillName === skillName)
+                console.log(skillsName)
+                //  const parameters = skillsName.parameters.map((item) => item?.parameterName === parameter?.parameterName)
+                skillsName?.parameters?.map((par) => (
+                    par.parameterValue = (categoryValue / (skillsName?.parameters.length))
+    
+                ))
+                //  parameters.parameterValue = +(e.target?.value);
+    
+                setNewAssignment(newValueAssignment);
+            }
 
-            ))
-            //  parameters.parameterValue = +(e.target?.value);
-
-            setNewAssignment(newValueAssignment);
         }
+       
 
 
 
@@ -591,6 +600,9 @@ const AssignmentEvaluation2 = () => {
                             )}
                         </div>
                         {
+                            ((mainAssignments?.skillParameterData) || (mainAssignments?.earningParameterData)) && (
+                               <>
+                                 {
                             (!assignment?.submitter.result ) && (
                                 <form onSubmit={handleSubmit}>
                                     <div className=" ms-10 my-10">
@@ -603,7 +615,7 @@ const AssignmentEvaluation2 = () => {
 
 
                                                     <div className="">
-                                                        {mainAssignments?.skillParameterData.map((mainAssignment) => (
+                                                        {mainAssignments?.skillParameterData?.map((mainAssignment) => (
                                                             <div className={` p-3 flex gap-2 items-center justify-between rounded-md h-[60px] mb-5 ${selectedCategoryName === mainAssignment.categoryName ? 'bg-[#F0F7FF]' : ' border'}`}>
                                                                 <div className="">
                                                                     <p>{mainAssignment.categoryName}</p>
@@ -640,14 +652,14 @@ const AssignmentEvaluation2 = () => {
 
                                             <div className=" ms-5">
 
-                                                {mainAssignments?.skillParameterData.map((data) => (
+                                                {mainAssignments?.skillParameterData?.map((data) => (
                                                     <>
 
                                                         {
                                                             data?.categoryName === selectedCategoryName && (
                                                                 <>
                                                                     {
-                                                                        data?.skills.map((skill) => (
+                                                                        data?.skills?.map((skill) => (
 
                                                                             <>
                                                                                 <div className={`flex items-center justify-between p-2 mb-5  w-[100%] h-[60px] ${selectedSkillName === skill.skillName ? 'bg-[#F0F7FF]' : ''}`}
@@ -703,21 +715,21 @@ const AssignmentEvaluation2 = () => {
 
 
                                             <div className=" ms-5">
-                                                {mainAssignments?.skillParameterData.map((data) => (
+                                                {mainAssignments?.skillParameterData?.map((data) => (
                                                     <>
 
                                                         {
                                                             data?.categoryName === selectedCategoryName && (
                                                                 <>
                                                                     {
-                                                                        data?.skills.map((skill) => (
+                                                                        data?.skills?.map((skill) => (
 
                                                                             <>
                                                                                 {
                                                                                     skill.skillName === selectedSkillName && (
                                                                                         <>
                                                                                             {
-                                                                                                skill?.parameters.map((parameter) => (
+                                                                                                skill?.parameters?.map((parameter) => (
                                                                                                     <>
                                                                                                         <div className={`flex items-center justify-between p-2 mb-5  w-[100%] h-[60px] ${selectedSkillName === skill.skillName ? 'bg-[#F0F7FF]' : ''}`}
                                                                                                             style={{
@@ -807,7 +819,7 @@ const AssignmentEvaluation2 = () => {
 
                                                     <div className="">
 
-                                                        {mainAssignments?.earningParameterData.map((mainAssignment) => (
+                                                        {mainAssignments?.earningParameterData?.map((mainAssignment) => (
                                                             <div className={` p-3 flex gap-2 items-center justify-between rounded-md h-[60px] mb-5 ${selectedEarningCategoryCategoryName === mainAssignment.categoryName ? 'bg-[#F0F7FF]' : ' border'}`}>
                                                                 <div className="">
                                                                     <p>{mainAssignment.categoryName}</p>
@@ -846,14 +858,14 @@ const AssignmentEvaluation2 = () => {
 
 
 
-                                                {mainAssignments?.earningParameterData.map((data) => (
+                                                {mainAssignments?.earningParameterData?.map((data) => (
                                                     <>
 
                                                         {
                                                             data?.categoryName === selectedEarningCategoryCategoryName && (
                                                                 <>
                                                                     {
-                                                                        data?.earningItems.map((earningItem) => (
+                                                                        data?.earningItems?.map((earningItem) => (
 
                                                                             <>
                                                                                 <div className={`flex items-center justify-between p-2 mb-5  w-[100%] h-[60px] ${selectedEarningCategoryCategoryName === data?.categoryName ? 'bg-[#F0F7FF]' : ' border'}`}
@@ -938,6 +950,13 @@ const AssignmentEvaluation2 = () => {
                                 <EditResult submittedAssignment={assignment} />
                             )
                         }
+                               
+                               
+                               </> 
+                            ) 
+
+                        }
+                      
 
 
 
