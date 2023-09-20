@@ -9,77 +9,150 @@ import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import { gapi } from "gapi-script";
+import axios from "axios";
 
 const localizer = momentLocalizer(moment);
 
-const events = [
+// const demoEvents = [
+//   {
+//     title: "Give Quizzes to all the respective batches",
+//     start: new Date(),
+//     end: new Date(),
+//   },
+//   {
+//     title: "Work",
+//     start: new Date(),
+//     end: new Date(),
+//   },
+//   {
+//     title: "Give Quizzes to all the respective batches",
+//     start: new Date(),
+//     end: new Date(),
+//   },
+//   {
+//     title: "Work",
+//     start: new Date(),
+//     end: new Date(),
+//   },
+//   // Add more events here
+// ];
+const demoEvents = [
   {
-    title: "Give Quizzes to all the respective batches",
-    start: new Date(),
-    end: new Date(),
+    _id: "6508f7b3b1ca4dc43b42cc40",
+    title: "execution mentor <> Experiment Labs",
+    start: new Date("2023-09-20T01:25:00.000Z"),
+    end: new Date("2023-09-20T01:55:00.000Z"),
+    attendees: [
+      {
+        email: "naman.j@experimentlabs.in",
+      },
+      {
+        email: "gaurav@experimentlabs.in",
+      },
+      {
+        email: "executionmentor@gmail.com",
+      },
+    ],
   },
   {
-    title: "Work",
-    start: new Date(),
-    end: new Date(),
+    _id: "6508f7c2b1ca4dc43b42cc41",
+    title: "execution mentor <> Experiment Labs",
+    start: new Date("2023-09-21T01:25:00.000Z"),
+    end: new Date("2023-09-21T01:55:00.000Z"),
+    attendees: [
+      {
+        email: "naman.j@experimentlabs.in",
+      },
+      {
+        email: "gaurav@experimentlabs.in",
+      },
+      {
+        email: "executionmentor@gmail.com",
+      },
+    ],
   },
-  // Add more events here
+  {
+    _id: "6508fb3621f4063eb070b64f",
+    title: "execution mentor <> Experiment Labs",
+    start: new Date("2023-09-19T01:25:00.000Z"),
+    end: new Date("2023-09-19T01:55:00.000Z"),
+    attendees: [
+      {
+        email: "naman.j@experimentlabs.in",
+      },
+      {
+        email: "gaurav@experimentlabs.in",
+      },
+      {
+        email: "executionmentor@gmail.com",
+      },
+    ],
+  },
+  {
+    _id: "6508fb4321f4063eb070b650",
+    title: "execution mentor <> Experiment Labs",
+    start: new Date("2023-09-19T03:30:00.000Z"),
+    end: new Date("2023-09-19T04:00:00.000Z"),
+    attendees: [
+      {
+        email: "naman.j@experimentlabs.in",
+      },
+      {
+        email: "gaurav@experimentlabs.in",
+      },
+      {
+        email: "executionmentor@gmail.com",
+      },
+    ],
+  },
+  {
+    _id: "6508fb4d21f4063eb070b651",
+    title: "execution mentor <> Experiment Labs",
+    start: new Date("2023-09-19T06:30:00.000Z"),
+    end: new Date("2023-09-19T07:00:00.000Z"),
+    attendees: [
+      {
+        email: "naman.j@experimentlabs.in",
+      },
+      {
+        email: "gaurav@experimentlabs.in",
+      },
+      {
+        email: "executionmentor@gmail.com",
+      },
+    ],
+  },
 ];
 
 const ExecutionMentorSchedule = () => {
-  const { user } = useContext(AuthContext);
-  const calendarID = "shihab77023@gmail.com";
-  const clientID =
-    "344492096403-ktib1l5g2dv5u4otjah2o55bdlq4h3vb.apps.googleusercontent.com";
-  const apiKey = "AIzaSyCJJvQ5Wv03kDc5ydrJYbJuW15WiIe2fvY";
-
+  const { user, userInfo } = useContext(AuthContext);
   const [events, setEvents] = useState([]);
-
-  const fetchEvents = () => {
-    const refreshToken =
-      "1//048mgfX-fTbLpCgYIARAAGAQSNwF-L9IrsxBnTsUMrD7ziecm_ab44jpCvKMRbSb7SHtWRNtkBFO27dc7EEoKLbgRnYRdz2FueGw";
-
-    fetch("https://oauth2.googleapis.com/token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: `grant_type=refresh_token&refresh_token=${refreshToken}&client_id=344492096403-ktib1l5g2dv5u4otjah2o55bdlq4h3vb.apps.googleusercontent.com&client_secret=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`,
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        const newAccessToken = data.access_token;
-        console.log(newAccessToken);
-
-        gapi.client
-          .request({
-            path: `https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events`,
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${newAccessToken}`,
-            },
-          })
-          .then(
-            (response) => {
-              console.log("Fetched events:", response.result.items);
-              setEvents(response.result.items);
-            },
-            (err) => {
-              console.error("Error fetching events:", err);
-            }
-          );
-      })
-      .catch((error) => {
-        console.error("Token refresh error:", error);
-      });
-  };
-
   useEffect(() => {
-    fetchEvents();
-  }, []);
-
+    axios
+      .get(`${process.env.REACT_APP_BACKEND_API}/events`)
+      .then((response) => {
+        console.log(response?.data);
+        let filteredEvent = [];
+        response?.data?.forEach((element) => {
+          if (
+            element?.organization?.organizationId === userInfo?.organizationId
+          ) {
+            let event = {
+              _id: element?._id,
+              title: element?.title,
+              start: new Date(element?.start),
+              end: new Date(element?.end),
+              organization: element?.organization,
+              attendees: element?.attendees,
+              weekData: element?.weekData,
+            };
+            filteredEvent = [...filteredEvent, event];
+          }
+        });
+        setEvents(filteredEvent);
+      });
+  }, [userInfo?.email]);
   console.log(events);
-
   return (
     <div>
       <Layout>
@@ -97,9 +170,10 @@ const ExecutionMentorSchedule = () => {
               <Calendar
                 localizer={localizer}
                 events={events}
+                step={60}
                 startAccessor="start"
                 endAccessor="end"
-                style={{ height: 500 }}
+                style={{ height: 750, maxWidth: 700 }}
               />
             </div>
           </div>
