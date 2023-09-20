@@ -1,16 +1,19 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Challenges from "../../../assets/Dashboard/Challenges.png";
 import RightArrowBlack from "../../../assets/Dashboard/RightArrowBlack.png";
 import RightArrowWhite from "../../../assets/Dashboard/RightArrowWhite.png";
 import DashboardPrimaryButton from "../Shared/DashboardPrimaryButton";
 import { gapi } from "gapi-script";
 import { AuthContext } from "../../../contexts/AuthProvider";
+import axios from "axios";
+import Swal from "sweetalert2";
 
-const TechnicalUpdate = () => {
+const TechnicalUpdate = ({ weeks }) => {
   const { user, userInfo } = useContext(AuthContext);
   console.log(userInfo);
   const [date, setDate] = useState(""); // State for the date
   const [time, setTime] = useState(""); // State for the time
+  const [currentWeek, setCurrentWeek] = useState(null);
 
   // Update the date state when the date input changes
   const handleDateChange = (event) => {
@@ -22,8 +25,22 @@ const TechnicalUpdate = () => {
     setTime(event.target.value);
   };
 
+  useEffect(() => {
+    setCurrentWeek(null);
+    weeks.forEach((singleData) => {
+      const weekStartDate = new Date(singleData?.weekStartDate);
+      const weekEndDate = new Date(singleData?.weekEndDate);
+      const currentDateTime = new Date();
+      if (weekStartDate <= currentDateTime && weekEndDate >= currentDateTime) {
+        setCurrentWeek(singleData);
+        return;
+      }
+    });
+  }, [weeks]);
+  console.log(currentWeek);
+
   // Function to combine date and time into a single variable
-  const combineDateTime = () => {
+  const combineDateTime = async () => {
     if (date && time) {
       const combinedDateTime = new Date(`${date}T${time}`);
       const endDateTime = new Date(
@@ -36,40 +53,96 @@ const TechnicalUpdate = () => {
         combinedDateTime.toISOString(),
         endDateTime.toISOString()
       );
+      const currentDateTime = new Date();
+      const timeDifferenceInMilliseconds = combinedDateTime - currentDateTime;
+      if (timeDifferenceInMilliseconds < 0) {
+        Swal.fire({
+          icon: "error",
+          title: "Invalid Date and time!",
+          text: "Please enter valid date & time for event!",
+        });
+        return;
+      }
+      var event = {
+        title: `${userInfo?.name} <> Experiment Labs <> Discussion`,
+        start: new Date(combinedDateTime),
+        end: new Date(endDateTime),
+        organization: {
+          organizationId: userInfo?.organizationId,
+          organizationName: userInfo?.organizationName,
+        },
+        attendees: [
+          { email: "naman.j@experimentlabs.in" },
+          { email: "gaurav@experimentlabs.in" },
+          { email: user?.email },
+        ],
+        weekData: currentWeek,
+      };
       // You can now use combinedDateTime as needed
+      console.log(event);
+
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_API}/events`,
+        { ...event }
+      );
+      const sendMail = await axios.post(
+        `${process.env.REACT_APP_BACKEND_API}/sendMail`,
+        {
+          from: `${user?.email}`,
+          to: `${user?.email},shihab77023@gmail.com`,
+          subject: `Event request`,
+          message: `A event is going to held for doubt clearing at ${event?.start.toLocaleString()} to ${event?.end.toLocaleTimeString()}. Meeting link event?.hangoutLink`,
+        }
+      );
+      if (sendMail?.data?.Success && response?.data?.acknowledged) {
+        Swal.fire({
+          icon: "success",
+          title: "Request Sent!",
+          text: "Your slot request has been sent!",
+        });
+      }
+      console.log(sendMail, response);
     } else {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Date and time!",
+        text: "Both date and time must be selected.",
+      });
       console.error("Both date and time must be selected.");
     }
   };
 
   const calendarID = process.env.REACT_APP_calendarID;
 
-  const addEvent = () => {
-    const refreshToken = process.env.REACT_APP_refreshToken;
+  const addEvent = async () => {
+    if (date && time) {
+      const combinedDateTime = new Date(`${date}T${time}`);
+      const endDateTime = new Date(
+        new Date(`${date}T${time}`).setMinutes(
+          new Date(`${date}T${time}`).getMinutes() + 30
+        )
+      );
+      const currentDateTime = new Date();
+      const timeDifferenceInMilliseconds = combinedDateTime - currentDateTime;
+      if (timeDifferenceInMilliseconds < 0) {
+        Swal.fire({
+          icon: "error",
+          title: "Invalid Date and time!",
+          text: "Please enter valid date & time for event!",
+        });
+        return;
+      }
+      const refreshToken = process.env.REACT_APP_refreshToken;
 
-    fetch("https://oauth2.googleapis.com/token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: `grant_type=refresh_token&refresh_token=${refreshToken}&client_id=${process.env.REACT_APP_google_clientId}&client_secret=${process.env.REACT_APP_google_clientSecret}`,
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (date && time) {
-          const combinedDateTime = new Date(`${date}T${time}`);
-          const endDateTime = new Date(
-            new Date(`${date}T${time}`).setMinutes(
-              new Date(`${date}T${time}`).getMinutes() + 30
-            )
-          );
-          // setStartTime(combinedDateTime.toISOString());
-          // setEndTime(endDateTime.toISOString());
-          console.log(
-            "Combined Date and Time:",
-            combinedDateTime.toISOString(),
-            endDateTime.toISOString()
-          );
+      fetch("https://oauth2.googleapis.com/token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: `grant_type=refresh_token&refresh_token=${refreshToken}&client_id=${process.env.REACT_APP_google_clientId}&client_secret=${process.env.REACT_APP_google_clientSecret}`,
+      })
+        .then((response) => response.json())
+        .then((data) => {
           // You can now use combinedDateTime as needed
           var event = {
             summary: `${userInfo?.name} <> Experiment Labs`,
@@ -105,6 +178,30 @@ const TechnicalUpdate = () => {
           // Handle the new access token and possibly a new refresh token
           const newAccessToken = data.access_token;
           function initiate() {
+            const sendData = async (event) => {
+              const response = await axios.post(
+                `${process.env.REACT_APP_BACKEND_API}/events`,
+                event
+              );
+              const sendMail = await axios.post(
+                `${process.env.REACT_APP_BACKEND_API}/sendMail`,
+                {
+                  from: `${user?.email}`,
+                  to: `naman.j@experimentlabs.in,gaurav@experimentlabs.in,${user?.email},shihab77023@gmail.com`,
+                  subject: `Event request`,
+                  message: `A event is going to held for doubt clearing at ${event?.start.toLocaleString()} to ${event?.end.toLocaleTimeString()}. Meeting link ${
+                    event?.hangoutLink
+                  }`,
+                }
+              );
+              if (sendMail?.data?.Success && response?.data?.acknowledged) {
+                Swal.fire({
+                  icon: "success",
+                  title: "Request Sent!",
+                  text: "Your slot request has been sent!",
+                });
+              }
+            };
             gapi.client
               .request({
                 path: `https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events?conferenceDataVersion=1`,
@@ -117,6 +214,27 @@ const TechnicalUpdate = () => {
               })
               .then(
                 (response) => {
+                  console.log(response?.result?.hangoutLink);
+                  var event = {
+                    title: `${userInfo?.name} <> Experiment Labs <> Doubt clearing <> ${response?.result?.hangoutLink}`,
+                    start: new Date(combinedDateTime),
+                    end: new Date(endDateTime),
+                    organization: {
+                      organizationId: userInfo?.organizationId,
+                      organizationName: userInfo?.organizationName,
+                    },
+                    attendees: [
+                      { email: "naman.j@experimentlabs.in" },
+                      { email: "gaurav@experimentlabs.in" },
+                      { email: user?.email },
+                    ],
+                    weekData: currentWeek,
+                    hangoutLink: response?.result?.hangoutLink,
+                  };
+                  // You can now use combinedDateTime as needed
+                  console.log(event);
+
+                  sendData(event);
                   console.log(response);
                   return [true, response];
                 },
@@ -127,14 +245,19 @@ const TechnicalUpdate = () => {
               );
           }
           gapi.load("client", initiate);
-        } else {
-          console.error("Both date and time must be selected.");
-        }
-      })
-      .catch((error) => {
-        // Handle errors, e.g., refresh token has expired
-        console.error("Token refresh error:", error);
+        })
+        .catch((error) => {
+          // Handle errors, e.g., refresh token has expired
+          console.error("Token refresh error:", error);
+        });
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Date and time!",
+        text: "Please enter valid date & time for event!",
       });
+      console.error("Both date and time must be selected.");
+    }
   };
   return (
     <div className="flex flex-row md:justify-around md:flex-row-reverse gap-4 overflow-x-scroll lg:overflow-x-visible h-[450px] lg:h-[630px]">
@@ -150,8 +273,11 @@ const TechnicalUpdate = () => {
         >
           <div>
             <h1 className="text-white text-[18px] font-[700]">
-              <span className="pr-6">{"<"}</span> Week 4{" "}
-              <span className=" pl-6">{">"}</span>
+              <span className="pr-4">{"<"}</span>
+              {currentWeek
+                ? currentWeek?.weekName.slice(0, 24)
+                : "Post Programme Support"}
+              <span className=" pl-4 ">{">"}</span>
             </h1>
           </div>
           <div className="w-full relative">
@@ -237,7 +363,7 @@ const TechnicalUpdate = () => {
             onClick={addEvent}
           >
             <p className="flex items-center justify-center text-white">
-              Set availability{" "}
+              Request Event{" "}
               <img
                 className="pl-1 w-[21px] lg:w-[32px]"
                 src={RightArrowWhite}
