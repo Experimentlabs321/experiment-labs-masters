@@ -98,54 +98,54 @@ const LabPoints = () => {
 
   const [itemName, setItemName] = useState({});
   const [newValue, setNewValue] = useState();
- /*  useEffect(() => {
-    if (allResults) {
-      // Initialize an empty object to store category sums
-      const earningItemsName = {};
-
-      allResults?.map((item) => {
-      
-
-        (item.submitter.result.earningParameterData?.map((data,i) =>
-          data?.earningItems.forEach((a) => {
-            console.log(a.earningItemName)
-
-            const earningName = a.earningItemName;
-
-
-            earningItemsName[earningName] = a.itemValue;
-            console.log(earningItemsName[earningName])
-           
-
-
-        
-
-          })
-
-        ))
-
-        // console.log(m.earningItemName)
-
-       setItemName(earningItemsName)
-
-      });
-
-    }
-  }, [allResults]);
-
-  console.log(itemName) */
+  /*  useEffect(() => {
+     if (allResults) {
+       // Initialize an empty object to store category sums
+       const earningItemsName = {};
+ 
+       allResults?.map((item) => {
+       
+ 
+         (item.submitter.result.earningParameterData?.map((data,i) =>
+           data?.earningItems.forEach((a) => {
+             console.log(a.earningItemName)
+ 
+             const earningName = a.earningItemName;
+ 
+ 
+             earningItemsName[earningName] = a.itemValue;
+             console.log(earningItemsName[earningName])
+            
+ 
+ 
+         
+ 
+           })
+ 
+         ))
+ 
+         // console.log(m.earningItemName)
+ 
+        setItemName(earningItemsName)
+ 
+       });
+ 
+     }
+   }, [allResults]);
+ 
+   console.log(itemName) */
 
 
   useEffect(() => {
     if (allResults) {
       // Initialize an empty object to store category sums
       const earningItemsName = {};
-  
+
       allResults.forEach((item) => {
         item.submitter.result.earningParameterData?.forEach((data) => {
           data?.earningItems.forEach((a) => {
             const earningName = a.earningItemName;
-  
+
             // If earningName already exists in earningItemsName, add itemValue to the existing value, otherwise, set it to itemValue
             if (earningItemsName.hasOwnProperty(earningName)) {
               earningItemsName[earningName] += a.itemValue;
@@ -155,12 +155,12 @@ const LabPoints = () => {
           });
         });
       });
-  
+
       // Store the result in the state variable itemName
       setItemName(earningItemsName);
     }
   }, [allResults]);
-  
+
   console.log(itemName);
   const [itemCategorySum, setItemCategorySum] = useState({});
 
@@ -173,7 +173,7 @@ const LabPoints = () => {
         //  console.log(item.earningItems)
         item.submitter.result.earningParameterData?.forEach(m => {
           const earningName = m.categoryName;
-          const earningSum = m.earningItems.reduce((sum, skill) => sum + skill.itemValue, 0);
+          const earningSum = m.earningItems.reduce((sum, skill) => sum + itemName[skill.earningItemName], 0);
           CategoryName[earningName] = earningSum;
         }
 
@@ -185,9 +185,13 @@ const LabPoints = () => {
       });
 
     }
-  }, [allResults]);
+  }, [allResults, itemName]);
   console.log(itemCategorySum)
-  
+
+  const itemValue = Object.values(itemCategorySum);
+  //const newEarningItemDataLabels = Object.keys(earningItemResult);
+  const totalSum = itemValue.reduce((sum, value) => sum + value, 0);
+  console.log(totalSum)
 
   const previous = () => {
     if (currentIndex > 1) {
@@ -205,7 +209,7 @@ const LabPoints = () => {
   return (
     <div>
       <div className="flex flex-col lg:flex-row gap-10 lg:gap-4 justify-between lg:h-[700px] mt-[56px] mb-5 lg:mb-0">
-        <div className="w-[340px] lg:w-[490px] min-w-[250px] lg:min-w-min lg:h-[575px] relative">
+        <div className="w-[340px] lg:w-[490px]  min-w-[250px] lg:min-w-min lg:h-[575px] h-[500px] relative">
           <h1 className="text-[18px] lg:text-[25px] font-[700] lg:text-center pb-[32px]">
             My Lab Points
           </h1>
@@ -232,15 +236,7 @@ const LabPoints = () => {
               key={index}
               className={`mt-20 bg-[#082270] w-full h-full rounded-[14px] py-[20px] px-[15px] lg:p-[30px] flex flex-col justify-between items-center gap-5 overflow-hidden absolute top-0 ${currentIndex === index + 1 ? "" : "hidden"}`}
             >
-              {/* <img src={image} alt="image" className="rounded-sm" /> */}
-              {/* <p>{cat}</p> */}
 
-              {/*    <div
-                      style={{
-                        filter: "drop-shadow(3.75217px 3.75217px 0px #000000)",
-                      }}
-                      className="bg-[#082270] w-full h-full rounded-[14px] py-[20px] px-[15px] lg:p-[30px] flex flex-col justify-between items-center gap-5 overflow-hidden"
-                    > */}
 
 
               <img
@@ -253,26 +249,55 @@ const LabPoints = () => {
                 src={LabPointsCardBottomImg}
                 alt="LabPointsCardBottomImg"
               />
-              {/* <p className="mb-[-10px] ">aaaaa</p> */}
+
               <div className="text-white text-center z-10 absolute top-[55px] lg:top-[60px] text-[8px] lg:text-[12px] font-[600]">
                 <p className="m-0 p-0 tracking-[1px]">You Have</p>
                 <h1 className="text-[#009E47] text-[30px] lg:text-[45px] font-[800] m-0 p-0 tracking-[3px]">
-                  {itemCategorySum[cat]}
+                  {totalSum}
                 </h1>
                 <p className="m-0 p-0 tracking-[1px]">Points</p>
               </div>
               <img className="z-0" src={LabPointsImg} alt="LabPointsImg" />
+
               {
                 allResults?.map((item) => (
-                  //  console.log(item.earningItems)
-                  /*     const catagory = item.submitter.result.earningParameterData?.find((data) => data.categoryName === cat)
-                      {
-                        console.log(catagory)
-                      } */
+
+
+                  (item.submitter.result.earningParameterData?.find((data) => data.categoryName === cat))?.earningItems.map((a, i) => (
+
+
+                    <>
+                      <div className="absolute top-[172px] lg:top-[195px] left-[50px] lg:left-[107px] text-[#FF0303] text-[13px] lg:text-[20px] tracking-[1px] font-[700] flex flex-col items-center justify-center w-[100px] lg:w-[120px] text-center">
+                        <h1>{itemName[a?.earningItemName]}</h1>
+                        <h1 className="text-[8px] lg:text-[12px] text-white mt-[37px]">
+                          {a?.earningItemName}
+                        </h1>
+                      </div>
+                      {/* <div className="absolute top-[172px] lg:top-[195px] left-[180px] lg:left-[252px] text-[#FF0303] text-[13px] lg:text-[20px] tracking-[1px] font-[700] flex flex-col items-center justify-center w-[100px] lg:w-[120px] text-center">
+                        <h1>150</h1>
+                        <h1 className="text-[8px] lg:text-[12px] text-white mt-[37px]">
+                          Challenge Submission
+                        </h1>
+                      </div> */}
+                    </>
+
+
+
+
+                  ))
+
+                ))
+
+              }
+
+
+              {/*   {
+                allResults?.map((item) => (
+                
 
                   (item.submitter.result.earningParameterData?.find((data) => data.categoryName === cat))?.earningItems.map((a) => (
-                    //console.log(a.earningItemName)
-                    //     <p className="absolute top-[172px] lg:top-[195px] left-[50px] lg:left-[107px] text-[#FF0303] text-[13px] lg:text-[20px] tracking-[1px] font-[700] flex flex-col items-center justify-center w-[100px] lg:w-[120px] text-center">{a?.earningItemName}</p>
+                   
+                    
 
                     <div className="absolute top-[172px] lg:top-[195px] left-[50px] lg:left-[107px] text-[#FF0303] text-[13px] lg:text-[20px] tracking-[1px] font-[700] flex flex-col items-center justify-center w-[100px] lg:w-[120px] text-center">
                       <h1>{itemName[a?.earningItemName]}</h1>
@@ -287,7 +312,7 @@ const LabPoints = () => {
 
                 ))
 
-              }
+              } */}
               {/*    <div className="absolute top-[172px] lg:top-[195px] left-[50px] lg:left-[107px] text-[#FF0303] text-[13px] lg:text-[20px] tracking-[1px] font-[700] flex flex-col items-center justify-center w-[100px] lg:w-[120px] text-center">
                 <h1>200</h1>
                 <h1 className="text-[8px] lg:text-[12px] text-white mt-[37px]">
@@ -317,6 +342,7 @@ const LabPoints = () => {
                 <button className="bg-[#fff] p-1 rounded" onClick={forward}><ArrowForwardIosIcon /></button>
 
               </p>
+              <p className="mb-[-150px] text-[#fff] text-lg ">{cat} : {itemCategorySum[cat]}</p>
               <DashboardPrimaryButton
                 bgColor="#FFDB70"
                 shadow="0px 7.50435px 0px #F08323"
@@ -412,7 +438,7 @@ const LabPoints = () => {
             </DashboardPrimaryButton>
           </div> */}
         </div>
-      
+
 
 
 
@@ -425,7 +451,7 @@ const LabPoints = () => {
 
 
 
-        <div className="w-[340px] lg:w-[490px] min-w-[250px] lg:min-w-min lg:h-[575px] relative">
+        <div className="w-[340px] lg:mt-0 mt-20 lg:w-[490px] min-w-[250px] lg:min-w-min lg:h-[575px] relative">
           <h1 className="text-[18px] lg:text-[25px] font-[700] lg:text-center pb-[32px]">
             Milestones
           </h1>

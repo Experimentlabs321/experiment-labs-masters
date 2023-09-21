@@ -1,10 +1,39 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import DashboardPrimaryButton from "../Shared/DashboardPrimaryButton";
 import DialogLayout from "../Shared/DialogLayout";
+import { AuthContext } from "../../../contexts/AuthProvider";
+import axios from "axios";
+
 
 const SkillsStatistics = ({ skillsData }) => {
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState();
+
+  const { userInfo, user } = useContext(AuthContext)
+  console.log(userInfo._id)
+
+  const [allResults, setAllResult] = useState();
+
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_BACKEND_API}/getSubmitAssignment/all/${userInfo._id}`)
+      .then((response) => {
+
+        // setAssignment(response?.data)
+
+        const collection = response?.data.filter((item) => (item?.submitter?.result?.skillParameterData))
+        setAllResult(response?.data.filter((item) => (item?.submitter?.result?.skillParameterData)))
+        //console.log(a)
+
+
+      })
+      .catch((error) => console.error(error));
+  }, [userInfo._id]);
+
+  console.log(allResults)
+
+
+
   return (
     <div className="flex flex-row justify-between gap-4 overflow-x-scroll lg:overflow-x-visible px-4 mt-[30px] lg:mt-0">
       {skillsData?.map((item) => (
