@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import StatementBg from "../../../assets/Dashboard/PointsStatementBg.png";
+import axios from "axios";
+import { AuthContext } from "../../../contexts/AuthProvider";
 
 const Statement = () => {
-  const data = [
+  /* const data = [
     {
       day: "02",
       month: "July",
@@ -75,7 +77,30 @@ const Statement = () => {
       state: "Attendance",
       statePoint: "25",
     },
-  ];
+  ]; */
+  const { userInfo, user } = useContext(AuthContext)
+  const [allResults, setAllResult] = useState();
+
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_BACKEND_API}/getSubmitAssignment/all/${userInfo._id}`)
+      .then((response) => {
+
+        // setAssignment(response?.data)
+        console.log(response?.data)
+        const collection = response?.data.filter((item) => (item?.submitter?.result?.earningParameterData))
+        setAllResult(collection)
+        //console.log(a)
+
+
+      })
+      .catch((error) => console.error(error));
+  }, [userInfo._id]);
+
+  console.log(allResults)
+  
+  
+  
   return (
     <div>
       <div className="flex justify-between mt-[40px]">
@@ -121,8 +146,79 @@ const Statement = () => {
       </div>
       <div className="bg-[#B01E38] py-[24px] lg:py-[57px] px-[10px] lg:px-[42px] rounded-[12px] mt-[32px] lg:mt-[40px] mb-[40px]">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 justify-between">
-          {data.map((singleData) => (
-            <div className="overflow-hidden relative w-fit justify-self-center">
+          {
+             allResults?.map((item) => (
+              item.submitter.result.earningParameterData?.map((data) => (
+                data?.earningItems.map((a) => (
+                
+                // console.log(a.earningItemName)
+               //  console.log(a.itemValue)
+               <div className="overflow-hidden relative w-fit justify-self-center">
+               <img className=" w-fit" src={StatementBg} alt="StatementBg" />
+               <div className="grid grid-cols-12 absolute top-0 min-w-min h-full w-full">
+                 <div className="w-full h-full flex justify-center items-center text-center text-black text-[11px] lg:text-[16px] font-semibold col-span-3 px-[15px]">
+                   <h1 className="hidden lg:block">
+                    
+                    {item.submitter.result.dateAndTime}
+                     {/* {singleData?.day} {singleData?.month} */}
+                     <br/>
+                     {/* {singleData?.year} */}
+                     
+                   </h1>
+                   <h1 className="block text-[#404040] lg:hidden">
+                   {item.submitter.result.dateAndTime}
+                     {/* {singleData?.month} */}
+                     <br/>
+                     <span className="text-[16px] font-bold text-black">
+                       {/* {singleData?.day} */}
+                     </span>
+                     <br />
+                     {/* {singleData?.year} */}
+                   </h1>
+                 </div>
+                 <div className="w-full h-full flex-col justify-center items-center gap-3 inline-flex col-span-6">
+                   <div>
+                     <h1 className=" text-indigo-800 text-[13px] lg:text-[22px] font-bold">
+                       {/* {singleData?.status} */}
+                       Points Earned
+                     </h1>
+                     <h1>
+                       <span className="text-zinc-600 text-[11px] lg:text-[15px] font-medium">
+                         {/* {singleData?.state}: */}
+                         {a.earningItemName}
+                       </span>{" "}
+                       <span className="text-black text-[11px] lg:text-[15px] font-semibold">
+                         {/* {singleData?.statePoint} */}
+                         {a.itemValue}
+                       </span>
+                     </h1>
+                   </div>
+                 </div>
+                 <div
+                   className='w-full h-full flex justify-center items-center text-center text-[18px] lg:text-[30px] font-semibold col-span-3 text-[#00863C] bg-[#C1EDD5]'
+                 >
+                   {a.itemValue}
+                 </div>
+              {/*    <div
+                   className={`w-full h-full flex justify-center items-center text-center ${
+                     singleData?.status === "Points Earned"
+                       ? "text-[#00863C] bg-[#C1EDD5]"
+                       : "text-[#E53333] bg-[#FFBEBE]"
+                   }  text-[18px] lg:text-[30px] font-semibold col-span-3`}
+                 >
+                 ?  {singleData?.statePoint}
+                 </div> */}
+               </div>
+             </div> 
+                 
+                ))
+              ))
+             ))
+          }
+
+          {/* {data.map((singleData) => ( */}
+
+            {/* <div className="overflow-hidden relative w-fit justify-self-center">
               <img className=" w-fit" src={StatementBg} alt="StatementBg" />
               <div className="grid grid-cols-12 absolute top-0 min-w-min h-full w-full">
                 <div className="w-full h-full flex justify-center items-center text-center text-black text-[11px] lg:text-[16px] font-semibold col-span-3 px-[15px]">
@@ -166,8 +262,11 @@ const Statement = () => {
                   {singleData?.statePoint}
                 </div>
               </div>
-            </div>
-          ))}
+            </div> */}
+
+
+
+          {/* ))} */}
         </div>
       </div>
     </div>
