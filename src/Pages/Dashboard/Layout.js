@@ -197,7 +197,7 @@ const Layout = ({ children }) => {
                             </span>
                           </Link>
                         </li>
-                        <li>
+                       {/*  <li>
                           <Link
                             style={
                               location.pathname === "/leaderBoard"
@@ -234,7 +234,7 @@ const Layout = ({ children }) => {
                               Leader Board
                             </span>
                           </Link>
-                        </li>
+                        </li> */}
                         <li>
                           <Link
                             style={
@@ -273,7 +273,7 @@ const Layout = ({ children }) => {
                             </span>
                           </Link>
                         </li>
-                        <li>
+                       {/*  <li>
                           <Link
                             style={
                               location.pathname === "/redemption"
@@ -310,8 +310,8 @@ const Layout = ({ children }) => {
                               Redemption
                             </span>
                           </Link>
-                        </li>
-                        <li>
+                        </li> */}
+                       {/*  <li>
                           <Link
                             style={
                               location.pathname === "/skillAnalysis"
@@ -348,8 +348,8 @@ const Layout = ({ children }) => {
                               Skill Analysis
                             </span>
                           </Link>
-                        </li>
-                        <li>
+                        </li> */}
+                       {/*  <li>
                           <Link
                             style={
                               location.pathname === "/careerAnalysis"
@@ -386,7 +386,7 @@ const Layout = ({ children }) => {
                               Career Analysis
                             </span>
                           </Link>
-                        </li>
+                        </li> */}
                         <li>
                           <Link
                             style={
