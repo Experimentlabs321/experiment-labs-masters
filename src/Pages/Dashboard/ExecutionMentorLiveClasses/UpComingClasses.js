@@ -1,6 +1,6 @@
 //UpcomingClasses
 
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Layout from "../Layout";
 import { Link } from "react-router-dom";
 import AssignmentUpNev from "../ExecutionMentorAssignments/AssignmentUpNev";
@@ -9,14 +9,29 @@ import filter from "../../../assets/ExecutionMentor/filter.svg";
 import active from "../../../assets/ExecutionMentor/active.svg";
 import clock from "../../../assets/ExecutionMentor/clock.svg";
 import list from "../../../assets/ExecutionMentor/list.svg";
+import axios from "axios";
+import { AuthContext } from "../../../contexts/AuthProvider";
 
 const UpComingClasses = () => {
+  const { userInfo } = useContext(AuthContext);
   const [selectedTab, setSelectedTab] = useState("upcomingClasses");
+  const [courses, setCourses] = useState([]);
 
   const handleTabClick = (tab) => {
     setSelectedTab(tab);
   };
   ///
+
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_BACKEND_API}/courses/organizations/${userInfo?.organizationId}`
+      )
+      .then((response) => {
+        setCourses(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [userInfo]);
 
   return (
     <div>
