@@ -10,7 +10,7 @@ const Submission = ({ taskData }) => {
   const [selectedFile, setSelectedFile] = useState();
   // upload file
   const [dragActive, setDragActive] = useState(true);
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo, user } = useContext(AuthContext);
 
   const handleDragEnter = (e) => {
     e.preventDefault();
@@ -56,6 +56,18 @@ const Submission = ({ taskData }) => {
       fileUrl: fileUrl,
       submitter: userInfo,
     };
+
+    const sendMail = await axios.post(
+      `${process.env.REACT_APP_BACKEND_API}/sendMail`,
+      {
+        from: `${user?.email}`,
+        to: `naman.j@experimentlabs.in,gaurav@experimentlabs.in,shihab77023@gmail.com`,
+        subject: `Submission of ${taskData?.taskName}`,
+        message: `${userInfo?.name} has submitted assignment of the task ${taskData?.taskName}. Please review the submission.`,
+      }
+    );
+
+    console.log(sendMail);
 
     if (manageAssignment && fileUrl) {
       const newAssignment = await axios.post(
