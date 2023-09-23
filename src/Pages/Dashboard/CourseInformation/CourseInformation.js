@@ -352,20 +352,28 @@ const CourseInformation = () => {
       .then((response) => {
         setWeeks(response?.data);
         const currentDateTime = new Date();
-        response?.data?.forEach((element) => {
-          const weekStartDate = new Date(element?.weekStartDate);
-          const weekEndDate = new Date(element?.weekEndDate);
-          if (
-            weekStartDate <= currentDateTime &&
-            weekEndDate >= currentDateTime
-          ) {
-            setCurrentWeek(element);
-            return;
-          }
-          if (!currentWeek) {
-            setCurrentWeek(response?.data[0]);
-          }
-        });
+        const queryParameters = new URLSearchParams(window.location.search);
+        const queryWeek = queryParameters.get("week");
+        if (queryWeek) {
+          setCurrentWeek(
+            response?.data?.find((item) => item?._id === queryWeek)
+          );
+        } else {
+          response?.data?.forEach((element) => {
+            const weekStartDate = new Date(element?.weekStartDate);
+            const weekEndDate = new Date(element?.weekEndDate);
+            if (
+              weekStartDate <= currentDateTime &&
+              weekEndDate >= currentDateTime
+            ) {
+              setCurrentWeek(element);
+              return;
+            }
+            if (!currentWeek) {
+              setCurrentWeek(response?.data[0]);
+            }
+          });
+        }
       })
       .catch((error) => console.error(error));
   }, [id]);
