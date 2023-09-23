@@ -102,7 +102,14 @@ const Dashboard = () => {
       )
       .then((response) => {
         setCourses(response?.data);
-        setSelectedCourse(response?.data[0]);
+        if (localStorage.getItem("course")) {
+          const findCourse = response?.data?.find(
+            (item) => item?.courseFullName === localStorage.getItem("course")
+          );
+          if (findCourse) {
+            setSelectedCourse(findCourse);
+          } else setSelectedCourse(response?.data[0]);
+        } else setSelectedCourse(response?.data[0]);
       })
       .catch((error) => console.error(error));
   }, [userInfo]);
