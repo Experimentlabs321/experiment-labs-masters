@@ -7,13 +7,15 @@ import { gapi } from "gapi-script";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { Link } from "react-router-dom";
 
-const TechnicalUpdate = ({ weeks }) => {
+const TechnicalUpdate = ({ weeks, selectedCourse }) => {
   const { user, userInfo } = useContext(AuthContext);
   console.log(userInfo);
   const [date, setDate] = useState(""); // State for the date
   const [time, setTime] = useState(""); // State for the time
   const [currentWeek, setCurrentWeek] = useState(null);
+  const [reservedEvent, setReservedEvent] = useState(null);
 
   // Update the date state when the date input changes
   const handleDateChange = (event) => {
@@ -36,8 +38,25 @@ const TechnicalUpdate = ({ weeks }) => {
         return;
       }
     });
-  }, [weeks]);
+  }, [selectedCourse, weeks]);
   console.log(currentWeek);
+
+  const [startTime, setStartTime] = useState();
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_BACKEND_API}/events`)
+      .then((response) => {
+        const findEvent = response?.data?.find(
+          (item) =>
+            item?.requester === user?.email &&
+            item?.organization?.organizationId === userInfo?.organizationId &&
+            item?.weekData?._id === currentWeek?._id
+        );
+        setReservedEvent(findEvent);
+        setStartTime(new Date(findEvent?.start));
+      })
+      .catch((error) => console.error(error));
+  }, [weeks, selectedCourse, currentWeek]);
 
   // Function to combine date and time into a single variable
   const combineDateTime = async () => {
@@ -230,6 +249,7 @@ const TechnicalUpdate = ({ weeks }) => {
                     ],
                     weekData: currentWeek,
                     hangoutLink: response?.result?.hangoutLink,
+                    requester: user?.email,
                   };
                   // You can now use combinedDateTime as needed
                   console.log(event);
@@ -285,38 +305,15 @@ const TechnicalUpdate = ({ weeks }) => {
               Date
             </p>
             <div className="relative inline-flex w-full">
-              {/* <svg
-                className="w-[18px] h-[12px] absolute top-2 right-1 m-4"
-                width="11"
-                height="8"
-                viewBox="0 0 11 8"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M1.30406 0.892914L5.16539 4.74584L9.02673 0.892914L10.2129 2.07908L5.16539 7.12657L0.117895 2.07908L1.30406 0.892914Z"
-                  fill="#222222"
-                />
-              </svg> */}
               <input
                 required
+                defaultValue={reservedEvent?.start?.slice(0, 10)}
                 onChange={handleDateChange}
                 className=" text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
                 name="date"
                 id="date"
                 type="date"
               />
-              {/* <select
-                required
-                className=" text-[18px] font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
-                name="option"
-                id="option"
-              >
-                <option value="14th June 2023">14th June 2023</option>
-                <option value="15th June 2023">15th June 2023</option>
-                <option value="16th June 2023">16th June 2023</option>
-                <option value="17th June 2023">17th June 2023</option>
-              </select> */}
             </div>
             <p className="text-[#C0C0C0] text-[18px] font-[600] py-[18px]">
               Time
@@ -327,36 +324,47 @@ const TechnicalUpdate = ({ weeks }) => {
                 onChange={handleTimeChange}
                 className=" text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
                 name="time"
+                // defaultValue={() => {const startEvent = new Date(reservedEvent?.start)?toTimeString().slice(0, 8)}}
+                defaultValue={startTime?.toTimeString().slice(0, 8)}
                 id="time"
                 type="time"
               />
-              {/* <svg
-                className="w-[18px] h-[12px] absolute top-2 right-1 m-4"
-                width="11"
-                height="8"
-                viewBox="0 0 11 8"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M1.30406 0.892914L5.16539 4.74584L9.02673 0.892914L10.2129 2.07908L5.16539 7.12657L0.117895 2.07908L1.30406 0.892914Z"
-                  fill="#222222"
-                />
-              </svg>
-              <select
-                required
-                className=" text-[18px] font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
-                name="option"
-                id="option"
-              >
-                <option value="9.00 - 11.00">9.00 - 11.00</option>
-                <option value="11.00 - 12.00">11.00 - 12.00</option>
-                <option value="12.00 - 1.00">12.00 - 1.00</option>
-                <option value="1.00 - 2.00">1.00 - 2.00</option>
-              </select> */}
             </div>
           </div>
-          <DashboardPrimaryButton
+          {reservedEvent ? (
+            <a
+              href={reservedEvent?.hangoutLink}
+              target="_blank"
+              style={{ boxShadow: "0px 6.32482px 0px #CA5F98" }}
+              className="bg-[#0F3934] w-full py-[15px] px-[23px] rounded-[13px] text-[12px] lg:text-[18px] font-[700] z-[1]"
+            >
+              <p className="flex items-center justify-center text-white">
+                Join Meeting{" "}
+                <img
+                  className="pl-1 w-[21px] lg:w-[32px]"
+                  src={RightArrowWhite}
+                  alt="RightArrowBlack"
+                />
+              </p>
+            </a>
+          ) : (
+            <DashboardPrimaryButton
+              bgColor="#3E4DAC"
+              shadow="0px 6.32482px 0px #CA5F98"
+              width="full"
+              onClick={addEvent}
+            >
+              <p className="flex items-center justify-center text-white">
+                Request Event{" "}
+                <img
+                  className="pl-1 w-[21px] lg:w-[32px]"
+                  src={RightArrowWhite}
+                  alt="RightArrowBlack"
+                />
+              </p>
+            </DashboardPrimaryButton>
+          )}
+          {/* <DashboardPrimaryButton
             bgColor="#3E4DAC"
             shadow="0px 6.32482px 0px #CA5F98"
             width="full"
@@ -370,7 +378,7 @@ const TechnicalUpdate = ({ weeks }) => {
                 alt="RightArrowBlack"
               />
             </p>
-          </DashboardPrimaryButton>
+          </DashboardPrimaryButton> */}
         </div>
       </div>
       <div className="w-[250px] lg:w-[355px] min-w-[250px] lg:min-w-min h-[370px] lg:h-[515px]">
@@ -387,7 +395,7 @@ const TechnicalUpdate = ({ weeks }) => {
             <img src={Challenges} alt="Challenges" />
           </div>
           <h1 className="text-[14px] lg:text-[18px] text-white font-[700]">
-            Week 4: Build a platform
+            {currentWeek ? currentWeek?.weekName : "Course Completed"}
           </h1>
           <div className="w-full">
             <small className="text-white pb-[10px] font-[700]">
@@ -404,20 +412,22 @@ const TechnicalUpdate = ({ weeks }) => {
               </div>
             </div>
           </div>
-          <DashboardPrimaryButton
-            bgColor="#FFDB70"
-            shadow="0px 7.50435px 0px #F08323"
-            width="full"
-          >
-            <p className="flex items-center justify-center">
-              Complete Challenge{" "}
-              <img
-                className="pl-1 w-[21px] lg:w-[32px]"
-                src={RightArrowBlack}
-                alt="RightArrowBlack"
-              />
-            </p>
-          </DashboardPrimaryButton>
+          {currentWeek && (
+            <Link
+              to={`/questLevels/${currentWeek?.courseId}?week=${currentWeek?._id}`}
+              style={{ boxShadow: "0px 7.50435px 0px #F08323" }}
+              className="bg-[#FFDB70] w-full py-[15px] px-[23px] rounded-[13px] text-[12px] lg:text-[18px] font-[700] z-[1]"
+            >
+              <p className="flex items-center justify-center text-black">
+                Complete Challenge{" "}
+                <img
+                  className="pl-1 w-[21px] lg:w-[32px]"
+                  src={RightArrowBlack}
+                  alt="RightArrowBlack"
+                />
+              </p>
+            </Link>
+          )}
         </div>
       </div>
     </div>

@@ -212,10 +212,10 @@ const Dashboard = () => {
           </div>
           <div className="lg:grid lg:grid-cols-3 gap-2 mb-[150px] lg:mb-0">
             <div className="lg:col-span-2 pt-10 px-4">
-              <TechnicalUpdate weeks={weeks} />
+              <TechnicalUpdate selectedCourse={selectedCourse} weeks={weeks} />
             </div>
             <div className=" lg:border-b-2 lg:border-l-2 lg:border-[#E8E8E8] pt-10 px-4">
-              <div className="w-full flex justify-center">
+              {/* <div className="w-full flex justify-center">
                 <div className="w-full lg:max-w-[355px] lg:h-[515px]">
                   <h1 className="text-[18px] lg:text-[25px] font-[700] text-center pb-[32px]">
                     Upcoming Quest
@@ -295,7 +295,7 @@ const Dashboard = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
