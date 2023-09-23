@@ -311,7 +311,7 @@ const Layout = ({ children }) => {
                             </span>
                           </Link>
                         </li> */}
-                       {/*  <li>
+                        <li>
                           <Link
                             style={
                               location.pathname === "/skillAnalysis"
@@ -348,7 +348,7 @@ const Layout = ({ children }) => {
                               Skill Analysis
                             </span>
                           </Link>
-                        </li> */}
+                        </li>
                        {/*  <li>
                           <Link
                             style={
