@@ -339,7 +339,7 @@ const TechnicalUpdate = ({ weeks, selectedCourse }) => {
               className="bg-[#0F3934] w-full py-[15px] px-[23px] rounded-[13px] text-[12px] lg:text-[18px] font-[700] z-[1]"
             >
               <p className="flex items-center justify-center text-white">
-                Join{" "}
+                Join Meeting{" "}
                 <img
                   className="pl-1 w-[21px] lg:w-[32px]"
                   src={RightArrowWhite}

@@ -77,24 +77,28 @@ const EditAssignment = () => {
     // .catch((error) => console.error(error));
   }, [currentWeek]);
   useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_BACKEND_API}/courses/${chapter?.courseId}`)
-      .then((response) => {
-        setCourse(response?.data);
-      });
+    if (chapter?.courseId)
+      axios
+        .get(
+          `${process.env.REACT_APP_BACKEND_API}/courses/${chapter?.courseId}`
+        )
+        .then((response) => {
+          setCourse(response?.data);
+        });
   }, [chapter]);
   useEffect(() => {
-    axios
-      .get(
-        `${process.env.REACT_APP_BACKEND_API}/tasks/assignments?id=${openTask?.taskId}`
-      )
-      .then((response) => {
-        setAssignmentData(response?.data);
-        setInstructions(response?.data?.instructions);
-        setSelectedFile(response?.data?.file);
-        setSkillParameterData(response?.data?.skillParameterData);
-        setEarningParameterData(response?.data?.earningParameterData);
-      });
+    if (openTask?.taskId)
+      axios
+        .get(
+          `${process.env.REACT_APP_BACKEND_API}/tasks/assignments?id=${openTask?.taskId}`
+        )
+        .then((response) => {
+          setAssignmentData(response?.data);
+          setInstructions(response?.data?.instructions);
+          setSelectedFile(response?.data?.file);
+          setSkillParameterData(response?.data?.skillParameterData);
+          setEarningParameterData(response?.data?.earningParameterData);
+        });
   }, [openTask]);
 
   const handleSubmit = async (event) => {
