@@ -150,7 +150,10 @@ const DashboardUserUpdate = ({
               <li
                 key={index}
                 className="cursor-pointer py-2 text-[#6A6A6A] text-[14px] font-[400] "
-                onClick={() => setSelectedCourse(option)}
+                onClick={() => {
+                  setSelectedCourse(option);
+                  localStorage.setItem("course", option?.courseFullName);
+                }}
               >
                 {option?.courseFullName}
               </li>

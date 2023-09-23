@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Layout from "../Layout";
 import FluentCommunication from "../../../assets/Dashboard/FluentCommunication.png";
 import Teamwork from "../../../assets/Dashboard/Teamwork.png";
@@ -10,6 +10,8 @@ import SkillsStatistics from "./SkillsStatistics";
 import Tailored from "./Tailored";
 import FeedbackAndSession from "./FeedbackAndSession";
 import FAQs from "./FAQs";
+import axios from "axios";
+import { AuthContext } from "../../../contexts/AuthProvider";
 
 const skillsData = [
   {
@@ -88,12 +90,79 @@ const Faqs = [
 ];
 
 const SkillAnalysis = () => {
+  const { userInfo } = useContext(AuthContext);
+  const [courses, setCourses] = useState([]);
+  const [selectedCourse, setSelectedCourse] = useState({});
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_BACKEND_API}/courses/organizations/${userInfo?.organizationId}`
+      )
+      .then((response) => {
+        setCourses(response?.data);
+        if (localStorage.getItem("course")) {
+          const findCourse = response?.data?.find(
+            (item) => item?.courseFullName === localStorage.getItem("course")
+          );
+          if (findCourse) {
+            setSelectedCourse(findCourse);
+          } else setSelectedCourse(response?.data[0]);
+        } else setSelectedCourse(response?.data[0]);
+      })
+      .catch((error) => console.error(error));
+  }, [userInfo]);
   return (
     <div>
       <Layout>
         <div>
-          <div className="py-[65px]">
-            <SkillsStatistics skillsData={skillsData} />
+          <div className="relative inline-block w-full px-4 mb-[10px]">
+            <div
+              className="flex items-center justify-right mt-5 w-full "
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              <button className="cursor-pointer bg-[#FF557A] text-[15px] font-[700] py-3 px-4 rounded-full flex items-center justify-center shadow-[0px_2px_4px_0px_#00000026]">
+                {selectedCourse?.courseFullName}{" "}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <path
+                    d="M8.71484 17.9847L14.5187 12.1808L8.71484 6.37695"
+                    stroke="white"
+                    stroke-width="1.93462"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
+            {isOpen && (
+              <ul className="absolute top-full left-0 w-full bg-gray-200 border border-gray-300 py-1 px-4 rounded mt-1 transition-opacity duration-300 ease-in-out delay-100 z-10 ">
+                {courses?.map((option, index) => (
+                  <li
+                    key={index}
+                    className="cursor-pointer py-2 text-[#6A6A6A] text-[14px] font-[400] "
+                    onClick={() => {
+                      setSelectedCourse(option);
+                      localStorage.setItem("course", option?.courseFullName);
+                    }}
+                  >
+                    {option?.courseFullName}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          <div className="pb-[65px] pt-[30px] ">
+            <SkillsStatistics
+              selectedCourse={selectedCourse}
+              skillsData={skillsData}
+            />
             <Tailored />
             <FeedbackAndSession />
             <FAQs Faqs={Faqs} />
