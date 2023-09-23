@@ -3,6 +3,7 @@ import Lock from "../../../assets/Dashboard/lock.png";
 import DownArrow from "../../../assets/Dashboard/dashboard_arrow-down.png";
 import UpArrow from "../../../assets/Dashboard/dashboard_arrow-up.png";
 import "./style.css";
+import { Link } from "react-router-dom";
 
 const Level = ({ singleData, i, length, onClick, viewAllLevel }) => {
   const [status, setStatus] = useState("");
@@ -40,7 +41,8 @@ const Level = ({ singleData, i, length, onClick, viewAllLevel }) => {
           i % 2 === 0 ? " justify-end" : "flex-row-reverse justify-end"
         }`}
       >
-        <h1
+        <Link
+          to={`/questLevels/${singleData?.courseId}?week=${singleData?._id}`}
           className={`underline underline-offset-2 rounded-[9px] z-0 text-[15px] font-[500] hidden lg:block ${
             status === "Completed" && "bg-[#9CAAFF]"
           } ${status === "Ongoing" && "bg-[#FFC13D]"} ${
@@ -48,7 +50,7 @@ const Level = ({ singleData, i, length, onClick, viewAllLevel }) => {
           } ${i % 2 === 0 ? "levelLeft" : "levelRight"}`}
         >
           {singleData?.weekName}
-        </h1>
+        </Link>
         <div
           // style={[{ boxShadow: "1.70448px 1.70448px 0px #000000" }]}
           className={`rounded-[50%] w-[71px] h-[69px] flex flex-col items-center justify-center text-[17px] font-[700] underline underline-offset-4 z-[1] ${
