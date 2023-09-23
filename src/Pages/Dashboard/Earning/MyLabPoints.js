@@ -3,7 +3,10 @@ import LabPointsCardBottomImg from "../../../assets/Dashboard/LabPointsCardBotto
 import LabPointsCardTopImg from "../../../assets/Dashboard/LabPointsCardTopImg.png";
 import LabPointsFrame from "../../../assets/Dashboard/LabPointsFrame.png";
 import RightArrowBlack from "../../../assets/Dashboard/RightArrowBlack.png";
-import LabCategoryButton from "../../../assets/Dashboard/LabCategoryButton.png";
+import LabCategoryGreenButton from "../../../assets/Dashboard/LabCategoryGreenButton.png";
+import LabCategoryOrangeButton from "../../../assets/Dashboard/LabCategoryOrangeButton.png";
+import LabCategoryPurpleButton from "../../../assets/Dashboard/LabCategoryPurpleButton.png";
+import LabCategoryBlueButton from "../../../assets/Dashboard/LabCategoryBlueButton.png";
 import DashboardPrimaryButton from "../Shared/DashboardPrimaryButton";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -18,6 +21,12 @@ const MyLabPoints = ({
   allResults,
   itemName,
 }) => {
+  const imageUrls = [
+    LabCategoryGreenButton,
+    LabCategoryOrangeButton,
+    LabCategoryPurpleButton,
+    LabCategoryBlueButton,
+  ];
   return (
     <div>
       <div className="w-[340px] md:w-[490px]  min-w-[250px] md:min-w-min md:h-[575px] h-[500px] relative">
@@ -71,26 +80,8 @@ const MyLabPoints = ({
                           <div className="text-[#FF0303] text-[13px] lg:text-[20px] tracking-[1px] font-[700] flex flex-col items-center justify-center w-[100px] lg:w-[120px] text-center">
                             <h1>{itemName[a?.earningItemName]}</h1>
                             <img
-                              src={LabCategoryButton}
-                              alt="LabCategoryButton"
-                            />
-                            <h1 className="text-[8px] lg:text-[12px] text-white">
-                              {a?.earningItemName}
-                            </h1>
-                          </div>
-                        </>
-                      ))
-                  )}
-                  {allResults?.map((item) =>
-                    item.submitter.result.earningParameterData
-                      ?.find((data) => data.categoryName === cat)
-                      ?.earningItems.map((a, i) => (
-                        <>
-                          <div className="text-[#FF0303] text-[13px] lg:text-[20px] tracking-[1px] font-[700] flex flex-col items-center justify-center w-[100px] lg:w-[120px] text-center">
-                            <h1>{itemName[a?.earningItemName]}</h1>
-                            <img
-                              src={LabCategoryButton}
-                              alt="LabCategoryButton"
+                              src={imageUrls[i % imageUrls.length]} // Use the modulo operator to cycle through the image URLs
+                              alt={`LabCategoryButton_${i}`} // Add a unique alt text for accessibility
                             />
                             <h1 className="text-[8px] lg:text-[12px] text-white">
                               {a?.earningItemName}
