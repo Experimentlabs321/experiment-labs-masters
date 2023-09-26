@@ -122,7 +122,7 @@ const SkillAnalysis = () => {
               className="flex items-center justify-right mt-5 w-full "
               onClick={() => setIsOpen(!isOpen)}
             >
-              <button className="cursor-pointer bg-[#FF557A] text-[15px] font-[700] py-3 px-4 rounded-full flex items-center justify-center shadow-[0px_2px_4px_0px_#00000026]">
+              <button className="cursor-pointer mt-16 lg:mt-2 bg-[#FF557A] text-[15px] font-[700] py-3 px-4 rounded-full flex items-center justify-center shadow-[0px_2px_4px_0px_#00000026]">
                 {selectedCourse?.courseFullName}{" "}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -142,7 +142,7 @@ const SkillAnalysis = () => {
               </button>
             </div>
             {isOpen && (
-              <ul className="absolute top-full left-0 w-full bg-gray-200 border border-gray-300 py-1 px-4 rounded mt-1 transition-opacity duration-300 ease-in-out delay-100 z-10 ">
+              <ul className="absolute  top-full left-0 w-full bg-gray-200 border border-gray-300 py-1 px-4 rounded mt-1 transition-opacity duration-300 ease-in-out delay-100 z-10 ">
                 {courses?.map((option, index) => (
                   <li
                     key={index}
@@ -163,9 +163,9 @@ const SkillAnalysis = () => {
               selectedCourse={selectedCourse}
               skillsData={skillsData}
             />
-            <Tailored />
-            <FeedbackAndSession />
-            <FAQs Faqs={Faqs} />
+            {/* <Tailored /> */}
+            {/* <FeedbackAndSession /> */}
+            {/* <FAQs Faqs={Faqs} /> */}
           </div>
         </div>
       </Layout>

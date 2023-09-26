@@ -6,12 +6,52 @@ import axios from "axios";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 
 const SkillsStatistics = ({ skillsData, selectedCourse }) => {
+  console.log(selectedCourse?._id)
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState();
   const [selectedSkillName, setSelectedSkillName] = useState("");
 
   const { userInfo, user } = useContext(AuthContext);
   console.log(userInfo);
+  const [course, setCourse] = useState();
+  const [taskIds, setTaskIds] = useState();
+  const [chapterIds, setChapterIds] = useState();
+
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_BACKEND_API}/chapters/courseId/${selectedCourse?._id}`
+      )
+      .then((response) => {
+        const taskName = {};
+        const chapterName = {};
+        // setAssignment(response?.data)
+        const chapters = response?.data;
+        chapters.map((chap) => {
+          chapterName[chap.chapterName] = chap._id;
+          chap.tasks.map((task) => {
+            if (task.taskType === "Assignment") {
+
+              taskName[task.taskName] = task.taskId;
+            }
+          }
+          )
+        }
+        )
+        setChapterIds(chapterName)
+        setTaskIds(taskName)
+        setCourse(response?.data);
+        //console.log(a)
+      })
+      .catch((error) => console.error(error));
+  }, [selectedCourse?._id]);
+
+  console.log(course);
+  console.log(taskIds);
+  console.log(chapterIds);
+
+
+
 
   const [allResults, setAllResult] = useState();
 
@@ -24,29 +64,52 @@ const SkillsStatistics = ({ skillsData, selectedCourse }) => {
         // setAssignment(response?.data)
 
         const collection = response?.data.filter(
-          (item) => item?.submitter?.result?.skillParameterData
+          (item) => (item?.submitter?.result?.skillParameterData && item?.taskId === taskIds[item?.taskName])
         );
         setAllResult(collection);
         //console.log(a)
       })
       .catch((error) => console.error(error));
-  }, [userInfo._id]);
+  }, [userInfo._id, taskIds]);
 
   console.log(allResults);
+
+
+  const [submittedTaskID, setSubmittedTaskID] = useState({})
+
+  useEffect(() => {
+    if (allResults) {
+      // Initialize an empty object to store category sums
+      const taskName = {};
+
+      allResults.forEach((item) => {
+        taskName[item.taskName] = item.taskId;
+      });
+
+      // Store the result in the state variable itemName
+      setSubmittedTaskID(taskName);
+    }
+  }, [allResults]);
+
+  console.log(submittedTaskID); 
+
+
+
+
   const [mainAssignments, setMainAssignments] = useState();
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_API}/tasks/assignments/?id=65014a2c909a7f4de551388b`
+        `${process.env.REACT_APP_BACKEND_API}/assignments`
       )
       .then((response) => {
-        const ass = response?.data;
+        const ass = response?.data.filter((item)=>item._id===submittedTaskID[item.taskName])
 
         setMainAssignments(ass);
         // setNewValueAssignment(ass)
       })
       .catch((error) => console.error(error));
-  }, []);
+  }, [submittedTaskID]);
 
   console.log(mainAssignments);
 
@@ -54,26 +117,33 @@ const SkillsStatistics = ({ skillsData, selectedCourse }) => {
     setSelectedSkillName(skillName);
   };
 
-  /*   const [parameters, setParameters] = useState({})
+    const [sumParametersMain, setSumParametersMain] = useState({})
+    const [sumSkillMain, setSumSkillMain] = useState({})
 
   useEffect(() => {
-    if (allResults) {
+    if (mainAssignments) {
       // Initialize an empty object to store category sums
       const parametersName = {};
+      const skillName = {};
 
-      allResults.forEach((item) => {
-        item.submitter.result.skillParameterData?.forEach((data) => {
+      mainAssignments.forEach((item) => {
+        item?.skillParameterData?.forEach((data) => {
        //   console.log(data)
           data?.skills.forEach((item) => {
-           
+
+            if (skillName.hasOwnProperty(item.skillName)) {
+              skillName[item.skillName] += +(item.skillValue);
+            } else {
+              skillName[item.skillName] = +(item.skillValue);
+            }
             item?.parameters.forEach((a) => {
               const parameterName = a.parameterName;
               console.log(parameterName)
               // If earningName already exists in earningItemsName, add itemValue to the existing value, otherwise, set it to itemValue
               if (parametersName.hasOwnProperty(parameterName)) {
-                parametersName[parameterName] += a.parameterValue;
+                parametersName[parameterName] += +(a.parameterValue);
               } else {
-                parametersName[parameterName] = a.parameterValue;
+                parametersName[parameterName] = +(a.parameterValue);
               }
             });
           })
@@ -82,152 +152,60 @@ const SkillsStatistics = ({ skillsData, selectedCourse }) => {
       });
 
       // Store the result in the state variable itemName
-      setParameters(parametersName);
+      setSumParametersMain(parametersName);
+      setSumSkillMain(skillName);
     }
-  }, [allResults]);
+  }, [mainAssignments]);
 
-  console.log(parameters); */
-  /*   const [parameters, setParameters] = useState({});
+  console.log(sumParametersMain);
+  console.log(sumSkillMain);
+
+
+  const [sumParameters, setSumParameters] = useState({})
+  const [sumSkill, setSumSkill] = useState({})
 
 useEffect(() => {
   if (allResults) {
-    // Initialize an empty object to store parameter data
-    const parameterData = {};
-
-    let totalSumOfAllParameters = 0; // Initialize the total sum
+    // Initialize an empty object to store category sums
+    const parametersName = {};
+    const skillName = {};
 
     allResults.forEach((item) => {
       item.submitter.result.skillParameterData?.forEach((data) => {
+     //   console.log(data)
         data?.skills.forEach((item) => {
-          const skillName = item.skillName;
+
+          if (skillName.hasOwnProperty(item.skillName)) {
+            skillName[item.skillName] += +(item.skillValue);
+          } else {
+            skillName[item.skillName] = +(item.skillValue);
+          }
           item?.parameters.forEach((a) => {
             const parameterName = a.parameterName;
-            const parameterValue = a.parameterValue;
-
-            if (parameterData.hasOwnProperty(parameterName)) {
-              // If parameterName already exists, update the sum and count
-              parameterData[parameterName].sum += parameterValue;
-              parameterData[parameterName].count++;
+            console.log(parameterName)
+            // If earningName already exists in earningItemsName, add itemValue to the existing value, otherwise, set it to itemValue
+            if (parametersName.hasOwnProperty(parameterName)) {
+              parametersName[parameterName] += +(a.parameterValue);
             } else {
-              // If parameterName doesn't exist, initialize it
-              parameterData[parameterName] = {
-                sum: parameterValue,
-                count: 1,
-              };
+              parametersName[parameterName] = +(a.parameterValue);
             }
-
-            // Update the total sum
-            totalSumOfAllParameters += parameterValue;
           });
-        });
+        })
+
       });
     });
-    
-    // Calculate averages and percentages for each parameterName
-    const parametersName = {};
 
-    for (const parameterName in parameterData) {
-      const { sum, count } = parameterData[parameterName];
-      const average = sum / count;
-      console.log(totalSumOfAllParameters)
-      const percentage = (average / 100) * 100;
-
-      parametersName[parameterName] = {
-        average,
-        percentage,
-      };
-    }
-
-    // Store the result in the state variable parameters
-    setParameters(parametersName);
+    // Store the result in the state variable itemName
+    setSumParameters(parametersName);
+    setSumSkill(skillName);
   }
 }, [allResults]);
 
-console.log(parameters); */
+console.log(sumParameters);
+console.log(sumSkill);
 
-  const [parameters, setParameters] = useState({});
-  const [skillValues, setSkillValues] = useState({}); // Add state for skill values
 
-  useEffect(() => {
-    if (allResults) {
-      // Initialize an empty object to store parameter data
-      const parameterData = {};
-      const skillData = {};
 
-      let totalSumOfAllParameters = 0; // Initialize the total sum
-
-      allResults.forEach((item) => {
-        item.submitter.result.skillParameterData?.forEach((data) => {
-          data?.skills.forEach((item) => {
-            const skillName = item.skillName;
-
-            item?.parameters.forEach((a) => {
-              const parameterName = a.parameterName; // Declare parameterName here
-              const parameterValue = a.parameterValue;
-
-              if (parameterData.hasOwnProperty(parameterName)) {
-                // If parameterName already exists, update the sum and count
-                parameterData[parameterName].sum += parameterValue;
-                parameterData[parameterName].count++;
-              } else {
-                // If parameterName doesn't exist, initialize it
-                parameterData[parameterName] = {
-                  sum: parameterValue,
-                  count: 1,
-                };
-              }
-
-              // Update the total sum
-              totalSumOfAllParameters += parameterValue;
-
-              if (skillData.hasOwnProperty(skillName)) {
-                // If skillName already exists, update the sum and count
-                skillData[skillName].sum += parameterValue;
-                skillData[skillName].count++;
-              } else {
-                // If skillName doesn't exist, initialize it
-                skillData[skillName] = {
-                  sum: parameterValue,
-                  count: 1,
-                };
-              }
-            });
-          });
-        });
-      });
-
-      // Calculate averages and percentages for each parameterName
-      const parametersName = {};
-
-      for (const parameterName in parameterData) {
-        const { sum, count } = parameterData[parameterName];
-        const average = sum / count;
-        const percentage = (average / sum) * 100;
-
-        parametersName[parameterName] = {
-          average,
-          percentage,
-        };
-      }
-
-      // Calculate skill values as the average of parameter values
-      const skillValues = {};
-
-      for (const skillName in skillData) {
-        const { sum, count } = skillData[skillName];
-        const skillValue = sum / count;
-
-        skillValues[skillName] = skillValue;
-      }
-
-      // Store the results in state variables
-      setParameters(parametersName);
-      setSkillValues(skillValues);
-    }
-  }, [allResults]);
-
-  console.log(parameters);
-  console.log(skillValues);
 
   return (
     <div className="flex flex-row justify-between gap-4 overflow-x-scroll lg:grid grid-cols-3 lg:overflow-x-visible px-4 mt-[30px] lg:mt-0">
@@ -265,7 +243,7 @@ console.log(parameters); */
                             background: "#FFDBC1",
                             border: "1px solid #FFDBC1",
                             // width: `${subSkill?.percentage}%`,
-                            width: `${subSkill?.skillValue}%`,
+                            width: `${100*sumSkill[subSkill?.skillName]/sumSkillMain[subSkill?.skillName]}%`,
                           }}
                         ></div>
                       </div>
@@ -310,7 +288,7 @@ console.log(parameters); */
                                 //background: `${item?.themeColor}`,
                                 background: "#FFDBC1",
                                 // border: `1px solid black`,
-                                width: `${subSkill?.skillValue}%`,
+                                width: `${100*sumSkill[subSkill?.skillName]/sumSkillMain[subSkill?.skillName]}%`,
                               }}
                             ></div>
                           </div>
@@ -320,11 +298,10 @@ console.log(parameters); */
                         </h1>
                       </div>
                       <p
-                        className={`rounded-full ${
-                          selectedSkillName === subSkill.skillName
+                        className={`rounded-full ${selectedSkillName === subSkill.skillName
                             ? "bg-[#FFDBC1]"
                             : ""
-                        }`}
+                          }`}
                         onClick={() => handleClickSkill(subSkill?.skillName)}
                       >
                         <ArrowRightIcon />
@@ -373,12 +350,12 @@ console.log(parameters); */
                           <>
                             <div className="   flex items-center justify-between p-2 mb-5  w-[100%] h-[60px] ">
                               <div className="text-sm font-bold flex items-center gap-2 ">
-                                <label htmlFor={parameter.parameterName}>
-                                  {parameter.parameterName}
+                                <label htmlFor={parameter?.parameterName}>
+                                  {parameter?.parameterName}
                                 </label>
                               </div>
                               <div className="text-sm font-bold flex gap-2 ms-5">
-                                <p>{parameter.parameterValue} %</p>
+                                <p>{Math.round(100*sumParameters[parameter?.parameterName]/sumParametersMain[parameter?.parameterName])} %</p>
                               </div>
                             </div>
                           </>
@@ -404,7 +381,7 @@ console.log(parameters); */
           </div>
         ))
       )}
-      {}
+      { }
     </div>
   );
 };
