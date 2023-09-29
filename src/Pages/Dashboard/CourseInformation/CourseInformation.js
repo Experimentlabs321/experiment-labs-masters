@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import Completed from "../../../assets/Dashboard/Completed.png";
 import InProgress from "../../../assets/Dashboard/InProgress.png";
+import Pending from "../../../assets/Dashboard/Pending.png";
 import Task from "../../../assets/Dashboard/Task.png";
 import ReadingTask from "../../../assets/Dashboard/ReadingTask.png";
 import ClassesTask from "../../../assets/Dashboard/ClassesTask.png";
@@ -1026,9 +1027,36 @@ const CourseInformation = () => {
                             <div className="flex items-center justify-between my-[60px] relative z-10 ">
                               <div className="flex items-center">
                                 <div className="w-[85px] flex items-center justify-center ">
-                                  {/* {Role === "user" && (
-                                    <img src={Completed} alt="Completed" />
-                                  )} */}
+                                  {Role === "user" && (
+                                    <>
+                                      {task?.participants?.find(
+                                        (item) =>
+                                          item?.participantId === userInfo?._id
+                                      ) ? (
+                                        <>
+                                          {task?.participants?.find(
+                                            (item) =>
+                                              item?.participantId ===
+                                              userInfo?._id
+                                          )?.status === "Completed" ? (
+                                            <img
+                                              src={Completed}
+                                              alt="Completed"
+                                            />
+                                          ) : (
+                                            <img
+                                              src={InProgress}
+                                              alt="InProgress"
+                                            />
+                                          )}
+                                        </>
+                                      ) : (
+                                        <>
+                                          <img src={Pending} alt="Pending" />
+                                        </>
+                                      )}
+                                    </>
+                                  )}
                                 </div>
                                 <div className="flex items-center">
                                   {task?.taskType === "Reading" && (

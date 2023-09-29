@@ -1,7 +1,10 @@
 // import mammoth from "mammoth";
-import React from "react";
+import React, { useState } from "react";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import Quiz from "./SubFile/Shared/Quiz";
 
 const ReadingTask = ({ taskData }) => {
+  const [openQuiz, setOpenQuiz] = useState(false);
   return (
     <div>
       {/* <div
@@ -71,9 +74,27 @@ const ReadingTask = ({ taskData }) => {
           </p>
         </object>
       </div> */}
-      
-      <div className="h-[70vh] mb-[60px] ">
-        {taskData?.additionalFiles && (
+
+      <div className="min-h-[72vh] mb-[60px] ">
+        <div className="container mx-auto">
+          <button
+            onClick={() => {
+              setOpenQuiz(!openQuiz);
+            }}
+            className=" bg-green py-2 px-5 my-4 float-right mr-4 rounded-lg text-lg text-white font-bold "
+          >
+            Make as complete <CheckCircleOutlineIcon />
+          </button>
+          {openQuiz && (
+            <Quiz
+              setOpenQuiz={setOpenQuiz}
+              openQuiz={openQuiz}
+              taskData={taskData}
+              questions={taskData?.completionParameter?.questions}
+            />
+          )}
+        </div>
+        {taskData?.additionalFiles && !openQuiz && (
           <iframe
             className="h-[68vh] mx-auto border-x-[30px] mt-[40px] border-t-[30px] border-b-[50px] rounded-lg border-[#292929]"
             src={`https://docs.google.com/viewer?url=${taskData?.additionalFiles}&embedded=true`}
