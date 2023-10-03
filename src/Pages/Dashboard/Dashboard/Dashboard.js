@@ -86,6 +86,10 @@ const Dashboard = () => {
   const [selectedCourse, setSelectedCourse] = useState({});
   const [isOpen, setIsOpen] = useState(false);
   const [weeks, setWeeks] = useState([]);
+  const [currentWeek, setCurrentWeek] = useState(null);
+  const [chapters, setChapters] = useState([]);
+  const [currentWeekCompletion, setCurrentWeekCompletion] = useState(0);
+  const [currentCourseCompletion, setCurrentCourseCompletion] = useState(0);
 
   const handleViewAllLevel = () => {
     setViewAllLevel(true);
@@ -121,8 +125,81 @@ const Dashboard = () => {
       })
       .catch((error) => console.error(error));
   }, [selectedCourse]);
+  useEffect(() => {
+    setCurrentWeek(null);
+    weeks.forEach((singleData) => {
+      const weekStartDate = new Date(singleData?.weekStartDate);
+      const weekEndDate = new Date(singleData?.weekEndDate);
+      const currentDateTime = new Date();
+      if (weekStartDate <= currentDateTime && weekEndDate >= currentDateTime) {
+        setCurrentWeek(singleData);
+        return;
+      }
+    });
+  }, [selectedCourse, weeks]);
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_BACKEND_API}/chapters/${currentWeek?._id}`)
+      .then((response) => {
+        setChapters(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [currentWeek]);
+  useEffect(() => {
+    let totalCompleted = 0;
+    let totalTask = 0;
+    if (chapters) {
+      chapters.forEach((item) => {
+        console.log(item);
+        item?.tasks?.forEach((task) => {
+          totalTask++;
+          if (task?.participants) {
+            if (
+              task?.participants?.find(
+                (item) => item?.participantId === userInfo?._id
+              )
+            ) {
+              totalCompleted++;
+            }
+          }
+        });
+      });
+    }
+    setCurrentWeekCompletion(parseInt((totalCompleted / totalTask) * 100));
+    console.log(totalCompleted, totalTask);
+  }, [chapters, user, userInfo]);
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_BACKEND_API}/chapters`)
+      .then((response) => {
+        const currentCourseChapter = response?.data?.filter(
+          (item) => item?.courseId === selectedCourse?._id
+        );
+        if (currentCourseChapter) {
+          let totalCompleted = 0;
+          let totalTask = 0;
+          currentCourseChapter?.forEach((item) => {
+            item?.tasks?.forEach((singleTask) => {
+              totalTask++;
+              if (singleTask?.participants) {
+                if (
+                  singleTask?.participants?.find(
+                    (item) => item?.participantId === userInfo?._id
+                  )
+                ) {
+                  totalCompleted++;
+                }
+              }
+            });
+          });
+          setCurrentCourseCompletion(
+            parseInt((totalCompleted / totalTask) * 100)
+          );
+        }
+      })
+      .catch((error) => console.error(error));
+  }, [user, userInfo, selectedCourse]);
 
-  console.log(userInfo, user);
   return (
     <div>
       <Layout>
@@ -130,6 +207,7 @@ const Dashboard = () => {
           <div className="grid grid-col-1 lg:grid-cols-3 gap-2">
             <div className="lg:col-span-2 pt-20 lg:pt-10 px-4">
               <DashboardUserUpdate
+                currentCourseCompletion={currentCourseCompletion}
                 setIsOpen={setIsOpen}
                 isOpen={isOpen}
                 courses={courses}
@@ -219,7 +297,11 @@ const Dashboard = () => {
           </div>
           <div className="lg:grid lg:grid-cols-3 gap-2 mb-[150px] lg:mb-0">
             <div className="lg:col-span-2 pt-10 px-4">
-              <TechnicalUpdate selectedCourse={selectedCourse} weeks={weeks} />
+              <TechnicalUpdate
+                currentWeekCompletion={currentWeekCompletion}
+                selectedCourse={selectedCourse}
+                weeks={weeks}
+              />
             </div>
             <div className=" lg:border-b-2 lg:border-l-2 lg:border-[#E8E8E8] pt-10 px-4">
               {/* <div className="w-full flex justify-center">

@@ -226,13 +226,27 @@ const CourseInformation = () => {
       // Create a copy of the chapters array to avoid mutation
       const updatedWeeksArray = [...weeks];
       // Update the chapterName of the specific chapter in the copied array
-      updatedWeeksArray[chapterData?.index].weekName = week.weekName;
+      updatedWeeksArray[
+        updatedWeeksArray.findIndex((item) => item?._id === currentWeek?._id)
+      ].weekName = week?.weekName;
+      updatedWeeksArray[
+        updatedWeeksArray.findIndex((item) => item?._id === currentWeek?._id)
+      ].weekStartDate = week?.weekStartDate;
+      updatedWeeksArray[
+        updatedWeeksArray.findIndex((item) => item?._id === currentWeek?._id)
+      ].weekEndDate = week?.weekEndDate;
+      // updatedWeeksArray.findIndex((item) => item === currentWeek)
+      const abc = updatedWeeksArray.findIndex(
+        (item) => item?._id === currentWeek?._id
+      );
+      console.log("check -> ", abc);
       // Update the chapters state with the updated array
       setWeeks(updatedWeeksArray);
       setEditWeekOpen(false);
       event.target.reset();
     }
   };
+  console.log(currentWeek);
 
   const handleWeekDelete = async (id) => {
     if (weeks?.length === 1) {

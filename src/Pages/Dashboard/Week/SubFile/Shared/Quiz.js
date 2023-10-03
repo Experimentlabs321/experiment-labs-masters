@@ -135,23 +135,29 @@ const Quiz = ({ taskData, questions, setOpenQuiz, openQuiz }) => {
   const handleSubmit = async () => {
     if (point >= taskData?.completionParameter?.passMarks) {
       setOpenQuiz(false);
-      const submitCompletion = await axios.post(
-        `${process.env.REACT_APP_BACKEND_API}/chapter/${taskData?.chapterId}/task/${taskData?._id}/add-participant/${openTask?.taskType}`,
-        {
-          participantChapter: {
-            participantEmail: userInfo?.email,
+      const sendData = {
+        participantChapter: {
+          email: userInfo?.email,
+          participantId: userInfo?._id,
+          status: "Completed",
+        },
+        participantTask: {
+          participant: {
+            email: userInfo?.email,
             participantId: userInfo?._id,
             status: "Completed",
           },
-          participantTask: {
-            participant: {
-              participantEmail: userInfo?.email,
-              participantId: userInfo?._id,
-              status: "Completed",
-            },
-            questions: allQuestions,
-          },
-        }
+          questions: allQuestions,
+        },
+      };
+      console.log("passed");
+      console.log(
+        `https://experiment-labs-master-server.vercel.app/chapter/${taskData?.chapterId}/task/${taskData?._id}/add-participant/${openTask?.taskType}`
+      );
+      console.log(sendData);
+      const submitCompletion = await axios.post(
+        `https://experiment-labs-master-server.vercel.app/chapter/${taskData?.chapterId}/task/${taskData?._id}/add-participant/${openTask?.taskType}`,
+        sendData
       );
       console.log(submitCompletion);
       Swal.fire({
@@ -159,7 +165,6 @@ const Quiz = ({ taskData, questions, setOpenQuiz, openQuiz }) => {
         title: "Congratulations!",
         text: "You have completed successfully!",
       });
-      console.log("passed");
     } else {
       setOpenQuiz(false);
       Swal.fire({
@@ -175,7 +180,6 @@ const Quiz = ({ taskData, questions, setOpenQuiz, openQuiz }) => {
     // setScore(0);
     // setCongratulationOpen(true);
   };
-  console.log(taskData);
   return (
     <div>
       <DialogLayout open={openQuiz} setOpen={setOpenQuiz} width={650}>

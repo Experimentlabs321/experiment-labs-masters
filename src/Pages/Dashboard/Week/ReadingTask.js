@@ -1,10 +1,54 @@
 // import mammoth from "mammoth";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import Quiz from "./SubFile/Shared/Quiz";
+import { AuthContext } from "../../../contexts/AuthProvider";
+import axios from "axios";
+import Swal from "sweetalert2";
 
 const ReadingTask = ({ taskData }) => {
+  const { userInfo, user } = useContext(AuthContext);
+  const [openTask, setOpenTask] = useState(
+    JSON.parse(localStorage.getItem("task"))
+  );
   const [openQuiz, setOpenQuiz] = useState(false);
+  console.log(taskData);
+  const handleCompletion = async () => {
+    if (
+      !taskData?.completionParameter ||
+      taskData?.completionParameter?.completionParameter === "Without Quiz"
+    ) {
+      setOpenQuiz(false);
+      const sendData = {
+        participantChapter: {
+          email: userInfo?.email,
+          participantId: userInfo?._id,
+          status: "Completed",
+        },
+        participantTask: {
+          participant: {
+            email: userInfo?.email,
+            participantId: userInfo?._id,
+            status: "Completed",
+          },
+        },
+      };
+      const submitCompletion = await axios.post(
+        `https://experiment-labs-master-server.vercel.app/chapter/${taskData?.chapterId}/task/${taskData?._id}/add-participant/${openTask?.taskType}`,
+        sendData
+      );
+      console.log(submitCompletion);
+      console.log(sendData);
+      if (submitCompletion?.data?.acknowledged)
+        Swal.fire({
+          icon: "success",
+          title: "Congratulations!",
+          text: "You have completed successfully!",
+        });
+    } else {
+      setOpenQuiz(!openQuiz);
+    }
+  };
   return (
     <div>
       {/* <div
@@ -79,7 +123,7 @@ const ReadingTask = ({ taskData }) => {
         <div className="container mx-auto">
           <button
             onClick={() => {
-              setOpenQuiz(!openQuiz);
+              handleCompletion();
             }}
             className=" bg-green py-2 px-5 my-4 float-right mr-4 rounded-lg text-lg text-white font-bold "
           >

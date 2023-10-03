@@ -30,30 +30,6 @@ const CompletionParameter = ({ setCompletionParameter }) => {
     setQuestions(addQuestion);
     setSelectedQuestionData(addQuestion[0]);
   };
-  const handleNextQuestion = () => {
-    handleQuestionBlur();
-    setSelectedQuestionData(questions[currentQuestion + 1]);
-    setQuestion(questions[currentQuestion + 1]?.questionTitle);
-    setCurrentQuestion(currentQuestion + 1);
-    console.log(question);
-  };
-
-  const handleBackQuestion = () => {
-    handleQuestionBlur();
-    setSelectedQuestionData(questions[currentQuestion - 1]);
-    setQuestion(questions[currentQuestion - 1]?.questionTitle);
-    setCurrentQuestion(currentQuestion - 1);
-    console.log(question);
-  };
-
-  const handleQuestionBlur = () => {
-    console.log({
-      completionParameter: selectedCompletionParameter,
-      numberOfQuestion: numberOfQuestion,
-      passMarks: passMarks,
-      questions: questions,
-    });
-  };
 
   useEffect(() => {
     setCompletionParameter({
@@ -62,13 +38,7 @@ const CompletionParameter = ({ setCompletionParameter }) => {
       passMarks: passMarks,
       questions: questions,
     });
-  }, [
-    selectedCompletionParameter,
-    numberOfQuestion,
-    numberOfQuestion,
-    questions,
-    passMarks,
-  ]);
+  }, [selectedCompletionParameter, numberOfQuestion, questions, passMarks]);
   return (
     <div>
       <p className="text-[25px] font-bold mb-10">Completion Parameter</p>

@@ -10,6 +10,7 @@ import ItemEarningParameter from "./Components/Shared/ItemEarningParameter";
 import uploadFileToS3 from "../../UploadComponent/s3Uploader";
 import { toast } from "react-hot-toast";
 import FilesTask from "../Week/FilesTask";
+import CompletionParameter from "./Components/Shared/CompletionParameter";
 
 const ManageFile = () => {
   // upload file
@@ -59,6 +60,7 @@ const ManageFile = () => {
   const [preview, setPreview] = useState(false);
   const [submitPermission, setSubmitPermission] = useState(false);
   const [fileData, setFileData] = useState({});
+  const [completionParameter, setCompletionParameter] = useState({});
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
@@ -112,6 +114,7 @@ const ManageFile = () => {
       skillParameterData: skillParameterData,
       earningParameterData: earningParameterData,
       chapterId: id,
+      completionParameter: completionParameter,
     };
 
     setFileData(ManageFile);
@@ -332,6 +335,11 @@ const ManageFile = () => {
                 selectedData={earningParameterData}
                 setSelectedData={setEarningParameterData}
                 categories={earningCategories}
+              />
+            </div>
+            <div className="px-4 my-10">
+              <CompletionParameter
+                setCompletionParameter={setCompletionParameter}
               />
             </div>
             <div className="flex items-center justify-center mt-20 mb-10">

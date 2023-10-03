@@ -11,6 +11,9 @@ const Submission = ({ taskData }) => {
   // upload file
   const [dragActive, setDragActive] = useState(true);
   const { userInfo, user } = useContext(AuthContext);
+  const [openTask, setOpenTask] = useState(
+    JSON.parse(localStorage.getItem("task"))
+  );
 
   const handleDragEnter = (e) => {
     e.preventDefault();
@@ -70,10 +73,32 @@ const Submission = ({ taskData }) => {
     console.log(sendMail);
 
     if (manageAssignment && fileUrl) {
+      console.log(manageAssignment);
       const newAssignment = await axios.post(
         `${process.env.REACT_APP_BACKEND_API}/submitAssignment`,
         manageAssignment
       );
+
+      const sendData = {
+        participantChapter: {
+          email: userInfo?.email,
+          participantId: userInfo?._id,
+          status: "In Progress",
+        },
+        participantTask: {
+          participant: {
+            email: userInfo?.email,
+            participantId: userInfo?._id,
+            status: "In Progress",
+          },
+        },
+      };
+      const submitCompletion = await axios.post(
+        `https://experiment-labs-master-server.vercel.app/chapter/${taskData?.chapterId}/task/${taskData?._id}/add-participant/${openTask?.taskType}`,
+        sendData
+      );
+
+      console.log(submitCompletion);
 
       if (newAssignment?.data?.acknowledged) {
         toast.success("Assignment Submitted Successfully");
