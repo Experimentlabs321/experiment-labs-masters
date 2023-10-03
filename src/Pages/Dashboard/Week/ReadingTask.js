@@ -1,7 +1,54 @@
 // import mammoth from "mammoth";
-import React from "react";
+import React, { useContext, useState } from "react";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import Quiz from "./SubFile/Shared/Quiz";
+import { AuthContext } from "../../../contexts/AuthProvider";
+import axios from "axios";
+import Swal from "sweetalert2";
 
 const ReadingTask = ({ taskData }) => {
+  const { userInfo, user } = useContext(AuthContext);
+  const [openTask, setOpenTask] = useState(
+    JSON.parse(localStorage.getItem("task"))
+  );
+  const [openQuiz, setOpenQuiz] = useState(false);
+  console.log(taskData);
+  const handleCompletion = async () => {
+    if (
+      !taskData?.completionParameter ||
+      taskData?.completionParameter?.completionParameter === "Without Quiz"
+    ) {
+      setOpenQuiz(false);
+      const sendData = {
+        participantChapter: {
+          email: userInfo?.email,
+          participantId: userInfo?._id,
+          status: "Completed",
+        },
+        participantTask: {
+          participant: {
+            email: userInfo?.email,
+            participantId: userInfo?._id,
+            status: "Completed",
+          },
+        },
+      };
+      const submitCompletion = await axios.post(
+        `https://experiment-labs-master-server.vercel.app/chapter/${taskData?.chapterId}/task/${taskData?._id}/add-participant/${openTask?.taskType}`,
+        sendData
+      );
+      console.log(submitCompletion);
+      console.log(sendData);
+      if (submitCompletion?.data?.acknowledged)
+        Swal.fire({
+          icon: "success",
+          title: "Congratulations!",
+          text: "You have completed successfully!",
+        });
+    } else {
+      setOpenQuiz(!openQuiz);
+    }
+  };
   return (
     <div>
       {/* <div
@@ -71,9 +118,27 @@ const ReadingTask = ({ taskData }) => {
           </p>
         </object>
       </div> */}
-      
-      <div className="h-[70vh] mb-[60px] ">
-        {taskData?.additionalFiles && (
+
+      <div className="min-h-[72vh] mb-[60px] ">
+        <div className="container mx-auto">
+          <button
+            onClick={() => {
+              handleCompletion();
+            }}
+            className=" bg-green py-2 px-5 my-4 float-right mr-4 rounded-lg text-lg text-white font-bold "
+          >
+            Make as complete <CheckCircleOutlineIcon />
+          </button>
+          {openQuiz && (
+            <Quiz
+              setOpenQuiz={setOpenQuiz}
+              openQuiz={openQuiz}
+              taskData={taskData}
+              questions={taskData?.completionParameter?.questions}
+            />
+          )}
+        </div>
+        {taskData?.additionalFiles && !openQuiz && (
           <iframe
             className="h-[68vh] mx-auto border-x-[30px] mt-[40px] border-t-[30px] border-b-[50px] rounded-lg border-[#292929]"
             src={`https://docs.google.com/viewer?url=${taskData?.additionalFiles}&embedded=true`}

@@ -89,6 +89,7 @@ const DashboardUserUpdate = ({
   setSelectedCourse,
   selectedCourse,
   weeks,
+  currentCourseCompletion,
 }) => {
   const { userInfo } = useContext(AuthContext);
   const [currentWeek, setCurrentWeek] = useState({});
@@ -180,7 +181,9 @@ const DashboardUserUpdate = ({
           />
           <div className="flex flex-col lg:flex-row items-center justify-center gap-3 lg:justify-around h-full">
             <h1 className="lg:text-[26px] text-[15px] font-[600] text-white text-center z-[1]">
-              Your course is <span className="text-[#FFDB70]">0%</span> complete
+              Your course is{" "}
+              <span className="text-[#FFDB70]">{currentCourseCompletion}%</span>{" "}
+              complete
             </h1>
             {/* <DashboardPrimaryButton
               bgColor="#FFDB70"

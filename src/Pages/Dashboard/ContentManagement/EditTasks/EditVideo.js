@@ -91,11 +91,14 @@ const EditVideo = () => {
       .catch((error) => console.error(error));
   }, [id, userInfo, userInfo?.email]);
   useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_BACKEND_API}/courses/${chapter?.courseId}`)
-      .then((response) => {
-        setCourse(response?.data);
-      });
+    if (chapter?.courseId)
+      axios
+        .get(
+          `${process.env.REACT_APP_BACKEND_API}/courses/${chapter?.courseId}`
+        )
+        .then((response) => {
+          setCourse(response?.data);
+        });
   }, [chapter]);
   useEffect(() => {
     axios

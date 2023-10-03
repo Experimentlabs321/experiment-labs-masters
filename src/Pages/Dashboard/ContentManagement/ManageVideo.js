@@ -13,6 +13,7 @@ import uploadFileToS3 from "../../UploadComponent/s3Uploader";
 import { toast } from "react-hot-toast";
 import VideoTask from "../Week/VideoTask";
 import DialogLayout from "../Shared/DialogLayout";
+import CompletionParameter from "./Components/Shared/CompletionParameter";
 
 const ManageVideo = () => {
   // upload file
@@ -64,6 +65,7 @@ const ManageVideo = () => {
   const [videoData, setVideoData] = useState({});
   const [openAddYoutubeLink, setOpenAddYoutubeLink] = useState(false);
   const [youtubeVideoLink, setYoutubeVideoLink] = useState(null);
+  const [completionParameter, setCompletionParameter] = useState({});
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
@@ -119,6 +121,7 @@ const ManageVideo = () => {
       skillParameterData: skillParameterData,
       earningParameterData: earningParameterData,
       chapterId: id,
+      completionParameter: completionParameter,
     };
 
     console.log(ManageVideo);
@@ -386,6 +389,11 @@ const ManageVideo = () => {
                 selectedData={earningParameterData}
                 setSelectedData={setEarningParameterData}
                 categories={earningCategories}
+              />
+            </div>
+            <div className="px-4 my-10">
+              <CompletionParameter
+                setCompletionParameter={setCompletionParameter}
               />
             </div>
             <div className="flex items-center justify-center mt-20 mb-10">

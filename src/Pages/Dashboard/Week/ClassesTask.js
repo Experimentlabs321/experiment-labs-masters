@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import LiveClass from "../../../assets/Dashboard/LiveClass.png";
 import HttpsIcon from "@mui/icons-material/Https";
+import Swal from "sweetalert2";
+import axios from "axios";
+import { AuthContext } from "../../../contexts/AuthProvider";
 
 const ClassesTask = ({ taskData }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,6 +33,33 @@ const ClassesTask = ({ taskData }) => {
   const seconds = Math.floor(timeDifferenceInSeconds % 60); // Calculate remaining seconds
 
   console.log(minutes, -1 * taskData?.duration);
+
+  const { userInfo, user } = useContext(AuthContext);
+  const [openTask, setOpenTask] = useState(
+    JSON.parse(localStorage.getItem("task"))
+  );
+
+  const handleCompletion = async () => {
+    const sendData = {
+      participantChapter: {
+        email: userInfo?.email,
+        participantId: userInfo?._id,
+        status: "Completed",
+      },
+      participantTask: {
+        participant: {
+          email: userInfo?.email,
+          participantId: userInfo?._id,
+          status: "Completed",
+        },
+      },
+    };
+    const submitCompletion = await axios.post(
+      `https://experiment-labs-master-server.vercel.app/chapter/${taskData?.chapterId}/task/${taskData?._id}/add-participant/${openTask?.taskType}`,
+      sendData
+    );
+    console.log(submitCompletion);
+  };
 
   return (
     <div>
@@ -73,6 +103,7 @@ const ClassesTask = ({ taskData }) => {
               </div>
               <div>
                 <a
+                  onClick={() => handleCompletion()}
                   href={taskData?.meetingData?.join_url}
                   target="_blank"
                   className={`bg-[#3E4DAC] cursor-pointer px-8 py-4 text-white w-[150px] h-[50px] text-[16px] font-[600] text-center rounded-[8px] z-[1] shadow-[0px_4px_0px_0px_#CA5F98] lg:shadow-[0px_8px_0px_0px_#CA5F98]`}
