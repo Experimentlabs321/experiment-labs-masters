@@ -137,7 +137,7 @@ const RedeemGifts = ({
 
       <div className="mt-[20px] lg:mt-[50px] flex justify-between items-center">
         <div>
-          {state === "Points statistics" ? (
+       {/*    {state === "Points statistics" ? (
             <button
               // style={{ boxShadow: "0px 8px 0px 0px #CA5F98" }}
               className={`bg-[#3E4DAC] py-[8px] lg:py-[15px] px-[15px] lg:px-[30px] rounded-[32px] text-white text-[8px] lg:text-[15px] font-[700] z-[1] mr-[16px] lg:mr-[32px] shadow-[0px_3px_0px_0px_#CA5F98] lg:shadow-[0px_8px_0px_0px_#CA5F98]`}
@@ -151,7 +151,7 @@ const RedeemGifts = ({
             >
               Points statistics
             </button>
-          )}
+          )} */}
           {state === "Redeem gifts" ? (
             <button
               // style={{ boxShadow: "0px 8px 0px 0px #CA5F98" }}
