@@ -94,14 +94,14 @@ const Redemption = () => {
 }, [userInfo?.organizationId]);
 console.log(redemptionCollection)
 
-  const [state, setState] = useState("Points statistics");
+  const [state, setState] = useState("Redeem gifts");
   const [redemptionProduct, setRedemptionProduct] = useState();
   return (
     <div>
       <Layout>
-        {state === "Points statistics" && (
+       {/*  {state === "Points statistics" && (
           <PointsStatistics state={state} setState={setState} />
-        )}
+        )} */}
         {state === "Redeem gifts" && (
           <RedeemGifts
             cheaps={cheaps}

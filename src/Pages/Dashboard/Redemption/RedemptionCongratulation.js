@@ -50,7 +50,7 @@ const RedemptionCongratulation = ({ setState, state, redemptionProduct }) => {
             </div>
             <div className="mt-[20px] lg:mt-[50px] flex justify-between items-center">
                 <div>
-                    {state === "Points statistics" ? (
+                  {/*   {state === "Points statistics" ? (
                         <button
                             // style={{ boxShadow: "0px 8px 0px 0px #CA5F98" }}
                             className={`bg-[#3E4DAC] py-[8px] lg:py-[15px] px-[15px] lg:px-[30px] rounded-[32px] text-white text-[8px] lg:text-[15px] font-[700] z-[1] mr-[16px] lg:mr-[32px] shadow-[0px_3px_0px_0px_#CA5F98] lg:shadow-[0px_8px_0px_0px_#CA5F98]`}
@@ -64,7 +64,7 @@ const RedemptionCongratulation = ({ setState, state, redemptionProduct }) => {
                         >
                             Points statistics
                         </button>
-                    )}
+                    )} */}
                     {state === "Redemption Congratulation" ? (
                         <button
                             // style={{ boxShadow: "0px 8px 0px 0px #CA5F98" }}
@@ -125,7 +125,7 @@ const RedemptionCongratulation = ({ setState, state, redemptionProduct }) => {
                     <div className="lg:w-[160px]">
                     <Link to={redemptionProduct?.redemptionLink}
                         
-                        className="w-[100px] lg:w-[160px] bg-[#FF557A] rounded-full lg:rounded-[10px] py-2 px-10 text-[12px] lg:text-[15px] font-[700]">
+                        className="w-[100px] lg:w-[160px] bg-[#6055ff] rounded-full lg:rounded-[10px] py-2 px-10 text-[12px] lg:text-[15px] font-[700]">
                         View
                     </Link>
                         {/* <Link to='' className=" lg:w-[160px] bg-[#FF557A] rounded-full lg:rounded-[10px] py-2 text-[12px] lg:text-[15px] font-[700]"  >View</Link> */}
