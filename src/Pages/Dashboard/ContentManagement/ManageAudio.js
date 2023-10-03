@@ -12,6 +12,7 @@ import ItemEarningParameter from "./Components/Shared/ItemEarningParameter";
 import uploadFileToS3 from "../../UploadComponent/s3Uploader";
 import { toast } from "react-hot-toast";
 import AudioTask from "../Week/AudioTask";
+import CompletionParameter from "./Components/Shared/CompletionParameter";
 
 const ManageAudio = () => {
   // upload file
@@ -61,6 +62,7 @@ const ManageAudio = () => {
   const [preview, setPreview] = useState(false);
   const [submitPermission, setSubmitPermission] = useState(false);
   const [audioData, setAudioData] = useState({});
+  const [completionParameter, setCompletionParameter] = useState({});
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
@@ -115,6 +117,7 @@ const ManageAudio = () => {
       skillParameterData: skillParameterData,
       earningParameterData: earningParameterData,
       chapterId: id,
+      completionParameter: completionParameter,
     };
 
     setAudioData(ManageAudio);
@@ -340,6 +343,11 @@ const ManageAudio = () => {
                 selectedData={earningParameterData}
                 setSelectedData={setEarningParameterData}
                 categories={earningCategories}
+              />
+            </div>
+            <div className="px-4 my-10">
+              <CompletionParameter
+                setCompletionParameter={setCompletionParameter}
               />
             </div>
             <div className="flex items-center justify-center mt-20 mb-10">

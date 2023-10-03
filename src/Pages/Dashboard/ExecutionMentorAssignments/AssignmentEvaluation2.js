@@ -145,7 +145,7 @@ const AssignmentEvaluation2 = () => {
         }
       })
       .catch((error) => console.error(error));
-  }, [assignment]);
+  }, [assignment, assignment?.taskId, id, mainAssignments]);
 
   // console.log(mainAssignments)
 
@@ -369,6 +369,27 @@ const AssignmentEvaluation2 = () => {
       toast.error("Feedback not added");
       //  event.target.reset();
     }
+
+    const sendData = {
+      participantChapter: {
+        email: userInfo?.email,
+        participantId: userInfo?._id,
+        status: "Completed",
+      },
+      participantTask: {
+        participant: {
+          email: userInfo?.email,
+          participantId: userInfo?._id,
+          status: "Completed",
+        },
+      },
+    };
+    const submitCompletion = await axios.post(
+      `https://experiment-labs-master-server.vercel.app/chapter/${assignment?.chapterId}/task/${assignment?._id}/add-participant/Assignment`,
+      sendData
+    );
+
+    console.log(submitCompletion);
   };
   const handleSubmitFeedback = async (event) => {
     event.preventDefault();
@@ -407,8 +428,29 @@ const AssignmentEvaluation2 = () => {
       //   //  event.target.reset();
       // }
     }
-  };
 
+    const sendData = {
+      participantChapter: {
+        email: userInfo?.email,
+        participantId: userInfo?._id,
+        status: "Completed",
+      },
+      participantTask: {
+        participant: {
+          email: userInfo?.email,
+          participantId: userInfo?._id,
+          status: "Completed",
+        },
+      },
+    };
+    const submitCompletion = await axios.post(
+      `https://experiment-labs-master-server.vercel.app/chapter/${assignment?.chapterId}/task/${assignment?._id}/add-participant/Assignment`,
+      sendData
+    );
+
+    console.log(submitCompletion);
+  };
+  console.log(assignment);
   return (
     <div>
       <Layout>

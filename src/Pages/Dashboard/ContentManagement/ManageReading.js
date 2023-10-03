@@ -11,6 +11,7 @@ import TextEditor from "../../Shared/TextEditor/TextEditor";
 import uploadFileToS3 from "../../UploadComponent/s3Uploader";
 import { toast } from "react-hot-toast";
 import ReadingTask from "../Week/ReadingTask";
+import CompletionParameter from "./Components/Shared/CompletionParameter";
 
 const ManageReading = () => {
   // upload file
@@ -61,6 +62,8 @@ const ManageReading = () => {
   const [preview, setPreview] = useState(false);
   const [submitPermission, setSubmitPermission] = useState(false);
   const [readingData, setReadingData] = useState({});
+  const [completionParameter, setCompletionParameter] = useState({});
+
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
@@ -116,9 +119,11 @@ const ManageReading = () => {
       earningParameterData: earningParameterData,
       readingMaterial: readingMaterial,
       chapterId: id,
+      completionParameter: completionParameter,
     };
 
     setReadingData(manageReading);
+    console.log(manageReading);
 
     if (submitPermission) {
       const newTask = await axios.post(
@@ -358,6 +363,12 @@ const ManageReading = () => {
                 selectedData={earningParameterData}
                 setSelectedData={setEarningParameterData}
                 categories={earningCategories}
+              />
+            </div>
+
+            <div className="px-4 my-10">
+              <CompletionParameter
+                setCompletionParameter={setCompletionParameter}
               />
             </div>
 

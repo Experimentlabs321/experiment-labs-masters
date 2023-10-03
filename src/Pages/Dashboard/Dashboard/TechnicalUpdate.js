@@ -9,9 +9,8 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 
-const TechnicalUpdate = ({ weeks, selectedCourse }) => {
+const TechnicalUpdate = ({ weeks, selectedCourse, currentWeekCompletion }) => {
   const { user, userInfo } = useContext(AuthContext);
-  console.log(userInfo);
   const [date, setDate] = useState(""); // State for the date
   const [time, setTime] = useState(""); // State for the time
   const [currentWeek, setCurrentWeek] = useState(null);
@@ -39,7 +38,6 @@ const TechnicalUpdate = ({ weeks, selectedCourse }) => {
       }
     });
   }, [selectedCourse, weeks]);
-  console.log(currentWeek);
 
   const [startTime, setStartTime] = useState();
   useEffect(() => {
@@ -67,11 +65,6 @@ const TechnicalUpdate = ({ weeks, selectedCourse }) => {
           new Date(`${date}T${time}`).getMinutes() + 30
         )
       );
-      console.log(
-        "Combined Date and Time:",
-        combinedDateTime.toISOString(),
-        endDateTime.toISOString()
-      );
       const currentDateTime = new Date();
       const timeDifferenceInMilliseconds = combinedDateTime - currentDateTime;
       if (timeDifferenceInMilliseconds < 0) {
@@ -98,7 +91,6 @@ const TechnicalUpdate = ({ weeks, selectedCourse }) => {
         weekData: currentWeek,
       };
       // You can now use combinedDateTime as needed
-      console.log(event);
 
       const response = await axios.post(
         `${process.env.REACT_APP_BACKEND_API}/events`,
@@ -120,14 +112,12 @@ const TechnicalUpdate = ({ weeks, selectedCourse }) => {
           text: "Your slot request has been sent!",
         });
       }
-      console.log(sendMail, response);
     } else {
       Swal.fire({
         icon: "error",
         title: "Invalid Date and time!",
         text: "Both date and time must be selected.",
       });
-      console.error("Both date and time must be selected.");
     }
   };
 
@@ -193,7 +183,6 @@ const TechnicalUpdate = ({ weeks, selectedCourse }) => {
               },
             },
           };
-          console.log(event);
           // Handle the new access token and possibly a new refresh token
           const newAccessToken = data.access_token;
           function initiate() {
@@ -233,7 +222,6 @@ const TechnicalUpdate = ({ weeks, selectedCourse }) => {
               })
               .then(
                 (response) => {
-                  console.log(response?.result?.hangoutLink);
                   var event = {
                     title: `${userInfo?.name} <> Experiment Labs <> Doubt clearing <> ${response?.result?.hangoutLink}`,
                     start: new Date(combinedDateTime),
@@ -252,10 +240,8 @@ const TechnicalUpdate = ({ weeks, selectedCourse }) => {
                     requester: user?.email,
                   };
                   // You can now use combinedDateTime as needed
-                  console.log(event);
 
                   sendData(event);
-                  console.log(response);
                   return [true, response];
                 },
                 function (err) {
@@ -276,7 +262,6 @@ const TechnicalUpdate = ({ weeks, selectedCourse }) => {
         title: "Invalid Date and time!",
         text: "Please enter valid date & time for event!",
       });
-      console.error("Both date and time must be selected.");
     }
   };
   return (
@@ -399,15 +384,15 @@ const TechnicalUpdate = ({ weeks, selectedCourse }) => {
           </h1>
           <div className="w-full">
             <small className="text-white pb-[10px] font-[700]">
-              20% Completed
+              {currentWeekCompletion}% Completed
             </small>
             <div className="relative w-full">
               <div className="w-full bg-gray-200 rounded-lg h-2">
                 <div
                   className="bg-[#3E4DAC] h-2 rounded-lg"
                   // className="bg-cyan-600 h-2 rounded-sm"
-                  // style={{ width: `${p}%` }}
-                  style={{ width: "20%" }}
+                  style={{ width: `${currentWeekCompletion}%` }}
+                  // style={{ width: "20%" }}
                 ></div>
               </div>
             </div>

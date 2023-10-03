@@ -86,11 +86,14 @@ const EditFiles = () => {
       .catch((error) => console.error(error));
   }, [currentWeek]);
   useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_BACKEND_API}/courses/${chapter?.courseId}`)
-      .then((response) => {
-        setCourse(response?.data);
-      });
+    if (chapter?.courseId)
+      axios
+        .get(
+          `${process.env.REACT_APP_BACKEND_API}/courses/${chapter?.courseId}`
+        )
+        .then((response) => {
+          setCourse(response?.data);
+        });
   }, [chapter]);
   useEffect(() => {
     axios
