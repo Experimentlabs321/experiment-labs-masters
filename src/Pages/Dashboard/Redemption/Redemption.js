@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Layout from "../Layout";
 import RedeemGifts from "./RedeemGifts";
 import PointsStatistics from "./PointsStatistics";
 import RedemptionProduct from "./RedemptionProduct";
+import { AuthContext } from "../../../contexts/AuthProvider";
+import axios from "axios";
+import RedemptionCongratulation from "./RedemptionCongratulation";
 const cheaps = [
   "Skill support",
   "Training",
@@ -73,6 +76,24 @@ const cardsData = [
 ];
 
 const Redemption = () => {
+  const { userInfo } = useContext(AuthContext);
+  const [redemptionCollection, setRedemptionCollection] = useState();
+
+  console.log(userInfo.organizationId)
+
+  useEffect(() => {
+    axios
+        .get(
+            `${process.env.REACT_APP_BACKEND_API}/redemptionCollections/${userInfo?.organizationId}`
+        )
+        .then((response) => {
+          setRedemptionCollection(response?.data);
+
+        })
+        .catch((error) => console.error(error));
+}, [userInfo?.organizationId]);
+console.log(redemptionCollection)
+
   const [state, setState] = useState("Points statistics");
   const [redemptionProduct, setRedemptionProduct] = useState();
   return (
@@ -88,10 +109,18 @@ const Redemption = () => {
             state={state}
             setState={setState}
             setRedemptionProduct={setRedemptionProduct}
+            redemptionCollection={redemptionCollection}
           />
         )}
         {state === "Redemption product" && (
           <RedemptionProduct
+            state={state}
+            setState={setState}
+            redemptionProduct={redemptionProduct}
+          />
+        )}
+        {state === "Redemption Congratulation" && (
+          <RedemptionCongratulation
             state={state}
             setState={setState}
             redemptionProduct={redemptionProduct}

@@ -1,16 +1,20 @@
+//SelectRedemptionCategory
+
 import axios from "axios";
 import React, { useContext, useState } from "react";
 import { toast } from "react-hot-toast";
 import Swal from "sweetalert2";
-import { AuthContext } from "../../../../../contexts/AuthProvider";
-import DialogLayout from "../../../Shared/DialogLayout";
 
 
-const SelectEarningCategory = ({
-  setEarningCategories,
-  earningCategories,
-  selectedEarningCategory,
-  setSelectedEarningCategory,
+import { AuthContext } from "../../../../contexts/AuthProvider";
+import DialogLayout from "../../Shared/DialogLayout";
+
+
+const SelectRedemptionCategory = ({
+  setRedemptionCategories,
+  redemptionCategories,
+  selectedRedemptionCategory,
+  setSelectedRedemptionCategory,
   setCategoryThreeDot,
   categoryThreeDot,
   selectedCourse,
@@ -28,9 +32,9 @@ const SelectEarningCategory = ({
       return;
     }
     const newCategory = await axios.post(
-      `${process.env.REACT_APP_BACKEND_API}/earning_categories`,
+      `${process.env.REACT_APP_BACKEND_API}/redemption_categories`,
       {
-        categoryName: `category ${earningCategories?.length + 1}`,
+        categoryName: `category ${redemptionCategories?.length + 1}`,
         courseId: selectedCourse?._id,
         organizationId: userInfo?.organizationId,
       }
@@ -38,12 +42,12 @@ const SelectEarningCategory = ({
 
     if (newCategory?.data?.acknowledged) {
       toast.success("Category added Successfully");
-      setEarningCategories([
-        ...earningCategories,
-        { categoryName: `category ${earningCategories?.length + 1}` },
+      setRedemptionCategories([
+        ...redemptionCategories,
+        { categoryName: `category ${redemptionCategories?.length + 1}` },
       ]);
-      setSelectedEarningCategory({
-        categoryName: `category ${earningCategories?.length + 1}`,
+      setSelectedRedemptionCategory({
+        categoryName: `category ${redemptionCategories?.length + 1}`,
       });
     }
   };
@@ -54,7 +58,7 @@ const SelectEarningCategory = ({
       categoryName: event?.target?.categoryName?.value,
     };
     if (
-      earningCategories?.find(
+      redemptionCategories?.find(
         (item) => item?.categoryName === category?.categoryName
       )
     ) {
@@ -68,31 +72,31 @@ const SelectEarningCategory = ({
     }
     const update = {
       organizationId: userInfo?.organizationId,
-      oldCategoryName: selectedEarningCategory?.categoryName,
+      oldCategoryName: selectedRedemptionCategory?.categoryName,
       newCategoryName: event?.target?.categoryName?.value,
       courseId: selectedCourse?._id,
     };
     console.log({
       organizationId: userInfo?.organizationId,
-      oldCategoryName: selectedEarningCategory?.categoryName,
+      oldCategoryName: selectedRedemptionCategory?.categoryName,
       newCategoryName: event?.target?.categoryName?.value,
       courseId: selectedCourse?._id,
     });
     const updatedCategory = await axios.put(
-      `${process.env.REACT_APP_BACKEND_API}/earning_categories/categoryName`,
+      `${process.env.REACT_APP_BACKEND_API}/redemption_categories/categoryName`,
       update
     );
 
     if (updatedCategory?.data?.acknowledged) {
       toast.success("Category Updated Successfully");
-      const updatedCategoriesArray = [...earningCategories];
+      const updatedCategoriesArray = [...redemptionCategories];
       const selectedIndex = updatedCategoriesArray.findIndex(
         (category) =>
-          category.categoryName === selectedEarningCategory.categoryName
+          category.categoryName === selectedRedemptionCategory.categoryName
       );
       updatedCategoriesArray[selectedIndex].categoryName =
         category.categoryName;
-      setEarningCategories(updatedCategoriesArray);
+      setRedemptionCategories(updatedCategoriesArray);
       setEditCategoryOpen(false);
       event.target.reset();
     }
@@ -114,7 +118,7 @@ const SelectEarningCategory = ({
           categoryName: name,
           courseId: selectedCourse?._id,
         });
-        fetch(`${process.env.REACT_APP_BACKEND_API}/earning/deleteCategory`, {
+        fetch(`${process.env.REACT_APP_BACKEND_API}/redemption/deleteCategory`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -135,11 +139,11 @@ const SelectEarningCategory = ({
             console.log(result);
             if (result?.acknowledged) {
               toast.success("Category Deleted Successfully!");
-              const remainingCategories = earningCategories.filter(
+              const remainingCategories = redemptionCategories.filter(
                 (category) => category?.categoryName !== name
               );
-              setEarningCategories(remainingCategories);
-              setSelectedEarningCategory(remainingCategories[0]);
+              setRedemptionCategories(remainingCategories);
+              setSelectedRedemptionCategory(remainingCategories[0]);
             }
           })
           .catch((error) => {
@@ -173,7 +177,7 @@ const SelectEarningCategory = ({
             type="text"
             id="categoryName"
             name="categoryName"
-            defaultValue={selectedEarningCategory?.categoryName}
+            defaultValue={selectedRedemptionCategory?.categoryName}
             placeholder="Category"
             className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
           />
@@ -188,18 +192,18 @@ const SelectEarningCategory = ({
       </DialogLayout>
       {/* Edit category name end */}
       <h1 className=" text-[#737373] text-[24px] font-[500] mt-5 mb-2 ">
-        Earning Category
+        Redemption Category
       </h1>
       <div className="flex flex-wrap gap-y-2 items-center">
-        {earningCategories?.map((item, index) => (
+        {redemptionCategories?.map((item, index) => (
           <button
             key={index}
             className={`px-2 py-3 relative text-base border rounded-md font-semibold flex items-center min-w-[150px] justify-between gap-6 mr-1 ${
-              selectedEarningCategory?.categoryName === item?.categoryName
+              selectedRedemptionCategory?.categoryName === item?.categoryName
                 ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
                 : "text-[#949494]"
             }`}
-            onClick={() => setSelectedEarningCategory(item)}
+            onClick={() => setSelectedRedemptionCategory(item)}
           >
             {item?.categoryName}
             <button
@@ -228,7 +232,7 @@ const SelectEarningCategory = ({
                 />
               </svg>
             </button>
-            {selectedEarningCategory?.categoryName === item?.categoryName &&
+            {selectedRedemptionCategory?.categoryName === item?.categoryName &&
               categoryThreeDot && (
                 <ul className="absolute right-0 top-[53px] w-max border  bg-white p-2 rounded-[8px] mt-1 transform translate-y-[-10px] shadow-[0px_2px_4px_0px_#00000026] z-10 ">
                   <li
@@ -244,7 +248,7 @@ const SelectEarningCategory = ({
                     className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
                     onMouseDown={() => {
                       handleCategoryDelete(
-                        selectedEarningCategory?.categoryName
+                        selectedRedemptionCategory?.categoryName
                       );
                     }}
                   >
@@ -254,7 +258,7 @@ const SelectEarningCategory = ({
               )}
           </button>
         ))}
-        {!earningCategories[0] && (
+        {!redemptionCategories[0] && (
           <div
             className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
           >
@@ -272,4 +276,4 @@ const SelectEarningCategory = ({
   );
 };
 
-export default SelectEarningCategory;
+export default SelectRedemptionCategory;

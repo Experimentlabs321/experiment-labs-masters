@@ -98,9 +98,74 @@ const Statement = () => {
   }, [userInfo._id]);
 
   console.log(allResults)
-  
-  
-  
+
+  const [redemptionAccessCollection, setRedemptionAccessCollection] = useState();
+
+  console.log(userInfo.organizationId)
+
+  useEffect(() => {
+    axios
+      .get(
+       
+       `${process.env.REACT_APP_BACKEND_API}/getRedemptionAccess/${userInfo?.organizationId}/${userInfo?._id}`
+       
+        )
+      .then((response) => {
+
+        const AllAccessItems = response?.data.accessItems
+
+
+
+        setRedemptionAccessCollection(AllAccessItems);
+
+      })
+      .catch((error) => console.error(error));
+  }, [userInfo?.organizationId]);
+  console.log(redemptionAccessCollection)
+  console.log(`${process.env.REACT_APP_BACKEND_API}/getRedemptionAccess/${userInfo?.organizationId}/${userInfo?._id}`)
+  //////////////////////
+
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    if (allResults && redemptionAccessCollection) {
+      const allResultsItems = [];
+      allResults?.forEach((item) => {
+        item.submitter.result.earningParameterData?.forEach((data) => {
+          data?.earningItems.forEach((a) => {
+            allResultsItems.push({
+              date: new Date(item.submitter.result?.dateAndTime),
+              name: a?.earningItemName,
+              value: a?.itemValue,
+              type: "Points Earned"
+            });
+          });
+        });
+      });
+
+      const redemptionItems = [];
+      redemptionAccessCollection?.forEach((item) => {
+        redemptionItems.push({
+          date: new Date(item?.dateAndTime),
+          name: item?.redemptionItemName,
+          value: item?.itemValue,
+          type: "Points Redeemed"
+        });
+      });
+
+      const mergedItems = allResultsItems.concat(redemptionItems);
+      // Sort the mergedItems array by the date property in descending order (latest date first)
+      mergedItems.sort((a, b) => b.date - a.date);
+      setItems(mergedItems);
+    }
+  }, [allResults, redemptionAccessCollection]);
+
+  console.log(items);
+
+
+
+  ////////////
+
   return (
     <div>
       <div className="flex justify-between mt-[40px]">
@@ -147,78 +212,89 @@ const Statement = () => {
       <div className="bg-[#B01E38] py-[24px] lg:py-[57px] px-[10px] lg:px-[42px] rounded-[12px] mt-[32px] lg:mt-[40px] mb-[40px]">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 justify-between">
           {
-             allResults?.map((item) => (
-              item.submitter.result.earningParameterData?.map((data) => (
-                data?.earningItems.map((a) => (
-                
-                // console.log(a.earningItemName)
-               //  console.log(a.itemValue)
-               <div className="overflow-hidden relative w-fit justify-self-center">
-               <img className=" w-fit" src={StatementBg} alt="StatementBg" />
-               <div className="grid grid-cols-12 absolute top-0 min-w-min h-full w-full">
-                 <div className="w-full h-full flex justify-center items-center text-center text-black text-[11px] lg:text-[16px] font-semibold col-span-3 px-[15px]">
-                   <h1 className="hidden lg:block">
-                    
-                    {item.submitter.result.dateAndTime}
-                     {/* {singleData?.day} {singleData?.month} */}
-                     <br/>
-                     {/* {singleData?.year} */}
-                     
-                   </h1>
-                   <h1 className="block text-[#404040] lg:hidden">
-                   {item.submitter.result.dateAndTime}
-                     {/* {singleData?.month} */}
-                     <br/>
-                     <span className="text-[16px] font-bold text-black">
-                       {/* {singleData?.day} */}
-                     </span>
-                     <br />
-                     {/* {singleData?.year} */}
-                   </h1>
-                 </div>
-                 <div className="w-full h-full flex-col justify-center items-center gap-3 inline-flex col-span-6">
-                   <div>
-                     <h1 className=" text-indigo-800 text-[13px] lg:text-[22px] font-bold">
-                       {/* {singleData?.status} */}
-                       Points Earned
-                     </h1>
-                     <h1>
-                       <span className="text-zinc-600 text-[11px] lg:text-[15px] font-medium">
-                         {/* {singleData?.state}: */}
-                         {a.earningItemName}
-                       </span>{" "}
-                       <span className="text-black text-[11px] lg:text-[15px] font-semibold">
-                         {/* {singleData?.statePoint} */}
-                         {a.itemValue}
-                       </span>
-                     </h1>
-                   </div>
-                 </div>
-                 <div
-                   className='w-full h-full flex justify-center items-center text-center text-[18px] lg:text-[30px] font-semibold col-span-3 text-[#00863C] bg-[#C1EDD5]'
-                 >
-                   {a.itemValue}
-                 </div>
-              {/*    <div
-                   className={`w-full h-full flex justify-center items-center text-center ${
-                     singleData?.status === "Points Earned"
-                       ? "text-[#00863C] bg-[#C1EDD5]"
-                       : "text-[#E53333] bg-[#FFBEBE]"
-                   }  text-[18px] lg:text-[30px] font-semibold col-span-3`}
-                 >
-                 ?  {singleData?.statePoint}
-                 </div> */}
-               </div>
-             </div> 
+
+
+            items?.map((item) => (
+
+
+              <div className="overflow-hidden relative w-fit justify-self-center">
+                <img className=" w-fit" src={StatementBg} alt="StatementBg" />
+                <div className="grid grid-cols-12 absolute top-0 min-w-min h-full w-full">
+                  <div className="w-full h-full flex justify-center items-center text-center text-black text-[8px] lg:text-[12px] font-semibold col-span-3 px-[15px]">
+                    <h1 className="hidden lg:block">
+
+                    {item.date.toLocaleDateString()}
+
+                      <br />
+
+
+                    </h1>
+                    <h1 className="block text-[#404040] lg:hidden">
+                    {item.date.toLocaleDateString()}
+
+                      <br />
+                      <span className="text-[16px] font-bold text-black">
+
+                      </span>
+                      <br />
+
+                    </h1>
+                  </div>
+                  <div className="w-full h-full flex-col justify-center items-center gap-3 inline-flex col-span-6">
+                    <div>
+                      <h1 className=" text-indigo-800 text-[13px] lg:text-[22px] font-bold">
+                       
+                        {item?.type}
+                      </h1>
+                      <h1>
+                        <span className="text-zinc-600 text-[11px] lg:text-[15px] font-medium">
+
+                          {item?.name}
+                        </span>{" "}
+                        <span className="text-black text-[11px] lg:text-[15px] font-semibold">
+
+                          {item.value}
+                        </span>
+                      </h1>
+                    </div>
+                  </div>
+                  {
+                     (item?.type==="Points Earned") && (
+                      <div
+                      className='w-full h-full flex justify-center items-center text-center text-[18px] lg:text-[30px] font-semibold col-span-3 text-[#00863C] bg-[#C1EDD5]'
+                    >
+                      {item?.value}
+                    </div>
+                     )
+
+                  }
+
+                  { (item?.type==="Points Redeemed") &&
+                    (
+                      <div
+                      className='w-full h-full flex justify-center items-center text-center text-[18px] lg:text-[30px] font-semibold col-span-3 text-[#E53333] bg-[#FFBEBE]'
+                    >
+                      {item?.value}
+                    </div>
+                    )
+                  }
                  
-                ))
-              ))
-             ))
+
+                </div>
+              </div>
+
+            ))
+
+
           }
+
+
+
+
 
           {/* {data.map((singleData) => ( */}
 
-            {/* <div className="overflow-hidden relative w-fit justify-self-center">
+          {/* <div className="overflow-hidden relative w-fit justify-self-center">
               <img className=" w-fit" src={StatementBg} alt="StatementBg" />
               <div className="grid grid-cols-12 absolute top-0 min-w-min h-full w-full">
                 <div className="w-full h-full flex justify-center items-center text-center text-black text-[11px] lg:text-[16px] font-semibold col-span-3 px-[15px]">

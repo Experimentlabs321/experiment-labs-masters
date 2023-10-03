@@ -27,6 +27,8 @@ const MyLabPoints = ({
     LabCategoryPurpleButton,
     LabCategoryBlueButton,
   ];
+
+  const totalPoints= localStorage.getItem("EarningTotalPoint")
   return (
     <div>
       <div className="w-[340px] md:w-[490px]  min-w-[250px] md:min-w-min md:h-[575px] h-[500px] relative">
@@ -64,7 +66,7 @@ const MyLabPoints = ({
               <div className="text-white text-center z-10 absolute top-[55px] lg:top-[60px] text-[8px] lg:text-[12px] font-[600]">
                 <p className="m-0 p-0 tracking-[1px]">You Have</p>
                 <h1 className="text-[#009E47] text-[30px] lg:text-[45px] font-[800] m-0 p-0 tracking-[3px]">
-                  {totalSum}
+                  {totalPoints}
                 </h1>
                 <p className="m-0 p-0 tracking-[1px]">Points</p>
               </div>

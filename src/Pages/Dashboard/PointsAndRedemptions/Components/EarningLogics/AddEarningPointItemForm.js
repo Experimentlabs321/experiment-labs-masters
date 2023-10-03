@@ -3,6 +3,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { toast } from "react-hot-toast";
 
+
 const AddEarningPointItemForm = ({
   setIsOpenEarningItemAddForm,
   UploadingImg,
