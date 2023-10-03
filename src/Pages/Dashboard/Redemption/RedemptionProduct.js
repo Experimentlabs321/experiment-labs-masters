@@ -1,17 +1,73 @@
-import React from "react";
+import React, { useContext } from "react";
 import NotificationIcon from "../../../assets/Dashboard/NotificationIcon.svg";
 import NotificationIconMobile from "../../../assets/Dashboard/NotificationIconMobile.svg";
 import SearchIcon from "../../../assets/Dashboard/SearchIcon.png";
 import SearchIconMobile from "../../../assets/Dashboard/SearchIconMobile.svg";
+import axios from "axios";
+import { AuthContext } from "../../../contexts/AuthProvider";
+import toast from "react-hot-toast";
+
 
 const RedemptionProduct = ({ setState, state, redemptionProduct }) => {
   console.log(redemptionProduct);
+  const { userInfo } = useContext(AuthContext);
+  console.log(userInfo);
+  const totalPoints= localStorage.getItem("EarningTotalPoint")
+  const handleRedemption = async (event) => {
+    event.preventDefault();
+    
+ 
+  
+    const newItem = await axios.post(
+        `${process.env.REACT_APP_BACKEND_API}/redemptionAccess`,
+        {
+            organizationId: userInfo?.organizationId,
+            userId: userInfo?._id,
+            redemptionItemName : redemptionProduct.redemptionItemName,
+            accessItem: {
+              
+              redemptionItemName : redemptionProduct.redemptionItemName,
+              itemValue : redemptionProduct.itemValue,
+              dateAndTime: new Date(),
+            
+            },
+        }
+    );
+
+
+    if (newItem?.data?.acknowledged) {
+        toast.success("Item added Successfully");
+        setState("Redemption Congratulation")
+        localStorage.setItem("EarningTotalPoint",totalPoints-redemptionProduct?.itemValue)
+       
+    }
+    else if (newItem?.data?._id) {
+        toast.success("Item added Successfully");
+        setState("Redemption Congratulation")
+        localStorage.setItem("EarningTotalPoint",totalPoints-redemptionProduct?.itemValue)
+       
+    }
+   else if (!newItem?.data?._id) {
+        toast.error("Item not added ");
+       
+    }
+    else {
+      toast.error("Item not added");
+     
+  }
+    
+    
+    console.log(newItem?.data)
+  
+};
+
+
   return (
     <div className="py-[65px] px-4">
       <div className="hidden lg:flex flex-row justify-between items-center">
         <div>
           <h1 className="text-[30px] font-[700]">
-            Redemption of {redemptionProduct?.name}
+            Redemption of " {redemptionProduct?.redemptionItemName} "
           </h1>
           <h1 className="text-[#AAA] text-[15px]">
             Use the points you have earned to redeem what you want
@@ -89,7 +145,7 @@ const RedemptionProduct = ({ setState, state, redemptionProduct }) => {
       <div className="block lg:hidden my-[20px]">
         <div>
           <h1 className=" text-[14px] lg:text-[30px] font-[700]">
-            Redemption of {redemptionProduct?.name}
+            Redemption of " {redemptionProduct?.redemptionItemName} "
           </h1>
           <h1 className="text-[#AAA] text-[8px] lg:text-[15px]">
             Use the points you have earned to redeem what you want
@@ -102,10 +158,21 @@ const RedemptionProduct = ({ setState, state, redemptionProduct }) => {
             <p className="text-[14px] lg:text-[18px] font-[500] ">
               Product summary (1)
             </p>
-            <div className="flex justify-between border-y-2 border-[#B1B8D0] lg:mr-[140px] mt-[15px] lg:mt-[30px] py-[30px]">
-              <div>something </div>
-              <div>something </div>
-              <div>something </div>
+            <div className="flex items-center justify-between border-y-2 border-[#B1B8D0] lg:mr-[140px] mt-[15px] lg:mt-[30px] py-[30px]">
+              <div className="flex gap-2 items-center">
+                  <img className="h-[100px]" src={redemptionProduct?.selectedIcon} alt="icon"/>
+                  <div>
+                    <p className="text-lg font-bold">{redemptionProduct?.redemptionItemName}</p>
+                    <p className="text-[#979797] text-[6px] lg:text-[11px] font-[400] max-w-[190px]">{redemptionProduct?.description}</p>
+                    
+                  </div>
+              </div>
+              <div>
+                <p>Points : {redemptionProduct?.itemValue}</p>
+              </div>
+              <div>
+                <button>Remove</button>
+              </div>
             </div>
           </div>
         </div>
@@ -116,28 +183,35 @@ const RedemptionProduct = ({ setState, state, redemptionProduct }) => {
           <div className="lg:border border-[#B1B8D0] p-[20px]">
             <div className="flex justify-between text-[14px] lg:text-[16px] font-[600] mb-[15px] lg:mb-[30px] ">
               <p>Subtotal: </p>
-              <p>POINTS</p>
+              <p>{redemptionProduct?.itemValue}</p>
             </div>
             <div>
               <p className="text-[14px] lg:text-[16px] font-[600] mb-[10px] lg:mb-[20px] ">
-                Product code:
+                Product name:
               </p>
               <input
                 className="border border-[#B1B8D0] w-full p-[10px] "
                 type="text"
+                defaultValue={redemptionProduct.redemptionItemName}
               />
               <hr className="my-[15px] lg:my-[20px] bg-[#B1B8D0] pt-[1px] " />
             </div>
             <div className="flex justify-between text-[14px] lg:text-[16px] font-[600] mb-[15px] lg:mb-[30px] ">
               <p>Total </p>
-              <p>POINTS</p>
+              <p>{redemptionProduct?.itemValue}</p>
             </div>
           </div>
           <div className="flex justify-evenly mt-0 lg:mt-[27px] mb-[20px] lg:mb-0">
-            <button className="w-[100px] lg:w-[160px] bg-[#FF557A] rounded-full lg:rounded-[10px] py-2 text-[12px] lg:text-[15px] font-[700]">
+            <button
+            onClick={() => setState("Redeem gifts")}
+            className="w-[100px] lg:w-[160px] bg-[#FF557A] rounded-full lg:rounded-[10px] py-2 text-[12px] lg:text-[15px] font-[700]">
               Back
             </button>
-            <button className="w-[100px] lg:w-[160px] bg-[#FF557A] rounded-full lg:rounded-[10px] py-2 text-[12px] lg:text-[15px] font-[700]">
+            
+            <button
+            onClick = {handleRedemption}
+            //onClick={() => setState("Redemption Congratulation")}
+            className="w-[100px] lg:w-[160px] bg-[#FF557A] rounded-full lg:rounded-[10px] py-2 text-[12px] lg:text-[15px] font-[700]">
               Redeem
             </button>
           </div>

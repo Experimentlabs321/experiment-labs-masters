@@ -1,10 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import NotificationIcon from "../../../assets/Dashboard/NotificationIcon.svg";
 import NotificationIconMobile from "../../../assets/Dashboard/NotificationIconMobile.svg";
 import SearchIcon from "../../../assets/Dashboard/SearchIcon.png";
 import SearchIconMobile from "../../../assets/Dashboard/SearchIconMobile.svg";
 import CreateYourPortfolio from "../../../assets/Dashboard/CreateYourPortfolio.png";
 import classNames from "classnames";
+import { AuthContext } from "../../../contexts/AuthProvider";
+import axios from "axios";
+import { Link } from "react-router-dom";
+import LockIcon from '@mui/icons-material/Lock';
+
 
 const RedeemGifts = ({
   setState,
@@ -12,32 +17,89 @@ const RedeemGifts = ({
   cheaps,
   cardsData,
   setRedemptionProduct,
+  redemptionCollection
 }) => {
-  const [items, setItems] = useState(cheaps);
-  const [displayItems, setDisplayItems] = useState(
-    cardsData?.filter((cardData) => {
-      return cardData?.cheap === items[0];
-    })
-  );
+
+  const { userInfo } = useContext(AuthContext)
+  console.log(userInfo)
+
+  const [items, setItems] = useState([]);
+  const [itemsLength, setItemsLength] = useState();
+  const redemptionCollections = redemptionCollection;
+  useEffect(() => {
+    if (redemptionCollection) {
+      const categoryName = [];
+      redemptionCollection?.courses?.forEach((data) => {
+        data.categories?.forEach((item) => {
+          categoryName.push(item.categoryName);
+        });
+      });
+      setItems(categoryName);
+      setItemsLength(categoryName.length)
+    }
+  }, [redemptionCollection]);
+
+  console.log(items);
+  console.log(redemptionCollection);
+
+
+  /*   const [displayItems, setDisplayItems] = useState(
+      redemptionCollection.courses?.forEach((data) => {
+        data.categories?.filter((item) => {
+          return item?.categoryName === items[0];
+        })
+      })
+    
+    ); */
+  //console.log(displayItems)
   const handleCheap = (index) => {
-    const rest = items.slice(index, cheaps.length);
+    const rest = items.slice(index, itemsLength);
     const others = items.slice(0, index);
     const all = [...rest, ...others];
     // console.log(all);
     setItems(all);
-    setDisplayItems(
-      cardsData?.filter((cardData) => {
-        return cardData?.cheap === items[0];
-      })
-    );
+    /*  setDisplayItems(
+       cardsData?.filter((cardData) => {
+         return cardData?.cheap === items[0];
+       })
+     ); */
   };
+  /*  useEffect(() => {
+     setDisplayItems(
+       cardsData?.filter((cardData) => {
+         return cardData?.cheap === items[0];
+       })
+     );
+   }, [items]); */
+  const EarningTotalPoint = localStorage.getItem("EarningTotalPoint")
+  console.log(EarningTotalPoint)
+
+  const [redemptionAccessCollection, setRedemptionAccessCollection] = useState();
+
+  console.log(userInfo.organizationId)
+
   useEffect(() => {
-    setDisplayItems(
-      cardsData?.filter((cardData) => {
-        return cardData?.cheap === items[0];
+    axios
+      .get(
+        `${process.env.REACT_APP_BACKEND_API}/getRedemptionAccess/${userInfo?.organizationId}/${userInfo?._id}`
+      )
+      .then((response) => {
+        const AllAccessItems = response?.data.accessItems
+        const RedemptionItem = []
+        AllAccessItems.forEach((item) => {
+          RedemptionItem.push(item.redemptionItemName);
+          //  RedemptionItem[item.redemptionItemName]= item.itemValue;
+        })
+
+        setRedemptionAccessCollection(RedemptionItem);
+
       })
-    );
-  }, [items]);
+      .catch((error) => console.error(error));
+  }, [userInfo?.organizationId]);
+  console.log(redemptionAccessCollection)
+
+
+
   return (
     <div className="py-[65px] px-4">
       <div className="hidden lg:flex flex-row justify-between items-center">
@@ -72,6 +134,7 @@ const RedeemGifts = ({
           />
         </div>
       </div>
+
       <div className="mt-[20px] lg:mt-[50px] flex justify-between items-center">
         <div>
           {state === "Points statistics" ? (
@@ -130,35 +193,102 @@ const RedeemGifts = ({
       </div>
       <div className=" max-w-full w-full">
         <ul className="flex flex-row space-x-4 mt-0 lg:mt-[30px] w-[100px]">
-          {items?.map((cheap, index) => (
-            <li
-              onClick={() => handleCheap(index)}
-              key={index}
-              className={classNames(
-                " w-fit cursor-pointer",
-                {
-                  "ml-2 lg:ml-4": index > 0,
-                },
-                `${
-                  index === 0
+          {
+
+
+            items?.map((item, index) => (
+              <li
+                onClick={() => handleCheap(index)}
+                key={index}
+                className={classNames(
+                  " w-fit cursor-pointer",
+                  {
+                    "ml-2 lg:ml-4": index > 0,
+                  },
+                  `${index === 0
                     ? "text-[#3E4DAC] text-[12px] lg:text-[16px] font-[700] py-2 lg:py-4 pr-2 lg:pr-4"
                     : "text-[#676767] text-[12px] lg:text-[16px] font-[400] p-2 lg:p-4"
-                }`
-              )}
-            >
-              <button className=" w-max flex flex-col items-center">
-                {cheap}
-                {index === 0 && (
-                  <hr className="w-[25px] lg:w-[50px] h-[2px] lg:h-[4px] bg-[#3E4DAC] rounded-[12px] mt-[2px] lg:mt-[5px]" />
+                  }`
                 )}
-              </button>
-            </li>
-          ))}
+              >
+
+                <button className=" w-max flex flex-col items-center">
+                  {item}
+                  {index === 0 && (
+                    <hr className="w-[25px] lg:w-[50px] h-[2px] lg:h-[4px] bg-[#3E4DAC] rounded-[12px] mt-[2px] lg:mt-[5px]" />
+                  )}
+                </button>
+              </li>
+            ))
+
+          }
+
         </ul>
       </div>
       <div className="">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-          {displayItems?.map((item) => (
+          {
+            redemptionCollections?.courses?.map((data) => (
+              data.categories?.map((item) => (
+                (item?.categoryName === items[0]) && (
+
+                  item.redemptionItems?.map((item) => (
+                    <div className="text-center flex flex-col items-center">
+                      <img className="h-[150px]" src={item?.selectedIcon} alt="Icon" />
+                      <h1 className=" text-[12px] lg:text-[16px] font-[700] mt-[6px] max-w-[205px]">
+                        {item?.redemptionItemName}
+                      </h1>
+                      <p className="text-[#979797] text-[6px] lg:text-[11px] font-[400] max-w-[190px]">
+                        {item?.description}
+                      </p>
+                      <p className="text-[#464dd4] text-[8px] lg:text-[11px] font-[500] max-w-[190px]">
+                        Item Value :  {item?.itemValue}
+                      </p>
+                      {redemptionAccessCollection && (redemptionAccessCollection?.find((data)=>data===item?.redemptionItemName))&&
+                        <Link to={item?.redemptionLink}
+                        className={`bg-[#b8c1f3] text-[#000000] py-[4px] lg:py-[7px] px-[10px] lg:px-[30px] rounded-[32px] text-[8px] lg:text-[12px] font-[700] z-[1] border border-[#E1E1E1] mt-[6px]`}
+                        >View</Link>
+                      }
+                     
+
+
+                      {(!redemptionAccessCollection?.find((data)=>data===item?.redemptionItemName))&&
+                        (EarningTotalPoint >= +(item?.itemValue) && EarningTotalPoint >= +(item.minimumValue)) && (
+                          <button
+                            onClick={() => {
+                              setRedemptionProduct(item);
+                              setState("Redemption product");
+                            }}
+                            className={`bg-[#3653df] text-[#fff] py-[4px] lg:py-[7px] px-[8px] lg:px-[15px] rounded-[32px] text-[8px] lg:text-[12px] font-[700] z-[1] border border-[#E1E1E1] mt-[6px]`}
+                          >
+                            Redeem now
+                          </button>
+                        )
+                      }
+                      {(!redemptionAccessCollection?.find((data)=>data===item?.redemptionItemName))&&
+                        (EarningTotalPoint < +(item?.itemValue) || EarningTotalPoint < +(item.minimumValue)) && (
+                          <button
+
+                            className={`bg-[#f3adad] flex items-center gap-1 py-[4px] lg:py-[7px] px-[8px] lg:px-[15px] rounded-[32px] text-[8px] lg:text-[12px] font-[700] z-[1] border border-[#E1E1E1] mt-[6px]`}
+                          >
+                            <LockIcon/>
+
+                            Insufficient points
+                          </button>
+                        )
+                      }
+
+                    </div>
+                  ))
+                )
+
+
+
+              ))
+            ))
+          }
+
+          {/*  {displayItems?.map((item) => (
             <div className="text-center flex flex-col items-center">
               <img src={CreateYourPortfolio} alt="CreateYourPortfolio" />
               <h1 className=" text-[12px] lg:text-[16px] font-[700] mt-[6px] max-w-[205px]">
@@ -177,7 +307,7 @@ const RedeemGifts = ({
                 Redeem now
               </button>
             </div>
-          ))}
+          ))} */}
           {/* <div className="text-center flex flex-col items-center">
             <img src={CreateYourPortfolio} alt="CreateYourPortfolio" />
             <h1 className="text-[16px] font-[700] mt-[6px] max-w-[205px]">
