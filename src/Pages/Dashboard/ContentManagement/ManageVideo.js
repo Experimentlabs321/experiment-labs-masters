@@ -122,6 +122,7 @@ const ManageVideo = () => {
       earningParameterData: earningParameterData,
       chapterId: id,
       completionParameter: completionParameter,
+      courseId: chapter?.courseId,
     };
 
     console.log(ManageVideo);

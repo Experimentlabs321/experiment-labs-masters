@@ -210,6 +210,13 @@ const ManageLiveClasses = () => {
       skillParameterData: skillParameterData,
       earningParameterData: earningParameterData,
       chapterId: id,
+      courseId: chapter?.courseId,
+      batches: [
+        {
+          batchName: selectedBatch?.batchName,
+          batchId: selectedBatch?._id,
+        },
+      ],
     };
 
     localStorage.setItem("manageClass", JSON.stringify(manageClass));
@@ -229,6 +236,23 @@ const ManageLiveClasses = () => {
   const [preview, setPreview] = useState(false);
   const [submitPermission, setSubmitPermission] = useState(false);
   const [classesData, setClassesData] = useState({});
+  const [batchesData, setBatchesData] = useState([]);
+  const [selectedBatch, setSelectedBatch] = useState({});
+
+  useEffect(() => {
+    axios
+      .get(
+        `${
+          process.env.REACT_APP_BACKEND_API
+        }/batches/courseId/${localStorage.getItem("courseId")}`
+      )
+      .then((response) => {
+        setBatchesData(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [chapter?.courseId]);
+
+  console.log(batchesData);
 
   return (
     <div>
@@ -339,8 +363,40 @@ const ManageLiveClasses = () => {
                   </div>
                 </div>
               </div>
-
-              <div className="flex justify-between mt-[116px] mb-20">
+              <div>
+                <div className="flex items-center gap-4 mt-[90px]">
+                  <p className="h-2 w-2 bg-black rounded-full"></p>
+                  <p className="font-bold text-lg me-[36px]">Select Batch</p>
+                  <img src={required} />
+                </div>
+                <ul className="flex gap-4 flex-wrap ">
+                  {batchesData?.map((option, index) => {
+                    return (
+                      <>
+                        <li className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] ">
+                          <input
+                            type="radio"
+                            id="student"
+                            name={option?.batchName}
+                            value={option?.batchName}
+                            checked={
+                              selectedBatch?.batchName === option?.batchName
+                            }
+                            onChange={() => setSelectedBatch(option)}
+                            className=" mb-1"
+                          />
+                          <div className="flex mb-1 items-center">
+                            <label className="ms-4" htmlFor={option?.batchName}>
+                              {option?.batchName}
+                            </label>
+                          </div>
+                        </li>
+                      </>
+                    );
+                  })}
+                </ul>
+              </div>
+              <div className="flex justify-between mt-[90px] mb-20">
                 <div className="">
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>

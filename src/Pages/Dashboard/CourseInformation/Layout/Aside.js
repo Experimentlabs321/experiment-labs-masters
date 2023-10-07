@@ -1,14 +1,4 @@
 import React, { useState } from "react";
-import DashboardIconLight from "../../../../assets/Dashboard/DashboardIconLight.svg";
-import DashboardIconDark from "../../../../assets/Dashboard/DashboardIconDark.svg";
-import LeaderBoardIconLight from "../../../../assets/Dashboard/LeaderBoardIconLight.svg";
-import LeaderBoardIconDark from "../../../../assets/Dashboard/LeaderBoardIconDark.svg";
-import EarningIconLight from "../../../../assets/Dashboard/EarningIconLight.svg";
-import EarningIconDark from "../../../../assets/Dashboard/EarningIconDark.svg";
-import RedemptionIconLight from "../../../../assets/Dashboard/RedemptionIconLight.svg";
-import RedemptionIconDark from "../../../../assets/Dashboard/RedemptionIconDark.svg";
-import SkillAnalysisIconLight from "../../../../assets/Dashboard/SkillAnalysisIconLight.svg";
-import SkillAnalysisIconDark from "../../../../assets/Dashboard/SkillAnalysisIconDark.svg";
 import StarLight from "../../../../assets/Dashboard/StarLight.png";
 import StarDark from "../../../../assets/Dashboard/StarDark.png";
 import WebinarsLight from "../../../../assets/Dashboard/WebinarsLight.png";
@@ -19,26 +9,25 @@ import DiscussionsLight from "../../../../assets/Dashboard/DiscussionsLight.png"
 import DiscussionsDark from "../../../../assets/Dashboard/DiscussionsDark.png";
 import CourseAccessIconLight from "../../../../assets/Dashboard/CourseAccessIconLight.svg";
 import CourseAccessIconDark from "../../../../assets/Dashboard/CourseAccessIconDark.svg";
-import CourseTham from "../../../../assets/Dashboard/CourseTham.png";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import axios from "axios";
 
 const Aside = ({ toggleButton }) => {
-  const [isCourseFullName, setCourseFullName] = useState('');
-  const [isCourseDescription, setCourseDescription] = useState('');
-  const [isCourseThumbnail, setCourseThumbnail] = useState('');
+  const [isCourseFullName, setCourseFullName] = useState("");
+  const [isCourseDescription, setCourseDescription] = useState("");
+  const [isCourseThumbnail, setCourseThumbnail] = useState("");
   const { id } = useParams();
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACKEND_API}/courses/${id}`)
       .then((response) => {
-       // setCourseData(response?.data);
-       
+        // setCourseData(response?.data);
+
         console.log(response?.data);
         setCourseFullName(response?.data.courseFullName);
         setCourseDescription(response?.data.courseDescription);
-        setCourseThumbnail(response?.data.courseThumbnail)
+        setCourseThumbnail(response?.data.courseThumbnail);
       })
       .catch((error) => console.error(error));
   }, [id]);
@@ -93,7 +82,7 @@ const Aside = ({ toggleButton }) => {
                   </div>
                   {isOpen && (
                     <ul className="absolute top-full left-0 w-full bg-gray-200 border border-gray-300 py-1 px-4 rounded mt-1 transition-opacity duration-300 ease-in-out delay-100">
-                      {options.map((option, index) => (
+                      {options?.map((option, index) => (
                         <li
                           key={index}
                           className="cursor-pointer py-2 text-[#6A6A6A] text-[14px] font-[400] "
@@ -111,14 +100,14 @@ const Aside = ({ toggleButton }) => {
                   <img src={isCourseThumbnail} alt="CourseThem" />
                   <div className=" py-[15px] ">
                     <h1 className="text-[#FFDB70] text-[15px] font-[700] ">
-                      {isCourseFullName} 
+                      {isCourseFullName}
                     </h1>
                     <p className="text-[#DFDFDF] text-[10px] font-[500] ">
                       {isCourseDescription}
                     </p>
                   </div>
 
-                {/*   <div>
+                  {/*   <div>
                     <div className="w-full">
                       <small className="text-[#AEB9FF] pb-[10px] font-[600]">
                         20% Completed
@@ -260,9 +249,7 @@ const Aside = ({ toggleButton }) => {
                       </h1>
                     </div>
                   </div> */}
-
                 </div>
-
               </li>
               <li>
                 <Link

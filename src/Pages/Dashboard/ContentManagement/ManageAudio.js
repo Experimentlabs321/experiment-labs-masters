@@ -63,6 +63,7 @@ const ManageAudio = () => {
   const [submitPermission, setSubmitPermission] = useState(false);
   const [audioData, setAudioData] = useState({});
   const [completionParameter, setCompletionParameter] = useState({});
+
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
@@ -118,6 +119,7 @@ const ManageAudio = () => {
       earningParameterData: earningParameterData,
       chapterId: id,
       completionParameter: completionParameter,
+      courseId: chapter?.courseId,
     };
 
     setAudioData(ManageAudio);

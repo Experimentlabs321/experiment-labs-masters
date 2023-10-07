@@ -260,7 +260,7 @@ const Aside = ({
                               )}
                             </div>
                             <h1
-                              className={`text-white ml-3 text-[18px] font-[500] flex items-center justify-center `}
+                              className={`text-white ml-3 text-[18px] font-[500]  `}
                             >
                               <span
                                 className={`mr-[5px] ${
@@ -269,7 +269,8 @@ const Aside = ({
                                     : "text-white"
                                 } `}
                               >
-                                Task {index + 1}:{" "}
+                                {/* Task {index + 1}:  */}
+                                {task?.taskType}:
                               </span>{" "}
                               <span
                                 className={`mr-[22px] ${

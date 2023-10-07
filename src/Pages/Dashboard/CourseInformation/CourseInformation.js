@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import Completed from "../../../assets/Dashboard/Completed.png";
 import InProgress from "../../../assets/Dashboard/InProgress.png";
 import Pending from "../../../assets/Dashboard/Pending.png";
-import Task from "../../../assets/Dashboard/Task.png";
 import ReadingTask from "../../../assets/Dashboard/ReadingTask.png";
 import ClassesTask from "../../../assets/Dashboard/ClassesTask.png";
 import AssignmentTask from "../../../assets/Dashboard/AssignmentTask.png";
@@ -29,6 +28,7 @@ import Swal from "sweetalert2";
 import { ReactSortable } from "react-sortablejs";
 import Sortable from "sortablejs";
 import WeekDetails from "./WeekDetails";
+import BatchConfiguration from "./BatchConfiguration";
 
 const CourseInformation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -246,7 +246,6 @@ const CourseInformation = () => {
       event.target.reset();
     }
   };
-  console.log(currentWeek);
 
   const handleWeekDelete = async (id) => {
     if (weeks?.length === 1) {
@@ -396,10 +395,33 @@ const CourseInformation = () => {
     axios
       .get(`${process.env.REACT_APP_BACKEND_API}/chapters/${currentWeek?._id}`)
       .then((response) => {
-        setChapters(response?.data);
+        if (Role === "admin") setChapters(response?.data);
+        else {
+          let chapterWithFilteredTask = [];
+          const batchId = userInfo?.courses?.find(
+            (item) => item?.courseId === courseData?._id
+          )?.batchId;
+          console.log(batchId);
+          response?.data?.forEach((item) => {
+            let singleChapter = { ...item };
+            singleChapter.tasks = [];
+            item?.tasks?.forEach((singleTask) => {
+              if (
+                singleTask?.batches?.find(
+                  (singleBatch) => singleBatch?.batchId === batchId
+                )
+              ) {
+                singleChapter.tasks.push(singleTask);
+                console.log(item);
+              }
+            });
+            chapterWithFilteredTask.push(singleChapter);
+          });
+          setChapters(chapterWithFilteredTask);
+        }
       })
       .catch((error) => console.error(error));
-  }, [currentWeek]);
+  }, [currentWeek, userInfo, Role, courseData]);
   const [items, setItems] = useState([
     {
       id: 1,
@@ -426,6 +448,7 @@ const CourseInformation = () => {
       ],
     },
   ]);
+  // console.log(chapters);
   // const containerRef = useRef(null);
   // let sortable;
 
@@ -570,6 +593,9 @@ const CourseInformation = () => {
                         {TaskTypeInfo?.map((taskType) => (
                           <Link
                             to={taskType?.route}
+                            onMouseDown={() => {
+                              localStorage.setItem("courseId", courseData?._id);
+                            }}
                             className="w-full bg-[#F6F7FF] rounded-[14px] p-[24px]"
                           >
                             <div
@@ -680,260 +706,268 @@ const CourseInformation = () => {
             ))}
           </div> */}
           <div className="px-4">
-            <div
-              className={`relative inline-block ${
-                Role === "admin" ? "mt-[40px]" : "mt-[140px]"
-              }  w-[400px] mb-[10px] flex items-center gap-[32px] `}
-            >
-              <div className="">
-                <button
-                  onClick={toggleOptions}
-                  className="cursor-pointer bg-[#FFDB70] text-[15px] font-[600] py-[20px] px-[25px] rounded-[15px] flex items-center justify-center shadow-[0px_2px_4px_0px_#00000026]"
-                >
-                  {currentWeek?.weekName}
-                  <svg
-                    className="ml-[20px]"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="13"
-                    height="14"
-                    viewBox="0 0 13 14"
-                    fill="none"
+            <div className="flex items-center ">
+              <div
+                className={`relative inline-block ${
+                  Role === "admin" ? "mt-[40px]" : "mt-[140px]"
+                }  basis-1/2 mb-[10px] flex items-center gap-[32px] `}
+              >
+                <div className="">
+                  <button
+                    onClick={toggleOptions}
+                    className="cursor-pointer bg-[#FFDB70] text-[15px] font-[600] py-[20px] px-[25px] rounded-[15px] flex items-center justify-center shadow-[0px_2px_4px_0px_#00000026]"
                   >
-                    <g clip-path="url(#clip0_3016_13126)">
-                      <path
-                        d="M1.52352 5.08398L5.82231 9.38277L10.1211 5.08398"
-                        stroke="#282828"
-                        stroke-width="1.43293"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-                    </g>
-                    <defs>
-                      <clipPath id="clip0_3016_13126">
-                        <rect
-                          width="12.5818"
-                          height="12.5818"
-                          fill="white"
-                          transform="matrix(0 1 -1 0 12.6328 0.890625)"
+                    {currentWeek?.weekName}
+                    <svg
+                      className="ml-[20px]"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="13"
+                      height="14"
+                      viewBox="0 0 13 14"
+                      fill="none"
+                    >
+                      <g clip-path="url(#clip0_3016_13126)">
+                        <path
+                          d="M1.52352 5.08398L5.82231 9.38277L10.1211 5.08398"
+                          stroke="#282828"
+                          stroke-width="1.43293"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
                         />
-                      </clipPath>
-                    </defs>
-                  </svg>
-                </button>
-                {isOpen && weeks?.length > 1 && (
-                  <ul className="absolute top-full left-0 w-full bg-gray-200 border border-gray-300 py-1 px-4 rounded mt-1 transition-opacity duration-300 ease-in-out delay-100 z-30 ">
-                    {weeks?.map((option, index) => {
-                      if (option?._id !== currentWeek?._id)
-                        return (
-                          <li
-                            key={index}
-                            className="cursor-pointer py-2 text-[#6A6A6A] text-[14px] font-[400] "
-                            onClick={() => setCurrentWeek(option)}
+                      </g>
+                      <defs>
+                        <clipPath id="clip0_3016_13126">
+                          <rect
+                            width="12.5818"
+                            height="12.5818"
+                            fill="white"
+                            transform="matrix(0 1 -1 0 12.6328 0.890625)"
+                          />
+                        </clipPath>
+                      </defs>
+                    </svg>
+                  </button>
+                  {isOpen && weeks?.length > 1 && (
+                    <ul className="absolute top-full left-0 w-full bg-gray-200 border border-gray-300 py-1 px-4 rounded mt-1 transition-opacity duration-300 ease-in-out delay-100 z-30 ">
+                      {weeks?.map((option, index) => {
+                        if (option?._id !== currentWeek?._id)
+                          return (
+                            <li
+                              key={index}
+                              className="cursor-pointer py-2 text-[#6A6A6A] text-[14px] font-[400] "
+                              onClick={() => setCurrentWeek(option)}
+                            >
+                              {option?.weekName}
+                            </li>
+                          );
+                      })}
+                    </ul>
+                  )}
+                </div>
+                {Role === "admin" && (
+                  <>
+                    {/* Add Week start */}
+                    <DialogLayout
+                      open={addWeekOpen}
+                      setOpen={setAddWeekOpen}
+                      width={440}
+                      borderRadius="15px"
+                      title={
+                        <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
+                          Add Week Name
+                        </p>
+                      }
+                    >
+                      <form
+                        onSubmit={handleAddWeek}
+                        className="px-[32px] py-[24px] "
+                      >
+                        <h1 className=" text-[18px] font-[700] mb-[24px] ">
+                          Week Name
+                        </h1>
+                        <input
+                          type="text"
+                          name="weekName"
+                          placeholder="Eg. Onboarding"
+                          className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+                        />
+                        <h1 className=" text-[18px] font-[700] my-[24px] ">
+                          Week Starting Date
+                        </h1>
+                        <input
+                          required
+                          className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+                          name="weekStartDate"
+                          type="date"
+                          placeholder="Eg. Entrepreneurship Lab"
+                        />
+                        <h1 className=" text-[18px] font-[700] my-[24px] ">
+                          Week Ending Date
+                        </h1>
+                        <input
+                          required
+                          className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+                          name="weekEndDate"
+                          type="date"
+                          placeholder="Eg. Entrepreneurship Lab"
+                        />
+                        <div className="w-full flex items-center justify-center mt-[40px]">
+                          <input
+                            type="submit"
+                            value="Add"
+                            className="py-[15px] cursor-pointer px-[48px] text-[20px] font-[700] rounded-[8px] bg-[#3E4DAC] text-white "
+                          />
+                        </div>
+                      </form>
+                    </DialogLayout>
+                    {/* Add Week end */}
+                    <button
+                      onClick={() => setAddWeekOpen(true)}
+                      className="bg-black rounded-full"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="25"
+                        height="25"
+                        viewBox="0 0 25 25"
+                        fill="none"
+                      >
+                        <path
+                          d="M19.6641 11.2275H13.6641V5.22754H11.6641V11.2275H5.66406V13.2275H11.6641V19.2275H13.6641V13.2275H19.6641V11.2275Z"
+                          fill="white"
+                        />
+                      </svg>
+                    </button>
+                    {/* Edit week name start */}
+                    <DialogLayout
+                      open={editWeekOpen}
+                      setOpen={setEditWeekOpen}
+                      width={440}
+                      borderRadius="15px"
+                      title={
+                        <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
+                          Edit Week Name
+                        </p>
+                      }
+                    >
+                      <form
+                        onSubmit={handleEditWeekName}
+                        className="px-[32px] py-[24px] "
+                      >
+                        <h1 className=" text-[18px] font-[700] mb-[20px] ">
+                          Week Name
+                        </h1>
+                        <input
+                          type="text"
+                          name="weekName"
+                          defaultValue={currentWeek?.weekName}
+                          placeholder="Eg. Onboarding"
+                          className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+                        />
+                        <h1 className=" text-[18px] font-[700] my-[24px] ">
+                          Week Starting Date
+                        </h1>
+                        <input
+                          required
+                          className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+                          defaultValue={currentWeek?.weekStartDate}
+                          name="weekStartDate"
+                          type="date"
+                          placeholder="Eg. Entrepreneurship Lab"
+                        />
+                        <h1 className=" text-[18px] font-[700] my-[24px] ">
+                          Week Ending Date
+                        </h1>
+                        <input
+                          required
+                          className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+                          defaultValue={currentWeek?.weekEndDate}
+                          name="weekEndDate"
+                          type="date"
+                          placeholder="Eg. Entrepreneurship Lab"
+                        />
+                        <div className="w-full flex items-center justify-center mt-[40px]">
+                          <input
+                            type="submit"
+                            value="Update"
+                            className="py-[15px] px-[48px] cursor-pointer text-[20px] font-[700] rounded-[8px] bg-[#3E4DAC] text-white "
+                          />
+                        </div>
+                      </form>
+                    </DialogLayout>
+                    {/* Edit week name end */}
+                    <button onClick={() => setEditWeekOpen(true)} className="">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="29"
+                        height="29"
+                        viewBox="0 0 29 29"
+                        fill="none"
+                      >
+                        <circle
+                          cx="14.6641"
+                          cy="14.2275"
+                          r="14"
+                          fill="#172D6E"
+                        />
+                        <path
+                          d="M18.8571 6.82129L21.6209 9.58506L19.514 11.6929L16.7502 8.92912L18.8571 6.82129ZM8.73438 19.7078H11.4981L18.2113 12.9946L15.4476 10.2309L8.73438 16.9441V19.7078Z"
+                          fill="white"
+                        />
+                      </svg>
+                    </button>
+                    {/* Dialog for confirmation start */}
+                    <DialogLayout
+                      open={openConfirmationDialog}
+                      width={500}
+                      bgColor="#3E4DAC"
+                      borderRadius={10}
+                      close={true}
+                    >
+                      <div className=" py-[56px] px-[40px] ">
+                        <h1 className=" text-[#F0E823] text-[28px] font-[700] w-[332px] mx-auto text-center ">
+                          Are you sure you want to delete the week?
+                        </h1>
+                        <div className="mt-[64px] flex items-center justify-between ">
+                          <button
+                            onClick={() => handleWeekDelete(currentWeek?._id)}
+                            className=" py-[16px] px-[64px] rounded-[20px] border-[3px] text-[21px] font-[600] border-[#FFF] text-white  "
                           >
-                            {option?.weekName}
-                          </li>
-                        );
-                    })}
-                  </ul>
+                            Yes
+                          </button>
+                          <button
+                            onClick={() => {
+                              setOpenConfirmationDialog(false);
+                            }}
+                            className=" py-[16px] px-[64px] rounded-[20px] border-[3px] text-[21px] font-[600] border-[#FF557A] bg-[#FF557A]  "
+                          >
+                            No
+                          </button>
+                        </div>
+                      </div>
+                    </DialogLayout>
+                    {/* Dialog for confirmation end */}
+                    <button
+                      onClick={() => setOpenConfirmationDialog(true)}
+                      className=" bg-sky-950 p-[6px] rounded-full"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="19"
+                        viewBox="0 0 24 25"
+                        fill="none"
+                      >
+                        <path
+                          d="M6 7.83105H5V20.8311C5 21.3615 5.21071 21.8702 5.58579 22.2453C5.96086 22.6203 6.46957 22.8311 7 22.8311H17C17.5304 22.8311 18.0391 22.6203 18.4142 22.2453C18.7893 21.8702 19 21.3615 19 20.8311V7.83105H6ZM16.618 4.83105L15 2.83105H9L7.382 4.83105H3V6.83105H21V4.83105H16.618Z"
+                          fill="#ED1010"
+                        />
+                      </svg>
+                    </button>
+                  </>
                 )}
               </div>
-              {Role === "admin" && (
-                <>
-                  {/* Add Week start */}
-                  <DialogLayout
-                    open={addWeekOpen}
-                    setOpen={setAddWeekOpen}
-                    width={440}
-                    borderRadius="15px"
-                    title={
-                      <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
-                        Add Week Name
-                      </p>
-                    }
-                  >
-                    <form
-                      onSubmit={handleAddWeek}
-                      className="px-[32px] py-[24px] "
-                    >
-                      <h1 className=" text-[18px] font-[700] mb-[24px] ">
-                        Week Name
-                      </h1>
-                      <input
-                        type="text"
-                        name="weekName"
-                        placeholder="Eg. Onboarding"
-                        className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
-                      />
-                      <h1 className=" text-[18px] font-[700] my-[24px] ">
-                        Week Starting Date
-                      </h1>
-                      <input
-                        required
-                        className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
-                        name="weekStartDate"
-                        type="date"
-                        placeholder="Eg. Entrepreneurship Lab"
-                      />
-                      <h1 className=" text-[18px] font-[700] my-[24px] ">
-                        Week Ending Date
-                      </h1>
-                      <input
-                        required
-                        className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
-                        name="weekEndDate"
-                        type="date"
-                        placeholder="Eg. Entrepreneurship Lab"
-                      />
-                      <div className="w-full flex items-center justify-center mt-[40px]">
-                        <input
-                          type="submit"
-                          value="Add"
-                          className="py-[15px] cursor-pointer px-[48px] text-[20px] font-[700] rounded-[8px] bg-[#3E4DAC] text-white "
-                        />
-                      </div>
-                    </form>
-                  </DialogLayout>
-                  {/* Add Week end */}
-                  <button
-                    onClick={() => setAddWeekOpen(true)}
-                    className="bg-black rounded-full"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="25"
-                      height="25"
-                      viewBox="0 0 25 25"
-                      fill="none"
-                    >
-                      <path
-                        d="M19.6641 11.2275H13.6641V5.22754H11.6641V11.2275H5.66406V13.2275H11.6641V19.2275H13.6641V13.2275H19.6641V11.2275Z"
-                        fill="white"
-                      />
-                    </svg>
-                  </button>
-                  {/* Edit week name start */}
-                  <DialogLayout
-                    open={editWeekOpen}
-                    setOpen={setEditWeekOpen}
-                    width={440}
-                    borderRadius="15px"
-                    title={
-                      <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
-                        Edit Week Name
-                      </p>
-                    }
-                  >
-                    <form
-                      onSubmit={handleEditWeekName}
-                      className="px-[32px] py-[24px] "
-                    >
-                      <h1 className=" text-[18px] font-[700] mb-[20px] ">
-                        Week Name
-                      </h1>
-                      <input
-                        type="text"
-                        name="weekName"
-                        defaultValue={currentWeek?.weekName}
-                        placeholder="Eg. Onboarding"
-                        className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
-                      />
-                      <h1 className=" text-[18px] font-[700] my-[24px] ">
-                        Week Starting Date
-                      </h1>
-                      <input
-                        required
-                        className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
-                        defaultValue={currentWeek?.weekStartDate}
-                        name="weekStartDate"
-                        type="date"
-                        placeholder="Eg. Entrepreneurship Lab"
-                      />
-                      <h1 className=" text-[18px] font-[700] my-[24px] ">
-                        Week Ending Date
-                      </h1>
-                      <input
-                        required
-                        className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
-                        defaultValue={currentWeek?.weekEndDate}
-                        name="weekEndDate"
-                        type="date"
-                        placeholder="Eg. Entrepreneurship Lab"
-                      />
-                      <div className="w-full flex items-center justify-center mt-[40px]">
-                        <input
-                          type="submit"
-                          value="Update"
-                          className="py-[15px] px-[48px] cursor-pointer text-[20px] font-[700] rounded-[8px] bg-[#3E4DAC] text-white "
-                        />
-                      </div>
-                    </form>
-                  </DialogLayout>
-                  {/* Edit week name end */}
-                  <button onClick={() => setEditWeekOpen(true)} className="">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="29"
-                      height="29"
-                      viewBox="0 0 29 29"
-                      fill="none"
-                    >
-                      <circle cx="14.6641" cy="14.2275" r="14" fill="#172D6E" />
-                      <path
-                        d="M18.8571 6.82129L21.6209 9.58506L19.514 11.6929L16.7502 8.92912L18.8571 6.82129ZM8.73438 19.7078H11.4981L18.2113 12.9946L15.4476 10.2309L8.73438 16.9441V19.7078Z"
-                        fill="white"
-                      />
-                    </svg>
-                  </button>
-                  {/* Dialog for confirmation start */}
-                  <DialogLayout
-                    open={openConfirmationDialog}
-                    width={500}
-                    bgColor="#3E4DAC"
-                    borderRadius={10}
-                    close={true}
-                  >
-                    <div className=" py-[56px] px-[40px] ">
-                      <h1 className=" text-[#F0E823] text-[28px] font-[700] w-[332px] mx-auto text-center ">
-                        Are you sure you want to delete the week?
-                      </h1>
-                      <div className="mt-[64px] flex items-center justify-between ">
-                        <button
-                          onClick={() => handleWeekDelete(currentWeek?._id)}
-                          className=" py-[16px] px-[64px] rounded-[20px] border-[3px] text-[21px] font-[600] border-[#FFF] text-white  "
-                        >
-                          Yes
-                        </button>
-                        <button
-                          onClick={() => {
-                            setOpenConfirmationDialog(false);
-                          }}
-                          className=" py-[16px] px-[64px] rounded-[20px] border-[3px] text-[21px] font-[600] border-[#FF557A] bg-[#FF557A]  "
-                        >
-                          No
-                        </button>
-                      </div>
-                    </div>
-                  </DialogLayout>
-                  {/* Dialog for confirmation end */}
-                  <button
-                    onClick={() => setOpenConfirmationDialog(true)}
-                    className=" bg-sky-950 p-[6px] rounded-full"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="18"
-                      height="19"
-                      viewBox="0 0 24 25"
-                      fill="none"
-                    >
-                      <path
-                        d="M6 7.83105H5V20.8311C5 21.3615 5.21071 21.8702 5.58579 22.2453C5.96086 22.6203 6.46957 22.8311 7 22.8311H17C17.5304 22.8311 18.0391 22.6203 18.4142 22.2453C18.7893 21.8702 19 21.3615 19 20.8311V7.83105H6ZM16.618 4.83105L15 2.83105H9L7.382 4.83105H3V6.83105H21V4.83105H16.618Z"
-                        fill="#ED1010"
-                      />
-                    </svg>
-                  </button>
-                </>
-              )}
+              {Role === "admin" && <BatchConfiguration />}
             </div>
             <div>
               {/* Edit chapter name start */}
@@ -1037,7 +1071,7 @@ const CourseInformation = () => {
                       </div>
                       <div className="sub-items">
                         {chapter?.tasks?.map((task, taskIndex) => (
-                          <div key={task?.taskId} className="relative">
+                          <div key={task?.taskId} className="relative ">
                             <div className="flex items-center justify-between my-[60px] relative z-10 ">
                               <div className="flex items-center">
                                 <div className="w-[85px] flex items-center justify-center ">
@@ -1144,6 +1178,10 @@ const CourseInformation = () => {
                                           "currentWeek",
                                           JSON.stringify(currentWeek)
                                         );
+                                        localStorage.setItem(
+                                          "courseId",
+                                          JSON.stringify(courseData?._id)
+                                        );
                                       }}
                                       to={`/week/${currentWeek?._id}`}
                                       className="text-[#3E4DAC] text-[22px] font-[700] "
@@ -1156,6 +1194,15 @@ const CourseInformation = () => {
                                   </div>
                                 </div>
                               </div>
+                              {Role === "admin" && (
+                                <div className="max-w-[200px] flex gap-2 flex-wrap ">
+                                  {task?.batches?.map((batch) => (
+                                    <h1 className="p-1 bg-slate-200 font-sans rounded-md">
+                                      {batch?.batchName}
+                                    </h1>
+                                  ))}
+                                </div>
+                              )}
                               {Role === "admin" && (
                                 <div className="relative">
                                   <button

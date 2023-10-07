@@ -53,6 +53,21 @@ const Assignment = () => {
   const [preview, setPreview] = useState(false);
   const [submitPermission, setSubmitPermission] = useState(false);
   const [assignmentData, setAssignmentData] = useState({});
+  const [batchesData, setBatchesData] = useState([]);
+  const [selectedBatch, setSelectedBatch] = useState({});
+
+  useEffect(() => {
+    axios
+      .get(
+        `${
+          process.env.REACT_APP_BACKEND_API
+        }/batches/courseId/${localStorage.getItem("courseId")}`
+      )
+      .then((response) => {
+        setBatchesData(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [chapter?.courseId]);
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
@@ -117,6 +132,13 @@ const Assignment = () => {
       skillParameterData: skillParameterData,
       earningParameterData: earningParameterData,
       chapterId: id,
+      courseId: chapter?.courseId,
+      batches: [
+        {
+          batchName: selectedBatch?.batchName,
+          batchId: selectedBatch?._id,
+        },
+      ],
     };
 
     setAssignmentData(manageAssignment);
@@ -127,8 +149,8 @@ const Assignment = () => {
         `${process.env.REACT_APP_BACKEND_API}/tasks/assignments`,
         manageAssignment
       );
-
-      if (newAssignment?.data?.acknowledged) {
+      console.log(newAssignment);
+      if (newAssignment?.data?.result?.acknowledged) {
         toast.success("Assignment added Successfully");
         event.target.reset();
       }
@@ -271,6 +293,9 @@ const Assignment = () => {
             </div>
             {isOpenGeneral && (
               <General
+                batchesData={batchesData}
+                selectedBatch={selectedBatch}
+                setSelectedBatch={setSelectedBatch}
                 instructions={instructions}
                 setInstructions={setInstructions}
                 selectedFile={selectedFile}

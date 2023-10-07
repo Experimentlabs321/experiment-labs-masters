@@ -9,6 +9,9 @@ const General = ({
   instructions,
   setInstructions,
   assignmentData,
+  batchesData,
+  selectedBatch,
+  setSelectedBatch,
 }) => {
   // upload file
   const [dragActive, setDragActive] = useState(true);
@@ -112,7 +115,6 @@ const General = ({
               <div dangerouslySetInnerHTML={{ __html: instructions }} /> */}
             </div>
           </div>
-
           <div>
             <div className="">
               <div className="flex items-center gap-4">
@@ -214,7 +216,6 @@ const General = ({
                           multiple
                         />
                       </div>
-                      
                     </>
                     // <input type="file" id="input-file-upload" onChange={handleFileChange} />
                   )}
@@ -222,6 +223,37 @@ const General = ({
               </div>
             </div>
           </div>
+        </div>
+        <div>
+          <div className="flex items-center gap-4">
+            <p className="h-2 w-2 bg-black rounded-full"></p>
+            <p className="font-bold text-lg me-[36px]">Select Batch</p>
+            <img src={required} />
+          </div>
+          <ul className="flex gap-4 flex-wrap ">
+            {batchesData?.map((option, index) => {
+              return (
+                <>
+                  <li className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] ">
+                    <input
+                      type="radio"
+                      id="student"
+                      name={option?.batchName}
+                      value={option?.batchName}
+                      checked={selectedBatch?.batchName === option?.batchName}
+                      onChange={() => setSelectedBatch(option)}
+                      className=" mb-1"
+                    />
+                    <div className="flex mb-1 items-center">
+                      <label className="ms-4" htmlFor={option?.batchName}>
+                        {option?.batchName}
+                      </label>
+                    </div>
+                  </li>
+                </>
+              );
+            })}
+          </ul>
         </div>
       </div>
     </div>
