@@ -120,6 +120,7 @@ const ManageReading = () => {
       readingMaterial: readingMaterial,
       chapterId: id,
       completionParameter: completionParameter,
+      courseId: chapter?.courseId,
     };
 
     setReadingData(manageReading);

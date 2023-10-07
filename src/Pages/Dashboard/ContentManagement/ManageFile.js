@@ -115,6 +115,7 @@ const ManageFile = () => {
       earningParameterData: earningParameterData,
       chapterId: id,
       completionParameter: completionParameter,
+      courseId: chapter?.courseId,
     };
 
     setFileData(ManageFile);

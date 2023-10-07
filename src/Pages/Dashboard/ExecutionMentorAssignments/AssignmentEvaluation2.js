@@ -1,5 +1,43 @@
 //AssignmentEvaluation2.js
 
+// const userData = {
+//   _id: { $oid: "64fc42bd9af35b7ef285f161" },
+//   name: "Gaurav",
+//   email: "gaurav@experimentlabs.in",
+//   password: "123456",
+//   phone: "8866571882",
+//   organizationId: "64f735ff9af35b7ef2a7c114",
+//   organizationName: "Experiments Labs LTD",
+//   role: "execution mentor",
+//   courseData: [
+//     {
+//       courseId: "id",
+//       courseName: "name",
+//       totalCompletedTask: 4,
+//       batchId: 1,
+//     },
+//   ],
+// };
+
+// const weekData = {
+//   _id: { $oid: "64f97aa7d66a470d37e8ff57" },
+//   courseId: "64f8193adfefb4ac83e0d309",
+//   weekName: "Level 11",
+//   creator: {
+//     name: "Naman Jain",
+//     email: "naman.j@experimentlabs.in",
+//     photoURL: null,
+//   },
+//   organization: {
+//     organizationId: "64f735ff9af35b7ef2a7c114",
+//     organizationName: "Experiments Labs LTD",
+//   },
+//   startAndEndDate: [
+//     { weekStartDate: "2023-11-19", weekEndDate: "2023-11-25", batchId: 1 },
+//     { weekStartDate: "2023-11-20", weekEndDate: "2023-11-27", batchId: 2 },
+//   ],
+// };
+
 import React, { useContext, useState } from "react";
 import Layout from "../Layout";
 import { Link, useParams } from "react-router-dom";
@@ -293,6 +331,27 @@ const AssignmentEvaluation2 = () => {
         toast.error("Result not added ");
         //  event.target.reset();
       }
+
+      const sendData = {
+        participantChapter: {
+          email: assignment?.submitter?.email,
+          participantId: assignment?.submitter?._id,
+          status: "Completed",
+        },
+        participantTask: {
+          participant: {
+            email: assignment?.submitter?.email,
+            participantId: assignment?.submitter?._id,
+            status: "Completed",
+          },
+        },
+      };
+      const submitCompletion = await axios.post(
+        `https://experiment-labs-master-server.vercel.app/chapter/${mainAssignments?.chapterId}/task/${assignment?.taskId}/add-participant/Assignment`,
+        sendData
+      );
+
+      console.log(submitCompletion);
     }
   };
 
@@ -372,24 +431,24 @@ const AssignmentEvaluation2 = () => {
 
     const sendData = {
       participantChapter: {
-        email: userInfo?.email,
-        participantId: userInfo?._id,
+        email: assignment?.submitter?.email,
+        participantId: assignment?.submitter?._id,
         status: "Completed",
       },
       participantTask: {
         participant: {
-          email: userInfo?.email,
-          participantId: userInfo?._id,
+          email: assignment?.submitter?.email,
+          participantId: assignment?.submitter?._id,
           status: "Completed",
         },
       },
     };
     const submitCompletion = await axios.post(
-      `https://experiment-labs-master-server.vercel.app/chapter/${assignment?.chapterId}/task/${assignment?._id}/add-participant/Assignment`,
+      `https://experiment-labs-master-server.vercel.app/chapter/${mainAssignments?.chapterId}/task/${assignment?.taskId}/add-participant/Assignment`,
       sendData
     );
 
-    console.log(submitCompletion);
+    console.log(submitCompletion, sendData);
   };
   const handleSubmitFeedback = async (event) => {
     event.preventDefault();
@@ -431,26 +490,40 @@ const AssignmentEvaluation2 = () => {
 
     const sendData = {
       participantChapter: {
-        email: userInfo?.email,
-        participantId: userInfo?._id,
+        email: assignment?.submitter?.email,
+        participantId: assignment?.submitter?._id,
         status: "Completed",
       },
       participantTask: {
         participant: {
-          email: userInfo?.email,
-          participantId: userInfo?._id,
+          email: assignment?.submitter?.email,
+          participantId: assignment?.submitter?._id,
           status: "Completed",
         },
       },
     };
     const submitCompletion = await axios.post(
-      `https://experiment-labs-master-server.vercel.app/chapter/${assignment?.chapterId}/task/${assignment?._id}/add-participant/Assignment`,
+      `https://experiment-labs-master-server.vercel.app/chapter/${mainAssignments?.chapterId}/task/${assignment?.taskId}/add-participant/Assignment`,
       sendData
     );
 
-    console.log(submitCompletion);
+    console.log(submitCompletion, sendData);
   };
   console.log(assignment);
+  console.log({
+    participantChapter: {
+      email: assignment?.submitter?.email,
+      participantId: assignment?.submitter?._id,
+      status: "Completed",
+    },
+    participantTask: {
+      participant: {
+        email: assignment?.submitter?.email,
+        participantId: assignment?.submitter?._id,
+        status: "Completed",
+      },
+    },
+  });
   return (
     <div>
       <Layout>

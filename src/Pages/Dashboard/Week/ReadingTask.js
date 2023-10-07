@@ -1,5 +1,5 @@
 // import mammoth from "mammoth";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import Quiz from "./SubFile/Shared/Quiz";
 import { AuthContext } from "../../../contexts/AuthProvider";
@@ -13,6 +13,17 @@ const ReadingTask = ({ taskData }) => {
   );
   const [openQuiz, setOpenQuiz] = useState(false);
   console.log(taskData);
+  const [completionStatus, setCompletionStatus] = useState(false);
+
+  useEffect(() => {
+    if (
+      taskData?.participants?.find(
+        (item) => item?.participant?.email === user?.email
+      )
+    )
+      setCompletionStatus(true);
+  }, [taskData, user]);
+
   const handleCompletion = async () => {
     if (
       !taskData?.completionParameter ||
@@ -39,6 +50,7 @@ const ReadingTask = ({ taskData }) => {
       );
       console.log(submitCompletion);
       console.log(sendData);
+      setCompletionStatus(true);
       if (submitCompletion?.data?.acknowledged)
         Swal.fire({
           icon: "success",
@@ -120,24 +132,32 @@ const ReadingTask = ({ taskData }) => {
       </div> */}
 
       <div className="min-h-[72vh] mb-[60px] ">
-        <div className="container mx-auto">
-          <button
-            onClick={() => {
-              handleCompletion();
-            }}
-            className=" bg-green py-2 px-5 my-4 float-right mr-4 rounded-lg text-lg text-white font-bold "
-          >
-            Make as complete <CheckCircleOutlineIcon />
-          </button>
-          {openQuiz && (
-            <Quiz
-              setOpenQuiz={setOpenQuiz}
-              openQuiz={openQuiz}
-              taskData={taskData}
-              questions={taskData?.completionParameter?.questions}
-            />
-          )}
-        </div>
+        {completionStatus ? (
+          <div className="container mx-auto">
+            <button className=" bg-green py-2 px-5 my-4 float-right mr-4 rounded-lg text-lg text-white font-bold ">
+              Completed <CheckCircleOutlineIcon />
+            </button>
+          </div>
+        ) : (
+          <div className="container mx-auto">
+            <button
+              onClick={() => {
+                handleCompletion();
+              }}
+              className=" bg-green py-2 px-5 my-4 float-right mr-4 rounded-lg text-lg text-white font-bold "
+            >
+              Make as complete <CheckCircleOutlineIcon />
+            </button>
+            {openQuiz && (
+              <Quiz
+                setOpenQuiz={setOpenQuiz}
+                openQuiz={openQuiz}
+                taskData={taskData}
+                questions={taskData?.completionParameter?.questions}
+              />
+            )}
+          </div>
+        )}
         {taskData?.additionalFiles && !openQuiz && (
           <iframe
             className="h-[68vh] mx-auto border-x-[30px] mt-[40px] border-t-[30px] border-b-[50px] rounded-lg border-[#292929]"
