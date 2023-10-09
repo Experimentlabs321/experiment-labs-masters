@@ -54,7 +54,8 @@ const Assignment = () => {
   const [submitPermission, setSubmitPermission] = useState(false);
   const [assignmentData, setAssignmentData] = useState({});
   const [batchesData, setBatchesData] = useState([]);
-  const [selectedBatch, setSelectedBatch] = useState({});
+  const [selectedBatches, setSelectedBatches] = useState([]);
+  const [schedule, setSchedule] = useState([]);
 
   useEffect(() => {
     axios
@@ -109,6 +110,48 @@ const Assignment = () => {
         });
   }, [chapter]);
 
+  const handleOptionChangeBatch = (event, optionValue) => {
+    // const optionValue = event.target.value;
+    const isChecked = event.target.checked;
+
+    if (isChecked) {
+      if (selectedBatches) {
+        setSelectedBatches([
+          ...selectedBatches,
+          { batchName: optionValue?.batchName, batchId: optionValue?._id },
+        ]);
+        setSchedule([
+          ...schedule,
+          {
+            batchName: optionValue?.batchName,
+            batchId: optionValue?._id,
+            assignmentStartingDateTime: "",
+            assignmentEndingDateTime: "",
+          },
+        ]);
+      } else {
+        setSelectedBatches([
+          { batchName: optionValue?.batchName, batchId: optionValue?._id },
+        ]);
+        setSchedule([
+          {
+            batchName: optionValue?.batchName,
+            batchId: optionValue?._id,
+            assignmentStartingDateTime: "",
+            assignmentEndingDateTime: "",
+          },
+        ]);
+      }
+    } else {
+      setSelectedBatches(
+        selectedBatches.filter((option) => option?.batchId !== optionValue?._id)
+      );
+      setSchedule(
+        schedule.filter((option) => option?.batchId !== optionValue?._id)
+      );
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     let fileUrl = "";
@@ -133,12 +176,8 @@ const Assignment = () => {
       earningParameterData: earningParameterData,
       chapterId: id,
       courseId: chapter?.courseId,
-      batches: [
-        {
-          batchName: selectedBatch?.batchName,
-          batchId: selectedBatch?._id,
-        },
-      ],
+      batches: selectedBatches,
+      schedule: schedule,
     };
 
     setAssignmentData(manageAssignment);
@@ -294,8 +333,11 @@ const Assignment = () => {
             {isOpenGeneral && (
               <General
                 batchesData={batchesData}
-                selectedBatch={selectedBatch}
-                setSelectedBatch={setSelectedBatch}
+                selectedBatches={selectedBatches}
+                schedule={schedule}
+                setSchedule={setSchedule}
+                handleOptionChangeBatch={handleOptionChangeBatch}
+                setSelectedBatches={setSelectedBatches}
                 instructions={instructions}
                 setInstructions={setInstructions}
                 selectedFile={selectedFile}
