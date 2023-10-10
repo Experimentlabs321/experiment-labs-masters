@@ -160,8 +160,8 @@ const EditAssignment = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    let fileUrl = "";
-    if (selectedFile) fileUrl = await uploadFileToS3(selectedFile);
+    // let fileUrl = "";
+    // if (selectedFile) fileUrl = await uploadFileToS3(selectedFile);
 
     const form = event.target;
 
@@ -177,7 +177,7 @@ const EditAssignment = () => {
       assignmentTotalPointsMarks,
       AssignmentEndingDateTime,
       instructions: instructions,
-      file: fileUrl,
+      file: assignmentData?.file,
       skillParameterData: skillParameterData,
       earningParameterData: earningParameterData,
       chapterId: id,

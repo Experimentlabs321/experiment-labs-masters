@@ -228,6 +228,7 @@ const Dashboard = () => {
               <div className="pt-[40px] px-[30px] hidden lg:inline-block relative">
                 {weeks.map((singleData, i) => (
                   <Level
+                    selectedCourse={selectedCourse}
                     viewAllLevel={viewAllLevel}
                     length={length}
                     onClick={handleCloseViewAllLevel}

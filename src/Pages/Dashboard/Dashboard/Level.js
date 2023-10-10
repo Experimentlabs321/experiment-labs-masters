@@ -1,14 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Lock from "../../../assets/Dashboard/lock.png";
 import DownArrow from "../../../assets/Dashboard/dashboard_arrow-down.png";
 import UpArrow from "../../../assets/Dashboard/dashboard_arrow-up.png";
 import "./style.css";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../../contexts/AuthProvider";
 
-const Level = ({ singleData, i, length, onClick, viewAllLevel }) => {
+const Level = ({
+  singleData,
+  i,
+  length,
+  onClick,
+  viewAllLevel,
+  selectedCourse,
+}) => {
+  const { userInfo } = useContext(AuthContext);
   const [status, setStatus] = useState("");
-  const weekStartDate = new Date(singleData?.weekStartDate);
-  const weekEndDate = new Date(singleData?.weekEndDate);
+  const courseBatchId = userInfo?.courses?.find(
+    (item) => item?.courseId === selectedCourse?._id
+  )?.batchId;
+  const levelScheduleData = singleData?.schedules?.find(
+    (item) => item?.batchId === courseBatchId
+  );
+  const weekStartDate = new Date(levelScheduleData?.weekStartDate);
+  const weekEndDate = new Date(levelScheduleData?.weekEndDate);
   const currentDateTime = new Date(); // Get the current date and time
 
   // Calculate the time difference in milliseconds
@@ -20,7 +35,11 @@ const Level = ({ singleData, i, length, onClick, viewAllLevel }) => {
     if (singleData) {
       if (weekStartDate <= currentDateTime && weekEndDate >= currentDateTime) {
         setStatus("Ongoing");
-      } else if (weekStartDate > currentDateTime) {
+      } else if (
+        weekStartDate > currentDateTime ||
+        (levelScheduleData?.weekStartDate === "" &&
+          levelScheduleData?.weekEndDate === "")
+      ) {
         setStatus("Locked");
       } else {
         setStatus("Completed");
