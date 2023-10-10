@@ -61,6 +61,9 @@ const ManageFile = () => {
   const [submitPermission, setSubmitPermission] = useState(false);
   const [fileData, setFileData] = useState({});
   const [completionParameter, setCompletionParameter] = useState({});
+  const [batchesData, setBatchesData] = useState([]);
+  const [selectedBatches, setSelectedBatches] = useState([]);
+
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
@@ -99,6 +102,32 @@ const ManageFile = () => {
           setCourse(response?.data);
         });
   }, [chapter]);
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_BACKEND_API}/batches/courseId/${chapter?.courseId}`
+      )
+      .then((response) => {
+        setBatchesData(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [chapter]);
+
+  const handleOptionChangeBatch = (event, optionValue) => {
+    // const optionValue = event.target.value;
+    const isChecked = event.target.checked;
+
+    if (isChecked) {
+      setSelectedBatches([
+        ...selectedBatches,
+        { batchName: optionValue?.batchName, batchId: optionValue?._id },
+      ]);
+    } else {
+      setSelectedBatches(
+        selectedBatches.filter((option) => option?.batchId !== optionValue?._id)
+      );
+    }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -116,6 +145,7 @@ const ManageFile = () => {
       chapterId: id,
       completionParameter: completionParameter,
       courseId: chapter?.courseId,
+      batches: selectedBatches,
     };
 
     setFileData(ManageFile);
@@ -321,6 +351,41 @@ const ManageFile = () => {
                     )}
                   </div>
                 </div>
+              </div>
+            </div>
+            <div className="me-20 py-[35px] ps-[40px]">
+              <div>
+                <div className="flex items-center gap-4">
+                  <p className="h-2 w-2 bg-black rounded-full"></p>
+                  <p className="font-bold text-lg me-[36px]">Select Batch</p>
+                  <img src={required} alt="required" />
+                </div>
+                <ul className="flex gap-4 flex-wrap ">
+                  {batchesData?.map((option, index) => {
+                    return (
+                      <>
+                        <li className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] ">
+                          <input
+                            type="checkbox"
+                            id="student"
+                            name={option?.batchName}
+                            value={option?.batchName}
+                            checked={selectedBatches.find(
+                              (item) => item?.batchName === option?.batchName
+                            )}
+                            onChange={(e) => handleOptionChangeBatch(e, option)}
+                            className=" mb-1"
+                          />
+                          <div className="flex mb-1 items-center">
+                            <label className="ms-4" htmlFor={option?.batchName}>
+                              {option?.batchName}
+                            </label>
+                          </div>
+                        </li>
+                      </>
+                    );
+                  })}
+                </ul>
               </div>
             </div>
             <div className="px-4 my-10">

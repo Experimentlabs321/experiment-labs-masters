@@ -241,6 +241,34 @@ const ManageLiveClasses = () => {
 
   useEffect(() => {
     axios
+      .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
+      .then((response) => {
+        setChapter(response?.data);
+        const fetchData = {
+          organizationId: userInfo?.organizationId,
+          courseId: response?.data?.courseId,
+        };
+        if (fetchData && userInfo?.organizationId && chapter?.courseId) {
+          axios
+            .post(
+              `${process.env.REACT_APP_BACKEND_API}/skillCategoriesByCourseId`,
+              fetchData
+            )
+            .then((res) => setSkillCategories(res?.data))
+            .catch((error) => console.error(error));
+          axios
+            .post(
+              `${process.env.REACT_APP_BACKEND_API}/itemCategoryByCourseId`,
+              fetchData
+            )
+            .then((res) => setEarningCategories(res?.data))
+            .catch((error) => console.error(error));
+        }
+      })
+      .catch((error) => console.error(error));
+  }, [id, userInfo, userInfo?.email]);
+  useEffect(() => {
+    axios
       .get(
         `${
           process.env.REACT_APP_BACKEND_API

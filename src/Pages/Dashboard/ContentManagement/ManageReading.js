@@ -128,9 +128,7 @@ const ManageReading = () => {
       ]);
     } else {
       setSelectedBatches(
-        selectedBatches.filter(
-          (option) => option?.batchName !== optionValue?.batchName
-        )
+        selectedBatches.filter((option) => option?.batchId !== optionValue?._id)
       );
     }
   };
@@ -152,6 +150,7 @@ const ManageReading = () => {
       chapterId: id,
       completionParameter: completionParameter,
       courseId: chapter?.courseId,
+      batches: selectedBatches,
     };
 
     setReadingData(manageReading);
@@ -164,7 +163,7 @@ const ManageReading = () => {
       );
       console.log(newTask);
 
-      if (newTask?.data?.acknowledged) {
+      if (newTask?.data?.result?.acknowledged) {
         toast.success("Reading material added Successfully!");
         event.target.reset();
       }
@@ -388,7 +387,7 @@ const ManageReading = () => {
                 <div className="flex items-center gap-4">
                   <p className="h-2 w-2 bg-black rounded-full"></p>
                   <p className="font-bold text-lg me-[36px]">Select Batch</p>
-                  <img src={required} />
+                  <img src={required} alt="required" />
                 </div>
                 <ul className="flex gap-4 flex-wrap ">
                   {batchesData?.map((option, index) => {
