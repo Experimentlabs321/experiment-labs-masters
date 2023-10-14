@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import required from "../../../../../assets/ContentManagement/required.png";
 import TextEditor from "../../../../Shared/TextEditor/TextEditor";
+import ContentStage from "../Shared/ContentStage";
 
 const General = ({
   selectedFile,
@@ -15,6 +16,8 @@ const General = ({
   handleOptionChangeBatch,
   schedule,
   setSchedule,
+  contentStage,
+  setContentStage
 }) => {
   // upload file
   const [dragActive, setDragActive] = useState(true);
@@ -327,6 +330,12 @@ const General = ({
             ))}
           </>
         )}
+        <div className="mb-8">
+          <ContentStage
+            contentStage={contentStage}
+            setContentStage={setContentStage}
+          />
+        </div>
       </div>
     </div>
   );

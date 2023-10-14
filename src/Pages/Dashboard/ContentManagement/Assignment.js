@@ -32,6 +32,7 @@ const Assignment = () => {
 
   const { id } = useParams();
   const [selectedFile, setSelectedFile] = useState(null);
+  const [contentStage, setContentStage] = useState([]);
 
   const toggleDropdownGeneral = () => {
     setisOpenGeneral(!isOpenGeneral);
@@ -60,8 +61,7 @@ const Assignment = () => {
   useEffect(() => {
     axios
       .get(
-        `${
-          process.env.REACT_APP_BACKEND_API
+        `${process.env.REACT_APP_BACKEND_API
         }/batches/courseId/${localStorage.getItem("courseId")}`
       )
       .then((response) => {
@@ -178,6 +178,7 @@ const Assignment = () => {
       courseId: chapter?.courseId,
       batches: selectedBatches,
       schedule: schedule,
+      contentStage
     };
 
     setAssignmentData(manageAssignment);
@@ -342,6 +343,8 @@ const Assignment = () => {
                 setInstructions={setInstructions}
                 selectedFile={selectedFile}
                 setSelectedFile={setSelectedFile}
+                contentStage={contentStage}
+                setContentStage={setContentStage}
               />
             )}
             <div
@@ -359,9 +362,8 @@ const Assignment = () => {
               {isOpenEvaluationParameter && <img src={arrowDown} alt="arrow" />}
 
               <i
-                className={`dropdown-arrow ${
-                  isOpenEvaluationParameter ? "open" : ""
-                }`}
+                className={`dropdown-arrow ${isOpenEvaluationParameter ? "open" : ""
+                  }`}
               ></i>
             </div>
             {isOpenEvaluationParameter && (

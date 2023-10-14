@@ -44,6 +44,7 @@ const EditAssignment = () => {
   const [batchesData, setBatchesData] = useState([]);
   const [selectedBatches, setSelectedBatches] = useState([]);
   const [schedule, setSchedule] = useState([]);
+  const [contentStage, setContentStage] = useState([]);
 
   const [openTask, setOpenTask] = useState(
     JSON.parse(localStorage.getItem("task"))
@@ -103,6 +104,7 @@ const EditAssignment = () => {
           setSelectedFile(response?.data?.file);
           setSkillParameterData(response?.data?.skillParameterData);
           setEarningParameterData(response?.data?.earningParameterData);
+          setContentStage(response?.data?.contentStage === undefined ? [] : response?.data?.contentStage);
         });
   }, [openTask]);
   useEffect(() => {
@@ -183,6 +185,7 @@ const EditAssignment = () => {
       chapterId: id,
       batches: selectedBatches,
       schedule: schedule,
+      contentStage
     };
 
     setAssignmentData(manageAssignment);
@@ -350,6 +353,8 @@ const EditAssignment = () => {
                 setInstructions={setInstructions}
                 selectedFile={selectedFile}
                 setSelectedFile={setSelectedFile}
+                contentStage={contentStage}
+                setContentStage={setContentStage}
               />
             )}
             <div
@@ -367,9 +372,8 @@ const EditAssignment = () => {
               {isOpenEvaluationParameter && <img src={arrowDown} alt="arrow" />}
 
               <i
-                className={`dropdown-arrow ${
-                  isOpenEvaluationParameter ? "open" : ""
-                }`}
+                className={`dropdown-arrow ${isOpenEvaluationParameter ? "open" : ""
+                  }`}
               ></i>
             </div>
             {isOpenEvaluationParameter && (
