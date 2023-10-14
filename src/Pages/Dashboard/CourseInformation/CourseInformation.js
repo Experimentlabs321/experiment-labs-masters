@@ -211,11 +211,8 @@ const CourseInformation = () => {
 
   const handleEditWeekName = async (event) => {
     event.preventDefault();
-    const week = {
-      weekName: event?.target?.weekName?.value,
-      weekStartDate: event?.target?.weekStartDate?.value,
-      weekEndDate: event?.target?.weekEndDate?.value,
-    };
+    const week = { ...currentWeek };
+    delete week._id;
     const newWeek = await axios.put(
       `${process.env.REACT_APP_BACKEND_API}/weeks/${currentWeek?._id}`,
       week
@@ -228,23 +225,24 @@ const CourseInformation = () => {
       // Update the chapterName of the specific chapter in the copied array
       updatedWeeksArray[
         updatedWeeksArray.findIndex((item) => item?._id === currentWeek?._id)
-      ].weekName = week?.weekName;
-      updatedWeeksArray[
-        updatedWeeksArray.findIndex((item) => item?._id === currentWeek?._id)
-      ].weekStartDate = week?.weekStartDate;
-      updatedWeeksArray[
-        updatedWeeksArray.findIndex((item) => item?._id === currentWeek?._id)
-      ].weekEndDate = week?.weekEndDate;
+      ] = currentWeek;
+      // updatedWeeksArray[
+      //   updatedWeeksArray.findIndex((item) => item?._id === currentWeek?._id)
+      // ].weekStartDate = week?.weekStartDate;
+      // updatedWeeksArray[
+      //   updatedWeeksArray.findIndex((item) => item?._id === currentWeek?._id)
+      // ].weekEndDate = week?.weekEndDate;
       // updatedWeeksArray.findIndex((item) => item === currentWeek)
-      const abc = updatedWeeksArray.findIndex(
-        (item) => item?._id === currentWeek?._id
-      );
-      console.log("check -> ", abc);
+      // const abc = updatedWeeksArray.findIndex(
+      //   (item) => item?._id === currentWeek?._id
+      // );
+      // console.log("check -> ", abc);
       // Update the chapters state with the updated array
       setWeeks(updatedWeeksArray);
       setEditWeekOpen(false);
       event.target.reset();
     }
+    console.log(currentWeek);
   };
 
   const handleWeekDelete = async (id) => {
@@ -842,7 +840,7 @@ const CourseInformation = () => {
                     <DialogLayout
                       open={editWeekOpen}
                       setOpen={setEditWeekOpen}
-                      width={440}
+                      width={900}
                       borderRadius="15px"
                       title={
                         <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
@@ -861,10 +859,13 @@ const CourseInformation = () => {
                           type="text"
                           name="weekName"
                           defaultValue={currentWeek?.weekName}
+                          onChange={(e) => {
+                            currentWeek.weekName = e.target.value;
+                          }}
                           placeholder="Eg. Onboarding"
                           className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
                         />
-                        <h1 className=" text-[18px] font-[700] my-[24px] ">
+                        {/* <h1 className=" text-[18px] font-[700] my-[24px] ">
                           Week Starting Date
                         </h1>
                         <input
@@ -885,7 +886,103 @@ const CourseInformation = () => {
                           name="weekEndDate"
                           type="date"
                           placeholder="Eg. Entrepreneurship Lab"
-                        />
+                        /> */}
+                        <>
+                          <h1 className=" text-[26px] font-[700] mt-[30px] mb-[4px] ">
+                            Schedule List
+                          </h1>
+
+                          {currentWeek?.schedules?.map(
+                            (singleSchedule, index) => {
+                              return (
+                                <div
+                                  key={index}
+                                  className="tag-container flex flex-wrap w-full px-1 bg-slate-100 rounded-lg my-2 py-3 "
+                                >
+                                  <div className="basis-full px-2 flex items-center justify-between">
+                                    <h1 className=" text-[20px] font-[700]  ">
+                                      {singleSchedule?.batch}
+                                    </h1>
+                                  </div>
+                                  <div className="basis-1/2 px-2">
+                                    <h1 className=" text-[18px] font-[700] mt-[16px] mb-[8px] ">
+                                      Week Starting Date
+                                    </h1>
+                                    <input
+                                      className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+                                      defaultValue={
+                                        singleSchedule?.weekStartDate
+                                      }
+                                      onChange={(e) => {
+                                        let updatedWeek = currentWeek;
+                                        updatedWeek.schedules[
+                                          index
+                                        ].weekStartDate = e.target.value;
+                                        setCurrentWeek(updatedWeek);
+                                      }}
+                                      name={`weekStartDate${index}`}
+                                      type="date"
+                                      placeholder="Eg. Entrepreneurship Lab"
+                                    />
+                                  </div>
+                                  <div className="basis-1/2 px-2">
+                                    <h1 className=" text-[18px] font-[700] mt-[16px] mb-[8px] ">
+                                      Week Ending Date
+                                    </h1>
+                                    <input
+                                      className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+                                      defaultValue={singleSchedule?.weekEndDate}
+                                      onChange={(e) => {
+                                        let updatedWeek = currentWeek;
+                                        updatedWeek.schedules[
+                                          index
+                                        ].weekEndDate = e.target.value;
+                                        setCurrentWeek(updatedWeek);
+                                      }}
+                                      name={`weekEndDate${index}`}
+                                      type="date"
+                                      placeholder="Eg. Entrepreneurship Lab"
+                                    />
+                                  </div>
+                                  {/* <div className="basis-1/2 px-2">
+                                  <h1 className=" text-[18px] font-[700] mt-[16px] mb-[8px] ">
+                                    Password
+                                  </h1>
+                                  <input
+                                    type="password"
+                                    required
+                                    defaultValue={participant?.password}
+                                    onChange={(e) => {
+                                      participantsData[index].password =
+                                        e.target.value;
+                                    }}
+                                    name="password"
+                                    placeholder="Password"
+                                    className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+                                  />
+                                </div>
+                                <div className="basis-1/2 px-2">
+                                  <h1 className=" text-[18px] font-[700] mt-[16px] mb-[8px] ">
+                                    Phone
+                                  </h1>
+                                  <input
+                                    type="text"
+                                    required
+                                    defaultValue={participant?.phone}
+                                    onChange={(e) => {
+                                      participantsData[index].phone =
+                                        e.target.value;
+                                    }}
+                                    name="phone"
+                                    placeholder="Phone"
+                                    className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+                                  />
+                                </div> */}
+                                </div>
+                              );
+                            }
+                          )}
+                        </>
                         <div className="w-full flex items-center justify-center mt-[40px]">
                           <input
                             type="submit"
