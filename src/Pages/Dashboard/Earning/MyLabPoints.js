@@ -28,7 +28,7 @@ const MyLabPoints = ({
     LabCategoryBlueButton,
   ];
 
-  const totalPoints= localStorage.getItem("EarningTotalPoint")
+  const totalPoints = localStorage.getItem("EarningTotalPoint");
   return (
     <div>
       <div className="w-[340px] md:w-[490px]  min-w-[250px] md:min-w-min md:h-[575px] h-[500px] relative">
