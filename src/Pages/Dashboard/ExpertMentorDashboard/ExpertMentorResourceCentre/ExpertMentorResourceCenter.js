@@ -1,6 +1,6 @@
 //ExpertMentorResourceCentre
 
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Layout from "../../Layout";
 import "react-circular-progressbar/dist/styles.css";
 import SearchIcon from '@mui/icons-material/Search';
@@ -12,6 +12,10 @@ import MyRecordings from "./MyRecordings";
 import MyLabs from "./MyLabs";
 import OtherRecordings from "./OtherRecordings";
 import MyCourseContent from "./MyCourseContent";
+import axios from "axios";
+import { AuthContext } from "../../../../contexts/AuthProvider";
+import CoursesOptions from "./CoursesOptions";
+import BatchesOptions from "./BatchesOptions";
 
 
 const ExpertMentorResourceCentre = () => {
@@ -69,6 +73,44 @@ const ExpertMentorResourceCentre = () => {
     };
 
 
+    const { userInfo } = useContext(AuthContext);
+    const [courses, setCourses] = useState([]);
+    const [batches, setBatches] = useState([]);
+    const [selectedCourseId, setSelectedCourseId] = useState('');
+
+    // Function to handle option change
+    const handleCourseChange = async (event) => {
+        const courseId = event?.target.value;
+        setSelectedCourseId(courseId);
+
+        try {
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_API}/batches/courseId/${courseId}`);
+            setBatches(response?.data);
+            console.log("response =========>", response?.data);
+        } catch (error) {
+            // console.error("Error fetching data:", error);
+        }
+
+
+    };
+
+
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const response = await axios.get(`${process.env.REACT_APP_BACKEND_API}/courses/organizations/${userInfo?.organizationId}`);
+                // console.log("response =========>", response?.data);
+                setCourses(response?.data);
+            } catch (error) {
+                // console.error("Error fetching data:", error);
+            }
+        }
+        fetchCourses();
+    }, [userInfo?.organizationId]);
+
+
+
+
 
     return (
         <div>
@@ -76,34 +118,17 @@ const ExpertMentorResourceCentre = () => {
 
                 <div className="px-20  py-5 flex items-center  fixed w-[100%] justify-between bg-[#FFF] top-0  border-b ">
                     <div className="flex gap-10">
-                        <p>
-                            <select className=" py-3 px-5 text-[#676767] text-lg font-semibold" name="" id=""
-                                style={{
-                                    borderRadius: "8px",
-                                    background: "#F8F9FE",
-                                    boxShadow: "2px 2px 10px 0px rgba(149, 156, 225, 0.50)"
-                                }}
-                            >
-                                <option value="Product lab">Product lab </option>
-                                <option value="saab">Saab</option>
-                                <option value="opel">Opel</option>
-                                <option value="audi">Audi</option>
-                            </select>
-                        </p>
-                        <p>
-                            <select className=" py-3 px-5 text-[#676767] text-lg font-semibold" name="" id=""
-                                style={{
-                                    borderRadius: "8px",
-                                    background: "#F8F9FE",
-                                    boxShadow: "2px 2px 10px 0px rgba(149, 156, 225, 0.50)"
-                                }}
-                            >
-                                <option value="Batch -1 ">Batch -1  </option>
-                                <option value="saab">Saab</option>
-                                <option value="opel">Opel</option>
-                                <option value="audi">Audi</option>
-                            </select>
-                        </p>
+
+                        <CoursesOptions
+                            courses={courses}
+                            selectedCourseId={selectedCourseId}
+                            handleCourseChange={handleCourseChange}
+                        />
+
+                       <BatchesOptions
+                            batches={batches}
+                       />
+
                     </div>
 
 
@@ -295,7 +320,7 @@ const ExpertMentorResourceCentre = () => {
                     (selectedTab2 === 'Other Recordings') && (
                         <>
                             <div className="mx-10 my-10 ">
-                                <OtherRecordings/>
+                                <OtherRecordings />
                             </div>
 
                         </>
@@ -343,7 +368,7 @@ const ExpertMentorResourceCentre = () => {
                     (selectedTab3 === 'My Labs') && (
                         <>
                             <div className="mx-10 my-10 ">
-                                <MyLabs/>
+                                <MyLabs />
                             </div>
 
                         </>
@@ -353,7 +378,7 @@ const ExpertMentorResourceCentre = () => {
                     (selectedTab3 === 'My Course Content') && (
                         <>
                             <div className="mx-10 my-10 ">
-                                <MyCourseContent/>
+                                <MyCourseContent />
                             </div>
 
                         </>
