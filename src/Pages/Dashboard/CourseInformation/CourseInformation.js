@@ -1172,7 +1172,7 @@ const CourseInformation = () => {
                             <div className="flex items-center justify-between my-[60px] relative z-10 ">
                               <div className="flex items-center">
                                 <div className="w-[85px] flex items-center justify-center ">
-                                  {Role === "user" && (
+                                  {Role !== "admin" && (
                                     <>
                                       {task?.participants?.find(
                                         (item) =>
