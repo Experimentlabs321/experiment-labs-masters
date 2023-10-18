@@ -404,7 +404,7 @@ const EditReading = () => {
                             id="student"
                             name={option?.batchName}
                             value={option?.batchName}
-                            checked={selectedBatches.find(
+                            checked={selectedBatches?.find(
                               (item) => item?.batchName === option?.batchName
                             )}
                             onChange={(e) => handleOptionChangeBatch(e, option)}
