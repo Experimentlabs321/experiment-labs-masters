@@ -49,6 +49,7 @@ const CourseInformation = () => {
   const [selectedOption, setSelectedOption] = useState("Category");
   const options = ["Category name"];
   const { user, userInfo } = useContext(AuthContext);
+  const [toggleButton, setToggleButton] = useState(false);
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -426,6 +427,29 @@ const CourseInformation = () => {
       ],
     },
   ]);
+  useEffect(() => {
+    // Function to update toggleButton based on device size
+    function updateToggleButton() {
+      if (window.innerWidth <= 768) {
+        // Set to false for small devices
+        setToggleButton(false);
+      } else {
+        // Set to true for large devices
+        setToggleButton(true);
+      }
+    }
+
+    // Initial call to set toggleButton based on the device size
+    updateToggleButton();
+
+    // Event listener to update toggleButton when the window is resized
+    window.addEventListener('resize', updateToggleButton);
+
+    // Clean up the event listener when the component is unmounted
+    return () => {
+      window.removeEventListener('resize', updateToggleButton);
+    };
+  }, []);
   // const containerRef = useRef(null);
   // let sortable;
 
@@ -681,9 +705,8 @@ const CourseInformation = () => {
           </div> */}
           <div className="px-4">
             <div
-              className={`relative inline-block ${
-                Role === "admin" ? "mt-[40px]" : "mt-[140px]"
-              }  w-[400px] mb-[10px] flex items-center gap-[32px] `}
+              className={`relative inline-block ${Role === "admin" ? "mt-[40px]" : "mt-[140px]"
+                }  w-[400px] mb-[10px] flex items-center gap-[32px] `}
             >
               <div className="">
                 <button
@@ -1038,10 +1061,11 @@ const CourseInformation = () => {
                       <div className="sub-items">
                         {chapter?.tasks?.map((task, taskIndex) => (
                           <div key={task?.taskId} className="relative">
-                            <div className="flex items-center justify-between my-[60px] relative z-10 ">
-                              <div className="flex items-center">
-                                <div className="w-[85px] flex items-center justify-center ">
-                                  {Role === "user" && (
+                            <div className="flex items-center  justify-between my-[60px] relative z-10 ">
+                              <div className="flex w-full items-center  ">
+
+                                <div className="lg:w-[85px] flex items-center justify-center ">
+                                  {Role === "user" && toggleButton && (
                                     <>
                                       {task?.participants?.find(
                                         (item) =>
@@ -1072,89 +1096,127 @@ const CourseInformation = () => {
                                     </>
                                   )}
                                 </div>
-                                <div className="flex items-center">
-                                  {task?.taskType === "Reading" && (
-                                    <img
-                                      className="ml-[60px] mr-[30px] "
-                                      src={ReadingTask}
-                                      alt="Task"
-                                    />
-                                  )}
-                                  {task?.taskType === "Classes" && (
-                                    <img
-                                      className="ml-[60px] mr-[30px] "
-                                      src={ClassesTask}
-                                      alt="Task"
-                                    />
-                                  )}
-                                  {task?.taskType === "Assignment" && (
-                                    <img
-                                      className="ml-[60px] mr-[30px] "
-                                      src={AssignmentTask}
-                                      alt="Task"
-                                    />
-                                  )}
-                                  {task?.taskType === "Quiz" && (
-                                    <img
-                                      className="ml-[60px] mr-[30px] "
-                                      src={QuizTask}
-                                      alt="Task"
-                                    />
-                                  )}
-                                  {task?.taskType === "Live Test" && (
-                                    <img
-                                      className="ml-[60px] mr-[30px] "
-                                      src={LiveTestTask}
-                                      alt="Task"
-                                    />
-                                  )}
-                                  {task?.taskType === "Video" && (
-                                    <img
-                                      className="ml-[60px] mr-[30px] "
-                                      src={VideoTask}
-                                      alt="Task"
-                                    />
-                                  )}
-                                  {task?.taskType === "Audio" && (
-                                    <img
-                                      className="ml-[60px] mr-[30px] "
-                                      src={AudioTask}
-                                      alt="Task"
-                                    />
-                                  )}
-                                  {task?.taskType === "Files" && (
-                                    <img
-                                      className="ml-[60px] mr-[30px] "
-                                      src={FilesTask}
-                                      alt="Task"
-                                    />
-                                  )}
-                                  <div className="">
-                                    <Link
-                                      onClick={() => {
-                                        localStorage.setItem(
-                                          "chapter",
-                                          chapter?.chapterName
-                                        );
-                                        localStorage.setItem(
-                                          "task",
-                                          JSON.stringify(task)
-                                        );
-                                        localStorage.setItem(
-                                          "currentWeek",
-                                          JSON.stringify(currentWeek)
-                                        );
-                                      }}
-                                      to={`/week/${currentWeek?._id}`}
-                                      className="text-[#3E4DAC] text-[22px] font-[700] "
-                                    >
-                                      {task?.taskName}
-                                    </Link>
-                                    <p className="text-[#626262] text-[18px] font-[500] ">
-                                      {task?.taskType}
-                                    </p>
+                                <div className="flex w-full">
+                                  <div className="flex w-full items-center">
+                                    {task?.taskType === "Reading" && (
+                                      <img
+                                        className="lg:ml-[60px] lg:mr-[30px] mr-[20px]  w-[40px] lg:w-[65px] "
+                                        src={ReadingTask}
+                                        alt="Task"
+                                      />
+                                    )}
+                                    {task?.taskType === "Classes" && (
+                                      <img
+                                        className="lg:ml-[60px] lg:mr-[30px] mr-[20px] w-[40px] lg:w-[65px] "
+                                        src={ClassesTask}
+                                        alt="Task"
+                                      />
+                                    )}
+                                    {task?.taskType === "Assignment" && (
+                                      <img
+                                        className="lg:ml-[60px] lg:mr-[30px] mr-[20px]  w-[40px] lg:w-[65px] "
+                                        src={AssignmentTask}
+                                        alt="Task"
+                                      />
+                                    )}
+                                    {task?.taskType === "Quiz" && (
+                                      <img
+                                        className="lg:ml-[60px] lg:mr-[30px] mr-[20px] w-[40px] lg:w-[65px] "
+                                        src={QuizTask}
+                                        alt="Task"
+                                      />
+                                    )}
+                                    {task?.taskType === "Live Test" && (
+                                      <img
+                                        className="lg:ml-[60px] lg:mr-[30px] mr-[20px] w-[40px] lg:w-[65px] "
+                                        src={LiveTestTask}
+                                        alt="Task"
+                                      />
+                                    )}
+                                    {task?.taskType === "Video" && (
+                                      <img
+                                        className="lg:ml-[60px] lg:mr-[30px] mr-[20px] w-[40px] lg:w-[65px] "
+                                        src={VideoTask}
+                                        alt="Task"
+                                      />
+                                    )}
+                                    {task?.taskType === "Audio" && (
+                                      <img
+                                        className="lg:ml-[60px] lg:mr-[30px] mr-[20px] w-[40px] lg:w-[65px] "
+                                        src={AudioTask}
+                                        alt="Task"
+                                      />
+                                    )}
+                                    {task?.taskType === "Files" && (
+                                      <img
+                                        className="lg:ml-[60px] lg:mr-[30px] mr-[20px] w-[40px] lg:w-[65px] "
+                                        src={FilesTask}
+                                        alt="Task"
+                                      />
+                                    )}
+                                    <div className="">
+                                      <Link
+                                        onClick={() => {
+                                          localStorage.setItem(
+                                            "chapter",
+                                            chapter?.chapterName
+                                          );
+                                          localStorage.setItem(
+                                            "task",
+                                            JSON.stringify(task)
+                                          );
+                                          localStorage.setItem(
+                                            "currentWeek",
+                                            JSON.stringify(currentWeek)
+                                          );
+                                        }}
+                                        to={`/week/${currentWeek?._id}`}
+                                        className="text-[#3E4DAC] text-[22px] font-[700] "
+                                      >
+                                        {task?.taskName}
+                                      </Link>
+                                      <p className="text-[#626262] text-[18px] font-[500] ">
+                                        {task?.taskType}
+                                      </p>
+
+                                    </div>
                                   </div>
+                                  <div className="w-[85px] flex items-center justify-center ">
+                                    {Role === "user" && !toggleButton && (
+                                      <>
+                                        {task?.participants?.find(
+                                          (item) =>
+                                            item?.participantId === userInfo?._id
+                                        ) ? (
+                                          <>
+                                            {task?.participants?.find(
+                                              (item) =>
+                                                item?.participantId ===
+                                                userInfo?._id
+                                            )?.status === "Completed" ? (
+                                              <img
+                                                src={Completed}
+                                                alt="Completed"
+                                              />
+                                            ) : (
+                                              <img
+                                                src={InProgress}
+                                                alt="InProgress"
+                                              />
+                                            )}
+                                          </>
+                                        ) : (
+                                          <>
+                                            <img src={Pending} alt="Pending" />
+                                          </>
+                                        )}
+                                      </>
+                                    )}
+                                  </div>
+
                                 </div>
+
+
                               </div>
                               {Role === "admin" && (
                                 <div className="relative">
@@ -1222,7 +1284,7 @@ const CourseInformation = () => {
                               )}
                             </div>
                             {chapter?.tasks?.length - 1 !== taskIndex && (
-                              <hr className="w-[2px] pt-[150px] bg-[#C7C7C7] absolute bottom-[-100px] left-[174px] " />
+                              <hr className="w-[2px] pt-[150px] bg-[#C7C7C7] absolute bottom-[-100px] lg:left-[174px] left-[18px] " />
                             )}
                           </div>
                         ))}

@@ -782,17 +782,17 @@ const Layout = ({ children }) => {
                           <li>
                             <Link
                               style={
-                                location.pathname === "/feedback "
+                                location.pathname === "/feedback"
                                   ? {
                                       background:
                                         "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
                                     }
                                   : {}
                               }
-                              to="/feedback "
+                              to="/feedback"
                               className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
                             >
-                              {location.pathname === "/feedback " ? (
+                              {location.pathname === "/feedback" ? (
                                 <img className="" src={feather} alt="icon" />
                               ) : (
                                 <img className="" src={feather} alt="icon" />
@@ -801,7 +801,7 @@ const Layout = ({ children }) => {
                               <span
                                 className={`${
                                   location.pathname === "/feedback"
-                                    ? "text-[#2EB0FB]"
+                                    ? "text-[#fff]"
                                     : "text-[#8F8F8F]"
                                 } ml-3 text-[18px] font-[500]`}
                               >

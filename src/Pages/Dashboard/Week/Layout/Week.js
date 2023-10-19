@@ -53,7 +53,7 @@ const data = [
 
 const Week = () => {
   const { id } = useParams();
-  const [toggleButton, setToggleButton] = useState(true);
+  const [toggleButton, setToggleButton] = useState(false);
   const [week, setWeek] = useState(data[0]);
   const [lectureNo, setLectureNo] = useState(0);
   const [tasksNo, setTasksNo] = useState(0);
@@ -69,18 +69,45 @@ const Week = () => {
       .get(`${process.env.REACT_APP_BACKEND_API}/chapters/${id}`)
       .then((response) => {
         setChapters(response?.data);
+
+        console.log(response?.data)
         // setOpenTopic(response?.data[0]?.chapterName);
       })
       .catch((error) => console.error(error));
   }, [id]);
    console.log(chapters)
+   //const [toggleButton, setToggleButton] = useState(false);
+
+  useEffect(() => {
+    // Function to update toggleButton based on device size
+    function updateToggleButton() {
+      if (window.innerWidth <= 768) {
+        // Set to false for small devices
+        setToggleButton(false);
+      } else {
+        // Set to true for large devices
+        setToggleButton(true);
+      }
+    }
+
+    // Initial call to set toggleButton based on the device size
+    updateToggleButton();
+
+    // Event listener to update toggleButton when the window is resized
+    window.addEventListener('resize', updateToggleButton);
+
+    // Clean up the event listener when the component is unmounted
+    return () => {
+      window.removeEventListener('resize', updateToggleButton);
+    };
+  }, []); 
   return (
     <>
       <MyHelmet>Dashboard</MyHelmet>
       <div>
         <div className=" font-sansita">
           <Navbar />
-          <div className="flex overflow-hidden">
+          <div className="lg:flex overflow-hidden">
             <Aside
               openTopic={openTopic}
               setOpenTopic={setOpenTopic}

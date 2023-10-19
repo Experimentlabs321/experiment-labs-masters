@@ -1,4 +1,5 @@
-//SelectRedemptionCategory
+//SelectFeedbackCategory
+
 
 import axios from "axios";
 import React, { useContext, useState } from "react";
@@ -6,15 +7,17 @@ import { toast } from "react-hot-toast";
 import Swal from "sweetalert2";
 
 
-import { AuthContext } from "../../../../contexts/AuthProvider";
-import DialogLayout from "../../Shared/DialogLayout";
 
 
-const SelectRedemptionCategory = ({
-  setRedemptionCategories,
-  redemptionCategories,
-  selectedRedemptionCategory,
-  setSelectedRedemptionCategory,
+import { AuthContext } from "../../../contexts/AuthProvider";
+import DialogLayout from "../Shared/DialogLayout";
+
+
+const SelectFeedbackCategory = ({
+  setFeedbackCategories,
+  feedbackCategories,
+  selectedFeedbackCategory,
+  setSelectedFeedbackCategory,
   setCategoryThreeDot,
   categoryThreeDot,
   selectedCourse,
@@ -32,9 +35,10 @@ const SelectRedemptionCategory = ({
       return;
     }
     const newCategory = await axios.post(
-      `${process.env.REACT_APP_BACKEND_API}/redemption_categories`,
+      `${process.env.REACT_APP_BACKEND_API}/feedback_categories`,
       {
-        categoryName: `category ${redemptionCategories?.length + 1}`,
+        categoryName: `category ${feedbackCategories?.length + 1}`,
+        rating : "5",
         courseId: selectedCourse?._id,
         organizationId: userInfo?.organizationId,
       }
@@ -42,12 +46,16 @@ const SelectRedemptionCategory = ({
 
     if (newCategory?.data?.acknowledged) {
       toast.success("Category added Successfully");
-      setRedemptionCategories([
-        ...redemptionCategories,
-        { categoryName: `category ${redemptionCategories?.length + 1}` },
+      setFeedbackCategories([
+        ...feedbackCategories,
+        { categoryName: `category ${feedbackCategories?.length + 1}`,
+        rating : "5",
+      
+      },
       ]);
-      setSelectedRedemptionCategory({
-        categoryName: `category ${redemptionCategories?.length + 1}`,
+      setSelectedFeedbackCategory({
+        categoryName: `category ${feedbackCategories?.length + 1}`,
+        rating : "5",
       });
     }
   };
@@ -56,9 +64,10 @@ const SelectRedemptionCategory = ({
     event.preventDefault();
     const category = {
       categoryName: event?.target?.categoryName?.value,
+      rating: event?.target?.rating?.value,
     };
     if (
-      redemptionCategories?.find(
+      feedbackCategories?.find(
         (item) => item?.categoryName === category?.categoryName
       )
     ) {
@@ -72,31 +81,34 @@ const SelectRedemptionCategory = ({
     }
     const update = {
       organizationId: userInfo?.organizationId,
-      oldCategoryName: selectedRedemptionCategory?.categoryName,
+      oldCategoryName: selectedFeedbackCategory?.categoryName,
       newCategoryName: event?.target?.categoryName?.value,
+      newRating: event?.target?.rating?.value,
       courseId: selectedCourse?._id,
     };
     console.log({
       organizationId: userInfo?.organizationId,
-      oldCategoryName: selectedRedemptionCategory?.categoryName,
+      oldCategoryName: selectedFeedbackCategory?.categoryName,
       newCategoryName: event?.target?.categoryName?.value,
+      oldRating: selectedFeedbackCategory?.rating,
+      newRating: event?.target?.rating?.value,
       courseId: selectedCourse?._id,
     });
     const updatedCategory = await axios.put(
-      `${process.env.REACT_APP_BACKEND_API}/redemption_categories/categoryName`,
+      `${process.env.REACT_APP_BACKEND_API}/feedback_categories/categoryName`,
       update
     );
 
     if (updatedCategory?.data?.acknowledged) {
       toast.success("Category Updated Successfully");
-      const updatedCategoriesArray = [...redemptionCategories];
+      const updatedCategoriesArray = [...feedbackCategories];
       const selectedIndex = updatedCategoriesArray.findIndex(
         (category) =>
-          category.categoryName === selectedRedemptionCategory.categoryName
+          category.categoryName === selectedFeedbackCategory.categoryName
       );
-      updatedCategoriesArray[selectedIndex].categoryName =
-        category.categoryName;
-      setRedemptionCategories(updatedCategoriesArray);
+      updatedCategoriesArray[selectedIndex].categoryName = category.categoryName;
+      updatedCategoriesArray[selectedIndex].rating = category.rating;
+      setFeedbackCategories(updatedCategoriesArray);
       setEditCategoryOpen(false);
       event.target.reset();
     }
@@ -119,7 +131,7 @@ const SelectRedemptionCategory = ({
           categoryName: name,
           courseId: selectedCourse?._id,
         });
-        fetch(`${process.env.REACT_APP_BACKEND_API}/redemption/deleteCategory`, {
+        fetch(`${process.env.REACT_APP_BACKEND_API}/feedback/deleteCategory`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -140,11 +152,11 @@ const SelectRedemptionCategory = ({
             console.log(result);
             if (result?.acknowledged) {
               toast.success("Category Deleted Successfully!");
-              const remainingCategories = redemptionCategories.filter(
+              const remainingCategories = feedbackCategories.filter(
                 (category) => category?.categoryName !== name
               );
-              setRedemptionCategories(remainingCategories);
-              setSelectedRedemptionCategory(remainingCategories[0]);
+              setFeedbackCategories(remainingCategories);
+              setSelectedFeedbackCategory(remainingCategories[0]);
             }
           })
           .catch((error) => {
@@ -178,8 +190,17 @@ const SelectRedemptionCategory = ({
             type="text"
             id="categoryName"
             name="categoryName"
-            defaultValue={selectedRedemptionCategory?.categoryName}
+            defaultValue={selectedFeedbackCategory?.categoryName}
             placeholder="Category"
+            className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+          />
+          <h1 className=" text-[18px] font-[700] mb-[20px] ">Rating</h1>
+          <input
+            type="text"
+            id="rating"
+            name="rating"
+            defaultValue={selectedFeedbackCategory?.rating}
+            placeholder="Rating"
             className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
           />
           <div className="w-full flex items-center justify-center mt-[40px]">
@@ -193,20 +214,22 @@ const SelectRedemptionCategory = ({
       </DialogLayout>
       {/* Edit category name end */}
       <h1 className=" text-[#737373] text-[24px] font-[500] mt-5 mb-2 ">
-        Redemption Category
+        Feedback Category
       </h1>
       <div className="flex flex-wrap gap-y-2 items-center">
-        {redemptionCategories?.map((item, index) => (
+        {feedbackCategories?.map((item, index) => (
           <button
             key={index}
             className={`px-2 py-3 relative text-base border rounded-md font-semibold flex items-center min-w-[150px] justify-between gap-6 mr-1 ${
-              selectedRedemptionCategory?.categoryName === item?.categoryName
+              selectedFeedbackCategory?.categoryName === item?.categoryName
                 ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
                 : "text-[#949494]"
             }`}
-            onClick={() => setSelectedRedemptionCategory(item)}
+            onClick={() => setSelectedFeedbackCategory(item)}
           >
             {item?.categoryName}
+            <br/>
+              Rating :  {item?.rating}
             <button
               onBlur={() => setCategoryThreeDot(false)}
               onClick={() => setCategoryThreeDot(!categoryThreeDot)}
@@ -233,7 +256,7 @@ const SelectRedemptionCategory = ({
                 />
               </svg>
             </button>
-            {selectedRedemptionCategory?.categoryName === item?.categoryName &&
+            {selectedFeedbackCategory?.categoryName === item?.categoryName &&
               categoryThreeDot && (
                 <ul className="absolute right-0 top-[53px] w-max border  bg-white p-2 rounded-[8px] mt-1 transform translate-y-[-10px] shadow-[0px_2px_4px_0px_#00000026] z-10 ">
                   <li
@@ -249,7 +272,7 @@ const SelectRedemptionCategory = ({
                     className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
                     onMouseDown={() => {
                       handleCategoryDelete(
-                        selectedRedemptionCategory?.categoryName
+                        selectedFeedbackCategory?.categoryName
                       );
                     }}
                   >
@@ -259,7 +282,7 @@ const SelectRedemptionCategory = ({
               )}
           </button>
         ))}
-        {!redemptionCategories[0] && (
+        {!feedbackCategories[0] && (
           <div
             className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
           >
@@ -277,4 +300,4 @@ const SelectRedemptionCategory = ({
   );
 };
 
-export default SelectRedemptionCategory;
+export default SelectFeedbackCategory;

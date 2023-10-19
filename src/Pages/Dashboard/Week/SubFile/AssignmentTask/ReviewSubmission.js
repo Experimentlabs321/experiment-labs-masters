@@ -324,7 +324,7 @@ const ReviewSubmission = (taskData) => {
     <div>
       {
         (submittedResult?.submitter?.result) && (
-          <div className=" grid grid-cols-12 ">
+          <div className=" lg:grid grid-cols-12 ">
             <div className=" col-span-8 px-4 py-[45px] ">
               {
                 (submittedResult?.submitter?.result?.review) && (

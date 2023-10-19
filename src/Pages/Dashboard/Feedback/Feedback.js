@@ -1,4 +1,4 @@
-//PointsRedemptions.js
+
 
 import React, { useContext, useEffect, useState } from 'react';
 import Layout from '../Layout';
@@ -13,32 +13,39 @@ import editimg from '../../../assets/PointsRedemptions/edit.svg';
 import deleteimg from '../../../assets/PointsRedemptions/delete.svg';
 import Filterimg from '../../../assets/PointsRedemptions/Filter.svg';
 import undo from '../../../assets/PointsRedemptions/Sync-retry.svg';
-import RedemptionCategory from './RedemptionCategory';
-import { AuthContext } from '../../../contexts/AuthProvider';
+import ToggleOnIcon from '@mui/icons-material/ToggleOn';
+import ToggleOffIcon from '@mui/icons-material/ToggleOff';
+//import RedemptionCategory from './RedemptionCategory';
+
 import axios from 'axios';
 import Swal from "sweetalert2";
 import { toast } from "react-hot-toast";
 import AddSharpIcon from "@mui/icons-material/AddSharp";
-import SelectRedemptionCategory from './RedemptionLogicsComponents/SelectRedemptionCategory';
-import AddRedemptionPointItemForm from './RedemptionLogicsComponents/AddRedemptionPointItemForm';
+//import SelectRedemptionCategory from './RedemptionLogicsComponents/SelectRedemptionCategory';
+//import AddRedemptionPointItemForm from './RedemptionLogicsComponents/AddRedemptionPointItemForm';
 import UploadingImg from "../../../assets/PointsRedemptions/uploadimg.png";
-import EditRedemptionItemForm from './RedemptionLogicsComponents/EditRedemptionItemForm';
+import { AuthContext } from '../../../contexts/AuthProvider';
+import SelectFeedbackCategory from './SelectFeedbackCategory';
+import AddFeedbackItemForm from './AddFeedbackItemForm';
+import EditFeedbackItemForm from './EditFeedbackItemForm';
+//import EditRedemptionItemForm from './RedemptionLogicsComponents/EditRedemptionItemForm';
 
-const RedemptionLogics = () => {
+const Feedback = () => {
   const { userInfo } = useContext(AuthContext);
   const [courses, setCourses] = useState([]);
-  const [orgRedemptionLogics, setOrgRedemptionLogics] = useState([]);
+  const [orgFeedback, setOrgFeedback] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(
     courses?.length > 0 ? courses[0] : {}
   );
-  const [redemptionCategories, setRedemptionCategories] = useState([]);
-  const [selectedRedemptionCategory, setSelectedRedemptionCategory] = useState({});
+  const [feedbackCategories, setFeedbackCategories] = useState([]);
+  const [selectedFeedbackCategory, setSelectedFeedbackCategory] = useState({});
   const [categoryThreeDot, setCategoryThreeDot] = useState(false);
-  const [redemptionThreeDot, setRedemptionThreeDot] = useState(false);
-  const [selectedRedemptionLogic, setSelectedRedemptionLogic] = useState({});
-  const [isOpenRedemptionItemAddForm, setIsOpenRedemptionItemAddForm] =
+  const [FeedbackThreeDot, setFeedbackThreeDot] = useState(false);
+  const [selectedFeedback, setSelectedFeedback] = useState({});
+  const [isToggled, setIsToggled] = useState(false);
+  const [isOpenFeedbackItemAddForm, setIsOpenFeedbackItemAddForm] =
     useState(false);
-  const [isOpenRedemptionItemEditForm, setIsOpenRedemptionItemEditForm] =
+  const [isOpenFeedbackItemEditForm, setIsOpenFeedbackItemEditForm] =
     useState(false);
 
   useEffect(() => {
@@ -57,40 +64,47 @@ const RedemptionLogics = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_API}/redemption_categories/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_BACKEND_API}/feedback_categories/${userInfo?.organizationId}`
       )
       .then((response) => {
-        setOrgRedemptionLogics(response?.data?.courses);
+        setOrgFeedback(response?.data?.courses);
         const findCategories = response?.data?.courses?.find(
           (course) => course?.courseId === selectedCourse?._id
         );
-        setRedemptionCategories([...findCategories?.categories]);
-        setSelectedRedemptionCategory({ ...findCategories?.categories[0] });
+
+        if(findCategories){
+          setIsToggled(true)
+        }
+        else {
+          setIsToggled(false)
+        }
+        setFeedbackCategories([...findCategories?.categories]);
+        setSelectedFeedbackCategory({ ...findCategories?.categories[0] });
       })
       .catch((error) => console.error(error));
   }, [userInfo, selectedCourse]);
 
   const handleSelectCourse = (item) => {
     setSelectedCourse(item);
-    const findCategories = orgRedemptionLogics?.find(
+    const findCategories = orgFeedback?.find(
       (course) => course?.courseId === item?._id
     );
     if (findCategories) {
-      setRedemptionCategories(findCategories?.categories);
-      setSelectedRedemptionCategory(findCategories?.categories[0]);
+      setFeedbackCategories(findCategories?.categories);
+      setSelectedFeedbackCategory(findCategories?.categories[0]);
     } else {
-      setRedemptionCategories([]);
-      setSelectedRedemptionCategory({});
+      setFeedbackCategories([]);
+      setSelectedFeedbackCategory({});
     }
-    setIsOpenRedemptionItemAddForm(false);
+    setIsOpenFeedbackItemAddForm(false);
   };
 
   const handleItemDelete = async (name) => {
     const deleteData = {
       organizationId: userInfo?.organizationId,
-      categoryName: selectedRedemptionCategory?.categoryName,
+      categoryName: selectedFeedbackCategory?.categoryName,
       courseId: selectedCourse?._id,
-      redemptionItemName: name,
+      feedbackItemName: name,
     };
     console.log(deleteData);
     await Swal.fire({
@@ -103,7 +117,7 @@ const RedemptionLogics = () => {
       confirmButtonText: "Delete",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        fetch(`${process.env.REACT_APP_BACKEND_API}/deleteRedemptionItem`, {
+        fetch(`${process.env.REACT_APP_BACKEND_API}/deleteFeedbackItem`, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
@@ -115,12 +129,12 @@ const RedemptionLogics = () => {
             if (result?.ok) {
               toast.success("Item Deleted Successfully!");
               const remainingItems =
-                selectedRedemptionCategory?.redemptionItems?.filter(
-                  (item) => item?.redemptionItemName !== name
+                selectedFeedbackCategory?.feedbackItems?.filter(
+                  (item) => item?.feedbackItemName !== name
                 );
-              setSelectedRedemptionCategory({
-                categoryName: selectedRedemptionCategory?.categoryName,
-                redemptionItems: remainingItems,
+              setSelectedFeedbackCategory({
+                categoryName: selectedFeedbackCategory?.categoryName,
+                feedbackItems: remainingItems,
               });
             }
           })
@@ -132,65 +146,31 @@ const RedemptionLogics = () => {
     });
   };
 
+  //// Toggled
+  const buttonStyle = {
+    padding: '10px 20px',
+    // backgroundColor: isToggled ? 'blue' : '#ccc',
+    border: 'none',
+    outline: 'none',
+    cursor: 'pointer',
+    fontSize: '16px',
+    color: isToggled ? 'blue' : '#8F8F8F'
+  };
+
+  const handleToggle = () => {
+    setIsToggled(!isToggled);
+  };
+
 
 
   return (
     <div>
       <Layout>
-        {/*   <div className='flex items-center justify-center gap-7 pt-20 lg:pt-10 '>
-                    <div className="UserManagement origin-top-left rotate-[-0.51deg] text-zinc-500 text-[30px] font-medium">Redemption Logics</div>
-                    <div className="Input w-[425px] h-16 relative bg-slate-100 rounded-[40px] shadow-inner">
-                        <input className="Search w-[329px] left-[32px] top-[12px] absolute text-zinc-500 text-[20px] font-light leading-10 bg-transparent focus:outline-0" placeholder='Search' />
-                        <div className="Button w-10 h-10 left-[373px] top-[12px] absolute bg-zinc-500 rounded-[32px] shadow">
-                            <SearchIcon className="Search1 w-6 h-6 left-[8px] top-[8px] absolute text-white" />
-                        </div>
-                    </div>
-                    <Badge badgeContent={1} color='error'>
-                        <NotificationsIcon color="action" />
-                    </Badge>
-                </div>
-                <div className='flex justify-end mx-[75px] my-9'>
-                    <img src={undo} ></img>
 
-                </div>
-                <div className='flex justify-between mx-10'>
-
-                    <div className='flex justify-between items-center '>
-                        <input className='me-2 text-[#737373] h-[20px] ' type="checkbox" id="" name="" value="" />
-                        <p className='font-semibold text-[#000000]'>Select All</p>
-                    </div>
-
-                    <div className='flex items-center '>
-                        <p className='font-semibold  text-[#000000] px-4 py-2'>Select Category</p>
-                        <div className=" flex gap-2  border  rounded-lg h-[40px]  px-2 ms-5 text-[#535353] ">
-
-                            <select
-                                required
-                                className="w-full border-0 focus:outline-0"
-                                name="option"
-                                id="option"
-                            >
-
-                                <option className="" value="Student">Select Level</option>
-                                <option value="Parent"></option>
-                                <option value="Counselor"></option>
-                                <option value="Others"></option>
-                            </select>
-                        </div>
-                    </div>
-                    <div className='flex gap-5 items-center '>
-                        <p className='font-semibold text-[#000000]'>Upload</p>
-                        <img className='h-[70px] w-[70px]' src={updateimg}></img>
-                        <p className='font-semibold text-[#000000] me-3'>Edit</p>
-                        <img className='h-[35px] w-[35px] bg-[#404040] rounded-full p-1' src={editimg}></img>
-                        <p className='font-semibold text-[#000000] me-3'>Delete</p>
-                        <img className='h-[35px] w-[35px] bg-[#E70000] rounded-full p-1 ' src={deleteimg}></img>
-                    </div>
-                </div> */}
 
         <div className="flex items-center justify-between container mx-auto px-4 gap-7 pt-20 lg:pt-10 ">
           <div className="UserManagement origin-top-left rotate-[-0.51deg] text-zinc-500 text-[30px] font-medium">
-            Redemption Logics
+            Feedback
           </div>
           <div className="Input w-[425px] h-16 relative bg-slate-100 rounded-[40px] shadow-inner">
             <input
@@ -222,8 +202,8 @@ const RedemptionLogics = () => {
                 <button
                   key={index}
                   className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 ${selectedCourse?._id === item?._id
-                      ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
-                      : "text-[#949494]"
+                    ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
+                    : "text-[#949494]"
                     }`}
                   onClick={() => handleSelectCourse(item)}
                 >
@@ -232,51 +212,72 @@ const RedemptionLogics = () => {
               ))}
             </div>
           </div>
-          <SelectRedemptionCategory
-            setRedemptionCategories={setRedemptionCategories}
-            redemptionCategories={redemptionCategories}
-            selectedRedemptionCategory={selectedRedemptionCategory}
-            setSelectedRedemptionCategory={setSelectedRedemptionCategory}
-            setCategoryThreeDot={setCategoryThreeDot}
-            categoryThreeDot={categoryThreeDot}
-            selectedCourse={selectedCourse}
-          />
+          <div className='flex items-center gap-5 mt-5'>
+            <p className='text-xl font-medium text-zinc-500'>Set Feedbacks : </p>
+            <button style={buttonStyle} onClick={handleToggle}>
+              {isToggled ? <ToggleOnIcon style={{ fontSize: "60px" }} /> : <ToggleOffIcon style={{ fontSize: "60px" }} />}
+            </button>
+          </div>
+
+
+          {
+            (isToggled) && (
+
+              <SelectFeedbackCategory
+                setFeedbackCategories={setFeedbackCategories}
+                feedbackCategories={feedbackCategories}
+                selectedFeedbackCategory={selectedFeedbackCategory}
+                setSelectedFeedbackCategory={setSelectedFeedbackCategory}
+                setCategoryThreeDot={setCategoryThreeDot}
+                categoryThreeDot={categoryThreeDot}
+                selectedCourse={selectedCourse}
+              />
+            )
+          }
+
         </div>
         <div className="px-4 mt-[40px] mb-[20px] grid grid-cols-6 gap-4">
-          <div
-            onClick={() => {
-              if (!redemptionCategories[0]) {
-                Swal.fire({
-                  icon: "error",
-                  title: "Oops...",
-                  text: "Please add at least one category!",
-                });
-                return;
-              }
-              setIsOpenRedemptionItemAddForm(true);
-              setIsOpenRedemptionItemEditForm(false);
-            }}
-            className=" bg-[#DBDBDB] border w-full flex flex-col justify-center items-center mt-2 rounded-2xl cursor-pointer z-0"
-            style={{ boxShadow: " 0px 4px 4px 0px rgba(0, 0, 0, 0.25)" }}
-          >
-            <div className=" flex justify-center items-center text-[250px] font-thin text-[#ffffff] py-3">
-              <AddSharpIcon sx={{ fontSize: 150 }} />
-            </div>
-            <div className="text-[#8F8F8F] pb-5  mt-[-10px] font-medium text-base">
-              Add Details
-            </div>
-          </div>
-          {selectedRedemptionCategory?.redemptionItems?.map((item) => (
+          {
+            (isToggled) && (
+              <div
+                onClick={() => {
+                  if (!feedbackCategories[0]) {
+                    Swal.fire({
+                      icon: "error",
+                      title: "Oops...",
+                      text: "Please add at least one category!",
+                    });
+                    return;
+                  }
+                  setIsOpenFeedbackItemAddForm(true);
+                  setIsOpenFeedbackItemEditForm(false);
+                }}
+                className=" bg-[#DBDBDB] border w-full flex flex-col justify-center items-center mt-2 rounded-2xl cursor-pointer z-0"
+                style={{ boxShadow: " 0px 4px 4px 0px rgba(0, 0, 0, 0.25)" }}
+              >
+                <div className=" flex justify-center items-center text-[250px] font-thin text-[#ffffff] py-3">
+                  <AddSharpIcon sx={{ fontSize: 150 }} />
+                </div>
+                <div className="text-[#8F8F8F] pb-5  mt-[-10px] font-medium text-base">
+                  Add Details
+                </div>
+              </div>
+
+            )
+
+          }
+
+          {selectedFeedbackCategory?.feedbackItems?.map((item) => (
             <div
               className=" bg-[#fff] w-full flex flex-col justify-between items-center mt-2 min-h-[210px] rounded-2xl cursor-pointer border relative "
               style={{ boxShadow: " 0px 4px 4px 0px rgba(0, 0, 0, 0.25)" }}
             >
               <button
                 onClick={() => {
-                  setRedemptionThreeDot(!redemptionThreeDot);
-                  setSelectedRedemptionLogic(item);
+                  setFeedbackThreeDot(!FeedbackThreeDot);
+                  setSelectedFeedback(item);
                 }}
-                onBlur={() => setRedemptionThreeDot(false)}
+                onBlur={() => setFeedbackThreeDot(false)}
                 className="absolute top-[2px] right-[2px] px-3 py-2 rounded-full hover:bg-slate-100"
               >
                 <svg
@@ -300,16 +301,16 @@ const RedemptionLogics = () => {
                   />
                 </svg>
               </button>
-              {selectedRedemptionLogic?.redemptionItemName ===
-                item?.redemptionItemName &&
-                redemptionThreeDot && (
+              {selectedFeedback?.feedbackItemName ===
+                item?.feedbackItemName &&
+                FeedbackThreeDot && (
                   <ul className="absolute right-0 top-[40px] w-max border  bg-white p-2 rounded-[8px] mt-1 transform translate-y-[-10px] shadow-[0px_2px_4px_0px_#00000026] z-10 ">
                     <li
                       className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
                       onMouseDown={() => {
-                        setSelectedRedemptionLogic(item);
-                        setIsOpenRedemptionItemEditForm(true);
-                        setIsOpenRedemptionItemAddForm(false);
+                        setSelectedFeedback(item);
+                        setIsOpenFeedbackItemEditForm(true);
+                        setIsOpenFeedbackItemAddForm(false);
                       }}
                     >
                       Edit Item
@@ -317,7 +318,7 @@ const RedemptionLogics = () => {
                     <li
                       className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
                       onMouseDown={() =>
-                        handleItemDelete(item?.redemptionItemName)
+                        handleItemDelete(item?.feedbackItemName)
                       }
                     >
                       Delete Item
@@ -325,7 +326,7 @@ const RedemptionLogics = () => {
                   </ul>
                 )}
               <h1 className=" text-[#737373] text-[16px] font-[700] mt-[18px] px-5 text-center ">
-                {item?.redemptionItemName}
+                {item?.feedbackItemName}
               </h1>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -347,42 +348,39 @@ const RedemptionLogics = () => {
             </div>
           ))}
         </div>
-        {isOpenRedemptionItemAddForm && (
-          <AddRedemptionPointItemForm
-            setIsOpenRedemptionItemAddForm={setIsOpenRedemptionItemAddForm}
+        {isOpenFeedbackItemAddForm && (
+          <AddFeedbackItemForm
+            setIsOpenFeedbackItemAddForm={setIsOpenFeedbackItemAddForm}
             UploadingImg={UploadingImg}
-            selectedRedemptionCategory={selectedRedemptionCategory}
-            redemptionCategories={redemptionCategories}
-            setSelectedRedemptionCategory={setSelectedRedemptionCategory}
-            setRedemptionCategories={setRedemptionCategories}
-            selectedCourse={selectedCourse}
-            userInfo={userInfo}
-            courseId={selectedCourse?._id}
-          />
-        )}
-        
-        {isOpenRedemptionItemEditForm && selectedRedemptionLogic?.redemptionItemName && (
-          <EditRedemptionItemForm
-            selectedRedemptionLogic={selectedRedemptionLogic}
-            setIsOpenRedemptionItemEditForm={setIsOpenRedemptionItemEditForm}
-            setIsOpenRedemptionItemAddForm={setIsOpenRedemptionItemAddForm}
-            UploadingImg={UploadingImg}
-            selectedRedemptionCategory={selectedRedemptionCategory}
-            redemptionCategories={redemptionCategories}
-            setSelectedRedemptionCategory={setSelectedRedemptionCategory}
-            setRedemptionCategories={setRedemptionCategories}
+            selectedFeedbackCategory={selectedFeedbackCategory}
+            feedbackCategories={feedbackCategories}
+            setSelectedFeedbackCategory={setSelectedFeedbackCategory}
+            setFeedbackCategories={setFeedbackCategories}
             selectedCourse={selectedCourse}
             userInfo={userInfo}
             courseId={selectedCourse?._id}
           />
         )}
 
+        {isOpenFeedbackItemEditForm && selectedFeedback?.feedbackItemName && (
+          <EditFeedbackItemForm
+            selectedFeedback={selectedFeedback}
+            setIsOpenFeedbackItemEditForm={setIsOpenFeedbackItemEditForm}
+            setIsOpenFeedbackItemAddForm={setIsOpenFeedbackItemAddForm}
+            UploadingImg={UploadingImg}
+            selectedFeedbackCategory={selectedFeedbackCategory}
+            feedbackCategories={feedbackCategories}
+            setSelectedFeedbackCategory={setSelectedFeedbackCategory}
+            setFeedbackCategories={setFeedbackCategories}
+            selectedCourse={selectedCourse}
+            userInfo={userInfo}
+            courseId={selectedCourse?._id}
+          />
+        )}
 
 
-        {/*   <div>
-                    <RedemptionCategory />
-                 
-                </div> */}
+
+
 
 
       </Layout>
@@ -390,4 +388,4 @@ const RedemptionLogics = () => {
   );
 };
 
-export default RedemptionLogics;
+export default Feedback;

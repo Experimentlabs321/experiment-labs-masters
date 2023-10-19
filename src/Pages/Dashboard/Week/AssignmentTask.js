@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Instructions from "./SubFile/AssignmentTask/Instructions";
 import Submission from "./SubFile/AssignmentTask/Submission";
 import ReviewSubmission from "./SubFile/AssignmentTask/ReviewSubmission";
@@ -9,6 +9,25 @@ import { AuthContext } from "../../../contexts/AuthProvider";
 const AssignmentTask = ({ taskData }) => {
   const { userInfo } = useContext(AuthContext);
   const [view, setView] = useState("Instructions");
+
+  const [isFixed, setIsFixed] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 200) {
+        setIsFixed(true);
+      } else {
+        setIsFixed(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
     <div>
       <div className="px-4">
@@ -18,7 +37,7 @@ const AssignmentTask = ({ taskData }) => {
         </h1>
       </div>
       {taskData?.file && (
-        <div className="p-4 mt-[15px]">
+        <div  className="p-4 mt-[15px] ">
           <a
             className="p-4 bg-blue rounded-lg text-white font-bold"
             id="downloadButton"
@@ -30,7 +49,7 @@ const AssignmentTask = ({ taskData }) => {
         </div>
       )}
       <div className=" border-b-[1px] mt-[40px] ">
-        <div className="px-4">
+        <div className={`flex px-4 ${isFixed && window.innerWidth <= 768 ? 'fixed top-[100px] bg-white' : ''}`} style={window.innerWidth <= 768 ? { overflowY: 'scroll', scrollbarWidth: 'thin', scrollbarColor: 'darkgray lightgray' } : {}}>
           <button
             onClick={() => setView("Instructions")}
             className={`${

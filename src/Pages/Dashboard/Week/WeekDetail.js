@@ -9,7 +9,7 @@ import LiveTestTask from "./LiveTestTask";
 import VideoTask from "./VideoTask";
 import AudioTask from "./AudioTask";
 import FilesTask from "./FilesTask";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 
 const skillsCategories = [
@@ -113,6 +113,8 @@ const WeekDetail = ({
   const [currentWeek, setCurrentWeek] = useState(
     JSON.parse(localStorage.getItem("currentWeek"))
   );
+  const { id } = useParams();
+  console.log(id)
   const [taskData, setTaskData] = useState({});
   const handleNext = () => {
     if (week?.lecture[lectureNo]?.tasks?.length === tasksNo + 1) {
@@ -320,7 +322,10 @@ const WeekDetail = ({
           <ClassesTask taskData={taskData} />
         )}
         {openTask?.taskType === "Assignment" && (
-          <AssignmentTask taskData={taskData} />
+          <AssignmentTask 
+          taskData={taskData} 
+          chapters = {chapters}
+          />
         )}
         {openTask?.taskType === "Reading" && (
           <ReadingTask taskData={taskData} />
