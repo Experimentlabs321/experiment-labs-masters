@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import required from "../../../../../assets/ContentManagement/required.png";
 import TextEditor from "../../../../Shared/TextEditor/TextEditor";
+import ContentStage from "../Shared/ContentStage";
 
 const General = ({
   selectedFile,
@@ -9,6 +10,14 @@ const General = ({
   instructions,
   setInstructions,
   assignmentData,
+  batchesData,
+  selectedBatches,
+  setSelectedBatches,
+  handleOptionChangeBatch,
+  schedule,
+  setSchedule,
+  contentStage,
+  setContentStage
 }) => {
   // upload file
   const [dragActive, setDragActive] = useState(true);
@@ -44,7 +53,7 @@ const General = ({
     setSelectedFile(file);
   };
 
-  console.log(assignmentData);
+  console.log(schedule);
   return (
     <div>
       <div className="dropdown-menu mt-[71px] mb-[45px] border-b-2 ">
@@ -112,7 +121,6 @@ const General = ({
               <div dangerouslySetInnerHTML={{ __html: instructions }} /> */}
             </div>
           </div>
-
           <div>
             <div className="">
               <div className="flex items-center gap-4">
@@ -214,7 +222,6 @@ const General = ({
                           multiple
                         />
                       </div>
-                      
                     </>
                     // <input type="file" id="input-file-upload" onChange={handleFileChange} />
                   )}
@@ -222,6 +229,112 @@ const General = ({
               </div>
             </div>
           </div>
+        </div>
+        <div className="mb-5">
+          <div className="flex items-center gap-4">
+            <p className="h-2 w-2 bg-black rounded-full"></p>
+            <p className="font-bold text-lg me-[36px]">Select Batch</p>
+            <img src={required} />
+          </div>
+          <ul className="flex gap-4 flex-wrap ">
+            {batchesData?.map((option, index) => {
+              return (
+                <>
+                  <li className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] ">
+                    <input
+                      type="checkbox"
+                      id="student"
+                      name={option?.batchName}
+                      value={option?.batchName}
+                      checked={selectedBatches?.find(
+                        (item) => item?.batchName === option?.batchName
+                      )}
+                      onChange={(e) => handleOptionChangeBatch(e, option)}
+                      className=" mb-1"
+                    />
+                    <div className="flex mb-1 items-center">
+                      <label className="ms-4" htmlFor={option?.batchName}>
+                        {option?.batchName}
+                      </label>
+                    </div>
+                  </li>
+                </>
+              );
+            })}
+          </ul>
+        </div>
+        {schedule && (
+          <>
+            {schedule?.map((singleSchedule, index) => (
+              <>
+                <h1 className="text-xl font-bold">
+                  {singleSchedule?.batchName}
+                </h1>
+                <div className="flex">
+                  <div className="mb-12 basis-1/2 flex flex-col">
+                    <div className="flex items-center gap-4">
+                      <p className="h-2 w-2 bg-black rounded-full"></p>
+                      <p className="font-bold text-lg me-[36px]">
+                        {" "}
+                        Assignment Starting Date and Time{" "}
+                      </p>
+                      <img src={required} alt="required" />
+                    </div>
+
+                    <input
+                      required
+                      defaultValue={
+                        singleSchedule
+                          ? singleSchedule?.assignmentStartingDateTime
+                          : ""
+                      }
+                      onChange={(e) => {
+                        schedule[index].assignmentStartingDateTime =
+                          e.target.value;
+                      }}
+                      className="mt-6 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                      name={`${singleSchedule?.batchId}AssignmentStartingDateTime`}
+                      type="datetime-local"
+                      placeholder="Eg. Entrepreneurship Lab"
+                    />
+                  </div>
+                  <div className="mb-12 basis-1/2 flex flex-col">
+                    <div className="flex items-center gap-4">
+                      <p className="h-2 w-2 bg-black rounded-full"></p>
+                      <p className="font-bold text-lg me-[36px]">
+                        {" "}
+                        Assignment Ending Date and Time{" "}
+                      </p>
+                      <img src={required} alt="required" />
+                    </div>
+
+                    <input
+                      required
+                      defaultValue={
+                        singleSchedule
+                          ? singleSchedule?.assignmentEndingDateTime
+                          : ""
+                      }
+                      onChange={(e) => {
+                        schedule[index].assignmentEndingDateTime =
+                          e.target.value;
+                      }}
+                      className="mt-6 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                      name={`${singleSchedule?.batchId}AssignmentEndingDateTime`}
+                      type="datetime-local"
+                      placeholder="Eg. Entrepreneurship Lab"
+                    />
+                  </div>
+                </div>
+              </>
+            ))}
+          </>
+        )}
+        <div className="mb-8">
+          <ContentStage
+            contentStage={contentStage}
+            setContentStage={setContentStage}
+          />
         </div>
       </div>
     </div>

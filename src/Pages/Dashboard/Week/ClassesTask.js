@@ -92,6 +92,8 @@ const ClassesTask = ({ taskData }) => {
     console.log(submitCompletion);
   };
 
+  console.log(taskData);
+
   return (
     <div>
       <div

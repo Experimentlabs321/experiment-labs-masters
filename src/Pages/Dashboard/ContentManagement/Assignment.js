@@ -32,6 +32,7 @@ const Assignment = () => {
 
   const { id } = useParams();
   const [selectedFile, setSelectedFile] = useState(null);
+  const [contentStage, setContentStage] = useState([]);
 
   const toggleDropdownGeneral = () => {
     setisOpenGeneral(!isOpenGeneral);
@@ -53,6 +54,21 @@ const Assignment = () => {
   const [preview, setPreview] = useState(false);
   const [submitPermission, setSubmitPermission] = useState(false);
   const [assignmentData, setAssignmentData] = useState({});
+  const [batchesData, setBatchesData] = useState([]);
+  const [selectedBatches, setSelectedBatches] = useState([]);
+  const [schedule, setSchedule] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_BACKEND_API
+        }/batches/courseId/${localStorage.getItem("courseId")}`
+      )
+      .then((response) => {
+        setBatchesData(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [chapter?.courseId]);
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
@@ -94,6 +110,48 @@ const Assignment = () => {
         });
   }, [chapter]);
 
+  const handleOptionChangeBatch = (event, optionValue) => {
+    // const optionValue = event.target.value;
+    const isChecked = event.target.checked;
+
+    if (isChecked) {
+      if (selectedBatches) {
+        setSelectedBatches([
+          ...selectedBatches,
+          { batchName: optionValue?.batchName, batchId: optionValue?._id },
+        ]);
+        setSchedule([
+          ...schedule,
+          {
+            batchName: optionValue?.batchName,
+            batchId: optionValue?._id,
+            assignmentStartingDateTime: "",
+            assignmentEndingDateTime: "",
+          },
+        ]);
+      } else {
+        setSelectedBatches([
+          { batchName: optionValue?.batchName, batchId: optionValue?._id },
+        ]);
+        setSchedule([
+          {
+            batchName: optionValue?.batchName,
+            batchId: optionValue?._id,
+            assignmentStartingDateTime: "",
+            assignmentEndingDateTime: "",
+          },
+        ]);
+      }
+    } else {
+      setSelectedBatches(
+        selectedBatches.filter((option) => option?.batchId !== optionValue?._id)
+      );
+      setSchedule(
+        schedule.filter((option) => option?.batchId !== optionValue?._id)
+      );
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     let fileUrl = "";
@@ -117,6 +175,10 @@ const Assignment = () => {
       skillParameterData: skillParameterData,
       earningParameterData: earningParameterData,
       chapterId: id,
+      courseId: chapter?.courseId,
+      batches: selectedBatches,
+      schedule: schedule,
+      contentStage
     };
 
     setAssignmentData(manageAssignment);
@@ -127,8 +189,8 @@ const Assignment = () => {
         `${process.env.REACT_APP_BACKEND_API}/tasks/assignments`,
         manageAssignment
       );
-
-      if (newAssignment?.data?.acknowledged) {
+      console.log(newAssignment);
+      if (newAssignment?.data?.result?.acknowledged) {
         toast.success("Assignment added Successfully");
         event.target.reset();
       }
@@ -271,10 +333,18 @@ const Assignment = () => {
             </div>
             {isOpenGeneral && (
               <General
+                batchesData={batchesData}
+                selectedBatches={selectedBatches}
+                schedule={schedule}
+                setSchedule={setSchedule}
+                handleOptionChangeBatch={handleOptionChangeBatch}
+                setSelectedBatches={setSelectedBatches}
                 instructions={instructions}
                 setInstructions={setInstructions}
                 selectedFile={selectedFile}
                 setSelectedFile={setSelectedFile}
+                contentStage={contentStage}
+                setContentStage={setContentStage}
               />
             )}
             <div
@@ -292,9 +362,8 @@ const Assignment = () => {
               {isOpenEvaluationParameter && <img src={arrowDown} alt="arrow" />}
 
               <i
-                className={`dropdown-arrow ${
-                  isOpenEvaluationParameter ? "open" : ""
-                }`}
+                className={`dropdown-arrow ${isOpenEvaluationParameter ? "open" : ""
+                  }`}
               ></i>
             </div>
             {isOpenEvaluationParameter && (

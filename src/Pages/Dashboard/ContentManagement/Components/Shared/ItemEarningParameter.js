@@ -42,7 +42,7 @@ const ItemEarningParameter = ({
       );
     }
   };
-  const handleOptionChangeItemName = (category, event) => {
+  const handleOptionChangeItemName = (category, item, event) => {
     const optionValue = event.target.value;
     const isChecked = event.target.checked;
 
@@ -52,7 +52,11 @@ const ItemEarningParameter = ({
     if (isChecked) {
       setSelectedItems([
         ...selectedItems,
-        { earningItemName: optionValue, itemValue: 0 },
+        {
+          earningItemName: optionValue,
+          itemValue:
+            item?.itemEarningValue === "Automated" ? item?.itemValue : 0,
+        },
       ]);
       // setSelectedData(
       //   selectedData.filter(
@@ -67,7 +71,11 @@ const ItemEarningParameter = ({
           categoryName: category?.categoryName,
           earningItems: [
             ...findCategory?.earningItems,
-            { earningItemName: optionValue, itemValue: 0 },
+            {
+              earningItemName: optionValue,
+              itemValue:
+                item?.itemEarningValue === "Automated" ? item?.itemValue : 0,
+            },
           ],
         },
       ]);
@@ -337,7 +345,7 @@ const ItemEarningParameter = ({
                                     i?.earningItemName === item?.earningItemName
                                 )}
                                 onChange={(e) =>
-                                  handleOptionChangeItemName(category, e)
+                                  handleOptionChangeItemName(category, item, e)
                                 }
                                 className=" mb-1"
                               />

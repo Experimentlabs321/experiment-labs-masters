@@ -183,10 +183,11 @@ const LabPoints = () => {
   const itemValue = Object.values(itemCategorySum);
   //const newEarningItemDataLabels = Object.keys(earningItemResult);
 
-  const [redemptionAccessCollection, setRedemptionAccessCollection] = useState();
+  const [redemptionAccessCollection, setRedemptionAccessCollection] =
+    useState();
   const [redemptionAccessSum, setRedemptionAccessSum] = useState();
 
-  console.log(userInfo.organizationId)
+  console.log(userInfo.organizationId);
 
   useEffect(() => {
     axios
@@ -194,39 +195,33 @@ const LabPoints = () => {
         `${process.env.REACT_APP_BACKEND_API}/getRedemptionAccess/${userInfo?.organizationId}/${userInfo?._id}`
       )
       .then((response) => {
-        const AllAccessItems = response?.data.accessItems
-        const RedemptionItem = {}
-      /*   AllAccessItems.forEach((item) => {
+        const AllAccessItems = response?.data.accessItems;
+        const RedemptionItem = {};
+        /*   AllAccessItems.forEach((item) => {
           RedemptionItem[item.redemptionItemName]= +(item.itemValue);
           //  RedemptionItem[item.redemptionItemName]= item.itemValue;
           
         }) */
         const earningSum = AllAccessItems.reduce(
-          (sum, item) => sum + (+(item.itemValue)),
+          (sum, item) => sum + +item.itemValue,
           0
         );
-          
+
         setRedemptionAccessCollection(AllAccessItems);
         setRedemptionAccessSum(earningSum);
-
       })
       .catch((error) => console.error(error));
   }, [userInfo?.organizationId]);
-  console.log(redemptionAccessCollection)
-  
+  console.log(redemptionAccessCollection);
+
   //const RedemptionValue = Object.values(redemptionAccessCollection);
 
   let TotalRedemptionValue = redemptionAccessSum || 0;
-console.log(TotalRedemptionValue)
-
-
-
-
-
+  console.log(TotalRedemptionValue);
 
   const totalSum = itemValue.reduce((sum, value) => sum + value, 0);
   console.log(totalSum);
-  localStorage.setItem('EarningTotalPoint', totalSum-TotalRedemptionValue);
+  localStorage.setItem("EarningTotalPoint", totalSum - TotalRedemptionValue);
 
   const previous = () => {
     if (currentIndex > 1) {
@@ -250,7 +245,7 @@ console.log(TotalRedemptionValue)
           previous={previous}
           forward={forward}
           itemCategorySum={itemCategorySum}
-          totalSum={totalSum-TotalRedemptionValue}
+          totalSum={totalSum - TotalRedemptionValue}
           allResults={allResults}
           itemName={itemName}
         />

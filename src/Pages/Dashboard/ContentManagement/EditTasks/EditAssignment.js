@@ -41,6 +41,10 @@ const EditAssignment = () => {
   const [preview, setPreview] = useState(false);
   const [submitPermission, setSubmitPermission] = useState(false);
   const [assignmentData, setAssignmentData] = useState({});
+  const [batchesData, setBatchesData] = useState([]);
+  const [selectedBatches, setSelectedBatches] = useState([]);
+  const [schedule, setSchedule] = useState([]);
+  const [contentStage, setContentStage] = useState([]);
 
   const [openTask, setOpenTask] = useState(
     JSON.parse(localStorage.getItem("task"))
@@ -94,17 +98,72 @@ const EditAssignment = () => {
         )
         .then((response) => {
           setAssignmentData(response?.data);
+          setSelectedBatches(response?.data?.batches);
+          setSchedule(response?.data?.schedule);
           setInstructions(response?.data?.instructions);
           setSelectedFile(response?.data?.file);
           setSkillParameterData(response?.data?.skillParameterData);
           setEarningParameterData(response?.data?.earningParameterData);
+          setContentStage(response?.data?.contentStage === undefined ? [] : response?.data?.contentStage);
         });
   }, [openTask]);
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_BACKEND_API}/batches/courseId/${currentWeek?.courseId}`
+      )
+      .then((response) => {
+        setBatchesData(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [currentWeek]);
+
+  const handleOptionChangeBatch = (event, optionValue) => {
+    // const optionValue = event.target.value;
+    const isChecked = event.target.checked;
+
+    if (isChecked) {
+      if (selectedBatches) {
+        setSelectedBatches([
+          ...selectedBatches,
+          { batchName: optionValue?.batchName, batchId: optionValue?._id },
+        ]);
+        setSchedule([
+          ...schedule,
+          {
+            batchName: optionValue?.batchName,
+            batchId: optionValue?._id,
+            assignmentStartingDateTime: "",
+            assignmentEndingDateTime: "",
+          },
+        ]);
+      } else {
+        setSelectedBatches([
+          { batchName: optionValue?.batchName, batchId: optionValue?._id },
+        ]);
+        setSchedule([
+          {
+            batchName: optionValue?.batchName,
+            batchId: optionValue?._id,
+            assignmentStartingDateTime: "",
+            assignmentEndingDateTime: "",
+          },
+        ]);
+      }
+    } else {
+      setSelectedBatches(
+        selectedBatches.filter((option) => option?.batchId !== optionValue?._id)
+      );
+      setSchedule(
+        schedule.filter((option) => option?.batchId !== optionValue?._id)
+      );
+    }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    let fileUrl = "";
-    if (selectedFile) fileUrl = await uploadFileToS3(selectedFile);
+    // let fileUrl = "";
+    // if (selectedFile) fileUrl = await uploadFileToS3(selectedFile);
 
     const form = event.target;
 
@@ -120,10 +179,13 @@ const EditAssignment = () => {
       assignmentTotalPointsMarks,
       AssignmentEndingDateTime,
       instructions: instructions,
-      file: fileUrl,
+      file: assignmentData?.file,
       skillParameterData: skillParameterData,
       earningParameterData: earningParameterData,
       chapterId: id,
+      batches: selectedBatches,
+      schedule: schedule,
+      contentStage
     };
 
     setAssignmentData(manageAssignment);
@@ -143,6 +205,8 @@ const EditAssignment = () => {
       console.log(manageAssignment);
     }
   };
+
+  console.log(selectedBatches);
 
   return (
     <div>
@@ -278,11 +342,19 @@ const EditAssignment = () => {
             </div>
             {isOpenGeneral && (
               <General
+                batchesData={batchesData}
+                selectedBatches={selectedBatches}
+                schedule={schedule}
+                setSchedule={setSchedule}
+                handleOptionChangeBatch={handleOptionChangeBatch}
+                setSelectedBatches={setSelectedBatches}
                 assignmentData={assignmentData}
                 instructions={instructions}
                 setInstructions={setInstructions}
                 selectedFile={selectedFile}
                 setSelectedFile={setSelectedFile}
+                contentStage={contentStage}
+                setContentStage={setContentStage}
               />
             )}
             <div
@@ -300,9 +372,8 @@ const EditAssignment = () => {
               {isOpenEvaluationParameter && <img src={arrowDown} alt="arrow" />}
 
               <i
-                className={`dropdown-arrow ${
-                  isOpenEvaluationParameter ? "open" : ""
-                }`}
+                className={`dropdown-arrow ${isOpenEvaluationParameter ? "open" : ""
+                  }`}
               ></i>
             </div>
             {isOpenEvaluationParameter && (
