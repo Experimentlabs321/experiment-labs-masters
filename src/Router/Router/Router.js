@@ -96,6 +96,7 @@ import AffiliateSignUp from "../../Pages/Dashboard/LoginPage/Affiliate/Affiliate
 
 
 import ZoomIntegration from "../../Pages/Tester/ZoomIntegration";
+import Feedback from "../../Pages/Dashboard/Feedback/Feedback";
 
 const router = createBrowserRouter([
   {
@@ -468,6 +469,10 @@ const router = createBrowserRouter([
   {
     path: "/affiliateSignUp",
     element:<AffiliateSignUp/>,
+  },
+  {
+    path: "/feedback",
+    element:<Feedback/>,
   },
  
  

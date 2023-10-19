@@ -47,7 +47,7 @@ const Aside = ({
     <aside
       id="sidebar"
       className={`fixed ${
-        toggleButton ? "flex lg:flex" : "hidden"
+        toggleButton ? " lg:flex" : "hidden"
       } z-20 h-full top-0 bg-[#141414] shadow-lg left-0  flex-shrink-0 flex-col w-[324px] transition duration-500 ease-in-out delay-150`}
       aria-label="Sidebar"
     >

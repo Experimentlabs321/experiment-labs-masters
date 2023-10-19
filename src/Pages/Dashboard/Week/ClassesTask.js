@@ -1,16 +1,46 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import LiveClass from "../../../assets/Dashboard/LiveClass.png";
 import HttpsIcon from "@mui/icons-material/Https";
 import Swal from "sweetalert2";
 import axios from "axios";
+import Button from '@mui/material/Button';
+import { styled } from '@mui/material/styles';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import Typography from '@mui/material/Typography';
 import { AuthContext } from "../../../contexts/AuthProvider";
+import Rating from '@mui/material/Rating';
+import { useParams } from "react-router-dom";
+import toast from "react-hot-toast";
+import FeedbackPopup from "./FeedbackPopup";
+
+const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+  '& .MuiDialogContent-root': {
+    padding: theme.spacing(2),
+  },
+  '& .MuiDialogActions-root': {
+    padding: theme.spacing(1),
+  },
+}));
 
 const ClassesTask = ({ taskData }) => {
+  const { id } = useParams();
+  console.log(id)
   const [isOpen, setIsOpen] = useState(false);
+  const { userInfo, user } = useContext(AuthContext);
 
   const [selectedOption, setSelectedOption] = useState("Category");
+  const [feedbacks, setFeedbacks] = useState();
+  const [feedbackGiven, setFeedbackGiven] = useState();
   const options = ["Category name"];
+  //feedback//
+ 
 
+  ////
   const toggleOptions = () => {
     setIsOpen(!isOpen);
   };
@@ -19,6 +49,7 @@ const ClassesTask = ({ taskData }) => {
     setSelectedOption(option);
     setIsOpen(false);
   };
+
   const providedDateTimeString = taskData?.courseStartingDateTime;
   const providedDateTime = new Date(providedDateTimeString); // Parse the provided date string
 
@@ -34,7 +65,7 @@ const ClassesTask = ({ taskData }) => {
 
   console.log(minutes, -1 * taskData?.duration);
 
-  const { userInfo, user } = useContext(AuthContext);
+
   const [openTask, setOpenTask] = useState(
     JSON.parse(localStorage.getItem("task"))
   );
@@ -180,6 +211,12 @@ const ClassesTask = ({ taskData }) => {
             fill="#292929"
           />
         </svg>
+        <FeedbackPopup
+         taskData = {taskData}
+        
+        />
+
+      
       </div>
     </div>
   );

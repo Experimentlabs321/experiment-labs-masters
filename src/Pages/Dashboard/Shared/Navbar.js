@@ -5,7 +5,7 @@ import PersonProfilePic from "../../../assets/Dashboard/PersonProfilePic.png";
 const Navbar = () => {
   return (
     <nav className={`bg-[#151718] fixed z-30 w-full }`}>
-      <div className="px-[40px] py-[18px] lg:px-5 lg:pl-3">
+      <div className="px-[10px] py-[18px] lg:px-10 lg:pl-3">
         <div className={`flex items-center justify-between `}>
           {/* <button
                   id="toggleSidebarMobile"
@@ -32,7 +32,7 @@ const Navbar = () => {
             <img className="h-6 lg:h-8  " src={logo} alt="icon" />
           </div>
           <div className="flex items-center justify-center">
-            <div className="flex flex-col items-center justify-center mr-[60px] ">
+            <div className="flex flex-col items-center justify-center mr-[20px] lg:mr-[60px] ">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="40"

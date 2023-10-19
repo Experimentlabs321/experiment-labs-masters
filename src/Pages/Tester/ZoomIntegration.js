@@ -4,7 +4,7 @@
 // const ZoomIntegration = () => {
 
 //     const handleCreateMeeting = async () => {
-//         fetch('http://localhost:5000/create-meeting')
+//         fetch('${process.env.REACT_APP_BACKEND_API}/create-meeting')
 //             .then(res => console.log(res))
 //             .then(error => console.error(error))
 //     };
