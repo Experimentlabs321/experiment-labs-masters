@@ -38,6 +38,7 @@ const CourseInformation = () => {
   const [addWeekOpen, setAddWeekOpen] = useState(false);
   const [editWeekOpen, setEditWeekOpen] = useState(false);
   const [addTaskOpen, setAddTaskOpen] = useState(false);
+  const [toggleButton, setToggleButton] = useState(false);
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
   const [chapterData, setChapterData] = useState({});
   const [chapters, setChapters] = useState([]);
@@ -103,6 +104,30 @@ const CourseInformation = () => {
       route: `/manageFile/${chapterData?._id}`,
     },
   ];
+
+  useEffect(() => {
+    // Function to update toggleButton based on device size
+    function updateToggleButton() {
+      if (window.innerWidth <= 768) {
+        // Set to false for small devices
+        setToggleButton(false);
+      } else {
+        // Set to true for large devices
+        setToggleButton(true);
+      }
+    }
+
+    // Initial call to set toggleButton based on the device size
+    updateToggleButton();
+
+    // Event listener to update toggleButton when the window is resized
+    window.addEventListener('resize', updateToggleButton);
+
+    // Clean up the event listener when the component is unmounted
+    return () => {
+      window.removeEventListener('resize', updateToggleButton);
+    };
+  }, []);
 
   const toggleOptions = () => {
     setIsOpen(!isOpen);
@@ -1129,7 +1154,7 @@ const CourseInformation = () => {
                               {index + 1}
                             </h1>
                           </div>
-                          <h1 className="text-[23px] font-[700] ml-[40px] ">
+                          <h1 className="text-[23px] font-[700] lg:ml-[40px] mx-5">
                             {chapter?.chapterName}{" "}
                             {Role === "admin" && (
                               <>
@@ -1170,8 +1195,8 @@ const CourseInformation = () => {
                         {chapter?.tasks?.map((task, taskIndex) => (
                           <div key={task?.taskId} className="relative ">
                             <div className="flex items-center justify-between my-[60px] relative z-10 ">
-                              <div className="flex items-center">
-                                <div className="w-[85px] flex items-center justify-center ">
+                              <div className="flex gap-5 lg:gap-0 items-center w-full">
+                               { toggleButton &&  <div className="w-[85px] flex items-center justify-center ">
                                   {Role !== "admin" && (
                                     <>
                                       {task?.participants?.find(
@@ -1202,60 +1227,60 @@ const CourseInformation = () => {
                                       )}
                                     </>
                                   )}
-                                </div>
-                                <div className="flex items-center">
+                                </div> }
+                                <div className="flex w-full items-center">
                                   {task?.taskType === "Reading" && (
                                     <img
-                                      className="ml-[60px] mr-[30px] "
+                                      className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
                                       src={ReadingTask}
                                       alt="Task"
                                     />
                                   )}
                                   {task?.taskType === "Classes" && (
                                     <img
-                                      className="ml-[60px] mr-[30px] "
+                                      className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
                                       src={ClassesTask}
                                       alt="Task"
                                     />
                                   )}
                                   {task?.taskType === "Assignment" && (
                                     <img
-                                      className="ml-[60px] mr-[30px] "
+                                      className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
                                       src={AssignmentTask}
                                       alt="Task"
                                     />
                                   )}
                                   {task?.taskType === "Quiz" && (
                                     <img
-                                      className="ml-[60px] mr-[30px] "
+                                      className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
                                       src={QuizTask}
                                       alt="Task"
                                     />
                                   )}
                                   {task?.taskType === "Live Test" && (
                                     <img
-                                      className="ml-[60px] mr-[30px] "
+                                      className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
                                       src={LiveTestTask}
                                       alt="Task"
                                     />
                                   )}
                                   {task?.taskType === "Video" && (
                                     <img
-                                      className="ml-[60px] mr-[30px] "
+                                      className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
                                       src={VideoTask}
                                       alt="Task"
                                     />
                                   )}
                                   {task?.taskType === "Audio" && (
                                     <img
-                                      className="ml-[60px] mr-[30px] "
+                                      className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
                                       src={AudioTask}
                                       alt="Task"
                                     />
                                   )}
                                   {task?.taskType === "Files" && (
                                     <img
-                                      className="ml-[60px] mr-[30px] "
+                                      className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
                                       src={FilesTask}
                                       alt="Task"
                                     />
@@ -1290,6 +1315,39 @@ const CourseInformation = () => {
                                     </p>
                                   </div>
                                 </div>
+                                { !toggleButton &&  
+                                <div className="mx-2 flex items-center justify-center ">
+                                  {Role !== "admin" && (
+                                    <>
+                                      {task?.participants?.find(
+                                        (item) =>
+                                          item?.participantId === userInfo?._id
+                                      ) ? (
+                                        <>
+                                          {task?.participants?.find(
+                                            (item) =>
+                                              item?.participantId ===
+                                              userInfo?._id
+                                          )?.status === "Completed" ? (
+                                            <img
+                                              src={Completed}
+                                              alt="Completed"
+                                            />
+                                          ) : (
+                                            <img
+                                              src={InProgress}
+                                              alt="InProgress"
+                                            />
+                                          )}
+                                        </>
+                                      ) : (
+                                        <>
+                                          <img src={Pending} alt="Pending" />
+                                        </>
+                                      )}
+                                    </>
+                                  )}
+                                </div> }
                               </div>
                               {Role === "admin" && (
                                 <div className="max-w-[200px] flex gap-2 flex-wrap ">
@@ -1366,7 +1424,7 @@ const CourseInformation = () => {
                               )}
                             </div>
                             {chapter?.tasks?.length - 1 !== taskIndex && (
-                              <hr className="w-[2px] pt-[150px] bg-[#C7C7C7] absolute bottom-[-100px] left-[174px] " />
+                              <hr className="w-[2px] pt-[150px] bg-[#C7C7C7] absolute bottom-[-100px] lg:left-[175px] left-[20px]" />
                             )}
                           </div>
                         ))}
