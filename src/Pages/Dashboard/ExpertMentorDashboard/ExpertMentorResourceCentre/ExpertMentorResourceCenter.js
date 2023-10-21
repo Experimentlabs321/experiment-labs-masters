@@ -82,7 +82,6 @@ const ExpertMentorResourceCentre = () => {
   const [chapters, setChapters] = useState([]);
   const [previousWeek, setPreviousWeek] = useState({});
   const [previousChapters, setPreviousChapters] = useState([]);
-  const [recordedClasses, setRecordedClasses] = useState([]);
 
   // Function to handle option change
   const handleCourseChange = async (event) => {
@@ -91,7 +90,7 @@ const ExpertMentorResourceCentre = () => {
 
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_BACKEND_API}/batches/courseId/${courseId}`
+        `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${courseId}`
       );
       setBatches(response?.data);
       console.log("response =========>", response?.data);
@@ -104,7 +103,7 @@ const ExpertMentorResourceCentre = () => {
     const fetchCourses = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BACKEND_API}/courses/organizations/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
         );
         // console.log("response =========>", response?.data);
         setCourses(response?.data);
@@ -154,21 +153,7 @@ const ExpertMentorResourceCentre = () => {
         setPreviousChapters(response?.data);
       })
       .catch((error) => console.error(error));
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/classes/courseId/${selectedCourseId}`
-      )
-      .then((response) => {
-        setRecordedClasses(response?.data);
-        console.log(response);
-      })
-      .catch((error) => console.error(error));
-  }, [currentWeek, previousWeek, selectedCourseId]);
-
-  console.log(
-    recordedClasses,
-    `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/classes/courseId/${selectedCourseId}`
-  );
+  }, [currentWeek, previousWeek]);
 
   return (
     <div>
@@ -436,7 +421,7 @@ const ExpertMentorResourceCentre = () => {
         {selectedTab2 === "My Recordings" && (
           <>
             <div className="mx-10 my-10 ">
-              <MyRecordings recordedClasses={recordedClasses} />
+              <MyRecordings courses={courses} />
             </div>
           </>
         )}

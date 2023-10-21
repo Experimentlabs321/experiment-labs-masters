@@ -33,7 +33,7 @@ const Skill = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_API}/courses/organizations/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
         setCourses(response?.data);

@@ -107,7 +107,7 @@ const EditReading = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_API}/batches/courseId/${currentWeek?.courseId}`
+        `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${currentWeek?.courseId}`
       )
       .then((response) => {
         setBatchesData(response?.data);

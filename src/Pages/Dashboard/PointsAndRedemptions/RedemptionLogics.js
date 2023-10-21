@@ -1,28 +1,28 @@
 //PointsRedemptions.js
 
-import React, { useContext, useEffect, useState } from 'react';
-import Layout from '../Layout';
-import Badge from '@mui/material/Badge';
-import MailIcon from '@mui/icons-material/Mail';
-import SearchIcon from '@mui/icons-material/Search';
-import NotificationsIcon from '@mui/icons-material/Notifications';
+import React, { useContext, useEffect, useState } from "react";
+import Layout from "../Layout";
+import Badge from "@mui/material/Badge";
+import MailIcon from "@mui/icons-material/Mail";
+import SearchIcon from "@mui/icons-material/Search";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 /* import Category1 from './Category1'; */
 
-import updateimg from '../../../assets/PointsRedemptions/Upload.svg';
-import editimg from '../../../assets/PointsRedemptions/edit.svg';
-import deleteimg from '../../../assets/PointsRedemptions/delete.svg';
-import Filterimg from '../../../assets/PointsRedemptions/Filter.svg';
-import undo from '../../../assets/PointsRedemptions/Sync-retry.svg';
-import RedemptionCategory from './RedemptionCategory';
-import { AuthContext } from '../../../contexts/AuthProvider';
-import axios from 'axios';
+import updateimg from "../../../assets/PointsRedemptions/Upload.svg";
+import editimg from "../../../assets/PointsRedemptions/edit.svg";
+import deleteimg from "../../../assets/PointsRedemptions/delete.svg";
+import Filterimg from "../../../assets/PointsRedemptions/Filter.svg";
+import undo from "../../../assets/PointsRedemptions/Sync-retry.svg";
+import RedemptionCategory from "./RedemptionCategory";
+import { AuthContext } from "../../../contexts/AuthProvider";
+import axios from "axios";
 import Swal from "sweetalert2";
 import { toast } from "react-hot-toast";
 import AddSharpIcon from "@mui/icons-material/AddSharp";
-import SelectRedemptionCategory from './RedemptionLogicsComponents/SelectRedemptionCategory';
-import AddRedemptionPointItemForm from './RedemptionLogicsComponents/AddRedemptionPointItemForm';
+import SelectRedemptionCategory from "./RedemptionLogicsComponents/SelectRedemptionCategory";
+import AddRedemptionPointItemForm from "./RedemptionLogicsComponents/AddRedemptionPointItemForm";
 import UploadingImg from "../../../assets/PointsRedemptions/uploadimg.png";
-import EditRedemptionItemForm from './RedemptionLogicsComponents/EditRedemptionItemForm';
+import EditRedemptionItemForm from "./RedemptionLogicsComponents/EditRedemptionItemForm";
 
 const RedemptionLogics = () => {
   const { userInfo } = useContext(AuthContext);
@@ -32,7 +32,9 @@ const RedemptionLogics = () => {
     courses?.length > 0 ? courses[0] : {}
   );
   const [redemptionCategories, setRedemptionCategories] = useState([]);
-  const [selectedRedemptionCategory, setSelectedRedemptionCategory] = useState({});
+  const [selectedRedemptionCategory, setSelectedRedemptionCategory] = useState(
+    {}
+  );
   const [categoryThreeDot, setCategoryThreeDot] = useState(false);
   const [redemptionThreeDot, setRedemptionThreeDot] = useState(false);
   const [selectedRedemptionLogic, setSelectedRedemptionLogic] = useState({});
@@ -44,7 +46,7 @@ const RedemptionLogics = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_API}/courses/organizations/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
         setCourses(response?.data);
@@ -131,8 +133,6 @@ const RedemptionLogics = () => {
       }
     });
   };
-
-
 
   return (
     <div>
@@ -221,10 +221,11 @@ const RedemptionLogics = () => {
               {courses?.map((item, index) => (
                 <button
                   key={index}
-                  className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 ${selectedCourse?._id === item?._id
+                  className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 ${
+                    selectedCourse?._id === item?._id
                       ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
                       : "text-[#949494]"
-                    }`}
+                  }`}
                   onClick={() => handleSelectCourse(item)}
                 >
                   {item?.courseFullName}
@@ -360,31 +361,28 @@ const RedemptionLogics = () => {
             courseId={selectedCourse?._id}
           />
         )}
-        
-        {isOpenRedemptionItemEditForm && selectedRedemptionLogic?.redemptionItemName && (
-          <EditRedemptionItemForm
-            selectedRedemptionLogic={selectedRedemptionLogic}
-            setIsOpenRedemptionItemEditForm={setIsOpenRedemptionItemEditForm}
-            setIsOpenRedemptionItemAddForm={setIsOpenRedemptionItemAddForm}
-            UploadingImg={UploadingImg}
-            selectedRedemptionCategory={selectedRedemptionCategory}
-            redemptionCategories={redemptionCategories}
-            setSelectedRedemptionCategory={setSelectedRedemptionCategory}
-            setRedemptionCategories={setRedemptionCategories}
-            selectedCourse={selectedCourse}
-            userInfo={userInfo}
-            courseId={selectedCourse?._id}
-          />
-        )}
 
-
+        {isOpenRedemptionItemEditForm &&
+          selectedRedemptionLogic?.redemptionItemName && (
+            <EditRedemptionItemForm
+              selectedRedemptionLogic={selectedRedemptionLogic}
+              setIsOpenRedemptionItemEditForm={setIsOpenRedemptionItemEditForm}
+              setIsOpenRedemptionItemAddForm={setIsOpenRedemptionItemAddForm}
+              UploadingImg={UploadingImg}
+              selectedRedemptionCategory={selectedRedemptionCategory}
+              redemptionCategories={redemptionCategories}
+              setSelectedRedemptionCategory={setSelectedRedemptionCategory}
+              setRedemptionCategories={setRedemptionCategories}
+              selectedCourse={selectedCourse}
+              userInfo={userInfo}
+              courseId={selectedCourse?._id}
+            />
+          )}
 
         {/*   <div>
                     <RedemptionCategory />
                  
                 </div> */}
-
-
       </Layout>
     </div>
   );
