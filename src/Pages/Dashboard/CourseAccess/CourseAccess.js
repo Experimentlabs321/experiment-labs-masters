@@ -27,13 +27,13 @@ const CourseAccess = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_API}/courses/organizations/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
         setCourses(response?.data);
       })
       .catch((error) => console.error(error));
-  }, []);
+  }, [userInfo]);
 
   return (
     <div>
@@ -118,7 +118,7 @@ const CourseAccess = () => {
               )}
             </div>
           </div>
-                
+
           <div className="my-[60px] ">
             <div className="flex flex-wrap justify-between gap-x-2 gap-y-5 ">
               {courses?.map((course) => {

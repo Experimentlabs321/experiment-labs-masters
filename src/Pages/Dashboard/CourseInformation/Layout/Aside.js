@@ -14,15 +14,15 @@ import { useEffect } from "react";
 import axios from "axios";
 import MenuIcon from "@mui/icons-material/Menu";
 
-const Aside = ({  }) => {
-  const [isCourseFullName, setCourseFullName] = useState('');
-  const [isCourseDescription, setCourseDescription] = useState('');
-  const [isCourseThumbnail, setCourseThumbnail] = useState('');
+const Aside = () => {
+  const [isCourseFullName, setCourseFullName] = useState("");
+  const [isCourseDescription, setCourseDescription] = useState("");
+  const [isCourseThumbnail, setCourseThumbnail] = useState("");
   const [toggleButton, setToggleButton] = useState(false);
   const { id } = useParams();
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACKEND_API}/courses/${id}`)
+      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/courses/${id}`)
       .then((response) => {
         // setCourseData(response?.data);
 
@@ -49,99 +49,96 @@ const Aside = ({  }) => {
   return (
     <>
       <button
-         onClick={() => setToggleButton(true)}
+        onClick={() => setToggleButton(true)}
         className="text-black bg-blue font-normal rounded-r-[15px] ml-[-10px] flex items-center px-[20px] pt-[10px] pb-[5px] absolute top-[95px] z-10  group"
       >
-        <MenuIcon />{" "}
-        <h1 className="ml-3 text-[12px] font-[500]">Open menu</h1>
+        <MenuIcon /> <h1 className="ml-3 text-[12px] font-[500]">Open menu</h1>
       </button>
       <aside
-      id="sidebar"
-      className={` fixed ${
-        toggleButton ? " lg:flex" : "hidden"
-      } z-20 h-full top-0 bg-[#141414] shadow-lg left-0  lg:flex flex-shrink-0 flex-col w-[324px] transition duration-500 ease-in-out delay-150`}
-      aria-label="Sidebar"
-    >
-    
-      
-      <div className=" flex-1 flex flex-col min-h-0 pt-0">
-        <div className="flex-1 flex flex-col pb-4 overflow-y-auto">
-          <div className="flex-1 space-y-1">
-            <ul className="space-y-2 px-[22px] pt-[110px] pb-2 text-white">
-            <li className="lg:hidden block">
-                <button
-                  onClick={() => setToggleButton(false)}
-                  className="text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="21"
-                    height="17"
-                    viewBox="0 0 21 17"
-                    fill="none"
+        id="sidebar"
+        className={` fixed ${
+          toggleButton ? " lg:flex" : "hidden"
+        } z-20 h-full top-0 bg-[#141414] shadow-lg left-0  lg:flex flex-shrink-0 flex-col w-[324px] transition duration-500 ease-in-out delay-150`}
+        aria-label="Sidebar"
+      >
+        <div className=" flex-1 flex flex-col min-h-0 pt-0">
+          <div className="flex-1 flex flex-col pb-4 overflow-y-auto">
+            <div className="flex-1 space-y-1">
+              <ul className="space-y-2 px-[22px] pt-[110px] pb-2 text-white">
+                <li className="lg:hidden block">
+                  <button
+                    onClick={() => setToggleButton(false)}
+                    className="text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group"
                   >
-                    <path
-                      d="M2.55758 6.94027C1.66762 6.94027 0.949219 7.65867 0.949219 8.54862C0.949219 9.43858 1.66762 10.157 2.55758 10.157C3.44753 10.157 4.16593 9.43858 4.16593 8.54862C4.16593 7.65867 3.44753 6.94027 2.55758 6.94027ZM2.55758 0.506836C1.66762 0.506836 0.949219 1.22524 0.949219 2.11519C0.949219 3.00515 1.66762 3.72355 2.55758 3.72355C3.44753 3.72355 4.16593 3.00515 4.16593 2.11519C4.16593 1.22524 3.44753 0.506836 2.55758 0.506836ZM2.55758 13.3737C1.66762 13.3737 0.949219 14.1028 0.949219 14.9821C0.949219 15.8613 1.67834 16.5904 2.55758 16.5904C3.43681 16.5904 4.16593 15.8613 4.16593 14.9821C4.16593 14.1028 3.44753 13.3737 2.55758 13.3737ZM5.77429 16.0543H20.7856V13.9098H5.77429V16.0543ZM5.77429 9.62086H20.7856V7.47639H5.77429V9.62086ZM5.77429 1.04296V3.18743H20.7856V1.04296H5.77429Z"
-                      fill="white"
-                    />
-                  </svg>
-                  <h1 className="ml-3 text-[18px] font-[500]">Hide menu</h1>
-                </button>
-              </li>
-              <li>
-                <div className="relative inline-block w-full mb-[10px]">
-                  <div
-                    className="flex items-center justify-center w-full "
-                    onClick={toggleOptions}
-                  >
-                    <button className="cursor-pointer bg-[#FF557A] text-[15px] font-[700] py-3 px-4 rounded-full flex items-center justify-center shadow-[0px_2px_4px_0px_#00000026]">
-                      {isCourseFullName}{" "}
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                      >
-                        <path
-                          d="M8.71484 17.9847L14.5187 12.1808L8.71484 6.37695"
-                          stroke="white"
-                          stroke-width="1.93462"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        />
-                      </svg>
-                    </button>
-                    {/* <span className="text-[#3E4DAC] ">{selectedOption}</span> */}
-                  </div>
-                  {isOpen && (
-                    <ul className="absolute top-full left-0 w-full bg-gray-200 border border-gray-300 py-1 px-4 rounded mt-1 transition-opacity duration-300 ease-in-out delay-100">
-                      {options?.map((option, index) => (
-                        <li
-                          key={index}
-                          className="cursor-pointer py-2 text-[#6A6A6A] text-[14px] font-[400] "
-                          onClick={() => selectOption(option)}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="21"
+                      height="17"
+                      viewBox="0 0 21 17"
+                      fill="none"
+                    >
+                      <path
+                        d="M2.55758 6.94027C1.66762 6.94027 0.949219 7.65867 0.949219 8.54862C0.949219 9.43858 1.66762 10.157 2.55758 10.157C3.44753 10.157 4.16593 9.43858 4.16593 8.54862C4.16593 7.65867 3.44753 6.94027 2.55758 6.94027ZM2.55758 0.506836C1.66762 0.506836 0.949219 1.22524 0.949219 2.11519C0.949219 3.00515 1.66762 3.72355 2.55758 3.72355C3.44753 3.72355 4.16593 3.00515 4.16593 2.11519C4.16593 1.22524 3.44753 0.506836 2.55758 0.506836ZM2.55758 13.3737C1.66762 13.3737 0.949219 14.1028 0.949219 14.9821C0.949219 15.8613 1.67834 16.5904 2.55758 16.5904C3.43681 16.5904 4.16593 15.8613 4.16593 14.9821C4.16593 14.1028 3.44753 13.3737 2.55758 13.3737ZM5.77429 16.0543H20.7856V13.9098H5.77429V16.0543ZM5.77429 9.62086H20.7856V7.47639H5.77429V9.62086ZM5.77429 1.04296V3.18743H20.7856V1.04296H5.77429Z"
+                        fill="white"
+                      />
+                    </svg>
+                    <h1 className="ml-3 text-[18px] font-[500]">Hide menu</h1>
+                  </button>
+                </li>
+                <li>
+                  <div className="relative inline-block w-full mb-[10px]">
+                    <div
+                      className="flex items-center justify-center w-full "
+                      onClick={toggleOptions}
+                    >
+                      <button className="cursor-pointer bg-[#FF557A] text-[15px] font-[700] py-3 px-4 rounded-full flex items-center justify-center shadow-[0px_2px_4px_0px_#00000026]">
+                        {isCourseFullName}{" "}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
                         >
-                          {option}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              </li>
-              <li>
-                <div className="bg-[#09463F] py-[15px] px-[20px] rounded-[15px] mb-[15px] ">
-                  <img src={isCourseThumbnail} alt="CourseThem" />
-                  <div className=" py-[15px] ">
-                    <h1 className="text-[#FFDB70] text-[15px] font-[700] ">
-                      {isCourseFullName}
-                    </h1>
-                    <p className="text-[#DFDFDF] text-[10px] font-[500] ">
-                      {isCourseDescription}
-                    </p>
+                          <path
+                            d="M8.71484 17.9847L14.5187 12.1808L8.71484 6.37695"
+                            stroke="white"
+                            stroke-width="1.93462"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                      </button>
+                      {/* <span className="text-[#3E4DAC] ">{selectedOption}</span> */}
+                    </div>
+                    {isOpen && (
+                      <ul className="absolute top-full left-0 w-full bg-gray-200 border border-gray-300 py-1 px-4 rounded mt-1 transition-opacity duration-300 ease-in-out delay-100">
+                        {options?.map((option, index) => (
+                          <li
+                            key={index}
+                            className="cursor-pointer py-2 text-[#6A6A6A] text-[14px] font-[400] "
+                            onClick={() => selectOption(option)}
+                          >
+                            {option}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </div>
+                </li>
+                <li>
+                  <div className="bg-[#09463F] py-[15px] px-[20px] rounded-[15px] mb-[15px] ">
+                    <img src={isCourseThumbnail} alt="CourseThem" />
+                    <div className=" py-[15px] ">
+                      <h1 className="text-[#FFDB70] text-[15px] font-[700] ">
+                        {isCourseFullName}
+                      </h1>
+                      <p className="text-[#DFDFDF] text-[10px] font-[500] ">
+                        {isCourseDescription}
+                      </p>
+                    </div>
 
-                  {/*   <div>
+                    {/*   <div>
                     <div className="w-full">
                       <small className="text-[#AEB9FF] pb-[10px] font-[600]">
                         20% Completed
@@ -283,160 +280,168 @@ const Aside = ({  }) => {
                       </h1>
                     </div>
                   </div> */}
-                </div>
-              </li>
-              <li>
-                <Link
-                  style={
-                    location.pathname === "/courseAccess"
-                      ? {
-                        background:
-                          "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                      }
-                      : {}
-                  }
-                  to="/courseAccess"
-                  className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
-                >
-                  {location.pathname === "/courseAccess" ? (
-                    <img className="" src={CourseAccessIconLight} alt="icon" />
-                  ) : (
-                    <img className="" src={CourseAccessIconDark} alt="icon" />
-                  )}
-
-                  <span
-                    className={`${location.pathname === "/courseAccess"
-                        ? "text-white"
-                        : "text-[#8F8F8F]"
-                      } ml-3 text-[18px] font-[500]`}
+                  </div>
+                </li>
+                <li>
+                  <Link
+                    style={
+                      location.pathname === "/courseAccess"
+                        ? {
+                            background:
+                              "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                          }
+                        : {}
+                    }
+                    to="/courseAccess"
+                    className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
                   >
-                    Course Access
-                  </span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  style={
-                    location.pathname === "/questLevels"
-                      ? {
-                        background:
-                          "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                      }
-                      : {}
-                  }
-                  to="/questLevels"
-                  className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
-                >
-                  {location.pathname === "/questLevels" ? (
-                    <img className="" src={StarLight} alt="icon" />
-                  ) : (
-                    <img className="" src={StarDark} alt="icon" />
-                  )}
+                    {location.pathname === "/courseAccess" ? (
+                      <img
+                        className=""
+                        src={CourseAccessIconLight}
+                        alt="icon"
+                      />
+                    ) : (
+                      <img className="" src={CourseAccessIconDark} alt="icon" />
+                    )}
 
-                  <span
-                    className={`${location.pathname === "/questLevels"
-                        ? "text-white"
-                        : "text-[#8F8F8F]"
+                    <span
+                      className={`${
+                        location.pathname === "/courseAccess"
+                          ? "text-white"
+                          : "text-[#8F8F8F]"
                       } ml-3 text-[18px] font-[500]`}
+                    >
+                      Course Access
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    style={
+                      location.pathname === "/questLevels"
+                        ? {
+                            background:
+                              "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                          }
+                        : {}
+                    }
+                    to="/questLevels"
+                    className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
                   >
-                    Quest Levels
-                  </span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  style={
-                    location.pathname === "/webinars"
-                      ? {
-                        background:
-                          "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                      }
-                      : {}
-                  }
-                  to="/webinars"
-                  className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
-                >
-                  {location.pathname === "/webinars" ? (
-                    <img className="" src={WebinarsLight} alt="icon" />
-                  ) : (
-                    <img className="" src={WebinarsDark} alt="icon" />
-                  )}
+                    {location.pathname === "/questLevels" ? (
+                      <img className="" src={StarLight} alt="icon" />
+                    ) : (
+                      <img className="" src={StarDark} alt="icon" />
+                    )}
 
-                  <span
-                    className={`${location.pathname === "/webinars"
-                        ? "text-white"
-                        : "text-[#8F8F8F]"
+                    <span
+                      className={`${
+                        location.pathname === "/questLevels"
+                          ? "text-white"
+                          : "text-[#8F8F8F]"
                       } ml-3 text-[18px] font-[500]`}
+                    >
+                      Quest Levels
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    style={
+                      location.pathname === "/webinars"
+                        ? {
+                            background:
+                              "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                          }
+                        : {}
+                    }
+                    to="/webinars"
+                    className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
                   >
-                    Webinars
-                  </span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  style={
-                    location.pathname === "/bookmarks"
-                      ? {
-                        background:
-                          "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                      }
-                      : {}
-                  }
-                  to="/bookmarks"
-                  className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
-                >
-                  {location.pathname === "/bookmarks" ? (
-                    <img className="" src={BookmarksLight} alt="icon" />
-                  ) : (
-                    <img className="" src={BookmarksDark} alt="icon" />
-                  )}
+                    {location.pathname === "/webinars" ? (
+                      <img className="" src={WebinarsLight} alt="icon" />
+                    ) : (
+                      <img className="" src={WebinarsDark} alt="icon" />
+                    )}
 
-                  <span
-                    className={`${location.pathname === "/bookmarks"
-                        ? "text-white"
-                        : "text-[#8F8F8F]"
+                    <span
+                      className={`${
+                        location.pathname === "/webinars"
+                          ? "text-white"
+                          : "text-[#8F8F8F]"
                       } ml-3 text-[18px] font-[500]`}
+                    >
+                      Webinars
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    style={
+                      location.pathname === "/bookmarks"
+                        ? {
+                            background:
+                              "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                          }
+                        : {}
+                    }
+                    to="/bookmarks"
+                    className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
                   >
-                    Bookmarks
-                  </span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  style={
-                    location.pathname === "/discussions"
-                      ? {
-                        background:
-                          "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                      }
-                      : {}
-                  }
-                  to="/discussions"
-                  className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
-                >
-                  {location.pathname === "/discussions" ? (
-                    <img className="" src={DiscussionsLight} alt="icon" />
-                  ) : (
-                    <img className="" src={DiscussionsDark} alt="icon" />
-                  )}
+                    {location.pathname === "/bookmarks" ? (
+                      <img className="" src={BookmarksLight} alt="icon" />
+                    ) : (
+                      <img className="" src={BookmarksDark} alt="icon" />
+                    )}
 
-                  <span
-                    className={`${location.pathname === "/discussions"
-                        ? "text-white"
-                        : "text-[#8F8F8F]"
+                    <span
+                      className={`${
+                        location.pathname === "/bookmarks"
+                          ? "text-white"
+                          : "text-[#8F8F8F]"
                       } ml-3 text-[18px] font-[500]`}
+                    >
+                      Bookmarks
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    style={
+                      location.pathname === "/discussions"
+                        ? {
+                            background:
+                              "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                          }
+                        : {}
+                    }
+                    to="/discussions"
+                    className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
                   >
-                    Discussions
-                  </span>
-                </Link>
-              </li>
-            </ul>
+                    {location.pathname === "/discussions" ? (
+                      <img className="" src={DiscussionsLight} alt="icon" />
+                    ) : (
+                      <img className="" src={DiscussionsDark} alt="icon" />
+                    )}
+
+                    <span
+                      className={`${
+                        location.pathname === "/discussions"
+                          ? "text-white"
+                          : "text-[#8F8F8F]"
+                      } ml-3 text-[18px] font-[500]`}
+                    >
+                      Discussions
+                    </span>
+                  </Link>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
-    </aside>
+      </aside>
     </>
-   
   );
 };
 

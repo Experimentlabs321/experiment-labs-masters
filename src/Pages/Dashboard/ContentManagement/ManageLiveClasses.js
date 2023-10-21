@@ -274,8 +274,8 @@ const ManageLiveClasses = () => {
     axios
       .get(
         `${
-          process.env.REACT_APP_BACKEND_API
-        }/batches/courseId/${localStorage.getItem("courseId")}`
+          process.env.REACT_APP_SERVER_API
+        }/api/v1/batches/courseId/${localStorage.getItem("courseId")}`
       )
       .then((response) => {
         setBatchesData(response?.data);

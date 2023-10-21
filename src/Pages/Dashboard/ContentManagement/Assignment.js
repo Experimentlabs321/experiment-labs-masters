@@ -61,8 +61,9 @@ const Assignment = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_API
-        }/batches/courseId/${localStorage.getItem("courseId")}`
+        `${
+          process.env.REACT_APP_SERVER_API
+        }/api/v1/batches/courseId/${localStorage.getItem("courseId")}`
       )
       .then((response) => {
         setBatchesData(response?.data);
@@ -103,7 +104,7 @@ const Assignment = () => {
     if (chapter?.courseId)
       axios
         .get(
-          `${process.env.REACT_APP_BACKEND_API}/courses/${chapter?.courseId}`
+          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${chapter?.courseId}`
         )
         .then((response) => {
           setCourse(response?.data);
@@ -178,7 +179,7 @@ const Assignment = () => {
       courseId: chapter?.courseId,
       batches: selectedBatches,
       schedule: schedule,
-      contentStage
+      contentStage,
     };
 
     setAssignmentData(manageAssignment);
@@ -362,8 +363,9 @@ const Assignment = () => {
               {isOpenEvaluationParameter && <img src={arrowDown} alt="arrow" />}
 
               <i
-                className={`dropdown-arrow ${isOpenEvaluationParameter ? "open" : ""
-                  }`}
+                className={`dropdown-arrow ${
+                  isOpenEvaluationParameter ? "open" : ""
+                }`}
               ></i>
             </div>
             {isOpenEvaluationParameter && (

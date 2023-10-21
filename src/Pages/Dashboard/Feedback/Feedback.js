@@ -1,33 +1,31 @@
-
-
-import React, { useContext, useEffect, useState } from 'react';
-import Layout from '../Layout';
-import Badge from '@mui/material/Badge';
-import MailIcon from '@mui/icons-material/Mail';
-import SearchIcon from '@mui/icons-material/Search';
-import NotificationsIcon from '@mui/icons-material/Notifications';
+import React, { useContext, useEffect, useState } from "react";
+import Layout from "../Layout";
+import Badge from "@mui/material/Badge";
+import MailIcon from "@mui/icons-material/Mail";
+import SearchIcon from "@mui/icons-material/Search";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 /* import Category1 from './Category1'; */
 
-import updateimg from '../../../assets/PointsRedemptions/Upload.svg';
-import editimg from '../../../assets/PointsRedemptions/edit.svg';
-import deleteimg from '../../../assets/PointsRedemptions/delete.svg';
-import Filterimg from '../../../assets/PointsRedemptions/Filter.svg';
-import undo from '../../../assets/PointsRedemptions/Sync-retry.svg';
-import ToggleOnIcon from '@mui/icons-material/ToggleOn';
-import ToggleOffIcon from '@mui/icons-material/ToggleOff';
+import updateimg from "../../../assets/PointsRedemptions/Upload.svg";
+import editimg from "../../../assets/PointsRedemptions/edit.svg";
+import deleteimg from "../../../assets/PointsRedemptions/delete.svg";
+import Filterimg from "../../../assets/PointsRedemptions/Filter.svg";
+import undo from "../../../assets/PointsRedemptions/Sync-retry.svg";
+import ToggleOnIcon from "@mui/icons-material/ToggleOn";
+import ToggleOffIcon from "@mui/icons-material/ToggleOff";
 //import RedemptionCategory from './RedemptionCategory';
 
-import axios from 'axios';
+import axios from "axios";
 import Swal from "sweetalert2";
 import { toast } from "react-hot-toast";
 import AddSharpIcon from "@mui/icons-material/AddSharp";
 //import SelectRedemptionCategory from './RedemptionLogicsComponents/SelectRedemptionCategory';
 //import AddRedemptionPointItemForm from './RedemptionLogicsComponents/AddRedemptionPointItemForm';
 import UploadingImg from "../../../assets/PointsRedemptions/uploadimg.png";
-import { AuthContext } from '../../../contexts/AuthProvider';
-import SelectFeedbackCategory from './SelectFeedbackCategory';
-import AddFeedbackItemForm from './AddFeedbackItemForm';
-import EditFeedbackItemForm from './EditFeedbackItemForm';
+import { AuthContext } from "../../../contexts/AuthProvider";
+import SelectFeedbackCategory from "./SelectFeedbackCategory";
+import AddFeedbackItemForm from "./AddFeedbackItemForm";
+import EditFeedbackItemForm from "./EditFeedbackItemForm";
 //import EditRedemptionItemForm from './RedemptionLogicsComponents/EditRedemptionItemForm';
 
 const Feedback = () => {
@@ -51,7 +49,7 @@ const Feedback = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_API}/courses/organizations/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
         setCourses(response?.data);
@@ -72,11 +70,10 @@ const Feedback = () => {
           (course) => course?.courseId === selectedCourse?._id
         );
 
-        if(findCategories){
-          setIsToggled(true)
-        }
-        else {
-          setIsToggled(false)
+        if (findCategories) {
+          setIsToggled(true);
+        } else {
+          setIsToggled(false);
         }
         setFeedbackCategories([...findCategories?.categories]);
         setSelectedFeedbackCategory({ ...findCategories?.categories[0] });
@@ -148,26 +145,22 @@ const Feedback = () => {
 
   //// Toggled
   const buttonStyle = {
-    padding: '10px 20px',
+    padding: "10px 20px",
     // backgroundColor: isToggled ? 'blue' : '#ccc',
-    border: 'none',
-    outline: 'none',
-    cursor: 'pointer',
-    fontSize: '16px',
-    color: isToggled ? 'blue' : '#8F8F8F'
+    border: "none",
+    outline: "none",
+    cursor: "pointer",
+    fontSize: "16px",
+    color: isToggled ? "blue" : "#8F8F8F",
   };
 
   const handleToggle = () => {
     setIsToggled(!isToggled);
   };
 
-
-
   return (
     <div>
       <Layout>
-
-
         <div className="flex items-center justify-between container mx-auto px-4 gap-7 pt-20 lg:pt-10 ">
           <div className="UserManagement origin-top-left rotate-[-0.51deg] text-zinc-500 text-[30px] font-medium">
             Feedback
@@ -201,10 +194,11 @@ const Feedback = () => {
               {courses?.map((item, index) => (
                 <button
                   key={index}
-                  className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 ${selectedCourse?._id === item?._id
-                    ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
-                    : "text-[#949494]"
-                    }`}
+                  className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 ${
+                    selectedCourse?._id === item?._id
+                      ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
+                      : "text-[#949494]"
+                  }`}
                   onClick={() => handleSelectCourse(item)}
                 >
                   {item?.courseFullName}
@@ -212,60 +206,57 @@ const Feedback = () => {
               ))}
             </div>
           </div>
-          <div className='flex items-center gap-5 mt-5'>
-            <p className='text-xl font-medium text-zinc-500'>Set Feedbacks : </p>
+          <div className="flex items-center gap-5 mt-5">
+            <p className="text-xl font-medium text-zinc-500">
+              Set Feedbacks :{" "}
+            </p>
             <button style={buttonStyle} onClick={handleToggle}>
-              {isToggled ? <ToggleOnIcon style={{ fontSize: "60px" }} /> : <ToggleOffIcon style={{ fontSize: "60px" }} />}
+              {isToggled ? (
+                <ToggleOnIcon style={{ fontSize: "60px" }} />
+              ) : (
+                <ToggleOffIcon style={{ fontSize: "60px" }} />
+              )}
             </button>
           </div>
 
-
-          {
-            (isToggled) && (
-
-              <SelectFeedbackCategory
-                setFeedbackCategories={setFeedbackCategories}
-                feedbackCategories={feedbackCategories}
-                selectedFeedbackCategory={selectedFeedbackCategory}
-                setSelectedFeedbackCategory={setSelectedFeedbackCategory}
-                setCategoryThreeDot={setCategoryThreeDot}
-                categoryThreeDot={categoryThreeDot}
-                selectedCourse={selectedCourse}
-              />
-            )
-          }
-
+          {isToggled && (
+            <SelectFeedbackCategory
+              setFeedbackCategories={setFeedbackCategories}
+              feedbackCategories={feedbackCategories}
+              selectedFeedbackCategory={selectedFeedbackCategory}
+              setSelectedFeedbackCategory={setSelectedFeedbackCategory}
+              setCategoryThreeDot={setCategoryThreeDot}
+              categoryThreeDot={categoryThreeDot}
+              selectedCourse={selectedCourse}
+            />
+          )}
         </div>
         <div className="px-4 mt-[40px] mb-[20px] grid grid-cols-6 gap-4">
-          {
-            (isToggled) && (
-              <div
-                onClick={() => {
-                  if (!feedbackCategories[0]) {
-                    Swal.fire({
-                      icon: "error",
-                      title: "Oops...",
-                      text: "Please add at least one category!",
-                    });
-                    return;
-                  }
-                  setIsOpenFeedbackItemAddForm(true);
-                  setIsOpenFeedbackItemEditForm(false);
-                }}
-                className=" bg-[#DBDBDB] border w-full flex flex-col justify-center items-center mt-2 rounded-2xl cursor-pointer z-0"
-                style={{ boxShadow: " 0px 4px 4px 0px rgba(0, 0, 0, 0.25)" }}
-              >
-                <div className=" flex justify-center items-center text-[250px] font-thin text-[#ffffff] py-3">
-                  <AddSharpIcon sx={{ fontSize: 150 }} />
-                </div>
-                <div className="text-[#8F8F8F] pb-5  mt-[-10px] font-medium text-base">
-                  Add Details
-                </div>
+          {isToggled && (
+            <div
+              onClick={() => {
+                if (!feedbackCategories[0]) {
+                  Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Please add at least one category!",
+                  });
+                  return;
+                }
+                setIsOpenFeedbackItemAddForm(true);
+                setIsOpenFeedbackItemEditForm(false);
+              }}
+              className=" bg-[#DBDBDB] border w-full flex flex-col justify-center items-center mt-2 rounded-2xl cursor-pointer z-0"
+              style={{ boxShadow: " 0px 4px 4px 0px rgba(0, 0, 0, 0.25)" }}
+            >
+              <div className=" flex justify-center items-center text-[250px] font-thin text-[#ffffff] py-3">
+                <AddSharpIcon sx={{ fontSize: 150 }} />
               </div>
-
-            )
-
-          }
+              <div className="text-[#8F8F8F] pb-5  mt-[-10px] font-medium text-base">
+                Add Details
+              </div>
+            </div>
+          )}
 
           {selectedFeedbackCategory?.feedbackItems?.map((item) => (
             <div
@@ -301,8 +292,7 @@ const Feedback = () => {
                   />
                 </svg>
               </button>
-              {selectedFeedback?.feedbackItemName ===
-                item?.feedbackItemName &&
+              {selectedFeedback?.feedbackItemName === item?.feedbackItemName &&
                 FeedbackThreeDot && (
                   <ul className="absolute right-0 top-[40px] w-max border  bg-white p-2 rounded-[8px] mt-1 transform translate-y-[-10px] shadow-[0px_2px_4px_0px_#00000026] z-10 ">
                     <li
@@ -377,12 +367,6 @@ const Feedback = () => {
             courseId={selectedCourse?._id}
           />
         )}
-
-
-
-
-
-
       </Layout>
     </div>
   );

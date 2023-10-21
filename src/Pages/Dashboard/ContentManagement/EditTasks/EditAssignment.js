@@ -84,7 +84,7 @@ const EditAssignment = () => {
     if (chapter?.courseId)
       axios
         .get(
-          `${process.env.REACT_APP_BACKEND_API}/courses/${chapter?.courseId}`
+          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${chapter?.courseId}`
         )
         .then((response) => {
           setCourse(response?.data);
@@ -104,13 +104,17 @@ const EditAssignment = () => {
           setSelectedFile(response?.data?.file);
           setSkillParameterData(response?.data?.skillParameterData);
           setEarningParameterData(response?.data?.earningParameterData);
-          setContentStage(response?.data?.contentStage === undefined ? [] : response?.data?.contentStage);
+          setContentStage(
+            response?.data?.contentStage === undefined
+              ? []
+              : response?.data?.contentStage
+          );
         });
   }, [openTask]);
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_API}/batches/courseId/${currentWeek?.courseId}`
+        `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${currentWeek?.courseId}`
       )
       .then((response) => {
         setBatchesData(response?.data);
@@ -185,7 +189,7 @@ const EditAssignment = () => {
       chapterId: id,
       batches: selectedBatches,
       schedule: schedule,
-      contentStage
+      contentStage,
     };
 
     setAssignmentData(manageAssignment);
@@ -372,8 +376,9 @@ const EditAssignment = () => {
               {isOpenEvaluationParameter && <img src={arrowDown} alt="arrow" />}
 
               <i
-                className={`dropdown-arrow ${isOpenEvaluationParameter ? "open" : ""
-                  }`}
+                className={`dropdown-arrow ${
+                  isOpenEvaluationParameter ? "open" : ""
+                }`}
               ></i>
             </div>
             {isOpenEvaluationParameter && (
