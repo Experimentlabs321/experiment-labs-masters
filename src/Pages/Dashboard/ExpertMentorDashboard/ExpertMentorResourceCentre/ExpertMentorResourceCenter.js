@@ -82,6 +82,7 @@ const ExpertMentorResourceCentre = () => {
   const [chapters, setChapters] = useState([]);
   const [previousWeek, setPreviousWeek] = useState({});
   const [previousChapters, setPreviousChapters] = useState([]);
+  const [recordedClasses, setRecordedClasses] = useState([]);
 
   // Function to handle option change
   const handleCourseChange = async (event) => {
@@ -113,7 +114,6 @@ const ExpertMentorResourceCentre = () => {
     };
     fetchCourses();
   }, [userInfo?.organizationId]);
-
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACKEND_API}/weeks/${selectedCourseId}`)
@@ -154,9 +154,21 @@ const ExpertMentorResourceCentre = () => {
         setPreviousChapters(response?.data);
       })
       .catch((error) => console.error(error));
-  }, [currentWeek, previousWeek]);
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/classes/courseId/${selectedCourseId}`
+      )
+      .then((response) => {
+        setRecordedClasses(response?.data);
+        console.log(response);
+      })
+      .catch((error) => console.error(error));
+  }, [currentWeek, previousWeek, selectedCourseId]);
 
-  console.log(chapters);
+  console.log(
+    recordedClasses,
+    `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/classes/courseId/${selectedCourseId}`
+  );
 
   return (
     <div>
@@ -424,7 +436,7 @@ const ExpertMentorResourceCentre = () => {
         {selectedTab2 === "My Recordings" && (
           <>
             <div className="mx-10 my-10 ">
-              <MyRecordings />
+              <MyRecordings recordedClasses={recordedClasses} />
             </div>
           </>
         )}

@@ -94,6 +94,11 @@ const StageInfo = ({ chapters, stage, week }) => {
           ref={containerRef}
           className="flex overflow-x-scroll scroll-smooth gap-5 mtm-container lg:w-[45vw]"
         >
+          {!chapters[0] && (
+            <div>
+              <h1 className="text-white text-lg">No {stage}</h1>
+            </div>
+          )}
           {chapters?.map((chapter, index) => (
             <div className="bg-[#fff] min-w-fit rounded-lg p-5">
               <p className="text-[#676767] text-base font-semibold">
