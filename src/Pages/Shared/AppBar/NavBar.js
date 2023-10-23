@@ -33,6 +33,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const NavBar = (props) => {
+
+  const {userInfo} = useContext(AuthContext)
   const [state, setState] = React.useState(false);
   const [role, setRole] = useState(false);
 
@@ -633,6 +635,7 @@ const NavBar = (props) => {
       </Button>
     ) : (
       <Button
+      onClick={handleDashboard}
         // onClick={handleLogout}
         // onClick={() => graphyLogin(user?.email, user?.displayName)}
         sx={{
@@ -675,6 +678,28 @@ const NavBar = (props) => {
     >
       <Link>Know More</Link>
     </Button>,
+   
+  
+      <>
+      {
+        userInfo && (
+          <Button
+          onClick={() => handleLogout()}
+          sx={{
+            bgcolor: "#FF557A",
+            borderRadius: "22.5px",
+            ":hover": { bgcolor: "#94A4FF" },
+            color: "white",
+            width: "100%",
+          }}
+          className="my-2 block border-b border-gray-100 py-1 font-semibold text-gray-500 hover:text-black md:mx-2"
+        >
+          Logout
+        </Button>
+        )
+      }
+      
+      </>
   ];
 
   const drawer = (
