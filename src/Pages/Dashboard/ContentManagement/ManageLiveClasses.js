@@ -161,7 +161,7 @@ const ManageLiveClasses = () => {
     }
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.target;
 
@@ -186,6 +186,7 @@ const ManageLiveClasses = () => {
     // const courseEndDateTime = form.courseEndDateTime?.value;
     // const itemEarningParameter = form.itemEarningParameter?.value;
     // const itemEarningParameter1 = form.itemEarningParameter1?.value;
+    const week = await JSON.parse(localStorage.getItem("currentWeek"));
     const manageClass = {
       className,
       classType,
@@ -211,6 +212,7 @@ const ManageLiveClasses = () => {
       earningParameterData: earningParameterData,
       chapterId: id,
       courseId: chapter?.courseId,
+      weekId: week?._id,
       mentors: selectedMentors,
       batches: [
         {
