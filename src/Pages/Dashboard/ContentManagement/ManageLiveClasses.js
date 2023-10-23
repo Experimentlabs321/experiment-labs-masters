@@ -211,6 +211,7 @@ const ManageLiveClasses = () => {
       earningParameterData: earningParameterData,
       chapterId: id,
       courseId: chapter?.courseId,
+      mentors: selectedMentors,
       batches: [
         {
           batchName: selectedBatch?.batchName,
@@ -238,6 +239,8 @@ const ManageLiveClasses = () => {
   const [classesData, setClassesData] = useState({});
   const [batchesData, setBatchesData] = useState([]);
   const [selectedBatch, setSelectedBatch] = useState({});
+  const [mentors, setMentors] = useState([]);
+  const [selectedMentors, setSelectedMentors] = useState([]);
 
   useEffect(() => {
     axios
@@ -271,16 +274,46 @@ const ManageLiveClasses = () => {
     axios
       .get(
         `${
-          process.env.REACT_APP_BACKEND_API
-        }/batches/courseId/${localStorage.getItem("courseId")}`
+          process.env.REACT_APP_SERVER_API
+        }/api/v1/batches/courseId/${localStorage.getItem("courseId")}`
       )
       .then((response) => {
         setBatchesData(response?.data);
       })
       .catch((error) => console.error(error));
   }, [chapter?.courseId]);
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/users/mentors/organizationId/${userInfo?.organizationId}`
+      )
+      .then((response) => {
+        setMentors(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [userInfo]);
 
-  console.log(batchesData);
+  const handleOptionChangeBatch = (event, mentorData) => {
+    const optionValue = event.target.value;
+    const isChecked = event.target.checked;
+
+    if (isChecked) {
+      setSelectedMentors([
+        ...selectedMentors,
+        {
+          mentorName: mentorData?.name,
+          mentorEmail: mentorData?.email,
+          mentorId: mentorData?._id,
+        },
+      ]);
+    } else {
+      setSelectedMentors(
+        selectedMentors.filter((option) => option?.mentorEmail !== optionValue)
+      );
+    }
+  };
+
+  console.log(mentors);
 
   return (
     <div>
@@ -310,7 +343,7 @@ const ManageLiveClasses = () => {
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
                     <p className="font-bold text-lg me-[36px]"> Class Name</p>
-                    <img src={required} />
+                    <img src={required} alt="required" />
                   </div>
 
                   <input
@@ -326,7 +359,7 @@ const ManageLiveClasses = () => {
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
                     <p className="font-bold text-lg me-[36px]">Class Type</p>
-                    <img src={required} />
+                    <img src={required} alt="required" />
                   </div>
 
                   <div
@@ -359,7 +392,7 @@ const ManageLiveClasses = () => {
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
                     <p className="font-bold text-lg me-[36px]">Instance Type</p>
-                    <img src={required} />
+                    <img src={required} alt="required" />
                   </div>
 
                   <div
@@ -392,10 +425,10 @@ const ManageLiveClasses = () => {
                 </div>
               </div>
               <div>
-                <div className="flex items-center gap-4 mt-[90px]">
+                <div className="flex items-center gap-4 mt-[50px]">
                   <p className="h-2 w-2 bg-black rounded-full"></p>
                   <p className="font-bold text-lg me-[36px]">Select Batch</p>
-                  <img src={required} />
+                  <img src={required} alt="required" />
                 </div>
                 <ul className="flex gap-4 flex-wrap ">
                   {batchesData?.map((option, index) => {
@@ -424,6 +457,39 @@ const ManageLiveClasses = () => {
                   })}
                 </ul>
               </div>
+              <div>
+                <div className="flex items-center gap-4 mt-[50px]">
+                  <p className="h-2 w-2 bg-black rounded-full"></p>
+                  <p className="font-bold text-lg me-[36px]">Select Mentors</p>
+                  <img src={required} alt="required" />
+                </div>
+                <ul className="flex gap-4 flex-wrap ">
+                  {mentors?.map((option, index) => {
+                    return (
+                      <>
+                        <li className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] ">
+                          <input
+                            type="checkbox"
+                            id="student"
+                            name={option?._id}
+                            value={option?.email}
+                            checked={selectedMentors.find(
+                              (item) => item?.mentorEmail === option?.email
+                            )}
+                            onChange={(e) => handleOptionChangeBatch(e, option)}
+                            className=" mb-1"
+                          />
+                          <div className="flex mb-1 items-center">
+                            <label className="ms-4" htmlFor={option?.batchName}>
+                              {option?.name}
+                            </label>
+                          </div>
+                        </li>
+                      </>
+                    );
+                  })}
+                </ul>
+              </div>
               <div className="flex justify-between mt-[90px] mb-20">
                 <div className="">
                   <div className="flex items-center gap-4">
@@ -431,7 +497,7 @@ const ManageLiveClasses = () => {
                     <p className="font-bold text-lg me-[36px]">
                       Location (For offline & Hybrid)
                     </p>
-                    <img src={required} />
+                    <img src={required} alt="required" />
                   </div>
                   <div className="flex items-center justify-between  mt-6 ms-6 border rounded-md w-[100%] h-[50px] px-5 text-[#535353]  bg-[#F6F7FF] ">
                     <div className="flex gap-2">
@@ -467,7 +533,7 @@ const ManageLiveClasses = () => {
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
                     <p className="font-bold text-lg me-[36px]">Agenda</p>
-                    <img src={required} />
+                    <img src={required} alt="required" />
                   </div>
                   <div className="flex items-center justify-between  mt-6 ms-6 border rounded-md w-[100%] h-[50px] px-5 text-[#535353]  bg-[#F6F7FF] ">
                     <div className="flex gap-2">
@@ -485,7 +551,7 @@ const ManageLiveClasses = () => {
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
                     <p className="font-bold text-lg me-[36px]">Password</p>
-                    <img src={required} />
+                    <img src={required} alt="required" />
                   </div>
 
                   <input
@@ -500,7 +566,7 @@ const ManageLiveClasses = () => {
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
                     <p className="font-bold text-lg me-[36px]">Email</p>
-                    <img src={required} />
+                    <img src={required} alt="required" />
                   </div>
 
                   <input
@@ -545,7 +611,7 @@ const ManageLiveClasses = () => {
                         {" "}
                         Class Starting Date and Time{" "}
                       </p>
-                      <img src={required} />
+                      <img src={required} alt="required" />
                     </div>
 
                     <input
@@ -564,7 +630,7 @@ const ManageLiveClasses = () => {
                     <div className="flex items-center gap-4">
                       <p className="h-2 w-2 bg-black rounded-full"></p>
                       <p className="font-bold text-lg me-[36px]"> Duration </p>
-                      <img src={required} />
+                      <img src={required} alt="required" />
                     </div>
                     <input
                       className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "

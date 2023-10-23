@@ -50,6 +50,8 @@ const CourseInformation = () => {
   const [selectedOption, setSelectedOption] = useState("Category");
   const options = ["Category name"];
   const { user, userInfo } = useContext(AuthContext);
+  const [batchesData, setBatchesData] = useState([]);
+  const [selectedBatches, setSelectedBatches] = useState([]);
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -121,11 +123,11 @@ const CourseInformation = () => {
     updateToggleButton();
 
     // Event listener to update toggleButton when the window is resized
-    window.addEventListener('resize', updateToggleButton);
+    window.addEventListener("resize", updateToggleButton);
 
     // Clean up the event listener when the component is unmounted
     return () => {
-      window.removeEventListener('resize', updateToggleButton);
+      window.removeEventListener("resize", updateToggleButton);
     };
   }, []);
 
@@ -202,11 +204,20 @@ const CourseInformation = () => {
 
   const handleAddWeek = async (event) => {
     event.preventDefault();
+    let schedules = [];
+    batchesData?.forEach((element) => {
+      const weekStartDate = "weekStartDate" + element?._id;
+      const weekEndDate = "weekEndDate" + element?._id;
+      schedules?.push({
+        batchId: element?._id,
+        batch: element?.batchName,
+        weekStartDate: event?.target[weekStartDate].value,
+        weekEndDate: event?.target[weekEndDate].value,
+      });
+    });
     const week = {
       courseId: id,
       weekName: event?.target?.weekName?.value,
-      weekStartDate: event?.target?.weekStartDate?.value,
-      weekEndDate: event?.target?.weekEndDate?.value,
       creator: {
         name: user?.displayName,
         email: user?.email,
@@ -216,20 +227,21 @@ const CourseInformation = () => {
         organizationId: userInfo?.organizationId,
         organizationName: userInfo?.organizationName,
       },
+      schedules: schedules,
     };
 
-    const newWeek = await axios.post(
-      `${process.env.REACT_APP_BACKEND_API}/weeks`,
-      week
-    );
+    // const newWeek = await axios.post(
+    //   `${process.env.REACT_APP_BACKEND_API}/weeks`,
+    //   week
+    // );
 
-    if (newWeek?.data?.week?.acknowledged) {
-      toast.success("Week added Successfully");
-      setWeeks([...weeks, { ...week, _id: newWeek?.data?.week?.insertedId }]);
-      setCurrentWeek({ ...week, _id: newWeek?.data?.week?.insertedId });
-      setAddWeekOpen(false);
-      event.target.reset();
-    }
+    // if (newWeek?.data?.week?.acknowledged) {
+    //   toast.success("Week added Successfully");
+    //   setWeeks([...weeks, { ...week, _id: newWeek?.data?.week?.insertedId }]);
+    //   setCurrentWeek({ ...week, _id: newWeek?.data?.week?.insertedId });
+    //   setAddWeekOpen(false);
+    //   event.target.reset();
+    // }
 
     console.log("Add chapter----->", week);
   };
@@ -377,7 +389,7 @@ const CourseInformation = () => {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACKEND_API}/courses/${id}`)
+      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/courses/${id}`)
       .then((response) => {
         setCourseData(response?.data);
       })
@@ -445,6 +457,14 @@ const CourseInformation = () => {
       })
       .catch((error) => console.error(error));
   }, [currentWeek, userInfo, Role, courseData]);
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${id}`)
+      .then((response) => {
+        setBatchesData(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [id]);
   const [items, setItems] = useState([
     {
       id: 1,
@@ -793,7 +813,7 @@ const CourseInformation = () => {
                     <DialogLayout
                       open={addWeekOpen}
                       setOpen={setAddWeekOpen}
-                      width={440}
+                      width={900}
                       borderRadius="15px"
                       title={
                         <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
@@ -814,26 +834,62 @@ const CourseInformation = () => {
                           placeholder="Eg. Onboarding"
                           className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
                         />
-                        <h1 className=" text-[18px] font-[700] my-[24px] ">
-                          Week Starting Date
-                        </h1>
-                        <input
-                          required
-                          className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
-                          name="weekStartDate"
-                          type="date"
-                          placeholder="Eg. Entrepreneurship Lab"
-                        />
-                        <h1 className=" text-[18px] font-[700] my-[24px] ">
-                          Week Ending Date
-                        </h1>
-                        <input
-                          required
-                          className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
-                          name="weekEndDate"
-                          type="date"
-                          placeholder="Eg. Entrepreneurship Lab"
-                        />
+                        <>
+                          <h1 className=" text-[26px] font-[700] mt-[30px] mb-[4px] ">
+                            Schedule List
+                          </h1>
+
+                          {batchesData?.map((batch, index) => {
+                            return (
+                              <div
+                                key={index}
+                                className="tag-container flex flex-wrap w-full px-1 bg-slate-100 rounded-lg my-2 py-3 "
+                              >
+                                <div className="basis-full px-2 flex items-center justify-between">
+                                  <h1 className=" text-[20px] font-[700]  ">
+                                    {batch?.batchName}
+                                  </h1>
+                                </div>
+                                <div className="basis-1/2 px-2">
+                                  <h1 className=" text-[18px] font-[700] mt-[16px] mb-[8px] ">
+                                    Week Starting Date
+                                  </h1>
+                                  <input
+                                    className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+                                    // onChange={(e) => {
+                                    //   let updatedWeek = currentWeek;
+                                    //   updatedWeek.schedules[
+                                    //     index
+                                    //   ].weekStartDate = e.target.value;
+                                    //   setCurrentWeek(updatedWeek);
+                                    // }}
+                                    name={`weekStartDate${batch?._id}`}
+                                    type="date"
+                                    placeholder="Eg. Entrepreneurship Lab"
+                                  />
+                                </div>
+                                <div className="basis-1/2 px-2">
+                                  <h1 className=" text-[18px] font-[700] mt-[16px] mb-[8px] ">
+                                    Week Ending Date
+                                  </h1>
+                                  <input
+                                    className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+                                    // onChange={(e) => {
+                                    //   let updatedWeek = currentWeek;
+                                    //   updatedWeek.schedules[
+                                    //     index
+                                    //   ].weekEndDate = e.target.value;
+                                    //   setCurrentWeek(updatedWeek);
+                                    // }}
+                                    name={`weekEndDate${batch?._id}`}
+                                    type="date"
+                                    placeholder="Eg. Entrepreneurship Lab"
+                                  />
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </>
                         <div className="w-full flex items-center justify-center mt-[40px]">
                           <input
                             type="submit"
@@ -890,28 +946,6 @@ const CourseInformation = () => {
                           placeholder="Eg. Onboarding"
                           className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
                         />
-                        {/* <h1 className=" text-[18px] font-[700] my-[24px] ">
-                          Week Starting Date
-                        </h1>
-                        <input
-                          required
-                          className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
-                          defaultValue={currentWeek?.weekStartDate}
-                          name="weekStartDate"
-                          type="date"
-                          placeholder="Eg. Entrepreneurship Lab"
-                        />
-                        <h1 className=" text-[18px] font-[700] my-[24px] ">
-                          Week Ending Date
-                        </h1>
-                        <input
-                          required
-                          className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
-                          defaultValue={currentWeek?.weekEndDate}
-                          name="weekEndDate"
-                          type="date"
-                          placeholder="Eg. Entrepreneurship Lab"
-                        /> */}
                         <>
                           <h1 className=" text-[26px] font-[700] mt-[30px] mb-[4px] ">
                             Schedule List
@@ -969,40 +1003,6 @@ const CourseInformation = () => {
                                       placeholder="Eg. Entrepreneurship Lab"
                                     />
                                   </div>
-                                  {/* <div className="basis-1/2 px-2">
-                                  <h1 className=" text-[18px] font-[700] mt-[16px] mb-[8px] ">
-                                    Password
-                                  </h1>
-                                  <input
-                                    type="password"
-                                    required
-                                    defaultValue={participant?.password}
-                                    onChange={(e) => {
-                                      participantsData[index].password =
-                                        e.target.value;
-                                    }}
-                                    name="password"
-                                    placeholder="Password"
-                                    className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
-                                  />
-                                </div>
-                                <div className="basis-1/2 px-2">
-                                  <h1 className=" text-[18px] font-[700] mt-[16px] mb-[8px] ">
-                                    Phone
-                                  </h1>
-                                  <input
-                                    type="text"
-                                    required
-                                    defaultValue={participant?.phone}
-                                    onChange={(e) => {
-                                      participantsData[index].phone =
-                                        e.target.value;
-                                    }}
-                                    name="phone"
-                                    placeholder="Phone"
-                                    className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
-                                  />
-                                </div> */}
                                 </div>
                               );
                             }
@@ -1089,7 +1089,13 @@ const CourseInformation = () => {
                   </>
                 )}
               </div>
-              {Role === "admin" && <BatchConfiguration />}
+              {Role === "admin" && (
+                <BatchConfiguration
+                  selectedBatches={selectedBatches}
+                  setSelectedBatches={setSelectedBatches}
+                  batchesData={batchesData}
+                />
+              )}
             </div>
             <div>
               {/* Edit chapter name start */}
@@ -1196,38 +1202,41 @@ const CourseInformation = () => {
                           <div key={task?.taskId} className="relative ">
                             <div className="flex items-center justify-between my-[60px] relative z-10 ">
                               <div className="flex gap-5 lg:gap-0 items-center w-full">
-                               { toggleButton &&  <div className="w-[85px] flex items-center justify-center ">
-                                  {Role !== "admin" && (
-                                    <>
-                                      {task?.participants?.find(
-                                        (item) =>
-                                          item?.participantId === userInfo?._id
-                                      ) ? (
-                                        <>
-                                          {task?.participants?.find(
-                                            (item) =>
-                                              item?.participantId ===
-                                              userInfo?._id
-                                          )?.status === "Completed" ? (
-                                            <img
-                                              src={Completed}
-                                              alt="Completed"
-                                            />
-                                          ) : (
-                                            <img
-                                              src={InProgress}
-                                              alt="InProgress"
-                                            />
-                                          )}
-                                        </>
-                                      ) : (
-                                        <>
-                                          <img src={Pending} alt="Pending" />
-                                        </>
-                                      )}
-                                    </>
-                                  )}
-                                </div> }
+                                {toggleButton && (
+                                  <div className="w-[85px] flex items-center justify-center ">
+                                    {Role !== "admin" && (
+                                      <>
+                                        {task?.participants?.find(
+                                          (item) =>
+                                            item?.participantId ===
+                                            userInfo?._id
+                                        ) ? (
+                                          <>
+                                            {task?.participants?.find(
+                                              (item) =>
+                                                item?.participantId ===
+                                                userInfo?._id
+                                            )?.status === "Completed" ? (
+                                              <img
+                                                src={Completed}
+                                                alt="Completed"
+                                              />
+                                            ) : (
+                                              <img
+                                                src={InProgress}
+                                                alt="InProgress"
+                                              />
+                                            )}
+                                          </>
+                                        ) : (
+                                          <>
+                                            <img src={Pending} alt="Pending" />
+                                          </>
+                                        )}
+                                      </>
+                                    )}
+                                  </div>
+                                )}
                                 <div className="flex w-full items-center">
                                   {task?.taskType === "Reading" && (
                                     <img
@@ -1315,39 +1324,41 @@ const CourseInformation = () => {
                                     </p>
                                   </div>
                                 </div>
-                                { !toggleButton &&  
-                                <div className="mx-2 flex items-center justify-center ">
-                                  {Role !== "admin" && (
-                                    <>
-                                      {task?.participants?.find(
-                                        (item) =>
-                                          item?.participantId === userInfo?._id
-                                      ) ? (
-                                        <>
-                                          {task?.participants?.find(
-                                            (item) =>
-                                              item?.participantId ===
-                                              userInfo?._id
-                                          )?.status === "Completed" ? (
-                                            <img
-                                              src={Completed}
-                                              alt="Completed"
-                                            />
-                                          ) : (
-                                            <img
-                                              src={InProgress}
-                                              alt="InProgress"
-                                            />
-                                          )}
-                                        </>
-                                      ) : (
-                                        <>
-                                          <img src={Pending} alt="Pending" />
-                                        </>
-                                      )}
-                                    </>
-                                  )}
-                                </div> }
+                                {!toggleButton && (
+                                  <div className="mx-2 flex items-center justify-center ">
+                                    {Role !== "admin" && (
+                                      <>
+                                        {task?.participants?.find(
+                                          (item) =>
+                                            item?.participantId ===
+                                            userInfo?._id
+                                        ) ? (
+                                          <>
+                                            {task?.participants?.find(
+                                              (item) =>
+                                                item?.participantId ===
+                                                userInfo?._id
+                                            )?.status === "Completed" ? (
+                                              <img
+                                                src={Completed}
+                                                alt="Completed"
+                                              />
+                                            ) : (
+                                              <img
+                                                src={InProgress}
+                                                alt="InProgress"
+                                              />
+                                            )}
+                                          </>
+                                        ) : (
+                                          <>
+                                            <img src={Pending} alt="Pending" />
+                                          </>
+                                        )}
+                                      </>
+                                    )}
+                                  </div>
+                                )}
                               </div>
                               {Role === "admin" && (
                                 <div className="max-w-[200px] flex gap-2 flex-wrap ">

@@ -90,7 +90,7 @@ const ExpertMentorResourceCentre = () => {
 
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_BACKEND_API}/batches/courseId/${courseId}`
+        `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${courseId}`
       );
       setBatches(response?.data);
       console.log("response =========>", response?.data);
@@ -103,7 +103,7 @@ const ExpertMentorResourceCentre = () => {
     const fetchCourses = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BACKEND_API}/courses/organizations/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
         );
         // console.log("response =========>", response?.data);
         setCourses(response?.data);
@@ -113,7 +113,6 @@ const ExpertMentorResourceCentre = () => {
     };
     fetchCourses();
   }, [userInfo?.organizationId]);
-
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACKEND_API}/weeks/${selectedCourseId}`)
@@ -155,8 +154,6 @@ const ExpertMentorResourceCentre = () => {
       })
       .catch((error) => console.error(error));
   }, [currentWeek, previousWeek]);
-
-  console.log(chapters);
 
   return (
     <div>
@@ -424,7 +421,7 @@ const ExpertMentorResourceCentre = () => {
         {selectedTab2 === "My Recordings" && (
           <>
             <div className="mx-10 my-10 ">
-              <MyRecordings />
+              <MyRecordings courses={courses} />
             </div>
           </>
         )}

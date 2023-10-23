@@ -405,7 +405,7 @@ const AssignmentEvaluation2 = () => {
     console.log(manageFeedback);
 
     const sendMail = await axios.post(
-      `${process.env.REACT_APP_BACKEND_API}/sendMail`,
+      `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
       {
         from: `${user?.email}`,
         to: `${user?.email},shihab77023@gmail.com`,
@@ -463,7 +463,7 @@ const AssignmentEvaluation2 = () => {
 
     console.log(manageFeedback);
     const sendMail = await axios.post(
-      `${process.env.REACT_APP_BACKEND_API}/sendMail`,
+      `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
       {
         from: `${user?.email}`,
         to: `${user?.email},shihab77023@gmail.com`,

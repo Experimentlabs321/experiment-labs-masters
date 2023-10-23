@@ -6,27 +6,20 @@ import axios from "axios";
 import DialogLayoutForFromControl from "../Shared/DialogLayoutForFromControl";
 import { toast } from "react-hot-toast";
 
-const BatchConfiguration = () => {
+const BatchConfiguration = ({
+  selectedBatches,
+  setSelectedBatches,
+  batchesData,
+}) => {
   const Role = localStorage.getItem("role");
   const [isOpenBatches, setIsOpenBatches] = useState(false);
-  const [selectedBatches, setSelectedBatches] = useState([]);
   const [addBatchOpen, setAddBatchOpen] = useState(false);
   const [participant, setParticipant] = useState("");
   const [participants, setParticipants] = useState([]);
   const [participantsData, setParticipantsData] = useState([]);
-  const [batchesData, setBatchesData] = useState([]);
 
   const { id } = useParams();
   const { user, userInfo, createUser } = useContext(AuthContext);
-
-  useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_BACKEND_API}/batches/courseId/${id}`)
-      .then((response) => {
-        setBatchesData(response?.data);
-      })
-      .catch((error) => console.error(error));
-  }, [id]);
 
   const handleOptionChangeBatch = (event) => {
     const optionValue = event.target.value;

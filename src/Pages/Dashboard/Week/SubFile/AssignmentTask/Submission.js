@@ -61,7 +61,7 @@ const Submission = ({ taskData }) => {
     };
 
     const sendMail = await axios.post(
-      `${process.env.REACT_APP_BACKEND_API}/sendMail`,
+      `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
       {
         from: `${user?.email}`,
         to: `naman.j@experimentlabs.in,gaurav@experimentlabs.in,shihab77023@gmail.com`,
