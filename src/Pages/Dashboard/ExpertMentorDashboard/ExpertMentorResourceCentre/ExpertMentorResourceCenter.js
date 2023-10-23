@@ -428,7 +428,7 @@ const ExpertMentorResourceCentre = () => {
         {selectedTab2 === "Other Recordings" && (
           <>
             <div className="mx-10 my-10 ">
-              <OtherRecordings />
+              <OtherRecordings courses={courses} />
             </div>
           </>
         )}

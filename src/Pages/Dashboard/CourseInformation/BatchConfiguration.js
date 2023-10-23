@@ -61,7 +61,7 @@ const BatchConfiguration = ({
     console.log(sendData);
 
     const newBatch = await axios.post(
-      `${process.env.REACT_APP_BACKEND_API}/batches/create`,
+      `${process.env.REACT_APP_SERVER_API}/api/v1/batches`,
       sendData
     );
 

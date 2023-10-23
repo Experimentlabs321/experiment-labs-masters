@@ -230,18 +230,18 @@ const CourseInformation = () => {
       schedules: schedules,
     };
 
-    // const newWeek = await axios.post(
-    //   `${process.env.REACT_APP_BACKEND_API}/weeks`,
-    //   week
-    // );
+    const newWeek = await axios.post(
+      `${process.env.REACT_APP_SERVER_API}/api/v1/weeks`,
+      week
+    );
 
-    // if (newWeek?.data?.week?.acknowledged) {
-    //   toast.success("Week added Successfully");
-    //   setWeeks([...weeks, { ...week, _id: newWeek?.data?.week?.insertedId }]);
-    //   setCurrentWeek({ ...week, _id: newWeek?.data?.week?.insertedId });
-    //   setAddWeekOpen(false);
-    //   event.target.reset();
-    // }
+    if (newWeek?.data?.week?.acknowledged) {
+      toast.success("Week added Successfully");
+      setWeeks([...weeks, { ...week, _id: newWeek?.data?.week?.insertedId }]);
+      setCurrentWeek({ ...week, _id: newWeek?.data?.week?.insertedId });
+      setAddWeekOpen(false);
+      event.target.reset();
+    }
 
     console.log("Add chapter----->", week);
   };
@@ -638,6 +638,10 @@ const CourseInformation = () => {
                             to={taskType?.route}
                             onMouseDown={() => {
                               localStorage.setItem("courseId", courseData?._id);
+                              localStorage.setItem(
+                                "currentWeek",
+                                JSON.stringify(currentWeek)
+                              );
                             }}
                             className="w-full bg-[#F6F7FF] rounded-[14px] p-[24px]"
                           >
