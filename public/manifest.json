@@ -1,6 +1,6 @@
 {
-  "short_name": "Experiment Lab App",
-  "name": "Create Experiment Lab App ",
+  "short_name": "Experiment Labs",
+  "name": "Experiment Labs",
   "icons": [
     {
       "src": "favicon.ico",
@@ -8,12 +8,12 @@
       "type": "image/x-icon"
     },
     {
-      "src": "logo192.png",
-      "type": "image/png",
+      "src": "icon192.ico",
+      "type": "image/x-icon",
       "sizes": "192x192"
     },
     {
-      "src": "logo512.png",
+      "src": "favicon.ico",
       "type": "image/png",
       "sizes": "512x512"
     }
