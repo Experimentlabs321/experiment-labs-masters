@@ -115,7 +115,9 @@ const ExpertMentorResourceCentre = () => {
   }, [userInfo?.organizationId]);
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACKEND_API}/weeks/${selectedCourseId}`)
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/weeks/courseId/${selectedCourseId}`
+      )
       .then((response) => {
         setWeeks(response?.data);
         const currentDateTime = new Date();

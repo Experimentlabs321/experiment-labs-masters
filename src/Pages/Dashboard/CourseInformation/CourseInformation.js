@@ -159,7 +159,7 @@ const CourseInformation = () => {
     };
 
     const newChapter = await axios.post(
-      `${process.env.REACT_APP_SERVICE_API}/api/v1/chapters`,
+      `${process.env.REACT_APP_SERVER_API}/api/v1/chapters`,
       chapter
     );
 
@@ -184,7 +184,7 @@ const CourseInformation = () => {
     };
 
     const newChapter = await axios.put(
-      `${process.env.REACT_APP_BACKEND_API}/chapters/${chapterData?._id}`,
+      `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/${chapterData?._id}`,
       chapter
     );
 
@@ -251,7 +251,7 @@ const CourseInformation = () => {
     const week = { ...currentWeek };
     delete week._id;
     const newWeek = await axios.put(
-      `${process.env.REACT_APP_BACKEND_API}/weeks/${currentWeek?._id}`,
+      `${process.env.REACT_APP_SERVER_API}/api/v1/weeks/${currentWeek?._id}`,
       week
     );
 
@@ -294,7 +294,7 @@ const CourseInformation = () => {
     }
 
     await axios
-      .delete(`${process.env.REACT_APP_BACKEND_API}/weeks/${id}`)
+      .delete(`${process.env.REACT_APP_SERVER_API}/api/v1/weeks/${id}`)
       .then((result) => {
         if (result?.data?.deletedCount > 0) {
           toast.success("Week Deleted Successfully!");
@@ -397,7 +397,7 @@ const CourseInformation = () => {
   }, [id]);
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACKEND_API}/weeks/${id}`)
+      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/weeks/courseId/${id}`)
       .then((response) => {
         setWeeks(response?.data);
         const currentDateTime = new Date();

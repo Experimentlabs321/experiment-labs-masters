@@ -147,7 +147,7 @@ const ManageLiveClasses = () => {
       const meetingData = response.data.meeting;
       manageClass = { ...manageClass, meetingData: meetingData };
       const newClass = await axios.post(
-        `${process.env.REACT_APP_BACKEND_API}/tasks/classes`,
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/classes`,
         manageClass
       );
 

@@ -6,7 +6,7 @@ import axios from "axios";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 
 const SkillsStatistics = ({ skillsData, selectedCourse }) => {
-  console.log(selectedCourse?._id)
+  console.log(selectedCourse?._id);
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState();
   const [selectedSkillName, setSelectedSkillName] = useState("");
@@ -20,9 +20,10 @@ const SkillsStatistics = ({ skillsData, selectedCourse }) => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_API}/chapters/courseId/${selectedCourse?._id}`
+        `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/courseId/${selectedCourse?._id}`
       )
       .then((response) => {
+        console.log(response);
         const taskName = {};
         const chapterName = {};
         // setAssignment(response?.data)
@@ -31,15 +32,12 @@ const SkillsStatistics = ({ skillsData, selectedCourse }) => {
           chapterName[chap.chapterName] = chap._id;
           chap.tasks.map((task) => {
             if (task.taskType === "Assignment") {
-
               taskName[task.taskName] = task.taskId;
             }
-          }
-          )
-        }
-        )
-        setChapterIds(chapterName)
-        setTaskIds(taskName)
+          });
+        });
+        setChapterIds(chapterName);
+        setTaskIds(taskName);
         setCourse(response?.data);
         //console.log(a)
       })
@@ -49,9 +47,6 @@ const SkillsStatistics = ({ skillsData, selectedCourse }) => {
   console.log(course);
   console.log(taskIds);
   console.log(chapterIds);
-
-
-
 
   const [allResults, setAllResult] = useState();
 
@@ -64,7 +59,9 @@ const SkillsStatistics = ({ skillsData, selectedCourse }) => {
         // setAssignment(response?.data)
 
         const collection = response?.data.filter(
-          (item) => (item?.submitter?.result?.skillParameterData && item?.taskId === taskIds[item?.taskName])
+          (item) =>
+            item?.submitter?.result?.skillParameterData &&
+            item?.taskId === taskIds[item?.taskName]
         );
         setAllResult(collection);
         //console.log(a)
@@ -74,8 +71,7 @@ const SkillsStatistics = ({ skillsData, selectedCourse }) => {
 
   console.log(allResults);
 
-
-  const [submittedTaskID, setSubmittedTaskID] = useState({})
+  const [submittedTaskID, setSubmittedTaskID] = useState({});
 
   useEffect(() => {
     if (allResults) {
@@ -91,19 +87,16 @@ const SkillsStatistics = ({ skillsData, selectedCourse }) => {
     }
   }, [allResults]);
 
-  console.log(submittedTaskID); 
-
-
-
+  console.log(submittedTaskID);
 
   const [mainAssignments, setMainAssignments] = useState();
   useEffect(() => {
     axios
-      .get(
-        `${process.env.REACT_APP_BACKEND_API}/assignments`
-      )
+      .get(`${process.env.REACT_APP_BACKEND_API}/assignments`)
       .then((response) => {
-        const ass = response?.data.filter((item)=>item._id===submittedTaskID[item.taskName])
+        const ass = response?.data.filter(
+          (item) => item._id === submittedTaskID[item.taskName]
+        );
 
         setMainAssignments(ass);
         // setNewValueAssignment(ass)
@@ -117,8 +110,8 @@ const SkillsStatistics = ({ skillsData, selectedCourse }) => {
     setSelectedSkillName(skillName);
   };
 
-    const [sumParametersMain, setSumParametersMain] = useState({})
-    const [sumSkillMain, setSumSkillMain] = useState({})
+  const [sumParametersMain, setSumParametersMain] = useState({});
+  const [sumSkillMain, setSumSkillMain] = useState({});
 
   useEffect(() => {
     if (mainAssignments) {
@@ -128,26 +121,24 @@ const SkillsStatistics = ({ skillsData, selectedCourse }) => {
 
       mainAssignments.forEach((item) => {
         item?.skillParameterData?.forEach((data) => {
-       //   console.log(data)
+          //   console.log(data)
           data?.skills.forEach((item) => {
-
             if (skillName.hasOwnProperty(item.skillName)) {
-              skillName[item.skillName] += +(item.skillValue);
+              skillName[item.skillName] += +item.skillValue;
             } else {
-              skillName[item.skillName] = +(item.skillValue);
+              skillName[item.skillName] = +item.skillValue;
             }
             item?.parameters.forEach((a) => {
               const parameterName = a.parameterName;
-              console.log(parameterName)
+              console.log(parameterName);
               // If earningName already exists in earningItemsName, add itemValue to the existing value, otherwise, set it to itemValue
               if (parametersName.hasOwnProperty(parameterName)) {
-                parametersName[parameterName] += +(a.parameterValue);
+                parametersName[parameterName] += +a.parameterValue;
               } else {
-                parametersName[parameterName] = +(a.parameterValue);
+                parametersName[parameterName] = +a.parameterValue;
               }
             });
-          })
-
+          });
         });
       });
 
@@ -160,52 +151,46 @@ const SkillsStatistics = ({ skillsData, selectedCourse }) => {
   console.log(sumParametersMain);
   console.log(sumSkillMain);
 
+  const [sumParameters, setSumParameters] = useState({});
+  const [sumSkill, setSumSkill] = useState({});
 
-  const [sumParameters, setSumParameters] = useState({})
-  const [sumSkill, setSumSkill] = useState({})
+  useEffect(() => {
+    if (allResults) {
+      // Initialize an empty object to store category sums
+      const parametersName = {};
+      const skillName = {};
 
-useEffect(() => {
-  if (allResults) {
-    // Initialize an empty object to store category sums
-    const parametersName = {};
-    const skillName = {};
-
-    allResults.forEach((item) => {
-      item.submitter.result.skillParameterData?.forEach((data) => {
-     //   console.log(data)
-        data?.skills.forEach((item) => {
-
-          if (skillName.hasOwnProperty(item.skillName)) {
-            skillName[item.skillName] += +(item.skillValue);
-          } else {
-            skillName[item.skillName] = +(item.skillValue);
-          }
-          item?.parameters.forEach((a) => {
-            const parameterName = a.parameterName;
-            console.log(parameterName)
-            // If earningName already exists in earningItemsName, add itemValue to the existing value, otherwise, set it to itemValue
-            if (parametersName.hasOwnProperty(parameterName)) {
-              parametersName[parameterName] += +(a.parameterValue);
+      allResults.forEach((item) => {
+        item.submitter.result.skillParameterData?.forEach((data) => {
+          //   console.log(data)
+          data?.skills.forEach((item) => {
+            if (skillName.hasOwnProperty(item.skillName)) {
+              skillName[item.skillName] += +item.skillValue;
             } else {
-              parametersName[parameterName] = +(a.parameterValue);
+              skillName[item.skillName] = +item.skillValue;
             }
+            item?.parameters.forEach((a) => {
+              const parameterName = a.parameterName;
+              console.log(parameterName);
+              // If earningName already exists in earningItemsName, add itemValue to the existing value, otherwise, set it to itemValue
+              if (parametersName.hasOwnProperty(parameterName)) {
+                parametersName[parameterName] += +a.parameterValue;
+              } else {
+                parametersName[parameterName] = +a.parameterValue;
+              }
+            });
           });
-        })
-
+        });
       });
-    });
 
-    // Store the result in the state variable itemName
-    setSumParameters(parametersName);
-    setSumSkill(skillName);
-  }
-}, [allResults]);
+      // Store the result in the state variable itemName
+      setSumParameters(parametersName);
+      setSumSkill(skillName);
+    }
+  }, [allResults]);
 
-console.log(sumParameters);
-console.log(sumSkill);
-
-
-
+  console.log(sumParameters);
+  console.log(sumSkill);
 
   return (
     <div className="flex flex-row justify-between gap-4 overflow-x-scroll lg:grid grid-cols-3 lg:overflow-x-visible px-4 mt-[30px] lg:mt-0">
@@ -243,7 +228,10 @@ console.log(sumSkill);
                             background: "#FFDBC1",
                             border: "1px solid #FFDBC1",
                             // width: `${subSkill?.percentage}%`,
-                            width: `${100*sumSkill[subSkill?.skillName]/sumSkillMain[subSkill?.skillName]}%`,
+                            width: `${
+                              (100 * sumSkill[subSkill?.skillName]) /
+                              sumSkillMain[subSkill?.skillName]
+                            }%`,
                           }}
                         ></div>
                       </div>
@@ -288,7 +276,10 @@ console.log(sumSkill);
                                 //background: `${item?.themeColor}`,
                                 background: "#FFDBC1",
                                 // border: `1px solid black`,
-                                width: `${100*sumSkill[subSkill?.skillName]/sumSkillMain[subSkill?.skillName]}%`,
+                                width: `${
+                                  (100 * sumSkill[subSkill?.skillName]) /
+                                  sumSkillMain[subSkill?.skillName]
+                                }%`,
                               }}
                             ></div>
                           </div>
@@ -298,10 +289,11 @@ console.log(sumSkill);
                         </h1>
                       </div>
                       <p
-                        className={`rounded-full ${selectedSkillName === subSkill.skillName
+                        className={`rounded-full ${
+                          selectedSkillName === subSkill.skillName
                             ? "bg-[#FFDBC1]"
                             : ""
-                          }`}
+                        }`}
                         onClick={() => handleClickSkill(subSkill?.skillName)}
                       >
                         <ArrowRightIcon />
@@ -355,7 +347,16 @@ console.log(sumSkill);
                                 </label>
                               </div>
                               <div className="text-sm font-bold flex gap-2 ms-5">
-                                <p>{Math.round(100*sumParameters[parameter?.parameterName]/sumParametersMain[parameter?.parameterName])} %</p>
+                                <p>
+                                  {Math.round(
+                                    (100 *
+                                      sumParameters[parameter?.parameterName]) /
+                                      sumParametersMain[
+                                        parameter?.parameterName
+                                      ]
+                                  )}{" "}
+                                  %
+                                </p>
                               </div>
                             </div>
                           </>
@@ -381,7 +382,7 @@ console.log(sumSkill);
           </div>
         ))
       )}
-      { }
+      {}
     </div>
   );
 };

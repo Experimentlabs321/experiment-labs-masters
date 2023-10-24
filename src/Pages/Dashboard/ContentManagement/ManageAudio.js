@@ -155,7 +155,7 @@ const ManageAudio = () => {
 
     if (submitPermission) {
       const newTask = await axios.post(
-        `${process.env.REACT_APP_BACKEND_API}/tasks/audios`,
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/audios`,
         ManageAudio
       );
       console.log(newTask);

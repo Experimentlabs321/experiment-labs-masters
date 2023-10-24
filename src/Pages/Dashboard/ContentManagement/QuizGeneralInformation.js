@@ -40,7 +40,7 @@ const QuizGeneralInformation = () => {
 
     if (submitPermission) {
       const newAssignment = await axios.post(
-        `${process.env.REACT_APP_BACKEND_API}/tasks/quizes`,
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/quizes`,
         formData
       );
 
