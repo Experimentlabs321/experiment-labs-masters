@@ -169,7 +169,7 @@ const EditVideo = () => {
 
     if (submitPermission) {
       const newTask = await axios.post(
-        `${process.env.REACT_APP_BACKEND_API}/tasks/videos`,
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/videos`,
         ManageVideo
       );
       console.log(newTask);

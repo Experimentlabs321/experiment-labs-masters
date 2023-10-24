@@ -66,17 +66,17 @@ const Week = () => {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACKEND_API}/chapters/${id}`)
+      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/chapters/weekId/${id}`)
       .then((response) => {
         setChapters(response?.data);
 
-        console.log(response?.data)
+        console.log(response?.data);
         // setOpenTopic(response?.data[0]?.chapterName);
       })
       .catch((error) => console.error(error));
   }, [id]);
-   console.log(chapters)
-   //const [toggleButton, setToggleButton] = useState(false);
+  console.log(chapters);
+  //const [toggleButton, setToggleButton] = useState(false);
 
   useEffect(() => {
     // Function to update toggleButton based on device size
@@ -94,13 +94,13 @@ const Week = () => {
     updateToggleButton();
 
     // Event listener to update toggleButton when the window is resized
-    window.addEventListener('resize', updateToggleButton);
+    window.addEventListener("resize", updateToggleButton);
 
     // Clean up the event listener when the component is unmounted
     return () => {
-      window.removeEventListener('resize', updateToggleButton);
+      window.removeEventListener("resize", updateToggleButton);
     };
-  }, []); 
+  }, []);
   return (
     <>
       <MyHelmet>Dashboard</MyHelmet>
