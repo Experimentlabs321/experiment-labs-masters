@@ -142,13 +142,17 @@ const ExpertMentorResourceCentre = () => {
   }, [selectedCourseId, selectedBatchId]);
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACKEND_API}/chapters/${currentWeek?._id}`)
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/weekId/${currentWeek?._id}`
+      )
       .then((response) => {
         setChapters(response?.data);
       })
       .catch((error) => console.error(error));
     axios
-      .get(`${process.env.REACT_APP_BACKEND_API}/chapters/${previousWeek?._id}`)
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/weekId/${previousWeek?._id}`
+      )
       .then((response) => {
         setPreviousChapters(response?.data);
       })

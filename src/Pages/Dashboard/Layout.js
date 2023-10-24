@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import MyHelmet from "../../Components/MyHelmet/MyHelpmet";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import logo from "../../assets/Logos/Group 2859890.png";
 import users from "../../assets/PointsRedemptions/users.svg";
 import enroll from "../../assets/PointsRedemptions/enroll.svg";
@@ -66,7 +66,8 @@ const Layout = ({ children }) => {
   const [windowWidth, setWindowWidth] = useState(0);
   const Role = localStorage.getItem("role");
   const createCoursePage = localStorage.getItem("createCoursePage");
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo, logOut } = useContext(AuthContext);
+  const navigate = useNavigate();
   //console.log(Role);
   const location = useLocation();
   useEffect(() => {
@@ -85,7 +86,7 @@ const Layout = ({ children }) => {
   };
 
   const { id } = useParams();
- // console.log(id)
+  // console.log(id)
 
   return (
     <>
@@ -197,7 +198,7 @@ const Layout = ({ children }) => {
                             </span>
                           </Link>
                         </li>
-                       {/*  <li>
+                        {/*  <li>
                           <Link
                             style={
                               location.pathname === "/leaderBoard"
@@ -349,7 +350,7 @@ const Layout = ({ children }) => {
                             </span>
                           </Link>
                         </li>
-                       {/*  <li>
+                        {/*  <li>
                           <Link
                             style={
                               location.pathname === "/careerAnalysis"
@@ -1191,7 +1192,8 @@ const Layout = ({ children }) => {
                                 location.pathname === "/mentorAssignments" ||
                                 location.pathname ===
                                   `/assignmentEvaluation1/${id}` ||
-                                location.pathname === `/assignmentEvaluation2/${id}`
+                                location.pathname ===
+                                  `/assignmentEvaluation2/${id}`
                                   ? {
                                       background:
                                         "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
@@ -1202,8 +1204,10 @@ const Layout = ({ children }) => {
                               className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
                             >
                               {location.pathname === "/mentorAssignments" ||
-                              location.pathname === `/assignmentEvaluation1/${id}` ||
-                              location.pathname === `/assignmentEvaluation2/${id}` ? (
+                              location.pathname ===
+                                `/assignmentEvaluation1/${id}` ||
+                              location.pathname ===
+                                `/assignmentEvaluation2/${id}` ? (
                                 <img
                                   className=""
                                   src={Assignments}
@@ -1221,8 +1225,9 @@ const Layout = ({ children }) => {
                                 className={`${
                                   location.pathname === "/mentorAssignments" ||
                                   location.pathname ===
-                                  `/assignmentEvaluation1/${id}` ||
-                                  location.pathname === `/assignmentEvaluation2/${id}`
+                                    `/assignmentEvaluation1/${id}` ||
+                                  location.pathname ===
+                                    `/assignmentEvaluation2/${id}`
                                     ? "text-white"
                                     : "text-[#8F8F8F]"
                                 } ml-3 text-[18px] font-[500]`}
@@ -1692,7 +1697,17 @@ const Layout = ({ children }) => {
                         </p>
                       </div>
                     </div>
-                    <button className="p-2 text-center w-full text-white rounded-lg text-[18px]  ">
+                    <button
+                      onClick={() => {
+                        logOut()
+                          .then((res) => {
+                            console.log(res);
+                            navigate("/");
+                          })
+                          .catch((error) => console.error(error));
+                      }}
+                      className="p-2 text-center w-full text-white rounded-lg text-[18px]  "
+                    >
                       Logout
                     </button>
                   </div>

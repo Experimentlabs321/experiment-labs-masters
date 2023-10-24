@@ -119,7 +119,9 @@ const Dashboard = () => {
   }, [userInfo]);
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACKEND_API}/weeks/${selectedCourse?._id}`)
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/weeks/courseId/${selectedCourse?._id}`
+      )
       .then((response) => {
         setWeeks(response?.data);
       })
@@ -139,7 +141,9 @@ const Dashboard = () => {
   }, [selectedCourse, weeks]);
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACKEND_API}/chapters/${currentWeek?._id}`)
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/weekId/${currentWeek?._id}`
+      )
       .then((response) => {
         setChapters(response?.data);
       })
@@ -170,7 +174,7 @@ const Dashboard = () => {
   }, [chapters, user, userInfo]);
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACKEND_API}/chapters`)
+      .get(`${process.env.REACT_APP_SERVICE_API}/api/v1/chapters`)
       .then((response) => {
         const currentCourseChapter = response?.data?.filter(
           (item) => item?.courseId === selectedCourse?._id

@@ -159,7 +159,7 @@ const CourseInformation = () => {
     };
 
     const newChapter = await axios.post(
-      `${process.env.REACT_APP_BACKEND_API}/chapters`,
+      `${process.env.REACT_APP_SERVICE_API}/api/v1/chapters`,
       chapter
     );
 
@@ -428,7 +428,9 @@ const CourseInformation = () => {
   }, [id]);
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACKEND_API}/chapters/${currentWeek?._id}`)
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/weekId/${currentWeek?._id}`
+      )
       .then((response) => {
         if (Role === "admin") setChapters(response?.data);
         else {
