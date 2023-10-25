@@ -93,7 +93,7 @@ const EditReading = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_API}/tasks/readings?id=${openTask?.taskId}`
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/readings/taskId/${openTask?.taskId}`
       )
       .then((response) => {
         setReadingData(response?.data);
@@ -153,7 +153,7 @@ const EditReading = () => {
 
     if (submitPermission) {
       const newTask = await axios.put(
-        `${process.env.REACT_APP_BACKEND_API}/tasks/readings/${readingData?._id}`,
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/readings/taskId/${readingData?._id}`,
         manageReading
       );
       console.log(newTask);

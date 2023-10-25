@@ -100,7 +100,7 @@ const EditFiles = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_API}/tasks/files?id=${openTask?.taskId}`
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/files/taskId/${openTask?.taskId}`
       )
       .then((response) => {
         setFileData(response?.data);

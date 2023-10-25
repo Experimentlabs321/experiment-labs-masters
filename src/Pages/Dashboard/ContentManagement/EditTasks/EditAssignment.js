@@ -94,7 +94,7 @@ const EditAssignment = () => {
     if (openTask?.taskId)
       axios
         .get(
-          `${process.env.REACT_APP_BACKEND_API}/tasks/assignments?id=${openTask?.taskId}`
+          `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/assignments/taskId/${openTask?.taskId}`
         )
         .then((response) => {
           setAssignmentData(response?.data);
@@ -197,7 +197,7 @@ const EditAssignment = () => {
 
     if (submitPermission) {
       const newAssignment = await axios.put(
-        `${process.env.REACT_APP_BACKEND_API}/tasks/assignments/${assignmentData?._id}`,
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/assignments/taskId/${assignmentData?._id}`,
         manageAssignment
       );
       console.log(newAssignment);

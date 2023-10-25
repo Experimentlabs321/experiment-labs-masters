@@ -349,7 +349,7 @@ const CourseInformation = () => {
             console.error({ error: "Invalid task type" });
         }
         fetch(
-          `${process.env.REACT_APP_BACKEND_API}/tasks/${taskTypeForAPI}/${task?.taskId}`,
+          `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/${taskTypeForAPI}/taskId//${task?.taskId}`,
           {
             method: "DELETE",
             headers: {

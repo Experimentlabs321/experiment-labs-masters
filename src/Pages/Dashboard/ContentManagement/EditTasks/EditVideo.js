@@ -107,7 +107,7 @@ const EditVideo = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_API}/tasks/videos?id=${openTask?.taskId}`
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/videos/taskId/${openTask?.taskId}`
       )
       .then((response) => {
         setVideoData(response?.data);

@@ -90,7 +90,7 @@ const EditAudio = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_API}/tasks/audios?id=${openTask?.taskId}`
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/audios/taskId/${openTask?.taskId}`
       )
       .then((response) => {
         setAudioData(response?.data);
@@ -149,7 +149,7 @@ const EditAudio = () => {
 
     if (submitPermission) {
       const newTask = await axios.put(
-        `${process.env.REACT_APP_BACKEND_API}/tasks/audios/${audioData?._id}`,
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/audios/taskId/${audioData?._id}`,
         ManageAudio
       );
       console.log(newTask);
