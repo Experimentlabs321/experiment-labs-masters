@@ -654,7 +654,7 @@ const SkillBasedParameter = ({
           </div>
         </div>
       </div>
-      
+
       <div className=" mt-[50px]  border-b-2">
         <div className="flex justify-center">
           {!skillParameterNumberingSection && (
