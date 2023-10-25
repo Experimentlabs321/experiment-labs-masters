@@ -38,21 +38,8 @@ const EditSkillForm = ({
     };
     console.log(data);
     if (data?.categoryName === selectedSkillCategory?.categoryName) {
-      // if (
-      //   selectedSkillCategory?.skills?.find(
-      //     (item) => item?.skillName === event?.target?.skillName?.value
-      //   )
-      // ) {
-      //   setIsOpenSkillEditForm(false);
-      //   Swal.fire({
-      //     icon: "error",
-      //     title: "Skill already exist!",
-      //     text: "Please enter an unique skill name!",
-      //   });
-      //   return;
-      // }
       const updatedSkill = await axios.put(
-        `${process.env.REACT_APP_BACKEND_API}/editSkill`,
+        `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/skills`,
         data
       );
       if (updatedSkill?.data?.acknowledged) {
@@ -77,21 +64,8 @@ const EditSkillForm = ({
       let currentCategory = skillCategories?.find(
         (item) => item?.categoryName === data?.categoryName
       );
-      // if (
-      //   currentCategory?.skills?.find(
-      //     (item) => item?.skillName === event?.target?.skillName?.value
-      //   )
-      // ) {
-      //   setIsOpenSkillEditForm(false);
-      //   Swal.fire({
-      //     icon: "error",
-      //     title: "Skill already exist!",
-      //     text: "Please enter an unique skill name!",
-      //   });
-      //   return;
-      // }
       const newSkill = await axios.post(
-        `${process.env.REACT_APP_BACKEND_API}/skills`,
+        `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/skills`,
         {
           organizationId: userInfo?.organizationId,
           categoryName: currentCategory?.categoryName,

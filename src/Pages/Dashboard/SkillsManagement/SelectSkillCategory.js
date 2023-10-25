@@ -27,7 +27,7 @@ const SelectSkillCategory = ({
       return;
     }
     const newChapter = await axios.post(
-      `${process.env.REACT_APP_BACKEND_API}/skill_categories`,
+      `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories`,
       {
         categoryName: `category ${skillCategories?.length + 1}`,
         courseId: selectedCourse?._id,
@@ -36,7 +36,7 @@ const SelectSkillCategory = ({
     );
 
     if (newChapter?.data?.acknowledged) {
-      toast.success("Chapter added Successfully");
+      toast.success("Category added Successfully");
       setSkillCategories([
         ...skillCategories,
         { categoryName: `category ${skillCategories?.length + 1}` },
@@ -72,7 +72,7 @@ const SelectSkillCategory = ({
       courseId: selectedCourse?._id,
     };
     const updatedCategory = await axios.put(
-      `${process.env.REACT_APP_BACKEND_API}/skill_categories/updateCategoryName`,
+      `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/categoryName`,
       update
     );
     console.log(updatedCategory);
@@ -108,13 +108,16 @@ const SelectSkillCategory = ({
       confirmButtonText: "Delete",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        fetch(`${process.env.REACT_APP_BACKEND_API}/deleteCategory`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(deleteData),
-        })
+        fetch(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/categories`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(deleteData),
+          }
+        )
           .then((response) => {
             if (!response.ok) {
               throw new Error(`Request failed with status: ${response.status}`);
