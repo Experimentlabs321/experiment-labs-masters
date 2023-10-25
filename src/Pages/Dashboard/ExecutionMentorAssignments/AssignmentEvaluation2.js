@@ -142,7 +142,7 @@ const AssignmentEvaluation2 = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_API}/tasks/assignments/?id=${assignment?.taskId}`
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/assignments/taskId/${assignment?.taskId}`
       )
       .then((response) => {
         const ass = response?.data;
@@ -156,7 +156,7 @@ const AssignmentEvaluation2 = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_API}/tasks/assignments/?id=${assignment?.taskId}`
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/assignments/taskId/${assignment?.taskId}`
       )
       .then((response) => {
         if (

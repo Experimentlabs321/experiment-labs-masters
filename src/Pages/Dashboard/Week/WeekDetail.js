@@ -114,7 +114,7 @@ const WeekDetail = ({
     JSON.parse(localStorage.getItem("currentWeek"))
   );
   const { id } = useParams();
-  console.log(id)
+  console.log(id);
   const [taskData, setTaskData] = useState({});
   const handleNext = () => {
     if (week?.lecture[lectureNo]?.tasks?.length === tasksNo + 1) {
@@ -185,10 +185,9 @@ const WeekDetail = ({
         console.error({ error: "Invalid task type" });
     }
 
-    
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_API}/tasks/${taskTypeForAPI}?id=${openTask?.taskId}`
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/${taskTypeForAPI}/taskId/${openTask?.taskId}`
       )
       .then((response) => {
         setTaskData(response?.data);
@@ -322,10 +321,7 @@ const WeekDetail = ({
           <ClassesTask taskData={taskData} />
         )}
         {openTask?.taskType === "Assignment" && (
-          <AssignmentTask 
-          taskData={taskData} 
-          chapters = {chapters}
-          />
+          <AssignmentTask taskData={taskData} chapters={chapters} />
         )}
         {openTask?.taskType === "Reading" && (
           <ReadingTask taskData={taskData} />

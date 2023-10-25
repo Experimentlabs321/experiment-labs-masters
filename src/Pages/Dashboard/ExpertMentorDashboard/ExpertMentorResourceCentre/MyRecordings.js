@@ -73,7 +73,7 @@ const MyRecordings = ({ courses }) => {
         >
           {recordedClasses?.map((recordedClass) => {
             if (
-              !recordedClass?.mentors?.find(
+              recordedClass?.mentors?.find(
                 (item) => item?.email === user?.email
               )
             ) {
