@@ -94,9 +94,10 @@ import Planning from "../../Pages/Dashboard/LoginPage/Affiliate/Planning";
 import AffiliateName from "../../Pages/Dashboard/LoginPage/Affiliate/AffiliateName";
 import AffiliateSignUp from "../../Pages/Dashboard/LoginPage/Affiliate/AffiliateSignUp";
 
-
 import ZoomIntegration from "../../Pages/Tester/ZoomIntegration";
 import Feedback from "../../Pages/Dashboard/Feedback/Feedback";
+import LoginWithOrganization from "../../Pages/Login/LoginWithOrganization/LoginWithOrganization";
+import UpdateOrganization from "../../Pages/Dashboard/UpdateOrganization/UpdateOrganization";
 
 const router = createBrowserRouter([
   {
@@ -332,7 +333,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/studentsWhoNeedMoreGuidance",
-    element: <StudentsWhoNeedMoreGuidance/>,
+    element: <StudentsWhoNeedMoreGuidance />,
   },
   {
     path: "/studentFeedback",
@@ -385,99 +386,103 @@ const router = createBrowserRouter([
   },
   {
     path: "/loginPage",
-    element:<LoginPage/>,
+    element: <LoginPage />,
   },
   {
     path: "/selectProfile",
-    element:<SelectProfile/>,
+    element: <SelectProfile />,
   },
- 
+
   {
     path: "/studentSignup",
-    element:<StudentSignUp/>,
+    element: <StudentSignUp />,
   },
   {
     path: "/studentSignUpAcademicDetails",
-    element:<StudentSignUpAcademicDetails/>,
+    element: <StudentSignUpAcademicDetails />,
   },
   {
     path: "/studentSignUpUserDetails",
-    element:<StudentSignUpUserDetails/>,
+    element: <StudentSignUpUserDetails />,
   },
   {
     path: "/studentSignUpSelectCourses",
-    element:<StudentSignUpSelectCourses/>,
+    element: <StudentSignUpSelectCourses />,
   },
   {
     path: "/studentSignUpPricePlans",
-    element:<StudentSignUpPricePlans/>,
+    element: <StudentSignUpPricePlans />,
   },
   {
     path: "/organizationType",
-    element:<OrganizationType/>,
+    element: <OrganizationType />,
   },
   {
     path: "/organizationName",
-    element:<OrganizationName/>,
+    element: <OrganizationName />,
   },
- 
+
   {
     path: "/organizationCompanyDetails",
-    element:<OrganizationCompanyDetails/>,
+    element: <OrganizationCompanyDetails />,
   },
   {
     path: "/aboutOrganization",
-    element:<AboutOrganization/>,
+    element: <AboutOrganization />,
   },
   {
     path: "/organizationServices",
-    element:<OrganizationServices/>,
+    element: <OrganizationServices />,
   },
   {
     path: "/organizationSignup",
-    element:<OrganizationSignup/>,
+    element: <OrganizationSignup />,
   },
   {
     path: "/mentorType",
-    element:<MentorType/>,
+    element: <MentorType />,
   },
   {
     path: "/mentorName",
-    element:<MentorName/>,
+    element: <MentorName />,
   },
   {
     path: "/aboutSkillsExpertise",
-    element:<AboutSkillsExpertise/>,
+    element: <AboutSkillsExpertise />,
   },
   {
     path: "/mentorSignUp",
-    element:<MentorSignUp/>,
+    element: <MentorSignUp />,
   },
   {
     path: "/affiliateType",
-    element:<AffiliateType/>,
+    element: <AffiliateType />,
   },
   {
     path: "/planning",
-    element:<Planning/>,
+    element: <Planning />,
   },
   {
     path: "/affiliateName",
-    element:<AffiliateName/>,
+    element: <AffiliateName />,
   },
- 
+
   {
     path: "/affiliateSignUp",
-    element:<AffiliateSignUp/>,
+    element: <AffiliateSignUp />,
   },
   {
     path: "/feedback",
-    element:<Feedback/>,
+    element: <Feedback />,
   },
- 
- 
- 
- 
+  {
+    path: "/login/:id",
+    element: <LoginWithOrganization />,
+  },
+  {
+    path: "/updateOrganization",
+    element: <UpdateOrganization />,
+  },
 ]);
 
 export default router;
