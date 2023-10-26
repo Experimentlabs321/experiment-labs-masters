@@ -80,8 +80,8 @@ const EditVideo = () => {
       courseId: currentWeek?.courseId,
     };
     axios
-      .post(
-        `${process.env.REACT_APP_BACKEND_API}/skillCategoriesByCourseId`,
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
         fetchData
       )
       .then((res) => setSkillCategories(res?.data))

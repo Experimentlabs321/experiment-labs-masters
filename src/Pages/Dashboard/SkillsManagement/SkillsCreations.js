@@ -58,7 +58,7 @@ const Skill = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_API}/skill_categories/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
         setOrgSkills(response?.data?.courses);
