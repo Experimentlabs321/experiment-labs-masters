@@ -59,11 +59,13 @@ import ArrowLeftIcon from "../../assets/Dashboard/dashboard_arrow-left.png";
 import { Badge } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { AuthContext } from "../../contexts/AuthProvider";
+import axios from "axios";
 
 const Layout = ({ children }) => {
   const [toggleButton, setToggleButton] = useState(true);
   const [screenSmall, setScreenSmall] = useState(false);
   const [windowWidth, setWindowWidth] = useState(0);
+  const [orgData, setOrgData] = useState({});
   const Role = localStorage.getItem("role");
   const createCoursePage = localStorage.getItem("createCoursePage");
   const { userInfo, logOut } = useContext(AuthContext);
@@ -80,6 +82,16 @@ const Layout = ({ children }) => {
       setScreenSmall(true);
     }
   }, [windowWidth]);
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
+      )
+      .then((response) => {
+        setOrgData(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [userInfo]);
 
   const handleClick = () => {
     setToggleButton(!toggleButton);
@@ -145,7 +157,11 @@ const Layout = ({ children }) => {
                   <div className="flex-1 space-y-1">
                     <div className="py-8 border-b border-[#303031] flex items-center justify-between lg:justify-center">
                       <Link className="hidden lg:block" to={"/"}>
-                        <img className="h-6 lg:h-8" src={logo} alt="icon" />
+                        <img
+                          className="h-6 lg:h-8"
+                          src={orgData?.org_logo}
+                          alt="icon"
+                        />
                       </Link>
                       <p className="text-[#676767] ml-[27px] lg:hidden">Menu</p>
                       <button

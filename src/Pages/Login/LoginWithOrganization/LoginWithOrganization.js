@@ -1,6 +1,48 @@
-import React from "react";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { AuthContext } from "../../../contexts/AuthProvider";
 
 const LoginWithOrganization = () => {
+  const { id } = useParams();
+  const { signIn } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const [orgData, setOrgData] = useState({});
+
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${id}`)
+      .then((response) => {
+        setOrgData(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [id]);
+
+  const handleLoginSubmit = async (e) => {
+    e.preventDefault();
+
+    const form = e?.target;
+    const email = form.email.value;
+    const password = form.password.value;
+
+    try {
+      await signIn(email, password).then(() => {
+        saveUser(email);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const saveUser = async (email) => {
+    fetch(
+      `https://experiment-labs-master-server-rakibul58.vercel.app/users?email=${email}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        localStorage.setItem("role", data?.role);
+        navigate("/dashboard");
+      });
+  };
   return (
     <div>
       <div className="flex min-h-screen">
@@ -8,58 +50,34 @@ const LoginWithOrganization = () => {
         <div className="flex flex-row w-full">
           {/* <!-- Sidebar --> */}
           <div className="hidden lg:flex flex-col justify-center bg-[#f7fafc] lg:px-8 xl:px-12 py-2 basis-2/5">
-            {/* <div className="flex items-center justify-start space-x-3 mb-3">
-              <img
-                className="w-[100px]"
-                src="https://www.edvantaconsulting.com/wp-content/uploads/2023/02/logo.jpg"
-                alt="brand"
-              />
-              <span className="bg-black rounded-full w-8 h-8"></span>
-              <a href="#" className="font-medium text-xl">
-                Brand
-              </a>
-            </div> */}
             <div className="space-y-5 text-center text-green">
               <h1 className="lg:text-2xl xl:text-3xl xl:leading-snug font-extrabold">
-                The future of education is here
+                {orgData?.loginTitle}
               </h1>
-              <p className="">
-                With an all in one platform for the teaching world
-              </p>
+              <p className="">{orgData?.loginSubTitle}</p>
               <img
                 className="mx-auto"
-                src="https://web.classplusapp.com/static/media/loginCover.c813756b.svg"
+                src={orgData?.loginSidebarImage}
                 alt="showCase"
               />
             </div>
             {/* <p className="font-medium mt-3">© 2023 Experiment Labs</p> */}
             <img
               className="w-[100px] mx-auto mt-4"
-              src="https://www.edvantaconsulting.com/wp-content/uploads/2023/02/logo.jpg"
+              src={orgData?.org_logo}
               alt="brand"
             />
           </div>
-
           {/* <!-- Login --> */}
           <div className="flex flex-1 flex-col items-center justify-center px-10 relative">
             <div className="flex lg:hidden justify-center items-center w-full py-4">
               <div className="flex items-center justify-center space-x-3">
                 <img
                   className="w-[100px]"
-                  src="https://www.edvantaconsulting.com/wp-content/uploads/2023/02/logo.jpg"
+                  src={orgData?.org_logo}
                   alt="brand"
                 />
-                {/* <span className="bg-black rounded-full w-6 h-6"></span>
-                <a href="#" className="font-medium text-lg">
-                  Brand
-                </a> */}
               </div>
-              {/* <div className="flex items-center space-x-2">
-                <span>Not a member? </span>
-                <a href="#" className="underline font-medium text-[#070eff]">
-                  Sign up now
-                </a>
-              </div> */}
             </div>
             {/* <!-- Login box --> */}
             <div className="flex flex-1 flex-col  justify-center space-y-5 max-w-md">
@@ -73,7 +91,7 @@ const LoginWithOrganization = () => {
               </div>
               <div className="flex flex-col max-w-md space-y-5">
                 <form
-                  //   onSubmit={handleSubmit}
+                  onSubmit={handleLoginSubmit}
                   noValidate=""
                   action=""
                   className="space-y-6 ng-untouched ng-pristine ng-valid"
