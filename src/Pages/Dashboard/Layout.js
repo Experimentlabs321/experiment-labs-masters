@@ -810,6 +810,36 @@ const Layout = ({ children }) => {
                               </span>
                             </Link>
                           </li>
+                          <li>
+                            <Link
+                              style={
+                                location.pathname === "/updateOrganization"
+                                  ? {
+                                      background:
+                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                    }
+                                  : {}
+                              }
+                              to="/updateOrganization"
+                              className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
+                            >
+                              {location.pathname === "/updateOrganization" ? (
+                                <img className="" src={feather} alt="icon" />
+                              ) : (
+                                <img className="" src={feather} alt="icon" />
+                              )}
+
+                              <span
+                                className={`${
+                                  location.pathname === "/updateOrganization"
+                                    ? "text-[#fff]"
+                                    : "text-[#8F8F8F]"
+                                } ml-3 text-[18px] font-[500]`}
+                              >
+                                Update Organization
+                              </span>
+                            </Link>
+                          </li>
                           {/* <li>
                           <Link
                             style={
