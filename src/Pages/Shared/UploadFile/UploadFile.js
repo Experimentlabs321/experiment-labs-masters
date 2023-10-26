@@ -1,8 +1,8 @@
 import React, { useState } from "react";
+import uploadFileToS3 from "../../UploadComponent/s3Uploader";
 
-const UploadFile = () => {
-  const [imageLoading, setImageLoading] = useState(false);
-  const [image, setImage] = useState("");
+const UploadFile = ({ setFileUrl, children }) => {
+  const [fileLoading, setFileLoading] = useState(false);
 
   const dragOver = (e) => {
     e.preventDefault();
@@ -16,58 +16,28 @@ const UploadFile = () => {
     e.preventDefault();
   };
 
-  const imageFileDrop = async (e) => {
+  const fileFileDrop = async (e) => {
     e.preventDefault();
+    setFileLoading(true);
     const files = e.dataTransfer.files;
 
-    const data = new FormData();
-    data.append("file", files[0]);
-    data.append("upload_preset", "ml_default");
-    setImageLoading(true);
+    let res = "";
+    if (files[0]) res = await uploadFileToS3(files[0]);
 
-    const res = await fetch(
-      "https://api.cloudinary.com/v1_1/dvszolotz/image/upload",
-      {
-        method: "POST",
-        body: data,
-      }
-    );
-    const file = await res.json();
-
-    const field = "thumbnail";
-    const value = file.secure_url;
-    // //   const newBlogData = { ...blogData };
-    //   newBlogData[field] = value;
-    //   setBlogData(newBlogData);
-
-    setImage(file.secure_url);
-    // setImage(files[0])
-    // props.imgLink(file.secure_url);
-    setImageLoading(false);
+    setFileUrl(res);
+    setFileLoading(false);
   };
 
-  const uploadImage = async (e) => {
+  const uploadFile = async (e) => {
+    e.preventDefault();
+    setFileLoading(true);
     const files = e.target.files;
-    const data = new FormData();
-    data.append("file", files[0]);
-    data.append("upload_preset", "ml_default");
-    setImageLoading(true);
 
-    const res = await fetch(
-      "https://api.cloudinary.com/v1_1/dvszolotz/image/upload",
-      {
-        method: "POST",
-        body: data,
-      }
-    );
-    const file = await res.json();
-    const field = e.target.name;
-    const value = file.secure_url;
-    //   const newBlogData = { ...blogData };
-    //   newBlogData[field] = value;
-    //   setBlogData(newBlogData);
-    setImage(file.secure_url);
-    setImageLoading(false);
+    let res = "";
+    if (files[0]) res = await uploadFileToS3(files[0]);
+
+    setFileUrl(res);
+    setFileLoading(false);
   };
 
   return (
@@ -80,10 +50,10 @@ const UploadFile = () => {
               onDragOver={dragOver}
               onDragEnter={dragEnter}
               onDragLeave={dragLeave}
-              onDrop={imageFileDrop}
+              onDrop={fileFileDrop}
             >
               <div className="">
-                {imageLoading && (
+                {fileLoading && (
                   <div>
                     <img
                       className="mx-auto animate-ping"
@@ -94,24 +64,12 @@ const UploadFile = () => {
                     <p className="text-xl text-gray-400">Loading ...</p>
                   </div>
                 )}
-                {!imageLoading && (
-                  <div>
-                    <img
-                      className="mx-auto animate-pulse"
-                      style={{ height: "70px", width: "70px" }}
-                      src="https://i.ibb.co/gJLdW8G/cloud-upload-regular-240.png"
-                      alt=""
-                    />
-                    <p className="text-xl text-gray-400">
-                      Drag & Drop your thumbnail image
-                    </p>
-                  </div>
-                )}
-                <p className="py-4">
+                {!fileLoading && <div>{children}</div>}
+                {/* <p className="py-4">
                   <span className="rounded-lg bg-gray-400 px-3 py-3 font-semibold  text-Docy-Dark dark:text-white">
                     Upload Thumbnail
                   </span>
-                </p>
+                </p> */}
               </div>
             </div>
             <input
@@ -119,7 +77,7 @@ const UploadFile = () => {
               type="file"
               name="thumbnail"
               placeholder="upload"
-              onChange={uploadImage}
+              onChange={uploadFile}
             />
           </label>
         </div>
