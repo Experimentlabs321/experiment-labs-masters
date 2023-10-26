@@ -3,12 +3,14 @@ import Layout from "../Layout";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
 import UploadFile from "../../Shared/UploadFile/UploadFile";
+import toast from "react-hot-toast";
 
 const UpdateOrganization = () => {
   const { userInfo } = useContext(AuthContext);
   const [orgData, setOrgData] = useState({});
   const [orgLogoUrl, setOrgLogoUrl] = useState("");
   const [loginSidebarImage, setLoginSidebarImage] = useState("");
+  const [titlesColor, setTitlesColor] = useState("");
 
   useEffect(() => {
     axios
@@ -18,15 +20,45 @@ const UpdateOrganization = () => {
       .then((response) => {
         setOrgData(response?.data);
         setOrgLogoUrl(response?.data?.org_logo);
+        setLoginSidebarImage(response?.data?.loginSidebarImage);
+        setTitlesColor(response?.data?.titlesColor);
       })
       .catch((error) => console.error(error));
   }, [userInfo]);
-  console.log(orgLogoUrl);
-  const handleSubmit = async (event) => {};
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const form = event.target;
+
+    const orgInfo = {
+      organizationName: orgData?.organizationName,
+      email: orgData?.email,
+      loginTitle: form.loginTitle?.value,
+      loginSubTitle: form.loginSubTitle?.value,
+      org_logo: orgLogoUrl,
+      loginSidebarImage: loginSidebarImage,
+      titlesColor: titlesColor,
+    };
+    console.log(orgInfo);
+
+    const updateOrg = await axios.put(
+      `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${orgData?._id}`,
+      orgInfo
+    );
+
+    if (updateOrg?.data?.acknowledged) {
+      toast.success("Organization edited Successfully");
+      // event.target.reset();
+    }
+  };
+
   return (
     <div>
       <Layout>
-        <form onSubmit={handleSubmit} className="px-4 mt-5">
+        <h1 className="px-4 mt-4 text-lg font-bold font-sans">
+          Organization ID: {orgData?._id}
+        </h1>
+        <form onSubmit={handleSubmit} className="px-4 mt-1">
           <div className="flex gap-4">
             <div className="flex flex-col mt-5 basis-1/2">
               <label className="font-bold text-lg">Logo</label>
@@ -68,6 +100,7 @@ const UpdateOrganization = () => {
               <label className="font-bold text-lg">Login title</label>
               <input
                 type="text"
+                defaultValue={orgData?.loginTitle}
                 name="loginTitle"
                 className="border rounded-md max-w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]"
               />
@@ -77,6 +110,7 @@ const UpdateOrganization = () => {
               <input
                 type="text"
                 name="loginSubTitle"
+                defaultValue={orgData?.loginSubTitle}
                 className="border rounded-md max-w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]"
               />
             </div>
@@ -118,7 +152,7 @@ const UpdateOrganization = () => {
             </div>
           </div>
           <div className="flex flex-col mt-5">
-            <label className="font-bold text-lg">Titles color</label>
+            <label className="font-bold text-lg">Title & sub-title color</label>
             <ul className="flex gap-4 flex-wrap ">
               <li className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] ">
                 <input
@@ -126,8 +160,8 @@ const UpdateOrganization = () => {
                   id="student"
                   name="black"
                   value="black"
-                  checked={orgData?.titlesColor === "black"}
-                  // onChange={() => setSelectedBatch(option)}
+                  checked={titlesColor === "black"}
+                  onChange={() => setTitlesColor("black")}
                   className=" mb-1"
                 />
                 <div className="flex mb-1 items-center">
@@ -142,8 +176,8 @@ const UpdateOrganization = () => {
                   id="student"
                   name="white"
                   value="white"
-                  checked={orgData?.titlesColor === "white"}
-                  // onChange={() => setSelectedBatch(option)}
+                  checked={titlesColor === "white"}
+                  onChange={() => setTitlesColor("white")}
                   className=" mb-1"
                 />
                 <div className="flex mb-1 items-center">
@@ -152,24 +186,13 @@ const UpdateOrganization = () => {
                   </label>
                 </div>
               </li>
-              <li className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] ">
-                <input
-                  type="radio"
-                  id="student"
-                  name="green"
-                  value="green"
-                  checked={orgData?.titlesColor === "green"}
-                  // onChange={() => setSelectedBatch(option)}
-                  className=" mb-1"
-                />
-                <div className="flex mb-1 items-center">
-                  <label className="ms-4" htmlFor="green">
-                    Green
-                  </label>
-                </div>
-              </li>
             </ul>
           </div>
+          <input
+            className="bg-green text-white py-3 px-4 font-bold rounded-lg"
+            value="Save"
+            type="submit"
+          />
         </form>
       </Layout>
     </div>

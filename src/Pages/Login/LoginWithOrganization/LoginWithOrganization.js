@@ -42,8 +42,8 @@ const LoginWithOrganization = () => {
 
           {/* <!-- Login --> */}
           <div className="flex flex-1 flex-col items-center justify-center px-10 relative">
-            <div className="flex lg:hidden justify-between items-center w-full py-4">
-              <div className="flex items-center justify-start space-x-3">
+            <div className="flex lg:hidden justify-center items-center w-full py-4">
+              <div className="flex items-center justify-center space-x-3">
                 <img
                   className="w-[100px]"
                   src="https://www.edvantaconsulting.com/wp-content/uploads/2023/02/logo.jpg"
@@ -154,7 +154,7 @@ const LoginWithOrganization = () => {
             </div>
 
             {/* <!-- Footer --> */}
-            <div className="flex justify-center flex-col m-auto mb-16 text-center text-lg ">
+            <div className="flex justify-center flex-col m-auto my-5 text-center text-lg ">
               <p className="font-bold mb-1">
                 Built by{" "}
                 <a href="https://experimentlabs.in/" className="underline">
