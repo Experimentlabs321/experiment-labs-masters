@@ -27,6 +27,7 @@ import GoogleLogo from "../../../assets/icons/googleIcon.png";
 import Slide from "@mui/material/Slide";
 import emailjs from "@emailjs/browser";
 import ReactGA from "react-ga4";
+import toast from "react-hot-toast";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -34,7 +35,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const NavBar = (props) => {
 
-  const {userInfo} = useContext(AuthContext)
+  const { userInfo } = useContext(AuthContext)
   const [state, setState] = React.useState(false);
   const [role, setRole] = useState(false);
 
@@ -234,16 +235,16 @@ const NavBar = (props) => {
     if (Role === "admin") {
       navigate("/userManagement");
     }
-   else if (Role === "execution mentor") {
+    else if (Role === "execution mentor") {
       navigate("/executionMentorDashboard");
     }
-   else if (Role === "unpaid student") {
+    else if (Role === "unpaid student") {
       navigate("/unpaidStudentDashboard");
     }
-   else if (Role === "expert mentor") {
+    else if (Role === "expert mentor") {
       navigate("/expertMentorDashboard");
     }
-     else {
+    else {
       navigate("/dashboard");
     }
   };
@@ -265,60 +266,60 @@ const NavBar = (props) => {
   // };
 
   // Register user with Email Password
-  const registerUser = (e) =>{
+  const registerUser = (e) => {
     e.preventDefault();
     const form = e?.target;
     const name = form.name.value;
     const email = form.email.value;
     const password = form.password.value;
-    console.log(email,name,password)
-    
+    console.log(email, name, password)
+
     createUser(email, password)
-   
 
-    .then(result => {
-      const user = result?.user;
-      console.log(user);
 
-      alert('Register successfull')
-      setOpen2(false);
+      .then(result => {
+        const user = result?.user;
+        console.log(user);
 
-      updateUserProfile({
-        displayName: name,
+        alert('Register successfull')
+        setOpen2(false);
+
+        updateUserProfile({
+          displayName: name,
+        })
+        saveUser(email);
+        form.reset();
+
       })
-      saveUser(email);
-      form.reset();
-      
-  })
-  .catch(err => console.error(err));
-    
- 
+      .catch(err => console.error(err));
+
+
   }
 
 
 
- /*  const registerUser = (e) => {
-    console.log(e)
-    createUser(e.email, e.password)
-
-      .then((userCredential) => {
-        // sent name to firebase
-        alert("Create Successfull");
-        updateUserProfile({
-          displayName: e.name,
-        })
-          .then(() => {
-            // graphyLogin(loginData.email, loginData.name);
-            saveUser(e.email);
-            // navigate("/dashboard");
-          })
-          .catch((error) => { });
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
-    e.preventDefault();
-  }; */
+  /*  const registerUser = (e) => {
+     console.log(e)
+     createUser(e.email, e.password)
+ 
+       .then((userCredential) => {
+         // sent name to firebase
+         alert("Create Successfull");
+         updateUserProfile({
+           displayName: e.name,
+         })
+           .then(() => {
+             // graphyLogin(loginData.email, loginData.name);
+             saveUser(e.email);
+             // navigate("/dashboard");
+           })
+           .catch((error) => { });
+       })
+       .catch((error) => {
+         console.log(error.message);
+       });
+     e.preventDefault();
+   }; */
 
   // Login user with Email Password
   const loginUser = (email, password, location, history) => {
@@ -338,7 +339,7 @@ const NavBar = (props) => {
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
-    
+
     const form = e?.target;
     const email = form.email.value;
 
@@ -347,13 +348,15 @@ const NavBar = (props) => {
         setNewLogin(true);
         setOpen1(false);
         saveUser(email);
+       
 
       });
     } catch (error) {
       console.log(error);
+      toast.error("password or email error")
     }
   };
-  const saveUser = async(email) => {
+  const saveUser = async (email) => {
     const users = { email };
     fetch(`https://experiment-labs-master-server-rakibul58.vercel.app/users?email=${email}`)
       .then((res) => res.json())
@@ -362,7 +365,7 @@ const NavBar = (props) => {
 
         // setRole(data?.role);
         localStorage.setItem("role", data?.role);
-
+        navigates();
         //alert(data)
         /*  if (data.acknowledged) {
                 // setTreatment(null)
@@ -375,6 +378,28 @@ const NavBar = (props) => {
                 alert(`${data.message}`)
             } */
       });
+  };
+
+  const navigates = () => {
+    const Role = localStorage.getItem("role");
+    if (Role === "admin") {
+      navigate("/userManagement");
+    }
+    else if (Role === "execution mentor") {
+      navigate("/executionMentorDashboard");
+    }
+    else if (Role === "unpaid student") {
+      navigate("/unpaidStudentDashboard");
+    }
+    else if (Role === "expert mentor") {
+      navigate("/expertMentorDashboard");
+    }
+    else {
+      navigate("/dashboard");
+    }
+
+
+
   };
 
   // useEffect(() => {
@@ -635,7 +660,7 @@ const NavBar = (props) => {
       </Button>
     ) : (
       <Button
-      onClick={handleDashboard}
+        onClick={handleDashboard}
         // onClick={handleLogout}
         // onClick={() => graphyLogin(user?.email, user?.displayName)}
         sx={{
@@ -678,28 +703,28 @@ const NavBar = (props) => {
     >
       <Link>Know More</Link>
     </Button>,
-   
-  
-      <>
+
+
+    <>
       {
         userInfo && (
           <Button
-          onClick={() => handleLogout()}
-          sx={{
-            bgcolor: "#FF557A",
-            borderRadius: "22.5px",
-            ":hover": { bgcolor: "#94A4FF" },
-            color: "white",
-            width: "100%",
-          }}
-          className="my-2 block border-b border-gray-100 py-1 font-semibold text-gray-500 hover:text-black md:mx-2"
-        >
-          Logout
-        </Button>
+            onClick={() => handleLogout()}
+            sx={{
+              bgcolor: "#FF557A",
+              borderRadius: "22.5px",
+              ":hover": { bgcolor: "#94A4FF" },
+              color: "white",
+              width: "100%",
+            }}
+            className="my-2 block border-b border-gray-100 py-1 font-semibold text-gray-500 hover:text-black md:mx-2"
+          >
+            Logout
+          </Button>
         )
       }
-      
-      </>
+
+    </>
   ];
 
   const drawer = (

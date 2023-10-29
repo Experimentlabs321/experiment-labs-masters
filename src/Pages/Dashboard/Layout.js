@@ -94,7 +94,7 @@ const Layout = ({ children }) => {
       <div>
         <div className=" font-sansita">
           <nav
-            className={`bg-[#25282c] border-b border-gray-200 fixed z-30 w-full lg:hidden ${
+            className={`bg-[#01090d] border-b border-gray-200 fixed z-30 w-full lg:hidden ${
               toggleButton ? "" : "hidden"
             }`}
           >
