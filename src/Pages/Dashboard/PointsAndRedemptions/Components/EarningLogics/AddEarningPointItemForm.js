@@ -3,7 +3,6 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { toast } from "react-hot-toast";
 
-
 const AddEarningPointItemForm = ({
   setIsOpenEarningItemAddForm,
   UploadingImg,
@@ -13,10 +12,12 @@ const AddEarningPointItemForm = ({
   setEarningCategories,
   selectedCourse,
   userInfo,
+  weeks,
 }) => {
   const [itemValue, setItemValue] = useState(0);
   const [selectedItemEarningOption, setSelectedItemEarningOption] =
     useState("Automated");
+
   const handleItemEarningOptionChange = (event) => {
     setSelectedItemEarningOption(event.target.value);
   };
@@ -213,39 +214,43 @@ const AddEarningPointItemForm = ({
                       </div>
                     </div>
                   </div>
-                  <div className="flex  items-center ">
-                    <p className="font-bold text-base me-5">Item Value</p>
-                    <div className="text-[18px] w-[40%]  h-[40px] flex  ">
-                      <button
-                        type="button"
-                        style={{
-                          boxShadow: " 0px 0px 16px -2px rgba(0, 0, 0, 0.50)",
-                        }}
-                        className=" border w-[50%] text-[#000000] rounded-s-full text-center"
-                        onClick={() => setItemValue(itemValue - 1)}
-                      >
-                        -
-                      </button>
-                      <input
-                        value={itemValue}
-                        onChange={(e) => setItemValue(parseInt(e.target.value))}
-                        className="w-[60%] focus:outline-none flex justify-center items-center text-center font-sans"
-                        type="number"
-                        name="itemValue"
-                        id="itemValue"
-                      />
-                      <button
-                        type="button"
-                        style={{
-                          boxShadow: " 0px 0px 16px -2px rgba(0, 0, 0, 0.50)",
-                        }}
-                        className="border w-[50%] text-[#000000] rounded-e-full text-center"
-                        onClick={() => setItemValue(itemValue + 1)}
-                      >
-                        +
-                      </button>
+                  {weeks?.map((week) => (
+                    <div key={week?._id} className="flex  items-center ">
+                      <p className="font-bold text-base me-5">Item Value</p>
+                      <div className="text-[18px] w-[40%]  h-[40px] flex  ">
+                        <button
+                          type="button"
+                          style={{
+                            boxShadow: " 0px 0px 16px -2px rgba(0, 0, 0, 0.50)",
+                          }}
+                          className=" border w-[50%] text-[#000000] rounded-s-full text-center"
+                          onClick={() => setItemValue(itemValue - 1)}
+                        >
+                          -
+                        </button>
+                        <input
+                          value={itemValue}
+                          onChange={(e) =>
+                            setItemValue(parseInt(e.target.value))
+                          }
+                          className="w-[60%] focus:outline-none flex justify-center items-center text-center font-sans"
+                          type="number"
+                          name="itemValue"
+                          id="itemValue"
+                        />
+                        <button
+                          type="button"
+                          style={{
+                            boxShadow: " 0px 0px 16px -2px rgba(0, 0, 0, 0.50)",
+                          }}
+                          className="border w-[50%] text-[#000000] rounded-e-full text-center"
+                          onClick={() => setItemValue(itemValue + 1)}
+                        >
+                          +
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
                 <div className=" mt-5  ">
                   <input

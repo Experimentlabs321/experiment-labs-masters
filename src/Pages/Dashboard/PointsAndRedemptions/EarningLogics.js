@@ -29,6 +29,18 @@ const EarningLogics = () => {
     useState(false);
   const [isOpenEarningItemEditForm, setIsOpenEarningItemEditForm] =
     useState(false);
+  const [weeks, setWeeks] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/weeks/courseId/${selectedCourse?._id}`
+      )
+      .then((response) => {
+        setWeeks(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [selectedCourse]);
 
   useEffect(() => {
     axios
@@ -293,6 +305,7 @@ const EarningLogics = () => {
             setEarningCategories={setEarningCategories}
             selectedCourse={selectedCourse}
             userInfo={userInfo}
+            weeks={weeks}
           />
         )}
         {isOpenEarningItemEditForm && selectedEarningLogic?.earningItemName && (
