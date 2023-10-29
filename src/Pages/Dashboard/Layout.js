@@ -138,7 +138,13 @@ const Layout = ({ children }) => {
                   </svg>
                 </button>
                 <div>
-                  <img className="h-6 lg:h-8" src={logo} alt="icon" />
+                  <img
+                    // className="h-6 lg:h-8"
+                    className="w-[100px]"
+                    src={orgData?.org_logo}
+                    alt="icon"
+                  />
+                  {/* <img className="h-6 lg:h-8" src={logo} alt="icon" /> */}
                 </div>
               </div>
             </div>
@@ -155,10 +161,11 @@ const Layout = ({ children }) => {
               <div className=" flex-1 flex flex-col min-h-0 pt-0">
                 <div className="flex-1 flex flex-col pb-4 overflow-y-auto">
                   <div className="flex-1 space-y-1">
-                    <div className="py-8 border-b border-[#303031] flex items-center justify-between lg:justify-center">
+                    <div className="py-2 border-b border-[#303031] flex items-center justify-between lg:justify-center">
                       <Link className="hidden lg:block" to={"/"}>
                         <img
-                          className="h-6 lg:h-8"
+                          // className="h-6 lg:h-8"
+                          className="w-[100px]"
                           src={orgData?.org_logo}
                           alt="icon"
                         />
