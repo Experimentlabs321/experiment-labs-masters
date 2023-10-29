@@ -5,7 +5,6 @@ import Swal from "sweetalert2";
 import { AuthContext } from "../../../../../contexts/AuthProvider";
 import DialogLayout from "../../../Shared/DialogLayout";
 
-
 const SelectEarningCategory = ({
   setEarningCategories,
   earningCategories,
@@ -28,9 +27,11 @@ const SelectEarningCategory = ({
       return;
     }
     const newCategory = await axios.post(
-      `${process.env.REACT_APP_BACKEND_API}/earning_categories`,
+      `http://localhost:5000/api/v1/earningCategories`,
       {
         categoryName: `category ${earningCategories?.length + 1}`,
+        totalWeight: 0,
+        addedWeight: 0,
         courseId: selectedCourse?._id,
         organizationId: userInfo?.organizationId,
       }
@@ -40,10 +41,16 @@ const SelectEarningCategory = ({
       toast.success("Category added Successfully");
       setEarningCategories([
         ...earningCategories,
-        { categoryName: `category ${earningCategories?.length + 1}` },
+        {
+          categoryName: `category ${earningCategories?.length + 1}`,
+          totalWeight: 0,
+          addedWeight: 0,
+        },
       ]);
       setSelectedEarningCategory({
         categoryName: `category ${earningCategories?.length + 1}`,
+        totalWeight: 0,
+        addedWeight: 0,
       });
     }
   };
@@ -194,14 +201,18 @@ const SelectEarningCategory = ({
         {earningCategories?.map((item, index) => (
           <button
             key={index}
-            className={`px-2 py-3 relative text-base border rounded-md font-semibold flex items-center min-w-[150px] justify-between gap-6 mr-1 ${
+            className={`px-2 py-3 relative text-base text-start border rounded-md font-semibold flex items-center min-w-[150px] justify-between gap-6 mr-1 ${
               selectedEarningCategory?.categoryName === item?.categoryName
                 ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
                 : "text-[#949494]"
             }`}
             onClick={() => setSelectedEarningCategory(item)}
           >
-            {item?.categoryName}
+            <div>
+              <h1>Name: {item?.categoryName}</h1>
+              <p>Total Weight: {item?.totalWeight}</p>
+              <p>Added Weight: {item?.addedWeight}</p>
+            </div>
             <button
               onBlur={() => setCategoryThreeDot(false)}
               onClick={() => setCategoryThreeDot(!categoryThreeDot)}
