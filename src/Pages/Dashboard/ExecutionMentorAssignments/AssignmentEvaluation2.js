@@ -347,7 +347,7 @@ const AssignmentEvaluation2 = () => {
         },
       };
       const submitCompletion = await axios.post(
-        `https://experiment-labs-master-server.vercel.app/chapter/${mainAssignments?.chapterId}/task/${assignment?.taskId}/add-participant/Assignment`,
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/Assignment/taskId/${assignment?.taskId}/chapterId/${mainAssignments?.chapterId}`,
         sendData
       );
 
@@ -444,7 +444,7 @@ const AssignmentEvaluation2 = () => {
       },
     };
     const submitCompletion = await axios.post(
-      `https://experiment-labs-master-server.vercel.app/chapter/${mainAssignments?.chapterId}/task/${assignment?.taskId}/add-participant/Assignment`,
+      `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/Assignment/taskId/${assignment?.taskId}/chapterId/${mainAssignments?.chapterId}`,
       sendData
     );
 
@@ -503,7 +503,7 @@ const AssignmentEvaluation2 = () => {
       },
     };
     const submitCompletion = await axios.post(
-      `https://experiment-labs-master-server.vercel.app/chapter/${mainAssignments?.chapterId}/task/${assignment?.taskId}/add-participant/Assignment`,
+      `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/Assignment/taskId/${assignment?.taskId}/chapterId/${mainAssignments?.chapterId}`,
       sendData
     );
 

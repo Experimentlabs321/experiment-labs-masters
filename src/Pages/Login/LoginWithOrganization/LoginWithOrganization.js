@@ -50,7 +50,12 @@ const LoginWithOrganization = () => {
         <div className="flex flex-row w-full">
           {/* <!-- Sidebar --> */}
           <div className="hidden lg:flex flex-col justify-center bg-[#f7fafc] lg:px-8 xl:px-12 py-2 basis-2/5">
-            <div className="space-y-5 text-center text-green">
+            <div
+              style={{
+                color: orgData?.titlesColor ? orgData?.titlesColor : "black",
+              }}
+              className="space-y-5 text-center"
+            >
               <h1 className="lg:text-2xl xl:text-3xl xl:leading-snug font-extrabold">
                 {orgData?.loginTitle}
               </h1>
