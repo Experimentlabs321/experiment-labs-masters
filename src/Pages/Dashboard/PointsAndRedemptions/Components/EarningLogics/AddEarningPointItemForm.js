@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { toast } from "react-hot-toast";
@@ -12,7 +12,8 @@ const AddEarningPointItemForm = ({
   setEarningCategories,
   selectedCourse,
   userInfo,
-  weeks,
+  weeksForItems,
+  setWeeksForItems,
 }) => {
   const [itemValue, setItemValue] = useState(0);
   const [selectedItemEarningOption, setSelectedItemEarningOption] =
@@ -23,16 +24,6 @@ const AddEarningPointItemForm = ({
   };
   const handleAddSkill = async (event) => {
     event.preventDefault();
-    console.log({
-      organizationId: userInfo?.organizationId,
-      categoryName: selectedEarningCategory?.categoryName,
-      courseId: selectedCourse?._id,
-      earningItem: {
-        earningItemName: event?.target?.earningItemName?.value,
-        itemEarningValue: selectedItemEarningOption,
-        itemValue: event?.target?.itemValue?.value,
-      },
-    });
     if (
       selectedEarningCategory?.earningItems?.find(
         (item) =>
@@ -48,7 +39,7 @@ const AddEarningPointItemForm = ({
     }
 
     const newItem = await axios.post(
-      `${process.env.REACT_APP_BACKEND_API}/earningPointItems`,
+      `${process.env.REACT_APP_SERVER_API}/api/v1/earningCategories/earningItems`,
       {
         organizationId: userInfo?.organizationId,
         categoryName: selectedEarningCategory?.categoryName,
@@ -56,7 +47,7 @@ const AddEarningPointItemForm = ({
         earningItem: {
           earningItemName: event?.target?.earningItemName?.value,
           itemEarningValue: selectedItemEarningOption,
-          itemValue: event?.target?.itemValue?.value,
+          itemValues: weeksForItems,
         },
       }
     );
@@ -69,14 +60,14 @@ const AddEarningPointItemForm = ({
             {
               earningItemName: event?.target?.earningItemName?.value,
               itemEarningValue: selectedItemEarningOption,
-              itemValue: event?.target?.itemValue?.value,
+              itemValues: weeksForItems,
             },
           ]
         : [
             {
               earningItemName: event?.target?.earningItemName?.value,
               itemEarningValue: selectedItemEarningOption,
-              itemValue: event?.target?.itemValue?.value,
+              itemValues: weeksForItems,
             },
           ];
       setSelectedEarningCategory({
@@ -214,9 +205,13 @@ const AddEarningPointItemForm = ({
                       </div>
                     </div>
                   </div>
-                  {weeks?.map((week) => (
-                    <div key={week?._id} className="flex  items-center ">
-                      <p className="font-bold text-base me-5">Item Value</p>
+                </div>
+                <div className="flex flex-col gap-5 mt-4">
+                  {weeksForItems?.map((week, index) => (
+                    <div key={week?._id} className="flex flex-col ">
+                      <p className="font-bold text-base me-5 mb-3">
+                        {week?.weekName} Item Value
+                      </p>
                       <div className="text-[18px] w-[40%]  h-[40px] flex  ">
                         <button
                           type="button"
@@ -224,15 +219,26 @@ const AddEarningPointItemForm = ({
                             boxShadow: " 0px 0px 16px -2px rgba(0, 0, 0, 0.50)",
                           }}
                           className=" border w-[50%] text-[#000000] rounded-s-full text-center"
-                          onClick={() => setItemValue(itemValue - 1)}
+                          onClick={() => {
+                            if (parseInt(weeksForItems[index].itemValue) > 0)
+                              weeksForItems[index].itemValue =
+                                parseInt(weeksForItems[index].itemValue) - 1;
+                            setItemValue(itemValue - 1);
+                          }}
                         >
                           -
                         </button>
                         <input
-                          value={itemValue}
-                          onChange={(e) =>
-                            setItemValue(parseInt(e.target.value))
-                          }
+                          value={week?.itemValue}
+                          onChange={(e) => {
+                            if (e.target.value === "")
+                              weeksForItems[index].itemValue = 0;
+                            else
+                              weeksForItems[index].itemValue = parseInt(
+                                e.target.value
+                              );
+                            setItemValue(parseInt(e.target.value));
+                          }}
                           className="w-[60%] focus:outline-none flex justify-center items-center text-center font-sans"
                           type="number"
                           name="itemValue"
@@ -244,7 +250,11 @@ const AddEarningPointItemForm = ({
                             boxShadow: " 0px 0px 16px -2px rgba(0, 0, 0, 0.50)",
                           }}
                           className="border w-[50%] text-[#000000] rounded-e-full text-center"
-                          onClick={() => setItemValue(itemValue + 1)}
+                          onClick={() => {
+                            weeksForItems[index].itemValue =
+                              parseInt(weeksForItems[index].itemValue) + 1;
+                            setItemValue(itemValue + 1);
+                          }}
                         >
                           +
                         </button>

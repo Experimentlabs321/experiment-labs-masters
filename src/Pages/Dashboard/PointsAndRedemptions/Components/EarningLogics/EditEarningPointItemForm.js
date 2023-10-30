@@ -3,7 +3,6 @@ import Swal from "sweetalert2";
 import { toast } from "react-hot-toast";
 import axios from "axios";
 
-
 const EditEarningPointItemForm = ({
   selectedEarningLogic,
   setIsOpenEarningItemEditForm,
@@ -16,9 +15,7 @@ const EditEarningPointItemForm = ({
   selectedCourse,
   userInfo,
 }) => {
-  const [itemValue, setItemValue] = useState(
-    parseInt(selectedEarningLogic?.itemValue)
-  );
+  const [itemValue, setItemValue] = useState(0);
   const [selectedItemEarningOption, setSelectedItemEarningOption] = useState(
     selectedEarningLogic?.itemEarningValue
   );
@@ -289,7 +286,7 @@ const EditEarningPointItemForm = ({
                       </div>
                     </div>
                   </div>
-                  <div className="flex  items-center ">
+                  {/* <div className="flex  items-center ">
                     <p className="font-bold text-base me-5">Item Value</p>
                     <div className="text-[18px] w-[40%]  h-[40px] flex  ">
                       <button
@@ -321,7 +318,76 @@ const EditEarningPointItemForm = ({
                         +
                       </button>
                     </div>
-                  </div>
+                  </div> */}
+                </div>
+                <div className="flex flex-col gap-5 mt-4">
+                  {selectedEarningLogic?.itemValues?.map((week, index) => (
+                    <div key={week?.weekId} className="flex flex-col ">
+                      <p className="font-bold text-base me-5 mb-3">
+                        {week?.weekName} Item Value
+                      </p>
+                      <div className="text-[18px] w-[40%]  h-[40px] flex  ">
+                        <button
+                          type="button"
+                          style={{
+                            boxShadow: " 0px 0px 16px -2px rgba(0, 0, 0, 0.50)",
+                          }}
+                          className=" border w-[50%] text-[#000000] rounded-s-full text-center"
+                          onClick={() => {
+                            if (
+                              parseInt(
+                                selectedEarningLogic.itemValues[index].itemValue
+                              ) > 0
+                            )
+                              selectedEarningLogic.itemValues[index].itemValue =
+                                parseInt(
+                                  selectedEarningLogic.itemValues[index]
+                                    .itemValue
+                                ) - 1;
+                            setItemValue(itemValue - 1);
+                          }}
+                        >
+                          -
+                        </button>
+                        <input
+                          value={week?.itemValue}
+                          onChange={(e) => {
+                            if (e.target.value === "")
+                              selectedEarningLogic.itemValues[
+                                index
+                              ].itemValue = 0;
+                            else
+                              selectedEarningLogic.itemValues[index].itemValue =
+                                parseInt(e.target.value);
+
+                            week.itemValue =
+                              selectedEarningLogic.itemValues[index].itemValue;
+                            setItemValue(parseInt(e.target.value));
+                          }}
+                          className="w-[60%] focus:outline-none flex justify-center items-center text-center font-sans"
+                          type="number"
+                          name={`${week?.weekId}itemValue`}
+                          id={`${week?.weekId}itemValue`}
+                        />
+                        <button
+                          type="button"
+                          style={{
+                            boxShadow: " 0px 0px 16px -2px rgba(0, 0, 0, 0.50)",
+                          }}
+                          className="border w-[50%] text-[#000000] rounded-e-full text-center"
+                          onClick={() => {
+                            selectedEarningLogic.itemValues[index].itemValue =
+                              parseInt(
+                                selectedEarningLogic.itemValues[index].itemValue
+                              ) + 1;
+                            setItemValue(itemValue + 1);
+                          }}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
                 <div className=" mt-5  ">
                   <input
