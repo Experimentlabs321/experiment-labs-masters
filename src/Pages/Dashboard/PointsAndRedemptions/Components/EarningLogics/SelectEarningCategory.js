@@ -59,34 +59,31 @@ const SelectEarningCategory = ({
     event.preventDefault();
     const category = {
       categoryName: event?.target?.categoryName?.value,
+      totalWeight: event?.target?.totalWeight?.value,
     };
-    if (
-      earningCategories?.find(
-        (item) => item?.categoryName === category?.categoryName
-      )
-    ) {
-      setEditCategoryOpen(false);
-      Swal.fire({
-        icon: "error",
-        title: "Category already exist!",
-        text: "Please enter an unique category name!",
-      });
-      return;
-    }
+    // if (
+    //   earningCategories?.find(
+    //     (item) => item?.categoryName === category?.categoryName
+    //   )
+    // ) {
+    //   setEditCategoryOpen(false);
+    //   Swal.fire({
+    //     icon: "error",
+    //     title: "Category already exist!",
+    //     text: "Please enter an unique category name!",
+    //   });
+    //   return;
+    // }
     const update = {
       organizationId: userInfo?.organizationId,
       oldCategoryName: selectedEarningCategory?.categoryName,
       newCategoryName: event?.target?.categoryName?.value,
       courseId: selectedCourse?._id,
+      totalWeight: event?.target?.totalWeight?.value,
     };
-    console.log({
-      organizationId: userInfo?.organizationId,
-      oldCategoryName: selectedEarningCategory?.categoryName,
-      newCategoryName: event?.target?.categoryName?.value,
-      courseId: selectedCourse?._id,
-    });
+    console.log(update);
     const updatedCategory = await axios.put(
-      `${process.env.REACT_APP_BACKEND_API}/earning_categories/categoryName`,
+      `http://localhost:5000/api/v1/earningCategories/categoryName`,
       update
     );
 
@@ -99,6 +96,7 @@ const SelectEarningCategory = ({
       );
       updatedCategoriesArray[selectedIndex].categoryName =
         category.categoryName;
+      updatedCategoriesArray[selectedIndex].totalWeight = category.totalWeight;
       setEarningCategories(updatedCategoriesArray);
       setEditCategoryOpen(false);
       event.target.reset();
@@ -175,16 +173,25 @@ const SelectEarningCategory = ({
           onSubmit={handleEditCategoryName}
           className="px-[32px] py-[24px] "
         >
-          <h1 className=" text-[18px] font-[700] mb-[20px] ">Category Name</h1>
+          <h1 className=" text-[18px] font-[700] mb-[10px] ">Category Name</h1>
           <input
             type="text"
             id="categoryName"
             name="categoryName"
             defaultValue={selectedEarningCategory?.categoryName}
             placeholder="Category"
-            className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+            className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] mb-4 "
           />
-          <div className="w-full flex items-center justify-center mt-[40px]">
+          <h1 className=" text-[18px] font-[700] mb-[10px] ">Total Weight</h1>
+          <input
+            type="number"
+            id="totalWeight"
+            name="totalWeight"
+            defaultValue={selectedEarningCategory?.totalWeight}
+            placeholder="Category"
+            className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] mb-4 "
+          />
+          <div className="w-full flex items-center justify-center mt-[20px]">
             <input
               type="submit"
               value="Update"
@@ -206,7 +213,9 @@ const SelectEarningCategory = ({
                 ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
                 : "text-[#949494]"
             }`}
-            onClick={() => setSelectedEarningCategory(item)}
+            onClick={() => {
+              setSelectedEarningCategory(item);
+            }}
           >
             <div>
               <h1>Name: {item?.categoryName}</h1>
