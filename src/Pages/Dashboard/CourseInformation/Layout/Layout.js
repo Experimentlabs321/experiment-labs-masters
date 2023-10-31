@@ -1,15 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import logo from "../../../../assets/Logos/Group 2859890.png";
 import PersonProfilePic from "../../../../assets/Dashboard/PersonProfilePic.png";
 import MyHelmet from "../../../../Components/MyHelmet/MyHelpmet";
 import Aside from "./Aside";
+import axios from "axios";
+import { AuthContext } from "../../../../contexts/AuthProvider";
 
 const Layout = ({ children }) => {
   const [toggleButton, setToggleButton] = useState(true);
   const [screenSmall, setScreenSmall] = useState(false);
   const [windowWidth, setWindowWidth] = useState(0);
   const Role = localStorage.getItem("role");
-  console.log(Role);
+  const { userInfo } = useContext(AuthContext);
+  const [orgData, setOrgData] = useState({});
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
+      )
+      .then((response) => {
+        setOrgData(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [userInfo]);
   useEffect(() => {
     window.addEventListener("resize", () => {
       setWindowWidth(window.innerWidth);
@@ -54,7 +67,13 @@ const Layout = ({ children }) => {
                   </svg>
                 </button> */}
                 <div>
-                  <img className="h-6 lg:h-8  " src={logo} alt="icon" />
+                  {/* <img className="h-6 lg:h-8  " src={logo} alt="icon" /> */}
+                  <img
+                    className="h-6 lg:h-8"
+                    // className="w-[100px]"
+                    src={orgData?.org_logo}
+                    alt="icon"
+                  />
                 </div>
                 <div className="flex items-center justify-center">
                   <div className="flex flex-col items-center justify-center lg:mr-[60px] mr-[20px] ">

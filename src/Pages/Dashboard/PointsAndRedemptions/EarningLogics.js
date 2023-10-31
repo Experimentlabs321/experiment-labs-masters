@@ -30,6 +30,7 @@ const EarningLogics = () => {
   const [isOpenEarningItemEditForm, setIsOpenEarningItemEditForm] =
     useState(false);
   const [weeks, setWeeks] = useState([]);
+  const [weeksForItems, setWeeksForItems] = useState([]);
 
   useEffect(() => {
     axios
@@ -41,6 +42,18 @@ const EarningLogics = () => {
       })
       .catch((error) => console.error(error));
   }, [selectedCourse]);
+
+  useEffect(() => {
+    let weeksDataForItem = [];
+    weeks?.forEach((element) => {
+      weeksDataForItem.push({
+        weekName: element?.weekName,
+        weekId: element?._id,
+        itemValue: 0,
+      });
+    });
+    setWeeksForItems(weeksDataForItem);
+  }, [selectedEarningCategory, weeks]);
 
   useEffect(() => {
     axios
@@ -131,6 +144,8 @@ const EarningLogics = () => {
       }
     });
   };
+
+  console.log(weeksForItems);
 
   return (
     <div>
@@ -305,7 +320,8 @@ const EarningLogics = () => {
             setEarningCategories={setEarningCategories}
             selectedCourse={selectedCourse}
             userInfo={userInfo}
-            weeks={weeks}
+            weeksForItems={weeksForItems}
+            setWeeksForItems={setWeeksForItems}
           />
         )}
         {isOpenEarningItemEditForm && selectedEarningLogic?.earningItemName && (

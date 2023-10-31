@@ -1,8 +1,22 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import logo from "../../../assets/Logos/Group 2859890.png";
 import PersonProfilePic from "../../../assets/Dashboard/PersonProfilePic.png";
+import { AuthContext } from "../../../contexts/AuthProvider";
+import axios from "axios";
 
 const Navbar = () => {
+  const { userInfo } = useContext(AuthContext);
+  const [orgData, setOrgData] = useState({});
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
+      )
+      .then((response) => {
+        setOrgData(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [userInfo]);
   return (
     <nav className={`bg-[#151718] fixed z-30 w-full }`}>
       <div className="px-[10px] py-[18px] lg:px-10 lg:pl-3">
@@ -29,7 +43,13 @@ const Navbar = () => {
                   </svg>
                 </button> */}
           <div>
-            <img className="h-6 lg:h-8  " src={logo} alt="icon" />
+            {/* <img className="h-6 lg:h-8  " src={logo} alt="icon" /> */}
+            <img
+              className="h-6 lg:h-8"
+              // className="w-[100px]"
+              src={orgData?.org_logo}
+              alt="icon"
+            />
           </div>
           <div className="flex items-center justify-center">
             <div className="flex flex-col items-center justify-center mr-[20px] lg:mr-[60px] ">
