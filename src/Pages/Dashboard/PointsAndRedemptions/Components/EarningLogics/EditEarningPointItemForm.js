@@ -35,7 +35,7 @@ const EditEarningPointItemForm = ({
       item: {
         earningItemName: event?.target?.earningItemName?.value,
         itemEarningValue: selectedItemEarningOption,
-        itemValue: event?.target?.itemValue?.value,
+        itemValues: selectedEarningLogic?.itemValues,
       },
     };
     console.log(data);
@@ -55,7 +55,7 @@ const EditEarningPointItemForm = ({
       //   return;
       // }
       const updatedItem = await axios.put(
-        `${process.env.REACT_APP_BACKEND_API}/editItem`,
+        `http://localhost:5000/api/v1/earningCategories/earningItems`,
         data
       );
       if (updatedItem?.data?.acknowledged) {
@@ -96,7 +96,7 @@ const EditEarningPointItemForm = ({
         return;
       }
       const newItem = await axios.post(
-        `${process.env.REACT_APP_BACKEND_API}/earningPointItems`,
+        `${process.env.REACT_APP_SERVER_API}/api/v1/earningCategories/earningItems`,
         {
           organizationId: userInfo?.organizationId,
           categoryName: currentCategory?.categoryName,
@@ -104,23 +104,36 @@ const EditEarningPointItemForm = ({
           item: {
             earningItemName: event?.target?.earningItemName?.value,
             itemEarningValue: selectedItemEarningOption,
-            itemValue: event?.target?.itemValue?.value,
+            itemValues: selectedEarningLogic?.itemValues,
           },
         }
       );
+      console.log({
+        organizationId: userInfo?.organizationId,
+        categoryName: currentCategory?.categoryName,
+        courseId: selectedCourse?._id,
+        item: {
+          earningItemName: event?.target?.earningItemName?.value,
+          itemEarningValue: selectedItemEarningOption,
+          itemValues: selectedEarningLogic?.itemValues,
+        },
+      });
       if (newItem?.data?.acknowledged) {
-        fetch(`${process.env.REACT_APP_BACKEND_API}/deleteItem`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            organizationId: userInfo?.organizationId,
-            categoryName: selectedEarningCategory?.categoryName,
-            courseId: selectedCourse?._id,
-            earningItemName: selectedEarningLogic?.earningItemName,
-          }),
-        })
+        fetch(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/earningCategories/earningItems`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              organizationId: userInfo?.organizationId,
+              categoryName: selectedEarningCategory?.categoryName,
+              courseId: selectedCourse?._id,
+              earningItemName: selectedEarningLogic?.earningItemName,
+            }),
+          }
+        )
           .then((result) => {
             if (result?.ok) {
               const remainingItems =
@@ -139,14 +152,14 @@ const EditEarningPointItemForm = ({
                     {
                       earningItemName: event?.target?.earningItemName?.value,
                       itemEarningValue: selectedItemEarningOption,
-                      itemValue: event?.target?.itemValue?.value,
+                      itemValues: selectedEarningLogic?.itemValues,
                     },
                   ]
                 : [
                     {
                       earningItemName: event?.target?.earningItemName?.value,
                       itemEarningValue: selectedItemEarningOption,
-                      itemValue: event?.target?.itemValue?.value,
+                      itemValues: selectedEarningLogic?.itemValues,
                     },
                   ];
               setSelectedEarningCategory({

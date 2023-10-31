@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import Swal from "sweetalert2";
 import { AuthContext } from "../../../../../contexts/AuthProvider";
@@ -16,6 +16,7 @@ const SelectEarningCategory = ({
 }) => {
   const { userInfo } = useContext(AuthContext);
   const [editCategoryOpen, setEditCategoryOpen] = useState(false);
+  const [addedWeight, setAddedWeight] = useState(0);
 
   const handleAddCategory = async () => {
     if (!selectedCourse?._id || !userInfo?.organizationId) {
@@ -155,6 +156,19 @@ const SelectEarningCategory = ({
     });
   };
 
+  useEffect(() => {
+    let total = 0;
+    selectedEarningCategory?.earningItems?.forEach((element) => {
+      console.log(element.itemValues);
+      element?.itemValues?.forEach((item) => {
+        total = total + parseInt(item?.itemValue);
+      });
+    });
+    setAddedWeight(total);
+  }, [selectedEarningCategory]);
+
+  console.log(selectedEarningCategory);
+
   return (
     <div>
       {/* Edit category name start */}
@@ -205,75 +219,84 @@ const SelectEarningCategory = ({
         Earning Category
       </h1>
       <div className="flex flex-wrap gap-y-2 items-center">
-        {earningCategories?.map((item, index) => (
-          <button
-            key={index}
-            className={`px-2 py-3 relative text-base text-start border rounded-md font-semibold flex items-center min-w-[150px] justify-between gap-6 mr-1 ${
-              selectedEarningCategory?.categoryName === item?.categoryName
-                ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
-                : "text-[#949494]"
-            }`}
-            onClick={() => {
-              setSelectedEarningCategory(item);
-            }}
-          >
-            <div>
-              <h1>Name: {item?.categoryName}</h1>
-              <p>Total Weight: {item?.totalWeight}</p>
-              <p>Added Weight: {item?.addedWeight}</p>
-            </div>
+        {earningCategories?.map((item, index) => {
+          let totalAddedWeight = 0;
+          item?.earningItems?.forEach((element) => {
+            console.log(element.itemValues);
+            element?.itemValues?.forEach((item) => {
+              totalAddedWeight = totalAddedWeight + parseInt(item?.itemValue);
+            });
+          });
+          return (
             <button
-              onBlur={() => setCategoryThreeDot(false)}
-              onClick={() => setCategoryThreeDot(!categoryThreeDot)}
-              className="px-3 py-2 rounded-full hover:bg-slate-100"
+              key={index}
+              className={`px-2 py-3 relative text-base text-start border rounded-md font-semibold flex items-center min-w-[150px] justify-between gap-6 mr-1 ${
+                selectedEarningCategory?.categoryName === item?.categoryName
+                  ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
+                  : "text-[#949494]"
+              }`}
+              onClick={() => {
+                setSelectedEarningCategory(item);
+              }}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="5"
-                height="18"
-                viewBox="0 0 5 18"
-                fill="none"
+              <div>
+                <h1>Name: {item?.categoryName}</h1>
+                <p>Total Weight: {item?.totalWeight}</p>
+                <p>Added Weight: {totalAddedWeight}</p>
+              </div>
+              <button
+                onBlur={() => setCategoryThreeDot(false)}
+                onClick={() => setCategoryThreeDot(!categoryThreeDot)}
+                className="px-3 py-2 rounded-full hover:bg-slate-100"
               >
-                <path
-                  d="M4.31777 2.88577C4.31777 4.09795 3.35121 5.08061 2.15889 5.08061C0.966567 5.08061 0 4.09795 0 2.88577C0 1.67358 0.966567 0.690918 2.15889 0.690918C3.35121 0.690918 4.31777 1.67358 4.31777 2.88577Z"
-                  fill="#8F8F8F"
-                />
-                <path
-                  d="M4.31777 9.15676C4.31777 10.3689 3.35121 11.3516 2.15889 11.3516C0.966567 11.3516 0 10.3689 0 9.15676C0 7.94458 0.966567 6.96191 2.15889 6.96191C3.35121 6.96191 4.31777 7.94458 4.31777 9.15676Z"
-                  fill="#8F8F8F"
-                />
-                <path
-                  d="M4.31777 15.1142C4.31777 16.3264 3.35121 17.309 2.15889 17.309C0.966567 17.309 0 16.3264 0 15.1142C0 13.902 0.966567 12.9194 2.15889 12.9194C3.35121 12.9194 4.31777 13.902 4.31777 15.1142Z"
-                  fill="#8F8F8F"
-                />
-              </svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="5"
+                  height="18"
+                  viewBox="0 0 5 18"
+                  fill="none"
+                >
+                  <path
+                    d="M4.31777 2.88577C4.31777 4.09795 3.35121 5.08061 2.15889 5.08061C0.966567 5.08061 0 4.09795 0 2.88577C0 1.67358 0.966567 0.690918 2.15889 0.690918C3.35121 0.690918 4.31777 1.67358 4.31777 2.88577Z"
+                    fill="#8F8F8F"
+                  />
+                  <path
+                    d="M4.31777 9.15676C4.31777 10.3689 3.35121 11.3516 2.15889 11.3516C0.966567 11.3516 0 10.3689 0 9.15676C0 7.94458 0.966567 6.96191 2.15889 6.96191C3.35121 6.96191 4.31777 7.94458 4.31777 9.15676Z"
+                    fill="#8F8F8F"
+                  />
+                  <path
+                    d="M4.31777 15.1142C4.31777 16.3264 3.35121 17.309 2.15889 17.309C0.966567 17.309 0 16.3264 0 15.1142C0 13.902 0.966567 12.9194 2.15889 12.9194C3.35121 12.9194 4.31777 13.902 4.31777 15.1142Z"
+                    fill="#8F8F8F"
+                  />
+                </svg>
+              </button>
+              {selectedEarningCategory?.categoryName === item?.categoryName &&
+                categoryThreeDot && (
+                  <ul className="absolute right-0 top-[53px] w-max border  bg-white p-2 rounded-[8px] mt-1 transform translate-y-[-10px] shadow-[0px_2px_4px_0px_#00000026] z-10 ">
+                    <li
+                      onMouseDown={() => {
+                        setEditCategoryOpen(true);
+                        setCategoryThreeDot(false);
+                      }}
+                      className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
+                    >
+                      Edit Category Name
+                    </li>
+                    <li
+                      className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
+                      onMouseDown={() => {
+                        handleCategoryDelete(
+                          selectedEarningCategory?.categoryName
+                        );
+                      }}
+                    >
+                      Delete Category
+                    </li>
+                  </ul>
+                )}
             </button>
-            {selectedEarningCategory?.categoryName === item?.categoryName &&
-              categoryThreeDot && (
-                <ul className="absolute right-0 top-[53px] w-max border  bg-white p-2 rounded-[8px] mt-1 transform translate-y-[-10px] shadow-[0px_2px_4px_0px_#00000026] z-10 ">
-                  <li
-                    onMouseDown={() => {
-                      setEditCategoryOpen(true);
-                      setCategoryThreeDot(false);
-                    }}
-                    className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
-                  >
-                    Edit Category Name
-                  </li>
-                  <li
-                    className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
-                    onMouseDown={() => {
-                      handleCategoryDelete(
-                        selectedEarningCategory?.categoryName
-                      );
-                    }}
-                  >
-                    Delete Category
-                  </li>
-                </ul>
-              )}
-          </button>
-        ))}
+          );
+        })}
         {!earningCategories[0] && (
           <div
             className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
