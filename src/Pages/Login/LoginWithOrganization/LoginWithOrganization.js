@@ -136,7 +136,7 @@ const LoginWithOrganization = () => {
                     {/* <small>error</small> */}
                   </p>
                 </form>
-                <div
+                {/* <div
                   style={{ marginTop: 0 }}
                   className="flex justify-center items-center "
                 >
@@ -172,7 +172,7 @@ const LoginWithOrganization = () => {
                     </svg>
                   </span>
                   <span>Sign in with Google</span>
-                </button>
+                </button> */}
               </div>
             </div>
 

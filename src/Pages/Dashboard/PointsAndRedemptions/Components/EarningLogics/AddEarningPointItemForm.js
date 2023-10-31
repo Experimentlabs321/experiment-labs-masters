@@ -72,6 +72,7 @@ const AddEarningPointItemForm = ({
           ];
       setSelectedEarningCategory({
         categoryName: selectedEarningCategory?.categoryName,
+        totalWeight: selectedEarningCategory?.totalWeight,
         earningItems: selectedCategoryItems,
       });
       const otherCategories = earningCategories?.filter(
@@ -81,6 +82,7 @@ const AddEarningPointItemForm = ({
         {
           categoryName: selectedEarningCategory?.categoryName,
           earningItems: selectedCategoryItems,
+          totalWeight: selectedEarningCategory?.totalWeight,
         },
         ...otherCategories,
       ]);
