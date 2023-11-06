@@ -62,19 +62,6 @@ const SelectEarningCategory = ({
       categoryName: event?.target?.categoryName?.value,
       totalWeight: event?.target?.totalWeight?.value,
     };
-    // if (
-    //   earningCategories?.find(
-    //     (item) => item?.categoryName === category?.categoryName
-    //   )
-    // ) {
-    //   setEditCategoryOpen(false);
-    //   Swal.fire({
-    //     icon: "error",
-    //     title: "Category already exist!",
-    //     text: "Please enter an unique category name!",
-    //   });
-    //   return;
-    // }
     const update = {
       organizationId: userInfo?.organizationId,
       oldCategoryName: selectedEarningCategory?.categoryName,
@@ -159,7 +146,6 @@ const SelectEarningCategory = ({
   useEffect(() => {
     let total = 0;
     selectedEarningCategory?.earningItems?.forEach((element) => {
-      console.log(element.itemValues);
       element?.itemValues?.forEach((item) => {
         total = total + parseInt(item?.itemValue);
       });
@@ -167,10 +153,8 @@ const SelectEarningCategory = ({
     setAddedWeight(total);
   }, [selectedEarningCategory]);
 
-  console.log(selectedEarningCategory);
-
   return (
-    <div>
+    <div className="px-4">
       {/* Edit category name start */}
       <DialogLayout
         open={editCategoryOpen}
@@ -215,14 +199,13 @@ const SelectEarningCategory = ({
         </form>
       </DialogLayout>
       {/* Edit category name end */}
-      <h1 className=" text-[#737373] text-[24px] font-[500] mt-5 mb-2 ">
+      <h1 className=" text-[#737373] text-[24px] font-[500] mb-2 ">
         Earning Category
       </h1>
       <div className="flex flex-wrap gap-y-2 items-center">
         {earningCategories?.map((item, index) => {
           let totalAddedWeight = 0;
           item?.earningItems?.forEach((element) => {
-            console.log(element.itemValues);
             element?.itemValues?.forEach((item) => {
               totalAddedWeight = totalAddedWeight + parseInt(item?.itemValue);
             });
