@@ -316,7 +316,7 @@ const Aside = () => {
                     </span>
                   </Link>
                 </li>
-                <li>
+                {/* <li>
                   <Link
                     style={
                       location.pathname === "/questLevels"
@@ -435,7 +435,7 @@ const Aside = () => {
                       Discussions
                     </span>
                   </Link>
-                </li>
+                </li> */}
               </ul>
             </div>
           </div>

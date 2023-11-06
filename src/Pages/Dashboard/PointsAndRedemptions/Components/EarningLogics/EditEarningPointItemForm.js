@@ -23,8 +23,6 @@ const EditEarningPointItemForm = ({
     setSelectedItemEarningOption(event.target.value);
   };
 
-  console.log(selectedEarningLogic);
-
   const handleEditSkill = async (event) => {
     event.preventDefault();
     const data = {
@@ -38,22 +36,7 @@ const EditEarningPointItemForm = ({
         itemValues: selectedEarningLogic?.itemValues,
       },
     };
-    console.log(data);
     if (data?.categoryName === selectedEarningCategory?.categoryName) {
-      // if (
-      //   selectedEarningCategory?.earningItems?.find(
-      //     (item) =>
-      //       item?.earningItemName === event?.target?.earningItemName?.value
-      //   )
-      // ) {
-      //   setIsOpenEarningItemEditForm(false);
-      //   Swal.fire({
-      //     icon: "error",
-      //     title: "Item already exist!",
-      //     text: "Please enter an unique item name!",
-      //   });
-      //   return;
-      // }
       const updatedItem = await axios.put(
         `http://localhost:5000/api/v1/earningCategories/earningItems`,
         data
@@ -108,16 +91,6 @@ const EditEarningPointItemForm = ({
           },
         }
       );
-      console.log({
-        organizationId: userInfo?.organizationId,
-        categoryName: currentCategory?.categoryName,
-        courseId: selectedCourse?._id,
-        item: {
-          earningItemName: event?.target?.earningItemName?.value,
-          itemEarningValue: selectedItemEarningOption,
-          itemValues: selectedEarningLogic?.itemValues,
-        },
-      });
       if (newItem?.data?.acknowledged) {
         fetch(
           `${process.env.REACT_APP_SERVER_API}/api/v1/earningCategories/earningItems`,
