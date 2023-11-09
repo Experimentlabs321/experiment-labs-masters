@@ -5,6 +5,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 import DialogLayoutForFromControl from "../Shared/DialogLayoutForFromControl";
+import { elements } from "chart.js";
 
 const taskTypes = [
   "Classes",
@@ -24,6 +25,7 @@ const WeekConfiguration = ({
   setCurrentWeek,
   batchesData,
   courseId,
+  chapters,
 }) => {
   const Role = localStorage.getItem("role");
   const { user, userInfo } = useContext(AuthContext);
@@ -59,13 +61,18 @@ const WeekConfiguration = ({
   const [isShowSelectedEarningParameter, setIsShowSelectedEarningParameter] =
     useState(false);
   const [
-    selectedEarningItemsForGamification,
-    setSelectedEarningItemsForGamification,
-  ] = useState([]);
-  const [
     selectedEarningParameterForGamification,
     setSelectedEarningParameterForGamification,
   ] = useState([]);
+  let tasksNumber = {
+    Classes: 0,
+    Assignment: 0,
+    Reading: 0,
+    Quiz: 0,
+    LiveTest: 0,
+    Audio: 0,
+    Files: 0,
+  };
   const [value, setValue] = useState(0);
 
   useEffect(() => {
@@ -91,13 +98,67 @@ const WeekConfiguration = ({
       .catch((error) => console.error(error));
   }, [courseId, userInfo]);
   useEffect(() => {
-    if (currentWeek?.gamificationData)
+    if (currentWeek?.gamificationData) {
+      let earningItems = [];
       setGamificationData(currentWeek?.gamificationData);
+      currentWeek?.gamificationData.map((element) =>
+        earningItems.push(element?.earningItemName)
+      );
+      setSelectedEarningParameterForGamification(earningItems);
+    } else {
+      setSelectedEarningParameterForGamification([]);
+      setGamificationData([
+        {
+          tasks: [],
+          earningItemName: "",
+          value: 0,
+        },
+      ]);
+    }
     if (currentWeek?.selectedEarningItems)
       setSelectedEarningItems(currentWeek?.selectedEarningItems);
+    else setSelectedEarningItems([]);
     if (currentWeek?.combinedWeightageList)
       setCombinedWeightageList(currentWeek?.combinedWeightageList);
+    else
+      setCombinedWeightageList([
+        {
+          tasks: [],
+          earningItemName: "",
+          value: 0,
+        },
+      ]);
   }, [currentWeek]);
+  useEffect(() => {
+    chapters?.forEach((element) => {
+      element?.tasks?.forEach((task) => {
+        if (task?.taskType === "Classes") {
+          tasksNumber.Classes = tasksNumber.Classes + 1;
+        } else if (task?.taskType === "Assignment") {
+          tasksNumber.Assignment = tasksNumber.Assignment + 1;
+        } else if (task?.taskType === "Reading") {
+          tasksNumber.Reading = tasksNumber.Reading + 1;
+        } else if (task?.taskType === "Quiz") {
+          tasksNumber.Quiz = tasksNumber.Quiz + 1;
+        } else if (task?.taskType === "Live Test") {
+          tasksNumber.LiveTest = tasksNumber.LiveTest + 1;
+        } else if (task?.taskType === "Audio") {
+          tasksNumber.Audio = tasksNumber.Audio + 1;
+        } else if (task?.taskType === "Files") {
+          tasksNumber.Files = tasksNumber.Files + 1;
+        }
+      });
+    });
+  }, [chapters, tasksNumber]);
+  // useEffect(() => {}, [tasksNumber]);
+
+  let totalGamificationValue = () => {
+    let total = 0;
+    gamificationData?.forEach((element) => {
+      total = total + parseInt(element?.value);
+    });
+    return total;
+  };
 
   const handleAddWeek = async (event) => {
     event.preventDefault();
@@ -151,23 +212,39 @@ const WeekConfiguration = ({
     week.combinedWeightageList = combinedWeightageList;
     week.selectedEarningItems = selectedEarningItems;
 
-    const newWeek = await axios.put(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/weeks/${currentWeek?._id}`,
-      week
-    );
+    let totalAddedCombinedWeighted = () => {
+      let total = 0;
+      combinedWeightageList?.forEach((element) => {
+        total = total + parseInt(element?.earningWeightPercentage);
+      });
+      return total;
+    };
 
-    if (newWeek?.data?.acknowledged) {
-      toast.success("Week Updated Successfully");
-      // Create a copy of the chapters array to avoid mutation
-      const updatedWeeksArray = [...weeks];
-      // Update the chapterName of the specific chapter in the copied array
-      updatedWeeksArray[
-        updatedWeeksArray.findIndex((item) => item?._id === currentWeek?._id)
-      ] = currentWeek;
-      // Update the chapters state with the updated array
-      setWeeks(updatedWeeksArray);
-      setEditWeekOpen(false);
-      event.target.reset();
+    if (totalAddedCombinedWeighted() === 100) {
+      const newWeek = await axios.put(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/weeks/${currentWeek?._id}`,
+        week
+      );
+
+      if (newWeek?.data?.acknowledged) {
+        toast.success("Week Updated Successfully");
+        // Create a copy of the chapters array to avoid mutation
+        const updatedWeeksArray = [...weeks];
+        // Update the chapterName of the specific chapter in the copied array
+        updatedWeeksArray[
+          updatedWeeksArray.findIndex((item) => item?._id === currentWeek?._id)
+        ] = currentWeek;
+        // Update the chapters state with the updated array
+        setWeeks(updatedWeeksArray);
+        setEditWeekOpen(false);
+        event.target.reset();
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "The total of combined weightage is not 100%",
+      });
     }
   };
 
@@ -211,7 +288,7 @@ const WeekConfiguration = ({
       );
     }
   };
-  console.log(currentWeek);
+  console.log(tasksNumber, totalGamificationValue());
   return (
     <div
       className={`relative inline-block ${

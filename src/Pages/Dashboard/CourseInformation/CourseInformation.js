@@ -587,6 +587,7 @@ const CourseInformation = () => {
                 setCurrentWeek={setCurrentWeek}
                 batchesData={batchesData}
                 courseId={id}
+                chapters={chapters}
               />
               {Role === "admin" && (
                 <BatchConfiguration
