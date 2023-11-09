@@ -130,8 +130,6 @@ const BatchConfiguration = ({
     setParticipants(newParameters);
   };
 
-  console.log(participants);
-
   return (
     <div
       className={`relative inline-block ${
