@@ -352,7 +352,7 @@ const EditReading = () => {
                             defaultValue={
                               readingData ? readingData?.additionalFiles : ""
                             }
-                            // accept=".jpg, .jpeg, .png"
+                            accept=".jpg, .jpeg, .png"
                             name="input-file-upload"
                             id="input-file-upload"
                             onChange={handleFileChange}

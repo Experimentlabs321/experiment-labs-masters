@@ -32,7 +32,11 @@ const ClassesTask = ({ taskData }) => {
   console.log(id)
   const [isOpen, setIsOpen] = useState(false);
   const { userInfo, user } = useContext(AuthContext);
-
+  if(userInfo.role !== 'admin'){
+    window.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+    });
+  };
   const [selectedOption, setSelectedOption] = useState("Category");
   const [feedbacks, setFeedbacks] = useState();
   const [feedbackGiven, setFeedbackGiven] = useState();

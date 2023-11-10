@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Dialog from "@mui/material/Dialog";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -8,6 +8,7 @@ import Slide from "@mui/material/Slide";
 import CongratulationsLeft from "../../../assets/Dashboard/CongratulationsLeft.png";
 import CongratulationsRight from "../../../assets/Dashboard/CongratulationsRight.png";
 import CongratulationsBatch from "../../../assets/Dashboard/CongratulationsBatch.png";
+import { AuthContext } from "../../../contexts/AuthProvider";
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -288,7 +289,12 @@ const QuizTask = () => {
   if (submittedQuestions)
     submittedQuestion = JSON.parse(submittedQuestions)[currentQuestion];
   console.log(submittedQuestions);
-
+  const {userInfo} = useContext(AuthContext);
+  if(userInfo.role !== 'admin'){
+    window.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+    });
+  };
   return (
     <div>
       <div className="flex flex-col items-center justify-center">

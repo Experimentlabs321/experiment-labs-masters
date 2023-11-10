@@ -1,9 +1,16 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Instructions from "./SubFile/LiveTestTask/Instructions";
 import StartTest from "./SubFile/LiveTestTask/StartTest";
+import { AuthContext } from "../../../contexts/AuthProvider";
 
 const LiveTestTask = () => {
   const [view, setView] = useState("Instructions");
+  const { userInfo } = useContext(AuthContext);
+  if(userInfo.role !== 'admin'){
+    window.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+    });
+  };
   return (
     <div>
       <div className="px-4">

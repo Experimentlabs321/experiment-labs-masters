@@ -9,7 +9,11 @@ import { AuthContext } from "../../../contexts/AuthProvider";
 const AssignmentTask = ({ taskData }) => {
   const { userInfo } = useContext(AuthContext);
   const [view, setView] = useState("Instructions");
-
+  if(userInfo.role !== 'admin'){
+    window.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+    });
+  };
   const [isFixed, setIsFixed] = useState(false);
 
   useEffect(() => {

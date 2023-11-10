@@ -1,7 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 
+import icon from "../../../icon192.png";
+import { AuthContext } from "../../../contexts/AuthProvider";
 const VideoTask = ({ taskData, something }) => {
   console.log(taskData);
+  const {userInfo} = useContext(AuthContext);
+  if(userInfo.role !== 'admin'){
+    window.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+    });
+  };
   return (
     <div>
       {taskData?.additionalFiles && (
@@ -18,9 +26,9 @@ const VideoTask = ({ taskData, something }) => {
             allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowfullscreen
           ></iframe> */}
-          <div>
+          <div className='relative'>
             <video
-              className="max-h-[68vh] max-w-[90%] w-fit mx-auto border-x-[30px] mt-[40px] border-t-[30px] border-b-[50px] rounded-lg border-[#292929]"
+              className="h-[68vh] mx-auto border-x-30 mt-40 border-t-30 border-b-50 rounded-lg border-[#292929]"
               width="90%"
               height="80vh"
               controls
@@ -32,6 +40,7 @@ const VideoTask = ({ taskData, something }) => {
                 type="video/mp4"
               />
             </video>
+            <div className="flex items-center text-sm font-bold gap-1 absolute top-3 right-20 z-10"><img className="w-4" src={icon} alt="icon"/><p>Experiment Labs</p></div>
           </div>
         </div>
       )}

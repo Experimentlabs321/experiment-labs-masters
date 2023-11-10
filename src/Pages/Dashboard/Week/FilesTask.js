@@ -1,6 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
+import { AuthContext } from "../../../contexts/AuthProvider";
 
 const FilesTask = ({ taskData }) => {
+  const {userInfo} = useContext(AuthContext);
+  if(userInfo.role !== 'admin'){
+    window.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+    });
+  };
   return (
     <div>
       {/* <div className="h-full flex items-center justify-center ">
