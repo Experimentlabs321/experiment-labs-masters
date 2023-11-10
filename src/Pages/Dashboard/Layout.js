@@ -1755,7 +1755,7 @@ const Layout = ({ children }) => {
                         logOut()
                           .then((res) => {
                             console.log(res);
-                            navigate("/");
+                            navigate(`/login/${userInfo?.organizationId}`);
                           })
                           .catch((error) => console.error(error));
                       }}
