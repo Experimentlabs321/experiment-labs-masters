@@ -130,24 +130,20 @@ const CourseAccess = () => {
                 };
                 return (
                   <div className="bg-[#F6F7FF] rounded-[20px] p-[20px] max-w-[340px] shadow-[4px_4px_4px_0px_#0000001a]">
-                    <img
-                      className="w-full rounded-lg"
-                      src={
-                        course?.courseThumbnail
-                          ? course?.courseThumbnail
-                          : CourseTham
-                      }
-                      alt="CourseTham"
-                    />
-                    <Link to={`/questLevels/${course?._id}`}>
-                      <h1 className="text-[#3E4DAC] text-[16px] font-[800] mt-[16px] mb-[12px] ">
-                        {course?.courseFullName}
-                      </h1>
-                    </Link>
-                    <p className="text-[#7A7A7A] text-[12px] font-[500] mb-[16px] ">
-                      {course?.courseDescription}
-                    </p>
-                    <div className="flex items-center justify-between">
+                    <Link to={`/questLevels/${course?._id}`} onClick={(e) => e.stopPropagation()}>
+                      <div className="card-content">
+                        <img
+                          className="w-full rounded-lg"
+                          src={course?.courseThumbnail ? course?.courseThumbnail : CourseTham}
+                          alt="CourseTham"
+                        />
+                        <h1 className="text-[#3E4DAC] text-[16px] font-[800] mt-[16px] mb-[12px]">
+                          {course?.courseFullName}
+                        </h1>
+                        <p className="text-[#7A7A7A] text-[12px] font-[500] mb-[16px]">
+                          {course?.courseDescription}
+                        </p>
+                        <div className="flex items-center justify-between">
                       <p className="bg-[#E1D7FF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
                         {course?.courseCategory}
                       </p>
@@ -155,17 +151,17 @@ const CourseAccess = () => {
                         {date?.toLocaleDateString("en-US", options)}
                       </button>
                     </div>
-                    <div
-                      className={`${
-                        Role === "admin" ? "block" : "hidden"
-                      } relative `}
-                    >
+                      </div>
+                    </Link>
+
+                    <div className={`${Role === "admin" ? "block" : "hidden"} relative`}>
                       <button
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           if (clickedCourse === course) setClickedCourse(null);
                           else setClickedCourse(course);
                         }}
-                        className="bg-black relative mt-[24px] p-[3px] rounded-full float-right "
+                        className="bg-black relative mt-[24px] p-[3px] rounded-full float-right"
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -180,18 +176,16 @@ const CourseAccess = () => {
                           />
                         </svg>
                         {clickedCourse === course && (
-                          <ul className="absolute right-0 bottom-[17px] w-max border  bg-[#141414] border-t-0 p-2 rounded-[8px] mt-1 transform translate-y-[-10px] shadow-[0px_2px_4px_0px_#00000026]">
+                          <ul className="absolute right-0 bottom-[17px] w-max border bg-[#141414] border-t-0 p-2 rounded-[8px] mt-1 transform translate-y-[-10px] shadow-[0px_2px_4px_0px_#00000026]">
                             <li
-                              className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600] "
+                              className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600]"
                               onClick={() => console.log("Edit Course Details")}
                             >
                               Edit Course Details
                             </li>
                             <li
-                              className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600] "
-                              onClick={() =>
-                                console.log("Edit Course Contents")
-                              }
+                              className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600]"
+                              onClick={() => console.log("Edit Course Contents")}
                             >
                               Edit Course Contents
                             </li>
