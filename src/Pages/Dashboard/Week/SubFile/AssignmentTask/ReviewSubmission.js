@@ -49,6 +49,7 @@ const ReviewSubmission = (taskData) => {
       .then((response) => {
 
         setSubmittedResult(response?.data)
+        console.log(response?.data)
 
       })
       .catch((error) => console.error(error));
@@ -61,7 +62,7 @@ const ReviewSubmission = (taskData) => {
 
 
 
-  // console.log(submittedResult?.submitter?.result);
+   console.log(submittedResult);
   const colorData = [
     { progressBarColor: '#F0E823' },
     { progressBarColor: '#23F050' },
