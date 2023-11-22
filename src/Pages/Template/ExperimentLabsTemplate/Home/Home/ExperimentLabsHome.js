@@ -71,16 +71,141 @@ const ExperimentLabsHome = () => {
       }
 
     },
-    featureData: {
-      images: {
-        img1: img1,
-        img2: img2,
-        img3: img3,
-        imgL1: imgL1,
-        imgL2: imgL2,
-        imgL3: imgL3,
-      }
-    },
+    featureData: [
+      // Science/Innovation
+      // Commerce/Entrepreneurship
+      // Humanities/Arts
+      // Delete the option
+      {
+        category: "All",
+        details: [
+          {
+            category: "Science/Innovation",
+            title: "Leadership and career planning through innovation",
+            data: [
+              "12 Weeks",
+              "Hybrid",
+              "130+ Hours",
+              "Entrance Based Selection: Olympiad",
+            ],
+            info: [
+              "Experience 12+ careers based on 40+ Skills",
+              "Build your own innovative products and learn about different innovation based careers",
+              "Industry projects from Zomato, Swiggy, Nykaa and many more",
+            ],
+            img: img1,
+            imgLg:imgL1,
+            link: "/science-innovation",
+          },
+          {
+            title: "Leadership and career planning through Business",
+            category: "Commerce/Entrepreneurship",
+            data: [
+              "12 Weeks",
+              "Hybrid",
+              "130+ Hours",
+              "Entrance Based Selection: Olympiad",
+            ],
+            info: [
+              "Experience 20+ careers based on 40+ Skills",
+              "Build your own ventures and learn about different business based careers and path to leadership",
+              "Build Strong portfolios, chart out the best indian and international institutions and how to get admissions",
+            ],
+            img: img2,
+            imgLg:imgL2,
+            link: "/commerce-entrepreneurship/",
+          },
+          {
+            category: "Humanities/Arts",
+            title: "Leadership and career planning through Creativity",
+            data: [
+              "12 Weeks",
+              "Hybrid",
+              "130+ Hours",
+              "Entrance Based Selection: Olympiad",
+            ],
+            info: [
+              "Experience 15+ careers based on 40+ Skills",
+              "Learn about different career options by experiential learning",
+              "Connect with industry experts and mentors to get guidance and advice.",
+            ],
+            img:img3,
+            imgLg:imgL3,
+            link: "/humanities-arts/",
+          },
+        ],
+      },
+      {
+        category: "Innovation Track",
+        details: [
+          {
+            category: "Science/Innovation",
+            title: "Leadership and career planning through innovation",
+            data: [
+              "12 Weeks",
+              "Hybrid",
+              "130+ Hours",
+              "Entrance Based Selection: Olympiad",
+            ],
+            info: [
+              "Experience 12+ careers based on 40+ Skills",
+              "Build your own innovative products and learn about different innovation based careers",
+              "Industry projects from Zomato, Swiggy, Nykaa and many more",
+            ],
+            img: img1,
+            imgLg: imgL1,
+            link: "/science-innovation",
+          },
+        ],
+      },
+      {
+        category: "Business Track",
+        details: [
+          {
+            title: "Leadership and career planning through Business",
+            category: "Commerce/Entrepreneurship",
+            data: [
+              "12 Weeks",
+              "Hybrid",
+              "130+ Hours",
+              "Entrance Based Selection: Olympiad",
+            ],
+            info: [
+              "Experience 20+ careers based on 40+ Skills",
+              "Build your own ventures and learn about different business based careers and path to leadership",
+              "Build Strong portfolios, chart out the best indian and international institutions and how to get admissions",
+            ],
+            img: img2,
+            imgLg:imgL2,
+            link: "/commerce-entrepreneurship/",
+          },
+        ],
+      },
+      {
+        category: "Creative Track",
+        details: [
+          {
+            category: "Humanities/Arts",
+            title: "Leadership and career planning through Creativity",
+            data: [
+              "12 Weeks",
+              "Hybrid",
+              "130+ Hours",
+              "Entrance Based Selection: Olympiad",
+            ],
+            info: [
+              "Experience 15+ careers based on 40+ Skills",
+              "Learn about different career options by experiential learning",
+              "Connect with industry experts and mentors to get guidance and advice.",
+            ],
+            img: img3,
+            imgLg: imgL3,
+            link: "/humanities-arts/",
+          },
+        ],
+      },
+    ],
+
     lifeAtUnionData: {
       collan: collan
     },
