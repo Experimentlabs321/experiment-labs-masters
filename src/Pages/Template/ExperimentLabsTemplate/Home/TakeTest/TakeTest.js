@@ -45,7 +45,7 @@ const TakeTest = ({takeTest}) => {
                     {/* <div className='curved-sides'>
                         <video className='curved-sides2' src="https://dsqqu7oxq6o1v.cloudfront.net/motion-array-1177701-mBCKbnRAFv-high.mp4" controls></video>
                     </div> */}
-                    <img src={takeTest?.img} style={{ height: '100%' }} alt="" />
+                    <img src={takeTest?.takeTestImage} style={{ height: '100%' }} alt="" />
                 </div>
 
             </div>
