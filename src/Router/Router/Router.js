@@ -98,6 +98,7 @@ import ZoomIntegration from "../../Pages/Tester/ZoomIntegration";
 import Feedback from "../../Pages/Dashboard/Feedback/Feedback";
 import LoginWithOrganization from "../../Pages/Login/LoginWithOrganization/LoginWithOrganization";
 import UpdateOrganization from "../../Pages/Dashboard/UpdateOrganization/UpdateOrganization";
+import ExperimentLabsHome from "../../Pages/Template/ExperimentLabsTemplate/Home/Home/ExperimentLabsHome";
 
 const router = createBrowserRouter([
   {
@@ -116,6 +117,10 @@ const router = createBrowserRouter([
       {
         path: "/register",
         element: <Register />,
+      },
+      {
+        path: "/template/experimentLabs",
+        element: <ExperimentLabsHome/>,
       },
     ],
   },

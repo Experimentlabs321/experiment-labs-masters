@@ -66,7 +66,7 @@ function App() {
              },    
            
           ],
-          "start_url": "https://experiment-lab-db58b.web.app/", 
+          "start_url": "http://localhost:3000/", 
           "display": "standalone",
           "theme_color": "#000000",
           "background_color": "#000000",
