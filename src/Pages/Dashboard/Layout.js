@@ -454,7 +454,7 @@ const Layout = ({ children }) => {
                     {Role === "admin" && (
                       <>
                         <ul className="space-y-2 px-[22px] py-2 text-white">
-                          <li>
+                          {/* <li>
                             <Link
                               style={
                                 location.pathname === "/userManagement"
@@ -517,7 +517,7 @@ const Layout = ({ children }) => {
                                 Enroll & Registration
                               </span>
                             </Link>
-                          </li>
+                          </li> */}
                           <li>
                             <Link
                               style={
@@ -548,7 +548,7 @@ const Layout = ({ children }) => {
                               </span>
                             </Link>
                           </li>
-                          <li>
+                          {/* <li>
                             <Link
                               style={
                                 location.pathname === "/finance "
@@ -730,7 +730,7 @@ const Layout = ({ children }) => {
                                 Mentor Control
                               </span>
                             </Link>
-                          </li>
+                          </li> */}
                           <li>
                             <Link
                               style={
@@ -1179,7 +1179,7 @@ const Layout = ({ children }) => {
                               </span>
                             </Link>
                           </li>
-                          <li>
+                          {/* <li>
                             <Link
                               style={
                                 location.pathname === "/quizzes"
@@ -1238,7 +1238,7 @@ const Layout = ({ children }) => {
                                 Exams
                               </span>
                             </Link>
-                          </li>
+                          </li> */}
                           <li>
                             <Link
                               style={
@@ -1289,7 +1289,7 @@ const Layout = ({ children }) => {
                               </span>
                             </Link>
                           </li>
-                          <li>
+                          {/* <li>
                             <Link
                               style={
                                 location.pathname === "/batches"
@@ -1348,7 +1348,7 @@ const Layout = ({ children }) => {
                                 Doubts
                               </span>
                             </Link>
-                          </li>
+                          </li> */}
                         </ul>
                       </>
                     )}
@@ -1659,7 +1659,7 @@ const Layout = ({ children }) => {
                               </span>
                             </Link>
                           </li>
-                          <li>
+                          {/* <li>
                             <Link
                               style={
                                 location.pathname === "/mentorClub"
@@ -1730,7 +1730,7 @@ const Layout = ({ children }) => {
                                 Income Gateway
                               </span>
                             </Link>
-                          </li>
+                          </li> */}
                         </ul>
                       </>
                     )}
