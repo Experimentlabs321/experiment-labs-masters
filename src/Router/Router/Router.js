@@ -101,6 +101,7 @@ import UpdateOrganization from "../../Pages/Dashboard/UpdateOrganization/UpdateO
 import ExperimentLabsHome from "../../Pages/Template/ExperimentLabsTemplate/Home/Home/ExperimentLabsHome";
 import OnePagerHome from "../../Pages/Template/OnePager/OnePagerHome/OnePagerHome";
 import ExperimentLabsTemplateLayout from "../../Pages/Template/ExperimentLabsTemplate/Layout/ExperimentLabsTemplateLayout";
+import OnePagerLayout from "../../Pages/Template/OnePager/OnePagerLayout/OnePagerLayout";
 
 const router = createBrowserRouter([
   {
@@ -120,23 +121,29 @@ const router = createBrowserRouter([
         path: "/register",
         element: <Register />,
       },
-     
+
     ],
   },
   {
     path: "/template/experimentLabs",
-    element: <ExperimentLabsTemplateLayout/>,
-    children : [
+    element: <ExperimentLabsTemplateLayout />,
+    children: [
       {
-        path : "/template/experimentLabs",
-        element : <ExperimentLabsHome/>
+        path: "/template/experimentLabs",
+        element: <ExperimentLabsHome />
       }
     ]
   },
-  
+
   {
     path: "/template/onePager",
-    element: <OnePagerHome/>,
+    element: <OnePagerLayout />,
+    children: [
+      {
+        path: "/template/onePager",
+        element: <OnePagerHome />
+      }
+    ]
   },
   {
     path: "/science-innovation/",
