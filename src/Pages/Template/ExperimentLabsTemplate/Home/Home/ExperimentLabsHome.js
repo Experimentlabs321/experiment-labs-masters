@@ -55,7 +55,9 @@ const ExperimentLabsHome = () => {
   const data = {
     heroData: {
       heroImg: heroImg,
-      title : "aaaaaaaaaaxaxkaop"
+      heroTitle : "Discover Your Path to a Successful Career with Real-World Experience",
+      heroDescription: "Build leadership like a muscle",
+      heroButton : "Learn More",
     },
     allCoursesData: {
       images: {
@@ -275,10 +277,17 @@ const ExperimentLabsHome = () => {
         moulikLogo : moulikLogo,
       }
     }, */
-    takeTest : {
-      takeTestImage : takeTestImage
-    }
-
+    takeTestData : {
+      takeTestImage : takeTestImage,
+      takeTestButton : "Take Test",
+      takeTestHeading : "Take a free personality Evaluation test & Book a 1 on 1 counseling session.",
+    },
+    ceoChallengeData : {
+      ceoChallengeTitle:  "Unlock the world of Potential Career Options!",
+      ceoChallengeDescription : "Download our career PDF and delve deeper into the career options available for you",
+      ceoChallengeButton : "Download Career Handbook",
+      ceoChallengePdf : "https://drive.google.com/uc?export=download&id=16Zpw9uP_ZyWmyjuKAeEi6h11-WXrN8sl",
+    },
 
   }
 
@@ -298,11 +307,11 @@ const ExperimentLabsHome = () => {
       <div>
         <Feature featureData={data.featureData} />
       </div>
-      <TakeTest takeTest={data.takeTest}/>
+      <TakeTest takeTestData={data.takeTestData}/>
       <AllCourses allCoursesData={data.allCoursesData} />
       {/* <AiTutor/> */}
       <MeetTheMaster meetTheMasterData={data.meetTheMasterData}/>
-      <CEOChallenge />
+      <CEOChallenge ceoChallengeData={data.ceoChallengeData}/>
       <LifeAtUnion lifeAtUnionData={data.lifeAtUnionData}/>
       <Campus />
       {/* <ExperienceUnion/> */}

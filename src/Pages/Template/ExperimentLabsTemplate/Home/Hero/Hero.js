@@ -203,12 +203,10 @@ const Hero = ({heroData}) => {
         <div className="relative">
           <div className="pt-28 pb-20 px-10 lg:pl-10">
             <h1 className="text-4xl font-bold">
-              Discover Your Path to a Successful
-              <br />
-              Career with Real-World Experience
+              {heroData?.heroTitle}
             </h1>
             <p className="mt-8 mb-12 text-2xl">
-              Build leadership like a muscle
+              {heroData?.heroDescription}
             </p>
 
             {/* <div className='my-8 text-white flex flex-col gap-3 justify-start'>
@@ -232,7 +230,7 @@ const Hero = ({heroData}) => {
               variant="contained"
               endIcon={<ArrowForwardIosIcon className="h-6 w-6" />}
             >
-              Learn More
+              {heroData?.heroButton}
             </Button>
           </div>
         </div>

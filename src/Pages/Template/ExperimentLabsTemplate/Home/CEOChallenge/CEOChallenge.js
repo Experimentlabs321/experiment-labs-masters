@@ -17,7 +17,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const CEOChallenge = () => {
+const CEOChallenge = ({ceoChallengeData}) => {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -108,8 +108,7 @@ const CEOChallenge = () => {
       );
 
     const a = document.createElement("a");
-    a.href =
-      "https://drive.google.com/uc?export=download&id=16Zpw9uP_ZyWmyjuKAeEi6h11-WXrN8sl";
+    a.href = ceoChallengeData?.ceoChallengePdf;
     a.download = "HandBook.pdf"; // Set the desired file name
     a.click();
   };
@@ -127,17 +126,16 @@ const CEOChallenge = () => {
         style={{ height: "100%" }}
       >
         <h1 className="font-bold text-2xl lg:text-4xl">
-          Unlock the world of Potential Career Options!
+          {ceoChallengeData?.ceoChallengeTitle}
         </h1>
         <p className="mt-5 mb-8 text-lg lg:text-2xl font-light">
-          Download our career PDF and delve deeper into the <br />
-          career options available for you
+          {ceoChallengeData?.ceoChallengeDescription}
         </p>
         <button
           onClick={handleClickOpen}
           className="bg-pink hover:bg-purple py-2 px-8 font-bold text-sm lg:text-lg rounded-3xl"
         >
-          DOWNLOAD Career Handbook
+          {ceoChallengeData?.ceoChallengeButton}
         </button>
       </div>
       <Dialog
