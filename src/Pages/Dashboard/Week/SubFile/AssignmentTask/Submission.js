@@ -14,6 +14,7 @@ const Submission = ({ taskData }) => {
   const [openTask, setOpenTask] = useState(
     JSON.parse(localStorage.getItem("task"))
   );
+  console.log(taskData);
 
   const handleDragEnter = (e) => {
     e.preventDefault();
@@ -93,8 +94,12 @@ const Submission = ({ taskData }) => {
           },
         },
       };
+      console.log(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/Assignment/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`,
+        sendData
+      );
       const submitCompletion = await axios.post(
-        `https://experiment-labs-master-server.vercel.app/chapter/${taskData?.chapterId}/task/${taskData?._id}/add-participant/${openTask?.taskType}`,
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/Assignment/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`,
         sendData
       );
 
