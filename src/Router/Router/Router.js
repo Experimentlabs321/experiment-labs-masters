@@ -99,6 +99,8 @@ import Feedback from "../../Pages/Dashboard/Feedback/Feedback";
 import LoginWithOrganization from "../../Pages/Login/LoginWithOrganization/LoginWithOrganization";
 import UpdateOrganization from "../../Pages/Dashboard/UpdateOrganization/UpdateOrganization";
 import ExperimentLabsHome from "../../Pages/Template/ExperimentLabsTemplate/Home/Home/ExperimentLabsHome";
+import OnePagerHome from "../../Pages/Template/OnePager/OnePagerHome/OnePagerHome";
+import ExperimentLabsTemplateLayout from "../../Pages/Template/ExperimentLabsTemplate/Layout/ExperimentLabsTemplateLayout";
 
 const router = createBrowserRouter([
   {
@@ -118,11 +120,23 @@ const router = createBrowserRouter([
         path: "/register",
         element: <Register />,
       },
-      {
-        path: "/template/experimentLabs",
-        element: <ExperimentLabsHome/>,
-      },
+     
     ],
+  },
+  {
+    path: "/template/experimentLabs",
+    element: <ExperimentLabsTemplateLayout/>,
+    children : [
+      {
+        path : "/template/experimentLabs",
+        element : <ExperimentLabsHome/>
+      }
+    ]
+  },
+  
+  {
+    path: "/template/onePager",
+    element: <OnePagerHome/>,
   },
   {
     path: "/science-innovation/",
