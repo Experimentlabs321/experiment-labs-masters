@@ -71,6 +71,46 @@ const ExperimentLabsHome = () => {
       }
 
     },
+    meetTheMasterData: [
+   
+      {
+        masterName: "Shekhar gupta",
+        profession : "Ex-Group Product Manager, Nykaa",
+        masterImage : guptaImg,
+        logo : guptaLogo
+       
+      },
+      {
+        masterName: "Pulkit Handa",
+        profession : "Director-Sales, Magicpin",
+        masterImage : handaImg,
+        logo : handaLogo
+       
+      },
+      {
+        masterName: "Naman Jain",
+        profession : "Founder, Experiment Labs",
+        masterImage : jainImg,
+        logo : jainLogo
+       
+      },
+      {
+        masterName: "Aayush Garg",
+        profession : "Ex-Head of Growth, Zilingo",
+        masterImage : gargImg,
+        logo : gargLogo
+       
+      },
+      {
+        masterName: "Siddharth Moulik",
+        profession : "Ad Film Director",
+        masterImage : moulikImg,
+        logo : moulikLogo
+       
+      },
+     
+      
+    ],
     featureData: [
       // Science/Innovation
       // Commerce/Entrepreneurship
@@ -207,9 +247,21 @@ const ExperimentLabsHome = () => {
     ],
 
     lifeAtUnionData: {
-      collan: collan
+      image: collan,
+      organizationName : "Experiment Labs",
+      reviews : [
+        {
+          videoLink : "https://www.youtube.com/embed/lKkFKWQvaLs"
+        },
+        {
+          videoLink : "https://www.youtube.com/embed/B4QHMqNAP2g"
+        },
+        {
+          videoLink : "https://www.youtube.com/embed/wa617J4UUpw"
+        },
+      ]
     },
-    MeetTheMaster : {
+  /*   MeetTheMaster : {
       images : {
         guptaImg : guptaImg,
         guptaLogo : guptaLogo,
@@ -222,7 +274,7 @@ const ExperimentLabsHome = () => {
         moulikImg : moulikImg,
         moulikLogo : moulikLogo,
       }
-    },
+    }, */
     takeTest : {
       takeTestImage : takeTestImage
     }
@@ -249,7 +301,7 @@ const ExperimentLabsHome = () => {
       <TakeTest takeTest={data.takeTest}/>
       <AllCourses allCoursesData={data.allCoursesData} />
       {/* <AiTutor/> */}
-      <MeetTheMaster MeetTheMaster={data.MeetTheMaster}/>
+      <MeetTheMaster meetTheMasterData={data.meetTheMasterData}/>
       <CEOChallenge />
       <LifeAtUnion lifeAtUnionData={data.lifeAtUnionData}/>
       <Campus />
