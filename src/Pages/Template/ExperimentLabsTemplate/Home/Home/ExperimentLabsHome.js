@@ -73,6 +73,46 @@ const ExperimentLabsHome = () => {
       }
 
     },
+    meetTheMasterData: [
+   
+      {
+        masterName: "Shekhar gupta",
+        profession : "Ex-Group Product Manager, Nykaa",
+        masterImage : guptaImg,
+        logo : guptaLogo
+       
+      },
+      {
+        masterName: "Pulkit Handa",
+        profession : "Director-Sales, Magicpin",
+        masterImage : handaImg,
+        logo : handaLogo
+       
+      },
+      {
+        masterName: "Naman Jain",
+        profession : "Founder, Experiment Labs",
+        masterImage : jainImg,
+        logo : jainLogo
+       
+      },
+      {
+        masterName: "Aayush Garg",
+        profession : "Ex-Head of Growth, Zilingo",
+        masterImage : gargImg,
+        logo : gargLogo
+       
+      },
+      {
+        masterName: "Siddharth Moulik",
+        profession : "Ad Film Director",
+        masterImage : moulikImg,
+        logo : moulikLogo
+       
+      },
+     
+      
+    ],
     featureData: [
       // Science/Innovation
       // Commerce/Entrepreneurship
@@ -209,9 +249,21 @@ const ExperimentLabsHome = () => {
     ],
 
     lifeAtUnionData: {
-      collan: collan
+      image: collan,
+      organizationName : "Experiment Labs",
+      reviews : [
+        {
+          videoLink : "https://www.youtube.com/embed/lKkFKWQvaLs"
+        },
+        {
+          videoLink : "https://www.youtube.com/embed/B4QHMqNAP2g"
+        },
+        {
+          videoLink : "https://www.youtube.com/embed/wa617J4UUpw"
+        },
+      ]
     },
-    MeetTheMaster : {
+  /*   MeetTheMaster : {
       images : {
         guptaImg : guptaImg,
         guptaLogo : guptaLogo,
@@ -224,13 +276,13 @@ const ExperimentLabsHome = () => {
         moulikImg : moulikImg,
         moulikLogo : moulikLogo,
       }
-    },
-    takeTest : {
+    }, */
+    takeTestData : {
       takeTestImage : takeTestImage,
       takeTestButton : "Take Test",
       takeTestHeading : "Take a free personality Evaluation test & Book a 1 on 1 counseling session.",
     },
-    ceoChallenge : {
+    ceoChallengeData : {
       ceoChallengeTitle:  "Unlock the world of Potential Career Options!",
       ceoChallengeDescription : "Download our career PDF and delve deeper into the career options available for you",
       ceoChallengeButton : "Download Career Handbook",
@@ -255,11 +307,11 @@ const ExperimentLabsHome = () => {
       <div>
         <Feature featureData={data.featureData} />
       </div>
-      <TakeTest takeTest={data.takeTest}/>
+      <TakeTest takeTestData={data.takeTestData}/>
       <AllCourses allCoursesData={data.allCoursesData} />
       {/* <AiTutor/> */}
-      <MeetTheMaster MeetTheMaster={data.MeetTheMaster}/>
-      <CEOChallenge ceoChallenge={data.ceoChallenge}/>
+      <MeetTheMaster meetTheMasterData={data.meetTheMasterData}/>
+      <CEOChallenge ceoChallengeData={data.ceoChallengeData}/>
       <LifeAtUnion lifeAtUnionData={data.lifeAtUnionData}/>
       <Campus />
       {/* <ExperienceUnion/> */}

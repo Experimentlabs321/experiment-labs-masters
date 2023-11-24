@@ -17,7 +17,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const CEOChallenge = ({ceoChallenge}) => {
+const CEOChallenge = ({ceoChallengeData}) => {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -108,7 +108,7 @@ const CEOChallenge = ({ceoChallenge}) => {
       );
 
     const a = document.createElement("a");
-    a.href = ceoChallenge?.ceoChallengePdf;
+    a.href = ceoChallengeData?.ceoChallengePdf;
     a.download = "HandBook.pdf"; // Set the desired file name
     a.click();
   };
@@ -126,16 +126,16 @@ const CEOChallenge = ({ceoChallenge}) => {
         style={{ height: "100%" }}
       >
         <h1 className="font-bold text-2xl lg:text-4xl">
-          {ceoChallenge?.ceoChallengeTitle}
+          {ceoChallengeData?.ceoChallengeTitle}
         </h1>
         <p className="mt-5 mb-8 text-lg lg:text-2xl font-light">
-          {ceoChallenge?.ceoChallengeDescription}
+          {ceoChallengeData?.ceoChallengeDescription}
         </p>
         <button
           onClick={handleClickOpen}
           className="bg-pink hover:bg-purple py-2 px-8 font-bold text-sm lg:text-lg rounded-3xl"
         >
-          {ceoChallenge?.ceoChallengeButton}
+          {ceoChallengeData?.ceoChallengeButton}
         </button>
       </div>
       <Dialog

@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import OutboundOutlinedIcon from "@mui/icons-material/OutboundOutlined";
@@ -19,9 +19,9 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 //import moulikImg from "../../../assets/Masters/moulikImg.png";
 //import moulikLogo from "../../../assets/Masters/moulikLogo.png";
 
-const MeetTheMaster = ({MeetTheMaster}) => {
+const MeetTheMaster = ({ meetTheMasterData }) => {
   const containerRef = useRef(null);
-
+  const [mastersData, setMastersData] = useState([...meetTheMasterData]);
   function handleScrollLeft() {
     containerRef.current.scrollLeft -= 300; // scroll left by 100 pixels
   }
@@ -78,31 +78,37 @@ const MeetTheMaster = ({MeetTheMaster}) => {
               }}
             />
           </button>
+
           <div
             ref={containerRef}
             className="flex overflow-x-scroll scroll-smooth gap-5 mtm-container lg:w-[85vw]"
           >
-            <div
-              style={{
-                backgroundColor: "#FFFFFF",
-                borderBottom: "4px solid #94A4FF",
-                borderRight: "4px solid #94A4FF",
-                color: "black",
-                borderRadius: "24px",
-              }}
-              className="min-w-[290px] max-w-[290px] px-2 pb-4"
-            >
-              <img src={MeetTheMaster.images?.guptaImg} alt="" />
-              <div className="pt-3">
-                <h4 className="font-bold text-xl">Shekhar gupta</h4>
-                <h6 className="text-sm font-normal">
-                  Ex-Group Product Manager, Nykaa
-                </h6>
-              </div>
-              <img src={MeetTheMaster.images?.guptaLogo} alt="" />
-            </div>
+            {
+              mastersData.map((master) => (
+                <div
+                  style={{
+                    backgroundColor: "#FFFFFF",
+                    borderBottom: "4px solid #94A4FF",
+                    borderRight: "4px solid #94A4FF",
+                    color: "black",
+                    borderRadius: "24px",
+                  }}
+                  className="min-w-[290px] max-w-[290px] px-2 pb-4"
+                >
+                  <img src={master?.masterImage} alt="" />
+                  <div className="pt-3">
+                    <h4 className="font-bold text-xl">{master?.masterName}</h4>
+                    <h6 className="text-sm font-normal">
+                      {master?.profession}
+                    </h6>
+                  </div>
+                  <img src={master?.logo} alt="" />
+                </div>
+              ))
+            }
 
-            <div
+
+            {/*  <div
               style={{
                 backgroundColor: "#FFFFFF",
                 borderBottom: "4px solid #94A4FF",
@@ -160,9 +166,9 @@ const MeetTheMaster = ({MeetTheMaster}) => {
                 </h6>
               </div>
               <img src={MeetTheMaster.images?.gargLogo} alt="" />
-            </div>
+            </div> */}
 
-            <div
+           {/*  <div
               style={{
                 backgroundColor: "#FFFFFF",
                 borderBottom: "4px solid #94A4FF",
@@ -178,7 +184,8 @@ const MeetTheMaster = ({MeetTheMaster}) => {
                 <h6 className="text-sm font-normal">Ad Film Director</h6>
               </div>
               <img src={MeetTheMaster.images?.moulikLogo} alt="" />
-            </div>
+            </div> */}
+
           </div>
           <button
             onClick={handleScrollRight}
