@@ -34,9 +34,7 @@ const LoginWithOrganization = () => {
     }
   };
   const saveUser = async (email) => {
-    fetch(
-      `https://experiment-labs-master-server-rakibul58.vercel.app/users?email=${email}`
-    )
+    fetch(`${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${email}`)
       .then((res) => res.json())
       .then((data) => {
         localStorage.setItem("role", data?.role);
