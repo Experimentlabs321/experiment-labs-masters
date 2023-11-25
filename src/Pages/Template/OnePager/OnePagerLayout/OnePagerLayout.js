@@ -1,7 +1,7 @@
 import React from 'react';
 import Navbar from '../Shared/Navbar';
-import { Outlet } from '@mui/icons-material';
 import Footer from '../Shared/Footer';
+import { Outlet } from 'react-router-dom';
 
 const OnePagerLayout = () => {
     return (
