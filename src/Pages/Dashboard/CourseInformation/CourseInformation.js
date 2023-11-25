@@ -360,6 +360,7 @@ const CourseInformation = () => {
       })
       .catch((error) => console.error(error));
   }, [id]);
+  console.log(chapters);
   return (
     <div>
       <Layout>

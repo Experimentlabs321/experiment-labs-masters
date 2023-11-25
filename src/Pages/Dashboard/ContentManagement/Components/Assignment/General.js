@@ -17,7 +17,7 @@ const General = ({
   schedule,
   setSchedule,
   contentStage,
-  setContentStage
+  setContentStage,
 }) => {
   // upload file
   const [dragActive, setDragActive] = useState(true);
@@ -78,7 +78,7 @@ const General = ({
               />
             </div>
 
-            <div className="mt-12 flex flex-col">
+            {/* <div className="mt-12 flex flex-col">
               <div className="flex items-center gap-4">
                 <p className="h-2 w-2 bg-black rounded-full"></p>
                 <p className="font-bold text-lg me-[36px]">
@@ -98,8 +98,7 @@ const General = ({
                 type="datetime-local"
                 placeholder="Eg. Entrepreneurship Lab"
               />
-              {/* <input required className='mt-4 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='courseStartingTime' type="time" placeholder='Eg. Entrepreneurship Lab' /> */}
-            </div>
+            </div> */}
 
             <div className="mt-12">
               <div className="flex items-center gap-4">
@@ -145,7 +144,7 @@ const General = ({
               />
             </div>
 
-            <div className="mt-12 flex flex-col">
+            {/* <div className="mt-12 flex flex-col">
               <div className="flex items-center gap-4">
                 <p className="h-2 w-2 bg-black rounded-full"></p>
                 <p className="font-bold text-lg me-[36px]">
@@ -167,8 +166,7 @@ const General = ({
                 type="datetime-local"
                 placeholder="Eg. Entrepreneurship Lab"
               />
-              {/* <input required className='mt-4 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='courseStartingTime' type="time" placeholder='Eg. Entrepreneurship Lab' /> */}
-            </div>
+            </div> */}
 
             <div className="w-full mt-12">
               <div className=" flex flex-col">

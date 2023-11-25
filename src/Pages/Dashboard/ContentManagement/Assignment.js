@@ -175,7 +175,7 @@ const Assignment = () => {
       file: fileUrl,
       skillParameterData: skillParameterData,
       earningParameterData: earningParameterData,
-      chapterId: id,
+      chapterId: chapter?._id,
       courseId: chapter?.courseId,
       batches: selectedBatches,
       schedule: schedule,
@@ -199,6 +199,8 @@ const Assignment = () => {
       console.log(manageAssignment);
     }
   };
+
+  console.log(chapter);
 
   return (
     <div>
