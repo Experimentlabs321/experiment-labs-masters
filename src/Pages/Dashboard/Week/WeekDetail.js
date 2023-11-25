@@ -194,6 +194,7 @@ const WeekDetail = ({
       })
       .catch((error) => console.error(error));
   }, [openTask, openTask?.taskType]);
+  console.log(taskData);
 
   return (
     <div>

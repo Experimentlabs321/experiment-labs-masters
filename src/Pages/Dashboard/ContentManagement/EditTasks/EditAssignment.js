@@ -186,7 +186,7 @@ const EditAssignment = () => {
       file: assignmentData?.file,
       skillParameterData: skillParameterData,
       earningParameterData: earningParameterData,
-      chapterId: id,
+      chapterId: chapter?._id,
       batches: selectedBatches,
       schedule: schedule,
       contentStage,

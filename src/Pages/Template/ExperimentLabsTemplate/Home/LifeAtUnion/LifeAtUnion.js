@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import './style.css';
 //import collan from '../../../assets/collan.png';
 
+
 const LifeAtUnion = ({ lifeAtUnionData }) => {
     const [reviews, setReviews] = useState([...lifeAtUnionData?.reviews]);
     return (
