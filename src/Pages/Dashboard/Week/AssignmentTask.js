@@ -5,15 +5,14 @@ import ReviewSubmission from "./SubFile/AssignmentTask/ReviewSubmission";
 import MySubmission from "./SubFile/AssignmentTask/MySubmission";
 import { AuthContext } from "../../../contexts/AuthProvider";
 
-
 const AssignmentTask = ({ taskData }) => {
   const { userInfo } = useContext(AuthContext);
   const [view, setView] = useState("Instructions");
-  if(userInfo.role !== 'admin'){
+  if (userInfo.role !== "admin") {
     window.addEventListener("contextmenu", (e) => {
       e.preventDefault();
     });
-  };
+  }
   const [isFixed, setIsFixed] = useState(false);
 
   useEffect(() => {
@@ -25,10 +24,10 @@ const AssignmentTask = ({ taskData }) => {
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
@@ -41,7 +40,7 @@ const AssignmentTask = ({ taskData }) => {
         </h1>
       </div>
       {taskData?.file && (
-        <div  className="p-4 mt-[15px] ">
+        <div className="p-4 mt-[15px] ">
           <a
             className="p-4 bg-blue rounded-lg text-white font-bold"
             id="downloadButton"
@@ -53,7 +52,22 @@ const AssignmentTask = ({ taskData }) => {
         </div>
       )}
       <div className=" border-b-[1px] mt-[40px] ">
-        <div className={`flex px-4 ${isFixed && window.innerWidth <= 768 ? 'fixed top-[100px] bg-white' : ''}`} style={window.innerWidth <= 768 ? { overflowY: 'scroll', scrollbarWidth: 'thin', scrollbarColor: 'darkgray lightgray' } : {}}>
+        <div
+          className={`flex px-4 ${
+            isFixed && window.innerWidth <= 768
+              ? "fixed top-[100px] bg-white"
+              : ""
+          }`}
+          style={
+            window.innerWidth <= 768
+              ? {
+                  overflowY: "scroll",
+                  scrollbarWidth: "thin",
+                  scrollbarColor: "darkgray lightgray",
+                }
+              : {}
+          }
+        >
           <button
             onClick={() => setView("Instructions")}
             className={`${

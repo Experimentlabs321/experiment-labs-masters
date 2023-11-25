@@ -94,10 +94,6 @@ const Submission = ({ taskData }) => {
           },
         },
       };
-      console.log(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/Assignment/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`,
-        sendData
-      );
       const submitCompletion = await axios.post(
         `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/Assignment/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`,
         sendData
@@ -112,6 +108,9 @@ const Submission = ({ taskData }) => {
       console.log(manageAssignment);
     }
   };
+  console.log(
+    `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/Assignment/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`
+  );
 
   return (
     <div>
