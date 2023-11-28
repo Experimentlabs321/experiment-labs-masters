@@ -7,7 +7,7 @@ const ExploreCourse = ({ courseInfoData }) => {
         <h1
           style={{
             borderBottom: "2px solid #4555BA",
-            padding: '13px 0',
+            padding: "13px 0",
           }}
           className="text-black font-inter font-bold sm:text-[20px] md:text-[32px] pb-3 w-full lg:w-[583px]"
         >
@@ -45,37 +45,39 @@ const ExploreCourse = ({ courseInfoData }) => {
             </div>
           </div>
           <div className="bg-white md:bg-[rgb(241,243,255)] container sm:mx-auto sm:rounded-lg">
-            <p className="font-inter sm:text-center font-bold sm:text-[20px] md:text-[27px] sm:mt-[53px] md:mt-0">
+            <p className="font-inter text-center mt-2 sm:text-center font-bold sm:text-[20px] md:text-[27px] sm:mt-[53px] md:mt-0">
               {courseInfoData.courseInfoInOutline}
             </p>
-            {
-                courseInfoData?.courseInfoSubjects?.map((subject) => {
-                    return (
+            <div className="flex items-center justify-center mb-2">
+              <div className="w-fit">
+                {courseInfoData?.courseInfoSubjects?.map((subject) => {
+                  return (
                     <div className="flex sm:justify-items-center md:items-center sm:text-[15px] md:text-[16px]  font-inter font-bold mt-[8px]">
-                        <img alt="tick" src={courseInfoData.courseInfoTick}></img>
-                        <p>
-                        {subject}
-                        </p>
+                      <img alt="tick" src={courseInfoData.courseInfoTick}></img>
+                      <p>{subject}</p>
                     </div>
-                    );
-                })
-            }
+                  );
+                })}
+              </div>
+            </div>
             <p className="text-[20px] md:text-[24px] font-inter font-bold flex items-center justify-around">
-                <span>New!</span>
-                <div>
+              <span>New!</span>
+              <div>
                 <img
-                    alt="rupee"
-                    src={courseInfoData.courseInfoPriceIcon}
-                    className="inline-block"
+                  alt="rupee"
+                  src={courseInfoData.courseInfoPriceIcon}
+                  className="inline-block"
                 ></img>
                 <span className="text-[#4555BA]  sm:text-[20px] md:text-[27px]">
-                    {courseInfoData.courseInfoPrice}
+                  {courseInfoData.courseInfoPrice}
                 </span>
-                </div>
+              </div>
             </p>
-            <button className="font-inter text-[16px] md:text-[20px] text-white btn mt-[19px] w-[159px] md:w-[192px] p-[10px] bg-[#4555BA] rounded-md ">
+            <div className="flex items-center justify-center mb-3">
+              <button className="font-inter text-[16px] md:text-[20px] text-white btn mt-[19px] w-[159px] md:w-[192px] p-[10px] bg-[#4555BA] rounded-md ">
                 {courseInfoData.courseInfoButton}
-            </button>
+              </button>
+            </div>
           </div>
         </div>
       </div>

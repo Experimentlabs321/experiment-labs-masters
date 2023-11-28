@@ -114,6 +114,10 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
+        path: "/:id",
+        element: <Home />,
+      },
+      {
         path: "/login",
         element: <Login />,
       },
@@ -121,7 +125,6 @@ const router = createBrowserRouter([
         path: "/register",
         element: <Register />,
       },
-
     ],
   },
   {
@@ -130,9 +133,9 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/template/experimentLabs",
-        element: <ExperimentLabsHome />
-      }
-    ]
+        element: <ExperimentLabsHome />,
+      },
+    ],
   },
 
   {
@@ -141,9 +144,9 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/template/onePager",
-        element: <OnePagerHome />
-      }
-    ]
+        element: <OnePagerHome />,
+      },
+    ],
   },
   {
     path: "/science-innovation/",
