@@ -30,6 +30,7 @@ import Sortable from "sortablejs";
 import WeekDetails from "./WeekDetails";
 import BatchConfiguration from "./BatchConfiguration";
 import WeekConfiguration from "./WeekConfiguration";
+import DialogLayoutForFromControl from "../Shared/DialogLayoutForFromControl";
 
 const CourseInformation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -50,6 +51,13 @@ const CourseInformation = () => {
   const { user, userInfo } = useContext(AuthContext);
   const [batchesData, setBatchesData] = useState([]);
   const [selectedBatches, setSelectedBatches] = useState([]);
+  const [deleteTaskPopup, setDeleteTaskPopup] = useState(false);
+  const [
+    selectedChapterAndTaskToDeleteTask,
+    setSelectedChapterAndTaskToDeleteTask,
+  ] = useState({});
+  const [selectedBatchesToDeleteTask, setSelectedBatchesToDeleteTask] =
+    useState([]);
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -201,6 +209,7 @@ const CourseInformation = () => {
   };
 
   const handleTaskDelete = async (task, chapter) => {
+    setDeleteTaskPopup(false);
     await Swal.fire({
       title: "Are you sure?",
       text: "Once deleted, the task will not recover!",
@@ -241,41 +250,79 @@ const CourseInformation = () => {
           default:
             console.error({ error: "Invalid task type" });
         }
-        fetch(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/${taskTypeForAPI}/taskId//${task?.taskId}`,
-          {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        )
-          .then((result) => {
-            console.log(result);
-            if (result?.ok) {
-              toast.success("Item Deleted Successfully!");
-              let filterChapter = [];
-              chapters?.forEach((item) => {
-                if (item?._id === chapter?._id) {
-                  const filteredTask = [];
-                  item?.tasks?.forEach((i) => {
-                    if (i?.taskId !== task?.taskId) {
-                      filteredTask.push(i);
-                    }
-                  });
-                  item["tasks"] = filteredTask;
-                  filterChapter?.push(item);
-                } else {
-                  filterChapter?.push(item);
-                }
-              });
-              setChapters(filterChapter);
+        if (
+          selectedBatchesToDeleteTask?.length ===
+          selectedChapterAndTaskToDeleteTask?.task?.batches?.length
+        ) {
+          fetch(
+            `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/${taskTypeForAPI}/taskId/${task?.taskId}`,
+            {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify([]),
             }
-          })
-          .catch((error) => {
-            console.error("Fetch error:", error);
-            // Handle error, display a message to the user, etc.
-          });
+          )
+            .then((result) => {
+              console.log(result);
+              if (result?.ok) {
+                toast.success("Task Deleted Successfully!");
+                let filterChapter = [];
+                chapters?.forEach((item) => {
+                  if (item?._id === chapter?._id) {
+                    const filteredTask = [];
+                    item?.tasks?.forEach((i) => {
+                      if (i?.taskId !== task?.taskId) {
+                        filteredTask.push(i);
+                      }
+                    });
+                    item["tasks"] = filteredTask;
+                    filterChapter?.push(item);
+                  } else {
+                    filterChapter?.push(item);
+                  }
+                });
+                setChapters(filterChapter);
+              }
+            })
+            .catch((error) => {
+              console.error("Fetch error:", error);
+              // Handle error, display a message to the user, etc.
+            });
+        } else {
+          const remainingBatches =
+            selectedChapterAndTaskToDeleteTask?.task?.batches?.filter(
+              (batch) => {
+                if (!selectedBatchesToDeleteTask.includes(batch)) {
+                  return batch;
+                }
+              }
+            );
+          selectedChapterAndTaskToDeleteTask.task.batches = remainingBatches;
+          setSelectedBatchesToDeleteTask([]);
+          console.log(selectedChapterAndTaskToDeleteTask.task);
+          fetch(
+            `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/${taskTypeForAPI}/taskId/${task?.taskId}`,
+            {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(remainingBatches),
+            }
+          )
+            .then((result) => {
+              console.log(result);
+              if (result?.ok) {
+                toast.success("Task removed Successfully!");
+              }
+            })
+            .catch((error) => {
+              console.error("Fetch error:", error);
+              // Handle error, display a message to the user, etc.
+            });
+        }
       }
     });
   };
@@ -360,7 +407,6 @@ const CourseInformation = () => {
       })
       .catch((error) => console.error(error));
   }, [id]);
-  console.log(chapters);
   return (
     <div>
       <Layout>
@@ -635,6 +681,110 @@ const CourseInformation = () => {
                 </form>
               </DialogLayout>
               {/* Edit chapter name end */}
+              {/* Delete task start */}
+              <DialogLayoutForFromControl
+                title={
+                  <p className=" h-[80px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
+                    Delete Task
+                  </p>
+                }
+                width={500}
+                setOpen={setDeleteTaskPopup}
+                open={deleteTaskPopup}
+              >
+                <div className="w-full">
+                  <p className="text-[20px] font-[700] mb-3">
+                    Task:{" "}
+                    <span className="font-[500]">
+                      {selectedChapterAndTaskToDeleteTask &&
+                        selectedChapterAndTaskToDeleteTask?.task?.taskName}
+                    </span>
+                  </p>
+                  <p className=" mb-2 flex justify-between items-center">
+                    <span className="text-[20px] font-[700]">
+                      Select Batches:
+                    </span>
+                    <span>
+                      <input
+                        type="checkbox"
+                        checked={
+                          selectedBatchesToDeleteTask?.length ===
+                          selectedChapterAndTaskToDeleteTask?.task?.batches
+                            ?.length
+                        }
+                        onChange={(event) => {
+                          const isChecked = event.target.checked;
+                          if (isChecked) {
+                            setSelectedBatchesToDeleteTask(
+                              selectedChapterAndTaskToDeleteTask?.task.batches
+                            );
+                          } else {
+                            setSelectedBatchesToDeleteTask([]);
+                          }
+                        }}
+                        className="mr-2"
+                      />
+                      <label>Select all</label>
+                    </span>
+                  </p>
+                  <div className="flex gap-4 flex-wrap">
+                    {selectedChapterAndTaskToDeleteTask?.task &&
+                      selectedChapterAndTaskToDeleteTask?.task?.batches?.map(
+                        (batch) => (
+                          <div
+                            key={batch.batchId}
+                            className="flex items-center mb-2"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={selectedBatchesToDeleteTask.includes(
+                                batch
+                              )}
+                              onChange={(event) => {
+                                const isChecked = event.target.checked;
+                                if (isChecked) {
+                                  setSelectedBatchesToDeleteTask([
+                                    ...selectedBatchesToDeleteTask,
+                                    batch,
+                                  ]);
+                                } else {
+                                  setSelectedBatchesToDeleteTask(
+                                    selectedBatchesToDeleteTask.filter(
+                                      (singleBatch) =>
+                                        singleBatch?.batchId !== batch?.batchId
+                                    )
+                                  );
+                                }
+                              }}
+                              className="mr-2"
+                            />
+                            <label>{batch.batchName}</label>
+                          </div>
+                        )
+                      )}
+                  </div>
+                  <div className="flex space-x-4 mt-4">
+                    <button
+                      onClick={() => {
+                        handleTaskDelete(
+                          selectedChapterAndTaskToDeleteTask?.task,
+                          selectedChapterAndTaskToDeleteTask?.chapter
+                        );
+                      }}
+                      className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                    >
+                      Delete
+                    </button>
+                    <button
+                      // onClick={() => setShowDeletePopup(false)}
+                      className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </DialogLayoutForFromControl>
+              {/* Delete task end */}
               {/* If you want to allow tasks to be moved from one chapter to another, but you still want to ensure that each task remains under at least one chapter, */}
               {/* <WeekDetails
                 chapters={chapters}
@@ -924,9 +1074,13 @@ const CourseInformation = () => {
                                       </li>
                                       <li
                                         className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600] "
-                                        onMouseDown={() =>
-                                          handleTaskDelete(task, chapter)
-                                        }
+                                        onMouseDown={() => {
+                                          // handleTaskDelete(task, chapter);
+                                          setDeleteTaskPopup(true);
+                                          setSelectedChapterAndTaskToDeleteTask(
+                                            { task, chapter }
+                                          );
+                                        }}
                                       >
                                         Delete Task
                                       </li>
