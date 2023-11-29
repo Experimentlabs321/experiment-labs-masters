@@ -776,7 +776,11 @@ const CourseInformation = () => {
                       Delete
                     </button>
                     <button
-                      // onClick={() => setShowDeletePopup(false)}
+                      onClick={() => {
+                        setDeleteTaskPopup(false);
+                        setSelectedBatchesToDeleteTask([]);
+                        setSelectedChapterAndTaskToDeleteTask({});
+                      }}
                       className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
                     >
                       Cancel
