@@ -1,16 +1,16 @@
 import React from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import { Link } from 'react-router-dom';
-import organizationLogo from '../../../../assets/OnePager/Navbar/organizationLogo.png';
+
 
 const Navbar = () => {
     return (
-        <div className='flex bg-[#fff] lg:flex-row justify-between lg:items-center m-[20px] flex-col gap-5 lg:gap-0'>
+        <div className='flex lg:flex-row justify-between lg:items-center my-[20px] mx-[35px] flex-col gap-5 lg:gap-0'>
 
             <div className='flex items-center justify-between gap-3'>
-                <div className='flex items-center font-normal text-xl text-[#000]'>
-                    <img src={organizationLogo} alt='image' />
-                    <h1>Experiment labs</h1>
+                <div className='flex items-center font-bold text-xl text-[#000]'>
+                   
+                    <h1><span className='text-[#FFC062]'>Happy</span> charity</h1>
                 </div>
                 <div
                     style={{
@@ -18,7 +18,8 @@ const Navbar = () => {
                         border: "1px solid #DDD"
                     }}
                     className=' lg:flex hidden  items-center px-2 text-[#929292] text-xl font-normal gap-[10px] w-[480px] h-[48px] '>
-                    <p><SearchIcon /></p>
+                    
+                      <p><SearchIcon /></p>
                     <input className='w-full' placeholder='Search'></input>
                 </div>
                 <div>
@@ -40,7 +41,7 @@ const Navbar = () => {
                     border: "1px solid #DDD"
                 }}
                 className='me-2 flex lg:hidden  items-center px-2 text-[#929292] text-xl font-normal gap-[10px] w-[380px] h-[48px] '>
-                <p><SearchIcon /></p>
+                {/* <p><SearchIcon /></p> */}
                 <input className='w-full' placeholder='Search'></input>
             </div>
 
