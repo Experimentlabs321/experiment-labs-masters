@@ -21,12 +21,12 @@ const Footer = () => {
                            
                         </div>
                         <div
-                            className="h-[42px] flex justify-center items-center w-[105px] py-3 px-5"
+                            className="h-[42px] flex justify-center items-center w-[105px]  py-3 px-5"
                             style={{
                                 border: "0.889px solid #000",
                                 background: "var(--White, #FFF)",
                             }}>
-                            <p className="text-base font-normal ">Confirm</p>
+                            <button className="text-base font-normal hover:text-[#0E286C] ">Confirm</button>
                         </div>
 
                     </div>

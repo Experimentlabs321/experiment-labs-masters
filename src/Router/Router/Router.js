@@ -104,6 +104,7 @@ import ExperimentLabsTemplateLayout from "../../Pages/Template/ExperimentLabsTem
 import OnePagerLayout from "../../Pages/Template/OnePager/OnePagerLayout/OnePagerLayout";
 import CharitySiteLayout from "../../Pages/Template/CharitySite/CharitySiteLayout/CharitySiteLayout";
 import CharitySiteHome from "../../Pages/Template/CharitySite/CharitySiteHome/CharitySiteHome";
+import JoinCharity from "../../Pages/Template/CharitySite/JoinCharity/JoinCharity";
 
 const router = createBrowserRouter([
   {
@@ -151,12 +152,16 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/template/CharitySite",
+    path: "/template/charitySite",
     element: <CharitySiteLayout />,
     children: [
       {
-        path: "/template/CharitySite",
+        path: "/template/charitySite",
         element: <CharitySiteHome />,
+      },
+      {
+        path: "/template/charitySite/joinCharity",
+        element: <JoinCharity/>,
       },
     ],
   },
