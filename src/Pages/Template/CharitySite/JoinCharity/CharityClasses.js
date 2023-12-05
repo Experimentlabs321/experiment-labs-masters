@@ -1,17 +1,16 @@
 import { useState } from 'react';
 import React from 'react';
-//import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-//import { Navigation, Pagination, Mousewheel, Keyboard } from 'swiper/modules';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import { Navigation, Pagination, Mousewheel, Keyboard } from 'swiper/modules';
 
-import { Swiper, SwiperSlide } from 'swiper/react';
+ import { Swiper, SwiperSlide } from 'swiper/react';
 // import required modules
 
 // Import Swiper styles
-/* import 'swiper/css';
+import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import 'swiper/css/scrollbar'; */
-
+import 'swiper/css/scrollbar';
 
 
 
@@ -27,11 +26,11 @@ const CharityClasses = ({ charityClassesData }) => {
         <h1 className="text-[24px] font-bold border-b-2 border-[#FFC062] py-[4px] w-full">
             {charityClassesData?.title}
         </h1>
-       {/*  <Tabs>
+        <Tabs>
             <TabList className="flex gap-8 mt-6 ">
                 {charityClassesData?.categories?.map((category, index) => (
                     <Tab
-                    className={`text-[20px] font-semibold cursor-pointer p-2 hover:bg-blue-500 hover:text-white transition duration-300 ease-in-out rounded-lg ${
+                    className={`text-[20px] font-semibold cursor-pointer p-2 hover:bg-blue hover:text-black transition duration-300 ease-in-out rounded-lg ${
                         activeCategory === index ? 'bg-[#E5ECFF] border rounded-lg border-[#0E286C] text-[#0E286C]' : ''
                     }`}
                     selected={activeCategory === index}
@@ -83,7 +82,7 @@ const CharityClasses = ({ charityClassesData }) => {
                     </Swiper>
                 </TabPanel>
             ))}
-        </Tabs> */}
+        </Tabs>
     </div>
     );
 };

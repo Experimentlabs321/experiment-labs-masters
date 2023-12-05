@@ -7,14 +7,7 @@ import Stories from 'react-insta-stories';
 import OutboundOutlinedIcon from '@mui/icons-material/OutboundOutlined';
 import './style.css';
 import logo2 from '../../../assets/Logos/Group 2859890.png';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/scrollbar';
-import { Navigation, Pagination, Scrollbar, A11y, FreeMode } from 'swiper';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/scrollbar';
+
 import ArrowCircleLeftRoundedIcon from '@mui/icons-material/ArrowCircleLeftRounded';
 import ArrowCircleRightRoundedIcon from '@mui/icons-material/ArrowCircleRightRounded';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
