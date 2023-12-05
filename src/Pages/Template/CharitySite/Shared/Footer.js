@@ -17,17 +17,24 @@ const Footer = () => {
                                 border: "0.889px solid #000",
                                 background: "var(--White, #FFF)",
                             }}>
-                                <input className="text-base font-normal text-[#000]" placeholder="placeholder"/>
-                           
+                            <input className="text-base font-normal text-[#000]" placeholder="placeholder" />
+
                         </div>
-                        <div
+                        <button
+                            style={{ border: "1px solid #000" }}
+                            className="px-6 py-2 hover:bg-[#0E286C] hover:text-[#fff]"
+                        >
+                           Confirm
+                        </button>
+                      {/*   <div
                             className="h-[42px] flex justify-center items-center w-[105px]  py-3 px-5"
                             style={{
                                 border: "0.889px solid #000",
                                 background: "var(--White, #FFF)",
                             }}>
+
                             <button className="text-base font-normal hover:text-[#0E286C] ">Confirm</button>
-                        </div>
+                        </div> */}
 
                     </div>
 

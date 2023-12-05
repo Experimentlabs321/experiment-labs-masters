@@ -105,6 +105,9 @@ import OnePagerLayout from "../../Pages/Template/OnePager/OnePagerLayout/OnePage
 import CharitySiteLayout from "../../Pages/Template/CharitySite/CharitySiteLayout/CharitySiteLayout";
 import CharitySiteHome from "../../Pages/Template/CharitySite/CharitySiteHome/CharitySiteHome";
 import JoinCharity from "../../Pages/Template/CharitySite/JoinCharity/JoinCharity";
+import StudentsCharitiesHome from "../../Pages/Template/CharitySite/StudentsCharities/StudentsCharitiesHome";
+import ExperiencePersonHome from "../../Pages/Template/CharitySite/ExperiencePerson/ExperiencePersonHome";
+import BecomeMentorHome from "../../Pages/Template/CharitySite/BecomeMentor/BecomeMentorHome";
 
 const router = createBrowserRouter([
   {
@@ -162,6 +165,18 @@ const router = createBrowserRouter([
       {
         path: "/template/charitySite/joinCharity",
         element: <JoinCharity/>,
+      },
+      {
+        path: "/template/charitySite/studentsCharities",
+        element: <StudentsCharitiesHome/>,
+      },
+      {
+        path: "/template/charitySite/experiencePerson",
+        element: <ExperiencePersonHome/>,
+      },
+      {
+        path: "/template/charitySite/becomeMentor",
+        element: <BecomeMentorHome/>,
       },
     ],
   },
