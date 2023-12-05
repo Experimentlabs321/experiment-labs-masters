@@ -350,7 +350,7 @@ const JoinCharity = () => {
 
             <Articles articlesData={data.articlesData} />
             <ExpertAdvice expertAdviceData={data.expertAdviceData}/>
-            {/* <CharityClasses charityClassesData={data?.charityClassesData} /> */}
+            <CharityClasses charityClassesData={data?.charityClassesData} />
             <ShareCharityPage shareCharityData={data.shareCharityData} />
         </div>
     );
