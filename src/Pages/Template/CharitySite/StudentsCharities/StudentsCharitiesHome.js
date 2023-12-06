@@ -11,6 +11,7 @@ import instructorImg from "../../../../assets/CharitySite/JoinCharity/classInstr
 import StudentsCharitiesHero from './StudentsCharitiesHero';
 import TopExperienced from './TopExperienced';
 import JoinOurThriving from './JoinOurThriving';
+import ExperiencedAdults from './ExperiencedAdults';
 
 
 
@@ -383,7 +384,7 @@ const StudentsCharitiesHome = () => {
         <div className="font-roboto">
             <StudentsCharitiesHero studentsCharitiesHeroData={data?.studentsCharitiesHeroData} />
             <TopExperienced topExperiencedData={data?.topExperiencedData} />
-
+            <ExperiencedAdults experiencedAdults={data?.experiencedAdultsData} />
             <JoinOurThriving joinOurThrivingData={data?.joinOurThrivingData} />
           
         </div>
