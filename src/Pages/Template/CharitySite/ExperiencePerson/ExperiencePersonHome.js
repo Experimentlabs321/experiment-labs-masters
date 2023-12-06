@@ -1,7 +1,9 @@
 
 import React from 'react';
 
-import safe from "../../../../assets/CharitySite/StudentsCharities/safe.png";
+import safe from "../../../../assets/CharitySite/ExperiencePerson/safe.png";
+import coin from "../../../../assets/CharitySite/ExperiencePerson/coins.png";
+import stock from "../../../../assets/CharitySite/ExperiencePerson/stock.png";
 import naturalCharity1 from "../../../../assets/CharitySite/JoinCharity/naturalcharity1.png";
 import naturalCharity2 from "../../../../assets/CharitySite/JoinCharity/naturalcharity2.png";
 import naturalCharity3 from "../../../../assets/CharitySite/JoinCharity/naturalcharity3.png";
@@ -10,6 +12,7 @@ import ExperiencePersonHero from './ExperiencePersonHero';
 import YourAdvice from './YourAdvice';
 import GetEarlyAccess from './GetEarlyAccess';
 import Questions from './Questions';
+import AdvicePosts from './AdvicePosts';
 
 
 
@@ -29,7 +32,47 @@ const ExperiencePersonHome = () => {
                             img: safe,
                             type: "Nature",
                             title: "safe nature charity",
-                            desc: "We have been providing our services for around 10 years with 300 volunteers serving.",
+                            desc: [
+                                "Define Your Cause: Clarify the purpose of your charity, whether it's hunger relief, education, or healthcare.",
+                                "Engage the Community: Foster a sense of belonging by involving locals and volunteers in your charitable efforts.",
+                                "Transparent Operations: Build trust through transparent communication about how donations are utilized for maximum impact",
+                            ],
+                            instructor: [
+                                {
+                                    name: "nhkil",
+                                    img: instructorImg,
+                                    date: "11 Jan 2023",
+                                    time: "5 min read"
+                                }
+                            ]
+                        },
+                        {
+                            img: coin,
+                            type: "Nature",
+                            title: "safe nature charity",
+                            desc: [
+                                "Craft a Compelling Story: Share your charity's mission in a captivating narrative that resonates with potential donors.",
+                                "Utilize Social Media Impactfully: Leverage the power of social platforms to amplify your message and connect with a broader audience.",
+                                "Host Engaging Events: Plan fundraisers and events that not only raise funds but also",
+                            ],
+                            instructor: [
+                                {
+                                    name: "nhkil",
+                                    img: instructorImg,
+                                    date: "11 Jan 2023",
+                                    time: "5 min read"
+                                }
+                            ]
+                        },
+                        {
+                            img: stock,
+                            type: "Nature",
+                            title: "safe nature charity",
+                            desc: [
+                                "Define Your Cause: Clarify the purpose of your charity, whether it's hunger relief, education, or healthcare.",
+                                "Engage the Community: Foster a sense of belonging by involving locals and volunteers in your charitable efforts.",
+                                "Transparent Operations: Build trust through transparent communication about how donations are utilized for maximum impact",
+                            ],
                             instructor: [
                                 {
                                     name: "nhkil",
@@ -43,7 +86,47 @@ const ExperiencePersonHome = () => {
                             img: safe,
                             type: "Nature",
                             title: "safe nature charity",
-                            desc: "We have been providing our services for around 10 years with 300 volunteers serving.",
+                            desc: [
+                                "Define Your Cause: Clarify the purpose of your charity, whether it's hunger relief, education, or healthcare.",
+                                "Engage the Community: Foster a sense of belonging by involving locals and volunteers in your charitable efforts.",
+                                "Transparent Operations: Build trust through transparent communication about how donations are utilized for maximum impact",
+                            ],
+                            instructor: [
+                                {
+                                    name: "nhkil",
+                                    img: instructorImg,
+                                    date: "11 Jan 2023",
+                                    time: "5 min read"
+                                }
+                            ]
+                        },
+                        {
+                            img: coin,
+                            type: "Nature",
+                            title: "safe nature charity",
+                            desc: [
+                                "Define Your Cause: Clarify the purpose of your charity, whether it's hunger relief, education, or healthcare.",
+                                "Engage the Community: Foster a sense of belonging by involving locals and volunteers in your charitable efforts.",
+                                "Transparent Operations: Build trust through transparent communication about how donations are utilized for maximum impact",
+                            ],
+                            instructor: [
+                                {
+                                    name: "nhkil",
+                                    img: instructorImg,
+                                    date: "11 Jan 2023",
+                                    time: "5 min read"
+                                }
+                            ]
+                        },
+                        {
+                            img: stock,
+                            type: "Nature",
+                            title: "safe nature charity",
+                            desc: [
+                                "Define Your Cause: Clarify the purpose of your charity, whether it's hunger relief, education, or healthcare.",
+                                "Engage the Community: Foster a sense of belonging by involving locals and volunteers in your charitable efforts.",
+                                "Transparent Operations: Build trust through transparent communication about how donations are utilized for maximum impact",
+                            ],
                             instructor: [
                                 {
                                     name: "nhkil",
@@ -57,63 +140,11 @@ const ExperiencePersonHome = () => {
                             img: safe,
                             type: "Nature",
                             title: "safe nature charity",
-                            desc: "We have been providing our services for around 10 years with 300 volunteers serving.",
-                            instructor: [
-                                {
-                                    name: "nhkil",
-                                    img: instructorImg,
-                                    date: "11 Jan 2023",
-                                    time: "5 min read"
-                                }
-                            ]
-                        },
-                        {
-                            img: safe,
-                            type: "Nature",
-                            title: "safe nature charity",
-                            desc: "We have been providing our services for around 10 years with 300 volunteers serving.",
-                            instructor: [
-                                {
-                                    name: "nhkil",
-                                    img: instructorImg,
-                                    date: "11 Jan 2023",
-                                    time: "5 min read"
-                                }
-                            ]
-                        },
-                        {
-                            img: safe,
-                            type: "Nature",
-                            title: "safe nature charity",
-                            desc: "We have been providing our services for around 10 years with 300 volunteers serving.",
-                            instructor: [
-                                {
-                                    name: "nhkil",
-                                    img: instructorImg,
-                                    date: "11 Jan 2023",
-                                    time: "5 min read"
-                                }
-                            ]
-                        },
-                        {
-                            img: safe,
-                            type: "Nature",
-                            title: "safe nature charity",
-                            desc: "We have been providing our services for around 10 years with 300 volunteers serving.",
-                            instructor: [
-                                {
-                                    name: "nhkil",
-                                    img: instructorImg,
-                                    date: "11 Jan 2023",
-                                    time: "5 min read"
-                                }
-                            ]
-                        },
-                        {
-                            img: safe,
-                            type: "Nature",
-                            title: "safe nature charity",
-                            desc: "We have been providing our services for around 10 years with 300 volunteers serving.",
+                            desc: [
+                                "Define Your Cause: Clarify the purpose of your charity, whether it's hunger relief, education, or healthcare.",
+                                "Engage the Community: Foster a sense of belonging by involving locals and volunteers in your charitable efforts.",
+                                "Transparent Operations: Build trust through transparent communication about how donations are utilized for maximum impact",
+                            ],
                             instructor: [
                                 {
                                     name: "nhkil",
@@ -174,7 +205,47 @@ const ExperiencePersonHome = () => {
                             img: safe,
                             type: "Nature",
                             title: "safe nature charity",
-                            desc: "We have been providing our services for around 10 years with 300 volunteers serving.",
+                            desc: [
+                                "Define Your Cause: Clarify the purpose of your charity, whether it's hunger relief, education, or healthcare.",
+                                "Engage the Community: Foster a sense of belonging by involving locals and volunteers in your charitable efforts.",
+                                "Transparent Operations: Build trust through transparent communication about how donations are utilized for maximum impact",
+                            ],
+                            instructor: [
+                                {
+                                    name: "nhkil",
+                                    img: instructorImg,
+                                    date: "11 Jan 2023",
+                                    time: "5 min read"
+                                }
+                            ]
+                        },
+                        {
+                            img: coin,
+                            type: "Nature",
+                            title: "safe nature charity",
+                            desc: [
+                                "Craft a Compelling Story: Share your charity's mission in a captivating narrative that resonates with potential donors.",
+                                "Utilize Social Media Impactfully: Leverage the power of social platforms to amplify your message and connect with a broader audience.",
+                                "Host Engaging Events: Plan fundraisers and events that not only raise funds but also",
+                            ],
+                            instructor: [
+                                {
+                                    name: "nhkil",
+                                    img: instructorImg,
+                                    date: "11 Jan 2023",
+                                    time: "5 min read"
+                                }
+                            ]
+                        },
+                        {
+                            img: stock,
+                            type: "Nature",
+                            title: "safe nature charity",
+                            desc: [
+                                "Define Your Cause: Clarify the purpose of your charity, whether it's hunger relief, education, or healthcare.",
+                                "Engage the Community: Foster a sense of belonging by involving locals and volunteers in your charitable efforts.",
+                                "Transparent Operations: Build trust through transparent communication about how donations are utilized for maximum impact",
+                            ],
                             instructor: [
                                 {
                                     name: "nhkil",
@@ -188,7 +259,47 @@ const ExperiencePersonHome = () => {
                             img: safe,
                             type: "Nature",
                             title: "safe nature charity",
-                            desc: "We have been providing our services for around 10 years with 300 volunteers serving.",
+                            desc: [
+                                "Define Your Cause: Clarify the purpose of your charity, whether it's hunger relief, education, or healthcare.",
+                                "Engage the Community: Foster a sense of belonging by involving locals and volunteers in your charitable efforts.",
+                                "Transparent Operations: Build trust through transparent communication about how donations are utilized for maximum impact",
+                            ],
+                            instructor: [
+                                {
+                                    name: "nhkil",
+                                    img: instructorImg,
+                                    date: "11 Jan 2023",
+                                    time: "5 min read"
+                                }
+                            ]
+                        },
+                        {
+                            img: coin,
+                            type: "Nature",
+                            title: "safe nature charity",
+                            desc: [
+                                "Define Your Cause: Clarify the purpose of your charity, whether it's hunger relief, education, or healthcare.",
+                                "Engage the Community: Foster a sense of belonging by involving locals and volunteers in your charitable efforts.",
+                                "Transparent Operations: Build trust through transparent communication about how donations are utilized for maximum impact",
+                            ],
+                            instructor: [
+                                {
+                                    name: "nhkil",
+                                    img: instructorImg,
+                                    date: "11 Jan 2023",
+                                    time: "5 min read"
+                                }
+                            ]
+                        },
+                        {
+                            img: stock,
+                            type: "Nature",
+                            title: "safe nature charity",
+                            desc: [
+                                "Define Your Cause: Clarify the purpose of your charity, whether it's hunger relief, education, or healthcare.",
+                                "Engage the Community: Foster a sense of belonging by involving locals and volunteers in your charitable efforts.",
+                                "Transparent Operations: Build trust through transparent communication about how donations are utilized for maximum impact",
+                            ],
                             instructor: [
                                 {
                                     name: "nhkil",
@@ -202,63 +313,11 @@ const ExperiencePersonHome = () => {
                             img: safe,
                             type: "Nature",
                             title: "safe nature charity",
-                            desc: "We have been providing our services for around 10 years with 300 volunteers serving.",
-                            instructor: [
-                                {
-                                    name: "nhkil",
-                                    img: instructorImg,
-                                    date: "11 Jan 2023",
-                                    time: "5 min read"
-                                }
-                            ]
-                        },
-                        {
-                            img: safe,
-                            type: "Nature",
-                            title: "safe nature charity",
-                            desc: "We have been providing our services for around 10 years with 300 volunteers serving.",
-                            instructor: [
-                                {
-                                    name: "nhkil",
-                                    img: instructorImg,
-                                    date: "11 Jan 2023",
-                                    time: "5 min read"
-                                }
-                            ]
-                        },
-                        {
-                            img: safe,
-                            type: "Nature",
-                            title: "safe nature charity",
-                            desc: "We have been providing our services for around 10 years with 300 volunteers serving.",
-                            instructor: [
-                                {
-                                    name: "nhkil",
-                                    img: instructorImg,
-                                    date: "11 Jan 2023",
-                                    time: "5 min read"
-                                }
-                            ]
-                        },
-                        {
-                            img: safe,
-                            type: "Nature",
-                            title: "safe nature charity",
-                            desc: "We have been providing our services for around 10 years with 300 volunteers serving.",
-                            instructor: [
-                                {
-                                    name: "nhkil",
-                                    img: instructorImg,
-                                    date: "11 Jan 2023",
-                                    time: "5 min read"
-                                }
-                            ]
-                        },
-                        {
-                            img: safe,
-                            type: "Nature",
-                            title: "safe nature charity",
-                            desc: "We have been providing our services for around 10 years with 300 volunteers serving.",
+                            desc: [
+                                "Define Your Cause: Clarify the purpose of your charity, whether it's hunger relief, education, or healthcare.",
+                                "Engage the Community: Foster a sense of belonging by involving locals and volunteers in your charitable efforts.",
+                                "Transparent Operations: Build trust through transparent communication about how donations are utilized for maximum impact",
+                            ],
                             instructor: [
                                 {
                                     name: "nhkil",
@@ -275,38 +334,92 @@ const ExperiencePersonHome = () => {
                     name: "Water Charities",
                     about: [
                         {
-                            img: naturalCharity1,
-                            title: "How to Start a Charity",
-                            desc: "Learn the steps to start your own charity and make a difference.",
+                            img: safe,
+                            type: "Nature",
+                            title: "safe nature charity",
+                            desc: [
+                                "Define Your Cause: Clarify the purpose of your charity, whether it's hunger relief, education, or healthcare.",
+                                "Engage the Community: Foster a sense of belonging by involving locals and volunteers in your charitable efforts.",
+                                "Transparent Operations: Build trust through transparent communication about how donations are utilized for maximum impact",
+                            ],
                             instructor: [
                                 {
-                                    name: "John Doe",
+                                    name: "nhkil",
                                     img: instructorImg,
-                                    date: "10 Jan 2022"
+                                    date: "11 Jan 2023",
+                                    time: "5 min read"
                                 }
                             ]
                         },
                         {
-                            img: naturalCharity2,
-                            title: "Fundraising Strategies for Charities",
-                            desc: "Discover effective fundraising strategies for your charity organization.",
+                            img: coin,
+                            type: "Nature",
+                            title: "safe nature charity",
+                            desc: [
+                                "Craft a Compelling Story: Share your charity's mission in a captivating narrative that resonates with potential donors.",
+                                "Utilize Social Media Impactfully: Leverage the power of social platforms to amplify your message and connect with a broader audience.",
+                                "Host Engaging Events: Plan fundraisers and events that not only raise funds but also",
+                            ],
                             instructor: [
                                 {
-                                    name: "Jane Smith",
+                                    name: "nhkil",
                                     img: instructorImg,
-                                    date: "11 Jan 2022"
+                                    date: "11 Jan 2023",
+                                    time: "5 min read"
                                 }
                             ]
                         },
                         {
-                            img: naturalCharity3,
-                            title: "Marketing Tips for Charities",
-                            desc: "Learn effective marketing strategies to promote your charity.",
+                            img: stock,
+                            type: "Nature",
+                            title: "safe nature charity",
+                            desc: [
+                                "Define Your Cause: Clarify the purpose of your charity, whether it's hunger relief, education, or healthcare.",
+                                "Engage the Community: Foster a sense of belonging by involving locals and volunteers in your charitable efforts.",
+                                "Transparent Operations: Build trust through transparent communication about how donations are utilized for maximum impact",
+                            ],
                             instructor: [
                                 {
-                                    name: "Sarah Johnson",
+                                    name: "nhkil",
                                     img: instructorImg,
-                                    date: "10 Jan 2022"
+                                    date: "11 Jan 2023",
+                                    time: "5 min read"
+                                }
+                            ]
+                        },
+                        {
+                            img: safe,
+                            type: "Nature",
+                            title: "safe nature charity",
+                            desc: [
+                                "Define Your Cause: Clarify the purpose of your charity, whether it's hunger relief, education, or healthcare.",
+                                "Engage the Community: Foster a sense of belonging by involving locals and volunteers in your charitable efforts.",
+                                "Transparent Operations: Build trust through transparent communication about how donations are utilized for maximum impact",
+                            ],
+                            instructor: [
+                                {
+                                    name: "nhkil",
+                                    img: instructorImg,
+                                    date: "11 Jan 2023",
+                                    time: "5 min read"
+                                }
+                            ]
+                        },
+                        {
+                            img: coin,
+                            type: "Nature",
+                            title: "safe nature charity",
+                            desc: [
+                                "Define Your Cause: Clarify the purpose of your charity, whether it's hunger relief, education, or healthcare.",
+                                "Engage the Community: Foster a sense of belonging by involving locals and volunteers in your charitable efforts.",
+                                "Transparent Operations: Build trust through transparent communication about how donations are utilized for maximum impact",
+                            ],
+                            instructor: [
+                                {
+                                    name: "nhkil",
+                                    img: instructorImg,
+                                    date: "11 Jan 2023",
+                                    time: "5 min read"
                                 }
                             ]
                         },
@@ -316,38 +429,56 @@ const ExperiencePersonHome = () => {
                     name: "Home Charities",
                     about: [
                         {
-                            img: naturalCharity1,
-                            title: "How to Start a Charity",
-                            desc: "Learn the steps to start your own charity and make a difference.",
+                            img: safe,
+                            type: "Nature",
+                            title: "safe nature charity",
+                            desc: [
+                                "Define Your Cause: Clarify the purpose of your charity, whether it's hunger relief, education, or healthcare.",
+                                "Engage the Community: Foster a sense of belonging by involving locals and volunteers in your charitable efforts.",
+                                "Transparent Operations: Build trust through transparent communication about how donations are utilized for maximum impact",
+                            ],
                             instructor: [
                                 {
-                                    name: "John Doe",
+                                    name: "nhkil",
                                     img: instructorImg,
-                                    date: "10 Jan 2022"
+                                    date: "11 Jan 2023",
+                                    time: "5 min read"
                                 }
                             ]
                         },
                         {
-                            img: naturalCharity2,
-                            title: "Fundraising Strategies for Charities",
-                            desc: "Discover effective fundraising strategies for your charity organization.",
+                            img: coin,
+                            type: "Nature",
+                            title: "safe nature charity",
+                            desc: [
+                                "Craft a Compelling Story: Share your charity's mission in a captivating narrative that resonates with potential donors.",
+                                "Utilize Social Media Impactfully: Leverage the power of social platforms to amplify your message and connect with a broader audience.",
+                                "Host Engaging Events: Plan fundraisers and events that not only raise funds but also",
+                            ],
                             instructor: [
                                 {
-                                    name: "Jane Smith",
+                                    name: "nhkil",
                                     img: instructorImg,
-                                    date: "11 Jan 2022"
+                                    date: "11 Jan 2023",
+                                    time: "5 min read"
                                 }
                             ]
                         },
                         {
-                            img: naturalCharity3,
-                            title: "Marketing Tips for Charities",
-                            desc: "Learn effective marketing strategies to promote your charity.",
+                            img: stock,
+                            type: "Nature",
+                            title: "safe nature charity",
+                            desc: [
+                                "Define Your Cause: Clarify the purpose of your charity, whether it's hunger relief, education, or healthcare.",
+                                "Engage the Community: Foster a sense of belonging by involving locals and volunteers in your charitable efforts.",
+                                "Transparent Operations: Build trust through transparent communication about how donations are utilized for maximum impact",
+                            ],
                             instructor: [
                                 {
-                                    name: "Sarah Johnson",
+                                    name: "nhkil",
                                     img: instructorImg,
-                                    date: "10 Jan 2022"
+                                    date: "11 Jan 2023",
+                                    time: "5 min read"
                                 }
                             ]
                         },
@@ -401,9 +532,8 @@ const ExperiencePersonHome = () => {
     return (
         <div className="font-roboto">
             <ExperiencePersonHero />
-            
+            <AdvicePosts advicePostsData={data?.advicePostsData} />
             <YourAdvice yourAdviceData={data?.yourAdviceData} />
-
             <GetEarlyAccess getEarlyAccessData={data?.getEarlyAccessData} />
             <Questions questionsData={data?.questionsData} />
         </div>
