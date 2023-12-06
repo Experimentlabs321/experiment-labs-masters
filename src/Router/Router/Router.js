@@ -108,6 +108,7 @@ import JoinCharity from "../../Pages/Template/CharitySite/JoinCharity/JoinCharit
 import StudentsCharitiesHome from "../../Pages/Template/CharitySite/StudentsCharities/StudentsCharitiesHome";
 import ExperiencePersonHome from "../../Pages/Template/CharitySite/ExperiencePerson/ExperiencePersonHome";
 import BecomeMentorHome from "../../Pages/Template/CharitySite/BecomeMentor/BecomeMentorHome";
+import ShowcaseHome from "../../Pages/Template/CharitySite/Showcase/ShowcaseHome";
 
 const router = createBrowserRouter([
   {
@@ -177,6 +178,10 @@ const router = createBrowserRouter([
       {
         path: "/template/charitySite/becomeMentor",
         element: <BecomeMentorHome/>,
+      },
+      {
+        path: "/template/charitySite/showCase",
+        element: <ShowcaseHome/>,
       },
     ],
   },
