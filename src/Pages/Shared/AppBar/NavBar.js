@@ -34,8 +34,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const NavBar = (props) => {
-
-  const { userInfo } = useContext(AuthContext)
+  const { userInfo } = useContext(AuthContext);
   const [state, setState] = React.useState(false);
   const [role, setRole] = useState(false);
 
@@ -234,17 +233,13 @@ const NavBar = (props) => {
     const Role = localStorage.getItem("role");
     if (Role === "admin") {
       navigate("/userManagement");
-    }
-    else if (Role === "execution mentor") {
+    } else if (Role === "execution mentor") {
       navigate("/executionMentorDashboard");
-    }
-    else if (Role === "unpaid student") {
+    } else if (Role === "unpaid student") {
       navigate("/unpaidStudentDashboard");
-    }
-    else if (Role === "expert mentor") {
+    } else if (Role === "expert mentor") {
       navigate("/expertMentorDashboard");
-    }
-    else {
+    } else {
       navigate("/dashboard");
     }
   };
@@ -272,31 +267,24 @@ const NavBar = (props) => {
     const name = form.name.value;
     const email = form.email.value;
     const password = form.password.value;
-    console.log(email, name, password)
+    console.log(email, name, password);
 
     createUser(email, password)
-
-
-      .then(result => {
+      .then((result) => {
         const user = result?.user;
         console.log(user);
 
-        alert('Register successfull')
+        alert("Register successfull");
         setOpen2(false);
 
         updateUserProfile({
           displayName: name,
-        })
+        });
         saveUser(email);
         form.reset();
-
       })
-      .catch(err => console.error(err));
-
-
-  }
-
-
+      .catch((err) => console.error(err));
+  };
 
   /*  const registerUser = (e) => {
      console.log(e)
@@ -325,8 +313,8 @@ const NavBar = (props) => {
   const loginUser = (email, password, location, history) => {
     saveUser(email);
     signIn(email, password)
-      .then((userCredential) => { })
-      .catch((error) => { });
+      .then((userCredential) => {})
+      .catch((error) => {});
   };
 
   const handleOnChange = (e) => {
@@ -348,17 +336,17 @@ const NavBar = (props) => {
         setNewLogin(true);
         setOpen1(false);
         saveUser(email);
-       
-
       });
     } catch (error) {
       console.log(error);
-      toast.error("password or email error")
+      toast.error("password or email error");
     }
   };
   const saveUser = async (email) => {
     const users = { email };
-    fetch(`https://experiment-labs-master-server-rakibul58.vercel.app/users?email=${email}`)
+    fetch(
+      `https://experiment-labs-master-server-rakibul58.vercel.app/users?email=${email}`
+    )
       .then((res) => res.json())
       .then((data) => {
         console.log("aaaaaaaaa", data);
@@ -384,22 +372,15 @@ const NavBar = (props) => {
     const Role = localStorage.getItem("role");
     if (Role === "admin") {
       navigate("/userManagement");
-    }
-    else if (Role === "execution mentor") {
+    } else if (Role === "execution mentor") {
       navigate("/executionMentorDashboard");
-    }
-    else if (Role === "unpaid student") {
+    } else if (Role === "unpaid student") {
       navigate("/unpaidStudentDashboard");
-    }
-    else if (Role === "expert mentor") {
+    } else if (Role === "expert mentor") {
       navigate("/expertMentorDashboard");
-    }
-    else {
+    } else {
       navigate("/dashboard");
     }
-
-
-
   };
 
   // useEffect(() => {
@@ -532,6 +513,20 @@ const NavBar = (props) => {
     // <YouTubeIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
     // <LinkedInIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
     // <TwitterIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
+    <Button
+      // onClick={handleLogout}
+      // onClick={() => graphyLogin(user?.email, user?.displayName)}
+      sx={{
+        bgcolor: "#94A4FF",
+        borderRadius: "22.5px",
+        ":hover": { bgcolor: "#94A4FF" },
+        color: "white",
+        width: "100%",
+      }}
+      variant="contained"
+    >
+      <Link to="/internShips">Internships</Link>
+    </Button>,
     <Button
       // onClick={handleClickFormOpen}
       onClick={handleModalOpen}
@@ -676,6 +671,20 @@ const NavBar = (props) => {
       </Button>
     ),
     <Button
+      // onClick={handleLogout}
+      // onClick={() => graphyLogin(user?.email, user?.displayName)}
+      sx={{
+        bgcolor: "#94A4FF",
+        borderRadius: "22.5px",
+        ":hover": { bgcolor: "#94A4FF" },
+        color: "white",
+        width: "100%",
+      }}
+      variant="contained"
+    >
+      <Link to="/internShips">Internships</Link>
+    </Button>,
+    <Button
       // onClick={handleClickFormOpen}
       onClick={handleModalOpen}
       sx={{
@@ -704,27 +713,23 @@ const NavBar = (props) => {
       <Link>Know More</Link>
     </Button>,
 
-
     <>
-      {
-        userInfo && (
-          <Button
-            onClick={() => handleLogout()}
-            sx={{
-              bgcolor: "#FF557A",
-              borderRadius: "22.5px",
-              ":hover": { bgcolor: "#94A4FF" },
-              color: "white",
-              width: "100%",
-            }}
-            className="my-2 block border-b border-gray-100 py-1 font-semibold text-gray-500 hover:text-black md:mx-2"
-          >
-            Logout
-          </Button>
-        )
-      }
-
-    </>
+      {userInfo && (
+        <Button
+          onClick={() => handleLogout()}
+          sx={{
+            bgcolor: "#FF557A",
+            borderRadius: "22.5px",
+            ":hover": { bgcolor: "#94A4FF" },
+            color: "white",
+            width: "100%",
+          }}
+          className="my-2 block border-b border-gray-100 py-1 font-semibold text-gray-500 hover:text-black md:mx-2"
+        >
+          Logout
+        </Button>
+      )}
+    </>,
   ];
 
   const drawer = (
