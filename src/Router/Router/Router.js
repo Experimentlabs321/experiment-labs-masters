@@ -110,6 +110,7 @@ import ExperiencePersonHome from "../../Pages/Template/CharitySite/ExperiencePer
 import BecomeMentorHome from "../../Pages/Template/CharitySite/BecomeMentor/BecomeMentorHome";
 import ShowcaseHome from "../../Pages/Template/CharitySite/Showcase/ShowcaseHome";
 import InternShips from "../../Pages/InternShips/InternShips";
+import AdminCalendarSchedule from "../../Pages/Dashboard/ContentManagement/AdminCalendarSchedule";
 
 const router = createBrowserRouter([
   {
@@ -333,6 +334,10 @@ const router = createBrowserRouter([
   {
     path: "/manageQuestion/:id",
     element: <ManageQuestion />,
+  },
+  {
+    path: "/adminCalendarSchedule/:id",
+    element: <AdminCalendarSchedule />,
   },
   {
     path: "/addingEditingCalQues",
