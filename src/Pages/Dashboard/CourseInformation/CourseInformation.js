@@ -21,6 +21,7 @@ import LiveTestTaskIcon from "../../../assets/Dashboard/LiveTest.png";
 import VideoTaskIcon from "../../../assets/Dashboard/Video.png";
 import AudioTaskIcon from "../../../assets/Dashboard/Audio.png";
 import FilesTaskIcon from "../../../assets/Dashboard/Files.png";
+import calendar from "../../../assets/Dashboard/calendar.png";
 import axios from "axios";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import toast from "react-hot-toast";
@@ -110,6 +111,12 @@ const CourseInformation = () => {
       icon: FilesTaskIcon,
       theme: "#001246",
       route: `/manageFile/${chapterData?._id}`,
+    },
+    {
+      name: "Schedule",
+      icon: calendar,
+      theme: "black",
+      route: `/adminCalendarSchedule/${chapterData?._id}`,
     },
   ];
 
