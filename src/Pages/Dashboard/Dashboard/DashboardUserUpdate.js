@@ -1,13 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import Vector from "../../../assets/Dashboard/Vector.png";
 import VectorMobile from "../../../assets/Dashboard/VectorMobile.png";
-import Person from "../../../assets/Dashboard/person.png";
-import PersonForMobile from "../../../assets/Dashboard/personForMobile.png";
 import Flower from "../../../assets/Dashboard/Periwinkle.png";
 import Flower1 from "../../../assets/Dashboard/Periwinkle1.png";
 import Star from "../../../assets/Dashboard/Star.png";
-import OpenBox from "../../../assets/Dashboard/OpenBox.png";
-import WeekUpdate from "../../../assets/Dashboard/WeekUpdate.png";
 import RightArrowBlack from "../../../assets/Dashboard/RightArrowBlack.png";
 import DashboardPrimaryButton from "../Shared/DashboardPrimaryButton";
 import PropTypes from "prop-types";
@@ -83,6 +79,7 @@ const DialogContentWrapper = styled(DialogContent)(({ theme }) => ({
 }));
 
 const DashboardUserUpdate = ({
+  dashboardImages,
   setIsOpen,
   isOpen,
   courses,
@@ -171,12 +168,12 @@ const DashboardUserUpdate = ({
         >
           <img
             className=" float-left mt-[-50px] hidden lg:block"
-            src={Person}
+            src={dashboardImages?.userImg}
             alt="person"
           />
           <img
             className=" float-left mt-[-13px] lg:hidden"
-            src={PersonForMobile}
+            src={dashboardImages?.userImgMobile}
             alt="person"
           />
           <div className="flex flex-col lg:flex-row items-center justify-center gap-3 lg:justify-around h-full">
@@ -233,7 +230,7 @@ const DashboardUserUpdate = ({
           }}
           className="bg-[#FFC7C7] py-[30px] px-[30px] flex flex-col justify-between items-center gap-8 rounded-[14px]"
         >
-          <img src={OpenBox} alt="open box" />
+          <img src={dashboardImages?.treasureImg} alt="open box" />
           <DashboardPrimaryButton
             bgColor="#3E4DAC"
             shadow="0px 5.85246px 0px #CA5F98"
@@ -250,7 +247,7 @@ const DashboardUserUpdate = ({
           className="lg:col-span-2 flex flex-col lg:flex-row items-center bg-[#0F3934] rounded-[14px] px-[12px] lg:px-[32px] py-[23px] lg:py-[54px] gap-3"
         >
           <div className="bg-[#FF74BE] rounded-md h-full flex items-center justify-center">
-            <img src={WeekUpdate} alt="WeekUpdate" />
+            <img src={dashboardImages?.questImg} alt="WeekUpdate" />
           </div>
           <div className="flex flex-col gap-3">
             <h1 className="text-white text-[13px] lg:text-[22px] font-[700] text-center lg:text-left">
