@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import Challenges from "../../../assets/Dashboard/Challenges.png";
 import RightArrowBlack from "../../../assets/Dashboard/RightArrowBlack.png";
 import RightArrowWhite from "../../../assets/Dashboard/RightArrowWhite.png";
 import DashboardPrimaryButton from "../Shared/DashboardPrimaryButton";
@@ -9,7 +8,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 
-const TechnicalUpdate = ({ weeks, selectedCourse, currentWeekCompletion }) => {
+const TechnicalUpdate = ({ dashboardImages, weeks, selectedCourse, currentWeekCompletion }) => {
   const { user, userInfo } = useContext(AuthContext);
   const [date, setDate] = useState(""); // State for the date
   const [time, setTime] = useState(""); // State for the time
@@ -320,6 +319,7 @@ const TechnicalUpdate = ({ weeks, selectedCourse, currentWeekCompletion }) => {
             <a
               href={reservedEvent?.hangoutLink}
               target="_blank"
+              rel="noreferrer"
               style={{ boxShadow: "0px 6.32482px 0px #CA5F98" }}
               className="bg-[#0F3934] w-full py-[15px] px-[23px] rounded-[13px] text-[12px] lg:text-[18px] font-[700] z-[1]"
             >
@@ -377,14 +377,14 @@ const TechnicalUpdate = ({ weeks, selectedCourse, currentWeekCompletion }) => {
           className="bg-[#2B0825] w-full h-full rounded-[14px] py-[20px] px-[15px] lg:p-[30px] flex flex-col justify-between items-center gap-5"
         >
           <div className="bg-[#FF881B] rounded-md">
-            <img src={Challenges} alt="Challenges" />
+            <img src={dashboardImages?.challengesImg} alt="Challenges" />
           </div>
           <h1 className="text-[14px] lg:text-[18px] text-white font-[700]">
             {currentWeek ? currentWeek?.weekName : "Course Completed"}
           </h1>
           <div className="w-full">
             <small className="text-white pb-[10px] font-[700]">
-              {currentWeekCompletion}% Completed
+              {currentWeekCompletion ? currentWeekCompletion : "O"}%  Completed
             </small>
             <div className="relative w-full">
               <div className="w-full bg-gray-200 rounded-lg h-2">

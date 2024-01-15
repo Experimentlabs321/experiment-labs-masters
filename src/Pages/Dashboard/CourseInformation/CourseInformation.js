@@ -265,7 +265,6 @@ const CourseInformation = () => {
             }
           )
             .then((result) => {
-              console.log(result);
               if (result?.ok) {
                 toast.success("Task Deleted Successfully!");
                 let filterChapter = [];
@@ -313,7 +312,6 @@ const CourseInformation = () => {
             }
           )
             .then((result) => {
-              console.log(result);
               if (result?.ok) {
                 toast.success("Task removed Successfully!");
               }
@@ -418,7 +416,7 @@ const CourseInformation = () => {
                   <div className="flex items-center pt-[30px] pb-[40px] ">
                     <Link
                       to="/courseAccess"
-                      className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline "
+                      className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline"
                     >
                       My Courses
                     </Link>
@@ -806,8 +804,8 @@ const CourseInformation = () => {
               /> */}
               <div>
                 {chapters?.map((chapter, index) => (
-                  <div className=" sortable-chapter">
-                    <div key={chapter?._id} className="relative">
+                  <div  key={chapter?._id} className="sortable-chapter">
+                    <div className="relative">
                       <div className="flex items-center justify-between mt-[60px]">
                         <div className="flex items-center ">
                           <div className="w-[85px] rounded-full flex items-center justify-center h-[85px] bg-[#E1E6FF] ">
@@ -876,12 +874,14 @@ const CourseInformation = () => {
                                                 src={Completed}
                                                 alt="Completed"
                                               />
-                                            ) : (
+                                            ) :
+                                             (
                                               <img
                                                 src={InProgress}
                                                 alt="InProgress"
                                               />
-                                            )}
+                                            )
+                                            }
                                           </>
                                         ) : (
                                           <>

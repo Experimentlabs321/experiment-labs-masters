@@ -11,7 +11,11 @@ import Lock from "../../../assets/Dashboard/lock.png";
 import axios from "axios";
 import { AuthContext } from "../../../contexts/AuthProvider";
 // import SendEvent from "./SendEvent";
-
+import Person from "../../../assets/Dashboard/person.png";
+import PersonForMobile from "../../../assets/Dashboard/personForMobile.png";
+import OpenBox from "../../../assets/Dashboard/OpenBox.png";
+import WeekUpdate from "../../../assets/Dashboard/WeekUpdate.png";
+import Challenges from "../../../assets/Dashboard/Challenges.png";
 const Dashboard = () => {
   const data = [
     {
@@ -203,6 +207,13 @@ const Dashboard = () => {
       })
       .catch((error) => console.error(error));
   }, [user, userInfo, selectedCourse]);
+  const dashboardImages = {
+    userImg : Person,
+    userImgMobile : PersonForMobile,
+    treasureImg : OpenBox,
+    questImg : WeekUpdate,
+    challengesImg : Challenges
+  }
 
   return (
     <div>
@@ -211,6 +222,7 @@ const Dashboard = () => {
           <div className="grid grid-col-1 lg:grid-cols-3 gap-2">
             <div className="lg:col-span-2 pt-20 lg:pt-10 px-4">
               <DashboardUserUpdate
+                dashboardImages={dashboardImages}
                 currentCourseCompletion={currentCourseCompletion}
                 setIsOpen={setIsOpen}
                 isOpen={isOpen}
@@ -303,6 +315,7 @@ const Dashboard = () => {
           <div className="lg:grid lg:grid-cols-3 gap-2 mb-[150px] lg:mb-0">
             <div className="lg:col-span-2 pt-10 px-4">
               <TechnicalUpdate
+                dashboardImages={dashboardImages}
                 currentWeekCompletion={currentWeekCompletion}
                 selectedCourse={selectedCourse}
                 weeks={weeks}
