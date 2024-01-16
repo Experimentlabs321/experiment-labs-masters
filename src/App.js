@@ -7,6 +7,7 @@ import ReactGA from "react-ga4";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "./contexts/AuthProvider";
 import axios from "axios";
+import Loading from "./Pages/Shared/Loading/Loading";
 
 ReactGA.initialize("G-RL7TBN4FCW");
 
@@ -21,6 +22,7 @@ function App() {
     }
 
     setIsLoading(true);
+    Loading();
     
     fetch(`${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`)
       .then((response) => response.json())
@@ -87,15 +89,17 @@ function App() {
         document.head.appendChild(dynamicJsonDataLink);
 
         setIsLoading(false);
+        Loading().close();
       })
       .catch((error) => {
         console.error("Error fetching organization data:", error);
         setIsLoading(false);
+        Loading().close();
       });
   }, [userInfo]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div></div>;
   }
   return (
     <div className="max-w-[1920px] mx-auto">
