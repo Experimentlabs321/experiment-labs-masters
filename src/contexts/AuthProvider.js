@@ -10,6 +10,7 @@ import {
 } from "firebase/auth";
 import app from "../firebase/firebase.config";
 import axios from "axios";
+import Loading from "../Pages/Shared/Loading/Loading";
 
 export const AuthContext = createContext();
 const auth = getAuth(app);
@@ -64,12 +65,15 @@ const AuthProvider = ({ children }) => {
   }, [user?.email]);
 
   useEffect(() => {
+    Loading();
     axios
       .get(`${process.env.REACT_APP_BACKEND_API}/users?email=${user?.email}`)
       .then((user) => {
-        setUserInfo(user?.data);
+        setUserInfo(user?.data)
+        Loading().close();
       })
       .catch((error) => console.error(error));
+      Loading().close();
   }, [user?.email, userInfo?.email]);
 
   const authInfo = {
