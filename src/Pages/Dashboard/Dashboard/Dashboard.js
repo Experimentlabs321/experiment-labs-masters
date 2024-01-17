@@ -78,6 +78,8 @@ const Dashboard = () => {
       score: "0/160",
     },
   ];
+
+  
   const [viewAllLevel, setViewAllLevel] = useState(false);
   // const [length, setLength] = useState(data.length < 5 ? data.length : 5);
   const [length, setLength] = useState(data.length);
@@ -95,10 +97,14 @@ const Dashboard = () => {
     setViewAllLevel(true);
     setLength(data.length);
   };
+
+
   const handleCloseViewAllLevel = () => {
     setViewAllLevel(false);
     setLength(data.length < 5 ? data.length : 5);
   };
+
+
   useEffect(() => {
     axios
       .get(
@@ -117,6 +123,9 @@ const Dashboard = () => {
       })
       .catch((error) => console.error(error));
   }, [userInfo]);
+
+
+
   useEffect(() => {
     axios
       .get(
@@ -127,6 +136,8 @@ const Dashboard = () => {
       })
       .catch((error) => console.error(error));
   }, [selectedCourse]);
+
+
   useEffect(() => {
     setCurrentWeek(null);
     weeks.forEach((singleData) => {
@@ -139,6 +150,9 @@ const Dashboard = () => {
       }
     });
   }, [selectedCourse, weeks]);
+
+
+
   useEffect(() => {
     axios
       .get(
@@ -172,6 +186,9 @@ const Dashboard = () => {
     setCurrentWeekCompletion(parseInt((totalCompleted / totalTask) * 100));
     console.log(totalCompleted, totalTask);
   }, [chapters, user, userInfo]);
+
+
+
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_SERVER_API}/api/v1/chapters`)
@@ -203,6 +220,15 @@ const Dashboard = () => {
       })
       .catch((error) => console.error(error));
   }, [user, userInfo, selectedCourse]);
+
+
+  const dashboardImages = {
+    userImg : Person,
+    userImgMobile : PersonForMobile,
+    treasureImg : OpenBox,
+    questImg : WeekUpdate,
+    challengesImg : Challenges
+  }
 
   return (
     <div>
