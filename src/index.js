@@ -11,6 +11,7 @@ import AuthProvider from "./contexts/AuthProvider";
 import { createClient } from "@supabase/supabase-js";
 import { SessionContextProvider } from "@supabase/auth-helpers-react";
 
+
 const supabase = createClient(
   "https://qzgeifdgviycxooauyum.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF6Z2VpZmRndml5Y3hvb2F1eXVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDUzMzMyMTcsImV4cCI6MjAyMDkwOTIxN30.VVKlBGw8xmbW5C2UQ-QCCl8fk0qFRf3jrQfknsqtRxc"

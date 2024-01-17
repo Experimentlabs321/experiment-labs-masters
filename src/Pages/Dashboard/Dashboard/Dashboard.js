@@ -232,15 +232,6 @@ const Dashboard = () => {
     challengesImg : Challenges
   }
 
-
-  const dashboardImages = {
-    userImg : Person,
-    userImgMobile : PersonForMobile,
-    treasureImg : OpenBox,
-    questImg : WeekUpdate,
-    challengesImg : Challenges
-  }
-
   return (
     <div>
       <Layout>

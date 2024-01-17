@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Layout from "../Layout";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
@@ -8,6 +8,7 @@ import {
   useSupabaseClient,
   useSessionContext,
 } from "@supabase/auth-helpers-react";
+
 import DateTimePicker from "react-datetime-picker";
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -15,8 +16,12 @@ import interactionPlugin from "@fullcalendar/interaction";
 import 'react-datetime-picker/dist/DateTimePicker.css';
 import 'react-calendar/dist/Calendar.css';
 import 'react-clock/dist/Clock.css';
+import toast from "react-hot-toast";
+import { AuthContext } from "../../../contexts/AuthProvider";
+import required from "../../../assets/ContentManagement/required.png";
 /* import '@fullcalendar/common/main.css';  
 import '@fullcalendar/daygrid/main.css'; */
+
 
 const customStyles = {
   overlay: {
@@ -38,7 +43,138 @@ const customStyles = {
   },
 };
 const AdminCalendarSchedule = () => {
-  const { id } = useParams()
+  // const { id } = useParams()
+  //////---------------------///////
+
+
+  const { id } = useParams();
+
+
+  // ----   code by shihab   ----
+  const { user, userInfo } = useContext(AuthContext);
+  const [chapter, setChapter] = useState({});
+
+
+
+
+  const [course, setCourse] = useState({});
+  const [preview, setPreview] = useState(false);
+  const [submitPermission, setSubmitPermission] = useState(false);
+  const [assignmentData, setAssignmentData] = useState({});
+  const [batchesData, setBatchesData] = useState([]);
+  const [selectedBatches, setSelectedBatches] = useState([]);
+  const [schedule, setSchedule] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API
+        }/api/v1/batches/courseId/${localStorage.getItem("courseId")}`
+      )
+      .then((response) => {
+        setBatchesData(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [chapter?.courseId]);
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
+      .then((response) => {
+        setChapter(response?.data);
+      })
+
+      .catch((error) => console.error(error));
+  }, [id, userInfo, userInfo?.email]);
+  useEffect(() => {
+    if (chapter?.courseId)
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${chapter?.courseId}`
+        )
+        .then((response) => {
+          setCourse(response?.data);
+        });
+  }, [chapter]);
+
+  const handleOptionChangeBatch = (event, optionValue) => {
+    // const optionValue = event.target.value;
+    const isChecked = event.target.checked;
+
+    if (isChecked) {
+      if (selectedBatches) {
+        setSelectedBatches([
+          ...selectedBatches,
+          { batchName: optionValue?.batchName, batchId: optionValue?._id },
+        ]);
+        setSchedule([
+          ...schedule,
+          {
+            batchName: optionValue?.batchName,
+            batchId: optionValue?._id,
+
+          },
+        ]);
+      } else {
+        setSelectedBatches([
+          { batchName: optionValue?.batchName, batchId: optionValue?._id },
+        ]);
+        setSchedule([
+          {
+            batchName: optionValue?.batchName,
+            batchId: optionValue?._id,
+
+          },
+        ]);
+      }
+    } else {
+      setSelectedBatches(
+        selectedBatches.filter((option) => option?.batchId !== optionValue?._id)
+      );
+      setSchedule(
+        schedule.filter((option) => option?.batchId !== optionValue?._id)
+      );
+    }
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+
+    const form = event.target;
+
+    const scheduleName = form.scheduleName?.value;
+
+
+    const manageSchedule = {
+      scheduleName,
+      taskName: scheduleName,
+
+      chapterId: chapter?._id,
+      courseId: chapter?.courseId,
+      batches: selectedBatches,
+    };
+
+    setAssignmentData(manageSchedule);
+    console.log(manageSchedule);
+
+    /*  if (submitPermission) {
+       const newSchedule = await axios.post(
+         `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/schedule`,
+         manageSchedule
+       );
+       console.log(newSchedule);
+       if (newSchedule?.data?.result?.acknowledged) {
+         toast.success("Schedule added Successfully");
+         event.target.reset();
+       }
+ 
+       console.log(manageSchedule);
+     } */
+  };
+
+  console.log(chapter);
+
+  //////////-----------------//////
 
   const navigate = useNavigate();
   const [start, setStart] = useState(new Date());
@@ -50,7 +186,7 @@ const AdminCalendarSchedule = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const session = useSession();
   const supabase = useSupabaseClient();
-console.log(session);
+  console.log(session);
   const { isLoading } = useSessionContext();
   console.log("Start", start)
   console.log("End", end)
@@ -124,6 +260,14 @@ console.log(session);
     const formattedStartDate = eventInfo?.event?.start?.toLocaleTimeString();
     const formattedEndDate = eventInfo?.event?.end?.toLocaleTimeString();
     const meetlink = eventInfo?.event?.extendedProps?.link;
+
+
+
+
+
+
+
+
 
     return (
       <div
@@ -202,91 +346,273 @@ console.log(session);
     <div>
       <Layout>
         <div>
-          {session ? (
-            <>
-              <div className="my-6 px-5">
-                <h2>Your Calendar Events</h2>
-                <FullCalendar
-                  height="600px"
-                  plugins={[dayGridPlugin, interactionPlugin]}
-                  initialView="dayGridMonth"
-                  selectMirror={true}
-                  eventContent={renderEventContent}
-                  events={calendarEvents?.map((event) => ({
-                    title: event?.summary,
-                    start: event?.start?.dateTime,
-                    end: event?.end?.dateTime,
-                    link: event?.hangoutLink,
-                  }))}
-                  dateClick={(info) => handleDateClick(info.date)}
-                />
-              </div>
-              <div className="grid justify-center items-center">
-              <button className="bg-sky-500 text-white text-lg px-4 py-2 rounded-md my-2" onClick={() => signOut()}>Sign out </button>
-              </div>
-            </>
-          ) : (
-            <div className="grid justify-center items-center mt-10">
-              <button className="bg-sky-500 text-white text-lg px-4 py-2 rounded-md my-2" onClick={() => googleSignIn()}>Sync with google </button>
-            </div>
-          )}
-
-          <Modal
-            ariaHideApp={false}
-            isOpen={isModalOpen}
-            onRequestClose={() => setIsModalOpen(false)}
-            style={customStyles} // Apply custom styles to the modal
-            shouldCloseOnOverlayClick={false}
-
-          >
-            <div>
-              <h2 className="text-center mb-3 font-medium text-lg text-blue">Add Event</h2>
-              <p>Date: {selectedDate && selectedDate.toLocaleDateString()}</p>
-              <div className='flex justify-between gap-2 my-1'>
-                <label>
-                  Event Name:
-                  <input
-                    className="border border-black"
-                    type="text"
-                    value={eventName}
-                    onChange={(e) => setEventName(e.target.value)}
+          <div className=" border-b-2 ">
+            <div className="container mx-auto px-4 flex items-center justify-between ">
+              <div className="flex items-center pt-[30px] pb-[30px] ">
+                <Link
+                  to="/courseAccess"
+                  className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline "
+                >
+                  My Courses
+                </Link>
+                <svg
+                  className="mr-[30px]"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="25"
+                  viewBox="0 0 24 25"
+                  fill="none"
+                >
+                  <path
+                    d="M9 18.667L15 12.667L9 6.66699"
+                    stroke="black"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
                   />
-                </label>
-                <label className="my-1">
-                  Event Description:
-                  <input
-                    className="border border-black"
-                    type="text"
-                    value={eventDescription}
-                    onChange={(e) => setEventDescription(e.target.value)}
+                </svg>
+                <Link
+                  to={`/questLevels/${course?._id}`}
+                  className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline "
+                >
+                  {course?.courseFullName}
+                </Link>
+                <svg
+                  className="mr-[30px]"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="25"
+                  viewBox="0 0 24 25"
+                  fill="none"
+                >
+                  <path
+                    d="M9 18.667L15 12.667L9 6.66699"
+                    stroke="black"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
                   />
-                </label>
+                </svg>
+                <button className=" font-sans mr-[30px] text-[20px] font-[400] ">
+                  {chapter?.chapterName}
+                </button>
               </div>
-              <p className="mt-1">Event Start Time</p>
-              <DateTimePicker
-                className="border-black mb-1"
-                onChange={(date) => setStart(date)}
-                value={start}
-                disableClock={true}
-                disableCalendar={true}
-              />
-              <p className="mt-1">Event End Time</p>
-              <DateTimePicker
-                className="border-black  mb-1"
-                onChange={(date) => {
-                  setEnd(date);
-                }}
-                value={end}
-                disableClock={true}
-                disableCalendar={true}
-              />
-
+              <div className="flex items-center mt-[-10px] ">
+                <div className="flex items-center text-black text-[16px] font-[600] mr-[32px] ">
+                  <h1 className="mr-[16px]">Preview Mode</h1>
+                  {preview ? (
+                    <svg
+                      className="cursor-pointer"
+                      onClick={() => setPreview(!preview)}
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="58"
+                      height="27"
+                      viewBox="0 0 58 27"
+                      fill="none"
+                    >
+                      <rect
+                        width="57.8422"
+                        height="26.7841"
+                        rx="13.392"
+                        fill="#9747FF"
+                      />
+                      <circle
+                        cx="44.4512"
+                        cy="13.3916"
+                        r="10.1153"
+                        fill="white"
+                      />
+                    </svg>
+                  ) : (
+                    <svg
+                      className="cursor-pointer"
+                      onClick={() => setPreview(!preview)}
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="58"
+                      height="28"
+                      viewBox="0 0 58 28"
+                      fill="none"
+                    >
+                      <rect
+                        y="0.608398"
+                        width="57.8422"
+                        height="26.7841"
+                        rx="13.392"
+                        fill="#A3A3A3"
+                      />
+                      <circle cx="13.3926" cy="14" r="10.1153" fill="white" />
+                    </svg>
+                  )}
+                </div>
+              </div>
             </div>
-            <div className="grid items-center justify-center">
-              <button className="bg-orange-500 text-white text-lg px-4 py-2 rounded-md my-2" onClick={() => createCalendarEvent()}>Add Event</button>
-            </div>
-          </Modal>
+          </div>
         </div>
+        <div className={`${preview ? "block" : "hidden"}`}>
+          {/* <AssignmentTask taskData={assignmentData} /> */}
+        </div>
+        <div className={`${preview ? "hidden" : "block"}`}>
+          <div className="text-[#3E4DAC] text-[26px] font-bold  py-[35px] ps-[40px]">
+            <p>Manage Schedule in {chapter?.chapterName}</p>
+          </div>
+          <div>
+            {session ? (
+              <>
+                <div className="my-6 px-5">
+                  <h2>Your Calendar Events</h2>
+                  <FullCalendar
+                    height="600px"
+                    plugins={[dayGridPlugin, interactionPlugin]}
+                    initialView="dayGridMonth"
+                    selectMirror={true}
+                    eventContent={renderEventContent}
+                    events={calendarEvents?.map((event) => ({
+                      title: event?.summary,
+                      start: event?.start.dateTime,
+                      end: event?.end.dateTime,
+                      link: event?.hangoutLink,
+                    }))}
+                    dateClick={(info) => handleDateClick(info.date)}
+                  />
+                </div>
+                <form onSubmit={handleSubmit} className="ms-[40px]  mt-12">
+                  <div className="">
+                    <div className="flex items-center gap-4">
+                      <p className="h-2 w-2 bg-black rounded-full"></p>
+                      <p className="font-bold text-lg me-[36px]">Schedule Name</p>
+                      <img src={required} alt="required" />
+                    </div>
+
+                    <input
+                      required
+                      /*   defaultValue={
+                          assignmentData ? assignmentData?.scheduleName : ""
+                        } */
+                      className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                      name="scheduleName"
+                      type="text"
+                      placeholder="schedule Name"
+                    />
+                  </div>
+                  <div className="my-5">
+                    <div className="flex items-center gap-4">
+                      <p className="h-2 w-2 bg-black rounded-full"></p>
+                      <p className="font-bold text-lg me-[36px]">Select Batch</p>
+                      <img src={required} alt="icon" />
+                    </div>
+                    <ul className="flex gap-4 flex-wrap ">
+                      {batchesData?.map((option, index) => {
+                        return (
+                          <>
+                            <li className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] ">
+                              <input
+                                type="checkbox"
+                                id="student"
+                                name={option?.batchName}
+                                value={option?.batchName}
+                                checked={selectedBatches?.find(
+                                  (item) => item?.batchName === option?.batchName
+                                )}
+                                onChange={(e) => handleOptionChangeBatch(e, option)}
+                                className=" mb-1"
+                              />
+                              <div className="flex mb-1 items-center">
+                                <label className="ms-4" htmlFor={option?.batchName}>
+                                  {option?.batchName}
+                                </label>
+                              </div>
+                            </li>
+                          </>
+                        );
+                      })}
+                    </ul>
+                  </div>
+
+
+
+                  <div className="flex items-center justify-center mt-20 mb-10">
+
+                    <input
+                      type="submit"
+                      onClick={() => setSubmitPermission(true)}
+                      value="Save"
+                      className="px-[30px] py-3 bg-[#FF557A] text-[#fff] text-xl font-bold rounded-lg ms-20"
+                    />
+                  </div>
+                </form>
+
+                <button onClick={() => signOut()}>Sign out </button>
+              </>
+            ) : (
+              <button onClick={() => googleSignIn()}>Sync with google </button>
+            )}
+
+            <Modal
+              ariaHideApp={false}
+              isOpen={isModalOpen}
+              onRequestClose={() => setIsModalOpen(false)}
+              style={customStyles} // Apply custom styles to the modal
+              shouldCloseOnOverlayClick={false}
+
+            >
+              <div>
+                <h2 className="text-center mb-3 font-medium text-lg text-blue">Add Event</h2>
+                <p>Date: {selectedDate && selectedDate.toLocaleDateString()}</p>
+                <div className='flex justify-between gap-2 my-1'>
+                  <label>
+                    Event Name:
+                    <input
+                      className="border border-black"
+                      type="text"
+                      value={eventName}
+                      onChange={(e) => setEventName(e.target.value)}
+                    />
+                  </label>
+                  <label className="my-1">
+                    Event Description:
+                    <input
+                      className="border border-black"
+                      type="text"
+                      value={eventDescription}
+                      onChange={(e) => setEventDescription(e.target.value)}
+                    />
+                  </label>
+                </div>
+                <p className="mt-1">Event Start Time</p>
+                <DateTimePicker
+                  className="border-black mb-1"
+                  onChange={(date) => setStart(date)}
+                  value={start}
+                  disableClock={true}
+                  disableCalendar={true}
+                />
+                <p className="mt-1">Event End Time</p>
+                <DateTimePicker
+                  className="border-black  mb-1"
+                  onChange={(date) => {
+                    setEnd(date);
+                  }}
+                  value={end}
+                  disableClock={true}
+                  disableCalendar={true}
+                />
+
+              </div>
+              <div className="grid items-center justify-center">
+                <button className="bg-orange-500 text-white text-lg px-4 py-2 rounded-md my-2" onClick={() => createCalendarEvent()}>Add Event</button>
+              </div>
+            </Modal>
+          </div>
+
+
+
+
+
+
+
+        </div>
+
+
       </Layout>
     </div>
   );
