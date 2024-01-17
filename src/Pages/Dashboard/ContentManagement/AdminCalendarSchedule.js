@@ -50,7 +50,7 @@ const AdminCalendarSchedule = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const session = useSession();
   const supabase = useSupabaseClient();
-
+console.log(session);
   const { isLoading } = useSessionContext();
   console.log("Start", start)
   console.log("End", end)
@@ -59,7 +59,7 @@ const AdminCalendarSchedule = () => {
   // Call this function when your component mounts to fetch and display events
   useEffect(() => {
     fetchAndDisplayGoogleCalendarEvents();
-  }, []); // The empty dependency array ensures that this effect runs only once
+  }, [isModalOpen]); // The empty dependency array ensures that this effect runs only once
 
 
 
@@ -95,7 +95,7 @@ const AdminCalendarSchedule = () => {
         method: "GET",
         headers: {
           Authorization: "Bearer " + session.provider_token,
-           // Access token for Google
+          // Access token for Google
         },
       }
     );
@@ -165,29 +165,37 @@ const AdminCalendarSchedule = () => {
         'timeZone': Intl.DateTimeFormat().resolvedOptions().timeZone
       }
     };
-  
+
     try {
       const response = await fetch("https://www.googleapis.com/calendar/v3/calendars/primary/events", {
         method: "POST",
         headers: {
-          'Authorization': `Bearer ${session.provider_token}`, // Use template literals
+          'Authorization': `Bearer ${session.provider_token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(event),
       });
-  
+
+      console.log('Response status:', response.status);
+
+      // Store the response text in a variable
+      const responseBody = await response.text();
+      console.log('Response body:', responseBody);
+
       if (!response.ok) {
         throw new Error(`Failed to create Google Calendar event: ${response.statusText}`);
       }
-  
-      const data = await response.json();
-      console.log(data);
+
+      // Parse the response text as JSON
+      const data = JSON.parse(responseBody);
+      console.log('API response:', data);
       alert("Event created, check your Google Calendar!");
     } catch (error) {
-      console.error(error.message);
+      console.error('Error creating event:', error.message);
       alert("Error creating event. Please try again.");
     }
   }
+
 
 
   return (
@@ -206,17 +214,21 @@ const AdminCalendarSchedule = () => {
                   eventContent={renderEventContent}
                   events={calendarEvents?.map((event) => ({
                     title: event?.summary,
-                    start: event?.start.dateTime,
-                    end: event?.end.dateTime,
+                    start: event?.start?.dateTime,
+                    end: event?.end?.dateTime,
                     link: event?.hangoutLink,
                   }))}
                   dateClick={(info) => handleDateClick(info.date)}
                 />
               </div>
-              <button onClick={() => signOut()}>Sign out </button>
+              <div className="grid justify-center items-center">
+              <button className="bg-sky-500 text-white text-lg px-4 py-2 rounded-md my-2" onClick={() => signOut()}>Sign out </button>
+              </div>
             </>
           ) : (
-            <button onClick={() => googleSignIn()}>Sync with google </button>
+            <div className="grid justify-center items-center mt-10">
+              <button className="bg-sky-500 text-white text-lg px-4 py-2 rounded-md my-2" onClick={() => googleSignIn()}>Sync with google </button>
+            </div>
           )}
 
           <Modal
@@ -268,10 +280,10 @@ const AdminCalendarSchedule = () => {
                 disableClock={true}
                 disableCalendar={true}
               />
-              
+
             </div>
             <div className="grid items-center justify-center">
-            <button className="bg-orange-500 text-white text-lg px-4 py-2 rounded-md my-2"  onClick={() => createCalendarEvent()}>Add Event</button>
+              <button className="bg-orange-500 text-white text-lg px-4 py-2 rounded-md my-2" onClick={() => createCalendarEvent()}>Add Event</button>
             </div>
           </Modal>
         </div>
