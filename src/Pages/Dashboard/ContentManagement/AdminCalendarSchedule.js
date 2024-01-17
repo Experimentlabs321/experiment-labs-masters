@@ -22,7 +22,7 @@ import required from "../../../assets/ContentManagement/required.png";
 /* import '@fullcalendar/common/main.css';  
 import '@fullcalendar/daygrid/main.css'; */
 
-
+let global;
 const customStyles = {
   overlay: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)', // Set the background color and opacity of the overlay
@@ -43,14 +43,8 @@ const customStyles = {
   },
 };
 const AdminCalendarSchedule = () => {
-  // const { id } = useParams()
-  //////---------------------///////
-
 
   const { id } = useParams();
-
-
-  // ----   code by shihab   ----
   const { user, userInfo } = useContext(AuthContext);
   const [chapter, setChapter] = useState({});
 
@@ -65,6 +59,20 @@ const AdminCalendarSchedule = () => {
   const [selectedBatches, setSelectedBatches] = useState([]);
   const [schedule, setSchedule] = useState([]);
 
+  const navigate = useNavigate();
+  const [start, setStart] = useState(new Date());
+  const [end, setEnd] = useState(new Date());
+  const [eventName, setEventName] = useState("");
+  const [eventDescription, setEventDescription] = useState("");
+  const [calendarEvents, setCalendarEvents] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const session = useSession();
+  global = session;
+  const supabase = useSupabaseClient();
+  
+  const { isLoading } = useSessionContext();
+  
   useEffect(() => {
     axios
       .get(
@@ -152,6 +160,7 @@ const AdminCalendarSchedule = () => {
       chapterId: chapter?._id,
       courseId: chapter?.courseId,
       batches: selectedBatches,
+      usersession : global,
     };
 
     setAssignmentData(manageSchedule);
@@ -172,22 +181,7 @@ const AdminCalendarSchedule = () => {
      } */
   };
 
-  console.log(chapter);
-
-  //////////-----------------//////
-
-  const navigate = useNavigate();
-  const [start, setStart] = useState(new Date());
-  const [end, setEnd] = useState(new Date());
-  const [eventName, setEventName] = useState("");
-  const [eventDescription, setEventDescription] = useState("");
-  const [calendarEvents, setCalendarEvents] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const session = useSession();
-  const supabase = useSupabaseClient();
-  console.log(session);
-  const { isLoading } = useSessionContext();
+  // console.log(chapter);
   console.log("Start", start)
   console.log("End", end)
   console.log("Event", eventName)
@@ -235,7 +229,7 @@ const AdminCalendarSchedule = () => {
         },
       }
     );
-    console.log(session)
+    // console.log(session)
     if (!response.ok) {
       throw new Error("Failed to fetch Google Calendar events");
     }
@@ -530,8 +524,8 @@ const AdminCalendarSchedule = () => {
 
 
 
-                  <div className="flex items-center justify-center mt-20 mb-10">
-
+                  <div className="flex items-center gap-10 justify-center mt-20 mb-10">
+                  <button className="bg-sky-600 px-4 py-3 text-white text-lg rounded-lg" onClick={() => signOut()}>Sign out </button>
                     <input
                       type="submit"
                       onClick={() => setSubmitPermission(true)}
@@ -541,10 +535,12 @@ const AdminCalendarSchedule = () => {
                   </div>
                 </form>
 
-                <button onClick={() => signOut()}>Sign out </button>
+                
               </>
             ) : (
-              <button onClick={() => googleSignIn()}>Sync with google </button>
+              <div className="grid justify-center items-center">
+                <button className="bg-sky-600 px-5 py-3 text-white text-lg rounded-lg" onClick={() => googleSignIn()}>Sync with google </button>
+              </div>
             )}
 
             <Modal
