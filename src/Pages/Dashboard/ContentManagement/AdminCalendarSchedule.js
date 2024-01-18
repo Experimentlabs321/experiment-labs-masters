@@ -157,19 +157,19 @@ const AdminCalendarSchedule = () => {
     setAssignmentData(manageSchedule);
     console.log(manageSchedule);
 
-   /*  if (submitPermission) {
-      const newSchedule = await axios.post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/schedule`,
-        manageSchedule
-      );
-      console.log(newSchedule);
-      if (newSchedule?.data?.result?.acknowledged) {
-        toast.success("Schedule added Successfully");
-        event.target.reset();
-      }
-
-      console.log(manageSchedule);
-    } */
+    /*  if (submitPermission) {
+       const newSchedule = await axios.post(
+         `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/schedule`,
+         manageSchedule
+       );
+       console.log(newSchedule);
+       if (newSchedule?.data?.result?.acknowledged) {
+         toast.success("Schedule added Successfully");
+         event.target.reset();
+       }
+ 
+       console.log(manageSchedule);
+     } */
   };
 
   console.log(chapter);
@@ -186,7 +186,7 @@ const AdminCalendarSchedule = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const session = useSession();
   const supabase = useSupabaseClient();
-
+  console.log(session);
   const { isLoading } = useSessionContext();
   console.log("Start", start)
   console.log("End", end)
@@ -195,7 +195,7 @@ const AdminCalendarSchedule = () => {
   // Call this function when your component mounts to fetch and display events
   useEffect(() => {
     fetchAndDisplayGoogleCalendarEvents();
-  }, []); // The empty dependency array ensures that this effect runs only once
+  }, [isModalOpen]); // The empty dependency array ensures that this effect runs only once
 
 
 
@@ -314,29 +314,31 @@ const AdminCalendarSchedule = () => {
       const response = await fetch("https://www.googleapis.com/calendar/v3/calendars/primary/events", {
         method: "POST",
         headers: {
-          'Authorization': `Bearer ${session.provider_token}`, // Use template literals
+          'Authorization': `Bearer ${session.provider_token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(event),
       });
 
+      console.log('Response status:', response.status);
+
+      // Store the response text in a variable
+      const responseBody = await response.text();
+      console.log('Response body:', responseBody);
+
       if (!response.ok) {
         throw new Error(`Failed to create Google Calendar event: ${response.statusText}`);
       }
 
-      const data = await response.json();
-      console.log(data);
+      // Parse the response text as JSON
+      const data = JSON.parse(responseBody);
+      console.log('API response:', data);
       alert("Event created, check your Google Calendar!");
     } catch (error) {
-      console.error(error.message);
+      console.error('Error creating event:', error.message);
       alert("Error creating event. Please try again.");
     }
   }
-
-
-  //////////////////////////////--------------//////////////////
-
-
 
 
 
@@ -453,152 +455,161 @@ const AdminCalendarSchedule = () => {
           <div className="text-[#3E4DAC] text-[26px] font-bold  py-[35px] ps-[40px]">
             <p>Manage Schedule in {chapter?.chapterName}</p>
           </div>
-          <form onSubmit={handleSubmit} className="ms-[40px]  mt-12">
-            <div className="">
-              <div className="flex items-center gap-4">
-                <p className="h-2 w-2 bg-black rounded-full"></p>
-                <p className="font-bold text-lg me-[36px]">Schedule Name</p>
-                <img src={required} alt="required" />
-              </div>
+          <div>
+            {session ? (
+              <>
+                <div className="my-6 px-5">
+                  <h2>Your Calendar Events</h2>
+                  <FullCalendar
+                    height="600px"
+                    plugins={[dayGridPlugin, interactionPlugin]}
+                    initialView="dayGridMonth"
+                    selectMirror={true}
+                    eventContent={renderEventContent}
+                    events={calendarEvents?.map((event) => ({
+                      title: event?.summary,
+                      start: event?.start.dateTime,
+                      end: event?.end.dateTime,
+                      link: event?.hangoutLink,
+                    }))}
+                    dateClick={(info) => handleDateClick(info.date)}
+                  />
+                </div>
+                <form onSubmit={handleSubmit} className="ms-[40px]  mt-12">
+                  <div className="">
+                    <div className="flex items-center gap-4">
+                      <p className="h-2 w-2 bg-black rounded-full"></p>
+                      <p className="font-bold text-lg me-[36px]">Schedule Name</p>
+                      <img src={required} alt="required" />
+                    </div>
 
-              <input
-                required
-                /*   defaultValue={
-                    assignmentData ? assignmentData?.scheduleName : ""
-                  } */
-                className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                name="scheduleName"
-                type="text"
-                placeholder="schedule Name"
-              />
-            </div>
-            <div className="my-5">
-              <div className="flex items-center gap-4">
-                <p className="h-2 w-2 bg-black rounded-full"></p>
-                <p className="font-bold text-lg me-[36px]">Select Batch</p>
-                <img src={required} alt="icon" />
-              </div>
-              <ul className="flex gap-4 flex-wrap ">
-                {batchesData?.map((option, index) => {
-                  return (
-                    <>
-                      <li className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] ">
-                        <input
-                          type="checkbox"
-                          id="student"
-                          name={option?.batchName}
-                          value={option?.batchName}
-                          checked={selectedBatches?.find(
-                            (item) => item?.batchName === option?.batchName
-                          )}
-                          onChange={(e) => handleOptionChangeBatch(e, option)}
-                          className=" mb-1"
-                        />
-                        <div className="flex mb-1 items-center">
-                          <label className="ms-4" htmlFor={option?.batchName}>
-                            {option?.batchName}
-                          </label>
-                        </div>
-                      </li>
-                    </>
-                  );
-                })}
-              </ul>
-            </div>
-
-            <div>
-              {session ? (
-                <>
-                  <div className="my-6 px-5">
-                    <h2>Your Calendar Events</h2>
-                    <FullCalendar
-                      height="600px"
-                      plugins={[dayGridPlugin, interactionPlugin]}
-                      initialView="dayGridMonth"
-                      selectMirror={true}
-                      eventContent={renderEventContent}
-                      events={calendarEvents?.map((event) => ({
-                        title: event?.summary,
-                        start: event?.start.dateTime,
-                        end: event?.end.dateTime,
-                        link: event?.hangoutLink,
-                      }))}
-                      dateClick={(info) => handleDateClick(info.date)}
+                    <input
+                      required
+                      /*   defaultValue={
+                          assignmentData ? assignmentData?.scheduleName : ""
+                        } */
+                      className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                      name="scheduleName"
+                      type="text"
+                      placeholder="schedule Name"
                     />
                   </div>
-                  <button onClick={() => signOut()}>Sign out </button>
-                </>
-              ) : (
-                <button onClick={() => googleSignIn()}>Sync with google </button>
-              )}
-
-              <Modal
-                ariaHideApp={false}
-                isOpen={isModalOpen}
-                onRequestClose={() => setIsModalOpen(false)}
-                style={customStyles} // Apply custom styles to the modal
-                shouldCloseOnOverlayClick={false}
-
-              >
-                <div>
-                  <h2 className="text-center mb-3 font-medium text-lg text-blue">Add Event</h2>
-                  <p>Date: {selectedDate && selectedDate.toLocaleDateString()}</p>
-                  <div className='flex justify-between gap-2 my-1'>
-                    <label>
-                      Event Name:
-                      <input
-                        className="border border-black"
-                        type="text"
-                        value={eventName}
-                        onChange={(e) => setEventName(e.target.value)}
-                      />
-                    </label>
-                    <label className="my-1">
-                      Event Description:
-                      <input
-                        className="border border-black"
-                        type="text"
-                        value={eventDescription}
-                        onChange={(e) => setEventDescription(e.target.value)}
-                      />
-                    </label>
+                  <div className="my-5">
+                    <div className="flex items-center gap-4">
+                      <p className="h-2 w-2 bg-black rounded-full"></p>
+                      <p className="font-bold text-lg me-[36px]">Select Batch</p>
+                      <img src={required} alt="icon" />
+                    </div>
+                    <ul className="flex gap-4 flex-wrap ">
+                      {batchesData?.map((option, index) => {
+                        return (
+                          <>
+                            <li className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] ">
+                              <input
+                                type="checkbox"
+                                id="student"
+                                name={option?.batchName}
+                                value={option?.batchName}
+                                checked={selectedBatches?.find(
+                                  (item) => item?.batchName === option?.batchName
+                                )}
+                                onChange={(e) => handleOptionChangeBatch(e, option)}
+                                className=" mb-1"
+                              />
+                              <div className="flex mb-1 items-center">
+                                <label className="ms-4" htmlFor={option?.batchName}>
+                                  {option?.batchName}
+                                </label>
+                              </div>
+                            </li>
+                          </>
+                        );
+                      })}
+                    </ul>
                   </div>
-                  <p className="mt-1">Event Start Time</p>
-                  <DateTimePicker
-                    className="border-black mb-1"
-                    onChange={(date) => setStart(date)}
-                    value={start}
-                    disableClock={true}
-                    disableCalendar={true}
-                  />
-                  <p className="mt-1">Event End Time</p>
-                  <DateTimePicker
-                    className="border-black  mb-1"
-                    onChange={(date) => {
-                      setEnd(date);
-                    }}
-                    value={end}
-                    disableClock={true}
-                    disableCalendar={true}
-                  />
 
+
+
+                  <div className="flex items-center justify-center mt-20 mb-10">
+
+                    <input
+                      type="submit"
+                      onClick={() => setSubmitPermission(true)}
+                      value="Save"
+                      className="px-[30px] py-3 bg-[#FF557A] text-[#fff] text-xl font-bold rounded-lg ms-20"
+                    />
+                  </div>
+                </form>
+
+                <button onClick={() => signOut()}>Sign out </button>
+              </>
+            ) : (
+              <button onClick={() => googleSignIn()}>Sync with google </button>
+            )}
+
+            <Modal
+              ariaHideApp={false}
+              isOpen={isModalOpen}
+              onRequestClose={() => setIsModalOpen(false)}
+              style={customStyles} // Apply custom styles to the modal
+              shouldCloseOnOverlayClick={false}
+
+            >
+              <div>
+                <h2 className="text-center mb-3 font-medium text-lg text-blue">Add Event</h2>
+                <p>Date: {selectedDate && selectedDate.toLocaleDateString()}</p>
+                <div className='flex justify-between gap-2 my-1'>
+                  <label>
+                    Event Name:
+                    <input
+                      className="border border-black"
+                      type="text"
+                      value={eventName}
+                      onChange={(e) => setEventName(e.target.value)}
+                    />
+                  </label>
+                  <label className="my-1">
+                    Event Description:
+                    <input
+                      className="border border-black"
+                      type="text"
+                      value={eventDescription}
+                      onChange={(e) => setEventDescription(e.target.value)}
+                    />
+                  </label>
                 </div>
-                <div className="grid items-center justify-center">
-                  <button className="bg-orange-500 text-white text-lg px-4 py-2 rounded-md my-2" onClick={() => createCalendarEvent()}>Add Event</button>
-                </div>
-              </Modal>
-            </div>
+                <p className="mt-1">Event Start Time</p>
+                <DateTimePicker
+                  className="border-black mb-1"
+                  onChange={(date) => setStart(date)}
+                  value={start}
+                  disableClock={true}
+                  disableCalendar={true}
+                />
+                <p className="mt-1">Event End Time</p>
+                <DateTimePicker
+                  className="border-black  mb-1"
+                  onChange={(date) => {
+                    setEnd(date);
+                  }}
+                  value={end}
+                  disableClock={true}
+                  disableCalendar={true}
+                />
 
-            <div className="flex items-center justify-center mt-20 mb-10">
+              </div>
+              <div className="grid items-center justify-center">
+                <button className="bg-orange-500 text-white text-lg px-4 py-2 rounded-md my-2" onClick={() => createCalendarEvent()}>Add Event</button>
+              </div>
+            </Modal>
+          </div>
 
-              <input
-                type="submit"
-                onClick={() => setSubmitPermission(true)}
-                value="Save"
-                className="px-[30px] py-3 bg-[#FF557A] text-[#fff] text-xl font-bold rounded-lg ms-20"
-              />
-            </div>
-          </form>
+
+
+
+
+
+
         </div>
 
 
