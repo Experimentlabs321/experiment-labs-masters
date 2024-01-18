@@ -233,6 +233,7 @@ const Dashboard = () => {
     questImg : WeekUpdate,
     challengesImg : Challenges
   }
+  
 
   return (
     <div>

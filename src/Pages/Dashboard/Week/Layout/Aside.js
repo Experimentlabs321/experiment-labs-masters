@@ -15,6 +15,7 @@ import Audio from "../../../../assets/Dashboard/Audio.png";
 import AudioActive from "../../../../assets/Dashboard/AudioActive.png";
 import Files from "../../../../assets/Dashboard/Files.png";
 import FilesActive from "../../../../assets/Dashboard/FilesActive.png";
+import calendar from "../../../../assets/Dashboard/calendar.png";
 import { Link, useLocation } from "react-router-dom";
 
 const Aside = ({
@@ -254,6 +255,21 @@ const Aside = ({
                                     openTask?.taskId === task?.taskId
                                       ? FilesActive
                                       : Files
+                                  }
+                                  alt="TaskIcon"
+                                />
+                              )}
+                              {task?.taskType === "Schedule" && (
+                                <img
+                                  className={`${
+                                    openTask?.taskId === task?.taskId
+                                      ? "border-black"
+                                      : "border-white"
+                                  }  border p-[5px] rounded-full `}
+                                  src={
+                                    openTask?.taskId === task?.taskId
+                                      ? calendar
+                                      : calendar
                                   }
                                   alt="TaskIcon"
                                 />

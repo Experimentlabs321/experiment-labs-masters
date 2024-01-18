@@ -32,6 +32,7 @@ import WeekDetails from "./WeekDetails";
 import BatchConfiguration from "./BatchConfiguration";
 import WeekConfiguration from "./WeekConfiguration";
 import DialogLayoutForFromControl from "../Shared/DialogLayoutForFromControl";
+import Loading from "../../Shared/Loading/Loading";
 
 const CourseInformation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -254,6 +255,9 @@ const CourseInformation = () => {
           case "Files":
             taskTypeForAPI = "files";
             break;
+          case "Schedule":
+            taskTypeForAPI = "schedule";
+            break;
           default:
             console.error({ error: "Invalid task type" });
         }
@@ -375,6 +379,7 @@ const CourseInformation = () => {
 
 
   useEffect(() => {
+    Loading();
     axios
       .get(
         `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/weekId/${currentWeek?._id}`
@@ -405,8 +410,10 @@ const CourseInformation = () => {
           setChapters(chapterWithFilteredTask);
           console.log("tasks =======>", chapterWithFilteredTask[0]?.tasks);
         }
+        Loading().close();
       })
       .catch((error) => console.error(error));
+      Loading().close();
   }, [currentWeek, userInfo, Role, courseData]);
 
 
@@ -419,7 +426,7 @@ const CourseInformation = () => {
       .catch((error) => console.error(error));
   }, [id]);
 
-
+  console.log(chapters)
   return (
     <div>
       <Layout>
@@ -962,6 +969,13 @@ const CourseInformation = () => {
                                       className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
                                       src={FilesTask}
                                       alt="Task"
+                                    />
+                                  )}
+                                  {task?.taskType === "Schedule" && (
+                                    <img
+                                      className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
+                                      src={calendar}
+                                      alt="Schedule"
                                     />
                                   )}
                                   <div className="">

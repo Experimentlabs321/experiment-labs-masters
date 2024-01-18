@@ -70,7 +70,7 @@ const Week = () => {
       .then((response) => {
         setChapters(response?.data);
 
-        console.log(response?.data);
+        //console.log(response?.data);
         // setOpenTopic(response?.data[0]?.chapterName);
       })
       .catch((error) => console.error(error));
