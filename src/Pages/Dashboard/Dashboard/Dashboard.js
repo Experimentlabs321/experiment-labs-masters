@@ -224,13 +224,6 @@ const Dashboard = () => {
       })
       .catch((error) => console.error(error));
   }, [user, userInfo, selectedCourse]);
-  const dashboardImages = {
-    userImg : Person,
-    userImgMobile : PersonForMobile,
-    treasureImg : OpenBox,
-    questImg : WeekUpdate,
-    challengesImg : Challenges
-  }
 
 
   const dashboardImages = {
