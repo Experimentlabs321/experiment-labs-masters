@@ -166,7 +166,7 @@ const AdminCalendarSchedule = () => {
     setAssignmentData(manageSchedule);
     console.log(manageSchedule);
 
-    /*  if (submitPermission) {
+     if (submitPermission) {
        const newSchedule = await axios.post(
          `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/schedule`,
          manageSchedule
@@ -178,7 +178,7 @@ const AdminCalendarSchedule = () => {
        }
  
        console.log(manageSchedule);
-     } */
+     }
   };
 
   // console.log(chapter);

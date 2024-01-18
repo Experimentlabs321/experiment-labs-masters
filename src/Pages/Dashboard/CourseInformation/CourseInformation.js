@@ -254,6 +254,9 @@ const CourseInformation = () => {
           case "Files":
             taskTypeForAPI = "files";
             break;
+          case "Schedule":
+            taskTypeForAPI = "schedule";
+            break;
           default:
             console.error({ error: "Invalid task type" });
         }
@@ -412,6 +415,8 @@ const CourseInformation = () => {
       })
       .catch((error) => console.error(error));
   }, [id]);
+
+  console.log(chapters)
   return (
     <div>
       <Layout>
@@ -954,6 +959,13 @@ const CourseInformation = () => {
                                       className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
                                       src={FilesTask}
                                       alt="Task"
+                                    />
+                                  )}
+                                  {task?.taskType === "Schedule" && (
+                                    <img
+                                      className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
+                                      src={calendar}
+                                      alt="Schedule"
                                     />
                                   )}
                                   <div className="">

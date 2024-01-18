@@ -11,6 +11,7 @@ import AudioTask from "./AudioTask";
 import FilesTask from "./FilesTask";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
+import ScheduleTask from "./ScheduleTask";
 
 const skillsCategories = [
   {
@@ -181,6 +182,9 @@ const WeekDetail = ({
       case "Files":
         taskTypeForAPI = "files";
         break;
+      case "Schedule":
+        taskTypeForAPI = "schedule";
+        break;
       default:
         console.error({ error: "Invalid task type" });
     }
@@ -334,6 +338,7 @@ const WeekDetail = ({
         {openTask?.taskType === "Video" && <VideoTask taskData={taskData} />}
         {openTask?.taskType === "Audio" && <AudioTask taskData={taskData} />}
         {openTask?.taskType === "Files" && <FilesTask taskData={taskData} />}
+        {openTask?.taskType === "Schedule" && <ScheduleTask taskData={taskData} />}
       </div>
     </div>
   );
