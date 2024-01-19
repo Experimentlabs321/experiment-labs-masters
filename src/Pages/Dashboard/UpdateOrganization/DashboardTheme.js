@@ -5,6 +5,8 @@ import CourseCompletion from './DashboardThemeComponents/CourseCompletion';
 import uploadFileToS3 from '../../UploadComponent/s3Uploader';
 import OpenBox from './DashboardThemeComponents/OpenBox';
 import JoinQuest from './DashboardThemeComponents/JoinQuest';
+import Challenges from './DashboardThemeComponents/Challenges';
+import RequestSlots from './DashboardThemeComponents/RequestSlots';
 
 const DashboardTheme = (
     { userInfo,
@@ -16,10 +18,12 @@ const DashboardTheme = (
 
     const [courseCompletionText, setCourseCompletionText] = useState(dashboardTheme?.courseCompletionText || "Your course is");
     const [courseCompletionBgColor, setCourseCompletionBgColor] = useState(dashboardTheme?.courseCompletionBgColor || "#3E4DAC");
-    const [addCourseCompletion, setAddCourseCompletion] = useState(true);
-    const [addOpenBox, setAddOpenBox] = useState(true);
-    const [addJoinQuest, setAddJoinQuest] = useState(true);
-    const [isAvatar, setIsAvatar] = useState(false);
+    const [addCourseCompletion, setAddCourseCompletion] = useState(dashboardTheme?.addCourseCompletion || true);
+    const [addOpenBox, setAddOpenBox] = useState(dashboardTheme?.addOpenBox || true);
+    const [addJoinQuest, setAddJoinQuest] = useState(dashboardTheme?.addJoinQuest || true);
+    const [addChallenges, setAddChallenges] = useState(dashboardTheme?.addChallenges || true);
+    const [addRequestSlots, setAddRequestSlots] = useState(dashboardTheme?.addRequestSlots || true);
+    const [isAvatar, setIsAvatar] = useState(dashboardTheme?.isAvatar || false);
     const [avatarBg, setAvatarBg] = useState(dashboardTheme?.avatarBg || "#32CD62");
     const [openBoxButtonText, setOpenBoxButtonText] = useState(dashboardTheme?.openBoxButtonText || "Open Box");
     const [openBoxImage, setOpenBoxImage] = useState(dashboardTheme?.openBoxImage || null);
@@ -60,7 +64,10 @@ const DashboardTheme = (
                 joinQuestBtnBg,
                 joinQuestCardBg,
                 joinQuestImgBg,
-                joinQuestImg
+                joinQuestImg,
+                addChallenges,
+
+                addRequestSlots
             }
         };
         console.log(orgInfo);
@@ -87,6 +94,16 @@ const DashboardTheme = (
 
     const handleAddJoinQuest = () => {
         setAddJoinQuest(!addJoinQuest);
+    };
+
+
+    const handleAddChallenges = () => {
+        setAddChallenges(!addChallenges);
+    };
+
+
+    const handleAddRequestSlots = () => {
+        setAddRequestSlots(!addRequestSlots);
     };
 
 
@@ -479,6 +496,248 @@ const DashboardTheme = (
 
 
                 {/* Join Quest End */}
+
+
+                {/* Challenges Start */}
+
+                <div className='my-8'>
+                    <label htmlFor="challengesToggle" className="flex items-center cursor-pointer">
+                        <div className="relative">
+                            <input
+                                type="checkbox"
+                                id="challengesToggle"
+                                className="sr-only"
+                                checked={addChallenges}
+                                onChange={handleAddChallenges}
+                            />
+                            <div className="block bg-gray-600 w-14 h-8 rounded-full"></div>
+                            <div
+                                className={`${addChallenges ? 'bg-green translate-x-full' : 'bg-gray-300 translate-x-0'
+                                    } absolute left-1 top-1 w-6 h-6 rounded-full transition-transform transform ease-in-out duration-300`}
+                            >
+                            </div>
+                        </div>
+                        <div className="ml-3 text-gray-700 font-semibold text-xl">
+                            {!addChallenges ? "Add Section" : "Remove Section"}
+                        </div>
+                    </label>
+                </div>
+
+                <Challenges />
+
+                {
+                    addChallenges && <div className="mt-24 w-full mx-auto bg-white py-3 px-5 rounded shadow-md">
+                        <div className="flex justify-between items-center gap-4">
+                            {/* Text Input */}
+                            <div className="">
+                                <label htmlFor="textInput" className="block text-lg font-semibold text-gray-700">
+                                    Button Text
+                                </label>
+                                <input
+                                    type="text"
+                                    id="joinQuestBtnText"
+                                    name="joinQuestBtnText"
+                                    defaultValue={joinQuestBtnText}
+                                    onChange={(e) => setJoinQuestBtnText(e.target.value)}
+                                    className="mt-1 p-2 min-w-[200px] border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                                />
+                            </div>
+
+                            {/* Color Input */}
+                            <div className=" flex items-center">
+                                <label htmlFor="colorInput" className="block text-lg font-medium text-gray-700">
+                                    Change Button
+                                </label>
+                                <input
+                                    type="color"
+                                    id="joinQuestBtnBg"
+                                    name="joinQuestBtnBg"
+                                    defaultValue={joinQuestBtnBg}
+                                    onChange={(e) => setJoinQuestBtnBg(e.target.value)}
+                                    className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
+                                />
+                            </div>
+
+                            <div className=" flex items-center">
+                                <label htmlFor="colorInput" className="block text-lg font-medium text-gray-700">
+                                    Change Card
+                                </label>
+                                <input
+                                    type="color"
+                                    id="joinQuestCardBg"
+                                    name="joinQuestCardBg"
+                                    defaultValue={joinQuestCardBg}
+                                    onChange={(e) => setJoinQuestCardBg(e.target.value)}
+                                    className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
+                                />
+                            </div>
+
+                            <div className=" flex items-center">
+                                <label htmlFor="colorInput" className="block text-lg font-medium text-gray-700">
+                                    Change ImageBg
+                                </label>
+                                <input
+                                    type="color"
+                                    id="joinQuestImgBg"
+                                    name="joinQuestImgBg"
+                                    defaultValue={joinQuestImgBg}
+                                    onChange={(e) => setJoinQuestImgBg(e.target.value)}
+                                    className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
+                                />
+                            </div>
+
+                            {/* Image Input */}
+                            <div className="">
+                                <label htmlFor="imageInput" className="block text-lg font-medium text-gray-700">
+                                    Change Image
+                                </label>
+                                {
+                                    fileLoading ?
+                                        <img
+                                            className="mx-auto animate-ping"
+                                            style={{ height: "30px", width: "30px" }}
+                                            src="https://i.ibb.co/gJLdW8G/cloud-upload-regular-240.png"
+                                            alt=""
+                                        />
+                                        : <input
+                                            type="file"
+                                            id="joinQuestImg"
+                                            name="joinQuestImg"
+                                            // defaultValue={courseCompletionImg}
+                                            onChange={uploadJoinQuestImg}
+                                            className="ml-2 p-2 w-[200px] border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                                        />
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                }
+
+
+                {/* Challenges End */}
+
+
+                {/* Request Slots Start */}
+
+                <div className='my-8'>
+                    <label htmlFor="requestSlotsToggle" className="flex items-center cursor-pointer">
+                        <div className="relative">
+                            <input
+                                type="checkbox"
+                                id="requestSlotsToggle"
+                                className="sr-only"
+                                checked={addRequestSlots}
+                                onChange={handleAddRequestSlots}
+                            />
+                            <div className="block bg-gray-600 w-14 h-8 rounded-full"></div>
+                            <div
+                                className={`${addRequestSlots ? 'bg-green translate-x-full' : 'bg-gray-300 translate-x-0'
+                                    } absolute left-1 top-1 w-6 h-6 rounded-full transition-transform transform ease-in-out duration-300`}
+                            >
+                            </div>
+                        </div>
+                        <div className="ml-3 text-gray-700 font-semibold text-xl">
+                            {!addRequestSlots ? "Add Section" : "Remove Section"}
+                        </div>
+                    </label>
+                </div>
+
+                <RequestSlots />
+
+                {
+                    addRequestSlots && <div className="mt-24 w-full mx-auto bg-white py-3 px-5 rounded shadow-md">
+                        <div className="flex justify-between items-center gap-4">
+                            {/* Text Input */}
+                            <div className="">
+                                <label htmlFor="textInput" className="block text-lg font-semibold text-gray-700">
+                                    Button Text
+                                </label>
+                                <input
+                                    type="text"
+                                    id="joinQuestBtnText"
+                                    name="joinQuestBtnText"
+                                    defaultValue={joinQuestBtnText}
+                                    onChange={(e) => setJoinQuestBtnText(e.target.value)}
+                                    className="mt-1 p-2 min-w-[200px] border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                                />
+                            </div>
+
+                            {/* Color Input */}
+                            <div className=" flex items-center">
+                                <label htmlFor="colorInput" className="block text-lg font-medium text-gray-700">
+                                    Change Button
+                                </label>
+                                <input
+                                    type="color"
+                                    id="joinQuestBtnBg"
+                                    name="joinQuestBtnBg"
+                                    defaultValue={joinQuestBtnBg}
+                                    onChange={(e) => setJoinQuestBtnBg(e.target.value)}
+                                    className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
+                                />
+                            </div>
+
+                            <div className=" flex items-center">
+                                <label htmlFor="colorInput" className="block text-lg font-medium text-gray-700">
+                                    Change Card
+                                </label>
+                                <input
+                                    type="color"
+                                    id="joinQuestCardBg"
+                                    name="joinQuestCardBg"
+                                    defaultValue={joinQuestCardBg}
+                                    onChange={(e) => setJoinQuestCardBg(e.target.value)}
+                                    className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
+                                />
+                            </div>
+
+                            <div className=" flex items-center">
+                                <label htmlFor="colorInput" className="block text-lg font-medium text-gray-700">
+                                    Change ImageBg
+                                </label>
+                                <input
+                                    type="color"
+                                    id="joinQuestImgBg"
+                                    name="joinQuestImgBg"
+                                    defaultValue={joinQuestImgBg}
+                                    onChange={(e) => setJoinQuestImgBg(e.target.value)}
+                                    className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
+                                />
+                            </div>
+
+                            {/* Image Input */}
+                            <div className="">
+                                <label htmlFor="imageInput" className="block text-lg font-medium text-gray-700">
+                                    Change Image
+                                </label>
+                                {
+                                    fileLoading ?
+                                        <img
+                                            className="mx-auto animate-ping"
+                                            style={{ height: "30px", width: "30px" }}
+                                            src="https://i.ibb.co/gJLdW8G/cloud-upload-regular-240.png"
+                                            alt=""
+                                        />
+                                        : <input
+                                            type="file"
+                                            id="joinQuestImg"
+                                            name="joinQuestImg"
+                                            // defaultValue={courseCompletionImg}
+                                            onChange={uploadJoinQuestImg}
+                                            className="ml-2 p-2 w-[200px] border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                                        />
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                }
+                {
+                    !addRequestSlots && <div className="mt-20"></div>
+                }
+
+                {/* Request Slots End */}
 
 
                 {/* Submit Button */}
