@@ -32,6 +32,7 @@ import WeekDetails from "./WeekDetails";
 import BatchConfiguration from "./BatchConfiguration";
 import WeekConfiguration from "./WeekConfiguration";
 import DialogLayoutForFromControl from "../Shared/DialogLayoutForFromControl";
+import Loading from "../../Shared/Loading/Loading";
 
 const CourseInformation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -375,6 +376,7 @@ const CourseInformation = () => {
       .catch((error) => console.error(error));
   }, [id]);
   useEffect(() => {
+    Loading();
     axios
       .get(
         `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/weekId/${currentWeek?._id}`
@@ -404,8 +406,10 @@ const CourseInformation = () => {
           });
           setChapters(chapterWithFilteredTask);
         }
+        Loading().close();
       })
       .catch((error) => console.error(error));
+      Loading().close();
   }, [currentWeek, userInfo, Role, courseData]);
   useEffect(() => {
     axios
