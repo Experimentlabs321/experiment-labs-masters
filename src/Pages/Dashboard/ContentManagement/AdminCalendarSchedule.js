@@ -8,7 +8,6 @@ import {
   useSupabaseClient,
   useSessionContext,
 } from "@supabase/auth-helpers-react";
-
 import DateTimePicker from "react-datetime-picker";
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -47,10 +46,6 @@ const AdminCalendarSchedule = () => {
   const { id } = useParams();
   const { user, userInfo } = useContext(AuthContext);
   const [chapter, setChapter] = useState({});
-
-
-
-
   const [course, setCourse] = useState({});
   const [preview, setPreview] = useState(false);
   const [submitPermission, setSubmitPermission] = useState(false);
@@ -67,12 +62,13 @@ const AdminCalendarSchedule = () => {
   const [calendarEvents, setCalendarEvents] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [calendarId, setCalendarId] = useState("");
   const session = useSession();
   global = session;
   const supabase = useSupabaseClient();
-  
+
   const { isLoading } = useSessionContext();
-  
+
   useEffect(() => {
     axios
       .get(
@@ -160,67 +156,137 @@ const AdminCalendarSchedule = () => {
       chapterId: chapter?._id,
       courseId: chapter?.courseId,
       batches: selectedBatches,
-      usersession : global,
+      usersession: global,
     };
 
     setAssignmentData(manageSchedule);
     console.log(manageSchedule);
 
-     if (submitPermission) {
-       const newSchedule = await axios.post(
-         `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/schedule`,
-         manageSchedule
-       );
-       console.log(newSchedule);
-       if (newSchedule?.data?.result?.acknowledged) {
-         toast.success("Schedule added Successfully");
-         event.target.reset();
-       }
- 
-       console.log(manageSchedule);
-     }
-  };
+    if (submitPermission) {
+      const newSchedule = await axios.post(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/schedule`,
+        manageSchedule
+      );
+      console.log(newSchedule);
+      if (newSchedule?.data?.result?.acknowledged) {
+        toast.success("Schedule added Successfully");
+        event.target.reset();
+        navigate(`/questLevels/${chapter?.courseId}`)
+      }
 
+      console.log(manageSchedule);
+    }
+  };
+  
   // console.log(chapter);
   console.log("Start", start)
   console.log("End", end)
   console.log("Event", eventName)
   console.log("Description", eventDescription)
   // Call this function when your component mounts to fetch and display events
+// The empty dependency array ensures that this effect runs only once
+
   useEffect(() => {
-    fetchAndDisplayGoogleCalendarEvents();
-  }, [isModalOpen]); // The empty dependency array ensures that this effect runs only once
-
-
+    if (!session) {
+      
+    } else {
+      // If there's a session, fetch and display events
+      fetchAndDisplayGoogleCalendarEvents();
+      fetchPrimaryCalendarInfo();
+      checkAndRefreshToken();
+    }
+  }, [session,isModalOpen]);
+console.log('session before ', session);
 
   if (isLoading) {
     return <></>;
   }
 
+  async function checkAndRefreshToken() {
+    const currentTime = Math.floor(Date.now() / 1000);
+  
+    if (session.expires_at && session.expires_at < currentTime) {
+      try {
+        const refreshResponse = await fetch("https://qzgeifdgviycxooauyum.supabase.co/auth/v1/token", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            refresh_token: session.refresh_token,
+          }),
+        });
+
+        if (refreshResponse.ok) {
+          const newTokens = await refreshResponse.json();
+
+          // Update session with new tokens
+          session.access_token = newTokens.access_token;
+          session.expires_at = currentTime + newTokens.expires_in;
+        } else {
+          // Handle refresh token failure
+          console.error("Failed to refresh access token");
+        }
+      } catch (error) {
+        console.error("Error during token refresh:", error.message);
+      }
+    }
+  }
+  console.log("session after ",session);
   async function googleSignIn() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
         scopes: "https://www.googleapis.com/auth/calendar",
+        persistSession: true, // Enable session persistence
       },
     });
-    // navigate(`/adminCalendarSchedule/${id}`)
 
     if (error) {
       alert("Error logging in to Google provider with Supabase");
       console.log(error);
     }
-
   }
+
 
 
   async function signOut() {
     await supabase.auth.signOut();
+    // You might want to redirect or perform other actions after sign out
   }
 
+
+
+  async function fetchPrimaryCalendarInfo() {
+    try {
+      const response = await fetch(
+        "https://www.googleapis.com/calendar/v3/calendars/primary",
+        {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + session.provider_token,
+          },
+        }
+      );
+  
+      if (!response.ok) {
+        throw new Error("Failed to fetch primary calendar information");
+      }
+  
+      const calendarInfo = await response.json();
+      const primaryCalendarId = calendarInfo.id;
+      setCalendarId(primaryCalendarId);
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
+const url = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events`
+console.log(url)
   async function fetchGoogleCalendarEvents() {
+    
     const response = await fetch(
-      "https://www.googleapis.com/calendar/v3/calendars/primary/events",
+     "https://www.googleapis.com/calendar/v3/calendars/primary/events",
       {
         method: "GET",
         headers: {
@@ -229,12 +295,13 @@ const AdminCalendarSchedule = () => {
         },
       }
     );
-    // console.log(session)
+    console.log(session)
     if (!response.ok) {
       throw new Error("Failed to fetch Google Calendar events");
     }
 
     const data = await response.json();
+    console.log(data);
     return data.items || [];
   }
 
@@ -525,7 +592,7 @@ const AdminCalendarSchedule = () => {
 
 
                   <div className="flex items-center gap-10 justify-center mt-20 mb-10">
-                  <button className="bg-sky-600 px-4 py-3 text-white text-lg rounded-lg" onClick={() => signOut()}>Sign out </button>
+                    <button className="bg-sky-600 px-4 py-3 text-white text-lg rounded-lg" onClick={() => signOut()}>Sign out </button>
                     <input
                       type="submit"
                       onClick={() => setSubmitPermission(true)}
@@ -535,7 +602,7 @@ const AdminCalendarSchedule = () => {
                   </div>
                 </form>
 
-                
+
               </>
             ) : (
               <div className="grid justify-center items-center">
