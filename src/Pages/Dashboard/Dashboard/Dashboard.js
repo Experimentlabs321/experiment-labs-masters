@@ -224,6 +224,8 @@ const Dashboard = () => {
       })
       .catch((error) => console.error(error));
   }, [user, userInfo, selectedCourse]);
+
+
   const dashboardImages = {
     userImg : Person,
     userImgMobile : PersonForMobile,
@@ -231,6 +233,7 @@ const Dashboard = () => {
     questImg : WeekUpdate,
     challengesImg : Challenges
   }
+  
 
   return (
     <div>

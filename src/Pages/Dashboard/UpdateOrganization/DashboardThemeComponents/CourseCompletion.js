@@ -2,9 +2,11 @@ import React from 'react';
 import Flower from "../../../../assets/Dashboard/Periwinkle.png";
 import Flower1 from "../../../../assets/Dashboard/Periwinkle1.png";
 import Star from "../../../../assets/Dashboard/Star.png";
+import RoundAvatar from '../../Shared/RoundAvatar';
+import courseCompletionImg from "../../../../assets/Dashboard/person.png";
 
 
-const CourseCompletion = ({courseCompletionImg, courseCompletionText, courseCompletionBgColor}) => {
+const CourseCompletion = ({ isAvatar, courseCompletionText, courseCompletionBgColor, avatarBg }) => {
     return (
         <div className='my-5'>
             <div
@@ -13,19 +15,36 @@ const CourseCompletion = ({courseCompletionImg, courseCompletionText, courseComp
                     backgroundColor: courseCompletionBgColor
                 }}
                 className={`h-[132px] lg:h-[185px] mt-[20px] lg:mt-[80px] rounded-[14px]`}
-            >
-                <img
-                    className="float-left mt-[-50px] hidden lg:block"
-                    src={courseCompletionImg}
-                    alt="person"
-                />
-                <div className="flex flex-col lg:flex-row items-center justify-center gap-3 lg:justify-around h-full">
-                    <h1 className="lg:text-[26px] text-[15px] font-[600] text-white text-center z-[1]">
-                        {courseCompletionText}{" "}
-                        <span className="text-[#FFDB70]">0%</span>{" "}
-                        complete
-                    </h1>
-                </div>
+            >{!isAvatar ?
+                <>
+                    <img
+                        className="float-left mt-[-50px] hidden lg:block"
+                        src={courseCompletionImg}
+                        alt="person"
+                    />
+                    <div className="flex flex-col lg:flex-row items-center justify-center gap-3 lg:justify-around h-full">
+                        <h1 className="lg:text-[26px] text-[15px] font-[600] text-white text-center z-[1]">
+                            {courseCompletionText}{" "}
+                            <span className="text-[#FFDB70]">0%</span>{" "}
+                            complete
+                        </h1>
+                    </div>
+                </>
+                :
+                <>
+                    <div className="float-left hidden lg:flex h-full ml-4 items-center">
+                        <RoundAvatar name="John Doe" avatarBg={avatarBg} imageSrc="" />
+                    </div>
+                    <div className="flex flex-col lg:flex-row items-center justify-center gap-3 lg:justify-around h-full">
+                        <h1 className="lg:text-[26px] text-[15px] font-[600] text-white text-center z-[1]">
+                            {courseCompletionText}{" "}
+                            <span className="text-[#FFDB70]">0%</span>{" "}
+                            complete
+                        </h1>
+                    </div>
+                </>
+
+                }
                 <img
                     className=" absolute left-32 lg:left-60 top-0 z-0 w-[22px] lg:w-[57px]"
                     src={Flower}

@@ -344,6 +344,7 @@ const CourseInformation = () => {
       })
       .catch((error) => console.error(error));
   }, [id]);
+
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_SERVER_API}/api/v1/weeks/courseId/${id}`)
@@ -375,6 +376,8 @@ const CourseInformation = () => {
       })
       .catch((error) => console.error(error));
   }, [id]);
+
+
   useEffect(() => {
     Loading();
     axios
@@ -405,12 +408,15 @@ const CourseInformation = () => {
             chapterWithFilteredTask.push(singleChapter);
           });
           setChapters(chapterWithFilteredTask);
+          console.log("tasks =======>", chapterWithFilteredTask[0]?.tasks);
         }
         Loading().close();
       })
       .catch((error) => console.error(error));
       Loading().close();
   }, [currentWeek, userInfo, Role, courseData]);
+
+
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${id}`)
@@ -820,7 +826,7 @@ const CourseInformation = () => {
               /> */}
               <div>
                 {chapters?.map((chapter, index) => (
-                  <div  key={chapter?._id} className="sortable-chapter">
+                  <div key={chapter?._id} className="sortable-chapter">
                     <div className="relative">
                       <div className="flex items-center justify-between mt-[60px]">
                         <div className="flex items-center ">
@@ -867,7 +873,7 @@ const CourseInformation = () => {
                         )}
                       </div>
                       <div className="sub-items">
-                        {chapter?.tasks?.map((task, taskIndex) => (
+                        {Role === "admin" && chapter?.tasks?.map((task, taskIndex) => (
                           <div key={task?.taskId} className="relative ">
                             <div className="flex items-center justify-between my-[60px] relative z-10 ">
                               <div className="flex gap-5 lg:gap-0 items-center w-full">
@@ -891,12 +897,12 @@ const CourseInformation = () => {
                                                 alt="Completed"
                                               />
                                             ) :
-                                             (
-                                              <img
-                                                src={InProgress}
-                                                alt="InProgress"
-                                              />
-                                            )
+                                              (
+                                                <img
+                                                  src={InProgress}
+                                                  alt="InProgress"
+                                                />
+                                              )
                                             }
                                           </>
                                         ) : (
@@ -1121,7 +1127,159 @@ const CourseInformation = () => {
                             )}
                           </div>
                         ))}
+                        {Role !== "admin" && chapter?.tasks?.map((task, taskIndex) => {
+                          const userIsParticipant = task?.participants?.some(
+                            (item) => item?.participantId === userInfo?._id
+                          );
+
+                          const isPreviousTaskCompleted =
+                            taskIndex === 0 || // Always allow navigation for the first task
+                            chapter?.tasks?.[taskIndex - 1]?.participants?.some(
+                              (item) => item?.participantId === userInfo?._id && item?.status === "Completed"
+                            );
+
+                          return (
+                            <div key={task?.taskId} className="relative">
+                              <div className="flex items-center justify-between my-[60px] relative z-10">
+                                {toggleButton && (
+                                  <div className="w-[85px] flex items-center justify-center ">
+                                    {Role !== "admin" && (
+                                      <>
+                                        {userIsParticipant ? (
+                                          <>
+                                            {task?.participants?.find(
+                                              (item) => item?.participantId === userInfo?._id
+                                            )?.status === "Completed" ? (
+                                              <img src={Completed} alt="Completed" />
+                                            ) : (
+                                              <img src={InProgress} alt="InProgress" />
+                                            )}
+                                          </>
+                                        ) : (
+                                          <img src={Pending} alt="Pending" />
+                                        )}
+                                      </>
+                                    )}
+                                  </div>
+                                )}
+                                <div className="flex w-full items-center">
+                                  {task?.taskType === "Reading" && (
+                                    <img
+                                      className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
+                                      src={ReadingTask}
+                                      alt="Task"
+                                    />
+                                  )}
+                                  {task?.taskType === "Classes" && (
+                                    <img
+                                      className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
+                                      src={ClassesTask}
+                                      alt="Task"
+                                    />
+                                  )}
+                                  {task?.taskType === "Assignment" && (
+                                    <img
+                                      className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
+                                      src={AssignmentTask}
+                                      alt="Task"
+                                    />
+                                  )}
+                                  {task?.taskType === "Quiz" && (
+                                    <img
+                                      className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
+                                      src={QuizTask}
+                                      alt="Task"
+                                    />
+                                  )}
+                                  {task?.taskType === "Live Test" && (
+                                    <img
+                                      className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
+                                      src={LiveTestTask}
+                                      alt="Task"
+                                    />
+                                  )}
+                                  {task?.taskType === "Video" && (
+                                    <img
+                                      className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
+                                      src={VideoTask}
+                                      alt="Task"
+                                    />
+                                  )}
+                                  {task?.taskType === "Audio" && (
+                                    <img
+                                      className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
+                                      src={AudioTask}
+                                      alt="Task"
+                                    />
+                                  )}
+                                  {task?.taskType === "Files" && (
+                                    <img
+                                      className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
+                                      src={FilesTask}
+                                      alt="Task"
+                                    />
+                                  )}
+                                  {task?.taskType === "Schedule" && (
+                                    <img
+                                      className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
+                                      src={calendar}
+                                      alt="Task"
+                                    />
+                                  )}
+                                  <div className="">
+                                    {isPreviousTaskCompleted ? (
+                                      <Link
+                                        onClick={() => {
+                                          localStorage.setItem("chapter", chapter?.chapterName);
+                                          localStorage.setItem("task", JSON.stringify(task));
+                                          localStorage.setItem("currentWeek", JSON.stringify(currentWeek));
+                                          localStorage.setItem("courseId", JSON.stringify(courseData?._id));
+                                        }}
+                                        to={`/week/${currentWeek?._id}`}
+                                        className="text-[#3E4DAC] text-[22px] font-[700]"
+                                      >
+                                        {task?.taskName}
+                                      </Link>
+                                    ) : (
+                                      <span onClick={()=>toast.error("Complete The Previous Task")} className="text-[#3E4DAC] text-[22px] font-[700]">{task?.taskName}</span>
+                                    )}
+                                    <p className="text-[#626262] text-[18px] font-[500]">{task?.taskType}</p>
+                                  </div>
+                                </div>
+                                {!toggleButton && (
+                                  <div className="mx-2 flex items-center justify-center ">
+                                    {Role !== "admin" && (
+                                      <>
+                                        {userIsParticipant ? (
+                                          <>
+                                            {task?.participants?.find(
+                                              (item) => item?.participantId === userInfo?._id
+                                            )?.status === "Completed" ? (
+                                              <img src={Completed} alt="Completed" />
+                                            ) : (
+                                              <img src={InProgress} alt="InProgress" />
+                                            )}
+                                          </>
+                                        ) : (
+                                          <img src={Pending} alt="Pending" />
+                                        )}
+                                      </>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                              {chapter?.tasks?.length - 1 !== taskIndex && (
+                                <hr className="w-[2px] pt-[150px] bg-[#C7C7C7] absolute bottom-[-100px] lg:left-[175px] left-[20px]" />
+                              )}
+                            </div>
+                          );
+                        })}
                       </div>
+
+
+
+
+
                       {/* <div className="relative">
                         <div className="flex items-center justify-between my-[60px] ">
                           <div className="flex items-center">
