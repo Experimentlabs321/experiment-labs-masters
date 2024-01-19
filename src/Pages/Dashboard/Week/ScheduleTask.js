@@ -51,6 +51,7 @@ const ScheduleTask = ({ taskData }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const session = useSession();
+  console.log("session", session)
   const supabase = useSupabaseClient();
   const { isLoading } = useSessionContext();
   console.log(taskData)
