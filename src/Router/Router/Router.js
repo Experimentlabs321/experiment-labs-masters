@@ -111,7 +111,7 @@ import BecomeMentorHome from "../../Pages/Template/CharitySite/BecomeMentor/Beco
 import ShowcaseHome from "../../Pages/Template/CharitySite/Showcase/ShowcaseHome";
 import InternShips from "../../Pages/InternShips/InternShips";
 import AdminCalendarSchedule from "../../Pages/Dashboard/ContentManagement/AdminCalendarSchedule";
-
+import OnePagerKoreaHome from "../../Pages/Template/OnePager/OnePagerKoreaHome/OnePagerKoreaHome";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -154,6 +154,16 @@ const router = createBrowserRouter([
       {
         path: "/template/onePager",
         element: <OnePagerHome />,
+      },
+    ],
+  },
+  {
+    path: "/learnhub/kr",
+    element: <OnePagerLayout />,
+    children: [
+      {
+        path: "/learnhub/kr",
+        element: <OnePagerKoreaHome />,
       },
     ],
   },

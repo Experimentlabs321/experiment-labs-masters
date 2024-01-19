@@ -64,11 +64,14 @@ const AdminCalendarSchedule = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [calendarId, setCalendarId] = useState("");
   const session = useSession();
+  const [rafi, setRafi] = useState(null);
   global = session;
   const supabase = useSupabaseClient();
 
   const { isLoading } = useSessionContext();
-
+  useEffect(() => {
+    console.log(rafi);
+  }, [rafi]);
   useEffect(() => {
     axios
       .get(
@@ -177,26 +180,34 @@ const AdminCalendarSchedule = () => {
       console.log(manageSchedule);
     }
   };
-  
+
   // console.log(chapter);
   console.log("Start", start)
   console.log("End", end)
   console.log("Event", eventName)
   console.log("Description", eventDescription)
   // Call this function when your component mounts to fetch and display events
-// The empty dependency array ensures that this effect runs only once
+  // The empty dependency array ensures that this effect runs only once
 
   useEffect(() => {
     if (!session) {
-      
+
     } else {
       // If there's a session, fetch and display events
       fetchAndDisplayGoogleCalendarEvents();
       fetchPrimaryCalendarInfo();
-      checkAndRefreshToken();
+      checkAndRefreshToken(); // Call this function initially
+
+      // Set up an interval to periodically refresh the token
+      const refreshInterval = setInterval(() => {
+        checkAndRefreshToken();
+      }, 30 * 60 * 1000); // Refresh every 30 minutes (adjust as needed)
+
+      // Cleanup the interval when the component unmounts
+      return () => clearInterval(refreshInterval);
     }
-  }, [session,isModalOpen]);
-console.log('session before ', session);
+  }, [session, isModalOpen]);
+  console.log('session before ', session);
 
   if (isLoading) {
     return <></>;
@@ -204,7 +215,7 @@ console.log('session before ', session);
 
   async function checkAndRefreshToken() {
     const currentTime = Math.floor(Date.now() / 1000);
-  
+
     if (session.expires_at && session.expires_at < currentTime) {
       try {
         const refreshResponse = await fetch("https://qzgeifdgviycxooauyum.supabase.co/auth/v1/token", {
@@ -232,22 +243,27 @@ console.log('session before ', session);
       }
     }
   }
-  console.log("session after ",session);
-  async function googleSignIn() {
-    const { error } = await supabase.auth.signInWithOAuth({
+  console.log("session after ", session);
+
+  const googleSignIn = async () => {
+    const { user, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
         scopes: "https://www.googleapis.com/auth/calendar",
-        persistSession: true, // Enable session persistence
+        persistSession: true,
       },
     });
+    if(user){
+      console.log("Successfully signed in:", user);
 
+    }
     if (error) {
       alert("Error logging in to Google provider with Supabase");
-      console.log(error);
+      console.error(error);
     }
-  }
+  };
 
+  // Use useEffect to log rafi whenever it changes
 
 
   async function signOut() {
@@ -268,11 +284,11 @@ console.log('session before ', session);
           },
         }
       );
-  
+
       if (!response.ok) {
         throw new Error("Failed to fetch primary calendar information");
       }
-  
+
       const calendarInfo = await response.json();
       const primaryCalendarId = calendarInfo.id;
       setCalendarId(primaryCalendarId);
@@ -281,12 +297,12 @@ console.log('session before ', session);
     }
   }
 
-const url = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events`
-console.log(url)
+  const url = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events`
+  console.log(url)
   async function fetchGoogleCalendarEvents() {
-    
+
     const response = await fetch(
-     "https://www.googleapis.com/calendar/v3/calendars/primary/events",
+      "https://www.googleapis.com/calendar/v3/calendars/primary/events",
       {
         method: "GET",
         headers: {
