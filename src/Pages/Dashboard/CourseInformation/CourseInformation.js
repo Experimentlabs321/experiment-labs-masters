@@ -1219,6 +1219,13 @@ const CourseInformation = () => {
                                       alt="Task"
                                     />
                                   )}
+                                  {task?.taskType === "Schedule" && (
+                                    <img
+                                      className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
+                                      src={calendar}
+                                      alt="Task"
+                                    />
+                                  )}
                                   <div className="">
                                     {isPreviousTaskCompleted ? (
                                       <Link
