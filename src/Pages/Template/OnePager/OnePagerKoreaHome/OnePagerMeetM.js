@@ -37,7 +37,7 @@ const OnePagerMeetM = ({ meetTheMasterData }) => {
             </div>
 
             <div className="carousel-button-group">
-                <div className="flex justify-center gap-10 lg:mt-5">
+                <div className="flex justify-items-center justify-center gap-10 lg:mt-5">
                     <button
                         onClick={handleScrollLeft}
                         className="hidden lg:block"
@@ -59,7 +59,7 @@ const OnePagerMeetM = ({ meetTheMasterData }) => {
 
                     <div
                         ref={containerRef}
-                        className="flex overflow-x-scroll scroll-smooth gap-5 mtm-container lg:w-[85vw]"
+                        className="flex overflow-x-scroll scroll-smooth gap-5 mtm-container lg:w-[85vw] justify-center"
                     >
                         {
                             mastersData.map((master) => (
@@ -79,7 +79,13 @@ const OnePagerMeetM = ({ meetTheMasterData }) => {
                                             {master?.profession}
                                         </h6>
                                     </div>
-                                    <img src={master?.logo} alt="" />
+                                    <div className="pt-3">
+                                    {
+                                        master?.about?.map((para) => (
+                                            <p>{para}</p>
+                                        ))
+                                    }
+                                    </div>
                                 </div>
                             ))
                         }
@@ -107,8 +113,7 @@ const OnePagerMeetM = ({ meetTheMasterData }) => {
                         />
                     </button>
                 </div>
-            </div>
-          
+            </div> 
         </div >
     );
 };
