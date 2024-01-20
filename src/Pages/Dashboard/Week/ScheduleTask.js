@@ -41,6 +41,7 @@ const customStyles = {
   },
 };
 const ScheduleTask = ({ taskData, week }) => {
+  console.log(taskData?.usersession?.provider_token)
   const { user, userInfo } = useContext(AuthContext);
   if (userInfo.role !== 'admin') {
     window.addEventListener("contextmenu", (e) => {
@@ -203,7 +204,7 @@ const ScheduleTask = ({ taskData, week }) => {
                     hangoutLink: response?.result?.hangoutLink,
                     requester: user?.email,
                   };
-                
+
 
                   sendData(event);
                   return [true, response];
@@ -237,25 +238,25 @@ const ScheduleTask = ({ taskData, week }) => {
   const [calendarEvents, setCalendarEvents] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
-  const session = useSession();
- // console.log("session", session)
-  const supabase = useSupabaseClient();
-  const { isLoading } = useSessionContext();
- // console.log(taskData)
+  // const session = useSession();
+  // console.log("session", session)
+  // const supabase = useSupabaseClient();
+  // const { isLoading } = useSessionContext();
+
   useEffect(() => {
     fetchAndDisplayGoogleCalendarEvents();
   }, []); // The empty dependency array ensures that this effect runs only once
 
-  if (isLoading) {
-    return <></>;
-  }
+  // if (isLoading) {
+  //   return <></>;
+  // }
   async function fetchGoogleCalendarEvents() {
     const response = await fetch(
       "https://www.googleapis.com/calendar/v3/calendars/primary/events",
       {
         method: "GET",
         headers: {
-          Authorization: "Bearer " + session?.provider_token,
+          Authorization: "Bearer " + taskData?.usersession?.provider_token,
           // Access token for Google
         },
       }
@@ -266,7 +267,7 @@ const ScheduleTask = ({ taskData, week }) => {
     }
 
     const data = await response.json();
-   // console.log(data);
+    console.log("data : ",data);
     return data.items || [];
   }
 
