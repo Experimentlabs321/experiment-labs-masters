@@ -41,17 +41,15 @@ const customStyles = {
   },
 };
 const ScheduleTask = ({ taskData, week }) => {
-  console.log(taskData?.usersession?.provider_token)
+  console.log("Task data ", taskData)
   const { user, userInfo } = useContext(AuthContext);
   if (userInfo.role !== 'admin') {
     window.addEventListener("contextmenu", (e) => {
       e.preventDefault();
     });
   };
-  ///////////------------ shihab's code/////////////////
-
-  console.log(week)
-
+ 
+  const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
   const [date, setDate] = useState(""); // State for the date
   const [time, setTime] = useState(""); // State for the time
   const [reservedEvent, setReservedEvent] = useState(null);
@@ -68,24 +66,77 @@ const ScheduleTask = ({ taskData, week }) => {
     setTime(event.target.value);
   };
 
-
-
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACKEND_API}/events`)
       .then((response) => {
-        const findEvent = response?.data?.find(
-          (item) =>
-            item?.requester === user?.email &&
-            item?.organization?.organizationId === userInfo?.organizationId &&
-            item?.weekData?._id === week?._id
-        );
-        setReservedEvent(findEvent);
-        setStartTime(new Date(findEvent?.start));
+        console.log("API Response:", response.data); // Log the response data
+        const busyTimeSlots = response?.data?.map((event) => {
+          // Use the correct property for date and time based on the event structure
+          const startDateTime = event.start.dateTime || event.start; 
+          const endDateTime = event.end.dateTime || event.end;
+        
+          return {
+            start: new Date(startDateTime),
+            end: new Date(endDateTime),
+          };
+        });
+  
+        console.log("Busy Time Slots:", busyTimeSlots); // Log the busy time slots
+  
+        // Assuming week.start and week.end are available as Date objects
+        const allTimeSlots = generateAllTimeSlots(week.start, week.end);
+  
+        console.log("All Time Slots:", allTimeSlots); // Log all time slots
+  
+        const filteredTimeSlots = filterBusyTimeSlots(allTimeSlots, busyTimeSlots);
+  
+        console.log("Filtered Time Slots:", filteredTimeSlots); // Log the filtered time slots
+  
+        setAvailableTimeSlots(filteredTimeSlots);
       })
       .catch((error) => console.error(error));
-  }, []);
+  }, [week]);
+  const generateAllTimeSlots = (start, end) => {
+    const timeSlots = [];
+    let currentTime = new Date(start);
 
+    while (currentTime <= end) {
+      timeSlots.push(new Date(currentTime));
+      currentTime.setMinutes(currentTime.getMinutes() + 30); // Assuming 30-minute time slots
+    }
+
+    return timeSlots;
+  };
+
+  // Function to filter out busy time slots
+  const filterBusyTimeSlots = (allTimeSlots, busyTimeSlots) => {
+    return allTimeSlots.filter((timeSlot) => {
+      for (const busySlot of busyTimeSlots) {
+        if (timeSlot >= busySlot.start && timeSlot < busySlot.end) {
+          return false; // Remove busy time slots
+        }
+      }
+      return true; // Keep available time slots
+    });
+  };
+  
+  // useEffect(() => {
+  //   axios
+  //     .get(`${process.env.REACT_APP_BACKEND_API}/events`)
+  //     .then((response) => {
+  //       const findEvent = response?.data?.find(
+  //         (item) =>
+  //           item?.requester === user?.email &&
+  //           item?.organization?.organizationId === userInfo?.organizationId &&
+  //           item?.weekData?._id === week?._id
+  //       );
+  //       setReservedEvent(findEvent);
+  //       setStartTime(new Date(findEvent?.start));
+  //     })
+  //     .catch((error) => console.error(error));
+  // }, []);
+console.log("Available ",availableTimeSlots);
 
   const addEvent = async () => {
     if (date && time) {
@@ -233,52 +284,14 @@ const ScheduleTask = ({ taskData, week }) => {
 
   const [start, setStart] = useState(new Date());
   const [end, setEnd] = useState(new Date());
-  const [eventName, setEventName] = useState("");
+  const [eventName, setEventName] = useState({});
   const [eventDescription, setEventDescription] = useState("");
   const [calendarEvents, setCalendarEvents] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
-  // const session = useSession();
-  // console.log("session", session)
-  // const supabase = useSupabaseClient();
-  // const { isLoading } = useSessionContext();
 
-  useEffect(() => {
-    fetchAndDisplayGoogleCalendarEvents();
-  }, []); // The empty dependency array ensures that this effect runs only once
+  console.log(eventName);
 
-  // if (isLoading) {
-  //   return <></>;
-  // }
-  async function fetchGoogleCalendarEvents() {
-    const response = await fetch(
-      "https://www.googleapis.com/calendar/v3/calendars/primary/events",
-      {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + taskData?.usersession?.provider_token,
-          // Access token for Google
-        },
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch Google Calendar events");
-    }
-
-    const data = await response.json();
-    console.log("data : ",data);
-    return data.items || [];
-  }
-
-  async function fetchAndDisplayGoogleCalendarEvents() {
-    try {
-      const events = await fetchGoogleCalendarEvents();
-      setCalendarEvents(events);
-    } catch (error) {
-      console.error(error.message);
-    }
-  }
   function renderEventContent(eventInfo) {
     // console.log(eventInfo);
 
@@ -315,51 +328,6 @@ const ScheduleTask = ({ taskData, week }) => {
     setIsModalOpen(true);
   };
 
-  // async function createCalendarEvent() {
-  //   console.log("Creating calendar event");
-  //   const event = {
-  //     'summary': eventName,
-  //     'description': eventDescription,
-  //     'start': {
-  //       'dateTime': start.toISOString(),
-  //       'timeZone': Intl.DateTimeFormat().resolvedOptions().timeZone
-  //     },
-  //     'end': {
-  //       'dateTime': end.toISOString(),
-  //       'timeZone': Intl.DateTimeFormat().resolvedOptions().timeZone
-  //     }
-  //   };
-
-  //   try {
-  //     const response = await fetch("https://www.googleapis.com/calendar/v3/calendars/primary/events", {
-  //       method: "POST",
-  //       headers: {
-  //         'Authorization': `Bearer ${taskData?.usersession?.provider_token}`,
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(event),
-  //     });
-
-  //     console.log('Response status:', response.status);
-
-  //     // Store the response text in a variable
-  //     const responseBody = await response.text();
-  //     console.log('Response body:', responseBody);
-
-  //     if (!response.ok) {
-  //       throw new Error(`Failed to create Google Calendar event: ${response.statusText}`);
-  //     }
-
-  //     // Parse the response text as JSON
-  //     const data = JSON.parse(responseBody);
-  //     console.log('API response:', data);
-  //     alert("Event created, check your Google Calendar!");
-  //   } catch (error) {
-  //     console.error('Error creating event:', error.message);
-  //     alert("Error creating event. Please try again.");
-  //   }
-  // }
-  //console.log("calendar events ", calendarEvents)
   return (
     <div className="flex justify-center">
       <div className="w-[250px] lg:w-[355px] min-w-[250px] lg:min-w-min h-[370px] lg:h-[515px]">
@@ -372,15 +340,7 @@ const ScheduleTask = ({ taskData, week }) => {
           }}
           className="bg-[#0E2749] w-full h-full rounded-[14px] py-[20px] px-[15px] lg:p-[30px] flex flex-col justify-between items-center gap-5"
         >
-          {/*    <div>
-            <h1 className="text-white text-[18px] font-[700]">
-              <span className="pr-4">{"<"}</span>
-              {currentWeek
-                ? currentWeek?.weekName.slice(0, 24)
-                : "Post Programme Support"}
-              <span className=" pl-4 ">{">"}</span>
-            </h1>
-          </div> */}
+
           <div className="w-full relative">
             <p className="text-[#C0C0C0] text-[18px] font-[600] pb-[18px]">
               Date
@@ -446,109 +406,10 @@ const ScheduleTask = ({ taskData, week }) => {
               </p>
             </DashboardPrimaryButton>
           )}
-          {/* <DashboardPrimaryButton
-            bgColor="#3E4DAC"
-            shadow="0px 6.32482px 0px #CA5F98"
-            width="full"
-            onClick={addEvent}
-          >
-            <p className="flex items-center justify-center text-white">
-              Request Event{" "}
-              <img
-                className="pl-1 w-[21px] lg:w-[32px]"
-                src={RightArrowWhite}
-                alt="RightArrowBlack"
-              />
-            </p>
-          </DashboardPrimaryButton> */}
+
         </div>
       </div>
 
-      {/*   <div>
-        {taskData?.usersession?.provider_token ? (
-          <>
-            <div className="my-6 px-5">
-              <h2>Your Calendar Events</h2>
-              <FullCalendar
-                height="600px"
-                plugins={[dayGridPlugin, interactionPlugin]}
-                initialView="dayGridMonth"
-                selectMirror={true}
-                eventContent={renderEventContent}
-                events={calendarEvents?.map((event) => ({
-                  title: event?.summary,
-                  start: event?.start.dateTime,
-                  end: event?.end.dateTime,
-                  link: event?.hangoutLink,
-                }))}
-                dateClick={(info) => handleDateClick(info.date)}
-              />
-            </div>
-
-
-
-          </>
-        ) : (
-          <div className="grid justify-center items-center">
-            <button className="bg-sky-600 px-5 py-3 text-white text-lg rounded-lg" onClick={() => googleSignIn()}>Sync with google </button>
-            <p>No Admin Registered</p>
-          </div>
-        )}
-
-        <Modal
-          ariaHideApp={false}
-          isOpen={isModalOpen}
-          onRequestClose={() => setIsModalOpen(false)}
-          style={customStyles} // Apply custom styles to the modal
-          shouldCloseOnOverlayClick={false}
-
-        >
-          <div>
-            <h2 className="text-center mb-3 font-medium text-lg text-blue">Add Event</h2>
-            <p>Date: {selectedDate && selectedDate.toLocaleDateString()}</p>
-            <div className='flex justify-between gap-2 my-1'>
-              <label>
-                Event Name:
-                <input
-                  className="border border-black"
-                  type="text"
-                  value={eventName}
-                  onChange={(e) => setEventName(e.target.value)}
-                />
-              </label>
-              <label className="my-1">
-                Event Description:
-                <input
-                  className="border border-black"
-                  type="text"
-                  value={eventDescription}
-                  onChange={(e) => setEventDescription(e.target.value)}
-                />
-              </label>
-            </div>
-            <p className="mt-1">Event Start Time</p>
-            <DateTimePicker
-              className="border-black mb-1"
-              onChange={(date) => setStart(date)}
-              value={start}
-              disableClock={true}
-              disableCalendar={true}
-            />
-            <p className="mt-1">Event End Time</p>
-            <DateTimePicker
-              className="border-black  mb-1"
-              onChange={(date) => {
-                setEnd(date);
-              }}
-              value={end}
-              disableClock={true}
-              disableCalendar={true}
-            />
-
-          </div>
-       
-        </Modal>
-      </div> */}
     </div>
   );
 };

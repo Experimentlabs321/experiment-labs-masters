@@ -160,6 +160,7 @@ const AdminCalendarSchedule = () => {
       courseId: chapter?.courseId,
       batches: selectedBatches,
       usersession: global,
+      events : calendarEvents,
     };
 
     setAssignmentData(manageSchedule);
