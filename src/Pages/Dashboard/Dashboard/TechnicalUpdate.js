@@ -263,6 +263,7 @@ const TechnicalUpdate = ({ dashboardImages, weeks, selectedCourse, currentWeekCo
       });
     }
   };
+  
   return (
     <div className="flex flex-row md:justify-around md:flex-row-reverse gap-4 overflow-x-scroll lg:overflow-x-visible h-[450px] lg:h-[630px]">
       <div className="w-[250px] lg:w-[355px] min-w-[250px] lg:min-w-min h-[370px] lg:h-[515px]">
