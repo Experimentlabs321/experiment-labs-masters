@@ -1,5 +1,5 @@
 import React from 'react';
-import heroImage from '../../../../assets/OnePager/HeroSection/heroImage.png';
+import heroImage from '../../../../assets/OnePager/HeroSection/Picture3.png';
 import mentorSupport from '../../../../assets/OnePager/HeroSection/mentorSupport.svg';
 import realTimeProject from '../../../../assets/OnePager/HeroSection/realTimeProject.svg';
 import learn from '../../../../assets/OnePager/HeroSection/learn.svg';

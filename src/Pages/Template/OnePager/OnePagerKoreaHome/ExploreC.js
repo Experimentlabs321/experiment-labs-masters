@@ -61,13 +61,13 @@ const ExploreC = ({ courseInfoData }) => {
               </div>
             </div>
             <p className="text-[20px] md:text-[24px] font-inter font-bold flex items-center justify-around">
-              <span>New!</span>
+              <span>신규 런칭!</span>
               <div>
-                <img
+                {/* <img
                   alt="rupee"
-                  src={courseInfoData.courseInfoPriceIcon}
+                  src={courseInfoData?.courseInfoPriceIcon}
                   className="inline-block"
-                ></img>
+                ></img> */}
                 <span className="text-[#4555BA]  sm:text-[20px] md:text-[27px]">
                   {courseInfoData.courseInfoPrice}
                 </span>
