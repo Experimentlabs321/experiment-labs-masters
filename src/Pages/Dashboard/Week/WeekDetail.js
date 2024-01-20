@@ -96,6 +96,7 @@ const item = {
   },
 };
 
+
 const WeekDetail = ({
   toggleButton,
   setToggleButton,
@@ -198,7 +199,7 @@ const WeekDetail = ({
       })
       .catch((error) => console.error(error));
   }, [openTask, openTask?.taskType]);
-  console.log(taskData);
+  // console.log(taskData);
 
   return (
     <div>
@@ -338,7 +339,7 @@ const WeekDetail = ({
         {openTask?.taskType === "Video" && <VideoTask taskData={taskData} />}
         {openTask?.taskType === "Audio" && <AudioTask taskData={taskData} />}
         {openTask?.taskType === "Files" && <FilesTask taskData={taskData} />}
-        {openTask?.taskType === "Schedule" && <ScheduleTask taskData={taskData} />}
+        {openTask?.taskType === "Schedule" && <ScheduleTask taskData={taskData} week={week} />}
       </div>
     </div>
   );

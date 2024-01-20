@@ -160,6 +160,7 @@ const AdminCalendarSchedule = () => {
       courseId: chapter?.courseId,
       batches: selectedBatches,
       usersession: global,
+      events : calendarEvents,
     };
 
     setAssignmentData(manageSchedule);
@@ -246,20 +247,27 @@ const AdminCalendarSchedule = () => {
   console.log("session after ", session);
 
   const googleSignIn = async () => {
-    const { user, error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        scopes: "https://www.googleapis.com/auth/calendar",
-        persistSession: true,
-      },
-    });
-    if(user){
-      console.log("Successfully signed in:", user);
-
-    }
-    if (error) {
-      alert("Error logging in to Google provider with Supabase");
-      console.error(error);
+    try {
+      const { user, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          scopes: 'https://www.googleapis.com/auth/calendar',
+          persistSession: true,
+        },
+      });
+  
+      if (user) {
+        console.log('Successfully signed in:', user);
+        // Add any additional logic you need after successful sign-in
+      }
+  
+      if (error) {
+        console.error('Error during Google Sign-In:', error.message);
+        alert('Error logging in to Google provider with Supabase');
+      }
+    } catch (error) {
+      console.error('Unexpected error during Google Sign-In:', error.message);
+      alert('Unexpected error. Please try again.');
     }
   };
 

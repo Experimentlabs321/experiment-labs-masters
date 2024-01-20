@@ -112,6 +112,7 @@ import ShowcaseHome from "../../Pages/Template/CharitySite/Showcase/ShowcaseHome
 import InternShips from "../../Pages/InternShips/InternShips";
 import AdminCalendarSchedule from "../../Pages/Dashboard/ContentManagement/AdminCalendarSchedule";
 import OnePagerKoreaHome from "../../Pages/Template/OnePager/OnePagerKoreaHome/OnePagerKoreaHome";
+import OnePagerKoreaLayout from "../../Pages/Template/OnePager/OnePagerKoreaLayout/OnePagerKoreaLayout";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -159,7 +160,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/learnhub/kr",
-    element: <OnePagerLayout />,
+    element: <OnePagerKoreaLayout />,
     children: [
       {
         path: "/learnhub/kr",
