@@ -8,12 +8,13 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 
-const TechnicalUpdate = ({ dashboardImages, weeks, selectedCourse, currentWeekCompletion }) => {
+const TechnicalUpdate = ({ dashboardImages, weeks, selectedCourse, currentWeekCompletion, dashboardTheme }) => {
   const { user, userInfo } = useContext(AuthContext);
   const [date, setDate] = useState(""); // State for the date
   const [time, setTime] = useState(""); // State for the time
   const [currentWeek, setCurrentWeek] = useState(null);
   const [reservedEvent, setReservedEvent] = useState(null);
+  const { addChallenges, challengesHeaderText, challengesBtnText, challengesBtnBg, challengesCardBg, challengesProgressBg, challengesImgBg, challengesImg, addRequestSlots, slotsHeaderText, slotsBtnText, slotsBtnBg, slotsCardBg } = dashboardTheme;
 
   // Update the date state when the date input changes
   const handleDateChange = (event) => {
@@ -196,9 +197,8 @@ const TechnicalUpdate = ({ dashboardImages, weeks, selectedCourse, currentWeekCo
                   from: `${user?.email}`,
                   to: `naman.j@experimentlabs.in,gaurav@experimentlabs.in,${user?.email},shihab77023@gmail.com`,
                   subject: `Event request`,
-                  message: `A event is going to held for doubt clearing at ${event?.start.toLocaleString()} to ${event?.end.toLocaleTimeString()}. Meeting link ${
-                    event?.hangoutLink
-                  }`,
+                  message: `A event is going to held for doubt clearing at ${event?.start.toLocaleString()} to ${event?.end.toLocaleTimeString()}. Meeting link ${event?.hangoutLink
+                    }`,
                 }
               );
               if (sendMail?.data?.Success && response?.data?.acknowledged) {
@@ -263,94 +263,97 @@ const TechnicalUpdate = ({ dashboardImages, weeks, selectedCourse, currentWeekCo
       });
     }
   };
-  
+
   return (
     <div className="flex flex-row md:justify-around md:flex-row-reverse gap-4 overflow-x-scroll lg:overflow-x-visible h-[450px] lg:h-[630px]">
-      <div className="w-[250px] lg:w-[355px] min-w-[250px] lg:min-w-min h-[370px] lg:h-[515px]">
-        <h1 className="text-[18px] lg:text-[25px] font-[700] text-center pb-[32px]">
-          Request slots
-        </h1>
-        <div
-          style={{
-            filter: "drop-shadow(3.75217px 3.75217px 0px #000000)",
-          }}
-          className="bg-[#0E2749] w-full h-full rounded-[14px] py-[20px] px-[15px] lg:p-[30px] flex flex-col justify-between items-center gap-5"
-        >
-          <div>
-            <h1 className="text-white text-[18px] font-[700]">
-              <span className="pr-4">{"<"}</span>
-              {currentWeek
-                ? currentWeek?.weekName.slice(0, 24)
-                : "Post Programme Support"}
-              <span className=" pl-4 ">{">"}</span>
-            </h1>
-          </div>
-          <div className="w-full relative">
-            <p className="text-[#C0C0C0] text-[18px] font-[600] pb-[18px]">
-              Date
-            </p>
-            <div className="relative inline-flex w-full">
-              <input
-                required
-                defaultValue={reservedEvent?.start?.slice(0, 10)}
-                onChange={handleDateChange}
-                className=" text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
-                name="date"
-                id="date"
-                type="date"
-              />
+      {
+        addRequestSlots &&
+        <div className="w-[250px] lg:w-[355px] min-w-[250px] lg:min-w-min h-[370px] lg:h-[515px]">
+          <h1 className="text-[18px] lg:text-[25px] font-[700] text-center pb-[32px]">
+            {slotsHeaderText}
+          </h1>
+          <div
+            style={{
+              filter: "drop-shadow(3.75217px 3.75217px 0px #000000)",
+              backgroundColor: slotsCardBg
+            }}
+            className="w-full h-full rounded-[14px] py-[20px] px-[15px] lg:p-[30px] flex flex-col justify-between items-center gap-5"
+          >
+            <div>
+              <h1 className="text-white text-[18px] font-[700]">
+                <span className="pr-4">{"<"}</span>
+                {currentWeek
+                  ? currentWeek?.weekName.slice(0, 24)
+                  : "Post Programme Support"}
+                <span className=" pl-4 ">{">"}</span>
+              </h1>
             </div>
-            <p className="text-[#C0C0C0] text-[18px] font-[600] py-[18px]">
-              Time
-            </p>
-            <div className="relative inline-flex w-full">
-              <input
-                required
-                onChange={handleTimeChange}
-                className=" text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
-                name="time"
-                // defaultValue={() => {const startEvent = new Date(reservedEvent?.start)?toTimeString().slice(0, 8)}}
-                defaultValue={startTime?.toTimeString().slice(0, 8)}
-                id="time"
-                type="time"
-              />
+            <div className="w-full relative">
+              <p className="text-[#C0C0C0] text-[18px] font-[600] pb-[18px]">
+                Date
+              </p>
+              <div className="relative inline-flex w-full">
+                <input
+                  required
+                  defaultValue={reservedEvent?.start?.slice(0, 10)}
+                  onChange={handleDateChange}
+                  className=" text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
+                  name="date"
+                  id="date"
+                  type="date"
+                />
+              </div>
+              <p className="text-[#C0C0C0] text-[18px] font-[600] py-[18px]">
+                Time
+              </p>
+              <div className="relative inline-flex w-full">
+                <input
+                  required
+                  onChange={handleTimeChange}
+                  className=" text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
+                  name="time"
+                  // defaultValue={() => {const startEvent = new Date(reservedEvent?.start)?toTimeString().slice(0, 8)}}
+                  defaultValue={startTime?.toTimeString().slice(0, 8)}
+                  id="time"
+                  type="time"
+                />
+              </div>
             </div>
-          </div>
-          {reservedEvent ? (
-            <a
-              href={reservedEvent?.hangoutLink}
-              target="_blank"
-              rel="noreferrer"
-              style={{ boxShadow: "0px 6.32482px 0px #CA5F98" }}
-              className="bg-[#0F3934] w-full py-[15px] px-[23px] rounded-[13px] text-[12px] lg:text-[18px] font-[700] z-[1]"
-            >
-              <p className="flex items-center justify-center text-white">
-                Join Meeting{" "}
-                <img
-                  className="pl-1 w-[21px] lg:w-[32px]"
-                  src={RightArrowWhite}
-                  alt="RightArrowBlack"
-                />
-              </p>
-            </a>
-          ) : (
-            <DashboardPrimaryButton
-              bgColor="#3E4DAC"
-              shadow="0px 6.32482px 0px #CA5F98"
-              width="full"
-              onClick={addEvent}
-            >
-              <p className="flex items-center justify-center text-white">
-                Request Event{" "}
-                <img
-                  className="pl-1 w-[21px] lg:w-[32px]"
-                  src={RightArrowWhite}
-                  alt="RightArrowBlack"
-                />
-              </p>
-            </DashboardPrimaryButton>
-          )}
-          {/* <DashboardPrimaryButton
+            {reservedEvent ? (
+              <a
+                href={reservedEvent?.hangoutLink}
+                target="_blank"
+                rel="noreferrer"
+                style={{ boxShadow: "0px 6.32482px 0px #CA5F98" }}
+                className="bg-[#0F3934] w-full py-[15px] px-[23px] rounded-[13px] text-[12px] lg:text-[18px] font-[700] z-[1]"
+              >
+                <p className="flex items-center justify-center text-white">
+                  Join Meeting{" "}
+                  <img
+                    className="pl-1 w-[21px] lg:w-[32px]"
+                    src={RightArrowWhite}
+                    alt="RightArrowBlack"
+                  />
+                </p>
+              </a>
+            ) : (
+              <DashboardPrimaryButton
+                bgColor={slotsBtnBg}
+                shadow="0px 6.32482px 0px #CA5F98"
+                width="full"
+                onClick={addEvent}
+              >
+                <p className="flex items-center justify-center text-white">
+                  {slotsBtnText}{" "}
+                  <img
+                    className="pl-1 w-[21px] lg:w-[32px]"
+                    src={RightArrowWhite}
+                    alt="RightArrowBlack"
+                  />
+                </p>
+              </DashboardPrimaryButton>
+            )}
+            {/* <DashboardPrimaryButton
             bgColor="#3E4DAC"
             shadow="0px 6.32482px 0px #CA5F98"
             width="full"
@@ -365,57 +368,67 @@ const TechnicalUpdate = ({ dashboardImages, weeks, selectedCourse, currentWeekCo
               />
             </p>
           </DashboardPrimaryButton> */}
-        </div>
-      </div>
-      <div className="w-[250px] lg:w-[355px] min-w-[250px] lg:min-w-min h-[370px] lg:h-[515px]">
-        <h1 className="text-[18px] lg:text-[25px] font-[700] text-center pb-[32px]">
-          Challenges
-        </h1>
-        <div
-          style={{
-            filter: "drop-shadow(3.75217px 3.75217px 0px #000000)",
-          }}
-          className="bg-[#2B0825] w-full h-full rounded-[14px] py-[20px] px-[15px] lg:p-[30px] flex flex-col justify-between items-center gap-5"
-        >
-          <div className="bg-[#FF881B] rounded-md">
-            <img src={dashboardImages?.challengesImg} alt="Challenges" />
           </div>
-          <h1 className="text-[14px] lg:text-[18px] text-white font-[700]">
-            {currentWeek ? currentWeek?.weekName : "Course Completed"}
+        </div>
+      }
+
+
+      {
+        addChallenges &&
+        <div className="w-[250px] lg:w-[355px] min-w-[250px] lg:min-w-min h-[370px] lg:h-[515px]">
+          <h1 className="text-[18px] lg:text-[25px] font-[700] text-center pb-[32px]">
+            {challengesHeaderText}
           </h1>
-          <div className="w-full">
-            <small className="text-white pb-[10px] font-[700]">
-              {currentWeekCompletion ? currentWeekCompletion : "O"}%  Completed
-            </small>
-            <div className="relative w-full">
-              <div className="w-full bg-gray-200 rounded-lg h-2">
-                <div
-                  className="bg-[#3E4DAC] h-2 rounded-lg"
-                  // className="bg-cyan-600 h-2 rounded-sm"
-                  style={{ width: `${currentWeekCompletion}%` }}
+          <div
+            style={{
+              filter: "drop-shadow(3.75217px 3.75217px 0px #000000)",
+              backgroundColor: challengesCardBg
+            }}
+            className="w-full h-full rounded-[14px] py-[20px] px-[15px] lg:p-[30px] flex flex-col justify-between items-center gap-5"
+          >
+            <div style={{ backgroundColor: challengesImgBg }} className="rounded-md">
+              <img className='h-48' src={challengesImg || dashboardImages?.challengesImg} alt="Challenges" />
+            </div>
+            <h1 className="text-[14px] lg:text-[18px] text-white font-[700]">
+              {currentWeek ? currentWeek?.weekName : "Course Completed"}
+            </h1>
+            <div className="w-full">
+              <small className="text-white pb-[10px] font-[700]">
+                {currentWeekCompletion ? currentWeekCompletion : "O"}%  Completed
+              </small>
+              <div className="relative w-full">
+                <div className="w-full bg-gray-200 rounded-lg h-2">
+                  <div
+                    className="h-2 rounded-lg"
+                    // className="bg-cyan-600 h-2 rounded-sm"
+                    style={{
+                      width: `${currentWeekCompletion}%`,
+                      backgroundColor: challengesProgressBg
+                    }}
                   // style={{ width: "20%" }}
-                ></div>
+                  ></div>
+                </div>
               </div>
             </div>
+            {currentWeek && (
+              <Link
+                style={{ boxShadow: "0px 7.50435px 0px #F08323", backgroundColor: challengesBtnBg }}
+                to={`/questLevels/${currentWeek?.courseId}?week=${currentWeek?._id}`}
+                className="w-full py-[15px] px-[23px] rounded-[13px] text-[12px] lg:text-[18px] font-[700] z-[1]"
+              >
+                <p className="flex items-center justify-center text-black">
+                  {challengesBtnText}{" "}
+                  <img
+                    className="pl-1 w-[21px] lg:w-[32px]"
+                    src={RightArrowBlack}
+                    alt="RightArrowBlack"
+                  />
+                </p>
+              </Link>
+            )}
           </div>
-          {currentWeek && (
-            <Link
-              to={`/questLevels/${currentWeek?.courseId}?week=${currentWeek?._id}`}
-              style={{ boxShadow: "0px 7.50435px 0px #F08323" }}
-              className="bg-[#FFDB70] w-full py-[15px] px-[23px] rounded-[13px] text-[12px] lg:text-[18px] font-[700] z-[1]"
-            >
-              <p className="flex items-center justify-center text-black">
-                Complete Challenge{" "}
-                <img
-                  className="pl-1 w-[21px] lg:w-[32px]"
-                  src={RightArrowBlack}
-                  alt="RightArrowBlack"
-                />
-              </p>
-            </Link>
-          )}
         </div>
-      </div>
+      }
     </div>
   );
 };

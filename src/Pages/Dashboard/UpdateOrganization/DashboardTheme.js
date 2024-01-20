@@ -634,6 +634,7 @@ const DashboardTheme = (
                                     type="text"
                                     id="challengesBtnText"
                                     name="challengesBtnText"
+                                    maxLength="20"
                                     defaultValue={challengesBtnText}
                                     onChange={(e) => setChallengesBtnText(e.target.value)}
                                     className="mt-1 p-2 min-w-[200px] border rounded-md focus:outline-none focus:ring focus:border-blue-300"
@@ -793,6 +794,7 @@ const DashboardTheme = (
                                     type="text"
                                     id="slotsBtnText"
                                     name="slotsBtnText"
+                                    maxLength="20"
                                     defaultValue={slotsBtnText}
                                     onChange={(e) => setSlotsBtnText(e.target.value)}
                                     className="mt-1 p-2 min-w-[200px] border rounded-md focus:outline-none focus:ring focus:border-blue-300"

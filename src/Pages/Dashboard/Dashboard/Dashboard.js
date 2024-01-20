@@ -345,6 +345,7 @@ const Dashboard = () => {
                 currentWeekCompletion={currentWeekCompletion}
                 selectedCourse={selectedCourse}
                 weeks={weeks}
+                dashboardTheme={dashboardTheme}
               />
             </div>
             <div className=" lg:border-b-2 lg:border-l-2 lg:border-[#E8E8E8] pt-10 px-4">
