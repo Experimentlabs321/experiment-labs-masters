@@ -14,7 +14,7 @@ const JoinQuest = ({joinQuestBtnText,joinQuestBtnBg, joinQuestCardBg, joinQuestI
             className="lg:col-span-2 flex flex-col lg:flex-row items-center rounded-[14px] px-[12px] lg:px-[32px] py-[23px] lg:py-[54px] gap-3 w-1/2"
         >
             <div style={{backgroundColor: joinQuestImgBg}} className="rounded-md h-full flex items-center justify-center">
-                <img className='h-36' src={joinQuestImg || questImg} alt="WeekUpdate" />
+                <img className='max-h-[137px]' src={joinQuestImg || questImg} alt="WeekUpdate" />
             </div>
             <div className="flex flex-col gap-3">
                 <h1 className="text-white text-[13px] lg:text-[22px] font-[700] text-center lg:text-left">

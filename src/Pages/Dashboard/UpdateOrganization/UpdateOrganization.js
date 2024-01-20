@@ -226,6 +226,7 @@ const UpdateOrganization = () => {
             loginSidebarImage={loginSidebarImage}
             titlesColor={titlesColor}
             dashboardTheme={dashboardTheme}
+            setDashboardTheme={setDashboardTheme}
           />
         }
       </Layout>

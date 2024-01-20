@@ -14,10 +14,13 @@ const DashboardTheme = (
         orgLogoUrl,
         loginSidebarImage,
         titlesColor,
-        dashboardTheme }) => {
+        dashboardTheme,
+        setDashboardTheme
+    }) => {
 
     const [courseCompletionText, setCourseCompletionText] = useState(dashboardTheme?.courseCompletionText || "Your course is");
     const [courseCompletionBgColor, setCourseCompletionBgColor] = useState(dashboardTheme?.courseCompletionBgColor || "#3E4DAC");
+    const [courseCompletionDesign, setCourseCompletionDesign] = useState(dashboardTheme?.courseCompletionDesign || true);
     const [addCourseCompletion, setAddCourseCompletion] = useState(dashboardTheme?.addCourseCompletion || true);
     const [addOpenBox, setAddOpenBox] = useState(dashboardTheme?.addOpenBox || true);
     const [addJoinQuest, setAddJoinQuest] = useState(dashboardTheme?.addJoinQuest || true);
@@ -35,23 +38,37 @@ const DashboardTheme = (
     const [joinQuestCardBg, setJoinQuestCardBg] = useState(dashboardTheme?.joinQuestCardBg || "#0F3934");
     const [joinQuestImgBg, setJoinQuestImgBg] = useState(dashboardTheme?.joinQuestImgBg || "#FF74BE");
     const [joinQuestImg, setJoinQuestImg] = useState(dashboardTheme?.joinQuestImg || null);
+    const [challengesHeaderText, setChallengesHeaderText] = useState(dashboardTheme?.challengesHeaderText || "Challenges");
+    const [challengesBtnText, setChallengesBtnText] = useState(dashboardTheme?.challengesBtnText || "Complete Challenge");
+    const [challengesBtnBg, setChallengesBtnBg] = useState(dashboardTheme?.challengesBtnBg || "#FFDB70");
+    const [challengesCardBg, setChallengesCardBg] = useState(dashboardTheme?.challengesCardBg || "#2B0825");
+    const [challengesProgressBg, setChallengesProgressBg] = useState(dashboardTheme?.challengesProgressBg || "#3E4DAC");
+    const [challengesImgBg, setChallengesImgBg] = useState(dashboardTheme?.challengesImgBg || "#FF881B");
+    const [challengesImg, setChallengesImg] = useState(dashboardTheme?.challengesImg || null);
+    const [slotsHeaderText, setSlotsHeaderText] = useState(dashboardTheme?.slotsHeaderText || "Request Slots");
+    const [slotsBtnText, setSlotsBtnText] = useState(dashboardTheme?.slotsBtnText || "Request Event");
+    const [slotsBtnBg, setSlotsBtnBg] = useState(dashboardTheme?.slotsBtnBg || "#3E4DAC");
+    const [slotsCardBg, setSlotsCardBg] = useState(dashboardTheme?.slotsCardBg || "#0E2749");
+
+    console.log(dashboardTheme);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const form = event.target;
+        // const form = event.target;
 
         const orgInfo = {
             organizationName: orgData?.organizationName,
             email: orgData?.email,
-            loginTitle: form.loginTitle?.value,
-            loginSubTitle: form.loginSubTitle?.value,
+            loginTitle: orgData?.loginTitle,
+            loginSubTitle: orgData?.loginSubTitle,
             org_logo: orgLogoUrl,
             loginSidebarImage: loginSidebarImage,
             titlesColor: titlesColor,
-            DashboardTheme: {
+            dashboardTheme: {
                 addCourseCompletion,
                 courseCompletionBgColor,
                 courseCompletionText,
+                courseCompletionDesign,
                 isAvatar,
                 avatarBg,
                 addOpenBox,
@@ -66,21 +83,32 @@ const DashboardTheme = (
                 joinQuestImgBg,
                 joinQuestImg,
                 addChallenges,
-
-                addRequestSlots
+                challengesHeaderText,
+                challengesBtnText,
+                challengesBtnBg,
+                challengesCardBg,
+                challengesProgressBg,
+                challengesImgBg,
+                challengesImg,
+                addRequestSlots,
+                slotsHeaderText,
+                slotsBtnText,
+                slotsBtnBg,
+                slotsCardBg
             }
         };
-        console.log(orgInfo);
+        // console.log("Data ==========>",orgInfo);
 
-        // const updateOrg = await axios.put(
-        //     `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${orgData?._id}`,
-        //     orgInfo
-        // );
+        const updateOrg = await axios.put(
+            `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${orgData?._id}`,
+            orgInfo
+        );
 
-        // if (updateOrg?.data?.acknowledged) {
-        //     toast.success("Organization edited Successfully");
-        //     // event.target.reset();
-        // }
+        if (updateOrg?.data?.acknowledged) {
+            setDashboardTheme(orgInfo?.dashboardTheme);
+            toast.success("Organization edited Successfully");
+            // event.target.reset();
+        }
     };
 
     const handleAddCourseCompletion = () => {
@@ -135,6 +163,20 @@ const DashboardTheme = (
     };
 
 
+    const uploadChallengesImg = async (e) => {
+        e.preventDefault();
+        setFileLoading(true);
+        const files = e.target.files;
+        if (files[0]) {
+            const res = await uploadFileToS3(files[0]);
+            if (res) {
+                setChallengesImg(res);
+            }
+        }
+        setFileLoading(false);
+    };
+
+
 
     // console.log(courseCompletionText);
 
@@ -173,6 +215,7 @@ const DashboardTheme = (
                     courseCompletionBgColor={courseCompletionBgColor}
                     isAvatar={isAvatar}
                     avatarBg={avatarBg}
+                    courseCompletionDesign={courseCompletionDesign}
                 />
                 {/* Design End*/}
 
@@ -210,6 +253,34 @@ const DashboardTheme = (
                                     className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
                                 />
                             </div>
+
+
+                            <div className="flex flex-col items-start">
+                                <label className="block text-lg font-medium text-gray-700">Design</label>
+                                <div className="ml-2 flex items-center space-x-4">
+                                    <label className="flex items-center">
+                                        <input
+                                            type="radio"
+                                            name="courseCompletionDesign"
+                                            checked={courseCompletionDesign}
+                                            onChange={() => setCourseCompletionDesign(!courseCompletionDesign)}
+                                            className="mr-1"
+                                        />
+                                        <span>Add</span>
+                                    </label>
+                                    <label className="flex items-center">
+                                        <input
+                                            type="radio"
+                                            name="courseCompletionDesign"
+                                            className="mr-1"
+                                            checked={!courseCompletionDesign}
+                                            onChange={() => setCourseCompletionDesign(!courseCompletionDesign)}
+                                        />
+                                        <span>Remove</span>
+                                    </label>
+                                </div>
+                            </div>
+
 
                             {/* Avatar Type Input */}
                             <div className="flex flex-col items-start">
@@ -307,6 +378,7 @@ const DashboardTheme = (
                                     id="openBoxButtonText"
                                     name="openBoxButtonText"
                                     defaultValue={openBoxButtonText}
+                                    maxLength="10"
                                     onChange={(e) => setOpenBoxButtonText(e.target.value)}
                                     className="mt-1 p-2 min-w-[200px] border rounded-md focus:outline-none focus:ring focus:border-blue-300"
                                 />
@@ -417,6 +489,7 @@ const DashboardTheme = (
                                     type="text"
                                     id="joinQuestBtnText"
                                     name="joinQuestBtnText"
+                                    maxLength="10"
                                     defaultValue={joinQuestBtnText}
                                     onChange={(e) => setJoinQuestBtnText(e.target.value)}
                                     className="mt-1 p-2 min-w-[200px] border rounded-md focus:outline-none focus:ring focus:border-blue-300"
@@ -523,11 +596,35 @@ const DashboardTheme = (
                     </label>
                 </div>
 
-                <Challenges />
+                <Challenges
+                    challengesHeaderText={challengesHeaderText}
+                    challengesBtnText={challengesBtnText}
+                    challengesBtnBg={challengesBtnBg}
+                    challengesCardBg={challengesCardBg}
+                    challengesProgressBg={challengesProgressBg}
+                    challengesImgBg={challengesImgBg}
+                    challengesImg={challengesImg}
+                />
 
                 {
                     addChallenges && <div className="mt-24 w-full mx-auto bg-white py-3 px-5 rounded shadow-md">
-                        <div className="flex justify-between items-center gap-4">
+                        <div className="flex items-center gap-8 flex-wrap">
+                            {/* Text Input */}
+                            <div className="">
+                                <label htmlFor="textInput" className="block text-lg font-semibold text-gray-700">
+                                    Header Text
+                                </label>
+                                <input
+                                    type="text"
+                                    id="challengesHeaderText"
+                                    name="challengesHeaderText"
+                                    defaultValue={challengesHeaderText}
+                                    onChange={(e) => setChallengesHeaderText(e.target.value)}
+                                    className="mt-1 p-2 min-w-[200px] border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                                />
+                            </div>
+
+
                             {/* Text Input */}
                             <div className="">
                                 <label htmlFor="textInput" className="block text-lg font-semibold text-gray-700">
@@ -535,10 +632,10 @@ const DashboardTheme = (
                                 </label>
                                 <input
                                     type="text"
-                                    id="joinQuestBtnText"
-                                    name="joinQuestBtnText"
-                                    defaultValue={joinQuestBtnText}
-                                    onChange={(e) => setJoinQuestBtnText(e.target.value)}
+                                    id="challengesBtnText"
+                                    name="challengesBtnText"
+                                    defaultValue={challengesBtnText}
+                                    onChange={(e) => setChallengesBtnText(e.target.value)}
                                     className="mt-1 p-2 min-w-[200px] border rounded-md focus:outline-none focus:ring focus:border-blue-300"
                                 />
                             </div>
@@ -550,10 +647,10 @@ const DashboardTheme = (
                                 </label>
                                 <input
                                     type="color"
-                                    id="joinQuestBtnBg"
-                                    name="joinQuestBtnBg"
-                                    defaultValue={joinQuestBtnBg}
-                                    onChange={(e) => setJoinQuestBtnBg(e.target.value)}
+                                    id="challengesBtnBg"
+                                    name="challengesBtnBg"
+                                    defaultValue={challengesBtnBg}
+                                    onChange={(e) => setChallengesBtnBg(e.target.value)}
                                     className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
                                 />
                             </div>
@@ -564,10 +661,25 @@ const DashboardTheme = (
                                 </label>
                                 <input
                                     type="color"
-                                    id="joinQuestCardBg"
-                                    name="joinQuestCardBg"
-                                    defaultValue={joinQuestCardBg}
-                                    onChange={(e) => setJoinQuestCardBg(e.target.value)}
+                                    id="challengesCardBg"
+                                    name="challengesCardBg"
+                                    defaultValue={challengesCardBg}
+                                    onChange={(e) => setChallengesCardBg(e.target.value)}
+                                    className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
+                                />
+                            </div>
+
+
+                            <div className=" flex items-center">
+                                <label htmlFor="colorInput" className="block text-lg font-medium text-gray-700">
+                                    Change Progress
+                                </label>
+                                <input
+                                    type="color"
+                                    id="challengesProgressBg"
+                                    name="challengesProgressBg"
+                                    defaultValue={challengesProgressBg}
+                                    onChange={(e) => setChallengesProgressBg(e.target.value)}
                                     className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
                                 />
                             </div>
@@ -578,10 +690,10 @@ const DashboardTheme = (
                                 </label>
                                 <input
                                     type="color"
-                                    id="joinQuestImgBg"
-                                    name="joinQuestImgBg"
-                                    defaultValue={joinQuestImgBg}
-                                    onChange={(e) => setJoinQuestImgBg(e.target.value)}
+                                    id="challengesImgBg"
+                                    name="challengesImgBg"
+                                    defaultValue={challengesImgBg}
+                                    onChange={(e) => setChallengesImgBg(e.target.value)}
                                     className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
                                 />
                             </div>
@@ -601,10 +713,10 @@ const DashboardTheme = (
                                         />
                                         : <input
                                             type="file"
-                                            id="joinQuestImg"
-                                            name="joinQuestImg"
+                                            id="challengesImg"
+                                            name="challengesImg"
                                             // defaultValue={courseCompletionImg}
-                                            onChange={uploadJoinQuestImg}
+                                            onChange={uploadChallengesImg}
                                             className="ml-2 p-2 w-[200px] border rounded-md focus:outline-none focus:ring focus:border-blue-300"
                                         />
                                 }
@@ -612,6 +724,10 @@ const DashboardTheme = (
                             </div>
                         </div>
                     </div>
+                }
+
+                {
+                    !addChallenges && <div className="mt-24"></div>
                 }
 
 
@@ -643,11 +759,31 @@ const DashboardTheme = (
                     </label>
                 </div>
 
-                <RequestSlots />
+                <RequestSlots
+                    slotsHeaderText={slotsHeaderText}
+                    slotsBtnText={slotsBtnText}
+                    slotsBtnBg={slotsBtnBg}
+                    slotsCardBg={slotsCardBg}
+                />
 
                 {
                     addRequestSlots && <div className="mt-24 w-full mx-auto bg-white py-3 px-5 rounded shadow-md">
-                        <div className="flex justify-between items-center gap-4">
+                        <div className="flex justify-between items-center gap-8">
+                            {/* Text Input */}
+                            <div className="">
+                                <label htmlFor="textInput" className="block text-lg font-semibold text-gray-700">
+                                    Header Text
+                                </label>
+                                <input
+                                    type="text"
+                                    id="slotsHeaderText"
+                                    name="slotsHeaderText"
+                                    defaultValue={slotsHeaderText}
+                                    onChange={(e) => setSlotsHeaderText(e.target.value)}
+                                    className="mt-1 p-2 min-w-[200px] border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                                />
+                            </div>
+
                             {/* Text Input */}
                             <div className="">
                                 <label htmlFor="textInput" className="block text-lg font-semibold text-gray-700">
@@ -655,10 +791,10 @@ const DashboardTheme = (
                                 </label>
                                 <input
                                     type="text"
-                                    id="joinQuestBtnText"
-                                    name="joinQuestBtnText"
-                                    defaultValue={joinQuestBtnText}
-                                    onChange={(e) => setJoinQuestBtnText(e.target.value)}
+                                    id="slotsBtnText"
+                                    name="slotsBtnText"
+                                    defaultValue={slotsBtnText}
+                                    onChange={(e) => setSlotsBtnText(e.target.value)}
                                     className="mt-1 p-2 min-w-[200px] border rounded-md focus:outline-none focus:ring focus:border-blue-300"
                                 />
                             </div>
@@ -670,10 +806,10 @@ const DashboardTheme = (
                                 </label>
                                 <input
                                     type="color"
-                                    id="joinQuestBtnBg"
-                                    name="joinQuestBtnBg"
-                                    defaultValue={joinQuestBtnBg}
-                                    onChange={(e) => setJoinQuestBtnBg(e.target.value)}
+                                    id="slotsBtnBg"
+                                    name="slotsBtnBg"
+                                    defaultValue={slotsBtnBg}
+                                    onChange={(e) => setSlotsBtnBg(e.target.value)}
                                     className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
                                 />
                             </div>
@@ -684,52 +820,14 @@ const DashboardTheme = (
                                 </label>
                                 <input
                                     type="color"
-                                    id="joinQuestCardBg"
-                                    name="joinQuestCardBg"
-                                    defaultValue={joinQuestCardBg}
-                                    onChange={(e) => setJoinQuestCardBg(e.target.value)}
+                                    id="slotsCardBg"
+                                    name="slotsCardBg"
+                                    defaultValue={slotsCardBg}
+                                    onChange={(e) => setSlotsCardBg(e.target.value)}
                                     className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
                                 />
                             </div>
 
-                            <div className=" flex items-center">
-                                <label htmlFor="colorInput" className="block text-lg font-medium text-gray-700">
-                                    Change ImageBg
-                                </label>
-                                <input
-                                    type="color"
-                                    id="joinQuestImgBg"
-                                    name="joinQuestImgBg"
-                                    defaultValue={joinQuestImgBg}
-                                    onChange={(e) => setJoinQuestImgBg(e.target.value)}
-                                    className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
-                                />
-                            </div>
-
-                            {/* Image Input */}
-                            <div className="">
-                                <label htmlFor="imageInput" className="block text-lg font-medium text-gray-700">
-                                    Change Image
-                                </label>
-                                {
-                                    fileLoading ?
-                                        <img
-                                            className="mx-auto animate-ping"
-                                            style={{ height: "30px", width: "30px" }}
-                                            src="https://i.ibb.co/gJLdW8G/cloud-upload-regular-240.png"
-                                            alt=""
-                                        />
-                                        : <input
-                                            type="file"
-                                            id="joinQuestImg"
-                                            name="joinQuestImg"
-                                            // defaultValue={courseCompletionImg}
-                                            onChange={uploadJoinQuestImg}
-                                            className="ml-2 p-2 w-[200px] border rounded-md focus:outline-none focus:ring focus:border-blue-300"
-                                        />
-                                }
-
-                            </div>
                         </div>
                     </div>
                 }
