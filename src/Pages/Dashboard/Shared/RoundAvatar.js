@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 const RoundAvatar = ({ name, imageSrc, avatarBg }) => {
+    
     const [isImageLoaded, setIsImageLoaded] = useState(false);
 
     const handleImageLoad = () => {

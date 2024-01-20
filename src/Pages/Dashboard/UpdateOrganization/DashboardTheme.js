@@ -5,6 +5,8 @@ import CourseCompletion from './DashboardThemeComponents/CourseCompletion';
 import uploadFileToS3 from '../../UploadComponent/s3Uploader';
 import OpenBox from './DashboardThemeComponents/OpenBox';
 import JoinQuest from './DashboardThemeComponents/JoinQuest';
+import Challenges from './DashboardThemeComponents/Challenges';
+import RequestSlots from './DashboardThemeComponents/RequestSlots';
 
 const DashboardTheme = (
     { userInfo,
@@ -12,14 +14,19 @@ const DashboardTheme = (
         orgLogoUrl,
         loginSidebarImage,
         titlesColor,
-        dashboardTheme }) => {
+        dashboardTheme,
+        setDashboardTheme
+    }) => {
 
     const [courseCompletionText, setCourseCompletionText] = useState(dashboardTheme?.courseCompletionText || "Your course is");
     const [courseCompletionBgColor, setCourseCompletionBgColor] = useState(dashboardTheme?.courseCompletionBgColor || "#3E4DAC");
-    const [addCourseCompletion, setAddCourseCompletion] = useState(true);
-    const [addOpenBox, setAddOpenBox] = useState(true);
-    const [addJoinQuest, setAddJoinQuest] = useState(true);
-    const [isAvatar, setIsAvatar] = useState(false);
+    const [courseCompletionDesign, setCourseCompletionDesign] = useState(dashboardTheme?.courseCompletionDesign || true);
+    const [addCourseCompletion, setAddCourseCompletion] = useState(dashboardTheme?.addCourseCompletion || true);
+    const [addOpenBox, setAddOpenBox] = useState(dashboardTheme?.addOpenBox || true);
+    const [addJoinQuest, setAddJoinQuest] = useState(dashboardTheme?.addJoinQuest || true);
+    const [addChallenges, setAddChallenges] = useState(dashboardTheme?.addChallenges || true);
+    const [addRequestSlots, setAddRequestSlots] = useState(dashboardTheme?.addRequestSlots || true);
+    const [isAvatar, setIsAvatar] = useState(dashboardTheme?.isAvatar || false);
     const [avatarBg, setAvatarBg] = useState(dashboardTheme?.avatarBg || "#32CD62");
     const [openBoxButtonText, setOpenBoxButtonText] = useState(dashboardTheme?.openBoxButtonText || "Open Box");
     const [openBoxImage, setOpenBoxImage] = useState(dashboardTheme?.openBoxImage || null);
@@ -31,23 +38,37 @@ const DashboardTheme = (
     const [joinQuestCardBg, setJoinQuestCardBg] = useState(dashboardTheme?.joinQuestCardBg || "#0F3934");
     const [joinQuestImgBg, setJoinQuestImgBg] = useState(dashboardTheme?.joinQuestImgBg || "#FF74BE");
     const [joinQuestImg, setJoinQuestImg] = useState(dashboardTheme?.joinQuestImg || null);
+    const [challengesHeaderText, setChallengesHeaderText] = useState(dashboardTheme?.challengesHeaderText || "Challenges");
+    const [challengesBtnText, setChallengesBtnText] = useState(dashboardTheme?.challengesBtnText || "Complete Challenge");
+    const [challengesBtnBg, setChallengesBtnBg] = useState(dashboardTheme?.challengesBtnBg || "#FFDB70");
+    const [challengesCardBg, setChallengesCardBg] = useState(dashboardTheme?.challengesCardBg || "#2B0825");
+    const [challengesProgressBg, setChallengesProgressBg] = useState(dashboardTheme?.challengesProgressBg || "#3E4DAC");
+    const [challengesImgBg, setChallengesImgBg] = useState(dashboardTheme?.challengesImgBg || "#FF881B");
+    const [challengesImg, setChallengesImg] = useState(dashboardTheme?.challengesImg || null);
+    const [slotsHeaderText, setSlotsHeaderText] = useState(dashboardTheme?.slotsHeaderText || "Request Slots");
+    const [slotsBtnText, setSlotsBtnText] = useState(dashboardTheme?.slotsBtnText || "Request Event");
+    const [slotsBtnBg, setSlotsBtnBg] = useState(dashboardTheme?.slotsBtnBg || "#3E4DAC");
+    const [slotsCardBg, setSlotsCardBg] = useState(dashboardTheme?.slotsCardBg || "#0E2749");
+
+    console.log(dashboardTheme);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const form = event.target;
+        // const form = event.target;
 
         const orgInfo = {
             organizationName: orgData?.organizationName,
             email: orgData?.email,
-            loginTitle: form.loginTitle?.value,
-            loginSubTitle: form.loginSubTitle?.value,
+            loginTitle: orgData?.loginTitle,
+            loginSubTitle: orgData?.loginSubTitle,
             org_logo: orgLogoUrl,
             loginSidebarImage: loginSidebarImage,
             titlesColor: titlesColor,
-            DashboardTheme: {
+            dashboardTheme: {
                 addCourseCompletion,
                 courseCompletionBgColor,
                 courseCompletionText,
+                courseCompletionDesign,
                 isAvatar,
                 avatarBg,
                 addOpenBox,
@@ -60,20 +81,34 @@ const DashboardTheme = (
                 joinQuestBtnBg,
                 joinQuestCardBg,
                 joinQuestImgBg,
-                joinQuestImg
+                joinQuestImg,
+                addChallenges,
+                challengesHeaderText,
+                challengesBtnText,
+                challengesBtnBg,
+                challengesCardBg,
+                challengesProgressBg,
+                challengesImgBg,
+                challengesImg,
+                addRequestSlots,
+                slotsHeaderText,
+                slotsBtnText,
+                slotsBtnBg,
+                slotsCardBg
             }
         };
-        console.log(orgInfo);
+        // console.log("Data ==========>",orgInfo);
 
-        // const updateOrg = await axios.put(
-        //     `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${orgData?._id}`,
-        //     orgInfo
-        // );
+        const updateOrg = await axios.put(
+            `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${orgData?._id}`,
+            orgInfo
+        );
 
-        // if (updateOrg?.data?.acknowledged) {
-        //     toast.success("Organization edited Successfully");
-        //     // event.target.reset();
-        // }
+        if (updateOrg?.data?.acknowledged) {
+            setDashboardTheme(orgInfo?.dashboardTheme);
+            toast.success("Organization edited Successfully");
+            // event.target.reset();
+        }
     };
 
     const handleAddCourseCompletion = () => {
@@ -87,6 +122,16 @@ const DashboardTheme = (
 
     const handleAddJoinQuest = () => {
         setAddJoinQuest(!addJoinQuest);
+    };
+
+
+    const handleAddChallenges = () => {
+        setAddChallenges(!addChallenges);
+    };
+
+
+    const handleAddRequestSlots = () => {
+        setAddRequestSlots(!addRequestSlots);
     };
 
 
@@ -112,6 +157,20 @@ const DashboardTheme = (
             const res = await uploadFileToS3(files[0]);
             if (res) {
                 setJoinQuestImg(res);
+            }
+        }
+        setFileLoading(false);
+    };
+
+
+    const uploadChallengesImg = async (e) => {
+        e.preventDefault();
+        setFileLoading(true);
+        const files = e.target.files;
+        if (files[0]) {
+            const res = await uploadFileToS3(files[0]);
+            if (res) {
+                setChallengesImg(res);
             }
         }
         setFileLoading(false);
@@ -156,6 +215,7 @@ const DashboardTheme = (
                     courseCompletionBgColor={courseCompletionBgColor}
                     isAvatar={isAvatar}
                     avatarBg={avatarBg}
+                    courseCompletionDesign={courseCompletionDesign}
                 />
                 {/* Design End*/}
 
@@ -193,6 +253,34 @@ const DashboardTheme = (
                                     className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
                                 />
                             </div>
+
+
+                            <div className="flex flex-col items-start">
+                                <label className="block text-lg font-medium text-gray-700">Design</label>
+                                <div className="ml-2 flex items-center space-x-4">
+                                    <label className="flex items-center">
+                                        <input
+                                            type="radio"
+                                            name="courseCompletionDesign"
+                                            checked={courseCompletionDesign}
+                                            onChange={() => setCourseCompletionDesign(!courseCompletionDesign)}
+                                            className="mr-1"
+                                        />
+                                        <span>Add</span>
+                                    </label>
+                                    <label className="flex items-center">
+                                        <input
+                                            type="radio"
+                                            name="courseCompletionDesign"
+                                            className="mr-1"
+                                            checked={!courseCompletionDesign}
+                                            onChange={() => setCourseCompletionDesign(!courseCompletionDesign)}
+                                        />
+                                        <span>Remove</span>
+                                    </label>
+                                </div>
+                            </div>
+
 
                             {/* Avatar Type Input */}
                             <div className="flex flex-col items-start">
@@ -290,6 +378,7 @@ const DashboardTheme = (
                                     id="openBoxButtonText"
                                     name="openBoxButtonText"
                                     defaultValue={openBoxButtonText}
+                                    maxLength="10"
                                     onChange={(e) => setOpenBoxButtonText(e.target.value)}
                                     className="mt-1 p-2 min-w-[200px] border rounded-md focus:outline-none focus:ring focus:border-blue-300"
                                 />
@@ -400,6 +489,7 @@ const DashboardTheme = (
                                     type="text"
                                     id="joinQuestBtnText"
                                     name="joinQuestBtnText"
+                                    maxLength="10"
                                     defaultValue={joinQuestBtnText}
                                     onChange={(e) => setJoinQuestBtnText(e.target.value)}
                                     className="mt-1 p-2 min-w-[200px] border rounded-md focus:outline-none focus:ring focus:border-blue-300"
@@ -479,6 +569,275 @@ const DashboardTheme = (
 
 
                 {/* Join Quest End */}
+
+
+                {/* Challenges Start */}
+
+                <div className='my-8'>
+                    <label htmlFor="challengesToggle" className="flex items-center cursor-pointer">
+                        <div className="relative">
+                            <input
+                                type="checkbox"
+                                id="challengesToggle"
+                                className="sr-only"
+                                checked={addChallenges}
+                                onChange={handleAddChallenges}
+                            />
+                            <div className="block bg-gray-600 w-14 h-8 rounded-full"></div>
+                            <div
+                                className={`${addChallenges ? 'bg-green translate-x-full' : 'bg-gray-300 translate-x-0'
+                                    } absolute left-1 top-1 w-6 h-6 rounded-full transition-transform transform ease-in-out duration-300`}
+                            >
+                            </div>
+                        </div>
+                        <div className="ml-3 text-gray-700 font-semibold text-xl">
+                            {!addChallenges ? "Add Section" : "Remove Section"}
+                        </div>
+                    </label>
+                </div>
+
+                <Challenges
+                    challengesHeaderText={challengesHeaderText}
+                    challengesBtnText={challengesBtnText}
+                    challengesBtnBg={challengesBtnBg}
+                    challengesCardBg={challengesCardBg}
+                    challengesProgressBg={challengesProgressBg}
+                    challengesImgBg={challengesImgBg}
+                    challengesImg={challengesImg}
+                />
+
+                {
+                    addChallenges && <div className="mt-24 w-full mx-auto bg-white py-3 px-5 rounded shadow-md">
+                        <div className="flex items-center gap-8 flex-wrap">
+                            {/* Text Input */}
+                            <div className="">
+                                <label htmlFor="textInput" className="block text-lg font-semibold text-gray-700">
+                                    Header Text
+                                </label>
+                                <input
+                                    type="text"
+                                    id="challengesHeaderText"
+                                    name="challengesHeaderText"
+                                    defaultValue={challengesHeaderText}
+                                    onChange={(e) => setChallengesHeaderText(e.target.value)}
+                                    className="mt-1 p-2 min-w-[200px] border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                                />
+                            </div>
+
+
+                            {/* Text Input */}
+                            <div className="">
+                                <label htmlFor="textInput" className="block text-lg font-semibold text-gray-700">
+                                    Button Text
+                                </label>
+                                <input
+                                    type="text"
+                                    id="challengesBtnText"
+                                    name="challengesBtnText"
+                                    maxLength="20"
+                                    defaultValue={challengesBtnText}
+                                    onChange={(e) => setChallengesBtnText(e.target.value)}
+                                    className="mt-1 p-2 min-w-[200px] border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                                />
+                            </div>
+
+                            {/* Color Input */}
+                            <div className=" flex items-center">
+                                <label htmlFor="colorInput" className="block text-lg font-medium text-gray-700">
+                                    Change Button
+                                </label>
+                                <input
+                                    type="color"
+                                    id="challengesBtnBg"
+                                    name="challengesBtnBg"
+                                    defaultValue={challengesBtnBg}
+                                    onChange={(e) => setChallengesBtnBg(e.target.value)}
+                                    className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
+                                />
+                            </div>
+
+                            <div className=" flex items-center">
+                                <label htmlFor="colorInput" className="block text-lg font-medium text-gray-700">
+                                    Change Card
+                                </label>
+                                <input
+                                    type="color"
+                                    id="challengesCardBg"
+                                    name="challengesCardBg"
+                                    defaultValue={challengesCardBg}
+                                    onChange={(e) => setChallengesCardBg(e.target.value)}
+                                    className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
+                                />
+                            </div>
+
+
+                            <div className=" flex items-center">
+                                <label htmlFor="colorInput" className="block text-lg font-medium text-gray-700">
+                                    Change Progress
+                                </label>
+                                <input
+                                    type="color"
+                                    id="challengesProgressBg"
+                                    name="challengesProgressBg"
+                                    defaultValue={challengesProgressBg}
+                                    onChange={(e) => setChallengesProgressBg(e.target.value)}
+                                    className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
+                                />
+                            </div>
+
+                            <div className=" flex items-center">
+                                <label htmlFor="colorInput" className="block text-lg font-medium text-gray-700">
+                                    Change ImageBg
+                                </label>
+                                <input
+                                    type="color"
+                                    id="challengesImgBg"
+                                    name="challengesImgBg"
+                                    defaultValue={challengesImgBg}
+                                    onChange={(e) => setChallengesImgBg(e.target.value)}
+                                    className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
+                                />
+                            </div>
+
+                            {/* Image Input */}
+                            <div className="">
+                                <label htmlFor="imageInput" className="block text-lg font-medium text-gray-700">
+                                    Change Image
+                                </label>
+                                {
+                                    fileLoading ?
+                                        <img
+                                            className="mx-auto animate-ping"
+                                            style={{ height: "30px", width: "30px" }}
+                                            src="https://i.ibb.co/gJLdW8G/cloud-upload-regular-240.png"
+                                            alt=""
+                                        />
+                                        : <input
+                                            type="file"
+                                            id="challengesImg"
+                                            name="challengesImg"
+                                            // defaultValue={courseCompletionImg}
+                                            onChange={uploadChallengesImg}
+                                            className="ml-2 p-2 w-[200px] border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                                        />
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                {
+                    !addChallenges && <div className="mt-24"></div>
+                }
+
+
+                {/* Challenges End */}
+
+
+                {/* Request Slots Start */}
+
+                <div className='my-8'>
+                    <label htmlFor="requestSlotsToggle" className="flex items-center cursor-pointer">
+                        <div className="relative">
+                            <input
+                                type="checkbox"
+                                id="requestSlotsToggle"
+                                className="sr-only"
+                                checked={addRequestSlots}
+                                onChange={handleAddRequestSlots}
+                            />
+                            <div className="block bg-gray-600 w-14 h-8 rounded-full"></div>
+                            <div
+                                className={`${addRequestSlots ? 'bg-green translate-x-full' : 'bg-gray-300 translate-x-0'
+                                    } absolute left-1 top-1 w-6 h-6 rounded-full transition-transform transform ease-in-out duration-300`}
+                            >
+                            </div>
+                        </div>
+                        <div className="ml-3 text-gray-700 font-semibold text-xl">
+                            {!addRequestSlots ? "Add Section" : "Remove Section"}
+                        </div>
+                    </label>
+                </div>
+
+                <RequestSlots
+                    slotsHeaderText={slotsHeaderText}
+                    slotsBtnText={slotsBtnText}
+                    slotsBtnBg={slotsBtnBg}
+                    slotsCardBg={slotsCardBg}
+                />
+
+                {
+                    addRequestSlots && <div className="mt-24 w-full mx-auto bg-white py-3 px-5 rounded shadow-md">
+                        <div className="flex justify-between items-center gap-8">
+                            {/* Text Input */}
+                            <div className="">
+                                <label htmlFor="textInput" className="block text-lg font-semibold text-gray-700">
+                                    Header Text
+                                </label>
+                                <input
+                                    type="text"
+                                    id="slotsHeaderText"
+                                    name="slotsHeaderText"
+                                    defaultValue={slotsHeaderText}
+                                    onChange={(e) => setSlotsHeaderText(e.target.value)}
+                                    className="mt-1 p-2 min-w-[200px] border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                                />
+                            </div>
+
+                            {/* Text Input */}
+                            <div className="">
+                                <label htmlFor="textInput" className="block text-lg font-semibold text-gray-700">
+                                    Button Text
+                                </label>
+                                <input
+                                    type="text"
+                                    id="slotsBtnText"
+                                    name="slotsBtnText"
+                                    maxLength="20"
+                                    defaultValue={slotsBtnText}
+                                    onChange={(e) => setSlotsBtnText(e.target.value)}
+                                    className="mt-1 p-2 min-w-[200px] border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                                />
+                            </div>
+
+                            {/* Color Input */}
+                            <div className=" flex items-center">
+                                <label htmlFor="colorInput" className="block text-lg font-medium text-gray-700">
+                                    Change Button
+                                </label>
+                                <input
+                                    type="color"
+                                    id="slotsBtnBg"
+                                    name="slotsBtnBg"
+                                    defaultValue={slotsBtnBg}
+                                    onChange={(e) => setSlotsBtnBg(e.target.value)}
+                                    className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
+                                />
+                            </div>
+
+                            <div className=" flex items-center">
+                                <label htmlFor="colorInput" className="block text-lg font-medium text-gray-700">
+                                    Change Card
+                                </label>
+                                <input
+                                    type="color"
+                                    id="slotsCardBg"
+                                    name="slotsCardBg"
+                                    defaultValue={slotsCardBg}
+                                    onChange={(e) => setSlotsCardBg(e.target.value)}
+                                    className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
+                                />
+                            </div>
+
+                        </div>
+                    </div>
+                }
+                {
+                    !addRequestSlots && <div className="mt-20"></div>
+                }
+
+                {/* Request Slots End */}
 
 
                 {/* Submit Button */}

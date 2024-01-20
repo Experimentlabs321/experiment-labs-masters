@@ -19,6 +19,7 @@ import Typography from "@mui/material/Typography";
 import DialogLayout from "../Shared/DialogLayout";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import { Link } from "react-router-dom";
+import RoundAvatar from '../../Dashboard/Shared/RoundAvatar';
 
 // Define a custom theme
 const theme = createTheme({
@@ -87,6 +88,7 @@ const DashboardUserUpdate = ({
   selectedCourse,
   weeks,
   currentCourseCompletion,
+  dashboardTheme
 }) => {
   const { userInfo } = useContext(AuthContext);
   const [currentWeek, setCurrentWeek] = useState({});
@@ -100,6 +102,9 @@ const DashboardUserUpdate = ({
       }
     });
   }, [weeks]);
+
+  const { isAvatar, courseCompletionText, courseCompletionBgColor, avatarBg, addCourseCompletion, courseCompletionDesign, openBoxButtonText, openBoxImage, openBoxButtonBg, openBoxCardBg, addOpenBox, addJoinQuest, joinQuestBtnText, joinQuestBtnBg, joinQuestCardBg, joinQuestImgBg, joinQuestImg } = dashboardTheme;
+  // console.log(dashboardTheme);
 
   return (
     <div>
@@ -159,29 +164,61 @@ const DashboardUserUpdate = ({
           </ul>
         )}
       </div>
-      <div>
-        <div
-          style={{
-            filter: "drop-shadow(3.75217px 3.75217px 0px #000000)",
-          }}
-          className="bg-[#3E4DAC] h-[132px] lg:h-[185px] mt-[20px] lg:mt-[80px] rounded-[14px]"
-        >
-          <img
-            className=" float-left mt-[-50px] hidden lg:block"
-            src={dashboardImages?.userImg}
-            alt="person"
-          />
-          <img
-            className=" float-left mt-[-13px] lg:hidden"
-            src={dashboardImages?.userImgMobile}
-            alt="person"
-          />
-          <div className="flex flex-col lg:flex-row items-center justify-center gap-3 lg:justify-around h-full">
-            <h1 className="lg:text-[26px] text-[15px] font-[600] text-white text-center z-[1]">
-              Your course is{" "}
-              <span className="text-[#FFDB70]">{currentCourseCompletion}%</span>{" "}
-              complete
-            </h1>
+
+
+      {
+        addCourseCompletion &&
+        <div>
+          <div
+            style={{
+              filter: "drop-shadow(3.75217px 3.75217px 0px #000000)",
+              backgroundColor: courseCompletionBgColor
+            }}
+            className="h-[132px] lg:h-[185px] mt-[20px] lg:mt-[80px] rounded-[14px]"
+          >
+
+            {!isAvatar ?
+              <>
+                <img
+                  className="float-left mt-[-50px] hidden lg:block"
+                  src={dashboardImages?.userImg}
+                  alt="person"
+                />
+
+                <img
+                  className=" float-left mt-[-13px] lg:hidden"
+                  src={dashboardImages?.userImgMobile}
+                  alt="person"
+                />
+                <div className="flex flex-col lg:flex-row items-center justify-center gap-3 lg:justify-around h-full">
+                  <h1 className="lg:text-[26px] text-[15px] font-[600] text-white text-center z-[1]">
+                    {courseCompletionText}{" "}
+                    <span className="text-[#FFDB70]">0%</span>{" "}
+                    complete
+                  </h1>
+                </div>
+              </>
+              :
+              <>
+                <div className="float-left hidden lg:flex h-full ml-4 items-center">
+                  <RoundAvatar name={userInfo?.name} avatarBg={avatarBg} imageSrc="" />
+                </div>
+                <div className="flex flex-col lg:flex-row items-center justify-center gap-3 lg:justify-around h-full">
+                  <h1 className="lg:text-[26px] text-[15px] font-[600] text-white text-center z-[1]">
+                    {courseCompletionText}{" "}
+                    <span className="text-[#FFDB70]">0%</span>{" "}
+                    complete
+                  </h1>
+                </div>
+              </>
+
+            }
+            {/* <div className="flex flex-col lg:flex-row items-center justify-center gap-3 lg:justify-around h-full">
+              <h1 className="lg:text-[26px] text-[15px] font-[600] text-white text-center z-[1]">
+                {courseCompletionText}{" "}
+                <span className="text-[#FFDB70]">{currentCourseCompletion}%</span>{" "}
+                complete
+              </h1> */}
             {/* <DashboardPrimaryButton
               bgColor="#FFDB70"
               shadow="0px 7.50435px 0px #F08323"
@@ -205,73 +242,95 @@ const DashboardUserUpdate = ({
             <Button variant="outlined" onClick={handleClickOpen}>
               Open dialog
             </Button> */}
-          </div>
-          <img
-            className=" absolute left-32 lg:left-60 top-0 z-0 w-[22px] lg:w-[57px]"
-            src={Flower}
-            alt="Flower"
-          />
-          <img
-            className=" absolute bottom-1 right-8 lg:right-52 z-0 w-[22px] lg:w-[57px]"
-            src={Star}
-            alt="Star"
-          />
-          <img
-            className=" absolute top-0 right-0 z-0 w-[22px] lg:w-[57px]"
-            src={Flower1}
-            alt="Flower1"
-          />
-        </div>
-      </div>
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mt-[50px]">
-        <div
-          style={{
-            filter: "drop-shadow(3.75217px 3.75217px 0px #000000)",
-          }}
-          className="bg-[#FFC7C7] py-[30px] px-[30px] flex flex-col justify-between items-center gap-8 rounded-[14px]"
-        >
-          <img src={dashboardImages?.treasureImg} alt="open box" />
-          <DashboardPrimaryButton
-            bgColor="#3E4DAC"
-            shadow="0px 5.85246px 0px #CA5F98"
-          >
-            <p className="flex items-center text-white justify-center">
-              Open Box
-            </p>
-          </DashboardPrimaryButton>
-        </div>
-        <div
-          style={{
-            filter: "drop-shadow(3.75217px 3.75217px 0px #000000)",
-          }}
-          className="lg:col-span-2 flex flex-col lg:flex-row items-center bg-[#0F3934] rounded-[14px] px-[12px] lg:px-[32px] py-[23px] lg:py-[54px] gap-3"
-        >
-          <div className="bg-[#FF74BE] rounded-md h-full flex items-center justify-center">
-            <img src={dashboardImages?.questImg} alt="WeekUpdate" />
-          </div>
-          <div className="flex flex-col gap-3">
-            <h1 className="text-white text-[13px] lg:text-[22px] font-[700] text-center lg:text-left">
-              {currentWeek?.weekName}
-            </h1>
-            <DashboardPrimaryButton
-              bgColor="#FFDB70"
-              shadow="0px 7.50435px 0px #F08323"
-              classes="mb-[12px]"
-            >
-              <Link
-                to={`/questLevels/${selectedCourse?._id}`}
-                className="flex items-center justify-center "
-              >
-                Join Quest{" "}
+            {/* </div> */}
+            {
+              courseCompletionDesign &&
+              <>
                 <img
-                  className="pl-1 w-[21px] lg:w-[32px]"
-                  src={RightArrowBlack}
-                  alt="RightArrowBlack"
+                  className=" absolute left-32 lg:left-60 top-0 z-0 w-[22px] lg:w-[57px]"
+                  src={Flower}
+                  alt="Flower"
                 />
-              </Link>
+                <img
+                  className=" absolute bottom-1 right-8 lg:right-52 z-0 w-[22px] lg:w-[57px]"
+                  src={Star}
+                  alt="Star"
+                />
+                <img
+                  className=" absolute top-0 right-0 z-0 w-[22px] lg:w-[57px]"
+                  src={Flower1}
+                  alt="Flower1"
+                />
+              </>
+            }
+          </div>
+        </div>
+      }
+
+
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mt-[50px]">
+        {
+          addOpenBox &&
+          <div
+            style={{
+              filter: "drop-shadow(3.75217px 3.75217px 0px #000000)",
+              backgroundColor: openBoxCardBg
+            }}
+            className="py-[30px] px-[30px] flex flex-col justify-between items-center gap-8 rounded-[14px]"
+          >
+            <img className='h-24' src={openBoxImage || dashboardImages?.treasureImg} alt="open box" />
+            <DashboardPrimaryButton
+              bgColor={openBoxButtonBg}
+              shadow="0px 5.85246px 0px #CA5F98"
+            >
+              <p className="flex items-center text-white justify-center">
+                {openBoxButtonText}
+              </p>
             </DashboardPrimaryButton>
           </div>
-        </div>
+        }
+
+
+
+        {
+          addJoinQuest &&
+          <div
+            style={{
+              filter: "drop-shadow(3.75217px 3.75217px 0px #000000)",
+              backgroundColor: joinQuestCardBg
+            }}
+            className="lg:col-span-2 flex flex-col lg:flex-row items-center rounded-[14px] px-[12px] lg:px-[32px] py-[23px] lg:py-[54px] gap-3"
+          >
+            <div style={{ backgroundColor: joinQuestImgBg }} className="rounded-md h-full flex items-center justify-center">
+              <img className='max-h-[137px]' src={joinQuestImg || dashboardImages?.questImg} alt="WeekUpdate" />
+            </div>
+            <div className="flex flex-col gap-3">
+              <h1 className="text-white text-[13px] lg:text-[22px] font-[700] text-center lg:text-left">
+                {currentWeek?.weekName}
+              </h1>
+              <DashboardPrimaryButton
+                bgColor={joinQuestBtnBg}
+                shadow="0px 7.50435px 0px #F08323"
+                classes="mb-[12px]"
+              >
+                <Link
+                  to={`/questLevels/${selectedCourse?._id}`}
+                  className="flex items-center justify-center "
+                >
+                  {joinQuestBtnText}{" "}
+                  <img
+                    className="pl-1 w-[21px] lg:w-[32px]"
+                    src={RightArrowBlack}
+                    alt="RightArrowBlack"
+                  />
+                </Link>
+              </DashboardPrimaryButton>
+            </div>
+          </div>
+        }
+
+
+
       </div>
     </div>
   );
