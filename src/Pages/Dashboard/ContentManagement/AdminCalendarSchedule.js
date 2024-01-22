@@ -342,8 +342,8 @@ const AdminCalendarSchedule = () => {
   function renderEventContent(eventInfo) {
     // console.log(eventInfo?.event.start);
 
-    const formattedStartDate = eventInfo?.event?.start?.toLocaleTimeString();
-    const formattedEndDate = eventInfo?.event?.end?.toLocaleTimeString();
+    const formattedStartDate = eventInfo?.event?.start?.toUTCString();
+    const formattedEndDate = eventInfo?.event?.end?.toUTCString();
     const meetlink = eventInfo?.event?.extendedProps?.link;
 
 
@@ -357,16 +357,16 @@ const AdminCalendarSchedule = () => {
     return (
       <div
         style={{
+          width: '100%',
           backgroundColor: 'blue', // Set the background color of the event
           color: 'white', // Set the text color of the event
           borderRadius: '5px',
           paddingLeft: '5px',
-          paddingRight: '5px',
         }}
       >
         <h1>{eventInfo?.event?.title}</h1>
-        <p>Start time : {formattedStartDate}</p>
-        <p>End time : {formattedEndDate}</p>
+        <p>Start time : <br></br>{formattedStartDate}</p>
+        <p>End time : <br></br>{formattedEndDate}</p>
         <a target="_blank" href={meetlink} rel="noreferrer">Google Meet</a>
       </div>
     );
