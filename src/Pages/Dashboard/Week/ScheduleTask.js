@@ -21,26 +21,55 @@ import Swal from "sweetalert2";
 import { gapi } from "gapi-script";
 import DashboardPrimaryButton from "../Shared/DashboardPrimaryButton";
 
-const customStyles = {
-  overlay: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Set the background color and opacity of the overlay
-    zIndex: 1000, // Set a higher z-index value
-  },
-  content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
-    backgroundColor: 'white', // Set the background color of the modal content
-    border: '1px solid #ccc',
-    borderRadius: '5px',
-    padding: '10px',
-    zIndex: 1001, // Set a higher z-index value
-  },
+
+let matching = false;
+const matchInputWithBusySlots = (inputDate, inputTime, busyTimeSlots) => {
+  let flag = 0;
+  const inputDateTime = new Date(`${inputDate}T${inputTime}`);
+  console.log('Input DateTime:', inputDateTime);
+
+  // Extract date and time separately
+  const inputDateString = inputDateTime.toDateString();
+  const inputTimeString = inputDateTime.toTimeString();
+
+
+
+  const isMatch = busyTimeSlots.some((busySlot) => {
+    const busyStartDateTimeString = busySlot.start.dateTime;
+    const busyEndDateTimeString = busySlot.end.dateTime;
+    // console.log("busystart",busyStartDateTimeString);
+    const busyStartDateString = busyStartDateTimeString.substring(0, 16).replace(',', '');
+    const dateParts = busyStartDateString.split(' ');
+    const busyStartDateStringFormatted = `${dateParts[0]} ${dateParts[2][0].toUpperCase() + dateParts[2].substring(1)} ${dateParts[1]} ${dateParts[3]}`;
+    console.log('Input Date:', inputDateString);
+    console.log('Busy Date:', busyStartDateStringFormatted);
+    if (inputDateString === busyStartDateStringFormatted) {
+      flag = 1;
+    }
+    const busyStartTime = busyStartDateTimeString.split(' ')[4];
+    console.log('busy start: ', busyStartTime);
+    const busyEndTime = busyEndDateTimeString.split(' ')[4];
+ 
+    console.log(flag);
+    return (
+      flag === 1 &&
+      inputTimeString >= busyStartTime &&
+      inputTimeString <= busyEndTime
+    );
+  });
+
+  if (isMatch) {
+    matching = true;
+  } else {
+    matching = false;
+  }
 };
+
 const ScheduleTask = ({ taskData, week }) => {
+  const adminMail = taskData?.usersession?.user?.email;
+  console.log(adminMail);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
+  const [busyTimeSlots, setBusyTimeSlots] = useState([]);
   console.log("Task data ", taskData)
   const { user, userInfo } = useContext(AuthContext);
   if (userInfo.role !== 'admin') {
@@ -48,7 +77,7 @@ const ScheduleTask = ({ taskData, week }) => {
       e.preventDefault();
     });
   };
- 
+
   const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
   const [date, setDate] = useState(""); // State for the date
   const [time, setTime] = useState(""); // State for the time
@@ -59,44 +88,64 @@ const ScheduleTask = ({ taskData, week }) => {
 
   const handleDateChange = (event) => {
     setDate(event.target.value);
+    matchInputWithBusySlots(event.target.value, time, busyTimeSlots);
   };
 
   // Update the time state when the time input changes
   const handleTimeChange = (event) => {
     setTime(event.target.value);
+    console.log("handletimechange", event.target.value);
+    matchInputWithBusySlots(date, event.target.value, busyTimeSlots);
   };
 
   useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_BACKEND_API}/events`)
-      .then((response) => {
-        console.log("API Response:", response.data); // Log the response data
-        const busyTimeSlots = response?.data?.map((event) => {
-          // Use the correct property for date and time based on the event structure
-          const startDateTime = event.start.dateTime || event.start; 
-          const endDateTime = event.end.dateTime || event.end;
-        
-          return {
-            start: new Date(startDateTime),
-            end: new Date(endDateTime),
-          };
-        });
+    const busyTimeSlots = taskData?.events?.map((event) => {
+      // Use the correct property for date and time based on the event structure
+      const startDateTime = event.start?.dateTime || event.start;
+
+      // Ensure that startDateTime is defined before proceeding
+      if (!startDateTime) {
+        return null; // Skip events without a valid startDateTime
+      }
+
+      const endDateTime = event.end?.dateTime || event.end;
+
+      const startDate = new Date(startDateTime);
+      const startTime = startDate.toUTCString();
+
+      const endDate = new Date(endDateTime);
+      const endTime = endDate.toUTCString();
+
   
-        console.log("Busy Time Slots:", busyTimeSlots); // Log the busy time slots
-  
-        // Assuming week.start and week.end are available as Date objects
-        const allTimeSlots = generateAllTimeSlots(week.start, week.end);
-  
-        console.log("All Time Slots:", allTimeSlots); // Log all time slots
-  
-        const filteredTimeSlots = filterBusyTimeSlots(allTimeSlots, busyTimeSlots);
-  
-        console.log("Filtered Time Slots:", filteredTimeSlots); // Log the filtered time slots
-  
-        setAvailableTimeSlots(filteredTimeSlots);
-      })
-      .catch((error) => console.error(error));
-  }, [week]);
+
+      return {
+        start: {
+          dateTime: startTime,
+          // time: startTimeString,
+        },
+        end: {
+          dateTime: endTime,
+          // time: endTimeString,
+        },
+      };
+    }).filter(Boolean);
+
+    console.log("Busy Time Slots:", busyTimeSlots); // Log the busy time slots
+
+    // Assuming week.start and week.end are available as Date objects
+    const allTimeSlots = generateAllTimeSlots(week.start, week.end);
+
+    console.log("All Time Slots:", allTimeSlots); // Log all time slots
+
+    const filteredTimeSlots = filterBusyTimeSlots(allTimeSlots, busyTimeSlots, reservedEvent);
+
+    console.log("Filtered Time Slots:", filteredTimeSlots); // Log the filtered time slots
+
+    setBusyTimeSlots(busyTimeSlots);
+    setAvailableTimeSlots(filteredTimeSlots);
+  }, [taskData,matching]);
+
+
   const generateAllTimeSlots = (start, end) => {
     const timeSlots = [];
     let currentTime = new Date(start);
@@ -110,17 +159,71 @@ const ScheduleTask = ({ taskData, week }) => {
   };
 
   // Function to filter out busy time slots
-  const filterBusyTimeSlots = (allTimeSlots, busyTimeSlots) => {
+  const filterBusyTimeSlots = (allTimeSlots, busyTimeSlots, reservedEvent) => {
     return allTimeSlots.filter((timeSlot) => {
+      // Check if the time slot is within any busy time slots
       for (const busySlot of busyTimeSlots) {
         if (timeSlot >= busySlot.start && timeSlot < busySlot.end) {
           return false; // Remove busy time slots
         }
       }
+
+      // Check if the time slot matches the reserved event's time slot
+      if (reservedEvent && timeSlot >= reservedEvent.start && timeSlot < reservedEvent.end) {
+        return false; // Remove reserved time slot
+      }
+
       return true; // Keep available time slots
     });
   };
-  
+
+  const isTimeSlotBusy = (timeSlot) => {
+    for (const busySlot of busyTimeSlots) {
+      if (
+        timeSlot.getTime() >= busySlot.start.getTime() &&
+        timeSlot.getTime() < busySlot.end.getTime()
+      ) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const isTimeSlotReserved = (timeSlot) => {
+    if (reservedEvent) {
+      const reservedStart = new Date(reservedEvent.start);
+      const reservedEnd = new Date(reservedEvent.end);
+
+      return (
+        timeSlot.getTime() >= reservedStart.getTime() &&
+        timeSlot.getTime() < reservedEnd.getTime()
+      );
+    }
+
+    return false;
+  };
+
+  const handleTimeSlotSelection = (timeSlot) => {
+    // Check if the selected time slot falls within any busy time slots
+    const isBusy = isTimeSlotBusy(timeSlot);
+
+    if (isBusy) {
+      // Additional logic to handle when the selected time slot is busy
+      // For example, you can show a message or disable the button
+      console.log("Selected time slot is busy");
+    } else if (isTimeSlotReserved(timeSlot)) {
+      // Additional logic to handle when the selected time slot is reserved
+      // For example, you can show a message or disable the button
+      console.log("Selected time slot is reserved");
+    } else {
+      // Logic to handle when the selected time slot is available
+      // For example, you can update the UI or perform other actions
+      console.log("Selected time slot is available");
+
+      // Here, you can perform actions for an available time slot, if needed
+      setSelectedTimeSlot(timeSlot);
+    }
+  };
   // useEffect(() => {
   //   axios
   //     .get(`${process.env.REACT_APP_BACKEND_API}/events`)
@@ -136,18 +239,15 @@ const ScheduleTask = ({ taskData, week }) => {
   //     })
   //     .catch((error) => console.error(error));
   // }, []);
-console.log("Available ",availableTimeSlots);
+  console.log("Available ", availableTimeSlots);
 
   const addEvent = async () => {
     if (date && time) {
-      const combinedDateTime = new Date(`${date}T${time}`);
-      const endDateTime = new Date(
-        new Date(`${date}T${time}`).setMinutes(
-          new Date(`${date}T${time}`).getMinutes() + 30
-        )
-      );
+      const combinedDateTimeUTC = new Date(`${date}T${time}Z`);
+const endDateTimeUTC = new Date(combinedDateTimeUTC);
+endDateTimeUTC.setMinutes(endDateTimeUTC.getMinutes() + 30);
       const currentDateTime = new Date();
-      const timeDifferenceInMilliseconds = combinedDateTime - currentDateTime;
+      const timeDifferenceInMilliseconds = combinedDateTimeUTC - currentDateTime;
       if (timeDifferenceInMilliseconds < 0) {
         Swal.fire({
           icon: "error",
@@ -172,18 +272,22 @@ console.log("Available ",availableTimeSlots);
             summary: `${userInfo?.name} <> Experiment Labs`,
             location: "",
             start: {
-              dateTime: combinedDateTime.toISOString(),
+              dateTime: combinedDateTimeUTC.toISOString(),
               timeZone: "UTC",
             },
             end: {
-              dateTime: endDateTime.toISOString(),
+              dateTime: endDateTimeUTC.toISOString(),
               timeZone: "UTC",
             },
             // recurrence: ["RRULE:FREQ=DAILY;COUNT=2"],
             attendees: [
-              { email: "naman.j@experimentlabs.in" },
-              { email: "gaurav@experimentlabs.in" },
+              // { email: "naman.j@experimentlabs.in" },
+              // { email: "gaurav@experimentlabs.in" },
               { email: user?.email },
+              {
+                email: adminMail
+              },
+              { email: "alrafi4@gmail.com" },
             ],
             reminders: {
               useDefault: true,
@@ -212,7 +316,7 @@ console.log("Available ",availableTimeSlots);
                 `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
                 {
                   from: `${user?.email}`,
-                  to: `naman.j@experimentlabs.in,gaurav@experimentlabs.in,${user?.email},shihab77023@gmail.com`,
+                  to: `${user?.email},shihab77023@gmail.com,alrafi4@gmail.com`,
                   subject: `Event request`,
                   message: `A event is going to held for doubt clearing at ${event?.start.toLocaleString()} to ${event?.end.toLocaleTimeString()}. Meeting link ${event?.hangoutLink
                     }`,
@@ -240,16 +344,20 @@ console.log("Available ",availableTimeSlots);
                 (response) => {
                   var event = {
                     title: `${userInfo?.name} <> Experiment Labs <> Doubt clearing <> ${response?.result?.hangoutLink}`,
-                    start: new Date(combinedDateTime),
-                    end: new Date(endDateTime),
+                    start: new Date(combinedDateTimeUTC),
+                    end: new Date(endDateTimeUTC),
                     organization: {
                       organizationId: userInfo?.organizationId,
                       organizationName: userInfo?.organizationName,
                     },
                     attendees: [
-                      { email: "naman.j@experimentlabs.in" },
-                      { email: "gaurav@experimentlabs.in" },
+                      // { email: "naman.j@experimentlabs.in" },
+                      // { email: "gaurav@experimentlabs.in" },
                       { email: user?.email },
+                      { email: "alrafi4@gmail.com" },
+                      {
+                        email: adminMail
+                      },
                     ],
                     weekData: currentWeek,
                     hangoutLink: response?.result?.hangoutLink,
@@ -280,65 +388,20 @@ console.log("Available ",availableTimeSlots);
       });
     }
   };
-  ////////-----------------/////////////
-
-  const [start, setStart] = useState(new Date());
-  const [end, setEnd] = useState(new Date());
-  const [eventName, setEventName] = useState({});
-  const [eventDescription, setEventDescription] = useState("");
-  const [calendarEvents, setCalendarEvents] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(null);
-
-  console.log(eventName);
-
-  function renderEventContent(eventInfo) {
-    // console.log(eventInfo);
-
-    const formattedStartDate = eventInfo?.event?.start?.toLocaleTimeString();
-    const formattedEndDate = eventInfo?.event?.end?.toLocaleTimeString();
-    const meetlink = eventInfo?.event?.extendedProps?.link;
-    return (
-      <div
-        style={{
-          width: '100%',
-          height: '10px',
-          backgroundColor: 'blue', // Set the background color of the event
-          color: 'white', // Set the text color of the event
-          borderRadius: '3px',
-          paddingLeft: '2px',
-          paddingRight: '2px',
-        }}
-      >
-        <p className="w-2 bg-blue"></p>
-        {/* <p>End time : {formattedEndDate}</p> */}
-        {/* <h1>{eventInfo?.event?.status}</h1> */}
-        {/* <p>Start time : {formattedStartDate}</p>
-        <p>End time : {formattedEndDate}</p>
-        <a target="_blank" href={meetlink} rel="noreferrer">Google Meet</a> */}
-      </div>
-    );
-  }
 
 
-  const handleDateClick = (date) => {
-    setSelectedDate(date);
-    setStart(date);
-    setEnd(date);
-    setIsModalOpen(true);
-  };
 
   return (
     <div className="flex justify-center">
       <div className="w-[250px] lg:w-[355px] min-w-[250px] lg:min-w-min h-[370px] lg:h-[515px]">
-        <h1 className="text-[18px] lg:text-[25px] font-[700] text-center pb-[32px]">
+        <h1 className="text-[18px] lg:text-[25px] font-[700] text-center pb-[25px]">
           Request slots
         </h1>
         <div
           style={{
             filter: "drop-shadow(3.75217px 3.75217px 0px #000000)",
           }}
-          className="bg-[#0E2749] w-full h-full rounded-[14px] py-[20px] px-[15px] lg:p-[30px] flex flex-col justify-between items-center gap-5"
+          className="bg-[#0E2749] w-full h-full rounded-[14px] py-[15px] px-[15px] mb-10 lg:p-[30px] flex flex-col justify-between items-center gap-5"
         >
 
           <div className="w-full relative">
@@ -348,7 +411,6 @@ console.log("Available ",availableTimeSlots);
             <div className="relative inline-flex w-full">
               <input
                 required
-                defaultValue={reservedEvent?.start?.slice(0, 10)}
                 onChange={handleDateChange}
                 className=" text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
                 name="date"
@@ -366,7 +428,7 @@ console.log("Available ",availableTimeSlots);
                 className=" text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
                 name="time"
                 // defaultValue={() => {const startEvent = new Date(reservedEvent?.start)?toTimeString().slice(0, 8)}}
-                defaultValue={startTime?.toTimeString().slice(0, 8)}
+
                 id="time"
                 type="time"
               />
@@ -390,21 +452,26 @@ console.log("Available ",availableTimeSlots);
               </p>
             </a>
           ) : (
-            <DashboardPrimaryButton
-              bgColor="#3E4DAC"
-              shadow="0px 6.32482px 0px #CA5F98"
-              width="full"
-              onClick={addEvent}
-            >
-              <p className="flex items-center justify-center text-white">
-                Request Event{" "}
-                <img
-                  className="pl-1 w-[21px] lg:w-[32px]"
-                  src={RightArrowWhite}
-                  alt="RightArrowBlack"
-                />
-              </p>
-            </DashboardPrimaryButton>
+            <>
+              { matching ? <><p className="text-white">Admin is Busy at that time</p>
+              
+              </> : <DashboardPrimaryButton
+                bgColor="#3E4DAC"
+                shadow="0px 6.32482px 0px #CA5F98"
+                width="full"
+                onClick={addEvent}
+                disabled={!selectedTimeSlot || isTimeSlotBusy(selectedTimeSlot) || isTimeSlotReserved(selectedTimeSlot)}
+              >
+                <p className="flex items-center justify-center text-white">
+                  Request Event{" "}
+                  <img
+                    className="pl-1 w-[21px] lg:w-[32px]"
+                    src={RightArrowWhite}
+                    alt="RightArrowBlack"
+                  />
+                </p>
+              </DashboardPrimaryButton>}
+            </>
           )}
 
         </div>
