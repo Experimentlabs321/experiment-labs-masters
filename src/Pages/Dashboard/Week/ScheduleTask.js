@@ -388,7 +388,13 @@ endDateTimeUTC.setMinutes(endDateTimeUTC.getMinutes() + 30);
       });
     }
   };
-
+  const getCurrentDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
 
 
   return (
@@ -412,10 +418,11 @@ endDateTimeUTC.setMinutes(endDateTimeUTC.getMinutes() + 30);
               <input
                 required
                 onChange={handleDateChange}
-                className=" text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
+                className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
                 name="date"
                 id="date"
                 type="date"
+                min={getCurrentDate()}
               />
             </div>
             <p className="text-[#C0C0C0] text-[18px] font-[600] py-[18px]">
