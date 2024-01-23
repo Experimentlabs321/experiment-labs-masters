@@ -192,18 +192,19 @@ const AdminCalendarSchedule = () => {
 
   useEffect(() => {
     if (!session) {
-
+      // If there's no session, sign in again
+      googleSignIn();
     } else {
       // If there's a session, fetch and display events
       fetchAndDisplayGoogleCalendarEvents();
       fetchPrimaryCalendarInfo();
       checkAndRefreshToken(); // Call this function initially
-
+  
       // Set up an interval to periodically refresh the token
       const refreshInterval = setInterval(() => {
         checkAndRefreshToken();
       }, 30 * 60 * 1000); // Refresh every 30 minutes (adjust as needed)
-
+  
       // Cleanup the interval when the component unmounts
       return () => clearInterval(refreshInterval);
     }
