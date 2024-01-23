@@ -143,7 +143,7 @@ const ScheduleTask = ({ taskData, week }) => {
 
     setBusyTimeSlots(busyTimeSlots);
     setAvailableTimeSlots(filteredTimeSlots);
-  }, [taskData]);
+  }, [taskData,matching]);
 
 
   const generateAllTimeSlots = (start, end) => {
@@ -243,14 +243,11 @@ const ScheduleTask = ({ taskData, week }) => {
 
   const addEvent = async () => {
     if (date && time) {
-      const combinedDateTime = new Date(`${date}T${time}`);
-      const endDateTime = new Date(
-        new Date(`${date}T${time}`).setMinutes(
-          new Date(`${date}T${time}`).getMinutes() + 30
-        )
-      );
+      const combinedDateTimeUTC = new Date(`${date}T${time}Z`);
+const endDateTimeUTC = new Date(combinedDateTimeUTC);
+endDateTimeUTC.setMinutes(endDateTimeUTC.getMinutes() + 30);
       const currentDateTime = new Date();
-      const timeDifferenceInMilliseconds = combinedDateTime - currentDateTime;
+      const timeDifferenceInMilliseconds = combinedDateTimeUTC - currentDateTime;
       if (timeDifferenceInMilliseconds < 0) {
         Swal.fire({
           icon: "error",
@@ -275,21 +272,22 @@ const ScheduleTask = ({ taskData, week }) => {
             summary: `${userInfo?.name} <> Experiment Labs`,
             location: "",
             start: {
-              dateTime: combinedDateTime.toISOString(),
+              dateTime: combinedDateTimeUTC.toISOString(),
               timeZone: "UTC",
             },
             end: {
-              dateTime: endDateTime.toISOString(),
+              dateTime: endDateTimeUTC.toISOString(),
               timeZone: "UTC",
             },
             // recurrence: ["RRULE:FREQ=DAILY;COUNT=2"],
             attendees: [
-              { email: "naman.j@experimentlabs.in" },
-              { email: "gaurav@experimentlabs.in" },
+              // { email: "naman.j@experimentlabs.in" },
+              // { email: "gaurav@experimentlabs.in" },
               { email: user?.email },
               {
                 email: adminMail
               },
+              { email: "alrafi4@gmail.com" },
             ],
             reminders: {
               useDefault: true,
@@ -318,7 +316,7 @@ const ScheduleTask = ({ taskData, week }) => {
                 `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
                 {
                   from: `${user?.email}`,
-                  to: `naman.j@experimentlabs.in,gaurav@experimentlabs.in,${user?.email},shihab77023@gmail.com`,
+                  to: `${user?.email},shihab77023@gmail.com,alrafi4@gmail.com`,
                   subject: `Event request`,
                   message: `A event is going to held for doubt clearing at ${event?.start.toLocaleString()} to ${event?.end.toLocaleTimeString()}. Meeting link ${event?.hangoutLink
                     }`,
@@ -346,16 +344,20 @@ const ScheduleTask = ({ taskData, week }) => {
                 (response) => {
                   var event = {
                     title: `${userInfo?.name} <> Experiment Labs <> Doubt clearing <> ${response?.result?.hangoutLink}`,
-                    start: new Date(combinedDateTime),
-                    end: new Date(endDateTime),
+                    start: new Date(combinedDateTimeUTC),
+                    end: new Date(endDateTimeUTC),
                     organization: {
                       organizationId: userInfo?.organizationId,
                       organizationName: userInfo?.organizationName,
                     },
                     attendees: [
-                      { email: "naman.j@experimentlabs.in" },
-                      { email: "gaurav@experimentlabs.in" },
+                      // { email: "naman.j@experimentlabs.in" },
+                      // { email: "gaurav@experimentlabs.in" },
                       { email: user?.email },
+                      { email: "alrafi4@gmail.com" },
+                      {
+                        email: adminMail
+                      },
                     ],
                     weekData: currentWeek,
                     hangoutLink: response?.result?.hangoutLink,
