@@ -33,6 +33,7 @@ import BatchConfiguration from "./BatchConfiguration";
 import WeekConfiguration from "./WeekConfiguration";
 import DialogLayoutForFromControl from "../Shared/DialogLayoutForFromControl";
 import Loading from "../../Shared/Loading/Loading";
+import lock from "../../../assets/Dashboard/lockIcon.png";
 
 const CourseInformation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -413,7 +414,7 @@ const CourseInformation = () => {
         Loading().close();
       })
       .catch((error) => console.error(error));
-      Loading().close();
+    Loading().close();
   }, [currentWeek, userInfo, Role, courseData]);
 
 
@@ -1128,6 +1129,7 @@ const CourseInformation = () => {
                           </div>
                         ))}
                         {Role !== "admin" && chapter?.tasks?.map((task, taskIndex) => {
+                          
                           const userIsParticipant = task?.participants?.some(
                             (item) => item?.participantId === userInfo?._id
                           );
@@ -1156,7 +1158,10 @@ const CourseInformation = () => {
                                             )}
                                           </>
                                         ) : (
-                                          <img src={Pending} alt="Pending" />
+                                          <div className="w-full flex items-center justify-start gap-6">
+                                            <img src={Pending} alt="Pending" />
+                                            {!isPreviousTaskCompleted && <img className="w-[35px]" src={lock} alt="Lock" />}
+                                          </div>
                                         )}
                                       </>
                                     )}
@@ -1241,7 +1246,7 @@ const CourseInformation = () => {
                                         {task?.taskName}
                                       </Link>
                                     ) : (
-                                      <span onClick={()=>toast.error("Complete The Previous Task")} className="text-[#3E4DAC] text-[22px] font-[700]">{task?.taskName}</span>
+                                      <span onClick={() => toast.error("Complete The Previous Task")} className="text-[#3E4DAC] text-[22px] font-[700]">{task?.taskName}</span>
                                     )}
                                     <p className="text-[#626262] text-[18px] font-[500]">{task?.taskType}</p>
                                   </div>
