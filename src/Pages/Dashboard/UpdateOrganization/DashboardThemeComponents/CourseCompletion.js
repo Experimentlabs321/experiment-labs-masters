@@ -7,6 +7,7 @@ import courseCompletionImg from "../../../../assets/Dashboard/person.png";
 
 
 const CourseCompletion = ({ isAvatar, courseCompletionText, courseCompletionBgColor, avatarBg, courseCompletionDesign }) => {
+    // console.log(courseCompletionDesign);
     return (
         <div className='my-5'>
             <div

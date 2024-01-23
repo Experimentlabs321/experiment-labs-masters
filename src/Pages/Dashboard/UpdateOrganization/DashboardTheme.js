@@ -20,13 +20,13 @@ const DashboardTheme = (
 
     const [courseCompletionText, setCourseCompletionText] = useState(dashboardTheme?.courseCompletionText || "Your course is");
     const [courseCompletionBgColor, setCourseCompletionBgColor] = useState(dashboardTheme?.courseCompletionBgColor || "#3E4DAC");
-    const [courseCompletionDesign, setCourseCompletionDesign] = useState(dashboardTheme?.courseCompletionDesign || true);
-    const [addCourseCompletion, setAddCourseCompletion] = useState(dashboardTheme?.addCourseCompletion || true);
-    const [addOpenBox, setAddOpenBox] = useState(dashboardTheme?.addOpenBox || true);
-    const [addJoinQuest, setAddJoinQuest] = useState(dashboardTheme?.addJoinQuest || true);
-    const [addChallenges, setAddChallenges] = useState(dashboardTheme?.addChallenges || true);
-    const [addRequestSlots, setAddRequestSlots] = useState(dashboardTheme?.addRequestSlots || true);
-    const [isAvatar, setIsAvatar] = useState(dashboardTheme?.isAvatar || false);
+    const [courseCompletionDesign, setCourseCompletionDesign] = useState(dashboardTheme?.courseCompletionDesign === false ? dashboardTheme?.courseCompletionDesign : true);
+    const [addCourseCompletion, setAddCourseCompletion] = useState(dashboardTheme?.addCourseCompletion === false ? dashboardTheme?.addCourseCompletion : true);
+    const [addOpenBox, setAddOpenBox] = useState(dashboardTheme?.addOpenBox === false ? dashboardTheme?.addOpenBox: true);
+    const [addJoinQuest, setAddJoinQuest] = useState(dashboardTheme?.addJoinQuest === false ? dashboardTheme?.addJoinQuest : true);
+    const [addChallenges, setAddChallenges] = useState(dashboardTheme?.addChallenges === false ? dashboardTheme?.addChallenges : true);
+    const [addRequestSlots, setAddRequestSlots] = useState(dashboardTheme?.addRequestSlots === false ? dashboardTheme?.addRequestSlots : true);
+    const [isAvatar, setIsAvatar] = useState(dashboardTheme?.isAvatar === true ? dashboardTheme?.isAvatar : false);
     const [avatarBg, setAvatarBg] = useState(dashboardTheme?.avatarBg || "#32CD62");
     const [openBoxButtonText, setOpenBoxButtonText] = useState(dashboardTheme?.openBoxButtonText || "Open Box");
     const [openBoxImage, setOpenBoxImage] = useState(dashboardTheme?.openBoxImage || null);
@@ -110,6 +110,9 @@ const DashboardTheme = (
             // event.target.reset();
         }
     };
+
+    console.log(dashboardTheme?.courseCompletionDesign);
+    console.log(courseCompletionDesign);
 
     const handleAddCourseCompletion = () => {
         setAddCourseCompletion(!addCourseCompletion);
