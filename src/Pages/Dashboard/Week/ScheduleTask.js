@@ -2,6 +2,7 @@ import { AuthContext } from "../../../contexts/AuthProvider";
 import React, { useContext, useEffect, useState } from "react";
 
 import { Link, useNavigate, useParams } from "react-router-dom";
+
 import axios from "axios";
 import Modal from "react-modal";
 import {
@@ -24,10 +25,11 @@ import DashboardPrimaryButton from "../Shared/DashboardPrimaryButton";
 
 let matching = false;
 const matchInputWithBusySlots = (inputDate, inputTime, busyTimeSlots) => {
+  
   let flag = 0;
   const inputDateTime = new Date(`${inputDate}T${inputTime}`);
   console.log('Input DateTime:', inputDateTime);
-
+  
   // Extract date and time separately
   const inputDateString = inputDateTime.toDateString();
   const inputTimeString = inputDateTime.toTimeString();
@@ -70,6 +72,8 @@ const ScheduleTask = ({ taskData, week }) => {
   console.log(adminMail);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
   const [busyTimeSlots, setBusyTimeSlots] = useState([]);
+  const session = useSession();
+  const supabase = useSupabaseClient();
   console.log("Task data ", taskData)
   const { user, userInfo } = useContext(AuthContext);
   if (userInfo.role !== 'admin') {
@@ -79,6 +83,7 @@ const ScheduleTask = ({ taskData, week }) => {
   };
 
   const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
+  const navigate = useNavigate();
   const [date, setDate] = useState(""); // State for the date
   const [time, setTime] = useState(""); // State for the time
   const [reservedEvent, setReservedEvent] = useState(null);
@@ -99,6 +104,12 @@ const ScheduleTask = ({ taskData, week }) => {
   };
 
   useEffect(() => {
+    if(localStorage.getItem("role") === "admin"){
+      if (!session?.provider_token) {
+        // If there's no session, sign in again
+        googleSignIn();
+      }
+    }
     const busyTimeSlots = taskData?.events?.map((event) => {
       // Use the correct property for date and time based on the event structure
       const startDateTime = event.start?.dateTime || event.start;
@@ -145,7 +156,25 @@ const ScheduleTask = ({ taskData, week }) => {
     setAvailableTimeSlots(filteredTimeSlots);
   }, [taskData,matching]);
 
-
+  const googleSignIn = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          scopes: 'https://www.googleapis.com/auth/calendar',
+          persistSession: true,
+        },
+      });
+  
+      if (error) {
+        console.error('Error during Google Sign-In:', error.message);
+        alert('Error logging in to Google provider with Supabase');
+      }
+    } catch (error) {
+      console.error('Unexpected error during Google Sign-In:', error.message);
+      alert('Unexpected error. Please try again.');
+    }
+  };
   const generateAllTimeSlots = (start, end) => {
     const timeSlots = [];
     let currentTime = new Date(start);
@@ -303,7 +332,6 @@ endDateTimeUTC.setMinutes(endDateTimeUTC.getMinutes() + 30);
             },
           };
 
-          console.log(event)
 
           const newAccessToken = data.access_token;
           function initiate() {
@@ -323,11 +351,17 @@ endDateTimeUTC.setMinutes(endDateTimeUTC.getMinutes() + 30);
                 }
               );
               if (sendMail?.data?.Success && response?.data?.acknowledged) {
+                const newEvent = await axios.post(
+                  `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/addEvent`,
+                  event
+                );
+                console.log("new event created ",newEvent);
                 Swal.fire({
                   icon: "success",
                   title: "Request Sent!",
                   text: "Your slot request has been sent!",
                 });
+                navigate(-1);
               }
             };
             gapi.client
@@ -375,6 +409,7 @@ endDateTimeUTC.setMinutes(endDateTimeUTC.getMinutes() + 30);
               );
           }
           gapi.load("client", initiate);
+
         })
         .catch((error) => {
 
