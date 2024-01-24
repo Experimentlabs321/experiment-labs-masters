@@ -8,15 +8,25 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "./contexts/AuthProvider";
 import axios from "axios";
 import Loading from "./Pages/Shared/Loading/Loading";
+import {
+  useSession,
+  useSupabaseClient,
+  useSessionContext,
+} from "@supabase/auth-helpers-react";
 
 ReactGA.initialize("G-RL7TBN4FCW");
 
 function App() {
   const { userInfo } = useContext(AuthContext);
   const [data, setData] = useState(null);
+  const [calendarEvents, setCalendarEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
+  const session = useSession();
   useEffect(() => {
+    if(localStorage.getItem("role") === "admin"){
+      fetchAndDisplayGoogleCalendarEvents();
+    }
+    // fetchPrimaryCalendarInfo();
     if (!userInfo) {
       return;
     }
@@ -100,6 +110,45 @@ function App() {
 
   if (isLoading) {
     return <div></div>;
+  }
+  async function fetchGoogleCalendarEvents() {
+
+    const response = await fetch(
+      "https://www.googleapis.com/calendar/v3/calendars/primary/events",
+      {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + session.provider_token,
+          // Access token for Google
+        },
+      }
+    );
+    console.log(session)
+    if (!response.ok) {
+      throw new Error("Failed to fetch Google Calendar events");
+    }
+
+    const data = await response.json();
+    console.log(data);
+    return data.items || [];
+  }
+
+  async function fetchAndDisplayGoogleCalendarEvents() {
+    try {
+      const events = await fetchGoogleCalendarEvents();
+      const adminEmail = events[0]?.creator?.email;
+      const newEvent = await axios.post(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/updateEvent/${adminEmail}`,
+        events
+      );
+      console.log(newEvent);
+      if (newEvent?.data?.success) {
+        console.log("Events updated");
+      }
+      setCalendarEvents(events);
+    } catch (error) {
+      console.error(error.message);
+    }
   }
   return (
     <div className="max-w-[1920px] mx-auto">
