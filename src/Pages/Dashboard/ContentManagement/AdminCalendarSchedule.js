@@ -191,7 +191,7 @@ const AdminCalendarSchedule = () => {
   // The empty dependency array ensures that this effect runs only once
 
   useEffect(() => {
-    if (!session) {
+    if (!session?.provider_token) {
       // If there's no session, sign in again
       googleSignIn();
     } else {
@@ -249,7 +249,7 @@ const AdminCalendarSchedule = () => {
 
   const googleSignIn = async () => {
     try {
-      const { user, error } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           scopes: 'https://www.googleapis.com/auth/calendar',
@@ -257,14 +257,13 @@ const AdminCalendarSchedule = () => {
         },
       });
   
-      if (user) {
-        console.log('Successfully signed in:', user);
-        // Add any additional logic you need after successful sign-in
-      }
-  
       if (error) {
         console.error('Error during Google Sign-In:', error.message);
         alert('Error logging in to Google provider with Supabase');
+      } else {
+        // If there is no error, the sign-in is successful
+        console.log('Google Sign-In successful!');
+        console.log(calendarEvents); // Log calendarEvents here or perform any other actions
       }
     } catch (error) {
       console.error('Unexpected error during Google Sign-In:', error.message);
@@ -273,7 +272,9 @@ const AdminCalendarSchedule = () => {
   };
 
   // Use useEffect to log rafi whenever it changes
-
+if(googleSignIn){
+  console.log("done signin");
+}
 
   async function signOut() {
     await supabase.auth.signOut();
@@ -338,7 +339,7 @@ const AdminCalendarSchedule = () => {
       console.error(error.message);
     }
   }
-  // console.log(calendarEvents)
+ 
 
   function renderEventContent(eventInfo) {
     // console.log(eventInfo?.event.start);

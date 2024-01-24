@@ -34,7 +34,7 @@ const matchInputWithBusySlots = (inputDate, inputTime, busyTimeSlots) => {
 
 
 
-  const isMatch = busyTimeSlots.some((busySlot) => {
+  const isMatch = busyTimeSlots?.some((busySlot) => {
     const busyStartDateTimeString = busySlot.start.dateTime;
     const busyEndDateTimeString = busySlot.end.dateTime;
     // console.log("busystart",busyStartDateTimeString);
