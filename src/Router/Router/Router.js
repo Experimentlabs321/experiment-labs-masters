@@ -113,6 +113,10 @@ import InternShips from "../../Pages/InternShips/InternShips";
 import AdminCalendarSchedule from "../../Pages/Dashboard/ContentManagement/AdminCalendarSchedule";
 import OnePagerKoreaHome from "../../Pages/Template/OnePager/OnePagerKoreaHome/OnePagerKoreaHome";
 import OnePagerKoreaLayout from "../../Pages/Template/OnePager/OnePagerKoreaLayout/OnePagerKoreaLayout";
+import AddStudent from "../../Pages/Dashboard/AddStudent/AddStudent";
+import ApplyCertificate from "../../Pages/Dashboard/ApplyCertificate/ApplyCertificate";
+import CreateCertificate from "../../Pages/Dashboard/CreateCertificate/CreateCertificate";
+import DownloadCertificate from "../../Pages/Dashboard/ApplyCertificate/DownloadCertificate";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -569,6 +573,22 @@ const router = createBrowserRouter([
   {
     path: "/internShips",
     element: <InternShips />,
+  },
+  {
+    path: "/addStudent",
+    element: <AddStudent />,
+  },
+  {
+    path: "/applyCertificate",
+    element: <ApplyCertificate />,
+  },
+  {
+    path: "/applyCertificate/:courseId",
+    element: <DownloadCertificate />,
+  },
+  {
+    path: "/createCertificate",
+    element: <CreateCertificate />,
   },
 ]);
 
