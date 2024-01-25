@@ -25,11 +25,11 @@ import DashboardPrimaryButton from "../Shared/DashboardPrimaryButton";
 
 let matching = false;
 const matchInputWithBusySlots = (inputDate, inputTime, busyTimeSlots) => {
-  
+
   let flag = 0;
   const inputDateTime = new Date(`${inputDate}T${inputTime}`);
   console.log('Input DateTime:', inputDateTime);
-  
+
   // Extract date and time separately
   const inputDateString = inputDateTime.toDateString();
   const inputTimeString = inputDateTime.toTimeString();
@@ -51,7 +51,7 @@ const matchInputWithBusySlots = (inputDate, inputTime, busyTimeSlots) => {
     const busyStartTime = busyStartDateTimeString.split(' ')[4];
     console.log('busy start: ', busyStartTime);
     const busyEndTime = busyEndDateTimeString.split(' ')[4];
- 
+
     console.log(flag);
     return (
       flag === 1 &&
@@ -71,6 +71,8 @@ const ScheduleTask = ({ taskData, week }) => {
   const adminMail = taskData?.usersession?.user?.email;
   console.log(adminMail);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
+  const [maxDateString, setMaxDateString] = useState("");
+  
   const [busyTimeSlots, setBusyTimeSlots] = useState([]);
   const session = useSession();
   const supabase = useSupabaseClient();
@@ -92,19 +94,65 @@ const ScheduleTask = ({ taskData, week }) => {
   const calendarID = process.env.REACT_APP_calendarID;
 
   const handleDateChange = (event) => {
-    setDate(event.target.value);
-    matchInputWithBusySlots(event.target.value, time, busyTimeSlots);
+    const selectedDate = event.target.value;
+    const selectedDay = new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long' });
+  
+    // Check if the selected day is an off-day
+    if (taskData?.offDays.includes(selectedDay)) {
+      alert(`You cannot select ${selectedDay} as it is an off-day.`);
+      // Clear the selected date
+      document.getElementById('date').value = "";
+      setDate(null);
+      setMaxDateString("");  // Reset maxDateString state
+      return;
+    }
+  
+    // Check if the selected date is within the valid date range
+    const currentDate = getCurrentDate();  // Assuming you have the getCurrentDate function
+    const maxDateOffset = parseInt(taskData?.dateRange, 10) || 0;
+    const maxDateObject = new Date(currentDate);  // Use currentDate as the starting point
+    maxDateObject.setDate(maxDateObject.getDate() + maxDateOffset);
+  
+    if (new Date(selectedDate) > maxDateObject) {
+      alert(`You cannot select a date beyond the allowed range.`);
+      // Clear the selected date
+      document.getElementById('date').value = "";
+      setDate(null);
+      setMaxDateString("");  // Reset maxDateString state
+      return;
+    }
+  
+    setDate(selectedDate);
+    const maxDateString = maxDateObject.toISOString().split('T')[0];
+    document.getElementById('date').max = maxDateString;
+    setMaxDateString(maxDateString);
+    matchInputWithBusySlots(selectedDate, time, busyTimeSlots);
   };
-
   // Update the time state when the time input changes
   const handleTimeChange = (event) => {
-    setTime(event.target.value);
-    console.log("handletimechange", event.target.value);
-    matchInputWithBusySlots(date, event.target.value, busyTimeSlots);
+    const selectedTime = event.target.value;
+    const minTime = '09:00';
+    const maxTime = '17:00';
+
+    const selectedTimeDate = new Date(`2000-01-01T${selectedTime}`);
+    const minTimeDate = new Date(`2000-01-01T${minTime}`);
+    const maxTimeDate = new Date(`2000-01-01T${maxTime}`);
+
+    if (selectedTimeDate < minTimeDate || selectedTimeDate > maxTimeDate) {
+      alert('Please choose a time between 09:00 AM and 05:00 PM.');
+      // Reset the time to the initial state or do nothing
+      document.getElementById('time').value = '09:00';
+      setTime(null);
+    } else {
+      setTime(selectedTime);
+      console.log("handletimechange", selectedTime);
+      matchInputWithBusySlots(date, selectedTime, busyTimeSlots);
+    }
   };
 
+
   useEffect(() => {
-    if(localStorage.getItem("role") === "admin"){
+    if (localStorage.getItem("role") === "admin") {
       if (!session?.provider_token) {
         // If there's no session, sign in again
         googleSignIn();
@@ -127,7 +175,7 @@ const ScheduleTask = ({ taskData, week }) => {
       const endDate = new Date(endDateTime);
       const endTime = endDate.toUTCString();
 
-  
+
 
       return {
         start: {
@@ -154,7 +202,7 @@ const ScheduleTask = ({ taskData, week }) => {
 
     setBusyTimeSlots(busyTimeSlots);
     setAvailableTimeSlots(filteredTimeSlots);
-  }, [taskData,matching]);
+  }, [taskData, matching]);
 
   const googleSignIn = async () => {
     try {
@@ -165,7 +213,7 @@ const ScheduleTask = ({ taskData, week }) => {
           persistSession: true,
         },
       });
-  
+
       if (error) {
         console.error('Error during Google Sign-In:', error.message);
         alert('Error logging in to Google provider with Supabase');
@@ -273,8 +321,8 @@ const ScheduleTask = ({ taskData, week }) => {
   const addEvent = async () => {
     if (date && time) {
       const combinedDateTimeUTC = new Date(`${date}T${time}Z`);
-const endDateTimeUTC = new Date(combinedDateTimeUTC);
-endDateTimeUTC.setMinutes(endDateTimeUTC.getMinutes() + 30);
+      const endDateTimeUTC = new Date(combinedDateTimeUTC);
+      endDateTimeUTC.setMinutes(endDateTimeUTC.getMinutes() + 30);
       const currentDateTime = new Date();
       const timeDifferenceInMilliseconds = combinedDateTimeUTC - currentDateTime;
       if (timeDifferenceInMilliseconds < 0) {
@@ -355,7 +403,7 @@ endDateTimeUTC.setMinutes(endDateTimeUTC.getMinutes() + 30);
                   `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/addEvent`,
                   event
                 );
-                console.log("new event created ",newEvent);
+                console.log("new event created ", newEvent);
                 Swal.fire({
                   icon: "success",
                   title: "Request Sent!",
@@ -458,6 +506,7 @@ endDateTimeUTC.setMinutes(endDateTimeUTC.getMinutes() + 30);
                 id="date"
                 type="date"
                 min={getCurrentDate()}
+                max={maxDateString}
               />
             </div>
             <p className="text-[#C0C0C0] text-[18px] font-[600] py-[18px]">
@@ -467,12 +516,13 @@ endDateTimeUTC.setMinutes(endDateTimeUTC.getMinutes() + 30);
               <input
                 required
                 onChange={handleTimeChange}
-                className=" text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
+                className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
                 name="time"
-                // defaultValue={() => {const startEvent = new Date(reservedEvent?.start)?toTimeString().slice(0, 8)}}
-
+                min="09:00"
+                max="17:00"
                 id="time"
                 type="time"
+                defaultValue="09:00" // Set the default value to 9:00 AM
               />
             </div>
           </div>
@@ -495,8 +545,8 @@ endDateTimeUTC.setMinutes(endDateTimeUTC.getMinutes() + 30);
             </a>
           ) : (
             <>
-              { matching ? <><p className="text-white">Admin is Busy at that time</p>
-              
+              {matching ? <><p className="text-white">Admin is Busy at that time</p>
+
               </> : <DashboardPrimaryButton
                 bgColor="#3E4DAC"
                 shadow="0px 6.32482px 0px #CA5F98"
