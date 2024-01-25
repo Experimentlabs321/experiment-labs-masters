@@ -433,7 +433,7 @@ endDateTimeUTC.setMinutes(endDateTimeUTC.getMinutes() + 30);
 
 
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center my-5">
       <div className="w-[250px] lg:w-[355px] min-w-[250px] lg:min-w-min h-[370px] lg:h-[515px]">
         <h1 className="text-[18px] lg:text-[25px] font-[700] text-center pb-[25px]">
           Request slots
@@ -442,7 +442,7 @@ endDateTimeUTC.setMinutes(endDateTimeUTC.getMinutes() + 30);
           style={{
             filter: "drop-shadow(3.75217px 3.75217px 0px #000000)",
           }}
-          className="bg-[#0E2749] w-full h-full rounded-[14px] py-[15px] px-[15px] mb-10 lg:p-[30px] flex flex-col justify-between items-center gap-5"
+          className="bg-[#0E2749] w-full h-[400px] rounded-[14px] py-[15px] px-[15px] mb-10 lg:p-[30px] flex flex-col justify-between items-center gap-5"
         >
 
           <div className="w-full relative">
