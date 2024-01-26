@@ -11,6 +11,7 @@ import {
 import DateTimePicker from "react-datetime-picker";
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import listPlugin from '@fullcalendar/list';
 import interactionPlugin from "@fullcalendar/interaction";
 import 'react-datetime-picker/dist/DateTimePicker.css';
 import 'react-calendar/dist/Calendar.css';
@@ -18,6 +19,10 @@ import 'react-clock/dist/Clock.css';
 import toast from "react-hot-toast";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import required from "../../../assets/ContentManagement/required.png";
+import { Calendar, momentLocalizer } from "react-big-calendar";
+import moment from "moment";
+import "react-big-calendar/lib/css/react-big-calendar.css";
+
 /* import '@fullcalendar/common/main.css';  
 import '@fullcalendar/daygrid/main.css'; */
 
@@ -41,6 +46,7 @@ const customStyles = {
     zIndex: 1001, // Set a higher z-index value
   },
 };
+const localizer = momentLocalizer(moment);
 const AdminCalendarSchedule = () => {
 
   const { id } = useParams();
@@ -66,6 +72,7 @@ const AdminCalendarSchedule = () => {
   const [calendarId, setCalendarId] = useState("");
   const session = useSession();
   const [rafi, setRafi] = useState(null);
+  const [calendarError, setCalendarError] = useState(false);
   global = session;
   const supabase = useSupabaseClient();
 
@@ -145,7 +152,7 @@ const AdminCalendarSchedule = () => {
   };
   const handleOptionChangeHoliday = (day) => {
     const isSelected = selectedHoliday.includes(day.day);
-  
+
     if (isSelected) {
       // If the day is already selected, remove it from the array
       const updatedSelection = selectedHoliday.filter((selectedDay) => selectedDay !== day.day);
@@ -155,8 +162,8 @@ const AdminCalendarSchedule = () => {
       setSelectedHoliday((prevSelection) => [...prevSelection, day.day]);
     }
   };
-  
-  
+
+
   console.log(selectedHoliday)
 
   const handleSubmit = async (event) => {
@@ -217,15 +224,18 @@ const AdminCalendarSchedule = () => {
       // If there's a session, fetch and display events
       fetchAndDisplayGoogleCalendarEvents();
       fetchPrimaryCalendarInfo();
-      checkAndRefreshToken(); // Call this function initially
+      if (calendarError) {
+        googleSignIn();
+      }
+      // checkAndRefreshToken(); // Call this function initially
 
-      // Set up an interval to periodically refresh the token
-      const refreshInterval = setInterval(() => {
-        checkAndRefreshToken();
-      }, 30 * 60 * 1000); // Refresh every 30 minutes (adjust as needed)
+      // // Set up an interval to periodically refresh the token
+      // const refreshInterval = setInterval(() => {
+      //   checkAndRefreshToken();
+      // }, 30 * 60 * 1000); // Refresh every 30 minutes (adjust as needed)
 
-      // Cleanup the interval when the component unmounts
-      return () => clearInterval(refreshInterval);
+      // // Cleanup the interval when the component unmounts
+      // return () => clearInterval(refreshInterval);
     }
   }, [session, isModalOpen]);
   console.log('session before ', session);
@@ -234,37 +244,37 @@ const AdminCalendarSchedule = () => {
     return <></>;
   }
 
-  async function checkAndRefreshToken() {
-    const currentTime = Math.floor(Date.now() / 1000);
+  // async function checkAndRefreshToken() {
+  //   const currentTime = Math.floor(Date.now() / 1000);
 
-    if (session.expires_at && session.expires_at < currentTime) {
-      try {
-        const refreshResponse = await fetch("https://qzgeifdgviycxooauyum.supabase.co/auth/v1/token", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            refresh_token: session.refresh_token,
-          }),
-        });
+  //   if (session.expires_at && session.expires_at < currentTime) {
+  //     try {
+  //       const refreshResponse = await fetch("https://qzgeifdgviycxooauyum.supabase.co/auth/v1/token", {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({
+  //           refresh_token: session.refresh_token,
+  //         }),
+  //       });
 
-        if (refreshResponse.ok) {
-          const newTokens = await refreshResponse.json();
+  //       if (refreshResponse.ok) {
+  //         const newTokens = await refreshResponse.json();
 
-          // Update session with new tokens
-          session.access_token = newTokens.access_token;
-          session.expires_at = currentTime + newTokens.expires_in;
-        } else {
-          // Handle refresh token failure
-          console.error("Failed to refresh access token");
-        }
-      } catch (error) {
-        console.error("Error during token refresh:", error.message);
-      }
-    }
-  }
-  console.log("session after ", session);
+  //         // Update session with new tokens
+  //         session.access_token = newTokens.access_token;
+  //         session.expires_at = currentTime + newTokens.expires_in;
+  //       } else {
+  //         // Handle refresh token failure
+  //         console.error("Failed to refresh access token");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error during token refresh:", error.message);
+  //     }
+  //   }
+  // }
+
 
   const googleSignIn = async () => {
     try {
@@ -326,8 +336,7 @@ const AdminCalendarSchedule = () => {
     }
   }
 
-  const url = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events`
-  console.log(url)
+
   async function fetchGoogleCalendarEvents() {
 
     const response = await fetch(
@@ -353,9 +362,10 @@ const AdminCalendarSchedule = () => {
   async function fetchAndDisplayGoogleCalendarEvents() {
     try {
       const events = await fetchGoogleCalendarEvents();
+      setCalendarError(false)
       setCalendarEvents(events);
     } catch (error) {
-      console.error(error.message);
+      setCalendarError(true)
     }
   }
 
@@ -525,7 +535,7 @@ const AdminCalendarSchedule = () => {
                     stroke-linejoin="round"
                   />
                 </svg>
-                
+
                 <button className=" font-sans mr-[30px] text-[20px] font-[400] ">
                   {chapter?.chapterName}
                 </button>
@@ -595,9 +605,14 @@ const AdminCalendarSchedule = () => {
                   <h2>Your Calendar Events</h2>
                   <FullCalendar
                     height="600px"
-                    plugins={[dayGridPlugin, interactionPlugin]}
+                    plugins={[dayGridPlugin,listPlugin, interactionPlugin]}
                     initialView="dayGridMonth"
                     selectMirror={true}
+                    headerToolbar={{
+                      start: 'title', // will normally be on the left. if RTL, will be on the right
+                      center: 'today',
+                      end: 'dayGridMonth,dayGridWeek,dayGridDay,list' // Add the desired views here
+                    }}
                     eventContent={renderEventContent}
                     events={calendarEvents?.map((event) => ({
                       title: event?.summary,
@@ -607,6 +622,14 @@ const AdminCalendarSchedule = () => {
                     }))}
                     dateClick={(info) => handleDateClick(info.date)}
                   />
+                  {/* <Calendar
+                    localizer={localizer}
+                    events={calendarEvents}
+                    step={60}
+                    startAccessor="start"
+                    endAccessor="end"
+                    style={{ height: 750, maxWidth: 700 }}
+                  /> */}
                 </div>
                 <form onSubmit={handleSubmit} className="ms-[40px]  mt-12">
                   <div className="grid grid-cols-2 gap-10">
@@ -642,7 +665,7 @@ const AdminCalendarSchedule = () => {
                         className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
                         name="dateRange"
                         type="number"
-                       defaultValue={7}
+                        defaultValue={7}
                       />
                     </div>
 
@@ -670,7 +693,7 @@ const AdminCalendarSchedule = () => {
                               />
                               <div className="flex mb-1 items-center">
                                 <label className="ms-4" htmlFor={day?.day}>
-                               {day?.day}
+                                  {day?.day}
                                 </label>
                               </div>
                             </li>
@@ -721,8 +744,8 @@ const AdminCalendarSchedule = () => {
 
                   <div className="flex items-center gap-10 justify-center mt-20 mb-10">
                     <button className="bg-sky-600 px-4 py-3 text-white text-lg rounded-lg" onClick={() => signOut()}>Sign out </button>
-                    <button className="px-[30px] py-3 bg-[#FF557A] text-[#fff] text-xl font-bold rounded-lg ms-20 "  type="submit" onClick={() => setSubmitPermission(true)}>Save</button>
-                 
+                    <button className="px-[30px] py-3 bg-[#FF557A] text-[#fff] text-xl font-bold rounded-lg ms-20 " type="submit" onClick={() => setSubmitPermission(true)}>Save</button>
+
                   </div>
                 </form>
 
