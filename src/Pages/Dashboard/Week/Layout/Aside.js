@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Reading from "../../../../assets/Dashboard/TaskIcon.png";
 import ReadingActive from "../../../../assets/Dashboard/TaskIconActive.png";
 import Assignment from "../../../../assets/Dashboard/Assignment.png";
@@ -17,6 +17,8 @@ import Files from "../../../../assets/Dashboard/Files.png";
 import FilesActive from "../../../../assets/Dashboard/FilesActive.png";
 import calendar from "../../../../assets/Dashboard/calendar.png";
 import { Link, useLocation } from "react-router-dom";
+import lock from "../../../../assets/Dashboard/lockIcon.png";
+import { AuthContext } from "../../../../contexts/AuthProvider";
 
 const Aside = ({
   toggleButton,
@@ -35,6 +37,7 @@ const Aside = ({
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("Category");
   const options = ["Category name"];
+  const { userInfo } = useContext(AuthContext);
 
   const toggleOptions = () => {
     setIsOpen(!isOpen);
@@ -47,9 +50,8 @@ const Aside = ({
   return (
     <aside
       id="sidebar"
-      className={`fixed ${
-        toggleButton ? " lg:flex" : "hidden"
-      } z-20 h-full top-0 bg-[#141414] shadow-lg left-0  flex-shrink-0 flex-col w-[324px] transition duration-500 ease-in-out delay-150`}
+      className={`fixed ${toggleButton ? " lg:flex" : "hidden"
+        } z-20 h-full top-0 bg-[#141414] shadow-lg left-0  flex-shrink-0 flex-col w-[324px] transition duration-500 ease-in-out delay-150`}
       aria-label="Sidebar"
     >
       <div className=" flex-1 flex flex-col min-h-0 pt-0">
@@ -76,267 +78,480 @@ const Aside = ({
                   <h1 className="ml-3 text-[18px] font-[500]">Hide menu</h1>
                 </button>
               </li>
-              {chapters?.map((item, index) => (
-                <li>
-                  <div>
-                    <div
-                      onClick={() => setOpenTopic(item?.chapterName)}
-                      className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px] cursor-pointer group`}
-                    >
-                      <div className="w-[42px] h-[42px] bg-[#D7DDFF] text-black flex items-center justify-center rounded-full ">
-                        {index + 1}
-                      </div>
-
-                      <h1
-                        className={`text-white ml-3 text-[18px] font-[500] flex items-center justify-center `}
+              {chapters?.map((item, index) => {
+                const chapterIndex = index;
+                return (
+                  <li key={index}>
+                    <div>
+                      <div
+                        onClick={() => setOpenTopic(item?.chapterName)}
+                        className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px] cursor-pointer group`}
                       >
-                        <span className="mr-[22px]">{item?.chapterName}</span>
-                        {Role === "admin" && (
+                        <div className="w-[42px] h-[42px] bg-[#D7DDFF] text-black flex items-center justify-center rounded-full ">
+                          {index + 1}
+                        </div>
+
+                        <h1
+                          className={`text-white ml-3 text-[18px] font-[500] flex items-center justify-center `}
+                        >
+                          <span className="mr-[22px]">{item?.chapterName}</span>
+                          {Role === "admin" && (
+                            <svg
+                              className="mr-[22px]"
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="18"
+                              height="20"
+                              viewBox="0 0 18 20"
+                              fill="none"
+                            >
+                              <path
+                                d="M13.6558 0.724121L17.3789 4.64745L14.5407 7.63965L10.8176 3.71632L13.6558 0.724121ZM0.0195312 19.0173H3.74259L12.7859 9.48754L9.06284 5.5642L0.0195312 15.094V19.0173Z"
+                                fill="white"
+                              />
+                            </svg>
+                          )}
                           <svg
-                            className="mr-[22px]"
                             xmlns="http://www.w3.org/2000/svg"
-                            width="18"
-                            height="20"
-                            viewBox="0 0 18 20"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
                             fill="none"
                           >
                             <path
-                              d="M13.6558 0.724121L17.3789 4.64745L14.5407 7.63965L10.8176 3.71632L13.6558 0.724121ZM0.0195312 19.0173H3.74259L12.7859 9.48754L9.06284 5.5642L0.0195312 15.094V19.0173Z"
-                              fill="white"
+                              d="M6.17272 8.88379L11.8403 14.5513L17.5078 8.88379"
+                              stroke="white"
+                              stroke-width="1.88918"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
                             />
                           </svg>
-                        )}
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                        >
-                          <path
-                            d="M6.17272 8.88379L11.8403 14.5513L17.5078 8.88379"
-                            stroke="white"
-                            stroke-width="1.88918"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                        </svg>
-                      </h1>
-                    </div>
-                    <div
-                      className={`${
-                        openTopic === item?.chapterName ? "" : "hidden"
-                      }`}
-                    >
-                      {item?.tasks?.map((task, index) => (
-                        <div
-                          onClick={() => setOpenTask(task)}
-                          className={`${
-                            openTask?.taskId === task?.taskId
+                        </h1>
+                      </div>
+                      <div
+                        className={`${openTopic === item?.chapterName ? "" : "hidden"
+                          }`}
+                      >
+                        {Role === "admin" && item?.tasks?.map((task, index) => (
+                          <div
+                            onClick={() => setOpenTask(task)}
+                            className={`${openTask?.taskId === task?.taskId
                               ? "bg-[#FFFDCF] border-[#3E4DAC] border-l-[12px] pl-[8px]"
                               : "pl-[20px]"
-                          }  text-white font-normal flex items-center justify-between pr-[10px] py-[13px] group cursor-pointer`}
-                        >
-                          <div className="flex items-center">
-                            <div className="w-[40px] h-[40px] text-black flex items-center justify-center rounded-full ">
-                              {task?.taskType === "Reading" && (
-                                <img
-                                  className={`${
-                                    openTask?.taskId === task?.taskId
+                              }  text-white font-normal flex items-center justify-between pr-[10px] py-[13px] group cursor-pointer`}
+                          >
+                            <div className="flex items-center">
+                              <div className="w-[40px] h-[40px] text-black flex items-center justify-center rounded-full ">
+                                {task?.taskType === "Reading" && (
+                                  <img
+                                    className={`${openTask?.taskId === task?.taskId
                                       ? "border-black"
                                       : "border-white"
-                                  }  border p-[5px] rounded-full `}
-                                  src={
-                                    openTask?.taskId === task?.taskId
-                                      ? ReadingActive
-                                      : Reading
-                                  }
-                                  alt="TaskIcon"
-                                />
-                              )}
-                              {task?.taskType === "Assignment" && (
-                                <img
-                                  className={`${
-                                    openTask?.taskId === task?.taskId
+                                      }  border p-[5px] rounded-full `}
+                                    src={
+                                      openTask?.taskId === task?.taskId
+                                        ? ReadingActive
+                                        : Reading
+                                    }
+                                    alt="TaskIcon"
+                                  />
+                                )}
+                                {task?.taskType === "Assignment" && (
+                                  <img
+                                    className={`${openTask?.taskId === task?.taskId
                                       ? "border-black"
                                       : "border-white"
-                                  }  border p-[5px] rounded-full `}
-                                  src={
-                                    openTask?.taskId === task?.taskId
-                                      ? AssignmentActive
-                                      : Assignment
-                                  }
-                                  alt="TaskIcon"
-                                />
-                              )}
-                              {task?.taskType === "Classes" && (
-                                <img
-                                  className={`${
-                                    openTask?.taskId === task?.taskId
+                                      }  border p-[5px] rounded-full `}
+                                    src={
+                                      openTask?.taskId === task?.taskId
+                                        ? AssignmentActive
+                                        : Assignment
+                                    }
+                                    alt="TaskIcon"
+                                  />
+                                )}
+                                {task?.taskType === "Classes" && (
+                                  <img
+                                    className={`${openTask?.taskId === task?.taskId
                                       ? "border-black"
                                       : "border-white"
-                                  }  border p-[5px] rounded-full `}
-                                  src={
-                                    openTask?.taskId === task?.taskId
-                                      ? ClassesActive
-                                      : Classes
-                                  }
-                                  alt="TaskIcon"
-                                />
-                              )}
-                              {task?.taskType === "Quiz" && (
-                                <img
-                                  className={`${
-                                    openTask?.taskId === task?.taskId
+                                      }  border p-[5px] rounded-full `}
+                                    src={
+                                      openTask?.taskId === task?.taskId
+                                        ? ClassesActive
+                                        : Classes
+                                    }
+                                    alt="TaskIcon"
+                                  />
+                                )}
+                                {task?.taskType === "Quiz" && (
+                                  <img
+                                    className={`${openTask?.taskId === task?.taskId
                                       ? "border-black"
                                       : "border-white"
-                                  }  border p-[5px] rounded-full `}
-                                  src={
-                                    openTask?.taskId === task?.taskId
-                                      ? QuizActive
-                                      : Quiz
-                                  }
-                                  alt="TaskIcon"
-                                />
-                              )}
-                              {task?.taskType === "Live Test" && (
-                                <img
-                                  className={`${
-                                    openTask?.taskId === task?.taskId
+                                      }  border p-[5px] rounded-full `}
+                                    src={
+                                      openTask?.taskId === task?.taskId
+                                        ? QuizActive
+                                        : Quiz
+                                    }
+                                    alt="TaskIcon"
+                                  />
+                                )}
+                                {task?.taskType === "Live Test" && (
+                                  <img
+                                    className={`${openTask?.taskId === task?.taskId
                                       ? "border-black"
                                       : "border-white"
-                                  }  border p-[5px] rounded-full `}
-                                  src={
-                                    openTask?.taskId === task?.taskId
-                                      ? LiveTestActive
-                                      : LiveTest
-                                  }
-                                  alt="TaskIcon"
-                                />
-                              )}
-                              {task?.taskType === "Video" && (
-                                <img
-                                  className={`${
-                                    openTask?.taskId === task?.taskId
+                                      }  border p-[5px] rounded-full `}
+                                    src={
+                                      openTask?.taskId === task?.taskId
+                                        ? LiveTestActive
+                                        : LiveTest
+                                    }
+                                    alt="TaskIcon"
+                                  />
+                                )}
+                                {task?.taskType === "Video" && (
+                                  <img
+                                    className={`${openTask?.taskId === task?.taskId
                                       ? "border-black"
                                       : "border-white"
-                                  }  border p-[5px] rounded-full `}
-                                  src={
-                                    openTask?.taskId === task?.taskId
-                                      ? VideoActive
-                                      : Video
-                                  }
-                                  alt="TaskIcon"
-                                />
-                              )}
-                              {task?.taskType === "Audio" && (
-                                <img
-                                  className={`${
-                                    openTask?.taskId === task?.taskId
+                                      }  border p-[5px] rounded-full `}
+                                    src={
+                                      openTask?.taskId === task?.taskId
+                                        ? VideoActive
+                                        : Video
+                                    }
+                                    alt="TaskIcon"
+                                  />
+                                )}
+                                {task?.taskType === "Audio" && (
+                                  <img
+                                    className={`${openTask?.taskId === task?.taskId
                                       ? "border-black"
                                       : "border-white"
-                                  }  border p-[5px] rounded-full `}
-                                  src={
-                                    openTask?.taskId === task?.taskId
-                                      ? AudioActive
-                                      : Audio
-                                  }
-                                  alt="TaskIcon"
-                                />
-                              )}
-                              {task?.taskType === "Files" && (
-                                <img
-                                  className={`${
-                                    openTask?.taskId === task?.taskId
+                                      }  border p-[5px] rounded-full `}
+                                    src={
+                                      openTask?.taskId === task?.taskId
+                                        ? AudioActive
+                                        : Audio
+                                    }
+                                    alt="TaskIcon"
+                                  />
+                                )}
+                                {task?.taskType === "Files" && (
+                                  <img
+                                    className={`${openTask?.taskId === task?.taskId
                                       ? "border-black"
                                       : "border-white"
-                                  }  border p-[5px] rounded-full `}
-                                  src={
-                                    openTask?.taskId === task?.taskId
-                                      ? FilesActive
-                                      : Files
-                                  }
-                                  alt="TaskIcon"
-                                />
-                              )}
-                              {task?.taskType === "Schedule" && (
-                                <img
-                                  className={`${
-                                    openTask?.taskId === task?.taskId
+                                      }  border p-[5px] rounded-full `}
+                                    src={
+                                      openTask?.taskId === task?.taskId
+                                        ? FilesActive
+                                        : Files
+                                    }
+                                    alt="TaskIcon"
+                                  />
+                                )}
+                                {task?.taskType === "Schedule" && (
+                                  <img
+                                    className={`${openTask?.taskId === task?.taskId
                                       ? "border-black"
                                       : "border-white"
-                                  }  border p-[5px] rounded-full `}
-                                  src={
-                                    openTask?.taskId === task?.taskId
-                                      ? calendar
-                                      : calendar
-                                  }
-                                  alt="TaskIcon"
-                                />
-                              )}
-                            </div>
-                            <h1
-                              className={`text-white ml-3 text-[18px] font-[500]  `}
-                            >
-                              <span
-                                className={`mr-[5px] ${
-                                  openTask?.taskId === task?.taskId
+                                      }  border p-[5px] rounded-full `}
+                                    src={
+                                      openTask?.taskId === task?.taskId
+                                        ? calendar
+                                        : calendar
+                                    }
+                                    alt="TaskIcon"
+                                  />
+                                )}
+                              </div>
+                              <h1
+                                className={`text-white ml-3 text-[18px] font-[500]  `}
+                              >
+                                <span
+                                  className={`mr-[5px] ${openTask?.taskId === task?.taskId
                                     ? "text-black"
                                     : "text-white"
-                                } `}
-                              >
-                                {/* Task {index + 1}:  */}
-                                {task?.taskType}:
-                              </span>{" "}
-                              <span
-                                className={`mr-[22px] ${
-                                  openTask?.taskId === task?.taskId
+                                    } `}
+                                >
+                                  {/* Task {index + 1}:  */}
+                                  {task?.taskType}:
+                                </span>{" "}
+                                <span
+                                  className={`mr-[22px] ${openTask?.taskId === task?.taskId
                                     ? "text-[#3E4DAC]"
                                     : "text-[#A4B0FF]"
-                                }  `}
-                              >
-                                {task?.taskName}
-                              </span>
-                            </h1>
+                                    }  `}
+                                >
+                                  {task?.taskName}
+                                </span>
+                              </h1>
+                            </div>
+                            {Role === "admin" && (
+                              <>
+                                {openTask?.taskId === task?.taskId ? (
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="25"
+                                    height="25"
+                                    viewBox="0 0 25 25"
+                                    fill="none"
+                                  >
+                                    <path
+                                      d="M12.4974 10.417C11.3516 10.417 10.4141 11.3545 10.4141 12.5003C10.4141 13.6462 11.3516 14.5837 12.4974 14.5837C13.6432 14.5837 14.5807 13.6462 14.5807 12.5003C14.5807 11.3545 13.6432 10.417 12.4974 10.417ZM12.4974 4.16699C11.3516 4.16699 10.4141 5.10449 10.4141 6.25033C10.4141 7.39616 11.3516 8.33366 12.4974 8.33366C13.6432 8.33366 14.5807 7.39616 14.5807 6.25033C14.5807 5.10449 13.6432 4.16699 12.4974 4.16699ZM12.4974 16.667C11.3516 16.667 10.4141 17.6045 10.4141 18.7503C10.4141 19.8962 11.3516 20.8337 12.4974 20.8337C13.6432 20.8337 14.5807 19.8962 14.5807 18.7503C14.5807 17.6045 13.6432 16.667 12.4974 16.667Z"
+                                      fill="black"
+                                    />
+                                  </svg>
+                                ) : (
+                                  <svg
+                                    className=" float-right"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="25"
+                                    height="25"
+                                    viewBox="0 0 25 25"
+                                    fill="none"
+                                  >
+                                    <path
+                                      d="M12.4974 10.417C11.3516 10.417 10.4141 11.3545 10.4141 12.5003C10.4141 13.6462 11.3516 14.5837 12.4974 14.5837C13.6432 14.5837 14.5807 13.6462 14.5807 12.5003C14.5807 11.3545 13.6432 10.417 12.4974 10.417ZM12.4974 4.16699C11.3516 4.16699 10.4141 5.10449 10.4141 6.25033C10.4141 7.39616 11.3516 8.33366 12.4974 8.33366C13.6432 8.33366 14.5807 7.39616 14.5807 6.25033C14.5807 5.10449 13.6432 4.16699 12.4974 4.16699ZM12.4974 16.667C11.3516 16.667 10.4141 17.6045 10.4141 18.7503C10.4141 19.8962 11.3516 20.8337 12.4974 20.8337C13.6432 20.8337 14.5807 19.8962 14.5807 18.7503C14.5807 17.6045 13.6432 16.667 12.4974 16.667Z"
+                                      fill="white"
+                                    />
+                                  </svg>
+                                )}
+                              </>
+                            )}
                           </div>
-                          {Role === "admin" && (
-                            <>
-                              {openTask?.taskId === task?.taskId ? (
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="25"
-                                  height="25"
-                                  viewBox="0 0 25 25"
-                                  fill="none"
+                        ))}
+                        {Role !== "admin" && item?.tasks?.map((task, taskIndex) => {
+                          const userIsParticipant = task?.participants?.some(
+                            (item) => item?.participantId === userInfo?._id
+                          );
+
+                          const isPreviousTaskCompleted =
+                            taskIndex === 0 || // Always allow navigation for the first task
+                            item?.tasks?.[taskIndex - 1]?.participants?.some(
+                              (item) => item?.participantId === userInfo?._id && item?.status === "Completed"
+                            );
+
+                          const isPrevChapterCompleted = chapterIndex === 0 || chapters?.[chapterIndex - 1]?.tasks?.[chapters?.[chapterIndex - 1]?.tasks?.length - 1]?.participants?.some(
+                            (item) => item?.participantId === userInfo?._id && item?.status === "Completed"
+                          );;
+
+                          // console.log(isPreviousTaskCompleted);
+
+                          return (
+                            <div
+                              onClick={() => setOpenTask(task)}
+                              className={`${openTask?.taskId === task?.taskId
+                                ? "bg-[#FFFDCF] border-[#3E4DAC] border-l-[12px] pl-[8px]"
+                                : "pl-[20px]"
+                                }  text-white font-normal flex items-center justify-between pr-[10px] py-[13px] group cursor-pointer`}
+                            >
+                              <div className="flex items-center">
+                                <div className="w-[40px] h-[40px] text-black flex items-center justify-center rounded-full ">
+                                  {
+                                    (userIsParticipant && isPrevChapterCompleted && isPreviousTaskCompleted) ?
+                                      <img
+                                        className={`${openTask?.taskId === task?.taskId
+                                          ? "border-black"
+                                          : "border-white"
+                                          }  border p-[5px] rounded-full `}
+                                        src={lock}
+                                        alt="Lock"
+                                      />
+                                      :
+                                      <>
+                                        {task?.taskType === "Reading" && (
+                                          <img
+                                            className={`${openTask?.taskId === task?.taskId
+                                              ? "border-black"
+                                              : "border-white"
+                                              }  border p-[5px] rounded-full `}
+                                            src={
+                                              openTask?.taskId === task?.taskId
+                                                ? ReadingActive
+                                                : Reading
+                                            }
+                                            alt="TaskIcon"
+                                          />
+                                        )}
+                                        {task?.taskType === "Assignment" && (
+                                          <img
+                                            className={`${openTask?.taskId === task?.taskId
+                                              ? "border-black"
+                                              : "border-white"
+                                              }  border p-[5px] rounded-full `}
+                                            src={
+                                              openTask?.taskId === task?.taskId
+                                                ? AssignmentActive
+                                                : Assignment
+                                            }
+                                            alt="TaskIcon"
+                                          />
+                                        )}
+                                        {task?.taskType === "Classes" && (
+                                          <img
+                                            className={`${openTask?.taskId === task?.taskId
+                                              ? "border-black"
+                                              : "border-white"
+                                              }  border p-[5px] rounded-full `}
+                                            src={
+                                              openTask?.taskId === task?.taskId
+                                                ? ClassesActive
+                                                : Classes
+                                            }
+                                            alt="TaskIcon"
+                                          />
+                                        )}
+                                        {task?.taskType === "Quiz" && (
+                                          <img
+                                            className={`${openTask?.taskId === task?.taskId
+                                              ? "border-black"
+                                              : "border-white"
+                                              }  border p-[5px] rounded-full `}
+                                            src={
+                                              openTask?.taskId === task?.taskId
+                                                ? QuizActive
+                                                : Quiz
+                                            }
+                                            alt="TaskIcon"
+                                          />
+                                        )}
+                                        {task?.taskType === "Live Test" && (
+                                          <img
+                                            className={`${openTask?.taskId === task?.taskId
+                                              ? "border-black"
+                                              : "border-white"
+                                              }  border p-[5px] rounded-full `}
+                                            src={
+                                              openTask?.taskId === task?.taskId
+                                                ? LiveTestActive
+                                                : LiveTest
+                                            }
+                                            alt="TaskIcon"
+                                          />
+                                        )}
+                                        {task?.taskType === "Video" && (
+                                          <img
+                                            className={`${openTask?.taskId === task?.taskId
+                                              ? "border-black"
+                                              : "border-white"
+                                              }  border p-[5px] rounded-full `}
+                                            src={
+                                              openTask?.taskId === task?.taskId
+                                                ? VideoActive
+                                                : Video
+                                            }
+                                            alt="TaskIcon"
+                                          />
+                                        )}
+                                        {task?.taskType === "Audio" && (
+                                          <img
+                                            className={`${openTask?.taskId === task?.taskId
+                                              ? "border-black"
+                                              : "border-white"
+                                              }  border p-[5px] rounded-full `}
+                                            src={
+                                              openTask?.taskId === task?.taskId
+                                                ? AudioActive
+                                                : Audio
+                                            }
+                                            alt="TaskIcon"
+                                          />
+                                        )}
+                                        {task?.taskType === "Files" && (
+                                          <img
+                                            className={`${openTask?.taskId === task?.taskId
+                                              ? "border-black"
+                                              : "border-white"
+                                              }  border p-[5px] rounded-full `}
+                                            src={
+                                              openTask?.taskId === task?.taskId
+                                                ? FilesActive
+                                                : Files
+                                            }
+                                            alt="TaskIcon"
+                                          />
+                                        )}
+                                        {task?.taskType === "Schedule" && (
+                                          <img
+                                            className={`${openTask?.taskId === task?.taskId
+                                              ? "border-black"
+                                              : "border-white"
+                                              }  border p-[5px] rounded-full `}
+                                            src={
+                                              openTask?.taskId === task?.taskId
+                                                ? calendar
+                                                : calendar
+                                            }
+                                            alt="TaskIcon"
+                                          />
+                                        )}</>}
+                                </div>
+                                <h1
+                                  className={`text-white ml-3 text-[18px] font-[500]  `}
                                 >
-                                  <path
-                                    d="M12.4974 10.417C11.3516 10.417 10.4141 11.3545 10.4141 12.5003C10.4141 13.6462 11.3516 14.5837 12.4974 14.5837C13.6432 14.5837 14.5807 13.6462 14.5807 12.5003C14.5807 11.3545 13.6432 10.417 12.4974 10.417ZM12.4974 4.16699C11.3516 4.16699 10.4141 5.10449 10.4141 6.25033C10.4141 7.39616 11.3516 8.33366 12.4974 8.33366C13.6432 8.33366 14.5807 7.39616 14.5807 6.25033C14.5807 5.10449 13.6432 4.16699 12.4974 4.16699ZM12.4974 16.667C11.3516 16.667 10.4141 17.6045 10.4141 18.7503C10.4141 19.8962 11.3516 20.8337 12.4974 20.8337C13.6432 20.8337 14.5807 19.8962 14.5807 18.7503C14.5807 17.6045 13.6432 16.667 12.4974 16.667Z"
-                                    fill="black"
-                                  />
-                                </svg>
-                              ) : (
-                                <svg
-                                  className=" float-right"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="25"
-                                  height="25"
-                                  viewBox="0 0 25 25"
-                                  fill="none"
-                                >
-                                  <path
-                                    d="M12.4974 10.417C11.3516 10.417 10.4141 11.3545 10.4141 12.5003C10.4141 13.6462 11.3516 14.5837 12.4974 14.5837C13.6432 14.5837 14.5807 13.6462 14.5807 12.5003C14.5807 11.3545 13.6432 10.417 12.4974 10.417ZM12.4974 4.16699C11.3516 4.16699 10.4141 5.10449 10.4141 6.25033C10.4141 7.39616 11.3516 8.33366 12.4974 8.33366C13.6432 8.33366 14.5807 7.39616 14.5807 6.25033C14.5807 5.10449 13.6432 4.16699 12.4974 4.16699ZM12.4974 16.667C11.3516 16.667 10.4141 17.6045 10.4141 18.7503C10.4141 19.8962 11.3516 20.8337 12.4974 20.8337C13.6432 20.8337 14.5807 19.8962 14.5807 18.7503C14.5807 17.6045 13.6432 16.667 12.4974 16.667Z"
-                                    fill="white"
-                                  />
-                                </svg>
+                                  <span
+                                    className={`mr-[5px] ${openTask?.taskId === task?.taskId
+                                      ? "text-black"
+                                      : "text-white"
+                                      } `}
+                                  >
+                                    {/* Task {index + 1}:  */}
+                                    {task?.taskType}:
+                                  </span>{" "}
+                                  <span
+                                    className={`mr-[22px] ${openTask?.taskId === task?.taskId
+                                      ? "text-[#3E4DAC]"
+                                      : "text-[#A4B0FF]"
+                                      }  `}
+                                  >
+                                    {task?.taskName}
+                                  </span>
+                                </h1>
+                              </div>
+                              {Role === "admin" && (
+                                <>
+                                  {openTask?.taskId === task?.taskId ? (
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="25"
+                                      height="25"
+                                      viewBox="0 0 25 25"
+                                      fill="none"
+                                    >
+                                      <path
+                                        d="M12.4974 10.417C11.3516 10.417 10.4141 11.3545 10.4141 12.5003C10.4141 13.6462 11.3516 14.5837 12.4974 14.5837C13.6432 14.5837 14.5807 13.6462 14.5807 12.5003C14.5807 11.3545 13.6432 10.417 12.4974 10.417ZM12.4974 4.16699C11.3516 4.16699 10.4141 5.10449 10.4141 6.25033C10.4141 7.39616 11.3516 8.33366 12.4974 8.33366C13.6432 8.33366 14.5807 7.39616 14.5807 6.25033C14.5807 5.10449 13.6432 4.16699 12.4974 4.16699ZM12.4974 16.667C11.3516 16.667 10.4141 17.6045 10.4141 18.7503C10.4141 19.8962 11.3516 20.8337 12.4974 20.8337C13.6432 20.8337 14.5807 19.8962 14.5807 18.7503C14.5807 17.6045 13.6432 16.667 12.4974 16.667Z"
+                                        fill="black"
+                                      />
+                                    </svg>
+                                  ) : (
+                                    <svg
+                                      className=" float-right"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="25"
+                                      height="25"
+                                      viewBox="0 0 25 25"
+                                      fill="none"
+                                    >
+                                      <path
+                                        d="M12.4974 10.417C11.3516 10.417 10.4141 11.3545 10.4141 12.5003C10.4141 13.6462 11.3516 14.5837 12.4974 14.5837C13.6432 14.5837 14.5807 13.6462 14.5807 12.5003C14.5807 11.3545 13.6432 10.417 12.4974 10.417ZM12.4974 4.16699C11.3516 4.16699 10.4141 5.10449 10.4141 6.25033C10.4141 7.39616 11.3516 8.33366 12.4974 8.33366C13.6432 8.33366 14.5807 7.39616 14.5807 6.25033C14.5807 5.10449 13.6432 4.16699 12.4974 4.16699ZM12.4974 16.667C11.3516 16.667 10.4141 17.6045 10.4141 18.7503C10.4141 19.8962 11.3516 20.8337 12.4974 20.8337C13.6432 20.8337 14.5807 19.8962 14.5807 18.7503C14.5807 17.6045 13.6432 16.667 12.4974 16.667Z"
+                                        fill="white"
+                                      />
+                                    </svg>
+                                  )}
+                                </>
                               )}
-                            </>
-                          )}
-                        </div>
-                      ))}
+                            </div>
+                          )
+                        })}
+                      </div>
                     </div>
-                  </div>
-                </li>
-              ))}
+                  </li>
+                )
+              })}
             </ul>
           </div>
         </div>

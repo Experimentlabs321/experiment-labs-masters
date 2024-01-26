@@ -2,18 +2,23 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import Layout from "../Layout";
 import SearchIcon from "../../../assets/Dashboard/SearchIcon.png";
 import CourseTham from "../../../assets/Dashboard/CourseTham.png";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../../../contexts/AuthProvider";
 
 const CourseAccess = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [courses, setCourses] = useState([]);
+  const [myCourses, setMyCourses] = useState([]);
+  const [showCourses, setShowCourses] = useState([]);
+  const [stateParams, setStateParams] = useState("myCourses");
   const [clickedCourse, setClickedCourse] = useState();
   const [selectedOption, setSelectedOption] = useState("Category");
   const options = ["Category name"];
   const Role = localStorage.getItem("role");
   const { userInfo } = useContext(AuthContext);
+  const location = useLocation();
+
   console.log(userInfo);
 
   const toggleOptions = () => {
@@ -24,16 +29,35 @@ const CourseAccess = () => {
     setSelectedOption(option);
     setIsOpen(false);
   };
+
+
   useEffect(() => {
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
-      )
+    const queryParams = new URLSearchParams(location.search);
+    const stateParam = queryParams.get('state');
+    setStateParams(stateParam || stateParams);
+
+    axios.get(
+      `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
+    )
       .then((response) => {
         setCourses(response?.data);
       })
       .catch((error) => console.error(error));
-  }, [userInfo]);
+
+    axios.get(
+      `${process.env.REACT_APP_SERVER_API}/api/v1/courses/userId/${userInfo._id}`
+    )
+      .then((response) => {
+        setMyCourses(response?.data);
+      })
+      .catch((error) => console.error(error));
+
+  }, [userInfo, location]);
+
+
+  useEffect(() => {
+    stateParams === "myCourses" ? setShowCourses(myCourses) : setShowCourses(courses);
+  }, [myCourses, courses]);
 
   return (
     <div>
@@ -80,12 +104,26 @@ const CourseAccess = () => {
               )}
             </div>
           </div>
-          <div className="mt-[80px] flex items-center justify-between ">
-            <div className="flex">
-              <button className="pr-[60px] text-[18px] font-[700] text-[#3E4DAC] underline ">
-                All
+          <div className="mt-[80px] flex items-center justify-between">
+            <div className="flex gap-8">
+              <button
+                onClick={() => {
+                  setStateParams("myCourses")
+                  setShowCourses(myCourses);
+                }}
+                className={`text-[18px] font-[700] ${stateParams === "myCourses" ? "text-[#3E4DAC] underline" : "text-black no-underline"}`}>
+                My Courses
               </button>
-              <button className="pr-[60px] text-[18px] font-[500] ">
+              <button
+                onClick={() => {
+                  setStateParams("allCourses")
+                  setShowCourses(courses);
+                }}
+                className={`text-[18px] font-[700] ${stateParams === "allCourses" ? "text-[#3E4DAC] underline" : "text-black no-underline"}`
+                }>
+                All Courses
+              </button>
+              {/* <button className="pr-[60px] text-[18px] font-[500] ">
                 Active
               </button>
               <button className="pr-[60px] text-[18px] font-[500] ">
@@ -93,7 +131,7 @@ const CourseAccess = () => {
               </button>
               <button className="pr-[60px] text-[18px] font-[500] ">
                 Completed
-              </button>
+              </button> */}
             </div>
             <div className="relative inline-block">
               <div
@@ -120,8 +158,8 @@ const CourseAccess = () => {
           </div>
 
           <div className="my-[60px] ">
-            <div className="flex flex-wrap justify-between gap-x-2 gap-y-5 ">
-              {courses?.map((course) => {
+            <div className={`flex flex-wrap ${showCourses.length<=2 ? "justify-start gap-x-14":"justify-between gap-x-2"}  gap-y-5`}>
+              {showCourses?.map((course, index) => {
                 const date = new Date(course?.courseStartingDate);
                 const options = {
                   year: "numeric",
@@ -129,7 +167,7 @@ const CourseAccess = () => {
                   day: "numeric",
                 };
                 return (
-                  <div className="bg-[#F6F7FF] rounded-[20px] p-[20px] max-w-[340px] shadow-[4px_4px_4px_0px_#0000001a]">
+                  <div key={index} className="bg-[#F6F7FF] rounded-[20px] p-[20px] max-w-[340px] shadow-[4px_4px_4px_0px_#0000001a]">
                     <Link to={`/questLevels/${course?._id}`} onClick={(e) => e.stopPropagation()}>
                       <div className="card-content">
                         <img
@@ -144,13 +182,13 @@ const CourseAccess = () => {
                           {course?.courseDescription}
                         </p>
                         <div className="flex items-center justify-between">
-                      <p className="bg-[#E1D7FF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
-                        {course?.courseCategory}
-                      </p>
-                      <button className="bg-[#CEDBFF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
-                        {date?.toLocaleDateString("en-US", options)}
-                      </button>
-                    </div>
+                          <p className="bg-[#E1D7FF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
+                            {course?.courseCategory}
+                          </p>
+                          <button className="bg-[#CEDBFF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
+                            {date?.toLocaleDateString("en-US", options)}
+                          </button>
+                        </div>
                       </div>
                     </Link>
 

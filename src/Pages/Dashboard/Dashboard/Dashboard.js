@@ -16,6 +16,7 @@ import PersonForMobile from "../../../assets/Dashboard/personForMobile.png";
 import OpenBox from "../../../assets/Dashboard/OpenBox.png";
 import WeekUpdate from "../../../assets/Dashboard/WeekUpdate.png";
 import Challenges from "../../../assets/Dashboard/Challenges.png";
+import DashboardCourses from "./DashboardCourses";
 const Dashboard = () => {
   const data = [
     {
@@ -291,8 +292,8 @@ const Dashboard = () => {
                 {data.map((singleData, i) => (
                   <div
                     className={`${i % 2 === 0
-                        ? "flex-col border-b-white border-b-0 rounded-t-full"
-                        : " flex-col-reverse border-t-white border-t-0 rounded-b-full self-end"
+                      ? "flex-col border-b-white border-b-0 rounded-t-full"
+                      : " flex-col-reverse border-t-white border-t-0 rounded-b-full self-end"
                       } h-[92px] relative flex ml-[-5.26px] p-[5px] border-[#0F3934] border-[5px] overflow-visible my-4`}
                   >
                     <div
@@ -431,6 +432,15 @@ const Dashboard = () => {
                 </div>
               </div> */}
             </div>
+          </div>
+          <div>
+            {
+              dashboardTheme?.addCourses &&
+              <DashboardCourses
+                myCoursesChecked={dashboardTheme?.myCoursesChecked}
+                allCoursesChecked={dashboardTheme?.allCoursesChecked}
+              />
+            }
           </div>
         </div>
       </Layout>

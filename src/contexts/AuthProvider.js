@@ -67,7 +67,7 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     Loading();
     axios
-      .get(`${process.env.REACT_APP_BACKEND_API}/users?email=${user?.email}`)
+      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${user?.email}`)
       .then((user) => {
         setUserInfo(user?.data)
         Loading().close();
