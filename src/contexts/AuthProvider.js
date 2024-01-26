@@ -69,11 +69,11 @@ const AuthProvider = ({ children }) => {
     axios
       .get(`${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${user?.email}`)
       .then((user) => {
-        setUserInfo(user?.data)
+        setUserInfo(user?.data);
         Loading().close();
       })
       .catch((error) => console.error(error));
-      Loading().close();
+    Loading().close();
   }, [user?.email, userInfo?.email]);
 
   const authInfo = {

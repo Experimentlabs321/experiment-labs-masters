@@ -2,6 +2,7 @@ import { AuthContext } from "../../../contexts/AuthProvider";
 import React, { useContext, useEffect, useState } from "react";
 
 import { Link, useNavigate, useParams } from "react-router-dom";
+
 import axios from "axios";
 import Modal from "react-modal";
 import {
@@ -24,6 +25,7 @@ import DashboardPrimaryButton from "../Shared/DashboardPrimaryButton";
 
 let matching = false;
 const matchInputWithBusySlots = (inputDate, inputTime, busyTimeSlots) => {
+
   let flag = 0;
   const inputDateTime = new Date(`${inputDate}T${inputTime}`);
   console.log('Input DateTime:', inputDateTime);
@@ -34,7 +36,7 @@ const matchInputWithBusySlots = (inputDate, inputTime, busyTimeSlots) => {
 
 
 
-  const isMatch = busyTimeSlots.some((busySlot) => {
+  const isMatch = busyTimeSlots?.some((busySlot) => {
     const busyStartDateTimeString = busySlot.start.dateTime;
     const busyEndDateTimeString = busySlot.end.dateTime;
     // console.log("busystart",busyStartDateTimeString);
@@ -49,7 +51,7 @@ const matchInputWithBusySlots = (inputDate, inputTime, busyTimeSlots) => {
     const busyStartTime = busyStartDateTimeString.split(' ')[4];
     console.log('busy start: ', busyStartTime);
     const busyEndTime = busyEndDateTimeString.split(' ')[4];
- 
+
     console.log(flag);
     return (
       flag === 1 &&
@@ -69,7 +71,11 @@ const ScheduleTask = ({ taskData, week }) => {
   const adminMail = taskData?.usersession?.user?.email;
   console.log(adminMail);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
+  const [maxDateString, setMaxDateString] = useState("");
+  
   const [busyTimeSlots, setBusyTimeSlots] = useState([]);
+  const session = useSession();
+  const supabase = useSupabaseClient();
   console.log("Task data ", taskData)
   const { user, userInfo } = useContext(AuthContext);
   if (userInfo.role !== 'admin') {
@@ -79,6 +85,7 @@ const ScheduleTask = ({ taskData, week }) => {
   };
 
   const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
+  const navigate = useNavigate();
   const [date, setDate] = useState(""); // State for the date
   const [time, setTime] = useState(""); // State for the time
   const [reservedEvent, setReservedEvent] = useState(null);
@@ -87,18 +94,70 @@ const ScheduleTask = ({ taskData, week }) => {
   const calendarID = process.env.REACT_APP_calendarID;
 
   const handleDateChange = (event) => {
-    setDate(event.target.value);
-    matchInputWithBusySlots(event.target.value, time, busyTimeSlots);
+    const selectedDate = event.target.value;
+    const selectedDay = new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long' });
+  
+    // Check if the selected day is an off-day
+    if (taskData?.offDays.includes(selectedDay)) {
+      alert(`You cannot select ${selectedDay} as it is an off-day.`);
+      // Clear the selected date
+      document.getElementById('date').value = "";
+      setDate(null);
+      setMaxDateString("");  // Reset maxDateString state
+      return;
+    }
+  
+    // Check if the selected date is within the valid date range
+    const currentDate = getCurrentDate();  // Assuming you have the getCurrentDate function
+    const maxDateOffset = parseInt(taskData?.dateRange, 10) || 0;
+    const maxDateObject = new Date(currentDate);  // Use currentDate as the starting point
+    maxDateObject.setDate(maxDateObject.getDate() + maxDateOffset);
+  
+    if (new Date(selectedDate) > maxDateObject) {
+      alert(`You cannot select a date beyond the allowed range.`);
+      // Clear the selected date
+      document.getElementById('date').value = "";
+      setDate(null);
+      setMaxDateString("");  // Reset maxDateString state
+      return;
+    }
+  
+    setDate(selectedDate);
+    const maxDateString = maxDateObject.toISOString().split('T')[0];
+    document.getElementById('date').max = maxDateString;
+    setMaxDateString(maxDateString);
+    matchInputWithBusySlots(selectedDate, time, busyTimeSlots);
   };
-
   // Update the time state when the time input changes
   const handleTimeChange = (event) => {
-    setTime(event.target.value);
-    console.log("handletimechange", event.target.value);
-    matchInputWithBusySlots(date, event.target.value, busyTimeSlots);
+    const selectedTime = event.target.value;
+    const minTime = '09:00';
+    const maxTime = '17:00';
+
+    const selectedTimeDate = new Date(`2000-01-01T${selectedTime}`);
+    const minTimeDate = new Date(`2000-01-01T${minTime}`);
+    const maxTimeDate = new Date(`2000-01-01T${maxTime}`);
+
+    if (selectedTimeDate < minTimeDate || selectedTimeDate > maxTimeDate) {
+      alert('Please choose a time between 09:00 AM and 05:00 PM.');
+      // Reset the time to the initial state or do nothing
+      document.getElementById('time').value = '09:00';
+      setTime(null);
+    } else {
+      setTime(selectedTime);
+      console.log("handletimechange", selectedTime);
+      matchInputWithBusySlots(date, selectedTime, busyTimeSlots);
+    }
   };
 
+
   useEffect(() => {
+    if (localStorage.getItem("role") === "admin") {
+      if (!session?.provider_token) {
+        // If there's no session, sign in again
+        googleSignIn();
+      }
+    }
     const busyTimeSlots = taskData?.events?.map((event) => {
       // Use the correct property for date and time based on the event structure
       const startDateTime = event.start?.dateTime || event.start;
@@ -116,7 +175,7 @@ const ScheduleTask = ({ taskData, week }) => {
       const endDate = new Date(endDateTime);
       const endTime = endDate.toUTCString();
 
-  
+
 
       return {
         start: {
@@ -143,9 +202,27 @@ const ScheduleTask = ({ taskData, week }) => {
 
     setBusyTimeSlots(busyTimeSlots);
     setAvailableTimeSlots(filteredTimeSlots);
-  }, [taskData,matching]);
+  }, [taskData, matching]);
 
+  const googleSignIn = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          scopes: 'https://www.googleapis.com/auth/calendar',
+          persistSession: true,
+        },
+      });
 
+      if (error) {
+        console.error('Error during Google Sign-In:', error.message);
+        alert('Error logging in to Google provider with Supabase');
+      }
+    } catch (error) {
+      console.error('Unexpected error during Google Sign-In:', error.message);
+      alert('Unexpected error. Please try again.');
+    }
+  };
   const generateAllTimeSlots = (start, end) => {
     const timeSlots = [];
     let currentTime = new Date(start);
@@ -244,8 +321,8 @@ const ScheduleTask = ({ taskData, week }) => {
   const addEvent = async () => {
     if (date && time) {
       const combinedDateTimeUTC = new Date(`${date}T${time}Z`);
-const endDateTimeUTC = new Date(combinedDateTimeUTC);
-endDateTimeUTC.setMinutes(endDateTimeUTC.getMinutes() + 30);
+      const endDateTimeUTC = new Date(combinedDateTimeUTC);
+      endDateTimeUTC.setMinutes(endDateTimeUTC.getMinutes() + 30);
       const currentDateTime = new Date();
       const timeDifferenceInMilliseconds = combinedDateTimeUTC - currentDateTime;
       if (timeDifferenceInMilliseconds < 0) {
@@ -303,7 +380,6 @@ endDateTimeUTC.setMinutes(endDateTimeUTC.getMinutes() + 30);
             },
           };
 
-          console.log(event)
 
           const newAccessToken = data.access_token;
           function initiate() {
@@ -323,11 +399,17 @@ endDateTimeUTC.setMinutes(endDateTimeUTC.getMinutes() + 30);
                 }
               );
               if (sendMail?.data?.Success && response?.data?.acknowledged) {
+                const newEvent = await axios.post(
+                  `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/addEvent`,
+                  event
+                );
+                console.log("new event created ", newEvent);
                 Swal.fire({
                   icon: "success",
                   title: "Request Sent!",
                   text: "Your slot request has been sent!",
                 });
+                navigate(-1);
               }
             };
             gapi.client
@@ -375,6 +457,7 @@ endDateTimeUTC.setMinutes(endDateTimeUTC.getMinutes() + 30);
               );
           }
           gapi.load("client", initiate);
+
         })
         .catch((error) => {
 
@@ -388,11 +471,17 @@ endDateTimeUTC.setMinutes(endDateTimeUTC.getMinutes() + 30);
       });
     }
   };
-
+  const getCurrentDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
 
 
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center my-5">
       <div className="w-[250px] lg:w-[355px] min-w-[250px] lg:min-w-min h-[370px] lg:h-[515px]">
         <h1 className="text-[18px] lg:text-[25px] font-[700] text-center pb-[25px]">
           Request slots
@@ -401,7 +490,7 @@ endDateTimeUTC.setMinutes(endDateTimeUTC.getMinutes() + 30);
           style={{
             filter: "drop-shadow(3.75217px 3.75217px 0px #000000)",
           }}
-          className="bg-[#0E2749] w-full h-full rounded-[14px] py-[15px] px-[15px] mb-10 lg:p-[30px] flex flex-col justify-between items-center gap-5"
+          className="bg-[#0E2749] w-full h-[400px] rounded-[14px] py-[15px] px-[15px] mb-10 lg:p-[30px] flex flex-col justify-between items-center gap-5"
         >
 
           <div className="w-full relative">
@@ -412,10 +501,12 @@ endDateTimeUTC.setMinutes(endDateTimeUTC.getMinutes() + 30);
               <input
                 required
                 onChange={handleDateChange}
-                className=" text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
+                className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
                 name="date"
                 id="date"
                 type="date"
+                min={getCurrentDate()}
+                max={maxDateString}
               />
             </div>
             <p className="text-[#C0C0C0] text-[18px] font-[600] py-[18px]">
@@ -425,12 +516,13 @@ endDateTimeUTC.setMinutes(endDateTimeUTC.getMinutes() + 30);
               <input
                 required
                 onChange={handleTimeChange}
-                className=" text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
+                className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
                 name="time"
-                // defaultValue={() => {const startEvent = new Date(reservedEvent?.start)?toTimeString().slice(0, 8)}}
-
+                min="09:00"
+                max="17:00"
                 id="time"
                 type="time"
+                defaultValue="09:00" // Set the default value to 9:00 AM
               />
             </div>
           </div>
@@ -453,8 +545,8 @@ endDateTimeUTC.setMinutes(endDateTimeUTC.getMinutes() + 30);
             </a>
           ) : (
             <>
-              { matching ? <><p className="text-white">Admin is Busy at that time</p>
-              
+              {matching ? <><p className="text-white">Admin is Busy at that time</p>
+
               </> : <DashboardPrimaryButton
                 bgColor="#3E4DAC"
                 shadow="0px 6.32482px 0px #CA5F98"

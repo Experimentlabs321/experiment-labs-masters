@@ -11,6 +11,7 @@ import {
 import DateTimePicker from "react-datetime-picker";
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import listPlugin from '@fullcalendar/list';
 import interactionPlugin from "@fullcalendar/interaction";
 import 'react-datetime-picker/dist/DateTimePicker.css';
 import 'react-calendar/dist/Calendar.css';
@@ -18,6 +19,10 @@ import 'react-clock/dist/Clock.css';
 import toast from "react-hot-toast";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import required from "../../../assets/ContentManagement/required.png";
+import { Calendar, momentLocalizer } from "react-big-calendar";
+import moment from "moment";
+import "react-big-calendar/lib/css/react-big-calendar.css";
+
 /* import '@fullcalendar/common/main.css';  
 import '@fullcalendar/daygrid/main.css'; */
 
@@ -41,6 +46,7 @@ const customStyles = {
     zIndex: 1001, // Set a higher z-index value
   },
 };
+const localizer = momentLocalizer(moment);
 const AdminCalendarSchedule = () => {
 
   const { id } = useParams();
@@ -52,6 +58,7 @@ const AdminCalendarSchedule = () => {
   const [assignmentData, setAssignmentData] = useState({});
   const [batchesData, setBatchesData] = useState([]);
   const [selectedBatches, setSelectedBatches] = useState([]);
+  const [selectedHoliday, setSelectedHoliday] = useState([]);
   const [schedule, setSchedule] = useState([]);
 
   const navigate = useNavigate();
@@ -65,6 +72,7 @@ const AdminCalendarSchedule = () => {
   const [calendarId, setCalendarId] = useState("");
   const session = useSession();
   const [rafi, setRafi] = useState(null);
+  const [calendarError, setCalendarError] = useState(false);
   global = session;
   const supabase = useSupabaseClient();
 
@@ -142,6 +150,21 @@ const AdminCalendarSchedule = () => {
       );
     }
   };
+  const handleOptionChangeHoliday = (day) => {
+    const isSelected = selectedHoliday.includes(day.day);
+
+    if (isSelected) {
+      // If the day is already selected, remove it from the array
+      const updatedSelection = selectedHoliday.filter((selectedDay) => selectedDay !== day.day);
+      setSelectedHoliday(updatedSelection);
+    } else {
+      // If the day is not selected, add it to the array
+      setSelectedHoliday((prevSelection) => [...prevSelection, day.day]);
+    }
+  };
+
+
+  console.log(selectedHoliday)
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -150,6 +173,7 @@ const AdminCalendarSchedule = () => {
     const form = event.target;
 
     const scheduleName = form.scheduleName?.value;
+    const dateRange = form.dateRange?.value;
 
 
     const manageSchedule = {
@@ -159,8 +183,10 @@ const AdminCalendarSchedule = () => {
       chapterId: chapter?._id,
       courseId: chapter?.courseId,
       batches: selectedBatches,
+      offDays: selectedHoliday,
+      dateRange: dateRange,
       usersession: global,
-      events : calendarEvents,
+      events: calendarEvents,
     };
 
     setAssignmentData(manageSchedule);
@@ -191,22 +217,25 @@ const AdminCalendarSchedule = () => {
   // The empty dependency array ensures that this effect runs only once
 
   useEffect(() => {
-    if (!session) {
+    if (!session?.provider_token) {
       // If there's no session, sign in again
       googleSignIn();
     } else {
       // If there's a session, fetch and display events
       fetchAndDisplayGoogleCalendarEvents();
       fetchPrimaryCalendarInfo();
-      checkAndRefreshToken(); // Call this function initially
-  
-      // Set up an interval to periodically refresh the token
-      const refreshInterval = setInterval(() => {
-        checkAndRefreshToken();
-      }, 30 * 60 * 1000); // Refresh every 30 minutes (adjust as needed)
-  
-      // Cleanup the interval when the component unmounts
-      return () => clearInterval(refreshInterval);
+      if (calendarError) {
+        googleSignIn();
+      }
+      // checkAndRefreshToken(); // Call this function initially
+
+      // // Set up an interval to periodically refresh the token
+      // const refreshInterval = setInterval(() => {
+      //   checkAndRefreshToken();
+      // }, 30 * 60 * 1000); // Refresh every 30 minutes (adjust as needed)
+
+      // // Cleanup the interval when the component unmounts
+      // return () => clearInterval(refreshInterval);
     }
   }, [session, isModalOpen]);
   console.log('session before ', session);
@@ -215,56 +244,55 @@ const AdminCalendarSchedule = () => {
     return <></>;
   }
 
-  async function checkAndRefreshToken() {
-    const currentTime = Math.floor(Date.now() / 1000);
+  // async function checkAndRefreshToken() {
+  //   const currentTime = Math.floor(Date.now() / 1000);
 
-    if (session.expires_at && session.expires_at < currentTime) {
-      try {
-        const refreshResponse = await fetch("https://qzgeifdgviycxooauyum.supabase.co/auth/v1/token", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            refresh_token: session.refresh_token,
-          }),
-        });
+  //   if (session.expires_at && session.expires_at < currentTime) {
+  //     try {
+  //       const refreshResponse = await fetch("https://qzgeifdgviycxooauyum.supabase.co/auth/v1/token", {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({
+  //           refresh_token: session.refresh_token,
+  //         }),
+  //       });
 
-        if (refreshResponse.ok) {
-          const newTokens = await refreshResponse.json();
+  //       if (refreshResponse.ok) {
+  //         const newTokens = await refreshResponse.json();
 
-          // Update session with new tokens
-          session.access_token = newTokens.access_token;
-          session.expires_at = currentTime + newTokens.expires_in;
-        } else {
-          // Handle refresh token failure
-          console.error("Failed to refresh access token");
-        }
-      } catch (error) {
-        console.error("Error during token refresh:", error.message);
-      }
-    }
-  }
-  console.log("session after ", session);
+  //         // Update session with new tokens
+  //         session.access_token = newTokens.access_token;
+  //         session.expires_at = currentTime + newTokens.expires_in;
+  //       } else {
+  //         // Handle refresh token failure
+  //         console.error("Failed to refresh access token");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error during token refresh:", error.message);
+  //     }
+  //   }
+  // }
+
 
   const googleSignIn = async () => {
     try {
-      const { user, error } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           scopes: 'https://www.googleapis.com/auth/calendar',
           persistSession: true,
         },
       });
-  
-      if (user) {
-        console.log('Successfully signed in:', user);
-        // Add any additional logic you need after successful sign-in
-      }
-  
+
       if (error) {
         console.error('Error during Google Sign-In:', error.message);
         alert('Error logging in to Google provider with Supabase');
+      } else {
+        // If there is no error, the sign-in is successful
+        console.log('Google Sign-In successful!');
+        console.log(calendarEvents); // Log calendarEvents here or perform any other actions
       }
     } catch (error) {
       console.error('Unexpected error during Google Sign-In:', error.message);
@@ -273,7 +301,9 @@ const AdminCalendarSchedule = () => {
   };
 
   // Use useEffect to log rafi whenever it changes
-
+  if (googleSignIn) {
+    console.log("done signin");
+  }
 
   async function signOut() {
     await supabase.auth.signOut();
@@ -306,8 +336,7 @@ const AdminCalendarSchedule = () => {
     }
   }
 
-  const url = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events`
-  console.log(url)
+
   async function fetchGoogleCalendarEvents() {
 
     const response = await fetch(
@@ -333,12 +362,13 @@ const AdminCalendarSchedule = () => {
   async function fetchAndDisplayGoogleCalendarEvents() {
     try {
       const events = await fetchGoogleCalendarEvents();
+      setCalendarError(false)
       setCalendarEvents(events);
     } catch (error) {
-      console.error(error.message);
+      setCalendarError(true)
     }
   }
-  // console.log(calendarEvents)
+
 
   function renderEventContent(eventInfo) {
     // console.log(eventInfo?.event.start);
@@ -426,6 +456,32 @@ const AdminCalendarSchedule = () => {
     }
   }
 
+  const days = [
+    {
+      "day": "Saturday",
+    },
+    {
+      "day": "Sunday",
+    },
+    {
+      "day": "Monday",
+    },
+    {
+      "day": "Tuesday",
+    },
+    {
+      "day": "Wednesday",
+    },
+
+    {
+      "day": "Thursday",
+    },
+    {
+      "day": "Friday",
+    },
+
+  ]
+
 
 
   return (
@@ -479,6 +535,7 @@ const AdminCalendarSchedule = () => {
                     stroke-linejoin="round"
                   />
                 </svg>
+
                 <button className=" font-sans mr-[30px] text-[20px] font-[400] ">
                   {chapter?.chapterName}
                 </button>
@@ -548,9 +605,14 @@ const AdminCalendarSchedule = () => {
                   <h2>Your Calendar Events</h2>
                   <FullCalendar
                     height="600px"
-                    plugins={[dayGridPlugin, interactionPlugin]}
+                    plugins={[dayGridPlugin,listPlugin, interactionPlugin]}
                     initialView="dayGridMonth"
                     selectMirror={true}
+                    headerToolbar={{
+                      start: 'title', // will normally be on the left. if RTL, will be on the right
+                      center: 'today',
+                      end: 'dayGridMonth,dayGridWeek,dayGridDay,list' // Add the desired views here
+                    }}
                     eventContent={renderEventContent}
                     events={calendarEvents?.map((event) => ({
                       title: event?.summary,
@@ -560,26 +622,90 @@ const AdminCalendarSchedule = () => {
                     }))}
                     dateClick={(info) => handleDateClick(info.date)}
                   />
+                  {/* <Calendar
+                    localizer={localizer}
+                    events={calendarEvents}
+                    step={60}
+                    startAccessor="start"
+                    endAccessor="end"
+                    style={{ height: 750, maxWidth: 700 }}
+                  /> */}
                 </div>
                 <form onSubmit={handleSubmit} className="ms-[40px]  mt-12">
-                  <div className="">
-                    <div className="flex items-center gap-4">
-                      <p className="h-2 w-2 bg-black rounded-full"></p>
-                      <p className="font-bold text-lg me-[36px]">Schedule Name</p>
-                      <img src={required} alt="required" />
+                  <div className="grid grid-cols-2 gap-10">
+                    <div className="">
+                      <div className="flex items-center gap-4">
+                        <p className="h-2 w-2 bg-black rounded-full"></p>
+                        <p className="font-bold text-lg me-[36px]">Schedule Name</p>
+                        <img src={required} alt="required" />
+                      </div>
+
+                      <input
+                        required
+                        /*   defaultValue={
+                            assignmentData ? assignmentData?.scheduleName : ""
+                          } */
+                        className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
+                        name="scheduleName"
+                        type="text"
+                        placeholder="schedule Name"
+                      />
                     </div>
 
-                    <input
-                      required
-                      /*   defaultValue={
-                          assignmentData ? assignmentData?.scheduleName : ""
-                        } */
-                      className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                      name="scheduleName"
-                      type="text"
-                      placeholder="schedule Name"
-                    />
+                    <div className="">
+                      <div className="flex items-center gap-4">
+                        <p className="h-2 w-2 bg-black rounded-full"></p>
+                        <p className="font-bold text-lg me-[36px]">Date range</p>
+                        <img src={required} alt="required" />
+                      </div>
+
+                      <input
+                        required
+
+                        className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
+                        name="dateRange"
+                        type="number"
+                        defaultValue={7}
+                      />
+                    </div>
+
+                    <div className="">
+
+                      <div className="flex items-center gap-4">
+                        <p className="h-2 w-2 bg-black rounded-full"></p>
+                        <p className="font-bold text-lg me-[36px]">Select holidays</p>
+                        <img src={required} alt="icon" />
+                      </div>
+                      <ul className="flex gap-4 flex-wrap ">
+                        {
+                          days?.map((day) => (
+                            <li className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] ">
+                              <input
+                                type="checkbox"
+                                id="student"
+                                name={day?.day}
+                                value={day?.day}
+                                checked={selectedHoliday?.find(
+                                  (item) => item?.day === day?.day
+                                )}
+                                onChange={(e) => handleOptionChangeHoliday(day)}
+                                className=" mb-1"
+                              />
+                              <div className="flex mb-1 items-center">
+                                <label className="ms-4" htmlFor={day?.day}>
+                                  {day?.day}
+                                </label>
+                              </div>
+                            </li>
+                          ))
+                        }
+
+                      </ul>
+
+                    </div>
+
                   </div>
+
                   <div className="my-5">
                     <div className="flex items-center gap-4">
                       <p className="h-2 w-2 bg-black rounded-full"></p>
@@ -618,12 +744,8 @@ const AdminCalendarSchedule = () => {
 
                   <div className="flex items-center gap-10 justify-center mt-20 mb-10">
                     <button className="bg-sky-600 px-4 py-3 text-white text-lg rounded-lg" onClick={() => signOut()}>Sign out </button>
-                    <input
-                      type="submit"
-                      onClick={() => setSubmitPermission(true)}
-                      value="Save"
-                      className="px-[30px] py-3 bg-[#FF557A] text-[#fff] text-xl font-bold rounded-lg ms-20"
-                    />
+                    <button className="px-[30px] py-3 bg-[#FF557A] text-[#fff] text-xl font-bold rounded-lg ms-20 " type="submit" onClick={() => setSubmitPermission(true)}>Save</button>
+
                   </div>
                 </form>
 

@@ -13,6 +13,7 @@
     "@fullcalendar/core": "^6.1.10",
     "@fullcalendar/daygrid": "^6.1.10",
     "@fullcalendar/interaction": "^6.1.10",
+    "@fullcalendar/list": "^6.1.10",
     "@fullcalendar/react": "^6.1.10",
     "@google-cloud/firestore": "^6.7.0",
     "@mui/icons-material": "^5.11.16",
@@ -72,6 +73,7 @@
     "react-slick": "^0.29.0",
     "react-sortablejs": "^6.1.4",
     "react-tabs": "^6.0.2",
+    "react-to-print": "^2.14.15",
     "react-vertical-timeline-component": "^3.6.0",
     "react-youtube": "^10.1.0",
     "reactjs-popup": "^2.0.5",
@@ -83,7 +85,8 @@
     "sweetalert2": "^11.7.20",
     "swiper": "^11.0.5",
     "util": "^0.12.5",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "xlsx": "^0.18.5"
   },
   "scripts": {
     "start": "react-scripts start",
