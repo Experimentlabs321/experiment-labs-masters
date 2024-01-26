@@ -52,6 +52,7 @@ const AdminCalendarSchedule = () => {
   const [assignmentData, setAssignmentData] = useState({});
   const [batchesData, setBatchesData] = useState([]);
   const [selectedBatches, setSelectedBatches] = useState([]);
+  const [selectedHoliday, setSelectedHoliday] = useState([]);
   const [schedule, setSchedule] = useState([]);
 
   const navigate = useNavigate();
@@ -142,6 +143,21 @@ const AdminCalendarSchedule = () => {
       );
     }
   };
+  const handleOptionChangeHoliday = (day) => {
+    const isSelected = selectedHoliday.includes(day.day);
+  
+    if (isSelected) {
+      // If the day is already selected, remove it from the array
+      const updatedSelection = selectedHoliday.filter((selectedDay) => selectedDay !== day.day);
+      setSelectedHoliday(updatedSelection);
+    } else {
+      // If the day is not selected, add it to the array
+      setSelectedHoliday((prevSelection) => [...prevSelection, day.day]);
+    }
+  };
+  
+  
+  console.log(selectedHoliday)
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -150,6 +166,7 @@ const AdminCalendarSchedule = () => {
     const form = event.target;
 
     const scheduleName = form.scheduleName?.value;
+    const dateRange = form.dateRange?.value;
 
 
     const manageSchedule = {
@@ -159,8 +176,10 @@ const AdminCalendarSchedule = () => {
       chapterId: chapter?._id,
       courseId: chapter?.courseId,
       batches: selectedBatches,
+      offDays: selectedHoliday,
+      dateRange: dateRange,
       usersession: global,
-      events : calendarEvents,
+      events: calendarEvents,
     };
 
     setAssignmentData(manageSchedule);
@@ -199,12 +218,12 @@ const AdminCalendarSchedule = () => {
       fetchAndDisplayGoogleCalendarEvents();
       fetchPrimaryCalendarInfo();
       checkAndRefreshToken(); // Call this function initially
-  
+
       // Set up an interval to periodically refresh the token
       const refreshInterval = setInterval(() => {
         checkAndRefreshToken();
       }, 30 * 60 * 1000); // Refresh every 30 minutes (adjust as needed)
-  
+
       // Cleanup the interval when the component unmounts
       return () => clearInterval(refreshInterval);
     }
@@ -256,7 +275,7 @@ const AdminCalendarSchedule = () => {
           persistSession: true,
         },
       });
-  
+
       if (error) {
         console.error('Error during Google Sign-In:', error.message);
         alert('Error logging in to Google provider with Supabase');
@@ -272,9 +291,9 @@ const AdminCalendarSchedule = () => {
   };
 
   // Use useEffect to log rafi whenever it changes
-if(googleSignIn){
-  console.log("done signin");
-}
+  if (googleSignIn) {
+    console.log("done signin");
+  }
 
   async function signOut() {
     await supabase.auth.signOut();
@@ -339,7 +358,7 @@ if(googleSignIn){
       console.error(error.message);
     }
   }
- 
+
 
   function renderEventContent(eventInfo) {
     // console.log(eventInfo?.event.start);
@@ -427,6 +446,32 @@ if(googleSignIn){
     }
   }
 
+  const days = [
+    {
+      "day": "Saturday",
+    },
+    {
+      "day": "Sunday",
+    },
+    {
+      "day": "Monday",
+    },
+    {
+      "day": "Tuesday",
+    },
+    {
+      "day": "Wednesday",
+    },
+
+    {
+      "day": "Thursday",
+    },
+    {
+      "day": "Friday",
+    },
+
+  ]
+
 
 
   return (
@@ -480,6 +525,7 @@ if(googleSignIn){
                     stroke-linejoin="round"
                   />
                 </svg>
+                
                 <button className=" font-sans mr-[30px] text-[20px] font-[400] ">
                   {chapter?.chapterName}
                 </button>
@@ -563,24 +609,80 @@ if(googleSignIn){
                   />
                 </div>
                 <form onSubmit={handleSubmit} className="ms-[40px]  mt-12">
-                  <div className="">
-                    <div className="flex items-center gap-4">
-                      <p className="h-2 w-2 bg-black rounded-full"></p>
-                      <p className="font-bold text-lg me-[36px]">Schedule Name</p>
-                      <img src={required} alt="required" />
+                  <div className="grid grid-cols-2 gap-10">
+                    <div className="">
+                      <div className="flex items-center gap-4">
+                        <p className="h-2 w-2 bg-black rounded-full"></p>
+                        <p className="font-bold text-lg me-[36px]">Schedule Name</p>
+                        <img src={required} alt="required" />
+                      </div>
+
+                      <input
+                        required
+                        /*   defaultValue={
+                            assignmentData ? assignmentData?.scheduleName : ""
+                          } */
+                        className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
+                        name="scheduleName"
+                        type="text"
+                        placeholder="schedule Name"
+                      />
                     </div>
 
-                    <input
-                      required
-                      /*   defaultValue={
-                          assignmentData ? assignmentData?.scheduleName : ""
-                        } */
-                      className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                      name="scheduleName"
-                      type="text"
-                      placeholder="schedule Name"
-                    />
+                    <div className="">
+                      <div className="flex items-center gap-4">
+                        <p className="h-2 w-2 bg-black rounded-full"></p>
+                        <p className="font-bold text-lg me-[36px]">Date range</p>
+                        <img src={required} alt="required" />
+                      </div>
+
+                      <input
+                        required
+
+                        className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
+                        name="dateRange"
+                        type="number"
+                       defaultValue={7}
+                      />
+                    </div>
+
+                    <div className="">
+
+                      <div className="flex items-center gap-4">
+                        <p className="h-2 w-2 bg-black rounded-full"></p>
+                        <p className="font-bold text-lg me-[36px]">Select holidays</p>
+                        <img src={required} alt="icon" />
+                      </div>
+                      <ul className="flex gap-4 flex-wrap ">
+                        {
+                          days?.map((day) => (
+                            <li className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] ">
+                              <input
+                                type="checkbox"
+                                id="student"
+                                name={day?.day}
+                                value={day?.day}
+                                checked={selectedHoliday?.find(
+                                  (item) => item?.day === day?.day
+                                )}
+                                onChange={(e) => handleOptionChangeHoliday(day)}
+                                className=" mb-1"
+                              />
+                              <div className="flex mb-1 items-center">
+                                <label className="ms-4" htmlFor={day?.day}>
+                               {day?.day}
+                                </label>
+                              </div>
+                            </li>
+                          ))
+                        }
+
+                      </ul>
+
+                    </div>
+
                   </div>
+
                   <div className="my-5">
                     <div className="flex items-center gap-4">
                       <p className="h-2 w-2 bg-black rounded-full"></p>
@@ -619,12 +721,8 @@ if(googleSignIn){
 
                   <div className="flex items-center gap-10 justify-center mt-20 mb-10">
                     <button className="bg-sky-600 px-4 py-3 text-white text-lg rounded-lg" onClick={() => signOut()}>Sign out </button>
-                    <input
-                      type="submit"
-                      onClick={() => setSubmitPermission(true)}
-                      value="Save"
-                      className="px-[30px] py-3 bg-[#FF557A] text-[#fff] text-xl font-bold rounded-lg ms-20"
-                    />
+                    <button className="px-[30px] py-3 bg-[#FF557A] text-[#fff] text-xl font-bold rounded-lg ms-20 "  type="submit" onClick={() => setSubmitPermission(true)}>Save</button>
+                 
                   </div>
                 </form>
 
