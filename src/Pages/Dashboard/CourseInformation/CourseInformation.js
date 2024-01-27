@@ -826,7 +826,9 @@ const CourseInformation = () => {
                 handleTaskDelete={handleTaskDelete}
               /> */}
               <div>
-                {chapters?.map((chapter, index) => (
+                {chapters?.map((chapter, index) => {
+                  const chapterIndex = index;
+                  return(
                   <div key={chapter?._id} className="sortable-chapter">
                     <div className="relative">
                       <div className="flex items-center justify-between mt-[60px]">
@@ -1140,6 +1142,10 @@ const CourseInformation = () => {
                               (item) => item?.participantId === userInfo?._id && item?.status === "Completed"
                             );
 
+                          const isPrevChapterCompleted = chapterIndex === 0 || chapters?.[chapterIndex - 1]?.tasks?.[chapters?.[chapterIndex - 1]?.tasks?.length - 1]?.participants?.some(
+                            (item) => item?.participantId === userInfo?._id && item?.status === "Completed"
+                          );;
+
                           return (
                             <div key={task?.taskId} className="relative">
                               <div className="flex items-center justify-between my-[60px] relative z-10">
@@ -1160,7 +1166,7 @@ const CourseInformation = () => {
                                         ) : (
                                           <div className="w-full flex items-center justify-start gap-6">
                                             <img src={Pending} alt="Pending" />
-                                            {!isPreviousTaskCompleted && <img className="w-[35px]" src={lock} alt="Lock" />}
+                                            {!(isPreviousTaskCompleted && isPrevChapterCompleted)&& <img className="w-[35px]" src={lock} alt="Lock" />}
                                           </div>
                                         )}
                                       </>
@@ -1232,7 +1238,7 @@ const CourseInformation = () => {
                                     />
                                   )}
                                   <div className="">
-                                    {isPreviousTaskCompleted ? (
+                                    {(isPreviousTaskCompleted && isPrevChapterCompleted) ? (
                                       <Link
                                         onClick={() => {
                                           localStorage.setItem("chapter", chapter?.chapterName);
@@ -1373,7 +1379,7 @@ const CourseInformation = () => {
                     )}
                     {index !== chapters?.length - 1 && <hr />}
                   </div>
-                ))}
+                )})}
               </div>
               {/* <div className="relative">
                 <div className="flex items-center justify-between mt-[60px]">

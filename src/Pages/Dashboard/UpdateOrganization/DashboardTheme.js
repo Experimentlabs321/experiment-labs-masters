@@ -22,7 +22,7 @@ const DashboardTheme = (
     const [courseCompletionBgColor, setCourseCompletionBgColor] = useState(dashboardTheme?.courseCompletionBgColor || "#3E4DAC");
     const [courseCompletionDesign, setCourseCompletionDesign] = useState(dashboardTheme?.courseCompletionDesign === false ? dashboardTheme?.courseCompletionDesign : true);
     const [addCourseCompletion, setAddCourseCompletion] = useState(dashboardTheme?.addCourseCompletion === false ? dashboardTheme?.addCourseCompletion : true);
-    const [addOpenBox, setAddOpenBox] = useState(dashboardTheme?.addOpenBox === false ? dashboardTheme?.addOpenBox: true);
+    const [addOpenBox, setAddOpenBox] = useState(dashboardTheme?.addOpenBox === false ? dashboardTheme?.addOpenBox : true);
     const [addJoinQuest, setAddJoinQuest] = useState(dashboardTheme?.addJoinQuest === false ? dashboardTheme?.addJoinQuest : true);
     const [addChallenges, setAddChallenges] = useState(dashboardTheme?.addChallenges === false ? dashboardTheme?.addChallenges : true);
     const [addRequestSlots, setAddRequestSlots] = useState(dashboardTheme?.addRequestSlots === false ? dashboardTheme?.addRequestSlots : true);
@@ -49,6 +49,9 @@ const DashboardTheme = (
     const [slotsBtnText, setSlotsBtnText] = useState(dashboardTheme?.slotsBtnText || "Request Event");
     const [slotsBtnBg, setSlotsBtnBg] = useState(dashboardTheme?.slotsBtnBg || "#3E4DAC");
     const [slotsCardBg, setSlotsCardBg] = useState(dashboardTheme?.slotsCardBg || "#0E2749");
+    const [addCourses, setAddCourses] = useState(dashboardTheme?.addCourses === false ? dashboardTheme?.addCourses : true);
+    const [myCoursesChecked, setMyCoursesChecked] = useState(dashboardTheme?.myCoursesChecked === false ? dashboardTheme?.myCoursesChecked : true);
+    const [allCoursesChecked, setAllCoursesChecked] = useState(dashboardTheme?.allCoursesChecked === false ? dashboardTheme?.allCoursesChecked : true);
 
     console.log(dashboardTheme);
 
@@ -94,7 +97,10 @@ const DashboardTheme = (
                 slotsHeaderText,
                 slotsBtnText,
                 slotsBtnBg,
-                slotsCardBg
+                slotsCardBg,
+                addCourses,
+                myCoursesChecked,
+                allCoursesChecked
             }
         };
         // console.log("Data ==========>",orgInfo);
@@ -135,6 +141,11 @@ const DashboardTheme = (
 
     const handleAddRequestSlots = () => {
         setAddRequestSlots(!addRequestSlots);
+    };
+
+
+    const handleAddCourses = () => {
+        setAddCourses(!addCourses);
     };
 
 
@@ -841,6 +852,63 @@ const DashboardTheme = (
                 }
 
                 {/* Request Slots End */}
+
+
+                <div className='my-8'>
+                    <label htmlFor="addCoursesToggle" className="flex items-center cursor-pointer">
+                        <div className="relative">
+                            <input
+                                type="checkbox"
+                                id="addCoursesToggle"
+                                className="sr-only"
+                                checked={addCourses}
+                                onChange={handleAddCourses}
+                            />
+                            <div className="block bg-gray-600 w-14 h-8 rounded-full"></div>
+                            <div
+                                className={`${addCourses ? 'bg-green translate-x-full' : 'bg-gray-300 translate-x-0'
+                                    } absolute left-1 top-1 w-6 h-6 rounded-full transition-transform transform ease-in-out duration-300`}
+                            >
+                            </div>
+                        </div>
+                        <div className="ml-3 text-gray-700 font-semibold text-xl">
+                            {!addCourses ? "Add Section" : "Remove Section"}
+                        </div>
+                    </label>
+                </div>
+
+
+                {
+                    addCourses && <div className="w-full mx-auto bg-white py-3 px-5 rounded shadow-md">
+                        <div className="flex justify-between items-center gap-8">
+                            <div className="flex flex-col items-start">
+                                <label className="block text-lg font-medium text-gray-700">Course Type</label>
+                                <div className="ml-2 flex items-center space-x-4">
+                                    <label className="flex items-center">
+                                        <input
+                                            type="checkbox"
+                                            name="myCourses"
+                                            checked={myCoursesChecked}
+                                            onChange={() => setMyCoursesChecked(!myCoursesChecked)}
+                                            className="mr-1"
+                                        />
+                                        <span>My Courses</span>
+                                    </label>
+                                    <label className="flex items-center">
+                                        <input
+                                            type="checkbox"
+                                            name="allCourses"
+                                            className="mr-1"
+                                            checked={allCoursesChecked}
+                                            onChange={() => setAllCoursesChecked(!allCoursesChecked)}
+                                        />
+                                        <span>All Courses</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
 
 
                 {/* Submit Button */}
