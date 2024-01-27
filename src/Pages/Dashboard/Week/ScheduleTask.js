@@ -97,16 +97,31 @@ const ScheduleTask = ({ taskData, week }) => {
   const [currentWeek, setCurrentWeek] = useState(null);
   const calendarID = process.env.REACT_APP_calendarID;
 
+  useEffect(() => {
+    // Assuming taskData is already available when the component mounts
+    if (taskData) {
+      const currentDate = getCurrentDate();
+      const maxDateOffset = parseInt(taskData?.dateRange, 10) || 0;
+      const maxDateObject = new Date(currentDate);
+      maxDateObject.setDate(maxDateObject.getDate() + maxDateOffset);
+      const initialMaxDateString = maxDateObject.toISOString().split('T')[0];
+
+      // Set initial maxDateString when the component mounts
+      setMaxDateString(initialMaxDateString);
+
+      // Set the min and max attributes for the date input
+      document.getElementById('date').min = getCurrentDate();
+      document.getElementById('date').max = initialMaxDateString;
+    }
+  }, [taskData]);
   const handleDateChange = (event) => {
     const selectedDate = event.target.value;
-    console.log(selectedDate)
-
+  
     // Replace this with your date string
     const options = { weekday: 'long', timeZone: 'UTC' }; // Set the timeZone option
-
+  
     const selectedDay = new Date(selectedDate).toLocaleDateString('en-US', options);
-
-    console.log(selectedDay);
+  
     // Check if the selected day is an off-day
     if (taskData?.offDays?.includes(selectedDay)) {
       alert(`You cannot select ${selectedDay} as it is an off-day.`);
@@ -116,13 +131,13 @@ const ScheduleTask = ({ taskData, week }) => {
       setMaxDateString("");  // Reset maxDateString state
       return;
     }
-
+  
     // Check if the selected date is within the valid date range
     const currentDate = getCurrentDate();  // Assuming you have the getCurrentDate function
     const maxDateOffset = parseInt(taskData?.dateRange, 10) || 0;
     const maxDateObject = new Date(currentDate);  // Use currentDate as the starting point
     maxDateObject.setDate(maxDateObject.getDate() + maxDateOffset);
-
+  
     if (new Date(selectedDate) > maxDateObject) {
       alert(`You cannot select a date beyond the allowed range.`);
       // Clear the selected date
@@ -131,13 +146,15 @@ const ScheduleTask = ({ taskData, week }) => {
       setMaxDateString("");  // Reset maxDateString state
       return;
     }
-
+  
     setDate(selectedDate);
     const maxDateString = maxDateObject.toISOString().split('T')[0];
+    document.getElementById('date').min = getCurrentDate();
     document.getElementById('date').max = maxDateString;
     setMaxDateString(maxDateString);
     matchInputWithBusySlots(selectedDate, time, busyTimeSlots);
   };
+
   // Update the time state when the time input changes
   const handleTimeChange = (event) => {
    

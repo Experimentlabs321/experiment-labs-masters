@@ -404,14 +404,13 @@ const endTimeString = endTimeStamp.toLocaleTimeString([], { hour: '2-digit', min
         }}
       >
         <h1>{eventInfo?.event?.title}</h1>
-        <p>Start time : {startTimeString}</p>
-        <p>End time :{endTimeString}</p>
+        
         {
           meetlink
            ?  
            <a target="_blank" href={meetlink} rel="noreferrer" className="flex items-center"><span><img src={meetIcon} className="w-[30px]" alt="icon"/></span>  Google Meet</a>
            :
-           <p>No Meeting</p>
+           <p>No Meeting Link Available</p>
         }
        
       </div>
@@ -619,30 +618,31 @@ const endTimeString = endTimeStamp.toLocaleTimeString([], { hour: '2-digit', min
                 <div className="my-6 px-5">
                   <h2>Your Calendar Events</h2>
                   <FullCalendar
-                    height="600px"
-                    plugins={[dayGridPlugin,listPlugin, interactionPlugin]}
-                    initialView="dayGridMonth"
-                    selectMirror={true}
-                    headerToolbar={{
-                      start: 'title', // will normally be on the left. if RTL, will be on the right
-                      center: 'today',
-                      end: 'dayGridMonth,dayGridWeek,dayGridDay,list' // Add the desired views here
-                    }}
-                    eventContent={renderEventContent}
-                    events={calendarEvents?.map((event) => ({
-                      title: event?.summary,
-                      start: event?.start.dateTime,
-                      end: event?.end.dateTime,
-                      link: event?.hangoutLink,
-                    }))}
-                    dateClick={(info) => handleDateClick(info.date)}
-                    eventTimeFormat={{
-                      hour: 'numeric',
-                      minute: '2-digit',
-                      meridiem: 'short',
-                      hour12: true,
-                    }}
-                  />
+  height="600px"
+  plugins={[dayGridPlugin, listPlugin, interactionPlugin]}
+  initialView="dayGridMonth"
+  selectMirror={true}
+  headerToolbar={{
+    start: 'title',
+    center: 'today',
+    end: 'dayGridMonth,dayGridWeek,dayGridDay,list'
+  }}
+  eventContent={renderEventContent}
+  events={calendarEvents?.map((event) => ({
+    title: event?.summary,
+    start: event?.start.dateTime,
+    end: event?.end.dateTime,
+    link: event?.hangoutLink,
+  }))}
+  dateClick={(info) => handleDateClick(info.date)}
+  eventTimeFormat={{
+    hour: 'numeric',
+    minute: '2-digit',
+    meridiem: 'short',
+    hour12: true,
+  }}
+  timeZone="UTC" // Set the appropriate time zone
+/>
                   {/* <Calendar
                     localizer={localizer}
                     events={calendarEvents}
