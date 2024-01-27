@@ -19,6 +19,7 @@ import 'react-clock/dist/Clock.css';
 import toast from "react-hot-toast";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import required from "../../../assets/ContentManagement/required.png";
+import meetIcon from "../../../assets/Dashboard/meetIcon.png"
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -174,6 +175,8 @@ const AdminCalendarSchedule = () => {
 
     const scheduleName = form.scheduleName?.value;
     const dateRange = form.dateRange?.value;
+    const minimumTime = form.minimumTime?.value;
+    const maximumTime = form.maximumTime?.value;
 
 
     const manageSchedule = {
@@ -185,6 +188,8 @@ const AdminCalendarSchedule = () => {
       batches: selectedBatches,
       offDays: selectedHoliday,
       dateRange: dateRange,
+      maximumTime,
+      minimumTime,
       usersession: global,
       events: calendarEvents,
     };
@@ -371,18 +376,21 @@ const AdminCalendarSchedule = () => {
 
 
   function renderEventContent(eventInfo) {
-    // console.log(eventInfo?.event.start);
+    console.log(calendarEvents);
 
     const formattedStartDate = eventInfo?.event?.start?.toUTCString();
     const formattedEndDate = eventInfo?.event?.end?.toUTCString();
     const meetlink = eventInfo?.event?.extendedProps?.link;
 
 
+console.log(formattedStartDate)
+console.log(formattedEndDate)
 
 
-
-
-
+const startTimeStamp = new Date(formattedStartDate);
+const startTimeString = startTimeStamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', timeZone: 'GMT' });
+const endTimeStamp = new Date(formattedEndDate);
+const endTimeString = endTimeStamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', timeZone: 'GMT' });
 
 
     return (
@@ -396,9 +404,16 @@ const AdminCalendarSchedule = () => {
         }}
       >
         <h1>{eventInfo?.event?.title}</h1>
-        <p>Start time : <br></br>{formattedStartDate}</p>
-        <p>End time : <br></br>{formattedEndDate}</p>
-        <a target="_blank" href={meetlink} rel="noreferrer">Google Meet</a>
+        <p>Start time : {startTimeString}</p>
+        <p>End time :{endTimeString}</p>
+        {
+          meetlink
+           ?  
+           <a target="_blank" href={meetlink} rel="noreferrer" className="flex items-center"><span><img src={meetIcon} className="w-[30px]" alt="icon"/></span>  Google Meet</a>
+           :
+           <p>No Meeting</p>
+        }
+       
       </div>
     );
   }
@@ -621,6 +636,12 @@ const AdminCalendarSchedule = () => {
                       link: event?.hangoutLink,
                     }))}
                     dateClick={(info) => handleDateClick(info.date)}
+                    eventTimeFormat={{
+                      hour: 'numeric',
+                      minute: '2-digit',
+                      meridiem: 'short',
+                      hour12: true,
+                    }}
                   />
                   {/* <Calendar
                     localizer={localizer}
@@ -666,6 +687,39 @@ const AdminCalendarSchedule = () => {
                         name="dateRange"
                         type="number"
                         defaultValue={7}
+                      />
+                    </div>
+                    
+                    <div className="">
+                      <div className="flex items-center gap-4">
+                        <p className="h-2 w-2 bg-black rounded-full"></p>
+                        <p className="font-bold text-lg me-[36px]">Minimum Time</p>
+                        <img src={required} alt="required" />
+                      </div>
+
+                      <input
+                        required
+
+                        className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
+                        name="minimumTime"
+                        type="time"
+                        
+                      />
+                    </div>
+                    <div className="">
+                      <div className="flex items-center gap-4">
+                        <p className="h-2 w-2 bg-black rounded-full"></p>
+                        <p className="font-bold text-lg me-[36px]">Maximum Time</p>
+                        <img src={required} alt="required" />
+                      </div>
+
+                      <input
+                        required
+
+                        className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
+                        name="maximumTime"
+                        type="time"
+                        
                       />
                     </div>
 

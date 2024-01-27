@@ -44,15 +44,15 @@ const matchInputWithBusySlots = (inputDate, inputTime, busyTimeSlots) => {
     const dateParts = busyStartDateString.split(' ');
     const busyStartDateStringFormatted = `${dateParts[0]} ${dateParts[2][0].toUpperCase() + dateParts[2].substring(1)} ${dateParts[1]} ${dateParts[3]}`;
     console.log('Input Date:', inputDateString);
-    console.log('Busy Date:', busyStartDateStringFormatted);
+  //  console.log('Busy Date:', busyStartDateStringFormatted);
     if (inputDateString === busyStartDateStringFormatted) {
       flag = 1;
     }
     const busyStartTime = busyStartDateTimeString.split(' ')[4];
-    console.log('busy start: ', busyStartTime);
+   // console.log('busy start: ', busyStartTime);
     const busyEndTime = busyEndDateTimeString.split(' ')[4];
 
-    console.log(flag);
+    //console.log(flag);
     return (
       flag === 1 &&
       inputTimeString >= busyStartTime &&
@@ -69,10 +69,10 @@ const matchInputWithBusySlots = (inputDate, inputTime, busyTimeSlots) => {
 
 const ScheduleTask = ({ taskData, week }) => {
   const adminMail = taskData?.usersession?.user?.email;
-  console.log(adminMail);
+ // console.log(adminMail);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
   const [maxDateString, setMaxDateString] = useState("");
-  
+
   const [busyTimeSlots, setBusyTimeSlots] = useState([]);
   const session = useSession();
   const supabase = useSupabaseClient();
@@ -84,10 +84,14 @@ const ScheduleTask = ({ taskData, week }) => {
     });
   };
 
-  const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
+
   const navigate = useNavigate();
   const [date, setDate] = useState(""); // State for the date
   const [time, setTime] = useState(""); // State for the time
+  const [checkTime, setCheckTime] = useState(false); 
+  const [timeRangeError, setTimeRangeError] = useState(false); 
+  const [minTime, setMinTime] = useState(""); 
+  const [maxTime, setMaxTime] = useState(""); 
   const [reservedEvent, setReservedEvent] = useState(null);
   const [startTime, setStartTime] = useState();
   const [currentWeek, setCurrentWeek] = useState(null);
@@ -95,10 +99,16 @@ const ScheduleTask = ({ taskData, week }) => {
 
   const handleDateChange = (event) => {
     const selectedDate = event.target.value;
-    const selectedDay = new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long' });
-  
+    console.log(selectedDate)
+
+    // Replace this with your date string
+    const options = { weekday: 'long', timeZone: 'UTC' }; // Set the timeZone option
+
+    const selectedDay = new Date(selectedDate).toLocaleDateString('en-US', options);
+
+    console.log(selectedDay);
     // Check if the selected day is an off-day
-    if (taskData?.offDays.includes(selectedDay)) {
+    if (taskData?.offDays?.includes(selectedDay)) {
       alert(`You cannot select ${selectedDay} as it is an off-day.`);
       // Clear the selected date
       document.getElementById('date').value = "";
@@ -106,13 +116,13 @@ const ScheduleTask = ({ taskData, week }) => {
       setMaxDateString("");  // Reset maxDateString state
       return;
     }
-  
+
     // Check if the selected date is within the valid date range
     const currentDate = getCurrentDate();  // Assuming you have the getCurrentDate function
     const maxDateOffset = parseInt(taskData?.dateRange, 10) || 0;
     const maxDateObject = new Date(currentDate);  // Use currentDate as the starting point
     maxDateObject.setDate(maxDateObject.getDate() + maxDateOffset);
-  
+
     if (new Date(selectedDate) > maxDateObject) {
       alert(`You cannot select a date beyond the allowed range.`);
       // Clear the selected date
@@ -121,7 +131,7 @@ const ScheduleTask = ({ taskData, week }) => {
       setMaxDateString("");  // Reset maxDateString state
       return;
     }
-  
+
     setDate(selectedDate);
     const maxDateString = maxDateObject.toISOString().split('T')[0];
     document.getElementById('date').max = maxDateString;
@@ -130,26 +140,34 @@ const ScheduleTask = ({ taskData, week }) => {
   };
   // Update the time state when the time input changes
   const handleTimeChange = (event) => {
+   
     const selectedTime = event.target.value;
-    const minTime = '09:00';
-    const maxTime = '17:00';
 
+   console.log(selectedTime)
+    const minTime = taskData?.minimumTime;
+    const maxTime = taskData?.maximumTime;
+    setMaxTime(maxTime)
+    setMinTime(minTime)
     const selectedTimeDate = new Date(`2000-01-01T${selectedTime}`);
     const minTimeDate = new Date(`2000-01-01T${minTime}`);
     const maxTimeDate = new Date(`2000-01-01T${maxTime}`);
 
     if (selectedTimeDate < minTimeDate || selectedTimeDate > maxTimeDate) {
-      alert('Please choose a time between 09:00 AM and 05:00 PM.');
+      setCheckTime(true)
+      setTimeRangeError(true)
+     //alert(`Please choose a time between ${minTime} and ${maxTime}.`);
       // Reset the time to the initial state or do nothing
-      document.getElementById('time').value = '09:00';
-      setTime(null);
+      document.getElementById('time').value = minTime;
+    //  setTime(null);
     } else {
+      setTimeRangeError(false)
+      setCheckTime(false)
       setTime(selectedTime);
       console.log("handletimechange", selectedTime);
       matchInputWithBusySlots(date, selectedTime, busyTimeSlots);
     }
   };
-
+ console.log("input time " ,time)
 
   useEffect(() => {
     if (localStorage.getItem("role") === "admin") {
@@ -189,19 +207,19 @@ const ScheduleTask = ({ taskData, week }) => {
       };
     }).filter(Boolean);
 
-    console.log("Busy Time Slots:", busyTimeSlots); // Log the busy time slots
+    //console.log("Busy Time Slots:", busyTimeSlots); // Log the busy time slots
 
     // Assuming week.start and week.end are available as Date objects
     const allTimeSlots = generateAllTimeSlots(week.start, week.end);
 
-    console.log("All Time Slots:", allTimeSlots); // Log all time slots
+    //console.log("All Time Slots:", allTimeSlots); // Log all time slots
 
     const filteredTimeSlots = filterBusyTimeSlots(allTimeSlots, busyTimeSlots, reservedEvent);
 
-    console.log("Filtered Time Slots:", filteredTimeSlots); // Log the filtered time slots
+  //  console.log("Filtered Time Slots:", filteredTimeSlots); // Log the filtered time slots
 
     setBusyTimeSlots(busyTimeSlots);
-    setAvailableTimeSlots(filteredTimeSlots);
+   
   }, [taskData, matching]);
 
   const googleSignIn = async () => {
@@ -280,196 +298,174 @@ const ScheduleTask = ({ taskData, week }) => {
     return false;
   };
 
-  const handleTimeSlotSelection = (timeSlot) => {
-    // Check if the selected time slot falls within any busy time slots
-    const isBusy = isTimeSlotBusy(timeSlot);
 
-    if (isBusy) {
-      // Additional logic to handle when the selected time slot is busy
-      // For example, you can show a message or disable the button
-      console.log("Selected time slot is busy");
-    } else if (isTimeSlotReserved(timeSlot)) {
-      // Additional logic to handle when the selected time slot is reserved
-      // For example, you can show a message or disable the button
-      console.log("Selected time slot is reserved");
-    } else {
-      // Logic to handle when the selected time slot is available
-      // For example, you can update the UI or perform other actions
-      console.log("Selected time slot is available");
-
-      // Here, you can perform actions for an available time slot, if needed
-      setSelectedTimeSlot(timeSlot);
-    }
-  };
-  // useEffect(() => {
-  //   axios
-  //     .get(`${process.env.REACT_APP_BACKEND_API}/events`)
-  //     .then((response) => {
-  //       const findEvent = response?.data?.find(
-  //         (item) =>
-  //           item?.requester === user?.email &&
-  //           item?.organization?.organizationId === userInfo?.organizationId &&
-  //           item?.weekData?._id === week?._id
-  //       );
-  //       setReservedEvent(findEvent);
-  //       setStartTime(new Date(findEvent?.start));
-  //     })
-  //     .catch((error) => console.error(error));
-  // }, []);
-  console.log("Available ", availableTimeSlots);
 
   const addEvent = async () => {
-    if (date && time) {
-      const combinedDateTimeUTC = new Date(`${date}T${time}Z`);
-      const endDateTimeUTC = new Date(combinedDateTimeUTC);
-      endDateTimeUTC.setMinutes(endDateTimeUTC.getMinutes() + 30);
-      const currentDateTime = new Date();
-      const timeDifferenceInMilliseconds = combinedDateTimeUTC - currentDateTime;
-      if (timeDifferenceInMilliseconds < 0) {
+    if(checkTime){
+      Swal.fire({
+        icon: "error",
+        title: "Invalid time!",
+        text: `Please choose a time between ${minTime} and ${maxTime}.`,
+      }); 
+    } 
+    else {
+      console.log(date)
+      console.log(time)
+      if (date && time) {
+        const combinedDateTimeUTC = new Date(`${date}T${time}Z`);
+        const endDateTimeUTC = new Date(combinedDateTimeUTC);
+        endDateTimeUTC.setMinutes(endDateTimeUTC.getMinutes() + 30);
+        const currentDateTime = new Date();
+        const timeDifferenceInMilliseconds = combinedDateTimeUTC - currentDateTime;
+        if (timeDifferenceInMilliseconds < 0) {
+          Swal.fire({
+            icon: "error",
+            title: "Invalid Date and time!",
+            text: "Please enter valid date & time for event!",
+          });
+          return;
+        }
+        const refreshToken = process.env.REACT_APP_refreshToken;
+  
+        fetch("https://oauth2.googleapis.com/token", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: `grant_type=refresh_token&refresh_token=${refreshToken}&client_id=${process.env.REACT_APP_google_clientId}&client_secret=${process.env.REACT_APP_google_clientSecret}`,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+  
+            var event = {
+              summary: `${userInfo?.name} <> Experiment Labs`,
+              location: "",
+              start: {
+                dateTime: combinedDateTimeUTC.toISOString(),
+                timeZone: "UTC",
+              },
+              end: {
+                dateTime: endDateTimeUTC.toISOString(),
+                timeZone: "UTC",
+              },
+              // recurrence: ["RRULE:FREQ=DAILY;COUNT=2"],
+              attendees: [
+                // { email: "naman.j@experimentlabs.in" },
+                // { email: "gaurav@experimentlabs.in" },
+                { email: user?.email },
+                {
+                  email: adminMail
+                },
+                { email: "alrafi4@gmail.com" },
+              ],
+              reminders: {
+                useDefault: true,
+              },
+              conferenceDataVersion: 1,
+              conferenceData: {
+                createRequest: {
+                  conferenceSolutionKey: {
+                    type: "hangoutsMeet",
+                  },
+                  requestId: `meeting-${Date.now()}`,
+                },
+              },
+            };
+  
+  
+            const newAccessToken = data.access_token;
+            function initiate() {
+              const sendData = async (event) => {
+                const response = await axios.post(
+                  `${process.env.REACT_APP_BACKEND_API}/events`,
+                  event
+                );
+                const sendMail = await axios.post(
+                  `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                  {
+                    from: `${user?.email}`,
+                    to: `${user?.email},shihab77023@gmail.com,alrafi4@gmail.com,${adminMail}`,
+                    subject: `Event request`,
+                    message: `A event is going to held for doubt clearing at ${combinedDateTimeUTC.toISOString()} to ${endDateTimeUTC.toISOString()}. Meeting link ${event?.hangoutLink
+                      }`,
+                  }
+                );
+                if (sendMail?.data?.Success && response?.data?.acknowledged) {
+                  const newEvent = await axios.post(
+                    `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/addEvent`,
+                    event
+                  );
+                  console.log("new event created ", newEvent);
+                  Swal.fire({
+                    icon: "success",
+                    title: "Request Sent!",
+                    text: "Your slot request has been sent!",
+                  });
+                 // navigate(-1);
+                }
+              };
+              gapi.client
+                .request({
+                  path: `https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events?conferenceDataVersion=1`,
+                  method: "POST",
+                  body: event,
+                  headers: {
+                    "Content-type": "application/json",
+                    Authorization: `Bearer ${newAccessToken}`,
+                  },
+                })
+                .then(
+                  (response) => {
+                    var event = {
+                      title: `${userInfo?.name} <> Experiment Labs <> Doubt clearing <> ${response?.result?.hangoutLink}`,
+                      start: new Date(combinedDateTimeUTC),
+                      end: new Date(endDateTimeUTC),
+                      organization: {
+                        organizationId: userInfo?.organizationId,
+                        organizationName: userInfo?.organizationName,
+                      },
+                      attendees: [
+                        // { email: "naman.j@experimentlabs.in" },
+                        // { email: "gaurav@experimentlabs.in" },
+                        { email: user?.email },
+                        { email: "alrafi4@gmail.com" },
+                        {
+                          email: adminMail
+                        },
+                      ],
+                      weekData: currentWeek,
+                      hangoutLink: response?.result?.hangoutLink,
+                      requester: user?.email,
+                    };
+  
+  
+                    sendData(event);
+                    return [true, response];
+                  },
+                  function (err) {
+                    console.log(err);
+                    return [false, err];
+                  }
+                );
+            }
+            gapi.load("client", initiate);
+            navigate(-1)  
+          })
+          
+          .catch((error) => {
+  
+            console.error("Token refresh error:", error);
+          });
+      } else {
         Swal.fire({
           icon: "error",
           title: "Invalid Date and time!",
           text: "Please enter valid date & time for event!",
         });
-        return;
       }
-      const refreshToken = process.env.REACT_APP_refreshToken;
 
-      fetch("https://oauth2.googleapis.com/token", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: `grant_type=refresh_token&refresh_token=${refreshToken}&client_id=${process.env.REACT_APP_google_clientId}&client_secret=${process.env.REACT_APP_google_clientSecret}`,
-      })
-        .then((response) => response.json())
-        .then((data) => {
-
-          var event = {
-            summary: `${userInfo?.name} <> Experiment Labs`,
-            location: "",
-            start: {
-              dateTime: combinedDateTimeUTC.toISOString(),
-              timeZone: "UTC",
-            },
-            end: {
-              dateTime: endDateTimeUTC.toISOString(),
-              timeZone: "UTC",
-            },
-            // recurrence: ["RRULE:FREQ=DAILY;COUNT=2"],
-            attendees: [
-              // { email: "naman.j@experimentlabs.in" },
-              // { email: "gaurav@experimentlabs.in" },
-              { email: user?.email },
-              {
-                email: adminMail
-              },
-              { email: "alrafi4@gmail.com" },
-            ],
-            reminders: {
-              useDefault: true,
-            },
-            conferenceDataVersion: 1,
-            conferenceData: {
-              createRequest: {
-                conferenceSolutionKey: {
-                  type: "hangoutsMeet",
-                },
-                requestId: `meeting-${Date.now()}`,
-              },
-            },
-          };
-
-
-          const newAccessToken = data.access_token;
-          function initiate() {
-            const sendData = async (event) => {
-              const response = await axios.post(
-                `${process.env.REACT_APP_BACKEND_API}/events`,
-                event
-              );
-              const sendMail = await axios.post(
-                `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
-                {
-                  from: `${user?.email}`,
-                  to: `${user?.email},shihab77023@gmail.com,alrafi4@gmail.com`,
-                  subject: `Event request`,
-                  message: `A event is going to held for doubt clearing at ${event?.start.toLocaleString()} to ${event?.end.toLocaleTimeString()}. Meeting link ${event?.hangoutLink
-                    }`,
-                }
-              );
-              if (sendMail?.data?.Success && response?.data?.acknowledged) {
-                const newEvent = await axios.post(
-                  `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/addEvent`,
-                  event
-                );
-                console.log("new event created ", newEvent);
-                Swal.fire({
-                  icon: "success",
-                  title: "Request Sent!",
-                  text: "Your slot request has been sent!",
-                });
-                navigate(-1);
-              }
-            };
-            gapi.client
-              .request({
-                path: `https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events?conferenceDataVersion=1`,
-                method: "POST",
-                body: event,
-                headers: {
-                  "Content-type": "application/json",
-                  Authorization: `Bearer ${newAccessToken}`,
-                },
-              })
-              .then(
-                (response) => {
-                  var event = {
-                    title: `${userInfo?.name} <> Experiment Labs <> Doubt clearing <> ${response?.result?.hangoutLink}`,
-                    start: new Date(combinedDateTimeUTC),
-                    end: new Date(endDateTimeUTC),
-                    organization: {
-                      organizationId: userInfo?.organizationId,
-                      organizationName: userInfo?.organizationName,
-                    },
-                    attendees: [
-                      // { email: "naman.j@experimentlabs.in" },
-                      // { email: "gaurav@experimentlabs.in" },
-                      { email: user?.email },
-                      { email: "alrafi4@gmail.com" },
-                      {
-                        email: adminMail
-                      },
-                    ],
-                    weekData: currentWeek,
-                    hangoutLink: response?.result?.hangoutLink,
-                    requester: user?.email,
-                  };
-
-
-                  sendData(event);
-                  return [true, response];
-                },
-                function (err) {
-                  console.log(err);
-                  return [false, err];
-                }
-              );
-          }
-          gapi.load("client", initiate);
-
-        })
-        .catch((error) => {
-
-          console.error("Token refresh error:", error);
-        });
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: "Invalid Date and time!",
-        text: "Please enter valid date & time for event!",
-      });
     }
+  
   };
   const getCurrentDate = () => {
     const today = new Date();
@@ -518,11 +514,11 @@ const ScheduleTask = ({ taskData, week }) => {
                 onChange={handleTimeChange}
                 className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
                 name="time"
-                min="09:00"
-                max="17:00"
+                min={taskData?.minimumTime}
+                max={taskData?.maximumTime}
                 id="time"
                 type="time"
-                defaultValue="09:00" // Set the default value to 9:00 AM
+                defaultValue={taskData?.minimumTime} // Set the default value to 9:00 AM
               />
             </div>
           </div>
@@ -545,7 +541,13 @@ const ScheduleTask = ({ taskData, week }) => {
             </a>
           ) : (
             <>
-              {matching ? <><p className="text-white">Admin is Busy at that time</p>
+              {matching || timeRangeError ? <>
+              {timeRangeError ? <p className="text-white">Please choose a time between {minTime} and {maxTime}.</p>
+              :
+              <p className="text-white">Admin is Busy at that time</p>
+
+              }
+              
 
               </> : <DashboardPrimaryButton
                 bgColor="#3E4DAC"
