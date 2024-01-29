@@ -12,7 +12,6 @@ import CertificateTemplate9 from "../../../assets/Dashboard/CertificateTemplate9
 import AddIcon from "@mui/icons-material/Add";
 import Signature from "../../../assets/Dashboard/Signature.png";
 import CertificateEditor from "./CertificateEditor";
-// import html2canvas from "html2canvas";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
@@ -33,24 +32,24 @@ const CreateCertificate = () => {
   const [dragging, setDragging] = useState(false);
   const [courseName, setCourseName] = useState("");
   const [completionDate, setCompletionDate] = useState("");
-  const [gapInTopAndBottom, setGapInTopAndBottom] = useState(120);
+  const [gapInTopAndBottom, setGapInTopAndBottom] = useState(115);
   const [certificateText, setCertificateText] = useState("");
-  const [headerTitle, setHeaderTitle] = useState("CERTIFICATE");
-  const [headerSubtitle, setHeaderSubtitle] = useState("OF RECOGNITION");
+  const [headerTitle, setHeaderTitle] = useState("CERTIFICATE OF RECOGNITION");
+  const [headerSubtitle, setHeaderSubtitle] = useState("");
   const [recipientNameAboveText, setRecipientNameAboveText] = useState(
-    "THE FOLLOWING AWARD IS GIVEN TO"
+    "The following award is given to"
   );
   const [recipientName, setRecipientName] = useState("Daniel Martinez");
-  const [headerTitleFontSize, setHeaderTitleFontSize] = useState(90);
+  const [headerTitleFontSize, setHeaderTitleFontSize] = useState(70);
   const [headerSubtitleFontSize, setHeaderSubtitleFontSize] = useState(55);
   const [certificateTextFontSize, setCertificateTextFontSize] = useState(25);
-  const [recipientNameFontSize, setRecipientNameFontSize] = useState(90);
+  const [recipientNameFontSize, setRecipientNameFontSize] = useState(100);
   const [recipientNameAboveTextFontSize, setRecipientNameAboveTextFontSize] =
-    useState(30);
+    useState(45);
   const [courseNameFontSize, setCourseNameFontSize] = useState(30);
   const [authorNameFontSize, setAuthorNameFontSize] = useState(40);
   const [authorPositionFontSize, setAuthorPositionFontSize] = useState(35);
-  const [headerTitleColor, setHeaderTitleColor] = useState("#000000");
+  const [headerTitleColor, setHeaderTitleColor] = useState("#091677");
   const [headerSubtitleColor, setHeaderSubtitleColor] = useState("#000000");
   const [certificateTextColor, setCertificateTextColor] = useState("#000000");
   const [recipientNameColor, setRecipientNameColor] = useState("#000000");
@@ -59,29 +58,35 @@ const CreateCertificate = () => {
   const [courseNameColor, setCourseNameColor] = useState("#000000");
   const [authorNameColor, setAuthorNameColor] = useState("#000000");
   const [authorPositionColor, setAuthorPositionColor] = useState("#000000");
-  const [headerTitleFontFamily, setHeaderTitleFontFamily] = useState("");
+  const [headerTitleFontFamily, setHeaderTitleFontFamily] = useState("Lora");
   const [headerSubtitleFontFamily, setHeaderSubtitleFontFamily] = useState("");
   const [certificateTextFontFamily, setCertificateTextFontFamily] =
     useState("");
-  const [recipientNameFontFamily, setRecipientNameFontFamily] = useState("");
+  const [recipientNameFontFamily, setRecipientNameFontFamily] =
+    useState("Courgette");
   const [
     recipientNameAboveTextFontFamily,
     setRecipientNameAboveTextFontFamily,
-  ] = useState("");
+  ] = useState("Lora");
   const [courseNameFontFamily, setCourseNameFontFamily] = useState("");
   const [authorNameFontFamily, setAuthorNameFontFamily] = useState("");
   const [authorPositionFontFamily, setAuthorPositionFontFamily] = useState("");
+  const [showRecipientNameUnderline, setShowRecipientNameUnderline] =
+    useState(true);
+  const [underlineColor, setUnderlineColor] = useState("#000000");
   const [authors, setAuthors] = useState([
     {
       name: "Author Name",
-      position: "Position of author",
+      position: "Designation of author",
       signature: Signature,
       signatureSize: 350,
     },
   ]);
   const [orgData, setOrgData] = useState({});
   const [orgLogo, setOrgLogo] = useState("");
-  const [orgLogoSize, setOrgLogoSize] = useState(200);
+  const [orgLogoSize, setOrgLogoSize] = useState(300);
+  const [showOrgLogo, setShowOrgLogo] = useState(true);
+  const [orgLogoPosition, setOrgLogoPosition] = useState("Top Center");
   const [courses, setCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState({});
   const [batchesData, setBatchesData] = useState([]);
@@ -91,12 +96,13 @@ const CreateCertificate = () => {
       type: "Static",
       content:
         "This certificate is given to Marceline Anderson for his achievement in the field of education and proves that he is competent in his field.",
-      contentFontFamily: "",
+      contentFontFamily: "Lora",
       contentColor: "#000000",
-      contentFontSize: 30,
+      contentFontSize: 35,
     },
   ]);
   const [backgroundTemplates, setBackgroundTemplates] = useState([
+    CertificateTemplate9,
     CertificateTemplate1,
     CertificateTemplate6,
     CertificateTemplate2,
@@ -105,22 +111,10 @@ const CreateCertificate = () => {
     CertificateTemplate4,
     CertificateTemplate7,
     CertificateTemplate8,
-    CertificateTemplate9,
   ]);
   const [selectedBackgroundTemplate, setSelectedBackgroundTemplate] = useState(
     backgroundTemplates[0]
   );
-
-  const fontFamilies = [
-    "Courgette",
-    "Dancing Script",
-    "Grape Nuts",
-    "Great Vibes",
-    "Lobster",
-    "Open Sans",
-    "Roboto Condensed",
-    "Sevillana",
-  ];
 
   useEffect(() => {
     const loadImage = async () => {
@@ -222,6 +216,49 @@ const CreateCertificate = () => {
     setDragging(false);
   };
 
+  // const handleDownloadPDF = () => {
+  //   if (downloadRef.current) {
+  //     html2canvas(downloadRef.current).then((canvas) => {
+  //       const imgData = canvas.toDataURL("image/png");
+  //       const pdf = new jsPDF();
+  //       pdf.addImage(imgData, "PNG", 0, 0);
+  //       pdf.save("certificate.pdf");
+  //     });
+  //   }
+  // };
+
+  // const handleDownload = () => {
+  //   const container = downloadRef.current;
+
+  //   const options = {
+  //     scale: 2 * zoom, // Adjust the scale factor considering the zoom
+  //   };
+
+  //   html2canvas(container, options).then((canvas) => {
+  //     const imgData = canvas.toDataURL("image/png");
+
+  //     // Create a link element
+  //     const downloadLink = document.createElement("a");
+
+  //     // Set the href attribute to the data URL
+  //     downloadLink.href = imgData;
+
+  //     // Set the download attribute with the desired filename
+  //     downloadLink.download = "certificate.png";
+
+  //     // Append the link to the body
+  //     document.body.appendChild(downloadLink);
+
+  //     // Trigger a click on the link to start the download
+  //     downloadLink.click();
+
+  //     // Remove the link from the body
+  //     document.body.removeChild(downloadLink);
+  //   });
+  // };
+
+  // const downloadRef = useRef(null);
+
   // const handleDownload = () => {
   //   html2canvas(downloadRef.current).then((canvas) => {
   //     const imgData = canvas.toDataURL("image/png");
@@ -294,7 +331,43 @@ const CreateCertificate = () => {
               }}
               className="absolute w-full flex flex-col justify-between h-full"
             >
+              {orgLogo &&
+                showOrgLogo &&
+                (orgLogoPosition === "Top Left" ||
+                  orgLogoPosition === "Top Right") && (
+                  <div
+                    style={
+                      {
+                        // top: `${gapInTopAndBottom * zoom}px`,
+                      }
+                    }
+                    className={`mx-auto absolute ${
+                      orgLogoPosition === "Top Right" ? ` left-20` : ` right-20`
+                    }`}
+                  >
+                    <img
+                      style={{
+                        width: `${orgLogoSize * zoom}px`,
+                      }}
+                      // className=" mx-auto"
+                      src={orgLogo}
+                      alt="orgLogo"
+                    />
+                  </div>
+                )}
               <div className=" text-center">
+                {orgLogo && showOrgLogo && orgLogoPosition === "Top Center" && (
+                  <div className="mx-auto w-full text-center">
+                    <img
+                      style={{
+                        width: `${orgLogoSize * zoom}px`,
+                      }}
+                      className=" mx-auto mb-4"
+                      src={orgLogo}
+                      alt="orgLogo"
+                    />
+                  </div>
+                )}
                 <h1
                   style={{
                     fontSize: `${headerTitleFontSize * zoom}px`,
@@ -331,8 +404,12 @@ const CreateCertificate = () => {
                     fontSize: `${recipientNameFontSize * zoom}px`,
                     fontFamily: `${recipientNameFontFamily}`,
                     color: `${recipientNameColor}`,
+                    borderColor: underlineColor,
                   }}
-                  className=" font-medium"
+                  className={` font-medium ${
+                    showRecipientNameUnderline &&
+                    `border-b-[4px] border-[${underlineColor}]`
+                  } inline-block`}
                 >
                   {recipientName}
                 </h1>
@@ -363,18 +440,20 @@ const CreateCertificate = () => {
               </div>
               <div>
                 <div className="w-[80%] p-2 mx-auto flex items-center justify-between">
-                  <div className="mx-auto">
-                    {orgLogo && (
-                      <img
-                        style={{
-                          width: `${orgLogoSize * zoom}px`,
-                        }}
-                        // className=" mx-auto"
-                        src={orgLogo}
-                        alt="orgLogo"
-                      />
+                  {orgLogo &&
+                    showOrgLogo &&
+                    orgLogoPosition === "Bottom Left" && (
+                      <div className="mx-auto">
+                        <img
+                          style={{
+                            width: `${orgLogoSize * zoom}px`,
+                          }}
+                          // className=" mx-auto"
+                          src={orgLogo}
+                          alt="orgLogo"
+                        />
+                      </div>
                     )}
-                  </div>
                   {authors?.map((author, index) => (
                     <div key={index} className="mx-auto w-fit text-center">
                       {author.signature && (
@@ -415,6 +494,20 @@ const CreateCertificate = () => {
                       </div>
                     </div>
                   ))}
+                  {orgLogo &&
+                    showOrgLogo &&
+                    orgLogoPosition === "Bottom Right" && (
+                      <div className="mx-auto">
+                        <img
+                          style={{
+                            width: `${orgLogoSize * zoom}px`,
+                          }}
+                          // className=" mx-auto"
+                          src={orgLogo}
+                          alt="orgLogo"
+                        />
+                      </div>
+                    )}
                 </div>
               </div>
             </div>
@@ -539,7 +632,7 @@ const CreateCertificate = () => {
             </div>
           </div>
           <div className="col-span-3 border-l border-black h-[100vh] overflow-y-scroll p-1">
-            {/* <button onClick={handlePrint}>Download PDF</button> */}
+            <button onClick={handlePrint}>Download PDF</button>
             <CertificateEditor
               selectedBackgroundTemplate={selectedBackgroundTemplate}
               imageDimensions={imageDimensions}
@@ -630,6 +723,14 @@ const CreateCertificate = () => {
               setOrgLogo={setOrgLogo}
               orgLogoSize={orgLogoSize}
               setOrgLogoSize={setOrgLogoSize}
+              showOrgLogo={showOrgLogo}
+              setShowOrgLogo={setShowOrgLogo}
+              orgLogoPosition={orgLogoPosition}
+              setOrgLogoPosition={setOrgLogoPosition}
+              showRecipientNameUnderline={showRecipientNameUnderline}
+              setShowRecipientNameUnderline={setShowRecipientNameUnderline}
+              underlineColor={underlineColor}
+              setUnderlineColor={setUnderlineColor}
             />
           </div>
         </div>

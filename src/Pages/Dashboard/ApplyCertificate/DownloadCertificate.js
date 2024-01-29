@@ -6,6 +6,8 @@ import axios from "axios";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import ZoomOutIcon from "@mui/icons-material/ZoomOut";
 import { useReactToPrint } from "react-to-print";
+import Swal from "sweetalert2";
+import Locked from "../../../assets/Dashboard/Locked.png";
 
 const DownloadCertificate = () => {
   const { courseId } = useParams();
@@ -19,6 +21,7 @@ const DownloadCertificate = () => {
   const [courseData, setCourseData] = useState({});
   const [batchData, setBatchData] = useState({});
   const [orgData, setOrgData] = useState({});
+  const [completionPercentage, setCompletionPercentage] = useState(0);
 
   useEffect(() => {
     const courseInfo = userInfo?.courses?.find(
@@ -97,11 +100,52 @@ const DownloadCertificate = () => {
     setDragging(false);
   };
 
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/chapters`)
+      .then((response) => {
+        const currentCourseChapter = response?.data?.filter(
+          (item) => item?.courseId === courseId
+        );
+        if (currentCourseChapter) {
+          let totalCompleted = 0;
+          let totalTask = 0;
+          currentCourseChapter?.forEach((item) => {
+            item?.tasks?.forEach((singleTask) => {
+              totalTask++;
+              if (singleTask?.participants) {
+                if (
+                  singleTask?.participants?.find(
+                    (item) => item?.participantId === userInfo?._id
+                  )
+                ) {
+                  totalCompleted++;
+                }
+              }
+            });
+          });
+          if (totalCompleted !== 0 && totalTask !== 0)
+            setCompletionPercentage(
+              parseInt((totalCompleted / totalTask) * 100)
+            );
+        }
+      })
+      .catch((error) => console.error(error));
+  }, [userInfo, courseId]);
+
   const CertificateContent = React.forwardRef((props, ref) => {
     // Content of your certificate component
     return (
-      <div>
+      <div className="relative">
+        <div className="absolute z-40 h-full w-full flex flex-col items-center justify-center">
+          <img className=" min-w-[40px]" src={Locked} alt="something" />
+          <p className=" text-black text-center font-sans mt-4">
+            To unlock the certificate you have to complete at least 70% of the
+            course.
+          </p>
+        </div>
         <div
+          className={`${completionPercentage < 70 && "filter blur-md"}`}
           id="your-section-id"
           style={{
             width: `${certificateTemplate?.imageDimensions?.width * zoom}px`,
@@ -123,7 +167,47 @@ const DownloadCertificate = () => {
               }}
               className="absolute w-full flex flex-col justify-between h-full"
             >
+              {certificateTemplate?.orgLogo &&
+                certificateTemplate?.showOrgLogo &&
+                (certificateTemplate?.orgLogoPosition === "Top Left" ||
+                  certificateTemplate?.orgLogoPosition === "Top Right") && (
+                  <div
+                    style={
+                      {
+                        // top: `${gapInTopAndBottom * zoom}px`,
+                      }
+                    }
+                    className={`mx-auto absolute ${
+                      certificateTemplate?.orgLogoPosition === "Top Right"
+                        ? ` left-20`
+                        : ` right-20`
+                    }`}
+                  >
+                    <img
+                      style={{
+                        width: `${certificateTemplate?.orgLogoSize * zoom}px`,
+                      }}
+                      // className=" mx-auto"
+                      src={certificateTemplate?.orgLogo}
+                      alt="orgLogo"
+                    />
+                  </div>
+                )}
               <div className=" text-center">
+                {certificateTemplate?.orgLogo &&
+                  certificateTemplate?.showOrgLogo &&
+                  certificateTemplate?.orgLogoPosition === "Top Center" && (
+                    <div className="mx-auto w-full text-center">
+                      <img
+                        style={{
+                          width: `${certificateTemplate?.orgLogoSize * zoom}px`,
+                        }}
+                        className=" mx-auto mb-4"
+                        src={certificateTemplate?.orgLogo}
+                        alt="orgLogo"
+                      />
+                    </div>
+                  )}
                 <h1
                   style={{
                     fontSize: `${
@@ -168,8 +252,12 @@ const DownloadCertificate = () => {
                     }px`,
                     fontFamily: `${certificateTemplate?.recipientNameFontFamily}`,
                     color: `${certificateTemplate?.recipientNameColor}`,
+                    borderColor: certificateTemplate?.underlineColor,
                   }}
-                  className=" font-medium"
+                  className={` font-medium ${
+                    certificateTemplate?.showRecipientNameUnderline &&
+                    `border-b-[4px]`
+                  } inline-block`}
                 >
                   {userInfo?.name}
                 </h1>
@@ -202,18 +290,22 @@ const DownloadCertificate = () => {
               </div>
               <div>
                 <div className="w-[80%] p-2 mx-auto flex items-center justify-between">
-                  <div className="mx-auto">
-                    {certificateTemplate?.orgLogo && (
-                      <img
-                        style={{
-                          width: `${certificateTemplate?.orgLogoSize * zoom}px`,
-                        }}
-                        // className=" mx-auto"
-                        src={certificateTemplate?.orgLogo}
-                        alt="orgLogo"
-                      />
+                  {certificateTemplate?.orgLogo &&
+                    certificateTemplate?.showOrgLogo &&
+                    certificateTemplate?.orgLogoPosition === "Bottom Left" && (
+                      <div className="mx-auto">
+                        <img
+                          style={{
+                            width: `${
+                              certificateTemplate?.orgLogoSize * zoom
+                            }px`,
+                          }}
+                          // className=" mx-auto"
+                          src={certificateTemplate?.orgLogo}
+                          alt="orgLogo"
+                        />
+                      </div>
                     )}
-                  </div>
                   {certificateTemplate?.authors?.map((author, index) => (
                     <div key={index} className="mx-auto w-fit text-center">
                       {author.signature && (
@@ -258,6 +350,22 @@ const DownloadCertificate = () => {
                       </div>
                     </div>
                   ))}
+                  {certificateTemplate?.orgLogo &&
+                    certificateTemplate?.showOrgLogo &&
+                    certificateTemplate?.orgLogoPosition === "Bottom Right" && (
+                      <div className="mx-auto">
+                        <img
+                          style={{
+                            width: `${
+                              certificateTemplate?.orgLogoSize * zoom
+                            }px`,
+                          }}
+                          // className=" mx-auto"
+                          src={certificateTemplate?.orgLogo}
+                          alt="orgLogo"
+                        />
+                      </div>
+                    )}
                 </div>
               </div>
             </div>
@@ -370,10 +478,22 @@ const DownloadCertificate = () => {
                 </button>
               </div>
               <button
-                className="mt-5 px-4 py-2 bg-green text-white text-lg font-bold rounded-md"
-                onClick={handlePrint}
+                className={`mt-5 px-4 py-2 ${
+                  completionPercentage < 70 ? " bg-gray-400" : " bg-green"
+                } text-white text-lg font-bold rounded-md flex items-center justify-center gap-2`}
+                onClick={() => {
+                  if (completionPercentage >= 70) handlePrint();
+                  else
+                    Swal.fire({
+                      title: "You have to complete at least 70% of the course!",
+                      icon: "warning",
+                    });
+                }}
               >
-                Download PDF
+                Download PDF{" "}
+                {completionPercentage < 70 && (
+                  <img className="w-[20px]" src={Locked} alt="locked" />
+                )}
               </button>
             </div>
           </div>

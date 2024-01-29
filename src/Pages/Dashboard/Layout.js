@@ -3,6 +3,7 @@ import MyHelmet from "../../Components/MyHelmet/MyHelpmet";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import logo from "../../assets/Logos/Group 2859890.png";
 import users from "../../assets/PointsRedemptions/users.svg";
+import usersDark from "../../assets/Dashboard/usersDark.png";
 import enroll from "../../assets/PointsRedemptions/enroll.svg";
 import book from "../../assets/PointsRedemptions/book.svg";
 import dollar from "../../assets/PointsRedemptions/dollar.svg";
@@ -860,6 +861,269 @@ const Layout = ({ children }) => {
                                 } ml-3 text-[18px] font-[500]`}
                               >
                                 Update Organization
+                              </span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              style={
+                                location.pathname === "/liveClasses" ||
+                                location.pathname === "/upcomingClasses"
+                                  ? {
+                                      background:
+                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                    }
+                                  : {}
+                              }
+                              to="/liveClasses"
+                              className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
+                            >
+                              {location.pathname === "/liveClasses" ||
+                              location.pathname === "/upcomingClasses" ? (
+                                <img className="" src={liveClass} alt="icon" />
+                              ) : (
+                                <img className="" src={liveClass1} alt="icon" />
+                              )}
+
+                              <span
+                                className={`${
+                                  location.pathname === "/liveClasses" ||
+                                  location.pathname === "/upcomingClasses"
+                                    ? "text-white"
+                                    : "text-[#8F8F8F]"
+                                } ml-3 text-[18px] font-[500]`}
+                              >
+                                Live Classes
+                              </span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              style={
+                                location.pathname === "/schedule"
+                                  ? {
+                                      background:
+                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                    }
+                                  : {}
+                              }
+                              to="/schedule"
+                              className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
+                            >
+                              {location.pathname === "/schedule" ? (
+                                <img className="" src={Schedule} alt="icon" />
+                              ) : (
+                                <img className="" src={Schedule1} alt="icon" />
+                              )}
+
+                              <span
+                                className={`${
+                                  location.pathname === "/schedule"
+                                    ? "text-white"
+                                    : "text-[#8F8F8F]"
+                                } ml-3 text-[18px] font-[500]`}
+                              >
+                                Schedule
+                              </span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              style={
+                                location.pathname === "/mentorAssignments" ||
+                                location.pathname ===
+                                  `/assignmentEvaluation1/${id}` ||
+                                location.pathname ===
+                                  `/assignmentEvaluation2/${id}`
+                                  ? {
+                                      background:
+                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                    }
+                                  : {}
+                              }
+                              to="/mentorAssignments"
+                              className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
+                            >
+                              {location.pathname === "/mentorAssignments" ||
+                              location.pathname ===
+                                `/assignmentEvaluation1/${id}` ||
+                              location.pathname ===
+                                `/assignmentEvaluation2/${id}` ? (
+                                <img
+                                  className=""
+                                  src={Assignments}
+                                  alt="icon"
+                                />
+                              ) : (
+                                <img
+                                  className=""
+                                  src={Assignments1}
+                                  alt="icon"
+                                />
+                              )}
+
+                              <span
+                                className={`${
+                                  location.pathname === "/mentorAssignments" ||
+                                  location.pathname ===
+                                    `/assignmentEvaluation1/${id}` ||
+                                  location.pathname ===
+                                    `/assignmentEvaluation2/${id}`
+                                    ? "text-white"
+                                    : "text-[#8F8F8F]"
+                                } ml-3 text-[18px] font-[500]`}
+                              >
+                                Assignments
+                              </span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              style={
+                                location.pathname ===
+                                "/expertMentorResourceCentre"
+                                  ? {
+                                      background:
+                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                    }
+                                  : {}
+                              }
+                              to="/expertMentorResourceCentre"
+                              className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
+                            >
+                              {location.pathname ===
+                              "/expertMentorResourceCentre" ? (
+                                <img
+                                  className=""
+                                  src={resourceCenter1}
+                                  alt="icon"
+                                />
+                              ) : (
+                                <img
+                                  className=""
+                                  src={resourceCenter}
+                                  alt="icon"
+                                />
+                              )}
+
+                              <span
+                                className={`${
+                                  location.pathname ===
+                                  "/expertMentorResourceCentre"
+                                    ? "text-white"
+                                    : "text-[#8F8F8F]"
+                                } ml-3 text-[18px] font-[500]`}
+                              >
+                                Resource Centre
+                              </span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              style={
+                                location.pathname ===
+                                "/expertMentorStudentProgress"
+                                  ? {
+                                      background:
+                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                    }
+                                  : {}
+                              }
+                              to="/expertMentorStudentProgress"
+                              className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
+                            >
+                              {location.pathname ===
+                              "/expertMentorStudentProgress" ? (
+                                <img
+                                  className=""
+                                  src={StudentProgress1}
+                                  alt="icon"
+                                />
+                              ) : (
+                                <img
+                                  className=""
+                                  src={StudentProgress}
+                                  alt="icon"
+                                />
+                              )}
+
+                              <span
+                                className={`${
+                                  location.pathname ===
+                                  "/expertMentorStudentProgress"
+                                    ? "text-white"
+                                    : "text-[#8F8F8F]"
+                                } ml-3 text-[18px] font-[500]`}
+                              >
+                                Student Progress
+                              </span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              style={
+                                location.pathname === "/addStudent"
+                                  ? {
+                                      background:
+                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                    }
+                                  : {}
+                              }
+                              to="/addStudent"
+                              className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
+                            >
+                              {location.pathname === "/addStudent" ? (
+                                <img className="" src={users} alt="icon" />
+                              ) : (
+                                <img className="" src={usersDark} alt="icon" />
+                              )}
+
+                              <span
+                                className={`${
+                                  location.pathname === "/addStudent"
+                                    ? "text-[#fff]"
+                                    : "text-[#8F8F8F]"
+                                } ml-3 text-[18px] font-[500]`}
+                              >
+                                Add Student
+                              </span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              style={
+                                location.pathname === "/showcasePage"
+                                  ? {
+                                      background:
+                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                    }
+                                  : {}
+                              }
+                              to="/showcasePage"
+                              className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
+                            >
+                              {location.pathname === "/showcasePage" ? (
+                                <img
+                                  className=""
+                                  src={ShowcasePage1}
+                                  alt="icon"
+                                />
+                              ) : (
+                                <img
+                                  className=""
+                                  src={ShowcasePage}
+                                  alt="icon"
+                                />
+                              )}
+
+                              <span
+                                className={`${
+                                  location.pathname === "/showcasePage"
+                                    ? "text-white"
+                                    : "text-[#8F8F8F]"
+                                } ml-3 text-[18px] font-[500]`}
+                              >
+                                Showcase Page
                               </span>
                             </Link>
                           </li>

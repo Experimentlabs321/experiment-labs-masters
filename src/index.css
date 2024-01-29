@@ -1,8 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Courgette&family=Dancing+Script:wght@500&family=Grape+Nuts&family=Great+Vibes&family=Lobster&family=Open+Sans&family=Roboto+Condensed&family=Sevillana&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Spectral:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed&family=Bebas+Neue&family=Caveat&family=Courgette&family=Dancing+Script&family=Exo+2&family=Fjalla+One&family=Grape+Nuts&family=Great+Vibes&family=Indie+Flower&family=Inter&family=Kanit&family=Lobster&family=Lobster+Two&family=Lora&family=Macondo&family=Meie+Script&family=Montserrat&family=Noto+Sans&family=Nunito&family=Open+Sans&family=Oswald&family=Oxygen&family=PT+Serif&family=Playfair+Display&family=Poppins&family=Quicksand&family=Raleway&family=Roboto&family=Roboto+Condensed&family=Rubik&family=Satisfy&family=Sevillana&family=Ubuntu&display=swap');
 
 body {
   margin: 0;
