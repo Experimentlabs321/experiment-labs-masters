@@ -72,7 +72,7 @@ const ScheduleTask = ({ taskData, week }) => {
  // console.log(adminMail);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
   const [maxDateString, setMaxDateString] = useState("");
-
+  const [isLoading, setIsLoading] = useState(true);
   const [busyTimeSlots, setBusyTimeSlots] = useState([]);
   const session = useSession();
   const supabase = useSupabaseClient();
@@ -329,6 +329,7 @@ const ScheduleTask = ({ taskData, week }) => {
       console.log(date)
       console.log(time)
       if (date && time) {
+        
         const combinedDateTimeUTC = new Date(`${date}T${time}Z`);
         const endDateTimeUTC = new Date(combinedDateTimeUTC);
         endDateTimeUTC.setMinutes(endDateTimeUTC.getMinutes() + 30);
