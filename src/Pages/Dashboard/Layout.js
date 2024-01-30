@@ -1074,7 +1074,7 @@ const Layout = ({ children }) => {
                                     : "text-[#8F8F8F]"
                                 } ml-3 text-[18px] font-[500]`}
                               >
-                                My Student
+                                Offers
                               </span>
                             </Link>
                           </li>
