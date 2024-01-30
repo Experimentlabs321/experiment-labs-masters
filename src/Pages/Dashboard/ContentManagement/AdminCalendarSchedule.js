@@ -177,7 +177,7 @@ const AdminCalendarSchedule = () => {
     const dateRange = form.dateRange?.value;
     const minimumTime = form.minimumTime?.value;
     const maximumTime = form.maximumTime?.value;
-
+    const meetingDuration = form.meetingDuration?.value;
 
     const manageSchedule = {
       scheduleName,
@@ -190,6 +190,7 @@ const AdminCalendarSchedule = () => {
       dateRange: dateRange,
       maximumTime,
       minimumTime,
+      meetingDuration : meetingDuration,
       usersession: global,
       events: calendarEvents,
     };
@@ -723,6 +724,21 @@ const endTimeString = endTimeStamp.toLocaleTimeString([], { hour: '2-digit', min
                       />
                     </div>
 
+                    <div className="">
+                      <div className="flex items-center gap-4">
+                        <p className="h-2 w-2 bg-black rounded-full"></p>
+                        <p className="font-bold text-lg me-[36px]">Meeting Duration Length</p>
+                        <img src={required} alt="required" />
+                      </div>
+
+                      <input
+                        required
+                        className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
+                        name="meetingDuration"
+                        type="number"
+                        defaultValue={30}
+                      />
+                    </div>
                     <div className="">
 
                       <div className="flex items-center gap-4">

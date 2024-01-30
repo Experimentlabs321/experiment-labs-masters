@@ -69,10 +69,12 @@ const matchInputWithBusySlots = (inputDate, inputTime, busyTimeSlots) => {
 
 const ScheduleTask = ({ taskData, week }) => {
   const adminMail = taskData?.usersession?.user?.email;
+  const meetingLength  = taskData?.meetingDuration;
+  console.log("Meeting duration : ",Number(meetingLength));
  // console.log(adminMail);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
   const [maxDateString, setMaxDateString] = useState("");
-
+  const [isLoading, setIsLoading] = useState(true);
   const [busyTimeSlots, setBusyTimeSlots] = useState([]);
   const session = useSession();
   const supabase = useSupabaseClient();
@@ -264,7 +266,7 @@ const ScheduleTask = ({ taskData, week }) => {
 
     while (currentTime <= end) {
       timeSlots.push(new Date(currentTime));
-      currentTime.setMinutes(currentTime.getMinutes() + 30); // Assuming 30-minute time slots
+      currentTime.setMinutes(currentTime.getMinutes() + Number(meetingLength)); // Assuming 30-minute time slots
     }
 
     return timeSlots;
@@ -329,9 +331,10 @@ const ScheduleTask = ({ taskData, week }) => {
       console.log(date)
       console.log(time)
       if (date && time) {
+        
         const combinedDateTimeUTC = new Date(`${date}T${time}Z`);
         const endDateTimeUTC = new Date(combinedDateTimeUTC);
-        endDateTimeUTC.setMinutes(endDateTimeUTC.getMinutes() + 30);
+        endDateTimeUTC.setMinutes(endDateTimeUTC.getMinutes() + Number(meetingLength));
         const currentDateTime = new Date();
         const timeDifferenceInMilliseconds = combinedDateTimeUTC - currentDateTime;
         if (timeDifferenceInMilliseconds < 0) {
