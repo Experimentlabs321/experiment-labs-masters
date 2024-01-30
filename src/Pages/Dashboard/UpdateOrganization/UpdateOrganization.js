@@ -44,7 +44,7 @@ const UpdateOrganization = () => {
       loginPageOrgLogo: loginPageOrgLogoUrl,
       loginSidebarImage: loginSidebarImage,
       titlesColor: titlesColor,
-      DashboardTheme: dashboardTheme,
+      dashboardTheme: dashboardTheme,
     };
     console.log(orgInfo);
 

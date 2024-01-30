@@ -98,6 +98,7 @@ import AffiliateSignUp from "../../Pages/Dashboard/LoginPage/Affiliate/Affiliate
 import ZoomIntegration from "../../Pages/Tester/ZoomIntegration";
 import Feedback from "../../Pages/Dashboard/Feedback/Feedback";
 import LoginWithOrganization from "../../Pages/Login/LoginWithOrganization/LoginWithOrganization";
+import RegisterWithOrganization from "../../Pages/Login/RegisterWithOrganization/RegisterWithOrganization";
 import UpdateOrganization from "../../Pages/Dashboard/UpdateOrganization/UpdateOrganization";
 import ExperimentLabsHome from "../../Pages/Template/ExperimentLabsTemplate/Home/Home/ExperimentLabsHome";
 import OnePagerHome from "../../Pages/Template/OnePager/OnePagerHome/OnePagerHome";
@@ -567,6 +568,10 @@ const router = createBrowserRouter([
   {
     path: "/login/:id",
     element: <LoginWithOrganization />,
+  },
+  {
+    path: "/register/:id",
+    element: <RegisterWithOrganization />,
   },
   {
     path: "/updateOrganization",
