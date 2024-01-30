@@ -190,7 +190,7 @@ const CertificateEditor = ({
     };
     // console.log(templateData);
     const addTemplate = await axios.post(
-      `http://localhost:5000/api/v1/certificateTemplates`,
+      `${process.env.REACT_APP_SERVER_API}/api/v1/certificateTemplates`,
       templateData
     );
 
