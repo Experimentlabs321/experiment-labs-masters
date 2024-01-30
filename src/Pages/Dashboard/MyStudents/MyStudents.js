@@ -95,6 +95,10 @@ const MyStudents = () => {
 
     setFilteredStudents(filtered);
   };
+  const formateDate = (dateCreated) => {
+    const date = new Date(dateCreated);
+    return date;
+  };
   console.log(courses);
   return (
     <div>
@@ -171,11 +175,12 @@ const MyStudents = () => {
             style={{ width: tableWidth, height: "70vh" }}
             className="overflow-x-auto"
           >
-            <table className="min-w-full bg-white border border-gray-300">
+            <table className="min-w-full font-sans bg-white border border-gray-300">
               <thead className="bg-gray-800 text-white sticky top-0">
                 <tr>
                   <th className="py-3 px-6 border-b text-left">Name</th>
                   <th className="py-3 px-6 border-b text-left">Email</th>
+                  <th className="py-3 px-6 border-b text-left">phone</th>
                   <th className="py-3 px-6 border-b text-left">Joining Date</th>
                   <th className="py-3 px-6 border-b text-left">Paid/Unpaid</th>
                 </tr>
@@ -183,33 +188,44 @@ const MyStudents = () => {
               <tbody>
                 {filteredStudents &&
                   filteredStudents[0] &&
-                  filteredStudents?.map((student, index) => (
-                    <tr
-                      key={student?.id}
-                      className={index % 2 === 0 ? "bg-gray-100" : "bg-gray-50"}
-                    >
-                      <td className="py-4 px-6 border-b text-left">
-                        {student?.name}
-                      </td>
-                      <td className="py-4 px-6 border-b text-left">
-                        {student?.email}
-                      </td>
-                      <td className="py-4 px-6 border-b text-left">
-                        {student?.dateCreated}
-                      </td>
-                      <td className="py-4 px-6 border-b text-left">
-                        {student?.courses && student?.courses[0] ? (
-                          <span className="text-green font-semibold">
-                            &#x2713; Paid
-                          </span>
-                        ) : (
-                          <span className="text-red-600 font-semibold">
-                            &#x2717; Unpaid
-                          </span>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
+                  filteredStudents?.map((student, index) => {
+                    const formattedDate = new Date(
+                      student?.dateCreated
+                    )?.toLocaleDateString();
+
+                    return (
+                      <tr
+                        key={student?.id}
+                        className={
+                          index % 2 === 0 ? "bg-gray-100" : "bg-gray-50"
+                        }
+                      >
+                        <td className="py-4 px-6 border-b text-left">
+                          {student?.name}
+                        </td>
+                        <td className="py-4 px-6 border-b text-left">
+                          {student?.email}
+                        </td>
+                        <td className="py-4 px-6 border-b text-left">
+                          {student?.phone}
+                        </td>
+                        <td className="py-4 px-6 border-b text-left">
+                          {formattedDate}
+                        </td>
+                        <td className="py-4 px-6 border-b text-left">
+                          {student?.courses && student?.courses[0] ? (
+                            <span className="text-green font-semibold">
+                              &#x2713; Paid
+                            </span>
+                          ) : (
+                            <span className="text-red-600 font-semibold">
+                              &#x2717; Unpaid
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
               </tbody>
             </table>
           </div>
