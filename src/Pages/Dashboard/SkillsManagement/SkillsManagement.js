@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Layout from "../Layout";
 import Badge from "@mui/material/Badge";
 import MailIcon from "@mui/icons-material/Mail";
@@ -9,8 +9,49 @@ import image1 from "../../../assets/SkillsManagement/Image1.png";
 import Image2 from "../../../assets/SkillsManagement/Image2.png";
 import man from "../../../assets/userManagement/man.png";
 import money from "../../../assets/userManagement/money.png";
+import { AuthContext } from "../../../contexts/AuthProvider";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const SkillsManagement = () => {
+  const { userInfo } = useContext(AuthContext);
+  const [orgData, setOrgData] = useState({});
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
+      )
+      .then((response) => {
+        setOrgData(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [userInfo]);
+
+  console.log(orgData);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    // const form = event.target;
+    if (orgData?._id) {
+      const orgInfo = { ...orgData };
+      orgInfo.showSkillsManagement = !orgData?.showSkillsManagement;
+      delete orgInfo._id;
+      console.log("Data ==========>", orgInfo);
+
+      const updateOrg = await axios.put(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${orgData?._id}`,
+        orgInfo
+      );
+
+      if (updateOrg?.data?.acknowledged) {
+        setOrgData({ _id: orgData?._id, ...orgInfo });
+        toast.success("Visibility of skills management edited successfully");
+        // event.target.reset();
+      }
+    }
+  };
   return (
     <div>
       <Layout>
@@ -31,6 +72,39 @@ const SkillsManagement = () => {
             <NotificationsIcon color="action" />
           </Badge>
         </div>
+
+        <div className="my-8 px-7">
+          <label
+            htmlFor="showLabJourneyToggle"
+            className="flex items-center cursor-pointer"
+          >
+            <div className="relative">
+              <input
+                type="checkbox"
+                id="showLabJourneyToggle"
+                className="sr-only"
+                checked={orgData?.showSkillsManagement}
+                onChange={(e) => {
+                  handleSubmit(e);
+                  setCount(count + 1);
+                }}
+              />
+              <div className="block bg-gray-600 w-14 h-8 rounded-full"></div>
+              <div
+                className={`${
+                  orgData?.showSkillsManagement
+                    ? "bg-green translate-x-full"
+                    : "bg-gray-300 translate-x-0"
+                } absolute left-1 top-1 w-6 h-6 rounded-full transition-transform transform ease-in-out duration-300`}
+              ></div>
+            </div>
+            <div className="ml-3 text-gray-700 font-semibold text-xl">
+              {!orgData?.showSkillsManagement ? "Show" : "Remove"} Skills
+              Management
+            </div>
+          </label>
+        </div>
+
         <div className="my-12 grid grid-cols-1 lg:grid-cols-2 gap-7 px-7">
           <Link
             to="/skillsCreations"
