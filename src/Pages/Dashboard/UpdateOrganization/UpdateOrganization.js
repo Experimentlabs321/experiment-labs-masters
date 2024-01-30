@@ -24,6 +24,7 @@ const UpdateOrganization = () => {
       .then((response) => {
         setOrgData(response?.data);
         setOrgLogoUrl(response?.data?.org_logo);
+        setLoginPageOrgLogoUrl(response?.data?.loginPageOrgLogo);
         setLoginSidebarImage(response?.data?.loginSidebarImage);
         setTitlesColor(response?.data?.titlesColor);
         setDashboardTheme(response?.data?.dashboardTheme || {});
