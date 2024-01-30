@@ -129,6 +129,11 @@ const DashboardTheme = ({
       ? dashboardTheme?.allCoursesChecked
       : true
   );
+  const [showLabJourney, setShowLabJourney] = useState(
+    dashboardTheme?.showLabJourney === false
+      ? dashboardTheme?.showLabJourney
+      : true
+  );
 
   console.log(dashboardTheme);
 
@@ -178,6 +183,7 @@ const DashboardTheme = ({
         addCourses,
         myCoursesChecked,
         allCoursesChecked,
+        showLabJourney,
       },
     };
     // console.log("Data ==========>",orgInfo);
@@ -260,7 +266,7 @@ const DashboardTheme = ({
     setFileLoading(false);
   };
 
-  // console.log(courseCompletionText);
+  //   console.log(showLabJourney);
 
   return (
     <div className="px-4 mt-4">
@@ -1058,6 +1064,34 @@ const DashboardTheme = ({
             </div>
           </div>
         )}
+
+        <div className="my-8">
+          <label
+            htmlFor="showLabJourneyToggle"
+            className="flex items-center cursor-pointer"
+          >
+            <div className="relative">
+              <input
+                type="checkbox"
+                id="showLabJourneyToggle"
+                className="sr-only"
+                checked={showLabJourney}
+                onChange={() => setShowLabJourney(!showLabJourney)}
+              />
+              <div className="block bg-gray-600 w-14 h-8 rounded-full"></div>
+              <div
+                className={`${
+                  showLabJourney
+                    ? "bg-green translate-x-full"
+                    : "bg-gray-300 translate-x-0"
+                } absolute left-1 top-1 w-6 h-6 rounded-full transition-transform transform ease-in-out duration-300`}
+              ></div>
+            </div>
+            <div className="ml-3 text-gray-700 font-semibold text-xl">
+              {!showLabJourney ? "Add" : "Remove"} Lab Journey Section
+            </div>
+          </label>
+        </div>
 
         {/* Submit Button */}
         <input

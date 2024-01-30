@@ -42,7 +42,8 @@ const LoginWithOrganization = () => {
       .then((res) => res.json())
       .then((data) => {
         localStorage.setItem("role", data?.role);
-        navigate("/dashboard");
+        if (data?.role === "admin") navigate("/adminDashboardHome");
+        else navigate("/dashboard");
       });
   };
 
