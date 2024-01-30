@@ -118,6 +118,7 @@ import AddStudent from "../../Pages/Dashboard/AddStudent/AddStudent";
 import ApplyCertificate from "../../Pages/Dashboard/ApplyCertificate/ApplyCertificate";
 import CreateCertificate from "../../Pages/Dashboard/CreateCertificate/CreateCertificate";
 import DownloadCertificate from "../../Pages/Dashboard/ApplyCertificate/DownloadCertificate";
+import MyStudents from "../../Pages/Dashboard/MyStudents/MyStudents";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -594,6 +595,10 @@ const router = createBrowserRouter([
   {
     path: "/offers",
     element: <Offers />,
+  },
+  {
+    path: "/myStudents",
+    element: <MyStudents />,
   },
 ]);
 

@@ -110,7 +110,7 @@ const BulkUpload = () => {
         role: "user",
       };
       const newUsers = await axios.post(
-        `http://localhost:5000/api/v1/users/addBulkStudent`,
+        `${process.env.REACT_APP_SERVER_API}/api/v1/users/addBulkStudent`,
         { users, relatedData }
       );
       console.log(newUsers);

@@ -108,7 +108,7 @@ const AddStudent = () => {
     };
     console.log(userData);
     const newUser = await axios.post(
-      `http://localhost:5000/api/v1/users/addStudent`,
+      `${process.env.REACT_APP_SERVER_API}/api/v1/users/addStudent`,
       userData
     );
     console.log(newUser);
