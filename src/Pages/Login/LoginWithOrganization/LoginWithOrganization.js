@@ -2,10 +2,14 @@ import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthProvider";
+import { GoogleAuthProvider } from "firebase/auth";
+import toast from "react-hot-toast";
+import GoogleLogo from "../../../assets/icons/googleIcon.png";
+
 
 const LoginWithOrganization = () => {
   const { id } = useParams();
-  const { signIn } = useContext(AuthContext);
+  const { signIn, providerLogin, logOut } = useContext(AuthContext);
   const navigate = useNavigate();
   const [orgData, setOrgData] = useState({});
 
@@ -17,6 +21,7 @@ const LoginWithOrganization = () => {
       })
       .catch((error) => console.error(error));
   }, [id]);
+
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
@@ -33,6 +38,8 @@ const LoginWithOrganization = () => {
       console.log(error);
     }
   };
+
+
   const saveUser = async (email) => {
     fetch(`${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${email}`)
       .then((res) => res.json())
@@ -41,6 +48,40 @@ const LoginWithOrganization = () => {
         navigate("/dashboard");
       });
   };
+
+
+  const handleLogout = () => {
+    logOut()
+      .then((res) => {
+        console.log(res);
+        navigate("/");
+      })
+      .catch((error) => console.error(error));
+  };
+
+
+  const handleGoogleSignIn = async () => {
+    const googleProvider = new GoogleAuthProvider();
+    providerLogin(googleProvider)
+      .then(async (result) => {
+        const email = result?.user?.email;
+        const userDetails = await axios.get(`${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${email}`);
+        console.log("Now Result  ==============>", result?.user?.email);
+        console.log("Now Result  ==============>", userDetails);
+        if (userDetails?.data?.isUser === false) {
+          toast.error("Your Are Not Registered User");
+          return handleLogout();
+        }
+        else {
+          saveUser(email);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+
   return (
     <div>
       <div className="flex min-h-screen">
@@ -130,9 +171,21 @@ const LoginWithOrganization = () => {
                     value="Login"
                     className="block w-full p-3 text-center rounded-xl text-gray-50 bg-cyan hover:bg-opacity-70 font-bold hover:transition-all hover:delay-200 hover:ease-out"
                   />
+
+                  <button
+                    onClick={handleGoogleSignIn}
+                    aria-label="Login with Google"
+                    type="button"
+                    className="flex items-center justify-center w-full p-3 space-x-4 border rounded-xl hover:transition-all hover:delay-200 hover:ease-out hover:bg-slate-200 bg-[#9c9d9e4e] text-black mb-[25px]"
+                  >
+                    <img className="w-[20px] h-[20px]" src={GoogleLogo} alt="" />
+                    <p className="text-[20px]">Continue with Google</p>
+                  </button>
+
                   <p className="text-center text-error">
                     {/* <small>error</small> */}
                   </p>
+
                 </form>
                 {/* <div
                   style={{ marginTop: 0 }}
