@@ -118,6 +118,7 @@ import AddStudent from "../../Pages/Dashboard/AddStudent/AddStudent";
 import ApplyCertificate from "../../Pages/Dashboard/ApplyCertificate/ApplyCertificate";
 import CreateCertificate from "../../Pages/Dashboard/CreateCertificate/CreateCertificate";
 import DownloadCertificate from "../../Pages/Dashboard/ApplyCertificate/DownloadCertificate";
+import AdminDashboardHome from "../../Pages/Dashboard/AdminDashboard/AdminDashboardHome";
 import MyStudents from "../../Pages/Dashboard/MyStudents/MyStudents";
 const router = createBrowserRouter([
   {
@@ -299,6 +300,10 @@ const router = createBrowserRouter([
   {
     path: "/createCourse",
     element: <CreateCourse />,
+  },
+  {
+    path: "/adminDashboardHome",
+    element: <AdminDashboardHome />,
   },
   {
     path: "/manageLiveClasses/:id",
