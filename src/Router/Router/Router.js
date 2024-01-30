@@ -11,6 +11,7 @@ import HumanitiesPage from "../../Pages/HumanitiesPage/HumanitiesPage/Humanities
 import ExperienceUnionCommercePage from "../../Pages/ExperienceUnionCommerce/ExperienceUnionPage/ExperienceUnionCommercePage";
 import ExperienceUnionHumanitiesPage from "../../Pages/ExperienceUnionHumanities/ExperienceUnionPage/ExperienceUnionHumanitiesPage";
 import Dashboard from "../../Pages/Dashboard/Dashboard/Dashboard";
+import Offers from "../../Pages/Dashboard/Dashboard/Offers";
 import LeaderBoard from "../../Pages/Dashboard/LeaderBoard/LeaderBoard";
 import Earning from "../../Pages/Dashboard/Earning/Earning";
 import Redemption from "../../Pages/Dashboard/Redemption/Redemption";
@@ -589,6 +590,10 @@ const router = createBrowserRouter([
   {
     path: "/createCertificate",
     element: <CreateCertificate />,
+  },
+  {
+    path: "/offers",
+    element: <Offers />,
   },
 ]);
 

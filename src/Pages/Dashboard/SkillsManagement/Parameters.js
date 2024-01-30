@@ -65,10 +65,12 @@ const Parameters = ({
       }
     }
   };
+
   const removeParameters = (removedTag) => {
     const newParameters = parameters.filter((tag) => tag !== removedTag);
     setParameters(newParameters);
   };
+  
   return (
     <>
       <div className="relative">
