@@ -8,13 +8,33 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 
-const TechnicalUpdate = ({ dashboardImages, weeks, selectedCourse, currentWeekCompletion, dashboardTheme }) => {
+const TechnicalUpdate = ({
+  dashboardImages,
+  weeks,
+  selectedCourse,
+  currentWeekCompletion,
+  dashboardTheme,
+}) => {
   const { user, userInfo } = useContext(AuthContext);
   const [date, setDate] = useState(""); // State for the date
   const [time, setTime] = useState(""); // State for the time
   const [currentWeek, setCurrentWeek] = useState(null);
   const [reservedEvent, setReservedEvent] = useState(null);
-  const { addChallenges, challengesHeaderText, challengesBtnText, challengesBtnBg, challengesCardBg, challengesProgressBg, challengesImgBg, challengesImg, addRequestSlots, slotsHeaderText, slotsBtnText, slotsBtnBg, slotsCardBg } = dashboardTheme;
+  const {
+    addChallenges,
+    challengesHeaderText,
+    challengesBtnText,
+    challengesBtnBg,
+    challengesCardBg,
+    challengesProgressBg,
+    challengesImgBg,
+    challengesImg,
+    addRequestSlots,
+    slotsHeaderText,
+    slotsBtnText,
+    slotsBtnBg,
+    slotsCardBg,
+  } = dashboardTheme;
 
   // Update the date state when the date input changes
   const handleDateChange = (event) => {
@@ -197,8 +217,9 @@ const TechnicalUpdate = ({ dashboardImages, weeks, selectedCourse, currentWeekCo
                   from: `${user?.email}`,
                   to: `naman.j@experimentlabs.in,gaurav@experimentlabs.in,${user?.email},shihab77023@gmail.com`,
                   subject: `Event request`,
-                  message: `A event is going to held for doubt clearing at ${event?.start.toLocaleString()} to ${event?.end.toLocaleTimeString()}. Meeting link ${event?.hangoutLink
-                    }`,
+                  message: `A event is going to held for doubt clearing at ${event?.start.toLocaleString()} to ${event?.end.toLocaleTimeString()}. Meeting link ${
+                    event?.hangoutLink
+                  }`,
                 }
               );
               if (sendMail?.data?.Success && response?.data?.acknowledged) {
@@ -266,8 +287,7 @@ const TechnicalUpdate = ({ dashboardImages, weeks, selectedCourse, currentWeekCo
 
   return (
     <div className="flex flex-row md:justify-around md:flex-row-reverse gap-4 overflow-x-scroll lg:overflow-x-visible h-[450px] lg:h-[630px]">
-      {
-        addRequestSlots &&
+      {addRequestSlots && (
         <div className="w-[250px] lg:w-[355px] min-w-[250px] lg:min-w-min h-[370px] lg:h-[515px]">
           <h1 className="text-[18px] lg:text-[25px] font-[700] text-center pb-[32px]">
             {slotsHeaderText}
@@ -275,7 +295,7 @@ const TechnicalUpdate = ({ dashboardImages, weeks, selectedCourse, currentWeekCo
           <div
             style={{
               filter: "drop-shadow(3.75217px 3.75217px 0px #000000)",
-              backgroundColor: slotsCardBg
+              backgroundColor: slotsCardBg,
             }}
             className="w-full h-full rounded-[14px] py-[20px] px-[15px] lg:p-[30px] flex flex-col justify-between items-center gap-5"
           >
@@ -370,11 +390,9 @@ const TechnicalUpdate = ({ dashboardImages, weeks, selectedCourse, currentWeekCo
           </DashboardPrimaryButton> */}
           </div>
         </div>
-      }
+      )}
 
-
-      {
-        addChallenges &&
+      {addChallenges && (
         <div className="w-[250px] lg:w-[355px] min-w-[250px] lg:min-w-min h-[370px] lg:h-[515px]">
           <h1 className="text-[18px] lg:text-[25px] font-[700] text-center pb-[32px]">
             {challengesHeaderText}
@@ -382,19 +400,26 @@ const TechnicalUpdate = ({ dashboardImages, weeks, selectedCourse, currentWeekCo
           <div
             style={{
               filter: "drop-shadow(3.75217px 3.75217px 0px #000000)",
-              backgroundColor: challengesCardBg
+              backgroundColor: challengesCardBg,
             }}
             className="w-full h-full rounded-[14px] py-[20px] px-[15px] lg:p-[30px] flex flex-col justify-between items-center gap-5"
           >
-            <div style={{ backgroundColor: challengesImgBg }} className="rounded-md">
-              <img className='h-48' src={challengesImg || dashboardImages?.challengesImg} alt="Challenges" />
+            <div
+              style={{ backgroundColor: challengesImgBg }}
+              className="rounded-md"
+            >
+              <img
+                className="h-48"
+                src={challengesImg || dashboardImages?.challengesImg}
+                alt="Challenges"
+              />
             </div>
             <h1 className="text-[14px] lg:text-[18px] text-white font-[700]">
               {currentWeek ? currentWeek?.weekName : "Course Completed"}
             </h1>
             <div className="w-full">
               <small className="text-white pb-[10px] font-[700]">
-                {currentWeekCompletion ? currentWeekCompletion : "O"}%  Completed
+                {currentWeekCompletion ? currentWeekCompletion : "O"}% Completed
               </small>
               <div className="relative w-full">
                 <div className="w-full bg-gray-200 rounded-lg h-2">
@@ -403,16 +428,19 @@ const TechnicalUpdate = ({ dashboardImages, weeks, selectedCourse, currentWeekCo
                     // className="bg-cyan-600 h-2 rounded-sm"
                     style={{
                       width: `${currentWeekCompletion}%`,
-                      backgroundColor: challengesProgressBg
+                      backgroundColor: challengesProgressBg,
                     }}
-                  // style={{ width: "20%" }}
+                    // style={{ width: "20%" }}
                   ></div>
                 </div>
               </div>
             </div>
             {currentWeek && (
               <Link
-                style={{ boxShadow: "0px 7.50435px 0px #F08323", backgroundColor: challengesBtnBg }}
+                style={{
+                  boxShadow: "0px 7.50435px 0px #F08323",
+                  backgroundColor: challengesBtnBg,
+                }}
                 to={`/questLevels/${currentWeek?.courseId}?week=${currentWeek?._id}`}
                 className="w-full py-[15px] px-[23px] rounded-[13px] text-[12px] lg:text-[18px] font-[700] z-[1]"
               >
@@ -428,7 +456,7 @@ const TechnicalUpdate = ({ dashboardImages, weeks, selectedCourse, currentWeekCo
             )}
           </div>
         </div>
-      }
+      )}
     </div>
   );
 };
