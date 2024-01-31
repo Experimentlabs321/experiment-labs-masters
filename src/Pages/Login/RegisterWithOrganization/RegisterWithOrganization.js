@@ -14,7 +14,7 @@ const LoginWithOrganization = () => {
     const navigate = useNavigate();
     const [orgData, setOrgData] = useState({});
     const [name, setName] = useState("");
-    const [phone, setPhone] = useState();
+    const [phone, setPhone] = useState("");
     const [error, setError] = useState(false);
 
     useEffect(() => {
@@ -74,15 +74,16 @@ const LoginWithOrganization = () => {
     const handleGoogleRegister = async () => {
         const googleProvider = new GoogleAuthProvider();
 
-        if (name.length > 0 && phone.length > 3) {
+        if (phone.length > 3) {
             providerLogin(googleProvider)
                 .then(async (result) => {
                     const email = result?.user?.email;
+                    const newName = result?.user?.displayName;
                     const userDetails = await axios.get(`${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${email}`);
                     if (userDetails?.data?.isUser === false) {
                         const res = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/v1/users`, {
                             email,
-                            name,
+                            name: newName,
                             phone,
                             organizationId: id,
                             organizationName: orgData?.organizationName,
@@ -179,7 +180,7 @@ const LoginWithOrganization = () => {
                                             className="w-full rounded-xl border px-4 py-3 border-gray-300 bg-gray-50 text-gray-800 focus:border-red-600"
                                             required
                                         />
-                                        {error && <p className="text-red-600">Need Name to Register</p>}
+                                        {/* {error && <p className="text-red-600">Need Name to Register</p>} */}
                                     </div>
                                     <div className="space-y-3 text-sm">
                                         <label htmlFor="username" className="block">
@@ -195,8 +196,9 @@ const LoginWithOrganization = () => {
                                         /> */}
                                         <PhoneInput
                                             international="true"
+                                            className="w-full rounded-xl border px-4 py-3 border-gray-300 bg-gray-50 text-gray-800 focus:border-red-600"
                                             defaultCountry="IN"
-                                            className='w-full focus:outline-0'
+                                            // className='w-full focus:outline-0'
                                             placeholder="Enter phone number"
                                             value={phone}
                                             onChange={setPhone} />
