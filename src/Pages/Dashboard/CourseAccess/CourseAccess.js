@@ -59,6 +59,7 @@ const CourseAccess = () => {
       ? setShowCourses(myCourses)
       : setShowCourses(courses);
   }, [myCourses, courses]);
+  console.log(stateParams);
 
   return (
     <div>
@@ -188,7 +189,18 @@ const CourseAccess = () => {
                     className="bg-[#F6F7FF] rounded-[20px] p-[20px] max-w-[340px] shadow-[4px_4px_4px_0px_#0000001a]"
                   >
                     <Link
-                      to={`/questLevels/${course?._id}`}
+                      to={
+                        stateParams === "allCourses" &&
+                        !myCourses?.find((item) => item?._id === course?._id)
+                          ? course?.coursePurchaseUrl
+                          : `/questLevels/${course?._id}`
+                      }
+                      target={
+                        stateParams === "allCourses" &&
+                        !myCourses?.find((item) => item?._id === course?._id)
+                          ? "_blank"
+                          : "_self"
+                      }
                       onClick={(e) => e.stopPropagation()}
                     >
                       <div className="card-content">
