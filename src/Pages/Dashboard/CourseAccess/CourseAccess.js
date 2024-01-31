@@ -30,33 +30,34 @@ const CourseAccess = () => {
     setIsOpen(false);
   };
 
-
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
-    const stateParam = queryParams.get('state');
+    const stateParam = queryParams.get("state");
     setStateParams(stateParam || stateParams);
 
-    axios.get(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
-    )
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
+      )
       .then((response) => {
         setCourses(response?.data);
       })
       .catch((error) => console.error(error));
 
-    axios.get(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/courses/userId/${userInfo._id}`
-    )
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/userId/${userInfo._id}`
+      )
       .then((response) => {
         setMyCourses(response?.data);
       })
       .catch((error) => console.error(error));
-
   }, [userInfo, location]);
 
-
   useEffect(() => {
-    stateParams === "myCourses" ? setShowCourses(myCourses) : setShowCourses(courses);
+    stateParams === "myCourses"
+      ? setShowCourses(myCourses)
+      : setShowCourses(courses);
   }, [myCourses, courses]);
 
   return (
@@ -108,19 +109,28 @@ const CourseAccess = () => {
             <div className="flex gap-8">
               <button
                 onClick={() => {
-                  setStateParams("myCourses")
+                  setStateParams("myCourses");
                   setShowCourses(myCourses);
                 }}
-                className={`text-[18px] font-[700] ${stateParams === "myCourses" ? "text-[#3E4DAC] underline" : "text-black no-underline"}`}>
+                className={`text-[18px] font-[700] ${
+                  stateParams === "myCourses"
+                    ? "text-[#3E4DAC] underline"
+                    : "text-black no-underline"
+                }`}
+              >
                 My Courses
               </button>
               <button
                 onClick={() => {
-                  setStateParams("allCourses")
+                  setStateParams("allCourses");
                   setShowCourses(courses);
                 }}
-                className={`text-[18px] font-[700] ${stateParams === "allCourses" ? "text-[#3E4DAC] underline" : "text-black no-underline"}`
-                }>
+                className={`text-[18px] font-[700] ${
+                  stateParams === "allCourses"
+                    ? "text-[#3E4DAC] underline"
+                    : "text-black no-underline"
+                }`}
+              >
                 All Courses
               </button>
               {/* <button className="pr-[60px] text-[18px] font-[500] ">
@@ -158,7 +168,13 @@ const CourseAccess = () => {
           </div>
 
           <div className="my-[60px] ">
-            <div className={`flex flex-wrap ${showCourses.length<=2 ? "justify-start gap-x-14":"justify-between gap-x-2"}  gap-y-5`}>
+            <div
+              className={`flex flex-wrap ${
+                showCourses.length <= 2
+                  ? "justify-start gap-x-14"
+                  : "justify-between gap-x-2"
+              }  gap-y-5`}
+            >
               {showCourses?.map((course, index) => {
                 const date = new Date(course?.courseStartingDate);
                 const options = {
@@ -167,12 +183,22 @@ const CourseAccess = () => {
                   day: "numeric",
                 };
                 return (
-                  <div key={index} className="bg-[#F6F7FF] rounded-[20px] p-[20px] max-w-[340px] shadow-[4px_4px_4px_0px_#0000001a]">
-                    <Link to={`/questLevels/${course?._id}`} onClick={(e) => e.stopPropagation()}>
+                  <div
+                    key={index}
+                    className="bg-[#F6F7FF] rounded-[20px] p-[20px] max-w-[340px] shadow-[4px_4px_4px_0px_#0000001a]"
+                  >
+                    <Link
+                      to={`/questLevels/${course?._id}`}
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <div className="card-content">
                         <img
                           className="w-full rounded-lg"
-                          src={course?.courseThumbnail ? course?.courseThumbnail : CourseTham}
+                          src={
+                            course?.courseThumbnail
+                              ? course?.courseThumbnail
+                              : CourseTham
+                          }
                           alt="CourseTham"
                         />
                         <h1 className="text-[#3E4DAC] text-[16px] font-[800] mt-[16px] mb-[12px]">
@@ -192,7 +218,11 @@ const CourseAccess = () => {
                       </div>
                     </Link>
 
-                    <div className={`${Role === "admin" ? "block" : "hidden"} relative`}>
+                    <div
+                      className={`${
+                        Role === "admin" ? "block" : "hidden"
+                      } relative`}
+                    >
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -215,17 +245,20 @@ const CourseAccess = () => {
                         </svg>
                         {clickedCourse === course && (
                           <ul className="absolute right-0 bottom-[17px] w-max border bg-[#141414] border-t-0 p-2 rounded-[8px] mt-1 transform translate-y-[-10px] shadow-[0px_2px_4px_0px_#00000026]">
-                            <li
-                              className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600]"
-                              onClick={() => console.log("Edit Course Details")}
-                            >
-                              Edit Course Details
+                            <li className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600]">
+                              <Link
+                                to={`/editCourse/${course?._id}`}
+                                onClick={() =>
+                                  console.log("Edit Course Details")
+                                }
+                              >
+                                Edit Course Details
+                              </Link>
                             </li>
-                            <li
-                              className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600]"
-                              onClick={() => console.log("Edit Course Contents")}
-                            >
-                              Edit Course Contents
+                            <li className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600]">
+                              <Link to={`/questLevels/${course?._id}`}>
+                                Edit Course Contents
+                              </Link>
                             </li>
                           </ul>
                         )}
