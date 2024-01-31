@@ -84,7 +84,7 @@ const EditCourse = () => {
     const showactivitycompletionconditions =
       +form.showactivitycompletionconditions?.value;
     const coursePurchaseUrl = "" + form.coursePurchaseUrl?.value;
-    const enableDrip = +form.enableDrip?.value;
+    const enableDrip = form.enableDrip?.value;
 
     let fileUrl = "";
     if (selectedFile) {
