@@ -518,6 +518,36 @@ const Layout = ({ children }) => {
                               </span>
                             </Link>
                           </li> */}
+                            <li>
+                            <Link
+                              style={
+                                location.pathname === "/adminDashboardHome"
+                                  ? {
+                                      background:
+                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                    }
+                                  : {}
+                              }
+                              to="/adminDashboardHome"
+                              className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
+                            >
+                              {location.pathname === "/adminDashboardHome" ? (
+                                <img className="" src={DashboardIconLight} alt="icon" />
+                              ) : (
+                                <img className="" src={DashboardIconDark} alt="icon" />
+                              )}
+
+                              <span
+                                className={`${
+                                  location.pathname === "/adminDashboardHome"
+                                    ? "text-white"
+                                    : "text-[#8F8F8F]"
+                                } ml-3 text-[18px] font-[500]`}
+                              >
+                               Dashboard
+                              </span>
+                            </Link>
+                          </li>
                           <li>
                             <Link
                               style={
