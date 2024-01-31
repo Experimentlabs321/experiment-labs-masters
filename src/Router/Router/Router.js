@@ -120,6 +120,7 @@ import CreateCertificate from "../../Pages/Dashboard/CreateCertificate/CreateCer
 import DownloadCertificate from "../../Pages/Dashboard/ApplyCertificate/DownloadCertificate";
 import AdminDashboardHome from "../../Pages/Dashboard/AdminDashboard/AdminDashboardHome";
 import MyStudents from "../../Pages/Dashboard/MyStudents/MyStudents";
+import EditCourse from "../../Pages/Dashboard/ContentManagement/EditCourse";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -300,6 +301,10 @@ const router = createBrowserRouter([
   {
     path: "/createCourse",
     element: <CreateCourse />,
+  },
+  {
+    path: "/editCourse/:id",
+    element: <EditCourse />,
   },
   {
     path: "/adminDashboardHome",

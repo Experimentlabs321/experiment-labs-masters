@@ -133,6 +133,7 @@ const CreateCourse = () => {
     const enableCompletionTracking = +form.enableCompletionTracking?.value;
     const showactivitycompletionconditions =
       +form.showactivitycompletionconditions?.value;
+    const coursePurchaseUrl = +form.coursePurchaseUrl?.value;
 
     let fileUrl = "";
     if (selectedFile) {
@@ -154,6 +155,7 @@ const CreateCourse = () => {
       groups,
       showactivitydates,
       numberOfWeeks,
+      coursePurchaseUrl,
       // weekChapterName: formData,
       showactivityreports,
       enableCompletionTracking,
@@ -312,6 +314,22 @@ const CreateCourse = () => {
                     name="courseDescription"
                     type="text"
                     placeholder="Eg. This Lab will teach you about...."
+                  />
+                </div>
+
+                <div className="mt-20">
+                  <div className="flex items-center gap-4">
+                    <p className="h-2 w-2 bg-black rounded-full"></p>
+                    <p className="font-bold text-lg me-[36px]">
+                      Course purchase url
+                    </p>
+                  </div>
+
+                  <input
+                    className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                    name="coursePurchaseUrl"
+                    type="url"
+                    placeholder="https://www.google.com/"
                   />
                 </div>
               </div>
@@ -622,48 +640,7 @@ const CreateCourse = () => {
                       placeholder="num"
                       name="numberofWeeks"
                     />
-                    {/*   <input
-                                            className='text-center my-4 border w-1/2'
-                                            type='text'
-                                            placeholder='2'
-                                            value={numberOfWeeks}
-                                            onChange={handleInputChange}
-                                        /> */}
-                    {/*  <div className='select-option' onClick={toggleDropdownNumberofWeeksChapters}>
-                                            {!isOpenNumberofWeeksChapters && <img className='w-6' src={arrowright}></img>}
-                                            {isOpenNumberofWeeksChapters && <img src={arrowDown}></img>}
-                                            <i className={`dropdown-arrow ${isOpenNumberofWeeksChapters ? 'open' : ''}`}></i>
-                                        </div> */}
                   </div>
-                  {/*  {isOpenNumberofWeeksChapters && (
-                                        <div className='dropdown-menu mt-[70px]'>
-                                            <ul>
-                                                {numberList.map((number) => (
-                                                    <li className='mt-[70px]' key={number}>
-                                                        <div className='flex items-center gap-6'>
-                                                            <p className='h-2 w-2 bg-black rounded-full'></p>
-                                                            <p className='text-[18px] font-bold'>Week/Chapter Name {number} </p>
-                                                        </div>
-
-                                                        <input className='h-[50px] w-[387px] mt-6 ms-6 ps-3 focus:outline-0'
-                                                        
-                                                        onChange={(e) => handleInputChangeweek(e, number)}
-                                                            type='text'
-                                                            name='weekChapterName'
-                                                            placeholder='Eg. Week : Thinking Big'
-                                                            style={{
-                                                                borderRadius: "6px",
-                                                                border: "1px solid #CECECE",
-                                                                background: "#F6F7FF"
-                                                            }}
-                                                        />
-
-
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    )} */}
                 </div>
 
                 <div className="mt-20">
@@ -752,36 +729,6 @@ const CreateCourse = () => {
                     </div>
                   </div>
                 </div>
-                {/*      <div className='mt-20'>
-                                    <div className='flex items-center gap-4'>
-                                        <p className='h-2 w-2 bg-black rounded-full'></p>
-                                        <p className='font-bold text-lg me-[36px]'>Certificate Generation</p>
-                                    </div>
-
-                                    <div className=" flex gap-2  mt-6 ms-6   w-[230px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]  "
-                                        style={{
-                                            borderRadius: "8px",
-
-                                            boxShadow: "0px 2px 4px 0px rgba(0, 0, 0, 0.15)"
-                                        }}
-                                    >
-
-                                        <select
-
-                                            required
-                                            className='w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold'
-                                            name="certificateGeneration"
-                                            id="option"
-                                        >
-
-                                            <option className="" value="Auto Generate">Auto Generate</option>
-                                            <option value="Parent"></option>
-                                            <option value="Counselor"></option>
-                                            <option value="Others"></option>
-                                        </select>
-
-                                    </div>
-                                </div> */}
               </div>
 
               <div>
