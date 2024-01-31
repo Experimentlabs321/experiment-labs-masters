@@ -131,6 +131,7 @@ const CreateCourse = () => {
     const numberOfWeeks = +form.numberofWeeks?.value;
     const showactivityreports = +form.showactivityreports?.value;
     const enableCompletionTracking = +form.enableCompletionTracking?.value;
+    const enableDrip = +form.enableDrip?.value;
     const showactivitycompletionconditions =
       +form.showactivitycompletionconditions?.value;
     const coursePurchaseUrl = +form.coursePurchaseUrl?.value;
@@ -159,6 +160,7 @@ const CreateCourse = () => {
       // weekChapterName: formData,
       showactivityreports,
       enableCompletionTracking,
+      enableDrip,
       // certificateGeneration,
       showactivitycompletionconditions,
       //showGradebooktostudents,
@@ -724,6 +726,35 @@ const CreateCourse = () => {
                         id="No"
                         name="enableCompletionTracking"
                         value="0"
+                      />
+                      <lebel> No</lebel>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div className="">
+                  <div className="flex items-center gap-4">
+                    <p className="h-2 w-2 bg-black rounded-full"></p>
+                    <p className="font-bold text-lg me-[36px]">Enable Drip</p>
+                  </div>
+
+                  <div className=" items-center flex gap-2  mt-2 ms-6  w-[319px] h-[50px] ps-2 text-[#535353] focus:outline-0 ">
+                    <div className="">
+                      <input
+                        type="radio"
+                        id="Yes"
+                        name="enableDrip"
+                        value={true}
+                      />
+                      <lebel> Yes</lebel>
+                    </div>
+                    <div className=" ms-[55px]">
+                      <input
+                        type="radio"
+                        id="No"
+                        name="enableDrip"
+                        value={false}
                       />
                       <lebel> No</lebel>
                     </div>
