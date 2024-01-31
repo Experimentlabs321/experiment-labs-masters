@@ -131,7 +131,7 @@ const CreateCourse = () => {
     const numberOfWeeks = +form.numberofWeeks?.value;
     const showactivityreports = +form.showactivityreports?.value;
     const enableCompletionTracking = +form.enableCompletionTracking?.value;
-    const enableDrip = form.enableDrip?.value;
+    const enableDrip = form.enableDrip?.value === "false" ? false : true;
     const showactivitycompletionconditions =
       +form.showactivitycompletionconditions?.value;
     const coursePurchaseUrl = +form.coursePurchaseUrl?.value;
