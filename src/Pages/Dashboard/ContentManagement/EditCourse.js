@@ -50,6 +50,7 @@ const EditCourse = () => {
   const { user, userInfo } = useContext(AuthContext);
   const [submitPermission, setSubmitPermission] = useState(false);
   const [courseData, setCourseData] = useState({});
+  const [enableDrip, setEnableDrip] = useState();
   const router = useNavigate();
 
   useEffect(() => {
@@ -57,6 +58,7 @@ const EditCourse = () => {
       .get(`${process.env.REACT_APP_SERVER_API}/api/v1/courses/${id}`)
       .then((response) => {
         setCourseData(response?.data);
+        setEnableDrip(response?.data?.enableDrip);
       })
       .catch((error) => console.error(error));
   }, [id]);
@@ -84,7 +86,7 @@ const EditCourse = () => {
     const showactivitycompletionconditions =
       +form.showactivitycompletionconditions?.value;
     const coursePurchaseUrl = "" + form.coursePurchaseUrl?.value;
-    const enableDrip = +form.enableDrip?.value;
+    const enableDrip = form.enableDrip?.value === "false" ? false : true;
 
     let fileUrl = "";
     if (selectedFile) {
@@ -709,6 +711,8 @@ const EditCourse = () => {
                         id="Yes"
                         name="enableDrip"
                         value={true}
+                        checked={enableDrip === true}
+                        onChange={() => setEnableDrip(true)}
                       />
                       <lebel> Yes</lebel>
                     </div>
@@ -718,6 +722,8 @@ const EditCourse = () => {
                         id="No"
                         name="enableDrip"
                         value={false}
+                        checked={enableDrip === false}
+                        onChange={() => setEnableDrip(false)}
                       />
                       <lebel> No</lebel>
                     </div>
