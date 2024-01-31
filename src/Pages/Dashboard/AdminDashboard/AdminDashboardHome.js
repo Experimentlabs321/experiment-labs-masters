@@ -5,23 +5,25 @@ import adminDas from "../../../assets/Dashboard/adminDash.png"
 import AdminStatistics from "./AdminStatistics";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
+import Loading from "../../Shared/Loading/Loading";
 
 
 const AdminDashboardHome = () => {
     const { userInfo } = useContext(AuthContext);
-    const [organization, setorganization] = useState();
+    const [organization, setOrganization] = useState();
   
 
     useEffect(() => {
-        
+        Loading();
         axios
             .get(
                 `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
             )
             .then((response) => {
-                setorganization(response?.data);
+                setOrganization(response?.data);
             })
             .catch((error) => console.error(error));
+            Loading().close();
     }, [userInfo]);
     console.log(organization)
     return (

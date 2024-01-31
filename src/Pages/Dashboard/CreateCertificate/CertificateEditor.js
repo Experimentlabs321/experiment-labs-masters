@@ -88,6 +88,14 @@ const CertificateEditor = ({
   setOrgLogo,
   orgLogoSize,
   setOrgLogoSize,
+  showOrgLogo,
+  setShowOrgLogo,
+  orgLogoPosition,
+  setOrgLogoPosition,
+  showRecipientNameUnderline,
+  setShowRecipientNameUnderline,
+  underlineColor,
+  setUnderlineColor,
 }) => {
   const fontFamilies = [
     "Anton",
@@ -132,6 +140,13 @@ const CertificateEditor = ({
     "Batch name",
     "Organization name",
   ];
+  const orgLogoPositions = [
+    "Top Right",
+    "Top Center",
+    "Top Left",
+    "Bottom Right",
+    "Bottom Left",
+  ];
   const [showCoursesDropDown, setShowCoursesDropDown] = useState(false);
   const [showBatchesDropDown, setShowBatchesDropDown] = useState(false);
   const handleSubmitCertificateTemplate = async () => {
@@ -166,11 +181,16 @@ const CertificateEditor = ({
       certificateTextContents,
       orgLogo,
       orgLogoSize,
+      orgLogoPosition,
+      showOrgLogo,
+      showRecipientNameUnderline,
+      underlineColor,
       courseId: selectedCourse?._id,
       batchId: selectedBatch?._id,
     };
+    // console.log(templateData);
     const addTemplate = await axios.post(
-      `http://localhost:5000/api/v1/certificateTemplates`,
+      `${process.env.REACT_APP_SERVER_API}/api/v1/certificateTemplates`,
       templateData
     );
 
@@ -187,6 +207,7 @@ const CertificateEditor = ({
       });
     }
   };
+  console.log(showRecipientNameUnderline);
   return (
     <div className="font-sans">
       <h1 className="text-lg font-semibold mb-3">
@@ -283,6 +304,83 @@ const CertificateEditor = ({
           className="mt-1 p-2 border w-full rounded-md"
           value={gapInTopAndBottom}
           onChange={(e) => setGapInTopAndBottom(e.target.value)}
+        />
+      </div>
+
+      <div className="mb-4">
+        <label
+          htmlFor="orgLogo"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Organization Logo
+        </label>
+        <input
+          type="file"
+          id="orgLogo"
+          name="orgLogo"
+          className="mt-1 p-2 border w-full rounded-md"
+          // value={authors[index].signature}
+          onChange={async (e) => {
+            e.preventDefault();
+            const file = e.target.files[0];
+            try {
+              if (file) {
+                const reader = new FileReader();
+
+                reader.onloadend = async () => {
+                  setOrgLogo(await reader.result);
+                  setCount(count + 1);
+                };
+
+                reader.readAsDataURL(file);
+              }
+              // authors[index].signature = await uploadFileToS3(file);
+              // authors[index].signature = file.name;
+            } catch (error) {
+              console.error("Error uploading file:", error);
+            }
+          }}
+        />
+      </div>
+
+      <div className="mb-4">
+        <label
+          htmlFor="orgLogSize"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Organization Logo position
+        </label>
+        <div className="flex flex-wrap mb-4">
+          {orgLogoPositions?.map((position, index) => (
+            <button
+              key={index}
+              onClick={() => {
+                setOrgLogoPosition(position);
+              }}
+              className={`w-fit px-2 py-1 ${
+                position === orgLogoPosition ? "bg-slate-300" : "bg-slate-100"
+              } border`}
+            >
+              {position}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="mb-4">
+        <label
+          htmlFor="orgLogSize"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Organization Logo size
+        </label>
+        <input
+          type="number"
+          id="orgLogSize"
+          name="orgLogSize"
+          className="mt-1 p-2 border w-full rounded-md"
+          value={orgLogoSize}
+          onChange={(e) => setOrgLogoSize(e.target.value)}
         />
       </div>
 
@@ -637,6 +735,68 @@ const CertificateEditor = ({
         </div>
       </div>
 
+      <div className="mb-4">
+        <label
+          htmlFor="recipientNameUnderline"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Underline recipient name
+        </label>
+
+        <input
+          type="radio"
+          checked={
+            showRecipientNameUnderline === true ||
+            showRecipientNameUnderline !== false
+          }
+          value={true}
+          onChange={(e) => {
+            // e.preventDefault();
+            // certificateTextContents[index].type = await e.target.value;
+            setShowRecipientNameUnderline(true);
+            setCount(count + 1);
+          }}
+        />
+        <span className="ml-1 mr-3">Show</span>
+        <input
+          type="radio"
+          checked={
+            showRecipientNameUnderline === false ||
+            showRecipientNameUnderline !== true
+          }
+          value={false}
+          onChange={(e) => {
+            // e.preventDefault();
+            // certificateTextContents[index].type = await e.target.value;
+            setShowRecipientNameUnderline(false);
+            setCount(count + 1);
+          }}
+        />
+        <span className="ml-1">Hide</span>
+      </div>
+
+      <div className="mb-4">
+        <label
+          htmlFor="underlineColor"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Underline color
+        </label>
+        <div className="flex items-center ">
+          <input
+            type="color"
+            id="underlineColor"
+            name="underlineColor"
+            className=" p-1 w-10 h-10 border rounded-l-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
+            value={underlineColor}
+            onChange={(e) => setUnderlineColor(e.target.value)}
+          />
+          <span className=" p-2 h-10 border font-sans rounded-r-md">
+            {underlineColor}
+          </span>
+        </div>
+      </div>
+
       {certificateTextContents?.map((content, index) => (
         <div>
           <div className="mb-4">
@@ -858,59 +1018,6 @@ const CertificateEditor = ({
         </span>
       </button>
 
-      <div className="mb-4">
-        <label
-          htmlFor="orgLogo"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Organization Logo
-        </label>
-        <input
-          type="file"
-          id="orgLogo"
-          name="orgLogo"
-          className="mt-1 p-2 border w-full rounded-md"
-          // value={authors[index].signature}
-          onChange={async (e) => {
-            e.preventDefault();
-            const file = e.target.files[0];
-            try {
-              if (file) {
-                const reader = new FileReader();
-
-                reader.onloadend = async () => {
-                  setOrgLogo(await reader.result);
-                  setCount(count + 1);
-                };
-
-                reader.readAsDataURL(file);
-              }
-              // authors[index].signature = await uploadFileToS3(file);
-              // authors[index].signature = file.name;
-            } catch (error) {
-              console.error("Error uploading file:", error);
-            }
-          }}
-        />
-      </div>
-
-      <div className="mb-4">
-        <label
-          htmlFor="orgLogSize"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Organization Logo size
-        </label>
-        <input
-          type="number"
-          id="orgLogSize"
-          name="orgLogSize"
-          className="mt-1 p-2 border w-full rounded-md"
-          value={orgLogoSize}
-          onChange={(e) => setOrgLogoSize(e.target.value)}
-        />
-      </div>
-
       {authors?.map((author, index) => (
         <div>
           <div className="mb-4">
@@ -939,7 +1046,7 @@ const CertificateEditor = ({
               htmlFor={author?.name + index}
               className="block text-sm font-medium text-gray-700"
             >
-              Author {index + 1} position
+              Author {index + 1} designation
             </label>
             <input
               type="text"
@@ -1121,7 +1228,7 @@ const CertificateEditor = ({
           htmlFor="authorPositionFontFamily"
           className="block text-sm font-medium text-gray-700"
         >
-          Auth position font family
+          Auth designation font family
         </label>
         <select
           id="authorPositionFontFamily"
@@ -1152,7 +1259,7 @@ const CertificateEditor = ({
           htmlFor="authorPositionFontSize"
           className="block text-sm font-medium text-gray-700"
         >
-          Author position font size
+          Author designation font size
         </label>
         <input
           type="number"
@@ -1169,7 +1276,7 @@ const CertificateEditor = ({
           htmlFor="authorPositionColor"
           className="block text-sm font-medium text-gray-700"
         >
-          Author position color
+          Author designation color
         </label>
         <div className="flex items-center ">
           <input

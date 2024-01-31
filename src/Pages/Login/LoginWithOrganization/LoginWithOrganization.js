@@ -2,10 +2,13 @@ import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthProvider";
+import { GoogleAuthProvider } from "firebase/auth";
+import toast from "react-hot-toast";
+import GoogleLogo from "../../../assets/icons/googleIcon.png";
 
 const LoginWithOrganization = () => {
   const { id } = useParams();
-  const { signIn } = useContext(AuthContext);
+  const { signIn, providerLogin, logOut } = useContext(AuthContext);
   const navigate = useNavigate();
   const [orgData, setOrgData] = useState({});
 
@@ -33,6 +36,7 @@ const LoginWithOrganization = () => {
       console.log(error);
     }
   };
+
   const saveUser = async (email) => {
     fetch(`${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${email}`)
       .then((res) => res.json())
@@ -41,6 +45,38 @@ const LoginWithOrganization = () => {
         navigate("/dashboard");
       });
   };
+
+  const handleLogout = () => {
+    logOut()
+      .then((res) => {
+        console.log(res);
+        navigate("/");
+      })
+      .catch((error) => console.error(error));
+  };
+
+  const handleGoogleSignIn = async () => {
+    const googleProvider = new GoogleAuthProvider();
+    providerLogin(googleProvider)
+      .then(async (result) => {
+        const email = result?.user?.email;
+        const userDetails = await axios.get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${email}`
+        );
+        console.log("Now Result  ==============>", result?.user?.email);
+        console.log("Now Result  ==============>", userDetails);
+        if (userDetails?.data?.isUser === false) {
+          toast.error("Your Are Not Registered User");
+          return handleLogout();
+        } else {
+          saveUser(email);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   return (
     <div>
       <div className="flex min-h-screen">
@@ -67,7 +103,7 @@ const LoginWithOrganization = () => {
             {/* <p className="font-medium mt-3">© 2023 Experiment Labs</p> */}
             <img
               className="w-[100px] mx-auto mt-4"
-              src={orgData?.org_logo}
+              src={orgData?.loginPageOrgLogo}
               alt="brand"
             />
           </div>
@@ -77,7 +113,7 @@ const LoginWithOrganization = () => {
               <div className="flex items-center justify-center space-x-3">
                 <img
                   className="w-[100px]"
-                  src={orgData?.org_logo}
+                  src={orgData?.loginPageOrgLogo}
                   alt="brand"
                 />
               </div>
@@ -100,13 +136,14 @@ const LoginWithOrganization = () => {
                   className="space-y-6 ng-untouched ng-pristine ng-valid"
                 >
                   <div className="space-y-3 text-sm">
-                    <label htmlFor="username" className="block">
+                    <label htmlFor="email" className="block">
                       Email
                     </label>
                     <input
                       type="email"
                       name="email"
-                      id="username"
+                      id="email"
+                      defaultValue=""
                       placeholder="Email"
                       className="w-full rounded-xl border px-4 py-3 border-gray-300 bg-gray-50 text-gray-800 focus:border-red-600"
                       required
@@ -120,6 +157,7 @@ const LoginWithOrganization = () => {
                       type="password"
                       name="password"
                       id="password"
+                      defaultValue=""
                       placeholder="Password"
                       className="border w-full px-4 py-3 rounded-xl border-gray-300 bg-gray-50 text-gray-800 focus:border-red-600"
                       required
@@ -128,8 +166,23 @@ const LoginWithOrganization = () => {
                   <input
                     type="submit"
                     value="Login"
-                    className="block w-full p-3 text-center rounded-xl text-gray-50 bg-cyan hover:bg-opacity-70 font-bold hover:transition-all hover:delay-200 hover:ease-out"
+                    className="block w-full p-3 text-center rounded-xl text-gray-50 bg-cyan hover:bg-opacity-70 cursor-pointer font-bold hover:transition-all hover:delay-200 hover:ease-out"
                   />
+
+                  <button
+                    onClick={handleGoogleSignIn}
+                    aria-label="Login with Google"
+                    type="button"
+                    className="flex items-center justify-center w-full p-3 space-x-4 border rounded-xl hover:transition-all hover:delay-200 hover:ease-out hover:bg-slate-200 bg-[#9c9d9e4e] text-black mb-[25px]"
+                  >
+                    <img
+                      className="w-[20px] h-[20px]"
+                      src={GoogleLogo}
+                      alt=""
+                    />
+                    <p className="text-[20px]">Continue with Google</p>
+                  </button>
+
                   <p className="text-center text-error">
                     {/* <small>error</small> */}
                   </p>

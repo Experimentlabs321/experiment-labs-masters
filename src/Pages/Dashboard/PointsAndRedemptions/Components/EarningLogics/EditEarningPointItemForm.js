@@ -38,7 +38,7 @@ const EditEarningPointItemForm = ({
     };
     if (data?.categoryName === selectedEarningCategory?.categoryName) {
       const updatedItem = await axios.put(
-        `http://localhost:5000/api/v1/earningCategories/earningItems`,
+        `${process.env.REACT_APP_SERVER_API}/api/v1/earningCategories/earningItems`,
         data
       );
       if (updatedItem?.data?.acknowledged) {

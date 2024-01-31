@@ -11,6 +11,7 @@ import HumanitiesPage from "../../Pages/HumanitiesPage/HumanitiesPage/Humanities
 import ExperienceUnionCommercePage from "../../Pages/ExperienceUnionCommerce/ExperienceUnionPage/ExperienceUnionCommercePage";
 import ExperienceUnionHumanitiesPage from "../../Pages/ExperienceUnionHumanities/ExperienceUnionPage/ExperienceUnionHumanitiesPage";
 import Dashboard from "../../Pages/Dashboard/Dashboard/Dashboard";
+import Offers from "../../Pages/Dashboard/Dashboard/Offers";
 import LeaderBoard from "../../Pages/Dashboard/LeaderBoard/LeaderBoard";
 import Earning from "../../Pages/Dashboard/Earning/Earning";
 import Redemption from "../../Pages/Dashboard/Redemption/Redemption";
@@ -118,6 +119,7 @@ import ApplyCertificate from "../../Pages/Dashboard/ApplyCertificate/ApplyCertif
 import CreateCertificate from "../../Pages/Dashboard/CreateCertificate/CreateCertificate";
 import DownloadCertificate from "../../Pages/Dashboard/ApplyCertificate/DownloadCertificate";
 import AdminDashboardHome from "../../Pages/Dashboard/AdminDashboard/AdminDashboardHome";
+import MyStudents from "../../Pages/Dashboard/MyStudents/MyStudents";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -132,10 +134,10 @@ const router = createBrowserRouter([
         path: "/:id",
         element: <Home />,
       },
-      {
-        path: "/login",
-        element: <Login />,
-      },
+      // {
+      //   path: "/login",
+      //   element: <Login />,
+      // },
       {
         path: "/register",
         element: <Register />,
@@ -594,6 +596,14 @@ const router = createBrowserRouter([
   {
     path: "/createCertificate",
     element: <CreateCertificate />,
+  },
+  {
+    path: "/offers",
+    element: <Offers />,
+  },
+  {
+    path: "/myStudents",
+    element: <MyStudents />,
   },
 ]);
 

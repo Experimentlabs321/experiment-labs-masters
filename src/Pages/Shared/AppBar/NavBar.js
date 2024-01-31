@@ -28,6 +28,7 @@ import Slide from "@mui/material/Slide";
 import emailjs from "@emailjs/browser";
 import ReactGA from "react-ga4";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -117,27 +118,27 @@ const NavBar = (props) => {
     setModalOpen(false);
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const form = event.target;
-    const name = form.name.value;
-    const email = form.email.value;
-    const phone = form.phone.value;
-    const selectClass = form.selectClass.value;
+  // const handleSubmit = (event) => {
+  //   event.preventDefault();
+  //   const form = event.target;
+  //   const name = form.name.value;
+  //   const email = form.email.value;
+  //   const phone = form.phone.value;
+  //   const selectClass = form.selectClass.value;
 
-    console.log(name, email, phone, selectClass);
+  //   console.log(name, email, phone, selectClass);
 
-    if (!name || !email || !phone || !selectClass) {
-      setError("Please fill in all the fields");
-    } else {
-      const a = document.createElement("a");
-      a.href =
-        "https://drive.google.com/uc?export=download&id=1-g7Bsun3RvKAezjWFZOL9QOvlnfcELRk";
-      a.download = "Brochure.pdf"; // Set the desired file name
-      a.click();
-      handleClose();
-    }
-  };
+  //   if (!name || !email || !phone || !selectClass) {
+  //     setError("Please fill in all the fields");
+  //   } else {
+  //     const a = document.createElement("a");
+  //     a.href =
+  //       "https://drive.google.com/uc?export=download&id=1-g7Bsun3RvKAezjWFZOL9QOvlnfcELRk";
+  //     a.download = "Brochure.pdf"; // Set the desired file name
+  //     a.click();
+  //     handleClose();
+  //   }
+  // };
 
   const { signIn, providerLogin, createUser, updateUserProfile } =
     useContext(AuthContext);
@@ -149,83 +150,83 @@ const NavBar = (props) => {
 
   const navigate = useNavigate();
 
-  const graphyLogin = async (email, displayName) => {
-    console.log(email, displayName);
-    saveUser(email);
-    try {
-      const payload = {
-        name: displayName,
-        email: email,
-        exp: Math.floor(Date.now() / 1000) + 60 * 60, // Set the token expiration time
-      };
+  // const graphyLogin = async (email, displayName) => {
+  //   console.log(email, displayName);
+  //   saveUser(email);
+  //   try {
+  //     const payload = {
+  //       name: displayName,
+  //       email: email,
+  //       exp: Math.floor(Date.now() / 1000) + 60 * 60, // Set the token expiration time
+  //     };
 
-      // Convert the payload to a Base64Url encoded string
-      const payloadBase64 = btoa(JSON.stringify(payload))
-        .replace(/=/g, "")
-        .replace(/\+/g, "-")
-        .replace(/\//g, "_");
+  //     // Convert the payload to a Base64Url encoded string
+  //     const payloadBase64 = btoa(JSON.stringify(payload))
+  //       .replace(/=/g, "")
+  //       .replace(/\+/g, "-")
+  //       .replace(/\//g, "_");
 
-      // Construct the header
-      const header = {
-        alg: "HS256",
-        typ: "JWT",
-      };
+  //     // Construct the header
+  //     const header = {
+  //       alg: "HS256",
+  //       typ: "JWT",
+  //     };
 
-      // Convert the header to a Base64Url encoded string
-      const headerBase64 = btoa(JSON.stringify(header))
-        .replace(/=/g, "")
-        .replace(/\+/g, "-")
-        .replace(/\//g, "_");
+  //     // Convert the header to a Base64Url encoded string
+  //     const headerBase64 = btoa(JSON.stringify(header))
+  //       .replace(/=/g, "")
+  //       .replace(/\+/g, "-")
+  //       .replace(/\//g, "_");
 
-      // Your API token obtained from Graphy
-      const apiToken = process.env.REACT_APP_key;
+  //     // Your API token obtained from Graphy
+  //     const apiToken = process.env.REACT_APP_key;
 
-      // Construct the signature
-      const signature = CryptoJS.HmacSHA256(
-        `${headerBase64}.${payloadBase64}`,
-        apiToken
-      );
+  //     // Construct the signature
+  //     const signature = CryptoJS.HmacSHA256(
+  //       `${headerBase64}.${payloadBase64}`,
+  //       apiToken
+  //     );
 
-      // Convert the signature to a Base64Url encoded string
-      const signatureBase64 = CryptoJS.enc.Base64.stringify(signature)
-        .replace(/=/g, "")
-        .replace(/\+/g, "-")
-        .replace(/\//g, "_");
+  //     // Convert the signature to a Base64Url encoded string
+  //     const signatureBase64 = CryptoJS.enc.Base64.stringify(signature)
+  //       .replace(/=/g, "")
+  //       .replace(/\+/g, "-")
+  //       .replace(/\//g, "_");
 
-      // Construct the SSO URL with the JWT token
-      const ssoUrl = `https://login.experimentlabs.in/s/mycourses?ssoToken=${headerBase64}.${payloadBase64}.${signatureBase64}`;
+  //     // Construct the SSO URL with the JWT token
+  //     const ssoUrl = `https://login.experimentlabs.in/s/mycourses?ssoToken=${headerBase64}.${payloadBase64}.${signatureBase64}`;
 
-      // Redirect the user to the SSO URL
-      // window.location.href = ssoUrl;
-      const a = document.createElement("a");
-      a.href = ssoUrl;
-      a.target = "_blank";
-      a.click();
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  //     // Redirect the user to the SSO URL
+  //     // window.location.href = ssoUrl;
+  //     const a = document.createElement("a");
+  //     a.href = ssoUrl;
+  //     a.target = "_blank";
+  //     a.click();
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   //Login with google provider
-  const handleGoogleSignIn = () => {
-    const googleProvider = new GoogleAuthProvider();
-    providerLogin(googleProvider)
-      .then((result) => {
-        const email = result?.user?.email;
-        const displayName = result?.user?.displayName;
-        saveUser(email);
-        // navigate("/dashboard");
-        handleClose();
-        if (email) {
-          graphyLogin(email, displayName);
-        }
-        setError("");
-      })
-      .catch((error) => {
-        console.error(error);
-        setError(error.message);
-      });
-  };
+  // const handleGoogleSignIn = () => {
+  //   const googleProvider = new GoogleAuthProvider();
+  //   providerLogin(googleProvider)
+  //     .then((result) => {
+  //       const email = result?.user?.email;
+  //       const displayName = result?.user?.displayName;
+  //       saveUser(email);
+  //       // navigate("/dashboard");
+  //       handleClose();
+  //       if (email) {
+  //         graphyLogin(email, displayName);
+  //       }
+  //       setError("");
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //       setError(error.message);
+  //     });
+  // };
 
   console.log("ab", role);
 
@@ -310,12 +311,12 @@ const NavBar = (props) => {
    }; */
 
   // Login user with Email Password
-  const loginUser = (email, password, location, history) => {
-    saveUser(email);
-    signIn(email, password)
-      .then((userCredential) => {})
-      .catch((error) => {});
-  };
+  // const loginUser = (email, password, location, history) => {
+  //   saveUser(email);
+  //   signIn(email, password)
+  //     .then((userCredential) => {})
+  //     .catch((error) => {});
+  // };
 
   const handleOnChange = (e) => {
     const field = e.target.name;
@@ -342,6 +343,33 @@ const NavBar = (props) => {
       toast.error("password or email error");
     }
   };
+
+  const handleGoogleSignIn = async () => {
+    const googleProvider = new GoogleAuthProvider();
+    providerLogin(googleProvider)
+      .then(async (result) => {
+        const email = result?.user?.email;
+        const userDetails = await axios.get(`${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${email}`);
+        console.log("Now Result  ==============>", result?.user?.email);
+        console.log("Now Result  ==============>", userDetails);
+        if (userDetails?.data?.isUser === false) {
+          toast.error("Your Are Not Registered User");
+          return handleLogout();
+        }
+        else {
+          setNewLogin(true);
+          saveUser(email);
+        }
+        handleClose();
+        setError("");
+      })
+      .catch((error) => {
+        console.error(error);
+        setError(error.message);
+      });
+  }
+
+
   const saveUser = async (email) => {
     const users = { email };
     fetch(
@@ -349,7 +377,7 @@ const NavBar = (props) => {
     )
       .then((res) => res.json())
       .then((data) => {
-        console.log("aaaaaaaaa", data);
+        // console.log("aaaaaaaaa", data);
 
         // setRole(data?.role);
         localStorage.setItem("role", data?.role);

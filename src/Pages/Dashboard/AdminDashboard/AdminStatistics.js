@@ -2,6 +2,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 
 
@@ -27,7 +28,7 @@ const AdminStatistics = () => {
             <h1 className="text-3xl font-bold my-10"> OverView </h1>
 
             <div className='flex gap-5'>
-                <div className="w-[160px] justify-center items-stretch shadow-sm bg-[#8064F0] flex flex-col px-2 rounded-md py-4">
+                <Link to='/myStudents' className="w-[160px] justify-center items-stretch shadow-sm bg-[#8064F0] flex flex-col px-2 rounded-md py-4">
                     <div className="justify-between items-stretch flex gap-5">
                         <div className="text-white text-sm font-medium tracking-widest">
                             Total Students
@@ -42,7 +43,7 @@ const AdminStatistics = () => {
                     <div className="text-white text-3xl font-bold tracking-[2.96px] whitespace-nowrap mt-3">
                         {statCount?.totalStudent?statCount?.totalStudent : "0"}
                     </div>
-                </div>
+                </Link>
                 <div className="w-[160px] justify-center items-stretch shadow-sm bg-[#0A98EA] flex flex-col px-2 rounded-md py-4">
                     <div className="justify-between items-stretch flex gap-5">
                         <div className="text-white text-sm font-medium tracking-widest">
@@ -58,7 +59,7 @@ const AdminStatistics = () => {
                     {statCount?.enrollStudents?statCount?.enrollStudents : "0"}
                     </div>
                 </div>
-                <div className="w-[160px] justify-center items-stretch shadow-sm bg-[#6278FF] flex flex-col px-2 rounded-md py-4">
+                <Link to='/mentorAssignments' className="w-[160px] justify-center items-stretch shadow-sm bg-[#6278FF] flex flex-col px-2 rounded-md py-4">
                     <div className="justify-between items-stretch flex gap-5">
                         <div className="text-white text-sm font-medium tracking-widest">
                           Unevaluated Students
@@ -74,9 +75,9 @@ const AdminStatistics = () => {
                     <div className="text-white text-3xl font-bold tracking-[2.96px] whitespace-nowrap mt-3">
                     {statCount?.unevaluatedStudents?statCount?.unevaluatedStudents : "0"}
                     </div>
-                </div>
+                </Link>
               
-                <div className="w-[160px] justify-center items-stretch shadow-sm bg-[#E8B912] flex flex-col px-2 rounded-md py-4">
+                <Link to='/schedule' className="w-[160px] justify-center items-stretch shadow-sm bg-[#E8B912] flex flex-col px-2 rounded-md py-4">
                     <div className="justify-between items-stretch flex gap-5">
                         <div className="text-white text-sm font-medium tracking-widest">
                            Meetings Today
@@ -91,7 +92,7 @@ const AdminStatistics = () => {
                     <div className="text-white text-3xl font-bold tracking-[2.96px] whitespace-nowrap mt-3">
                     {statCount?.totalMeeting?statCount?.totalMeeting : "0"}
                     </div>
-                </div>
+                </Link>
               {/*   <div className="w-[160px] justify-center items-stretch shadow-sm bg-[#DD2025] flex flex-col px-2 rounded-md py-4">
                     <div className="justify-between items-stretch flex gap-5">
                         <div className="text-white text-sm font-medium tracking-widest">
