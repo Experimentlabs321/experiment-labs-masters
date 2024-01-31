@@ -5,6 +5,7 @@ import CourseTham from "../../../assets/Dashboard/CourseTham.png";
 import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../../../contexts/AuthProvider";
+import Locked from "../../../assets/Dashboard/Locked.png";
 
 const CourseAccess = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -190,12 +191,14 @@ const CourseAccess = () => {
                   >
                     <Link
                       to={
+                        Role !== "admin" &&
                         stateParams === "allCourses" &&
                         !myCourses?.find((item) => item?._id === course?._id)
                           ? course?.coursePurchaseUrl
                           : `/questLevels/${course?._id}`
                       }
                       target={
+                        Role !== "admin" &&
                         stateParams === "allCourses" &&
                         !myCourses?.find((item) => item?._id === course?._id)
                           ? "_blank"
@@ -204,15 +207,30 @@ const CourseAccess = () => {
                       onClick={(e) => e.stopPropagation()}
                     >
                       <div className="card-content">
-                        <img
-                          className="w-full rounded-lg"
-                          src={
-                            course?.courseThumbnail
-                              ? course?.courseThumbnail
-                              : CourseTham
-                          }
-                          alt="CourseTham"
-                        />
+                        <div className="relative">
+                          <img
+                            className="w-full rounded-lg"
+                            src={
+                              course?.courseThumbnail
+                                ? course?.courseThumbnail
+                                : CourseTham
+                            }
+                            alt="CourseTham"
+                          />
+                          {Role !== "admin" &&
+                            stateParams === "allCourses" &&
+                            !myCourses?.find(
+                              (item) => item?._id === course?._id
+                            ) && (
+                              <div className="w-full h-full absolute top-0 flex items-center justify-center bg-[#ffffffb6]">
+                                <img
+                                  className=" w-[50px]"
+                                  src={Locked}
+                                  alt="CourseTham"
+                                />
+                              </div>
+                            )}
+                        </div>
                         <h1 className="text-[#3E4DAC] text-[16px] font-[800] mt-[16px] mb-[12px]">
                           {course?.courseFullName}
                         </h1>
