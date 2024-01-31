@@ -84,7 +84,6 @@ const Dashboard = () => {
     },
   ];
 
-
   const [viewAllLevel, setViewAllLevel] = useState(false);
   // const [length, setLength] = useState(data.length < 5 ? data.length : 5);
   const [length, setLength] = useState(data.length);
@@ -104,12 +103,10 @@ const Dashboard = () => {
     setLength(data.length);
   };
 
-
   const handleCloseViewAllLevel = () => {
     setViewAllLevel(false);
     setLength(data.length < 5 ? data.length : 5);
   };
-
 
   useEffect(() => {
     axios
@@ -130,8 +127,6 @@ const Dashboard = () => {
       .catch((error) => console.error(error));
   }, [userInfo]);
 
-
-
   useEffect(() => {
     axios
       .get(
@@ -142,7 +137,6 @@ const Dashboard = () => {
       })
       .catch((error) => console.error(error));
   }, [selectedCourse]);
-
 
   useEffect(() => {
     setCurrentWeek(null);
@@ -156,8 +150,6 @@ const Dashboard = () => {
       }
     });
   }, [selectedCourse, weeks]);
-
-
 
   useEffect(() => {
     axios
@@ -193,8 +185,6 @@ const Dashboard = () => {
     console.log(totalCompleted, totalTask);
   }, [chapters, user, userInfo]);
 
-
-
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_SERVER_API}/api/v1/chapters`)
@@ -227,15 +217,13 @@ const Dashboard = () => {
       .catch((error) => console.error(error));
   }, [user, userInfo, selectedCourse]);
 
-
   const dashboardImages = {
     userImg: Person,
     userImgMobile: PersonForMobile,
     treasureImg: OpenBox,
     questImg: WeekUpdate,
-    challengesImg: Challenges
-  }
-
+    challengesImg: Challenges,
+  };
 
   useEffect(() => {
     axios
@@ -247,8 +235,7 @@ const Dashboard = () => {
       })
       .catch((error) => console.error(error));
   }, [userInfo]);
-
-
+  console.log(dashboardTheme);
   return (
     <div>
       <Layout>
@@ -268,89 +255,108 @@ const Dashboard = () => {
               />
               {/* <SendEvent /> */}
             </div>
-            <div
-              className={`lg:border-b-2 lg:border-l-2 lg:border-[#E8E8E8] pt-10 pb-10 px-4 text-center lg:max-h-[732px] overflow-x-scroll lg:overflow-y-scroll ${viewAllLevel ? "labJourney" : "labJourneyRemoveScroll"
+            {dashboardTheme?.showLabJourney && (
+              <div
+                className={`lg:border-b-2 lg:border-l-2 lg:border-[#E8E8E8] pt-10 pb-10 px-4 text-center lg:max-h-[732px] overflow-x-scroll lg:overflow-y-scroll ${
+                  viewAllLevel ? "labJourney" : "labJourneyRemoveScroll"
                 } `}
-            >
-              <h1 className="text-[18px] lg:text-[26px] font-[700]">
-                Lab Journey
-              </h1>
-              <div className="pt-[40px] px-[30px] hidden lg:inline-block relative">
-                {weeks.map((singleData, i) => (
-                  <Level
-                    selectedCourse={selectedCourse}
-                    viewAllLevel={viewAllLevel}
-                    length={length}
-                    onClick={handleCloseViewAllLevel}
-                    singleData={singleData}
-                    i={i}
-                    key={singleData?._id}
-                  />
-                ))}
-              </div>
-              <div className="mt-[20px] bg-[#D7ECFF] labJourney rounded-lg px-[10px] flex lg:hidden overflow-x-scroll h-[155px]">
-                {data.map((singleData, i) => (
-                  <div
-                    className={`${i % 2 === 0
-                      ? "flex-col border-b-white border-b-0 rounded-t-full"
-                      : " flex-col-reverse border-t-white border-t-0 rounded-b-full self-end"
-                      } h-[92px] relative flex ml-[-5.26px] p-[5px] border-[#0F3934] border-[5px] overflow-visible my-4`}
-                  >
+              >
+                <h1 className="text-[18px] lg:text-[26px] font-[700]">
+                  Lab Journey
+                </h1>
+                <div className="pt-[40px] px-[30px] w-full hidden lg:inline-block relative">
+                  {weeks?.map((singleData, i) => (
+                    <Level
+                      selectedCourse={selectedCourse}
+                      viewAllLevel={viewAllLevel}
+                      length={length}
+                      onClick={handleCloseViewAllLevel}
+                      singleData={singleData}
+                      i={i}
+                      key={singleData?._id}
+                    />
+                  ))}
+                </div>
+                <div className="mt-[20px] bg-[#D7ECFF] labJourney rounded-lg px-[10px] flex lg:hidden overflow-x-scroll h-[155px]">
+                  {data?.map((singleData, i) => (
                     <div
-                      // style={[{ boxShadow: "1.70448px 1.70448px 0px #000000" }]}
-                      className={`rounded-[50%] w-[44px] h-[44px] lg:w-[71px] lg:h-[69px] flex flex-col items-center justify-center text-[8px] lg:text-[17px] font-[700] underline underline-offset-4 z-[1] ${singleData?.status === "Completed" &&
-                        " decoration-white text-white bg-[#3E4DAC]"
-                        } ${singleData?.status === "Ongoing" && "  bg-[#FFDB70]"
-                        } ${singleData?.status === "Locked"
-                          ? "lockShadow border-x-4 border-y-4 bg-[#D9D9D9] text-[#706F6F]"
-                          : "normalShadow"
+                      className={`${
+                        i % 2 === 0
+                          ? "flex-col border-b-white border-b-0 rounded-t-full"
+                          : " flex-col-reverse border-t-white border-t-0 rounded-b-full self-end"
+                      } h-[92px] relative flex ml-[-5.26px] p-[5px] border-[#0F3934] border-[5px] overflow-visible my-4`}
+                    >
+                      <div
+                        // style={[{ boxShadow: "1.70448px 1.70448px 0px #000000" }]}
+                        className={`rounded-[50%] w-[44px] h-[44px] lg:w-[71px] lg:h-[69px] flex flex-col items-center justify-center text-[8px] lg:text-[17px] font-[700] underline underline-offset-4 z-[1] ${
+                          singleData?.status === "Completed" &&
+                          " decoration-white text-white bg-[#3E4DAC]"
+                        } ${
+                          singleData?.status === "Ongoing" && "  bg-[#FFDB70]"
+                        } ${
+                          singleData?.status === "Locked"
+                            ? "lockShadow border-x-4 border-y-4 bg-[#D9D9D9] text-[#706F6F]"
+                            : "normalShadow"
                         }`}
-                    >
-                      {singleData?.status === "Ongoing" && (
-                        <h1 className="text-[8px] lg:text-[13px] ">Ongoing</h1>
-                      )}
-                      {singleData?.status === "Locked" && (
-                        <img
-                          className="w-[12px] h-[10px]"
-                          src={Lock}
-                          alt="lock"
-                        />
-                      )}
-                      <h1
-                        className={`${singleData?.status !== "Completed" &&
-                          "text-[8px] lg:text-[13px]"
-                          }`}
                       >
-                        {singleData?.score}
-                      </h1>
-                      {singleData?.status === "Completed" && (
-                        <h1>{singleData?.expression}</h1>
-                      )}
-                    </div>
-                    <h1
-                      className={`underline underline-offset-2 rounded-[9px] z-0 text-[8px] lg:text-[12px] font-[700] py-1 ${singleData?.status === "Completed" && "bg-[#9CAAFF]"
-                        } ${singleData?.status === "Ongoing" && "bg-[#FFC13D]"} ${singleData?.status === "Locked" && "bg-[#D9D9D9]"
+                        {singleData?.status === "Ongoing" && (
+                          <h1 className="text-[8px] lg:text-[13px] ">
+                            Ongoing
+                          </h1>
+                        )}
+                        {singleData?.status === "Locked" && (
+                          <img
+                            className="w-[12px] h-[10px]"
+                            src={Lock}
+                            alt="lock"
+                          />
+                        )}
+                        <h1
+                          className={`${
+                            singleData?.status !== "Completed" &&
+                            "text-[8px] lg:text-[13px]"
+                          }`}
+                        >
+                          {singleData?.score}
+                        </h1>
+                        {singleData?.status === "Completed" && (
+                          <h1>{singleData?.expression}</h1>
+                        )}
+                      </div>
+                      <h1
+                        className={`underline underline-offset-2 rounded-[9px] z-0 text-[8px] lg:text-[12px] font-[700] py-1 ${
+                          singleData?.status === "Completed" && "bg-[#9CAAFF]"
+                        } ${
+                          singleData?.status === "Ongoing" && "bg-[#FFC13D]"
+                        } ${
+                          singleData?.status === "Locked" && "bg-[#D9D9D9]"
                         } ${i % 2 === 0 ? "mt-[10px]" : "mb-[10px]"}`}
-                    >
-                      {singleData?.name}
-                    </h1>
-                  </div>
-                ))}
+                      >
+                        {singleData?.name}
+                      </h1>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
-          <div className="lg:grid lg:grid-cols-3 gap-2 mb-[150px] lg:mb-0">
-            <div className="lg:col-span-2 pt-10 px-4">
-              <TechnicalUpdate
-                dashboardImages={dashboardImages}
-                currentWeekCompletion={currentWeekCompletion}
-                selectedCourse={selectedCourse}
-                weeks={weeks}
-                dashboardTheme={dashboardTheme}
-              />
-            </div>
-            <div className=" lg:border-b-2 lg:border-l-2 lg:border-[#E8E8E8] pt-10 px-4">
-              {/* <div className="w-full flex justify-center">
+          {(dashboardTheme?.addRequestSlots ||
+            dashboardTheme?.addChallenges) && (
+            <div className="lg:grid lg:grid-cols-3 gap-2 mb-[150px] lg:mb-0">
+              {(dashboardTheme?.addRequestSlots ||
+                dashboardTheme?.addChallenges) && (
+                <div className="lg:col-span-2 pt-10 px-4">
+                  <TechnicalUpdate
+                    dashboardImages={dashboardImages}
+                    currentWeekCompletion={currentWeekCompletion}
+                    selectedCourse={selectedCourse}
+                    weeks={weeks}
+                    dashboardTheme={dashboardTheme}
+                  />
+                </div>
+              )}
+              {/* <div className=" lg:border-b-2 lg:border-l-2 lg:border-[#E8E8E8] pt-10 px-4">
+              <div className="w-full flex justify-center">
                 <div className="w-full lg:max-w-[355px] lg:h-[515px]">
                   <h1 className="text-[18px] lg:text-[25px] font-[700] text-center pb-[32px]">
                     Upcoming Quest
@@ -430,17 +436,17 @@ const Dashboard = () => {
                     </div>
                   </div>
                 </div>
-              </div> */}
+              </div>
+            </div> */}
             </div>
-          </div>
+          )}
           <div>
-            {
-              dashboardTheme?.addCourses &&
+            {dashboardTheme?.addCourses && (
               <DashboardCourses
                 myCoursesChecked={dashboardTheme?.myCoursesChecked}
                 allCoursesChecked={dashboardTheme?.allCoursesChecked}
               />
-            }
+            )}
           </div>
         </div>
       </Layout>

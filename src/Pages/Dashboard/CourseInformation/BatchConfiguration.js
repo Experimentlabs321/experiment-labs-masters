@@ -67,9 +67,9 @@ const BatchConfiguration = ({
 
     console.log(newBatch);
 
-    sendData?.user?.participants?.forEach((element) => {
-      createUser(element?.email, element?.password);
-    });
+    // sendData?.user?.participants?.forEach((element) => {
+    //   createUser(element?.email, element?.password);
+    // });
 
     if (newBatch?.data?.batch?.acknowledged) {
       toast.success("Batch Added Successfully");

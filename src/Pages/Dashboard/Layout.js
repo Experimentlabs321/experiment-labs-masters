@@ -260,120 +260,126 @@ const Layout = ({ children }) => {
                             </span>
                           </Link>
                         </li> */}
-                        <li>
-                          <Link
-                            style={
-                              location.pathname === "/earning"
-                                ? {
-                                    background:
-                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                  }
-                                : {}
-                            }
-                            to="/earning"
-                            className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
-                          >
-                            {location.pathname === "/earning" ? (
-                              <img
-                                className=""
-                                src={EarningIconLight}
-                                alt="icon"
-                              />
-                            ) : (
-                              <img
-                                className=""
-                                src={EarningIconDark}
-                                alt="icon"
-                              />
-                            )}
+                        {orgData?.showPointsAndRedemptions && (
+                          <>
+                            <li>
+                              <Link
+                                style={
+                                  location.pathname === "/earning"
+                                    ? {
+                                        background:
+                                          "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                      }
+                                    : {}
+                                }
+                                to="/earning"
+                                className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
+                              >
+                                {location.pathname === "/earning" ? (
+                                  <img
+                                    className=""
+                                    src={EarningIconLight}
+                                    alt="icon"
+                                  />
+                                ) : (
+                                  <img
+                                    className=""
+                                    src={EarningIconDark}
+                                    alt="icon"
+                                  />
+                                )}
 
-                            <span
-                              className={`${
-                                location.pathname === "/earning"
-                                  ? "text-white"
-                                  : "text-[#8F8F8F]"
-                              } ml-3 text-[18px] font-[500]`}
-                            >
-                              Earning
-                            </span>
-                          </Link>
-                        </li>
-                        <li>
-                          <Link
-                            style={
-                              location.pathname === "/redemption"
-                                ? {
-                                    background:
-                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                  }
-                                : {}
-                            }
-                            to="/redemption"
-                            className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
-                          >
-                            {location.pathname === "/redemption" ? (
-                              <img
-                                className=""
-                                src={RedemptionIconLight}
-                                alt="icon"
-                              />
-                            ) : (
-                              <img
-                                className=""
-                                src={RedemptionIconDark}
-                                alt="icon"
-                              />
-                            )}
+                                <span
+                                  className={`${
+                                    location.pathname === "/earning"
+                                      ? "text-white"
+                                      : "text-[#8F8F8F]"
+                                  } ml-3 text-[18px] font-[500]`}
+                                >
+                                  Earning
+                                </span>
+                              </Link>
+                            </li>
+                            <li>
+                              <Link
+                                style={
+                                  location.pathname === "/redemption"
+                                    ? {
+                                        background:
+                                          "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                      }
+                                    : {}
+                                }
+                                to="/redemption"
+                                className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
+                              >
+                                {location.pathname === "/redemption" ? (
+                                  <img
+                                    className=""
+                                    src={RedemptionIconLight}
+                                    alt="icon"
+                                  />
+                                ) : (
+                                  <img
+                                    className=""
+                                    src={RedemptionIconDark}
+                                    alt="icon"
+                                  />
+                                )}
 
-                            <span
-                              className={`${
-                                location.pathname === "/redemption"
-                                  ? "text-white"
-                                  : "text-[#8F8F8F]"
-                              } ml-3 text-[18px] font-[500]`}
-                            >
-                              Redemption
-                            </span>
-                          </Link>
-                        </li>
-                        <li>
-                          <Link
-                            style={
-                              location.pathname === "/skillAnalysis"
-                                ? {
-                                    background:
-                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                  }
-                                : {}
-                            }
-                            to="/skillAnalysis"
-                            className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
-                          >
-                            {location.pathname === "/skillAnalysis" ? (
-                              <img
-                                className=""
-                                src={SkillAnalysisIconLight}
-                                alt="icon"
-                              />
-                            ) : (
-                              <img
-                                className=""
-                                src={SkillAnalysisIconDark}
-                                alt="icon"
-                              />
-                            )}
-
-                            <span
-                              className={`${
+                                <span
+                                  className={`${
+                                    location.pathname === "/redemption"
+                                      ? "text-white"
+                                      : "text-[#8F8F8F]"
+                                  } ml-3 text-[18px] font-[500]`}
+                                >
+                                  Redemption
+                                </span>
+                              </Link>
+                            </li>
+                          </>
+                        )}
+                        {orgData?.showSkillsManagement && (
+                          <li>
+                            <Link
+                              style={
                                 location.pathname === "/skillAnalysis"
-                                  ? "text-white"
-                                  : "text-[#8F8F8F]"
-                              } ml-3 text-[18px] font-[500]`}
+                                  ? {
+                                      background:
+                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                    }
+                                  : {}
+                              }
+                              to="/skillAnalysis"
+                              className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
                             >
-                              Skill Analysis
-                            </span>
-                          </Link>
-                        </li>
+                              {location.pathname === "/skillAnalysis" ? (
+                                <img
+                                  className=""
+                                  src={SkillAnalysisIconLight}
+                                  alt="icon"
+                                />
+                              ) : (
+                                <img
+                                  className=""
+                                  src={SkillAnalysisIconDark}
+                                  alt="icon"
+                                />
+                              )}
+
+                              <span
+                                className={`${
+                                  location.pathname === "/skillAnalysis"
+                                    ? "text-white"
+                                    : "text-[#8F8F8F]"
+                                } ml-3 text-[18px] font-[500]`}
+                              >
+                                Skill Analysis
+                              </span>
+                            </Link>
+                          </li>
+                        )}
                         {/*  <li>
                           <Link
                             style={
@@ -455,6 +461,44 @@ const Layout = ({ children }) => {
                     {Role === "admin" && (
                       <>
                         <ul className="space-y-2 px-[22px] py-2 text-white">
+                          <li>
+                            <Link
+                              style={
+                                location.pathname === "/adminDashboardHome"
+                                  ? {
+                                      background:
+                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                    }
+                                  : {}
+                              }
+                              to="/adminDashboardHome"
+                              className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
+                            >
+                              {location.pathname === "/adminDashboardHome" ? (
+                                <img
+                                  className=""
+                                  src={DashboardIconLight}
+                                  alt="icon"
+                                />
+                              ) : (
+                                <img
+                                  className=""
+                                  src={DashboardIconDark}
+                                  alt="icon"
+                                />
+                              )}
+
+                              <span
+                                className={`${
+                                  location.pathname === "/adminDashboardHome"
+                                    ? "text-white"
+                                    : "text-[#8F8F8F]"
+                                } ml-3 text-[18px] font-[500]`}
+                              >
+                                Dashboard
+                              </span>
+                            </Link>
+                          </li>
                           <li>
                             <Link
                               style={

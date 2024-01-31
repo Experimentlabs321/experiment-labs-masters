@@ -1,20 +1,8 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Layout from "../Layout";
 import arrowDown from "../../../assets/SkillsManagement/arrow.svg";
 import arrowright from "../../../assets/SkillsManagement/arrowright.svg";
 import required from "../../../assets/ContentManagement/required.png";
-// import {
-//   S3Client,
-//   AbortMultipartUploadCommand,
-//   PutObjectCommand,
-//   __Client,
-//   GetObjectCommand,
-// } from "@aws-sdk/client-s3";
-
-import Badge from "@mui/material/Badge";
-import MailIcon from "@mui/icons-material/Mail";
-import SearchIcon from "@mui/icons-material/Search";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Level from "../Dashboard/Level";
 import axios from "axios";
@@ -22,20 +10,12 @@ import toast from "react-hot-toast";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import uploadFileToS3 from "../../UploadComponent/s3Uploader";
 
-// const client = new S3Client({
-//   region: "eu-north-1",
-//   credentials: {
-//     accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY_ID,
-//     secretAccessKey: process.env.REACT_APP_AWS_SECRET_ACCESS_KEY,
-//   },
-// });
-
 const EditCourse = () => {
+  const { id } = useParams();
   const [isOpenGeneralCourseInfo, setisOpenGeneralCourseInfo] = useState(true);
   const [isOpenCourseFormat, setisOpenCourseFormat] = useState(false);
   const [isOpenCompletionTracking, setisOpenCompletionTracking] =
     useState(false);
-  //const [isOpenNumberofWeeksChapters, setisOpenNumberofWeeksChapters] = useState(false);
 
   const toggleDropdownCourseSelection = () => {
     setisOpenGeneralCourseInfo(!isOpenGeneralCourseInfo);
@@ -46,27 +26,6 @@ const EditCourse = () => {
   const toggleDropdownCompletionTracking = () => {
     setisOpenCompletionTracking(!isOpenCompletionTracking);
   };
-  /*  const toggleDropdownNumberofWeeksChapters = () => {
-         setisOpenNumberofWeeksChapters(!isOpenNumberofWeeksChapters);
-     }; */
-
-  /*   const [numberOfWeeks, setNumberOfWeeks] = useState(0);
-      const [numberList, setNumberList] = useState([]);
-  
-      const handleInputChange = (event) => {
-          const value = event.target.value;
-          setNumberOfWeeks(value);
-          generateNumberList(value);
-      };
-  
-      const generateNumberList = (value) => {
-          const numbers = [];
-          for (let i = 1; i <= value; i++) {
-              numbers.push(i);
-          }
-          setNumberList(numbers);
-      }; */
-
   // addcoursecategory
   const [isOpenaddcoursecategory, setIsOpenaddcoursecategory] = useState(false);
 
@@ -88,29 +47,20 @@ const EditCourse = () => {
 
   const [url, setUrl] = useState("");
 
-  ///week names
-  /* const [formData, setFormData] = useState([]);
-    
-    const handleInputChangeweek = (e, number) => {
-        const { name, value } = e.target;
-        setFormData((prevFormData) => {
-          const updatedData = [...prevFormData];
-          const index = updatedData.findIndex((data) => data.number === number);
-          if (index !== -1) {
-            updatedData[index][name] = value;
-          } else {
-            updatedData.push({ number, [name]: value });
-          }
-          return updatedData;
-        });
-      }; */
-
   const { user, userInfo } = useContext(AuthContext);
   const [submitPermission, setSubmitPermission] = useState(false);
+  const [courseData, setCourseData] = useState({});
   const router = useNavigate();
 
-  console.log(userInfo);
-
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/courses/${id}`)
+      .then((response) => {
+        setCourseData(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [id]);
+  console.log(courseData);
   /// handle Submit
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -133,6 +83,7 @@ const EditCourse = () => {
     const enableCompletionTracking = +form.enableCompletionTracking?.value;
     const showactivitycompletionconditions =
       +form.showactivitycompletionconditions?.value;
+    const coursePurchaseUrl = "" + form.coursePurchaseUrl?.value;
 
     let fileUrl = "";
     if (selectedFile) {
@@ -146,7 +97,7 @@ const EditCourse = () => {
       courseEndingDate,
       courseDescription,
       courseCategory,
-      courseThumbnail: fileUrl,
+      courseThumbnail: fileUrl ? fileUrl : courseData?.courseThumbnail,
       courseVisibility,
       courseIDNumber,
       courseFormat,
@@ -154,6 +105,7 @@ const EditCourse = () => {
       groups,
       showactivitydates,
       numberOfWeeks,
+      coursePurchaseUrl,
       // weekChapterName: formData,
       showactivityreports,
       enableCompletionTracking,
@@ -173,14 +125,14 @@ const EditCourse = () => {
       },
     };
     if (submitPermission) {
-      const newCourse = await axios.post(
-        `${process.env.REACT_APP_BACKEND_API}/courses`,
+      const newCourse = await axios.put(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${id}`,
         addCourse
       );
       console.log("new course --> ", newCourse);
       console.log(newCourse?.data?.course?.acknowledged);
 
-      if (newCourse?.data?.course?.acknowledged) {
+      if (newCourse?.data?.acknowledged) {
         toast.success("Course added Successfully");
         router("/courseAccess");
         form.reset();
@@ -240,6 +192,7 @@ const EditCourse = () => {
                     required
                     className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                     name="courseFullName"
+                    defaultValue={courseData?.courseFullName}
                     type="text"
                     placeholder="Eg. Entrepreneurship Lab"
                   />
@@ -259,6 +212,7 @@ const EditCourse = () => {
                     required
                     className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                     name="courseShortName"
+                    defaultValue={courseData?.courseShortName}
                     type="text"
                     placeholder="Eg. Entrepreneurship Lab"
                   />
@@ -277,6 +231,7 @@ const EditCourse = () => {
                     required
                     className="mt-6 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                     name="courseStartingDate"
+                    defaultValue={courseData?.courseStartingDate}
                     type="datetime-local"
                     placeholder="Eg. Entrepreneurship Lab"
                   />
@@ -294,6 +249,7 @@ const EditCourse = () => {
                   <input
                     className="mt-6 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                     name="courseEndingDate"
+                    defaultValue={courseData?.courseEndingDate}
                     type="datetime-local"
                     placeholder="Eg. Entrepreneurship Lab"
                   />
@@ -310,8 +266,25 @@ const EditCourse = () => {
                   <input
                     className="mt-6 ms-6 border rounded-md w-[90%] h-[97px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                     name="courseDescription"
+                    defaultValue={courseData?.courseDescription}
                     type="text"
                     placeholder="Eg. This Lab will teach you about...."
+                  />
+                </div>
+                <div className="mt-20">
+                  <div className="flex items-center gap-4">
+                    <p className="h-2 w-2 bg-black rounded-full"></p>
+                    <p className="font-bold text-lg me-[36px]">
+                      Course purchase url
+                    </p>
+                  </div>
+
+                  <input
+                    className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                    name="coursePurchaseUrl"
+                    defaultValue={courseData?.coursePurchaseUrl}
+                    type="url"
+                    placeholder="https://www.google.com/"
                   />
                 </div>
               </div>
@@ -331,6 +304,7 @@ const EditCourse = () => {
                       required
                       className="w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold focus:outline-0"
                       name="courseCategory"
+                      defaultValue={courseData?.courseCategory}
                       // id="option"
                     >
                       <option className="" value="Web Development">
@@ -399,6 +373,7 @@ const EditCourse = () => {
                   >
                     <div className=" flex items-center">
                       <input
+                        defaultValue={courseData?.courseThumbnail}
                         className="w-full h-full flex items-center text-[#3E4DAC] text-base font-semibold mt-4"
                         type="file"
                       />
@@ -449,6 +424,7 @@ const EditCourse = () => {
                     <input
                       className="mt-6 ms-6 border rounded-md w-[272px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                       name="courseIDNumber"
+                      defaultValue={courseData?.courseIDNumber}
                       type="text"
                       placeholder="Eg. 02283847"
                     ></input>
@@ -498,6 +474,7 @@ const EditCourse = () => {
                       required
                       className="select select-bordered w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold"
                       name="courseFormat"
+                      defaultValue={courseData?.courseFormat}
                       //id="option"
                     >
                       <option value="weeks">Weekly format</option>
@@ -525,6 +502,7 @@ const EditCourse = () => {
                       required
                       className="w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold"
                       name="gradesFormat"
+                      defaultValue={courseData?.gradesFormate}
                       id="option"
                     >
                       <option className="" value="Gamified">
@@ -554,6 +532,7 @@ const EditCourse = () => {
                       required
                       className="w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold"
                       name="groups"
+                      defaultValue={courseData?.groups}
                       // id="option"
                     >
                       <option className="" value="No Groups">
@@ -621,49 +600,9 @@ const EditCourse = () => {
                       type="text"
                       placeholder="num"
                       name="numberofWeeks"
+                      defaultValue={courseData?.numberOfWeeks}
                     />
-                    {/*   <input
-                                            className='text-center my-4 border w-1/2'
-                                            type='text'
-                                            placeholder='2'
-                                            value={numberOfWeeks}
-                                            onChange={handleInputChange}
-                                        /> */}
-                    {/*  <div className='select-option' onClick={toggleDropdownNumberofWeeksChapters}>
-                                            {!isOpenNumberofWeeksChapters && <img className='w-6' src={arrowright}></img>}
-                                            {isOpenNumberofWeeksChapters && <img src={arrowDown}></img>}
-                                            <i className={`dropdown-arrow ${isOpenNumberofWeeksChapters ? 'open' : ''}`}></i>
-                                        </div> */}
                   </div>
-                  {/*  {isOpenNumberofWeeksChapters && (
-                                        <div className='dropdown-menu mt-[70px]'>
-                                            <ul>
-                                                {numberList.map((number) => (
-                                                    <li className='mt-[70px]' key={number}>
-                                                        <div className='flex items-center gap-6'>
-                                                            <p className='h-2 w-2 bg-black rounded-full'></p>
-                                                            <p className='text-[18px] font-bold'>Week/Chapter Name {number} </p>
-                                                        </div>
-
-                                                        <input className='h-[50px] w-[387px] mt-6 ms-6 ps-3 focus:outline-0'
-                                                        
-                                                        onChange={(e) => handleInputChangeweek(e, number)}
-                                                            type='text'
-                                                            name='weekChapterName'
-                                                            placeholder='Eg. Week : Thinking Big'
-                                                            style={{
-                                                                borderRadius: "6px",
-                                                                border: "1px solid #CECECE",
-                                                                background: "#F6F7FF"
-                                                            }}
-                                                        />
-
-
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    )} */}
                 </div>
 
                 <div className="mt-20">
@@ -752,36 +691,6 @@ const EditCourse = () => {
                     </div>
                   </div>
                 </div>
-                {/*      <div className='mt-20'>
-                                    <div className='flex items-center gap-4'>
-                                        <p className='h-2 w-2 bg-black rounded-full'></p>
-                                        <p className='font-bold text-lg me-[36px]'>Certificate Generation</p>
-                                    </div>
-
-                                    <div className=" flex gap-2  mt-6 ms-6   w-[230px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]  "
-                                        style={{
-                                            borderRadius: "8px",
-
-                                            boxShadow: "0px 2px 4px 0px rgba(0, 0, 0, 0.15)"
-                                        }}
-                                    >
-
-                                        <select
-
-                                            required
-                                            className='w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold'
-                                            name="certificateGeneration"
-                                            id="option"
-                                        >
-
-                                            <option className="" value="Auto Generate">Auto Generate</option>
-                                            <option value="Parent"></option>
-                                            <option value="Counselor"></option>
-                                            <option value="Others"></option>
-                                        </select>
-
-                                    </div>
-                                </div> */}
               </div>
 
               <div>
