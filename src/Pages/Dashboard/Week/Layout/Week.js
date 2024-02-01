@@ -61,8 +61,11 @@ const Week = () => {
     JSON.parse(localStorage.getItem("task"))
   );
   const [chapters, setChapters] = useState([]);
+  const [courseData, setCourseData] = useState({});
   const [openTopic, setOpenTopic] = useState(localStorage.getItem("chapter"));
   const Role = localStorage.getItem("role");
+
+  console.log(week);
 
   useEffect(() => {
     axios
@@ -75,8 +78,19 @@ const Week = () => {
       })
       .catch((error) => console.error(error));
   }, [id]);
-  console.log(chapters);
+  console.log("Chapters ==============>",chapters);
   //const [toggleButton, setToggleButton] = useState(false);
+
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/courses/${chapters[0]?.courseId}`)
+      .then((response) => {
+        setCourseData(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [chapters]);
+
+  console.log("CourseData ============>",courseData);
 
   useEffect(() => {
     // Function to update toggleButton based on device size
@@ -117,6 +131,7 @@ const Week = () => {
               setToggleButton={setToggleButton}
               chapters={chapters}
               data={week?.lecture}
+              courseData={courseData}
             />
             <button
               onClick={() => setToggleButton(true)}
@@ -127,9 +142,8 @@ const Week = () => {
             </button>
             <div
               id="main-content"
-              className={`h-full w-full relative ${
-                toggleButton ? "ml-[324px]" : ""
-              }`}
+              className={`h-full w-full relative ${toggleButton ? "ml-[324px]" : ""
+                }`}
             >
               <main className="min-h-[100vh]">
                 <div className="">
