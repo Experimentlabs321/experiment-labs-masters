@@ -1,26 +1,28 @@
 import React, { useContext, useEffect, useState } from 'react';
-import AddIcon from '@mui/icons-material/Add';
-import DialogLayout from '../../Shared/DialogLayout';
-import InfoIcon from '@mui/icons-material/Info';
-import DialogLayoutForFromControl from '../../Shared/DialogLayoutForFromControl';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
-import { AuthContext } from '../../../../contexts/AuthProvider';
 import Swal from "sweetalert2";
+import DialogLayoutForFromControl from '../../Shared/DialogLayoutForFromControl';
+import { AuthContext } from '../../../../contexts/AuthProvider';
 
-const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
-    const [open, setOpen] = useState(false);
+const OffersTable = ({ offerData, setOfferData, getAllOffers }) => {
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredOffers, setFilteredOffers] = useState(offerData);
+    const [updateOpen, setUpdateOpen] = useState(false);
     const [suggestDuringCheckout, setSuggestDuringCheckout] = useState(false);
     const [code, setCode] = useState('');
-    const [courseInput, setCourseInput] = useState("");
-    const [courseDropdown, setCourseDropdown] = useState(false);
-    const [selectedCourses, setSelectedCourses] = useState([]);
     const [selectedBatches, setSelectedBatches] = useState([]);
-    const [availableCourses, setAvailableCourses] = useState([]);
     const [discountPercent, setDiscountPercent] = useState("");
     const [maxDiscountValue, setMaxDiscountValue] = useState("");
     const [minCourseValue, setMinCourseValue] = useState("");
     const [validTill, setValidTill] = useState("");
     const [maxUseCount, setMaxUseCount] = useState("");
+    const [disabled, setDisabled] = useState(false);
+    const [organizationId, setOrganizationId] = useState("");
+    const [createdAt, setCreatedAt] = useState("");
+    const [createdBy, setCreatedBy] = useState("");
+    const [id, setId] = useState("");
 
     // State for validation errors
     const [errors, setErrors] = useState({});
@@ -28,18 +30,43 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
     const { userInfo } = useContext(AuthContext);
 
     useEffect(() => {
-        axios.get(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
-        )
-            .then((response) => {
-                setAvailableCourses(response?.data);
-            })
-            .catch((error) => console.error(error));
-    }, [userInfo]);
+        const newFilteredOffers = offerData.filter(offer =>
+            offer.code.includes(searchTerm)
+        );
+        setFilteredOffers(newFilteredOffers);
+    }, [offerData, searchTerm]);
 
 
-    console.log(availableCourses);
+    const handleInputs = (offer) => {
+        setDiscountPercent(offer?.discountPercent);
+        setMaxDiscountValue(offer?.maxDiscountValue);
+        setMinCourseValue(offer?.minCourseValue);
+        const newDate = new Date(offer?.validTill);
+        console.log(newDate);
+        setValidTill(offer?.validTill);
+        setMaxUseCount(offer?.maxUseCount);
+        setSelectedBatches(offer?.selectedBatches);
+        setSuggestDuringCheckout(offer?.suggestDuringCheckout);
+        setCode(offer?.code);
+        setDisabled(offer?.disabled);
+        setCreatedAt(offer?.createdAt);
+        setOrganizationId(offer?.organizationId);
+        setCreatedBy(offer?.createdBy)
+        setId(offer?._id)
+        setUpdateOpen(true);
+    }
 
+
+    const handleDeleteOffer = async (id) => {
+        const res = await axios.delete(`${process.env.REACT_APP_SERVER_API}/api/v1/offers/${id}`);
+        if (res.data.success) {
+            getAllOffers();
+            Swal.fire({
+                title: "New Offer Deleted successfully!",
+                icon: "success",
+            });
+        }
+    }
 
     const generateRandomCode = () => {
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -86,14 +113,6 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
             validationErrors.maxUseCount = "Max use count must be a valid number.";
         }
 
-        if (selectedCourses.length <= 0) {
-            validationErrors.courseAdded = "No Course Added.";
-        }
-
-        if (selectedBatches.length <= 0) {
-            validationErrors.batchAdded = "No Batch Added.";
-        }
-
         // Set validation errors
         setErrors(validationErrors);
         if (code.length <= 0) {
@@ -105,7 +124,7 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
         if (Object.keys(validationErrors).length === 0 && code.length >= 1) {
             // Perform any logic with the form values here
             // For example, you can send them to a server, update state, etc.
-            const newOffer = {
+            const updateOffer = {
                 suggestDuringCheckout,
                 code,
                 selectedBatches,
@@ -114,21 +133,21 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
                 minCourseValue,
                 validTill: validTill.toLocaleString(),
                 maxUseCount,
-                organizationId: userInfo?.organizationId,
-                createdBy: userInfo?.email,
-                createdAt: new Date().toLocaleString(),
-                disabled: false
+                organizationId,
+                createdBy,
+                createdAt,
+                disabled
             }
 
 
-            console.log(newOffer);
+            console.log(updateOffer);
 
-            const res = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/v1/offers`, newOffer);
+            const res = await axios.put(`${process.env.REACT_APP_SERVER_API}/api/v1/offers/${id}`, updateOffer);
 
             if (res.data.success) {
                 getAllOffers();
                 Swal.fire({
-                    title: "New Offer created successfully!",
+                    title: "New Offer Updated successfully!",
                     icon: "success",
                 });
             }
@@ -140,52 +159,13 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
             setMinCourseValue("");
             setValidTill("");
             setMaxUseCount("");
-            setSelectedCourses([])
             setSelectedBatches([]);
-            setCourseInput("");
             setSuggestDuringCheckout(false);
             setCode("");
+            setUpdateOpen(false);
         }
     }
 
-    const handleCourseInputChange = (event) => {
-        if (event.target.value.length > 0)
-            setCourseDropdown(true);
-        setCourseInput(event.target.value);
-    };
-
-    const handleCourseSelect = async (selectedCourse) => {
-        setCourseInput("");
-        setCourseDropdown(false);
-
-        const { data } = await axios.get(`${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${selectedCourse._id}`
-        );
-        selectedCourse.batches = data;
-        console.log("Selected Course", selectedCourse);
-
-        if (!selectedCourses?.includes(selectedCourse)) {
-            setSelectedCourses([...selectedCourses, selectedCourse]);
-        }
-    };
-
-    const removeSelectedCourse = (removedCourse) => {
-        const newSelectedCourses = selectedCourses.filter((course) => course !== removedCourse);
-        setSelectedCourses(newSelectedCourses);
-    };
-
-    const handleBatches = (batch) => {
-        if (!selectedBatches?.includes(batch._id)) {
-            setSelectedBatches([...selectedBatches, batch._id]);
-        }
-        else {
-            console.log(selectedBatches, batch._id);
-            const newSelectedBatches = selectedBatches.filter((removeBatch) => removeBatch !== batch._id);
-            setSelectedBatches(newSelectedBatches);
-        }
-    }
-
-
-    // Function to check if a value is a valid number
     const isValidNumber = (value) => {
         return !isNaN(value) && value.trim() !== "";
     };
@@ -196,17 +176,73 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
         return regex.test(value);
     };
 
-
     return (
-        <>
-            <div className='flex items-center justify-between'>
-                <h1 className="text-3xl font-bold mb-4">Offers</h1>
-                <button onClick={() => setOpen(true)} className='flex items-center text-xl font-semibold bg-[#3E4DAC] px-4 py-2 gap-3 rounded-lg text-white hover:bg-opacity-80'>Create <AddIcon /></button>
-
+        <div>
+            <div className="container mx-auto mt-8">
+                <input
+                    type="text"
+                    placeholder="Search..."
+                    className="border p-2 mb-4 w-full rounded-lg"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <table className="min-w-full border bg-white rounded-lg">
+                    <thead>
+                        <tr className="border-b">
+                            <th className="py-2 px-4 text-left">CREATED ON</th>
+                            <th className="py-2 px-4 text-left">CODE</th>
+                            <th className="py-2 px-4 text-left">DETAILS</th>
+                            <th className="py-2 px-4 text-left">VALID TILL</th>
+                            <th className="py-2 px-4 text-left">ACTIVE</th>
+                            <th className="py-2 px-4 text-left">USED</th>
+                            <th className="py-2 px-4 text-left">ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {/* Add your data rows here */}
+                        {
+                            filteredOffers?.map((offer, index) =>
+                            (<tr
+                                key={index}
+                                className="border-b">
+                                <td className="py-2 px-4 text-left font-sans">{new Date(offer.createdAt).toLocaleString()}</td>
+                                <td className="py-2 px-4 text-left">{offer?.code}</td>
+                                <td className="py-2 px-4 text-left">
+                                    <div className='flex flex-col gap-1 text-xs'>
+                                        <span>Discount: {offer?.discountPercent}%</span>
+                                        <span>Max Discount: {offer?.maxDiscountValue}</span>
+                                        <span>Min Cart: {offer?.minCourseValue}</span>
+                                    </div>
+                                </td>
+                                <td className="py-2 px-4 text-left">{offer?.validTill}</td>
+                                <td className="py-2 px-4 text-left">{(new Date(offer?.createdAt) <= new Date(offer?.validTill) && !offer?.disabled) ? "Yes" : "No"}</td>
+                                <td className="py-2 px-4 text-left">{offer?.usedCount || 0}</td>
+                                <td className="py-2 px-4 text-left">
+                                    <div>
+                                        <span
+                                            onClick={() => handleInputs(offer)}
+                                        ><EditIcon
+                                                sx={{
+                                                    ":hover": { color: "yellow" }
+                                                }}
+                                            /></span>
+                                        <span onClick={() => handleDeleteOffer(offer._id)}><DeleteIcon
+                                            sx={{
+                                                ":hover": { color: "red" }
+                                            }}
+                                        /></span>
+                                    </div>
+                                </td>
+                            </tr>)
+                            )
+                        }
+                        {/* Add more rows as needed */}
+                    </tbody>
+                </table>
             </div>
             <DialogLayoutForFromControl
-                open={open}
-                setOpen={setOpen}
+                open={updateOpen}
+                setOpen={setUpdateOpen}
                 title={
                     <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
                         Offers
@@ -234,6 +270,20 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
                         {/* <span className='ml-3' ><InfoIcon fontSize='small' /></span> */}
                     </div>
 
+                    <div className="mb-4 flex justify-start items-center">
+                        <input
+                            type="checkbox"
+                            id="suggestDuringCheckout"
+                            className="mr-3 h-4 w-4 rounded-lg"
+                            checked={disabled}
+                            onChange={() => setDisabled(!disabled)}
+                        />
+                        <label htmlFor="suggestDuringCheckout" className="text-lg font-medium text-gray-600">
+                            Disable Offer
+                        </label>
+                        {/* <span className='ml-3' ><InfoIcon fontSize='small' /></span> */}
+                    </div>
+
                     <div className="mb-4">
                         <label htmlFor="code" className="block text-lg font-medium text-gray-600">Promo Code</label>
                         <div className='flex gap-4 items-center'>
@@ -248,92 +298,6 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
                             <button onClick={handleGenerateCode} className='font-semibold bg-[#3E4DAC] px-4 py-2 rounded-lg text-white hover:bg-opacity-80'>Generate</button>
                         </div>
                         <p className="text-sm text-gray-500 mt-1">If not given, a random promo code will be generated.</p>
-                    </div>
-
-                    <div className='mb-4'>
-                        <div className="relative">
-                            <label className="text-[16px] font-[600]" htmlFor="course">
-                                Select Courses
-                            </label>
-                            <input
-                                // onKeyPress={handleKeyPress}
-                                onChange={handleCourseInputChange}
-                                // onFocus={() => setCourseDropdown(true)}
-                                onBlur={() => setCourseDropdown(false)}
-                                value={courseInput}
-                                autoComplete='off'
-                                name="Courses"
-                                placeholder="Start typing to select courses"
-                                className="block w-full px-4 py-2 mt-2 rounded-md border bg-white border-[#B7B7B7] focus:border-blue-500 focus:outline-none focus:ring"
-                            />
-                            {errors.courseAdded && <p className="text-red-500 text-sm">{errors.courseAdded}</p>}
-                            {courseDropdown && (
-                                <div className="absolute z-10 bg-white border border-gray-300 mt-1 w-full rounded-md shadow-lg max-h-[200px] overflow-y-auto">
-                                    {availableCourses
-                                        ?.filter((course) =>
-                                            course.courseFullName?.toLowerCase()?.includes(courseInput?.toLowerCase())
-                                        )
-                                        .map((course, index) => (
-                                            <div
-                                                key={index}
-                                                className={`px-4 py-2 cursor-pointer hover:bg-gray-100`}
-                                                onMouseDown={() => handleCourseSelect(course)}
-                                            >
-                                                {course.courseFullName}
-                                            </div>
-                                        ))}
-                                </div>
-                            )}
-
-
-                            {selectedCourses[0] && (
-                                <div className="tag-container my-2 flex flex-wrap rounded-lg border-2 p-2">
-                                    {selectedCourses?.map((course, index) => {
-                                        return (
-                                            <div
-                                                key={index}
-                                                className="m-1 h-fit rounded-lg border-2 py-1 px-2"
-                                            >
-                                                {course?.courseFullName}{" "}
-                                                <span
-                                                    className="cursor-pointer pl-1 text-xl font-bold"
-                                                    onClick={() => removeSelectedCourse(course)}
-                                                >
-                                                    ×
-                                                </span>
-                                            </div>
-                                        );
-                                    })}
-
-                                </div>
-                            )}
-
-
-                            {selectedCourses[0] && (
-                                <div className="tag-container my-2 flex flex-col rounded-lg border-2 p-2">
-                                    {selectedCourses?.map((course, index) => {
-                                        return (
-                                            <div
-                                                key={index}
-                                                className=""
-                                            >
-                                                <h1 className='font-semibold'>{course?.courseFullName}{" "}</h1>
-                                                <div className='flex gap-2 mt-2 flex-wrap mb-2'>
-                                                    {
-                                                        course?.batches?.map((batch, batchIndex) => {
-                                                            return (
-                                                                <div onClick={() => handleBatches(batch)} className={`px-2 py-1 border-2 rounded-full cursor-pointer ${selectedBatches?.includes(batch._id) && "bg-[#39249957]"}`} key={batchIndex}>{batch.batchName}</div>
-                                                            )
-                                                        })
-                                                    }
-                                                </div>
-                                                {errors.batchAdded && <p className="text-red-500 text-sm">{errors.batchAdded}</p>}
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            )}
-                        </div>
                     </div>
 
                     <div className="mb-4">
@@ -416,12 +380,12 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
                         {errors.maxUseCount && <p className="text-red-500 text-sm">{errors.maxUseCount}</p>}
                     </div>
 
-                    <input type="submit" value="Add Offers" className='font-semibold bg-[#3E4DAC] px-4 py-2 rounded-lg text-white hover:bg-opacity-80' />
+                    <input type="submit" value="Update Offers" className='font-semibold bg-[#3E4DAC] px-4 py-2 rounded-lg text-white hover:bg-opacity-80' />
 
                 </form>
             </DialogLayoutForFromControl>
-        </>
+        </div>
     );
 };
 
-export default OffersTop;
+export default OffersTable;

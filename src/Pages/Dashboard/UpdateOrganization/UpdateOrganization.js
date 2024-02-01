@@ -5,6 +5,8 @@ import axios from "axios";
 import UploadFile from "../../Shared/UploadFile/UploadFile";
 import toast from "react-hot-toast";
 import DashboardTheme from "./DashboardTheme";
+import PaymentIntegration from "./PaymentIntegration";
+import DeviceLimit from "./DeviceLimit";
 
 const UpdateOrganization = () => {
   const { userInfo } = useContext(AuthContext);
@@ -15,6 +17,8 @@ const UpdateOrganization = () => {
   const [titlesColor, setTitlesColor] = useState("");
   const [dashboardTheme, setDashboardTheme] = useState({});
   const [currentPage, setCurrentPage] = useState("organizationTheme");
+  const [paymentInstance, setPaymentInstance] = useState({});
+  const [maxDeviceCount, setMaxDeviceCount] = useState(0);
 
   useEffect(() => {
     axios
@@ -28,6 +32,8 @@ const UpdateOrganization = () => {
         setLoginSidebarImage(response?.data?.loginSidebarImage);
         setTitlesColor(response?.data?.titlesColor);
         setDashboardTheme(response?.data?.dashboardTheme || {});
+        setPaymentInstance(response?.data?.paymentInstance || {});
+        setMaxDeviceCount(response?.data?.maxDeviceCount || 0);
       })
       .catch((error) => console.error(error));
   }, [userInfo]);
@@ -66,23 +72,39 @@ const UpdateOrganization = () => {
         <div className="px-4 mt-4 flex items-center gap-4">
           <button
             onClick={() => setCurrentPage("organizationTheme")}
-            className={`px-4 py-2 text-lg font-semibold rounded-lg ${
-              currentPage === "organizationTheme"
-                ? "bg-[#3E4DAC] text-white"
-                : "bg-white border-2 border-gray-400 text-black"
-            }`}
+            className={`px-4 py-2 text-lg font-semibold rounded-lg ${currentPage === "organizationTheme"
+              ? "bg-[#3E4DAC] text-white"
+              : "bg-white border-2 border-gray-400 text-black"
+              }`}
           >
             Organization Theme
           </button>
           <button
             onClick={() => setCurrentPage("dashboardTheme")}
-            className={`px-4 py-2 text-lg font-semibold rounded-lg ${
-              currentPage === "dashboardTheme"
-                ? "bg-[#3E4DAC] text-white"
-                : "bg-white border-2 border-gray-400 text-black"
-            }`}
+            className={`px-4 py-2 text-lg font-semibold rounded-lg ${currentPage === "dashboardTheme"
+              ? "bg-[#3E4DAC] text-white"
+              : "bg-white border-2 border-gray-400 text-black"
+              }`}
           >
             Dashboard Theme
+          </button>
+          <button
+            onClick={() => setCurrentPage("paymentIntegration")}
+            className={`px-4 py-2 text-lg font-semibold rounded-lg ${currentPage === "paymentIntegration"
+              ? "bg-[#3E4DAC] text-white"
+              : "bg-white border-2 border-gray-400 text-black"
+              }`}
+          >
+            Payment Integration
+          </button>
+          <button
+            onClick={() => setCurrentPage("deviceLimit")}
+            className={`px-4 py-2 text-lg font-semibold rounded-lg ${currentPage === "deviceLimit"
+              ? "bg-[#3E4DAC] text-white"
+              : "bg-white border-2 border-gray-400 text-black"
+              }`}
+          >
+            Limit Device
           </button>
         </div>
 
@@ -291,6 +313,26 @@ const UpdateOrganization = () => {
             setDashboardTheme={setDashboardTheme}
           />
         )}
+
+
+        {
+          currentPage === "paymentIntegration" && (
+            <PaymentIntegration
+              paymentInstance={paymentInstance}
+              setPaymentInstance={setPaymentInstance}
+              orgData={orgData}
+            />
+          )}
+
+
+        {
+          currentPage === "deviceLimit" && (
+            <DeviceLimit
+              maxDeviceCount={maxDeviceCount}
+              setMaxDeviceCount={setMaxDeviceCount}
+              orgData={orgData}
+            />
+          )}
       </Layout>
     </div>
   );
