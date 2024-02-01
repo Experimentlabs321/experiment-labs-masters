@@ -17,21 +17,22 @@ const AssignmentUpNev = (props) => {
 
   return (
     <div className="px-10  py-4 flex items-center  fixed w-[100%] justify-between bg-[#FFF] top-0  border-b ">
-      <div className="border rounded-lg p-2">
-        <SearchIcon />
-        <input type="text rounded-lg p-2" placeholder="Search" />
+      <div className=" p-2">
+        <p className="w-[10px]"></p>
+       {/*  <SearchIcon />
+        <input type="text rounded-lg p-2" placeholder="Search" /> */}
       </div>
 
       <div className="flex items-center gap-10 me-80 ">
         {page === "assignment" && (
           <>
-            <div>
+          {/*   <div>
               <img className="w-[100%]" src={ChatIcon} alt="ChatIcon" />
-            </div>
+            </div> */}
 
-            <p className="bg-[#E6F2FE] rounded-3xl p-2 text-base text-[#0277FB] font-normal">
+           {/*  <p className="bg-[#E6F2FE] rounded-3xl p-2 text-base text-[#0277FB] font-normal">
               <span>+</span> Add New Batch
-            </p>
+            </p> */}
           </>
         )}
         {page === "liveClasses" && (
@@ -43,9 +44,9 @@ const AssignmentUpNev = (props) => {
         )}
         {page === "schedule" && (
           <>
-            <p className="bg-[#E6F2FE] rounded-3xl p-2 text-base text-[#0277FB] font-normal">
+           {/*  <p className="bg-[#E6F2FE] rounded-3xl p-2 text-base text-[#0277FB] font-normal">
               <span className="me-2 ">+</span>New Upload
-            </p>
+            </p> */}
           </>
         )}
         <div className="flex items-center gap-4">

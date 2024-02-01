@@ -122,7 +122,7 @@ const TechnicalUpdate = ({
           from: `${user?.email}`,
           to: `${user?.email},shihab77023@gmail.com`,
           subject: `Event request`,
-          message: `A event is going to held for doubt clearing at ${event?.start.toLocaleString()} to ${event?.end.toLocaleTimeString()}. Meeting link event?.hangoutLink`,
+          message: `A event is going to held for doubt clearing at ${event?.start?.toLocaleString()} to ${event?.end.toLocaleTimeString()}. Meeting link event?.hangoutLink`,
         }
       );
       if (sendMail?.data?.Success && response?.data?.acknowledged) {
@@ -217,7 +217,7 @@ const TechnicalUpdate = ({
                   from: `${user?.email}`,
                   to: `naman.j@experimentlabs.in,gaurav@experimentlabs.in,${user?.email},shihab77023@gmail.com`,
                   subject: `Event request`,
-                  message: `A event is going to held for doubt clearing at ${event?.start.toLocaleString()} to ${event?.end.toLocaleTimeString()}. Meeting link ${
+                  message: `A event is going to held for doubt clearing at ${event?.start?.toLocaleString()} to ${event?.end.toLocaleTimeString()}. Meeting link ${
                     event?.hangoutLink
                   }`,
                 }
