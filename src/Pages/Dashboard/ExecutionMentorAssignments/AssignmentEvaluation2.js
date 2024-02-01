@@ -2,7 +2,7 @@
 
 import React, { useContext, useState } from "react";
 import Layout from "../Layout";
-import { Link, useParams } from "react-router-dom";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import AssignmentUpNev from "./AssignmentUpNev";
 import AssignmentRightNev from "./AssignmentRightNev";
 import arrowRight from "../../../assets/ExecutionMentor/arrowRight.svg";
@@ -21,6 +21,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import EditResult from "./EditResult";
 import { AuthContext } from "../../../contexts/AuthProvider";
+import Loading from "../../Shared/Loading/Loading";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -34,7 +35,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 const AssignmentEvaluation2 = () => {
   const { id } = useParams();
   //  console.log(id)
-
+  const navigate = useNavigate();
   const { userInfo, user } = useContext(AuthContext);
   console.log(userInfo);
   console.log(user);
@@ -474,6 +475,71 @@ const AssignmentEvaluation2 = () => {
     console.log(submitCompletion, sendData);
   };
 
+  const handleAcceptOrReject = async (status) => {
+       console.log(status)
+       const manageStatus = {
+        status,
+        resultSubmitterName: user.displayName,
+        resultSubmitterPhotoURL: user.photoURL,
+        dateAndTime: new Date(),
+      };
+  
+      console.log(manageStatus);
+      Loading();
+      const sendMail = await axios.post(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+        {
+          from: `${user?.email}`,
+          to: `${user?.email},shihab77023@gmail.com`,
+          subject: `Feedback of ${assignment?.taskName}`,
+          message: `Dear student, \nYour assignment on ${assignment?.taskName} is ${status}. Please check it on the portal.`,
+        }
+      );
+  
+      console.log(sendMail);
+  
+      const addFeedback = await axios.post(
+        `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${id}/addResult`,
+        manageStatus
+      );
+  
+      if (addFeedback?.data?.acknowledged) {
+        Loading().close()
+        toast.success( `${status} Successfully`);
+        navigate(`/mentorAssignments`)
+       
+       
+        //  event.target.reset();
+      } else {
+        toast.error("status not added");
+        Loading().close()
+        //  event.target.reset();
+      }
+  
+      const sendData = {
+        participantChapter: {
+          email: assignment?.submitter?.email,
+          participantId: assignment?.submitter?._id,
+          status: "Completed",
+        },
+        participantTask: {
+          participant: {
+            email: assignment?.submitter?.email,
+            participantId: assignment?.submitter?._id,
+            status: "Completed",
+          },
+        },
+      };
+      const submitCompletion = await axios.post(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/Assignment/taskId/${assignment?.taskId}/chapterId/${mainAssignments?.chapterId}`,
+        sendData
+      );
+  
+      console.log(submitCompletion, sendData);
+    
+
+  };
+
   return (
     <div>
       <Layout>
@@ -481,11 +547,12 @@ const AssignmentEvaluation2 = () => {
           <AssignmentUpNev />
         </div>
 
-        <div className="flex mt-24">
+        <div className="flex mt-24 me-10">
           <div className="w-full">
             <div className="flex justify-between gap-10">
               <div className="px-10 flex gap-10 pb-3 text-lg mt-10">
-                <Link
+                <p className="text-lg font-bold">Assignment</p>
+              {/*   <Link
                   to="/mentorAssignments"
                   onClick={() => handleTabClick("Assignments")}
                   style={{
@@ -498,8 +565,8 @@ const AssignmentEvaluation2 = () => {
                   }}
                 >
                   Assignments
-                </Link>
-                <Link
+                </Link> */}
+                {/*   <Link
                   to="/assignmentsQuiz"
                   onClick={() => handleTabClick("Quiz")}
                   style={{
@@ -520,32 +587,41 @@ const AssignmentEvaluation2 = () => {
                   }}
                 >
                   Live Test
-                </Link>
+                </Link> */}
               </div>
-              {feedback && (
-                <div className="mt-10 ">
-                  <button
-                    variant="outlined"
-                    onClick={handleClickOpen}
-                    className="bg-[#FFEAE9] text-base font-bold px-3 py-1 rounded-md"
-                  >
-                    {" "}
-                    <span className="me-3 ">+</span>Add additional feedback
-                  </button>
+              <div>
+                <div className="flex gap-5 mt-5">
+                  <button onClick={()=>handleAcceptOrReject("Accepted")} className="bg-[green] p-2 rounded-2xl px-5 text-[#fff]">Accept</button>
+                  <button onClick={()=>handleAcceptOrReject("Rejected")}  className="bg-[red] p-2 rounded-2xl px-5 text-[#fff]">Reject</button>
                 </div>
-              )}
-              {!mainAssignments?.skillParameterData.length && (
-                <div className="mt-10 ">
-                  <button
-                    variant="outlined"
-                    onClick={handleClickOpen1}
-                    className="bg-[#FFEAE9] text-base font-bold px-3 py-1 rounded-md"
-                  >
-                    {" "}
-                    <span className="me-3 ">+</span>Add additional feedback
-                  </button>
-                </div>
-              )}
+                {feedback && (
+                  <div className=" ">
+                    <button
+                      variant="outlined"
+                      onClick={handleClickOpen}
+                      className="bg-[#FFEAE9] text-base font-bold px-3 py-1 rounded-md"
+                    >
+                      {" "}
+                      <span className="me-3 ">+</span>Add additional feedback
+                    </button>
+                  </div>
+                )}
+                {!mainAssignments?.skillParameterData.length && (
+                  <div className="mt-10 ">
+                    <button
+                      variant="outlined"
+                      onClick={handleClickOpen1}
+                      className="bg-[#FFEAE9] text-base font-bold px-3 py-1 rounded-md"
+                    >
+                      {" "}
+                      <span className="me-3 ">+</span>Add additional feedback
+                    </button>
+                  </div>
+                )}
+
+              </div>
+
+
 
               {/*   <Button variant="outlined" onClick={handleClickOpen}>
                                 Open dialog
@@ -668,46 +744,45 @@ const AssignmentEvaluation2 = () => {
 
             {(mainAssignments?.skillParameterData ||
               mainAssignments?.earningParameterData) && (
-              <>
-                {!assignment?.submitter.result && (
-                  <form onSubmit={handleSubmit}>
-                    <div className=" ms-10 my-10">
-                      <p className="text-2xl font-bold mb-10">SkillParameter</p>
+                <>
+                  {!assignment?.submitter.result && (
+                    <form onSubmit={handleSubmit}>
+                      <div className=" ms-10 my-10">
+                        <p className="text-2xl font-bold mb-10">SkillParameter</p>
 
-                      <div className=" flex ">
-                        {!pointGiven && (
-                          <div className="">
-                            {mainAssignments?.skillParameterData?.map(
-                              (mainAssignment) => (
-                                <div
-                                  className={` p-3 flex gap-2 items-center justify-between rounded-md h-[60px] mb-5 ${
-                                    selectedCategoryName ===
-                                    mainAssignment.categoryName
-                                      ? "bg-[#F0F7FF]"
-                                      : " border"
-                                  }`}
-                                >
-                                  <div className="">
-                                    <p>{mainAssignment.categoryName}</p>
-                                    <p className="text-[#B7B7B7] text-[10px] font-bold">
-                                      Marks
-                                    </p>
-                                  </div>
-                                  <img
-                                    onClick={() =>
-                                      handleClickCategory(
+                        <div className=" flex ">
+                          {!pointGiven && (
+                            <div className="">
+                              {mainAssignments?.skillParameterData?.map(
+                                (mainAssignment) => (
+                                  <div
+                                    className={` p-3 flex gap-2 items-center justify-between rounded-md h-[60px] mb-5 ${selectedCategoryName ===
                                         mainAssignment.categoryName
-                                      )
-                                    }
-                                    src={arrowRight}
-                                    alt=""
-                                  />
-                                </div>
-                              )
-                            )}
-                          </div>
-                        )}
-                        {/*   {
+                                        ? "bg-[#F0F7FF]"
+                                        : " border"
+                                      }`}
+                                  >
+                                    <div className="">
+                                      <p>{mainAssignment.categoryName}</p>
+                                      <p className="text-[#B7B7B7] text-[10px] font-bold">
+                                        Marks
+                                      </p>
+                                    </div>
+                                    <img
+                                      onClick={() =>
+                                        handleClickCategory(
+                                          mainAssignment.categoryName
+                                        )
+                                      }
+                                      src={arrowRight}
+                                      alt=""
+                                    />
+                                  </div>
+                                )
+                              )}
+                            </div>
+                          )}
+                          {/*   {
 
                               </div>
                               <img
@@ -741,211 +816,208 @@ const AssignmentEvaluation2 = () => {
                                             )
                                         } */}
 
-                        <div className=" ms-5">
-                          {mainAssignments?.skillParameterData?.map((data) => (
-                            <>
-                              {data?.categoryName === selectedCategoryName && (
-                                <>
-                                  {data?.skills?.map((skill) => (
-                                    <>
-                                      <div
-                                        className={`flex items-center justify-between p-2 mb-5  w-[100%] h-[60px] ${
-                                          selectedSkillName === skill.skillName
-                                            ? "bg-[#F0F7FF]"
-                                            : ""
-                                        }`}
-                                        style={{
-                                          borderRadius: "5px",
-                                          border: "1px solid #D9D9D9",
-                                        }}
-                                      >
-                                        <div className="text-xs font-semibold flex items-center gap-2 ">
-                                          <label htmlFor={skill.skillName}>
-                                            {skill.skillName}
-                                          </label>
-                                        </div>
-                                        <div className=" flex gap-2 ms-5">
-                                          <div className="flex flex-col">
-                                            <input
-                                              required
-                                              className="w-[50px] h-[25px] text-[14px] font-semibold border rounded-lg text-center"
-                                              name={skill?.skillName}
-                                              type="number"
-                                              onChange={(e) =>
-                                                handleSkillValue(e, skill)
-                                              }
-                                              placeholder="mark"
-                                            />
-                                            {error2 && (
-                                              <>
-                                                <span className="text-[red] text-[10px]">
-                                                  error
-                                                </span>
-                                              </>
-                                            )}
+                          <div className=" ms-5">
+                            {mainAssignments?.skillParameterData?.map((data) => (
+                              <>
+                                {data?.categoryName === selectedCategoryName && (
+                                  <>
+                                    {data?.skills?.map((skill) => (
+                                      <>
+                                        <div
+                                          className={`flex items-center justify-between p-2 mb-5  w-[100%] h-[60px] ${selectedSkillName === skill.skillName
+                                              ? "bg-[#F0F7FF]"
+                                              : ""
+                                            }`}
+                                          style={{
+                                            borderRadius: "5px",
+                                            border: "1px solid #D9D9D9",
+                                          }}
+                                        >
+                                          <div className="text-xs font-semibold flex items-center gap-2 ">
+                                            <label htmlFor={skill.skillName}>
+                                              {skill.skillName}
+                                            </label>
                                           </div>
+                                          <div className=" flex gap-2 ms-5">
+                                            <div className="flex flex-col">
+                                              <input
+                                                required
+                                                className="w-[50px] h-[25px] text-[14px] font-semibold border rounded-lg text-center"
+                                                name={skill?.skillName}
+                                                type="number"
+                                                onChange={(e) =>
+                                                  handleSkillValue(e, skill)
+                                                }
+                                                placeholder="mark"
+                                              />
+                                              {error2 && (
+                                                <>
+                                                  <span className="text-[red] text-[10px]">
+                                                    error
+                                                  </span>
+                                                </>
+                                              )}
+                                            </div>
 
-                                          <p>/{skill?.skillValue}</p>
+                                            <p>/{skill?.skillValue}</p>
 
-                                          <p
-                                            onClick={() =>
-                                              handleClickSkill(skill.skillName)
-                                            }
-                                          >
-                                            <ArrowForwardIcon />
-                                          </p>
+                                            <p
+                                              onClick={() =>
+                                                handleClickSkill(skill.skillName)
+                                              }
+                                            >
+                                              <ArrowForwardIcon />
+                                            </p>
+                                          </div>
                                         </div>
-                                      </div>
-                                    </>
-                                  ))}
-                                </>
-                              )}
-                            </>
-                          ))}
-                        </div>
+                                      </>
+                                    ))}
+                                  </>
+                                )}
+                              </>
+                            ))}
+                          </div>
 
-                        <div className=" ms-5">
-                          {mainAssignments?.skillParameterData?.map((data) => (
-                            <>
-                              {data?.categoryName === selectedCategoryName && (
-                                <>
-                                  {data?.skills?.map((skill) => (
-                                    <>
-                                      {skill.skillName ===
-                                        selectedSkillName && (
-                                        <>
-                                          {skill?.parameters?.map(
-                                            (parameter) => (
-                                              <>
-                                                <div
-                                                  className={`flex items-center justify-between p-2 mb-5  w-[100%] h-[60px] ${
-                                                    selectedSkillName ===
-                                                    skill.skillName
-                                                      ? "bg-[#F0F7FF]"
-                                                      : ""
-                                                  }`}
-                                                  style={{
-                                                    borderRadius: "5px",
-                                                    border: "1px solid #D9D9D9",
-                                                  }}
-                                                >
-                                                  <div className="text-xs font-semibold flex items-center gap-2 ">
-                                                    <label
-                                                      htmlFor={
-                                                        parameter.parameterName
-                                                      }
+                          <div className=" ms-5">
+                            {mainAssignments?.skillParameterData?.map((data) => (
+                              <>
+                                {data?.categoryName === selectedCategoryName && (
+                                  <>
+                                    {data?.skills?.map((skill) => (
+                                      <>
+                                        {skill.skillName ===
+                                          selectedSkillName && (
+                                            <>
+                                              {skill?.parameters?.map(
+                                                (parameter) => (
+                                                  <>
+                                                    <div
+                                                      className={`flex items-center justify-between p-2 mb-5  w-[100%] h-[60px] ${selectedSkillName ===
+                                                          skill.skillName
+                                                          ? "bg-[#F0F7FF]"
+                                                          : ""
+                                                        }`}
+                                                      style={{
+                                                        borderRadius: "5px",
+                                                        border: "1px solid #D9D9D9",
+                                                      }}
                                                     >
-                                                      {parameter.parameterName}
-                                                    </label>
-                                                  </div>
-                                                  <div className=" flex gap-2 ms-5">
-                                                    <div className="flex flex-col">
-                                                      <input
-                                                        required
-                                                        className="w-[50px] h-[25px] text-[14px] font-semibold border rounded-lg text-center"
-                                                        name={
-                                                          parameter.parameterName
-                                                        }
-                                                        type="number"
-                                                        // defaultValue={categoryValue / (skill?.parameters.length)}
-                                                        defaultValue={
-                                                          changeCategoryName ===
-                                                          selectedSkillName
-                                                            ? categoryValue /
-                                                              skill?.parameters
-                                                                .length
-                                                            : ""
-                                                        }
-                                                        onChange={(e) =>
-                                                          handleParameterValue(
-                                                            e,
-                                                            parameter,
-                                                            skill
-                                                          )
-                                                        }
-                                                        // placeholder={categoryValue/(skill?.parameters.length)}
-                                                      />
-                                                      {error && (
-                                                        <>
-                                                          {categoryValue /
-                                                            skill?.parameters
-                                                              .length >
-                                                            parameter.parameterValue && (
-                                                            <span className="text-[red] text-[10px]">
-                                                              error
-                                                            </span>
+                                                      <div className="text-xs font-semibold flex items-center gap-2 ">
+                                                        <label
+                                                          htmlFor={
+                                                            parameter.parameterName
+                                                          }
+                                                        >
+                                                          {parameter.parameterName}
+                                                        </label>
+                                                      </div>
+                                                      <div className=" flex gap-2 ms-5">
+                                                        <div className="flex flex-col">
+                                                          <input
+                                                            required
+                                                            className="w-[50px] h-[25px] text-[14px] font-semibold border rounded-lg text-center"
+                                                            name={
+                                                              parameter.parameterName
+                                                            }
+                                                            type="number"
+                                                            // defaultValue={categoryValue / (skill?.parameters.length)}
+                                                            defaultValue={
+                                                              changeCategoryName ===
+                                                                selectedSkillName
+                                                                ? categoryValue /
+                                                                skill?.parameters
+                                                                  .length
+                                                                : ""
+                                                            }
+                                                            onChange={(e) =>
+                                                              handleParameterValue(
+                                                                e,
+                                                                parameter,
+                                                                skill
+                                                              )
+                                                            }
+                                                          // placeholder={categoryValue/(skill?.parameters.length)}
+                                                          />
+                                                          {error && (
+                                                            <>
+                                                              {categoryValue /
+                                                                skill?.parameters
+                                                                  .length >
+                                                                parameter.parameterValue && (
+                                                                  <span className="text-[red] text-[10px]">
+                                                                    error
+                                                                  </span>
+                                                                )}
+                                                            </>
                                                           )}
-                                                        </>
-                                                      )}
-                                                      {error1 && (
-                                                        <>
-                                                          <span className="text-[red] text-[10px]">
-                                                            error
-                                                          </span>
-                                                        </>
-                                                      )}
-                                                    </div>
+                                                          {error1 && (
+                                                            <>
+                                                              <span className="text-[red] text-[10px]">
+                                                                error
+                                                              </span>
+                                                            </>
+                                                          )}
+                                                        </div>
 
-                                                    <p>
-                                                      /
-                                                      {parameter.parameterValue}
-                                                    </p>
-                                                  </div>
-                                                </div>
-                                              </>
-                                            )
+                                                        <p>
+                                                          /
+                                                          {parameter.parameterValue}
+                                                        </p>
+                                                      </div>
+                                                    </div>
+                                                  </>
+                                                )
+                                              )}
+                                            </>
                                           )}
-                                        </>
-                                      )}
-                                    </>
-                                  ))}
-                                </>
-                              )}
-                            </>
-                          ))}
+                                      </>
+                                    ))}
+                                  </>
+                                )}
+                              </>
+                            ))}
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div className=" ms-10 my-10">
-                      <p className="text-2xl font-bold mb-10">
-                        earningParameter
-                      </p>
+                      <div className=" ms-10 my-10">
+                        <p className="text-2xl font-bold mb-10">
+                          earningParameter
+                        </p>
 
-                      <div className=" flex ">
-                        {!pointGiven && (
-                          <div className="">
-                            {mainAssignments?.earningParameterData?.map(
-                              (mainAssignment) => (
-                                <div
-                                  className={` p-3 flex gap-2 items-center justify-between rounded-md h-[60px] mb-5 ${
-                                    selectedEarningCategoryCategoryName ===
-                                    mainAssignment.categoryName
-                                      ? "bg-[#F0F7FF]"
-                                      : " border"
-                                  }`}
-                                >
-                                  <div className="">
-                                    <p>{mainAssignment.categoryName}</p>
-                                    <p className="text-[#B7B7B7] text-[10px] font-bold">
-                                      Marks
-                                    </p>
-                                  </div>
-                                  <img
-                                    onClick={() =>
-                                      handleClickEarningCategory(
+                        <div className=" flex ">
+                          {!pointGiven && (
+                            <div className="">
+                              {mainAssignments?.earningParameterData?.map(
+                                (mainAssignment) => (
+                                  <div
+                                    className={` p-3 flex gap-2 items-center justify-between rounded-md h-[60px] mb-5 ${selectedEarningCategoryCategoryName ===
                                         mainAssignment.categoryName
-                                      )
-                                    }
-                                    src={arrowRight}
-                                    alt=""
-                                  />
-                                </div>
-                              )
-                            )}
-                          </div>
-                        )}
-                        {/*  {
+                                        ? "bg-[#F0F7FF]"
+                                        : " border"
+                                      }`}
+                                  >
+                                    <div className="">
+                                      <p>{mainAssignment.categoryName}</p>
+                                      <p className="text-[#B7B7B7] text-[10px] font-bold">
+                                        Marks
+                                      </p>
+                                    </div>
+                                    <img
+                                      onClick={() =>
+                                        handleClickEarningCategory(
+                                          mainAssignment.categoryName
+                                        )
+                                      }
+                                      src={arrowRight}
+                                      alt=""
+                                    />
+                                  </div>
+                                )
+                              )}
+                            </div>
+                          )}
+                          {/*  {
                                             pointGiven && (
                                                 <div>
                                                     <div className=" bg-[#F0F7FF] p-3 flex gap-2 items-center justify-between rounded-md ">
@@ -961,112 +1033,111 @@ const AssignmentEvaluation2 = () => {
                                             )
                                         } */}
 
-                        <div className=" ms-5">
-                          {mainAssignments?.earningParameterData?.map(
-                            (data) => (
-                              <>
-                                {data?.categoryName ===
-                                  selectedEarningCategoryCategoryName && (
-                                  <>
-                                    {data?.earningItems?.map((earningItem) => (
+                          <div className=" ms-5">
+                            {mainAssignments?.earningParameterData?.map(
+                              (data) => (
+                                <>
+                                  {data?.categoryName ===
+                                    selectedEarningCategoryCategoryName && (
                                       <>
-                                        <div
-                                          className={`flex items-center justify-between p-2 mb-5  w-[100%] h-[60px] ${
-                                            selectedEarningCategoryCategoryName ===
-                                            data?.categoryName
-                                              ? "bg-[#F0F7FF]"
-                                              : " border"
-                                          }`}
-                                          style={{
-                                            borderRadius: "5px",
-                                            border: "1px solid #D9D9D9",
-                                          }}
-                                        >
-                                          <div className="text-xs font-semibold flex items-center gap-2 ">
-                                            <label
-                                              htmlFor={
-                                                earningItem.earningItemName
-                                              }
+                                        {data?.earningItems?.map((earningItem) => (
+                                          <>
+                                            <div
+                                              className={`flex items-center justify-between p-2 mb-5  w-[100%] h-[60px] ${selectedEarningCategoryCategoryName ===
+                                                  data?.categoryName
+                                                  ? "bg-[#F0F7FF]"
+                                                  : " border"
+                                                }`}
+                                              style={{
+                                                borderRadius: "5px",
+                                                border: "1px solid #D9D9D9",
+                                              }}
                                             >
-                                              {earningItem.earningItemName}
-                                            </label>
-                                          </div>
-                                          <div className=" flex gap-2 ms-5">
-                                            <div className="flex flex-col">
-                                              <input
-                                                className="w-[50px] h-[25px] text-[14px] font-semibold border rounded-lg text-center"
-                                                name={
-                                                  earningItem.earningItemName
-                                                }
-                                                type="number"
-                                                //   value={skill?.skillValue}
-                                                onChange={(e) =>
-                                                  handleEarningParameterValue(
-                                                    e,
-                                                    earningItem
-                                                  )
-                                                }
-                                                placeholder="mark"
-                                              />
-                                              {error3 && (
-                                                <span className="text-[red] text-[10px]">
-                                                  error
-                                                </span>
-                                              )}
+                                              <div className="text-xs font-semibold flex items-center gap-2 ">
+                                                <label
+                                                  htmlFor={
+                                                    earningItem.earningItemName
+                                                  }
+                                                >
+                                                  {earningItem.earningItemName}
+                                                </label>
+                                              </div>
+                                              <div className=" flex gap-2 ms-5">
+                                                <div className="flex flex-col">
+                                                  <input
+                                                    className="w-[50px] h-[25px] text-[14px] font-semibold border rounded-lg text-center"
+                                                    name={
+                                                      earningItem.earningItemName
+                                                    }
+                                                    type="number"
+                                                    //   value={skill?.skillValue}
+                                                    onChange={(e) =>
+                                                      handleEarningParameterValue(
+                                                        e,
+                                                        earningItem
+                                                      )
+                                                    }
+                                                    placeholder="mark"
+                                                  />
+                                                  {error3 && (
+                                                    <span className="text-[red] text-[10px]">
+                                                      error
+                                                    </span>
+                                                  )}
+                                                </div>
+
+                                                <p>/{earningItem.itemValue}</p>
+
+                                                {/* <p onClick={() => handleClickSkill(earningItem.earningItemName)}><ArrowForwardIcon /></p> */}
+                                              </div>
                                             </div>
-
-                                            <p>/{earningItem.itemValue}</p>
-
-                                            {/* <p onClick={() => handleClickSkill(earningItem.earningItemName)}><ArrowForwardIcon /></p> */}
-                                          </div>
-                                        </div>
+                                          </>
+                                        ))}
                                       </>
-                                    ))}
-                                  </>
-                                )}
-                              </>
-                            )
-                          )}
+                                    )}
+                                </>
+                              )
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    {/* <div className="mt-5 flex gap-3 justify-center mb-20"> */}
+                      {/* <div className="mt-5 flex gap-3 justify-center mb-20"> */}
 
-                    <div className="mt-5 flex gap-3 justify-center mb-20">
-                      <input
-                        style={{
-                          borderRadius: "8.856px",
-                          border: "1px solid #CECECE",
-                          background: "#3E4DAC",
-                        }}
-                        className=" text-[#fff] text-base font-bold px-5 py-2"
-                        type="submit"
-                        value="Save"
-                      />
-                      <input
-                        style={{
-                          borderRadius: "8.856px",
-                          border: "1px solid #CECECE",
-                          background: "#FF557A",
-                        }}
-                        className=" text-[#fff] text-base font-bold px-5 py-2"
-                        type="submit"
-                        value="Save all"
-                      />
-                    </div>
-                  </form>
-                )}
-                {assignment?.submitter.result && (
-                  <EditResult submittedAssignment={assignment} />
-                )}
-              </>
-            )}
+                      <div className="mt-5 flex gap-3 justify-center mb-20">
+                        <input
+                          style={{
+                            borderRadius: "8.856px",
+                            border: "1px solid #CECECE",
+                            background: "#3E4DAC",
+                          }}
+                          className=" text-[#fff] text-base font-bold px-5 py-2"
+                          type="submit"
+                          value="Save"
+                        />
+                        <input
+                          style={{
+                            borderRadius: "8.856px",
+                            border: "1px solid #CECECE",
+                            background: "#FF557A",
+                          }}
+                          className=" text-[#fff] text-base font-bold px-5 py-2"
+                          type="submit"
+                          value="Save all"
+                        />
+                      </div>
+                    </form>
+                  )}
+                  {assignment?.submitter.result && (
+                    <EditResult submittedAssignment={assignment} />
+                  )}
+                </>
+              )}
           </div>
 
-          <div>
+          {/*  <div>
             <AssignmentRightNev />
-          </div>
+          </div> */}
         </div>
       </Layout>
     </div>

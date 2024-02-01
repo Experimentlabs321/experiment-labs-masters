@@ -12,6 +12,7 @@ import ExperienceUnionCommercePage from "../../Pages/ExperienceUnionCommerce/Exp
 import ExperienceUnionHumanitiesPage from "../../Pages/ExperienceUnionHumanities/ExperienceUnionPage/ExperienceUnionHumanitiesPage";
 import Dashboard from "../../Pages/Dashboard/Dashboard/Dashboard";
 import Offers from "../../Pages/Dashboard/Dashboard/Offers";
+import Profile from "../../Pages/Dashboard/Dashboard/Profile";
 import LeaderBoard from "../../Pages/Dashboard/LeaderBoard/LeaderBoard";
 import Earning from "../../Pages/Dashboard/Earning/Earning";
 import Redemption from "../../Pages/Dashboard/Redemption/Redemption";
@@ -122,6 +123,7 @@ import DownloadCertificate from "../../Pages/Dashboard/ApplyCertificate/Download
 import AdminDashboardHome from "../../Pages/Dashboard/AdminDashboard/AdminDashboardHome";
 import MyStudents from "../../Pages/Dashboard/MyStudents/MyStudents";
 import EditCourse from "../../Pages/Dashboard/ContentManagement/EditCourse";
+import Payment from "../../Pages/Dashboard/Payment/Payment";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -420,6 +422,10 @@ const router = createBrowserRouter([
     element: <ExecutionMentorSchedule />,
   },
   {
+    path: "/schedule/:agenda",
+    element: <ExecutionMentorSchedule />,
+  },
+  {
     path: "/executionMentorDashboard",
     element: <ExecutionMentorDashboard />,
   },
@@ -614,6 +620,16 @@ const router = createBrowserRouter([
   {
     path: "/myStudents",
     element: <MyStudents />,
+  },
+  {
+    path: "/myStudents/:paidStudents",
+    element: <MyStudents />,
+    path: "/payment/:id",
+    element: <Payment />,
+  },
+  {
+    path: "/profile/:email",
+    element: <Profile/>,
   },
 ]);
 

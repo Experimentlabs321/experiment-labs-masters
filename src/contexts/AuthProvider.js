@@ -34,12 +34,15 @@ const AuthProvider = ({ children }) => {
   //Logout
   const logOut = () => {
     setLoading(true);
+    const userAgent = navigator.userAgent;
+    const userDevice =  axios.put( `${process.env.REACT_APP_SERVER_API}/api/v1/users/removeDevice/${userInfo?.email}`, { device: userAgent, } );
     return signOut(auth);
   };
 
   // sign in with email and password
   const signIn = (email, password) => {
     setLoading(true);
+   
     return signInWithEmailAndPassword(auth, email, password);
   };
 

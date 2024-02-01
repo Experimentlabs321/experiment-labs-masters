@@ -5,6 +5,7 @@ import { AuthContext } from "../../../contexts/AuthProvider";
 import { GoogleAuthProvider } from "firebase/auth";
 import toast from "react-hot-toast";
 import GoogleLogo from "../../../assets/icons/googleIcon.png";
+import Swal from "sweetalert2";
 
 const LoginWithOrganization = () => {
   const { id } = useParams();
@@ -23,18 +24,48 @@ const LoginWithOrganization = () => {
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
+    const userAgent = window.navigator.userAgent;
+    console.log("shihab   ",window.navigator)
+    const platform = window.navigator.platform;
+    const randomString = Math.random().toString(20).substring(2, 14) + Math.random().toString(20).substring(2, 14);
+    
+    // const deviceID = `${userAgent}-${platform}-${randomString}`;
+    // console.log("device id",deviceID)
+    // console.log("platform",platform)
+    console.log("platform ",userAgent)
 
     const form = e?.target;
     const email = form.email.value;
     const password = form.password.value;
-
     try {
-      await signIn(email, password).then(() => {
-        saveUser(email);
-      });
+      const userDevice = await axios.put(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/users/addDevice/${email}`,
+        {
+          device: userAgent,
+        }
+      );
+    
+      console.log(userDevice.status);
+    
+      // Assuming your server returns a specific status code for device limit reached
+      if (userDevice.status === 200) {
+        await signIn(email, password).then(() => {
+          saveUser(email);
+        });
+      }
     } catch (error) {
-      console.log(error);
+      // Handle any other errors that may occur during the Axios request
+      console.error('Error during Axios request:', error);
+    
+      // Optionally show a generic error message to the user
+      Swal.fire({
+        icon: 'error',
+        title: '3 Device limit reached.',
+        text: 'Please logout from one of your devices and try again.',
+      });
     }
+    
+
   };
 
   const saveUser = async (email) => {

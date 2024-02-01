@@ -661,7 +661,7 @@ const Layout = ({ children }) => {
                               </span>
                             </Link>
                           </li>
-                          <li>
+                          {/* <li>
                             <Link
                               style={
                                 location.pathname === "/liveClasses" ||
@@ -693,7 +693,7 @@ const Layout = ({ children }) => {
                                 Live Classes
                               </span>
                             </Link>
-                          </li>
+                          </li> */}
                           <li>
                             <Link
                               style={
@@ -774,7 +774,7 @@ const Layout = ({ children }) => {
                               </span>
                             </Link>
                           </li>
-                          <li>
+                        {/*   <li>
                             <Link
                               style={
                                 location.pathname ===
@@ -814,8 +814,8 @@ const Layout = ({ children }) => {
                                 Resource Centre
                               </span>
                             </Link>
-                          </li>
-                          <li>
+                          </li> */}
+                         {/*  <li>
                             <Link
                               style={
                                 location.pathname ===
@@ -855,7 +855,7 @@ const Layout = ({ children }) => {
                                 Student Progress
                               </span>
                             </Link>
-                          </li>
+                          </li> */}
                           <li>
                             <Link
                               style={
@@ -886,7 +886,7 @@ const Layout = ({ children }) => {
                               </span>
                             </Link>
                           </li>
-                          <li>
+                         {/*  <li>
                             <Link
                               style={
                                 location.pathname === "/showcasePage"
@@ -923,7 +923,7 @@ const Layout = ({ children }) => {
                                 Showcase Page
                               </span>
                             </Link>
-                          </li>
+                          </li> */}
                           <li>
                             <Link
                               style={
@@ -1026,7 +1026,7 @@ const Layout = ({ children }) => {
                                     : "text-[#8F8F8F]"
                                 } ml-3 text-[18px] font-[500]`}
                               >
-                                My Student
+                                My Learners
                               </span>
                             </Link>
                           </li>

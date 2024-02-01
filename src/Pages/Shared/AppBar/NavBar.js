@@ -349,14 +349,15 @@ const NavBar = (props) => {
     providerLogin(googleProvider)
       .then(async (result) => {
         const email = result?.user?.email;
-        const userDetails = await axios.get(`${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${email}`);
+        const userDetails = await axios.get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${email}`
+        );
         console.log("Now Result  ==============>", result?.user?.email);
         console.log("Now Result  ==============>", userDetails);
         if (userDetails?.data?.isUser === false) {
           toast.error("Your Are Not Registered User");
           return handleLogout();
-        }
-        else {
+        } else {
           setNewLogin(true);
           saveUser(email);
         }
@@ -367,8 +368,7 @@ const NavBar = (props) => {
         console.error(error);
         setError(error.message);
       });
-  }
-
+  };
 
   const saveUser = async (email) => {
     const users = { email };
@@ -535,6 +535,18 @@ const NavBar = (props) => {
       setModalOpen(true);
     }
   }, [location]);
+
+  const [orgData, setOrgData] = useState({});
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
+      )
+      .then((response) => {
+        setOrgData(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [userInfo]);
 
   const navItems = [
     // <InstagramIcon style={{ fontSize: '36px' }} className={navItemSytle} />,
@@ -804,8 +816,20 @@ const NavBar = (props) => {
             sx={{ flexGrow: 1, color: "black" }}
           >
             <Link className="flex gap-3 items-center" to={"/"}>
-              <img className="h-6 lg:h-8" src={logo} alt="icon" />
-              <h1 className="text-logo-white font-semibold">Experiment Labs</h1>
+              {orgData?.org_logo ? (
+                <img
+                  className="h-6 lg:h-8"
+                  src={orgData?.org_logo}
+                  alt="icon"
+                />
+              ) : (
+                <>
+                  <img className="h-6 lg:h-8" src={logo} alt="icon" />
+                  <h1 className="text-logo-white font-semibold">
+                    Experiment Labs
+                  </h1>
+                </>
+              )}
             </Link>
           </Typography>
           <Box sx={{ display: { xs: "none", sm: "block" }, color: "black" }}>
