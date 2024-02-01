@@ -12,6 +12,7 @@ import ExperienceUnionCommercePage from "../../Pages/ExperienceUnionCommerce/Exp
 import ExperienceUnionHumanitiesPage from "../../Pages/ExperienceUnionHumanities/ExperienceUnionPage/ExperienceUnionHumanitiesPage";
 import Dashboard from "../../Pages/Dashboard/Dashboard/Dashboard";
 import Offers from "../../Pages/Dashboard/Dashboard/Offers";
+import Profile from "../../Pages/Dashboard/Dashboard/Profile";
 import LeaderBoard from "../../Pages/Dashboard/LeaderBoard/LeaderBoard";
 import Earning from "../../Pages/Dashboard/Earning/Earning";
 import Redemption from "../../Pages/Dashboard/Redemption/Redemption";
@@ -619,6 +620,10 @@ const router = createBrowserRouter([
   {
     path: "/payment/:id",
     element: <Payment />,
+  },
+  {
+    path: "/profile/:email",
+    element: <Profile/>,
   },
 ]);
 

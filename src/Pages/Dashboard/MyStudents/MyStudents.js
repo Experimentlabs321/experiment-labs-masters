@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import Layout from "../Layout";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const MyStudents = () => {
   const { userInfo } = useContext(AuthContext);
@@ -100,6 +101,7 @@ const MyStudents = () => {
     return date;
   };
   console.log(courses);
+  // console.log(filteredStudents);
   return (
     <div>
       <Layout>
@@ -194,36 +196,47 @@ const MyStudents = () => {
                     )?.toLocaleDateString();
 
                     return (
+                      
                       <tr
-                        key={student?.id}
-                        className={
-                          index % 2 === 0 ? "bg-gray-100" : "bg-gray-50"
-                        }
-                      >
-                        <td className="py-4 px-6 border-b text-left">
-                          {student?.name}
-                        </td>
-                        <td className="py-4 px-6 border-b text-left">
-                          {student?.email}
-                        </td>
-                        <td className="py-4 px-6 border-b text-left">
-                          {student?.phone}
-                        </td>
-                        <td className="py-4 px-6 border-b text-left">
-                          {formattedDate}
-                        </td>
-                        <td className="py-4 px-6 border-b text-left">
-                          {student?.courses && student?.courses[0] ? (
-                            <span className="text-green font-semibold">
-                              &#x2713; Paid
-                            </span>
-                          ) : (
-                            <span className="text-red-600 font-semibold">
-                              &#x2717; Unpaid
-                            </span>
-                          )}
-                        </td>
-                      </tr>
+                      key={student?._id}
+                      className={
+                        index % 2 === 0 ? "bg-gray-100" : "bg-gray-50"
+                      }
+                    >
+                      <td className="py-4 px-6 border-b text-left">
+                      <Link to={`/profile/${student?.email}`}>
+                      {student?.name}
+                      </Link>
+                      </td>
+                      <td className="py-4 px-6 border-b text-left">
+                      <Link to={`/profile/${student?.email}`}>
+                        {student?.email}
+                      </Link>
+                      </td>
+                      <td className="py-4 px-6 border-b text-left">
+                      <Link to={`/profile/${student?.email}`}>
+                        {student?.phone}
+                      </Link>
+                      </td>
+                      <td className="py-4 px-6 border-b text-left">
+                      <Link to={`/profile/${student?.email}`}>
+                        {formattedDate}
+                      </Link>
+                      </td>
+                      <td className="py-4 px-6 border-b text-left">
+                      <Link to={`/profile/${student?.email}`}>
+                        {student?.courses && student?.courses[0] ? (
+                          <span className="text-green font-semibold">
+                            &#x2713; Paid
+                          </span>
+                        ) : (
+                          <span className="text-red-600 font-semibold">
+                            &#x2717; Unpaid
+                          </span>
+                        )}
+                      </Link>
+                      </td>
+                    </tr>
                     );
                   })}
               </tbody>
