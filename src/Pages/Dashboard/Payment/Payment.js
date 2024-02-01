@@ -34,7 +34,7 @@ const Payment = () => {
     day: "numeric",
   };
   return (
-    <div className="bg-[#f6f7ff91] h-[100vh]">
+    <div className="bg-[#f6f7ff91] min-h-[100vh]">
       <NavBar></NavBar>
       <div className="container mx-auto px-4 py-28">
         <div className="flex flex-col md:flex-row md:justify-center gap-20">
