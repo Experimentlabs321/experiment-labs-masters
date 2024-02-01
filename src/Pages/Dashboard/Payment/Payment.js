@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
-import NavBar from "../../Shared/AppBar/NavBar";
 import CourseTham from "../../../assets/Dashboard/CourseTham.png";
 import axios from "axios";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import { useParams } from "react-router-dom";
+import Navbar from "./Navbar";
 
 const Payment = () => {
   const { userInfo } = useContext(AuthContext);
@@ -35,7 +35,7 @@ const Payment = () => {
   };
   return (
     <div className="bg-[#f6f7ff91] min-h-[100vh]">
-      <NavBar></NavBar>
+      <Navbar />
       <div className="container mx-auto px-4 py-28">
         <div className="flex flex-col md:flex-row md:justify-center gap-20">
           <div>
