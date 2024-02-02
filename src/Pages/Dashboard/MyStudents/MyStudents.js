@@ -19,6 +19,7 @@ const MyStudents = () => {
   const [batchesData, setBatchesData] = useState([]);
   const [selectedBatch, setSelectedBatch] = useState({});
   const [currentPage, setCurrentPage] = useState("My Learners");
+  const [selectedValidationStatus, setSelectedValidationStatus] = useState("");
 
   useEffect(() => {
     axios
@@ -87,13 +88,13 @@ const MyStudents = () => {
       .catch((error) => console.error(error));
   }, [userInfo]);
 
-  const applyFilters = () => {
+  const applyFilters = async () => {
     let filtered = allMyStudents;
     console.log(selectedBatch, selectedCourse);
 
     // Apply course filter
     if (selectedCourse?._id) {
-      filtered = filtered.filter((student) =>
+      filtered = await filtered.filter((student) =>
         student.courses?.some(
           (course) => course?.courseId === selectedCourse?._id
         )
@@ -103,9 +104,52 @@ const MyStudents = () => {
 
     // Apply batch filter
     if (selectedBatch?._id) {
-      filtered = filtered.filter((student) =>
+      filtered = await filtered.filter((student) =>
         student.courses?.some((batch) => batch?.batchId === selectedBatch._id)
       );
+    }
+
+    // Apply validation filter
+    // if (selectedValidationStatus) {
+    //   if (selectedValidationStatus === "Paid") {
+    //     filtered = await filtered.filter(
+    //       (item) => item?.courses && item?.courses[0]
+    //     );
+    //   } else if (selectedValidationStatus === "Unpaid") {
+    //     filtered = await filtered.filter(
+    //       (item) => !item?.courses || !item?.courses[0]
+    //     );
+    //   } else if (selectedValidationStatus === "Expired") {
+    //     // Apply filter for Expired students
+    //      const enrollmentDate = student?.courses?.[0]?.enrollDate;
+    //      const daysDifference = daysDifferenceFromEnrolled(enrollmentDate);
+    //      const isExpired =
+    //        parseInt(selectedCourse?.expirationDay) - daysDifference < 0;
+    //      return isExpired && (!student?.courses || !student?.courses[0]);
+    //   }
+    //   // else if (selectedValidationStatus === "Expired") {
+    //   //   filtered = await filtered.filter(
+    //   //     (item) => !item?.courses || !item?.courses[0]
+    //   //   );
+    //   // }
+    // }
+
+    // Apply validation filter
+    if (selectedValidationStatus) {
+      filtered = await filtered.filter((student) => {
+        if (selectedValidationStatus === "Paid") {
+          return student?.courses && student?.courses[0];
+        } else if (selectedValidationStatus === "Unpaid") {
+          return !student?.courses || !student?.courses[0];
+        } else if (selectedValidationStatus === "Expired") {
+          const enrollmentDate = student?.courses?.[0]?.enrollDate;
+          const daysDifference = daysDifferenceFromEnrolled(enrollmentDate);
+          const isExpired =
+            parseInt(selectedCourse?.expirationDay) - daysDifference < 0;
+          return isExpired && (!student?.courses || !student?.courses[0]);
+        }
+        return true; // Include other cases as well
+      });
     }
 
     setFilteredStudents(filtered);
@@ -215,6 +259,22 @@ const MyStudents = () => {
                         {batch?.batchName}
                       </option>
                     ))}
+                  </select>
+
+                  {/* Validation Filter Dropdown */}
+                  <select
+                    className="p-2 border rounded"
+                    value={selectedBatch?._id}
+                    onChange={(e) => {
+                      setSelectedValidationStatus(e.target.value);
+                    }}
+                  >
+                    <option className="hidden" value="">
+                      Select Validation
+                    </option>
+                    <option value="Paid">Paid</option>
+                    <option value="Unpaid">Unpaid</option>
+                    <option value="Expired">Expired</option>
                   </select>
 
                   {/* Apply Filters Button */}
