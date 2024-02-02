@@ -123,7 +123,7 @@ const AddStudent = () => {
   };
   return (
     <div>
-      <Layout>
+      {/* <Layout> */}
         <div className="p-4 mx-auto w-full">
           <div className="grid grid-flow-col mt-10 border-b border-[#D9D9D9] pb-2">
             <button>
@@ -327,7 +327,7 @@ const AddStudent = () => {
             </>
           )}
         </div>
-      </Layout>
+      {/* </Layout> */}
     </div>
   );
 };
