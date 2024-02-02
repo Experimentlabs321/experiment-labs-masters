@@ -29,14 +29,18 @@ const Navbar = (props) => {
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
   };
+
+
   const handleLogout = () => {
     logOut()
       .then((res) => {
         console.log(res);
-        navigate("/");
+        // navigate("/");
       })
       .catch((error) => console.error(error));
   };
+
+
   const toggleDrawer = (open) => (event) => {
     if (
       event.type === "keydown" &&
@@ -47,6 +51,8 @@ const Navbar = (props) => {
 
     setState(!state);
   };
+
+
   const navItems2 = [
     <>
       {userInfo && (
@@ -66,6 +72,9 @@ const Navbar = (props) => {
       )}
     </>,
   ];
+
+
+
   const drawer = (
     <Box
       onClick={handleDrawerToggle}
@@ -92,6 +101,8 @@ const Navbar = (props) => {
       </List>
     </Box>
   );
+
+
   const list = () => (
     <Box
       sx={{ width: "100%", height: "50vh" }}
@@ -102,6 +113,8 @@ const Navbar = (props) => {
       <h1 className="text-4xl mt-20 mx-auto w-80">Will be added later</h1>
     </Box>
   );
+
+
   const container =
     window !== undefined ? () => window().document.body : undefined;
   const [orgData, setOrgData] = useState({});
@@ -162,7 +175,7 @@ const Navbar = (props) => {
           </div>
           <div className="invisible absolute z-50 flex w-full flex-col  py-1 px-4 text-gray-800 shadow-xl group-hover:visible">
             <Button
-              //   onClick={() => handleLogout()}
+              onClick={() => handleLogout()}
               sx={{
                 bgcolor: "#FF557A",
                 borderRadius: "22.5px",
@@ -179,6 +192,8 @@ const Navbar = (props) => {
       </div>
     ),
   ];
+
+
   useEffect(() => {
     axios
       .get(
@@ -189,6 +204,8 @@ const Navbar = (props) => {
       })
       .catch((error) => console.error(error));
   }, [userInfo]);
+
+  
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
