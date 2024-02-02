@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import uploadFileToS3 from "../../UploadComponent/s3Uploader";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+// import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import axios from "axios";
 import Swal from "sweetalert2";
 
@@ -215,7 +215,7 @@ const CertificateEditor = ({
       });
     }
   };
-  console.log(selectedBatch);
+  console.log(authors[0].signature);
   return (
     <div className="font-sans">
       <h1 className="text-lg font-semibold mb-3">
@@ -332,14 +332,16 @@ const CertificateEditor = ({
             const file = e.target.files[0];
             try {
               if (file) {
-                const reader = new FileReader();
+                setOrgLogo(await uploadFileToS3(file));
+                setCount(count + 1);
+                // const reader = new FileReader();
 
-                reader.onloadend = async () => {
-                  setOrgLogo(await reader.result);
-                  setCount(count + 1);
-                };
+                // reader.onloadend = async () => {
+                //   // setOrgLogo(await reader.result);
+                //   setCount(count + 1);
+                // };
 
-                reader.readAsDataURL(file);
+                // reader.readAsDataURL(file);
               }
               // authors[index].signature = await uploadFileToS3(file);
               // authors[index].signature = file.name;
@@ -1087,10 +1089,11 @@ const CertificateEditor = ({
                 const file = e.target.files[0];
                 try {
                   if (file) {
+                    const url = await uploadFileToS3(file);
                     const reader = new FileReader();
 
                     reader.onloadend = async () => {
-                      authors[index].signature = await reader.result;
+                      authors[index].signature = await url;
                       setCount(count + 1);
                     };
 

@@ -17,6 +17,7 @@ import axios from "axios";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import ZoomOutIcon from "@mui/icons-material/ZoomOut";
 import { useReactToPrint } from "react-to-print";
+import uploadFileToS3 from "../../UploadComponent/s3Uploader";
 
 const CreateCertificate = () => {
   const { userInfo } = useContext(AuthContext);
@@ -215,84 +216,6 @@ const CreateCertificate = () => {
   const handleMouseUp = () => {
     setDragging(false);
   };
-
-  // const handleDownloadPDF = () => {
-  //   if (downloadRef.current) {
-  //     html2canvas(downloadRef.current).then((canvas) => {
-  //       const imgData = canvas.toDataURL("image/png");
-  //       const pdf = new jsPDF();
-  //       pdf.addImage(imgData, "PNG", 0, 0);
-  //       pdf.save("certificate.pdf");
-  //     });
-  //   }
-  // };
-
-  // const handleDownload = () => {
-  //   const container = downloadRef.current;
-
-  //   const options = {
-  //     scale: 2 * zoom, // Adjust the scale factor considering the zoom
-  //   };
-
-  //   html2canvas(container, options).then((canvas) => {
-  //     const imgData = canvas.toDataURL("image/png");
-
-  //     // Create a link element
-  //     const downloadLink = document.createElement("a");
-
-  //     // Set the href attribute to the data URL
-  //     downloadLink.href = imgData;
-
-  //     // Set the download attribute with the desired filename
-  //     downloadLink.download = "certificate.png";
-
-  //     // Append the link to the body
-  //     document.body.appendChild(downloadLink);
-
-  //     // Trigger a click on the link to start the download
-  //     downloadLink.click();
-
-  //     // Remove the link from the body
-  //     document.body.removeChild(downloadLink);
-  //   });
-  // };
-
-  // const downloadRef = useRef(null);
-
-  // const handleDownload = () => {
-  //   html2canvas(downloadRef.current).then((canvas) => {
-  //     const imgData = canvas.toDataURL("image/png");
-  //     const pdf = new jsPDF("l", "mm", [1000, 670]);
-  //     pdf.addImage(imgData, "PNG", 0, 0, 1000, 667);
-  //     pdf.save("certificate");
-  //     // Create a link element
-  //     // const downloadLink = document.createElement("a");
-  //     // // Set the href attribute to the data URL
-  //     // downloadLink.href = imgData;
-  //     // // Set the download attribute with the desired filename
-  //     // downloadLink.download = "certificate.png";
-  //     // // Append the link to the body
-  //     // document.body.appendChild(downloadLink);
-  //     // // Trigger a click on the link to start the download
-  //     // downloadLink.click();
-  //     // // Remove the link from the body
-  //     // document.body.removeChild(downloadLink);
-  //   });
-  // };
-
-  // const handleDownloadImage = () => {
-  //   if (downloadRef.current) {
-  //     html2canvas(downloadRef.current).then((canvas) => {
-  //       const imgData = canvas.toDataURL("image/png");
-  //       const downloadLink = document.createElement("a");
-  //       downloadLink.href = imgData;
-  //       downloadLink.download = "certificate.png";
-  //       document.body.appendChild(downloadLink);
-  //       downloadLink.click();
-  //       document.body.removeChild(downloadLink);
-  //     });
-  //   }
-  // };
 
   const handlePrint = useReactToPrint({
     content: () => downloadRef.current,
@@ -525,6 +448,7 @@ const CreateCertificate = () => {
       </div>
     );
   });
+  console.log(selectedBackgroundTemplate);
   return (
     <>
       <Layout>
@@ -581,10 +505,11 @@ const CreateCertificate = () => {
                       const file = e.target.files[0];
                       try {
                         if (file) {
+                          const url = await uploadFileToS3(file);
                           const reader = new FileReader();
 
                           reader.onloadend = async () => {
-                            const img = await reader.result;
+                            const img = await url;
                             setSelectedBackgroundTemplate(img);
                             setBackgroundTemplates([
                               img,
