@@ -140,12 +140,16 @@ const DownloadCertificate = () => {
         <div className="absolute z-40 h-full w-full flex flex-col items-center justify-center">
           <img className=" min-w-[40px]" src={Locked} alt="something" />
           <p className=" text-black text-center font-sans mt-4">
-            To unlock the certificate you have to complete at least 70% of the
-            course.
+            To unlock the certificate you have to complete at least{" "}
+            {certificateTemplate?.requiredCompletionPercentage}% of the course.
           </p>
         </div>
         <div
-          className={`${completionPercentage < 70 && "filter blur-md"}`}
+          className={`${
+            completionPercentage <
+              certificateTemplate?.requiredCompletionPercentage &&
+            "filter blur-md"
+          }`}
           id="your-section-id"
           style={{
             width: `${certificateTemplate?.imageDimensions?.width * zoom}px`,
@@ -479,19 +483,27 @@ const DownloadCertificate = () => {
               </div>
               <button
                 className={`mt-5 px-4 py-2 ${
-                  completionPercentage < 70 ? " bg-gray-400" : " bg-green"
+                  completionPercentage <
+                  certificateTemplate?.requiredCompletionPercentage
+                    ? " bg-gray-400"
+                    : " bg-green"
                 } text-white text-lg font-bold rounded-md flex items-center justify-center gap-2`}
                 onClick={() => {
-                  if (completionPercentage >= 70) handlePrint();
+                  if (
+                    completionPercentage >=
+                    certificateTemplate?.requiredCompletionPercentage
+                  )
+                    handlePrint();
                   else
                     Swal.fire({
-                      title: "You have to complete at least 70% of the course!",
+                      title: `You have to complete at least ${certificateTemplate?.requiredCompletionPercentage}% of the course!`,
                       icon: "warning",
                     });
                 }}
               >
                 Download PDF{" "}
-                {completionPercentage < 70 && (
+                {completionPercentage <
+                  certificateTemplate?.requiredCompletionPercentage && (
                   <img className="w-[20px]" src={Locked} alt="locked" />
                 )}
               </button>
