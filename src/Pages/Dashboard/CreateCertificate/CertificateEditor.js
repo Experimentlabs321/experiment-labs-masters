@@ -147,62 +147,70 @@ const CertificateEditor = ({
     "Bottom Right",
     "Bottom Left",
   ];
-  const [showCoursesDropDown, setShowCoursesDropDown] = useState(false);
-  const [showBatchesDropDown, setShowBatchesDropDown] = useState(false);
+  const [requiredCompletionPercentage, setRequiredCompletionPercentage] =
+    useState(70);
   const handleSubmitCertificateTemplate = async () => {
-    const templateData = {
-      selectedBackgroundTemplate,
-      imageDimensions,
-      zoom,
-      gapInTopAndBottom,
-      recipientName,
-      headerTitle,
-      headerSubtitle,
-      recipientNameAboveText,
-      headerTitleFontSize,
-      headerSubtitleFontSize,
-      recipientNameFontSize,
-      recipientNameAboveTextFontSize,
-      headerTitleColor,
-      headerSubtitleColor,
-      recipientNameColor,
-      recipientNameAboveTextColor,
-      headerTitleFontFamily,
-      headerSubtitleFontFamily,
-      recipientNameFontFamily,
-      recipientNameAboveTextFontFamily,
-      authors,
-      authorNameFontSize,
-      authorNameColor,
-      authorNameFontFamily,
-      authorPositionFontSize,
-      authorPositionColor,
-      authorPositionFontFamily,
-      certificateTextContents,
-      orgLogo,
-      orgLogoSize,
-      orgLogoPosition,
-      showOrgLogo,
-      showRecipientNameUnderline,
-      underlineColor,
-      courseId: selectedCourse?._id,
-      batchId: selectedBatch?._id,
-    };
-    // console.log(templateData);
-    const addTemplate = await axios.post(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/certificateTemplates`,
-      templateData
-    );
+    if (selectedCourse?._id && selectedBatch?._id) {
+      const templateData = {
+        selectedBackgroundTemplate,
+        imageDimensions,
+        zoom,
+        gapInTopAndBottom,
+        recipientName,
+        headerTitle,
+        headerSubtitle,
+        recipientNameAboveText,
+        headerTitleFontSize,
+        headerSubtitleFontSize,
+        recipientNameFontSize,
+        recipientNameAboveTextFontSize,
+        headerTitleColor,
+        headerSubtitleColor,
+        recipientNameColor,
+        recipientNameAboveTextColor,
+        headerTitleFontFamily,
+        headerSubtitleFontFamily,
+        recipientNameFontFamily,
+        recipientNameAboveTextFontFamily,
+        authors,
+        authorNameFontSize,
+        authorNameColor,
+        authorNameFontFamily,
+        authorPositionFontSize,
+        authorPositionColor,
+        authorPositionFontFamily,
+        certificateTextContents,
+        orgLogo,
+        orgLogoSize,
+        orgLogoPosition,
+        showOrgLogo,
+        showRecipientNameUnderline,
+        underlineColor,
+        requiredCompletionPercentage,
+        courseId: selectedCourse?._id,
+        batchId: selectedBatch?._id,
+      };
+      // console.log(templateData);
+      const addTemplate = await axios.post(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/certificateTemplates`,
+        templateData
+      );
 
-    if (addTemplate?.status === 200) {
-      Swal.fire({
-        title: addTemplate?.data?.message,
-        icon: "success",
-      });
-      // navigate("/schoolDashboard/myStudents");
+      if (addTemplate?.status === 200) {
+        Swal.fire({
+          title: addTemplate?.data?.message,
+          icon: "success",
+        });
+        // navigate("/schoolDashboard/myStudents");
+      } else {
+        Swal.fire({
+          title: addTemplate?.data?.message,
+          icon: "error",
+        });
+      }
     } else {
       Swal.fire({
-        title: addTemplate?.data?.message,
+        title: "Please select course and batch!",
         icon: "error",
       });
     }
@@ -286,6 +294,23 @@ const CertificateEditor = ({
           className="mt-1 p-2 border w-full rounded-md"
           value={gapInTopAndBottom}
           onChange={(e) => setGapInTopAndBottom(e.target.value)}
+        />
+      </div>
+
+      <div className="mb-4">
+        <label
+          htmlFor="requiredCompletionPercentage"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Required Completion Percentage
+        </label>
+        <input
+          type="number"
+          id="requiredCompletionPercentage"
+          name="requiredCompletionPercentage"
+          className="mt-1 p-2 border w-full rounded-md"
+          value={requiredCompletionPercentage}
+          onChange={(e) => setRequiredCompletionPercentage(e.target.value)}
         />
       </div>
 
