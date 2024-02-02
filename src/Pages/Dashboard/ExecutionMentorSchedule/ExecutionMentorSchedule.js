@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import Layout from "../Layout";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import AssignmentUpNev from "../ExecutionMentorAssignments/AssignmentUpNev";
 import AssignmentRightNev from "../ExecutionMentorAssignments/AssignmentRightNev";
 
@@ -125,6 +125,7 @@ const demoEvents = [
 ];
 
 const ExecutionMentorSchedule = () => {
+  const { agenda } = useParams();
   const { user, userInfo } = useContext(AuthContext);
   const [events, setEvents] = useState([]);
   useEffect(() => {
@@ -151,7 +152,7 @@ const ExecutionMentorSchedule = () => {
         });
         setEvents(filteredEvent);
       });
-  }, [userInfo?.email]);
+  }, [userInfo]);
   console.log(events);
   return (
     <div>
@@ -167,20 +168,36 @@ const ExecutionMentorSchedule = () => {
             </div>
 
             <div className="mt-10">
-              <Calendar
+              {
+                agenda ?    <Calendar
+              
+                defaultView="agenda" // Set 'agenda' as the default view
                 localizer={localizer}
                 events={events}
                 step={60}
                 startAccessor="start"
                 endAccessor="end"
-                style={{ height: 750, maxWidth: 700 }}
+                style={{ height: 750, maxWidth: 900 }}
               />
+              :
+              <Calendar
+              
+            
+              localizer={localizer}
+              events={events}
+              step={60}
+              startAccessor="start"
+              endAccessor="end"
+              style={{ height: 750, maxWidth: 900 }}
+            />
+              }
+        
             </div>
           </div>
 
-          <div>
+          {/* <div>
             <AssignmentRightNev />
-          </div>
+          </div> */}
         </div>
       </Layout>
     </div>

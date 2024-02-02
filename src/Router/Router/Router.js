@@ -414,6 +414,10 @@ const router = createBrowserRouter([
     element: <ExecutionMentorSchedule />,
   },
   {
+    path: "/schedule/:agenda",
+    element: <ExecutionMentorSchedule />,
+  },
+  {
     path: "/executionMentorDashboard",
     element: <ExecutionMentorDashboard />,
   },
@@ -603,6 +607,10 @@ const router = createBrowserRouter([
   },
   {
     path: "/myStudents",
+    element: <MyStudents />,
+  },
+  {
+    path: "/myStudents/:paidStudents",
     element: <MyStudents />,
   },
 ]);
