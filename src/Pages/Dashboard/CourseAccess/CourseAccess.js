@@ -15,6 +15,7 @@ const CourseAccess = () => {
   const [stateParams, setStateParams] = useState("myCourses");
   const [clickedCourse, setClickedCourse] = useState();
   const [selectedOption, setSelectedOption] = useState("Category");
+  const [filterData, setFilterData] = useState([]);
   const options = ["Category name"];
   const Role = localStorage.getItem("role");
   const { userInfo } = useContext(AuthContext);
@@ -76,6 +77,18 @@ const CourseAccess = () => {
                   alt="SearchIcon"
                 />
                 <input
+                  onChange={(e) => {
+                   /*  setFilteredStudents(
+                      courses?.filter((student) => {
+                        return Object.keys(student).some((key) =>
+                          student[key]
+                            ?.toString()
+                            .toLowerCase()
+                            .includes(e.target.value.toString().toLowerCase())
+                        );
+                      })
+                    ); */
+                  }}
                   className="rounded-[20px] bg-[#EEEEEE] py-[16px] pl-[40px] pr-[10px]"
                   placeholder="Search"
                   type="text"
@@ -109,7 +122,7 @@ const CourseAccess = () => {
           </div>
           <div className="mt-[80px] flex items-center justify-between">
             <div className="flex gap-8">
-              <button
+             {/*  <button
                 onClick={() => {
                   setStateParams("myCourses");
                   setShowCourses(myCourses);
@@ -121,7 +134,7 @@ const CourseAccess = () => {
                 }`}
               >
                 My Courses
-              </button>
+              </button> */}
               <button
                 onClick={() => {
                   setStateParams("allCourses");

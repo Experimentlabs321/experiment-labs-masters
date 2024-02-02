@@ -10,9 +10,9 @@ const ApexChart = ({ overViewCount }) => {
     const [students, setStudents] = useState();
     const [enrolledStudents, setEnrolledStudents] = useState();
 
-    console.log(overViewCount)
+   // console.log(overViewCount)
     console.log(students)
-    console.log(enrolledStudents)
+   // console.log(enrolledStudents)
     useEffect(() => {
         axios
             .get(
@@ -221,8 +221,45 @@ const ApexChart = ({ overViewCount }) => {
     console.log(monthForEnrollArray)
     console.log(totalValuesMonthForEnrollArray)
     
-  
-    
+  /// for week
+  useEffect(() => {
+    // Filter students for the current week
+    const today = new Date();
+    const currentWeekStart = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay());
+    const currentWeekEnd = new Date(currentWeekStart);
+    currentWeekEnd.setDate(currentWeekStart.getDate() + 6);
+
+    const studentsInCurrentWeek = students?.filter(student => {
+      const studentDateCreated = new Date(student.dateCreated);
+      return studentDateCreated >= currentWeekStart && studentDateCreated <= currentWeekEnd;
+    });
+
+    // Initialize an object to store counts for each day
+    const dayCounts = {};
+
+    // Loop through students in the current week and categorize by day
+    studentsInCurrentWeek?.forEach(student => {
+      const studentDate = new Date(student.dateCreated);
+      const dayOfWeek = studentDate.getDay(); // 0 for Sunday, 1 for Monday, and so on
+
+      // Adjust dayOfWeek to make day 1 as Saturday
+      const adjustedDay = (dayOfWeek + 6) % 7 + 1;
+
+      // Increment count for the day
+      if (dayCounts[adjustedDay]) {
+        dayCounts[adjustedDay]++;
+      } else {
+        dayCounts[adjustedDay] = 1;
+      }
+    });
+
+    // Separate the data into two arrays
+    const days = Object.keys(dayCounts).map(day => parseInt(day, 10));
+    const studentCounts = Object.values(dayCounts);
+
+    console.log('Days:', days);
+    console.log('Student Counts:', studentCounts);
+  }, [students]);
 
  
      
