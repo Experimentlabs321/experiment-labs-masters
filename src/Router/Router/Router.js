@@ -124,6 +124,7 @@ import AdminDashboardHome from "../../Pages/Dashboard/AdminDashboard/AdminDashbo
 import MyStudents from "../../Pages/Dashboard/MyStudents/MyStudents";
 import EditCourse from "../../Pages/Dashboard/ContentManagement/EditCourse";
 import Payment from "../../Pages/Dashboard/Payment/Payment";
+import UserProfile from "../../Pages/Dashboard/Dashboard/UserProfile";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -633,6 +634,10 @@ const router = createBrowserRouter([
   {
     path: "/profile/:email",
     element: <Profile/>,
+  },
+  {
+    path: "/userprofile/:email",
+    element: <UserProfile/>,
   },
 ]);
 
