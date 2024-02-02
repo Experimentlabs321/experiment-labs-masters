@@ -30,105 +30,9 @@ const ApexChart = ({ overViewCount }) => {
 
    
 
-
-
-      /*   const [chartState] = useState({
-           series: [
-               {
-                   name: "Total Students",
-                   data: [45, 52, 38, 24, 33, 26, 21, 20, 6, 8, 15, 10],
-               },
-               {
-                   name: "Enrolled Students",
-                   data: [35, 41, 62, 42, 13, 18, 29, 37, 36, 51, 32, 35],
-               }, 
-           ],
-           options: {
-               chart: {
-                   height: 350,
-                   type: "line",
-                   zoom: {
-                       enabled: false,
-                   },
-               },
-               dataLabels: {
-                   enabled: false,
-               },
-               stroke: {
-                   width: [5, 7, 5],
-                   curve: "straight",
-                   dashArray: [0, 8, 5],
-               },
-               title: {
-                   text: "Page Statistics",
-                   align: "left",
-               },
-               legend: {
-                   tooltipHoverFormatter: function (val, opts) {
-                       return (
-                           val +
-                           ' - <strong>' +
-                           opts.w.globals.series[opts.seriesIndex][opts.dataPointIndex] +
-                           "</strong>"
-                       );
-                   },
-               },
-               markers: {
-                   size: 0,
-                   hover: {
-                       sizeOffset: 6,
-                   },
-               },
-               xaxis: {
-                   categories: [
-                       "Jan",
-                       "Feb",
-                       "Mar",
-                       "Apr",
-                       "May",
-                       "Jun",
-                       "July",
-                       "Aug",
-                       "Sep",
-                       "Oct",
-                       "Nov",
-                       "Dec",
-                   ],
-               },
-               tooltip: {
-                   y: [
-                       {
-                           title: {
-                               formatter: function (val) {
-                                   return val + " (mins)";
-                               },
-                           },
-                       },
-                       {
-                           title: {
-                               formatter: function (val) {
-                                   return val + " per session";
-                               },
-                           },
-                       },
-                       {
-                           title: {
-                               formatter: function (val) {
-                                   return val;
-                               },
-                           },
-                       },
-                   ],
-               },
-               grid: {
-                   borderColor: "#f1f1f1",
-               },
-           },
-       });  */
-
     //////////////////
 
-    const [selectedFilter, setSelectedFilter] = useState('');
+    const [selectedFilter, setSelectedFilter] = useState('Year');
     const [selectedYear, setSelectedYear] = useState('');
     const [selectedMonth, setSelectedMonth] = useState('');
     const [selectedWeek, setSelectedWeek] = useState('');
@@ -229,9 +133,11 @@ const ApexChart = ({ overViewCount }) => {
         count: weeklyData?.filter((student) => dayToString(new Date(student.dateCreated).getDay()) === day).length,
     })); */
 
-    const availableMonths = Array.from(new Set(students?.map((student) => new Date(student.dateCreated).getMonth())));
-    const availableEnrollMonths = Array.from(new Set(enrolledStudents?.map((student) => new Date(student.dateCreated).getMonth())));
-    console.log(availableEnrollMonths)
+    const availableMonths = Array.from(new Set(students?.map((student) => new Date(student.dateCreated).getMonth()))).sort((a, b) => a - b);
+    
+    console.log(availableMonths)
+   /*  const availableEnrollMonths = Array.from(new Set(enrolledStudents?.map((student) => new Date(student.dateCreated).getMonth())));
+    console.log(availableEnrollMonths) */
  
     const availableWeeks = getLocalizedDayNames();
 
@@ -277,14 +183,14 @@ const ApexChart = ({ overViewCount }) => {
         }
       
        
-    }, [students,selectedFilter]);
+    }, [students,selectedFilter,enrolledStudents]);
 
-    console.log()
+
    
     //for month 
     useEffect(() => {
         if(selectedFilter === "Month"){
-
+         
           ///total Students
             const names = availableMonths.map(month => monthToString(month));
             setMonthArray(names);
@@ -295,13 +201,14 @@ const ApexChart = ({ overViewCount }) => {
             setTotalValuesMonthArray(values);
 
             // enroll students
-            const namesForEnroll = availableEnrollMonths.map(month => monthToString(month));
+            const namesForEnroll = availableMonths.map(month => monthToString(month));
             setMonthForEnrollArray(namesForEnroll);
 
-            const valuesForEnroll = availableEnrollMonths?.map(month =>
+            const valuesForEnroll = availableMonths?.map(month =>
                 monthlyData?.filter(student => new Date(student.dateCreated).getMonth() === month).length
             );
             setTotalValuesMonthForEnrollArray(valuesForEnroll);
+          
 
         
         }
@@ -309,8 +216,10 @@ const ApexChart = ({ overViewCount }) => {
         
     }, [selectedFilter, monthlyData,availableMonths]);
 
-    console.log(totalValuesForEnrollArray)
-    console.log(yearsForEnrollArray)
+    console.log(monthArray)
+    console.log(totalValuesMonthArray)
+    console.log(monthForEnrollArray)
+    console.log(totalValuesMonthForEnrollArray)
     
   
     
@@ -375,7 +284,7 @@ const ApexChart = ({ overViewCount }) => {
                     dashArray: [0, 8, 5],
                 },
                 title: {
-                    text: "Page Statistics",
+                    text: "",
                     align: "left",
                 },
                 legend: {
@@ -395,7 +304,7 @@ const ApexChart = ({ overViewCount }) => {
                     },
                 },
                 xaxis: {
-                    categories: dataForEnrollValue
+                    categories: dataValue
                 },
                 tooltip: {
                     y: [
@@ -428,16 +337,16 @@ const ApexChart = ({ overViewCount }) => {
             },
         });
 
-    }, [monthArray, totalValuesMonthArray]) 
+    }, [selectedFilter, yearsArray, totalValuesArray, yearsForEnrollArray,monthArray,monthForEnrollArray,totalValuesMonthArray,totalValuesMonthForEnrollArray,totalValuesForEnrollArray]) 
 
 
 
     return (
         <div>
-            <div>
+            <div className="mb-5 flex gap-5 items-center">
                 <label>Select Filter:</label>
-                <select onChange={(e) => setSelectedFilter(e.target.value)} value={selectedFilter}>
-                    <option value="">Select</option>
+                <select className="p-2 border rounded" onChange={(e) => setSelectedFilter(e.target.value)} value={selectedFilter}>
+                 
                     <option value="Year">Year</option>
                     <option value="Month">Month</option>
                     {/* <option value="Week">Week</option> */}
