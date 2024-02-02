@@ -25,14 +25,14 @@ const LoginWithOrganization = () => {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     const userAgent = window.navigator.userAgent;
-    console.log("shihab   ",window.navigator)
+    console.log("shihab   ", window.navigator)
     const platform = window.navigator.platform;
     const randomString = Math.random().toString(20).substring(2, 14) + Math.random().toString(20).substring(2, 14);
-    
+
     // const deviceID = `${userAgent}-${platform}-${randomString}`;
     // console.log("device id",deviceID)
     // console.log("platform",platform)
-    console.log("platform ",userAgent)
+    console.log("platform ", userAgent)
 
     const form = e?.target;
     const email = form.email.value;
@@ -44,9 +44,9 @@ const LoginWithOrganization = () => {
           device: userAgent,
         }
       );
-    
+
       console.log(userDevice.status);
-    
+
       // Assuming your server returns a specific status code for device limit reached
       if (userDevice.status === 200) {
         await signIn(email, password).then(() => {
@@ -56,7 +56,7 @@ const LoginWithOrganization = () => {
     } catch (error) {
       // Handle any other errors that may occur during the Axios request
       console.error('Error during Axios request:', error);
-    
+
       // Optionally show a generic error message to the user
       Swal.fire({
         icon: 'error',
@@ -64,7 +64,7 @@ const LoginWithOrganization = () => {
         text: 'Please logout from one of your devices and try again.',
       });
     }
-    
+
 
   };
 
@@ -86,6 +86,7 @@ const LoginWithOrganization = () => {
       })
       .catch((error) => console.error(error));
   };
+  
 
   const handleGoogleSignIn = async () => {
     const googleProvider = new GoogleAuthProvider();
@@ -95,8 +96,6 @@ const LoginWithOrganization = () => {
         const userDetails = await axios.get(
           `${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${email}`
         );
-        console.log("Now Result  ==============>", result?.user?.email);
-        console.log("Now Result  ==============>", userDetails);
         if (userDetails?.data?.isUser === false) {
           toast.error("Your Are Not Registered User");
           return handleLogout();
@@ -108,6 +107,7 @@ const LoginWithOrganization = () => {
         console.error(error);
       });
   };
+
 
   return (
     <div>

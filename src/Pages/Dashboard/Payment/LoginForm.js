@@ -1,7 +1,7 @@
 import React from 'react';
 import GoogleLogo from "../../../assets/icons/googleIcon.png";
 
-const LoginForm = ({ email, setEmail, password, setPassword, handleLogin }) => {
+const LoginForm = ({ email, setEmail, password, setPassword, handleLogin, loginOpen, setLoginOpen, registerOpen, setRegisterOpen }) => {
     return (
         <form
             onSubmit={handleLogin}
@@ -62,6 +62,12 @@ const LoginForm = ({ email, setEmail, password, setPassword, handleLogin }) => {
             <p className="text-center text-error">
                 {/* <small>error</small> */}
             </p>
+            <div className='flex justify-center'>
+                <p>Don't Have an Account ? <span onClick={() => {
+                    setLoginOpen(false)
+                    setRegisterOpen(true)
+                }} className='text-blue cursor-pointer'>Register</span></p>
+            </div>
         </form>
     );
 };
