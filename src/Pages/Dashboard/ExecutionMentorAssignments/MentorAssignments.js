@@ -37,8 +37,8 @@ const MentorAssignments = () => {
         `${process.env.REACT_APP_BACKEND_API}/getSubmitAssignment/${userInfo.organizationId}`
       )
       .then((response) => {
-        setAssignments(response?.data);
-        setFilteredAssignment(response?.data);
+        setAssignments(response?.data?.slice().reverse());
+        setFilteredAssignment(response?.data?.slice().reverse());
         //console.log(response?.data[0]);
         const ass = response?.data;
 

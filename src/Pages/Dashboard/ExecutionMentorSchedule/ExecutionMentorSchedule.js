@@ -3,6 +3,7 @@ import Layout from "../Layout";
 import { Link, useParams } from "react-router-dom";
 import AssignmentUpNev from "../ExecutionMentorAssignments/AssignmentUpNev";
 import AssignmentRightNev from "../ExecutionMentorAssignments/AssignmentRightNev";
+import meetIcon from "../../../assets/Dashboard/meetIcon.png"
 
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
@@ -10,6 +11,12 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import { gapi } from "gapi-script";
 import axios from "axios";
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import listPlugin from '@fullcalendar/list';
+import interactionPlugin from "@fullcalendar/interaction";
+
+import "react-big-calendar/lib/css/react-big-calendar.css";
 
 const localizer = momentLocalizer(moment);
 
@@ -154,6 +161,61 @@ const ExecutionMentorSchedule = () => {
       });
   }, [userInfo]);
   console.log(events);
+  //for meet link
+  function extractMeetLink(title) {
+    const meetLinkRegex = /https:\/\/meet\.google\.com\/\S+/;
+    const meetLinkArray = title?.match(meetLinkRegex);
+    return meetLinkArray ? meetLinkArray[0] : null;
+  }
+  //for title
+  function extractTitleWithoutMeetLink(title) {
+    const meetLinkRegex = /https:\/\/meet\.google\.com\/\S+/;
+    const titleWithoutLink = title?.replace(meetLinkRegex, '').trim();
+    return titleWithoutLink || null;
+  }
+
+  function renderEventContent(eventInfo) {
+    console.log(events);
+    console.log(eventInfo?.event?.title);
+
+    const formattedStartDate = eventInfo?.event?.start?.toUTCString();
+    const formattedEndDate = eventInfo?.event?.end?.toUTCString();
+    const meetlink = extractMeetLink(eventInfo?.event?.title);
+
+
+    console.log(formattedStartDate)
+    console.log(formattedEndDate)
+
+
+    const startTimeStamp = new Date(formattedStartDate);
+    const startTimeString = startTimeStamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', timeZone: 'GMT' });
+    const endTimeStamp = new Date(formattedEndDate);
+    const endTimeString = endTimeStamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', timeZone: 'GMT' });
+
+
+    return (
+      <div
+        style={{
+          width: '100%',
+          backgroundColor: 'blue', // Set the background color of the event
+          color: 'white', // Set the text color of the event
+          borderRadius: '5px',
+          paddingLeft: '5px',
+        }}
+      >
+        <h1>{extractTitleWithoutMeetLink(eventInfo?.event?.title)}</h1>
+
+        {
+          meetlink
+            ?
+            <a target="_blank" href={meetlink} rel="noreferrer" className="flex items-center"><span><img src={meetIcon} className="w-[30px]" alt="icon" /></span>  Google Meet</a>
+            :
+            <p>No Meeting Link Available</p>
+        }
+
+      </div>
+    );
+  }
   return (
     <div>
       <Layout>
@@ -162,12 +224,12 @@ const ExecutionMentorSchedule = () => {
         </div>
 
         <div className="flex mt-24">
-          <div className="w-full ms-10 mt-10">
+          <div className="w-full mx-10 mt-10">
             <div className="text-2xl font-semibold">
               <p>My Schedule</p>
             </div>
 
-            <div className="mt-10">
+            {/* <div className="mt-10">
               {
                 agenda ?    <Calendar
               
@@ -192,7 +254,72 @@ const ExecutionMentorSchedule = () => {
             />
               }
         
+            </div> */}
+            <div className="mt-5">
+              {
+                agenda ? <FullCalendar
+
+                  height="600px"
+                  plugins={[dayGridPlugin, listPlugin, interactionPlugin]}
+                  initialView="list"
+                  selectMirror={true}
+                  headerToolbar={{
+                    start: 'title',
+                    center: 'today',
+                    end: 'dayGridMonth,dayGridWeek,dayGridDay,list'
+                  }}
+                  eventContent={renderEventContent}
+                  events={events?.map((event) => ({
+                    title: event?.title,
+                    start: event?.start,
+                    end: event?.end,
+                    link: event?.meeting,
+                    meeting: extractMeetLink(event?.title),
+                  }))}
+                  // dateClick={(info) => handleDateClick(info.date)}
+                  eventTimeFormat={{
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    meridiem: 'short',
+                    hour12: true,
+                  }}
+                  timeZone="UTC" // Set the appropriate time zone
+                />
+                  :
+                  <FullCalendar
+
+                    height="600px"
+                    plugins={[dayGridPlugin, listPlugin, interactionPlugin]}
+                    initialView="dayGridMonth"
+                    selectMirror={true}
+                    headerToolbar={{
+                      start: 'title',
+                      center: 'today',
+                      end: 'dayGridMonth,dayGridWeek,dayGridDay,list'
+                    }}
+                    eventContent={renderEventContent}
+                    events={events?.map((event) => ({
+                      title: event?.title,
+                      start: event?.start,
+                      end: event?.end,
+                      link: event?.meeting,
+                      meeting: extractMeetLink(event?.title),
+                    }))}
+                    // dateClick={(info) => handleDateClick(info.date)}
+                    eventTimeFormat={{
+                      hour: 'numeric',
+                      minute: '2-digit',
+                      meridiem: 'short',
+                      hour12: true,
+                    }}
+                    timeZone="UTC" // Set the appropriate time zone
+                  />
+              }
+
+
             </div>
+
+
           </div>
 
           {/* <div>

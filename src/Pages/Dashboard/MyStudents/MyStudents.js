@@ -71,8 +71,18 @@ const MyStudents = () => {
         `${process.env.REACT_APP_SERVER_API}/api/v1/users/students/${userInfo?.organizationId}`
       )
       .then((response) => {
-        setAllMyStudents(response?.data);
-        setFilteredStudents(response?.data);
+        console.log(response?.data)
+        if(paidStudents){
+          const paidStudents = response?.data?.filter((student)=>(student?.courses && student?.courses[0]))
+          console.log(paidStudents)
+          setAllMyStudents(paidStudents);
+          setFilteredStudents(paidStudents);
+        }
+        else {
+          setAllMyStudents(response?.data);
+          setFilteredStudents(response?.data);
+        }
+       
       })
       .catch((error) => console.error(error));
   }, [userInfo]);
