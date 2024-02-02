@@ -4,13 +4,28 @@ import axios from "axios";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import { useParams } from "react-router-dom";
 import Navbar from "./Navbar";
+import './style.css'
+import Swal from "sweetalert2";
+import DialogLayoutForFromControl from "../Shared/DialogLayoutForFromControl";
+import LoginForm from "./LoginForm";
 
 const Payment = () => {
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo, user } = useContext(AuthContext);
   const { id } = useParams();
   const [course, setCourse] = useState([]);
   const [batchesData, setBatchesData] = useState([]);
+  const [organizationData, setOrganizationData] = useState([]);
   const [selectedBatch, setSelectedBatch] = useState({});
+  const [offers, setOffers] = useState([]);
+  const [coupon, setCoupon] = useState("");
+  const [couponDiscount, setCouponDiscount] = useState(0);
+  const [loginOpen, setLoginOpen] = useState(false);
+  const [registerOpen, setRegisterOpen] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+
+
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_SERVER_API}/api/v1/courses/${id}`)
@@ -27,12 +42,74 @@ const Payment = () => {
       .catch((error) => console.error(error));
   }, [id]);
 
+
+  const fetchOffers = async (batchId) => {
+    const offers = await axios.get(`${process.env.REACT_APP_SERVER_API}/api/v1/offers/batchId/${batchId}`);
+    setOffers(offers?.data?.result);
+    setCoupon("");
+    setCouponDiscount(0);
+  }
+
+  useEffect(() => {
+    fetchOffers(selectedBatch?._id);
+    // console.log("Offers  ==============>", offers);
+  }, [selectedBatch]);
+
+
   const date = new Date(course?.courseStartingDate);
   const options = {
     year: "numeric",
     month: "long",
     day: "numeric",
   };
+
+
+  // console.log(selectedBatch);
+
+  const handleApplyCoupon = () => {
+    const filteredCoupon = offers.filter((offer) => (offer.code === coupon) && (offer.disabled !== true));
+    if (filteredCoupon.length > 0) {
+      // console.log(filteredCoupon[0]);
+      let { discountPercent, maxDiscountValue } = filteredCoupon[0];
+      let discountAmount = (+selectedBatch?.price * +discountPercent) / 100;
+      // console.log("Discount Amount", discountAmount);
+      if (discountAmount > +maxDiscountValue)
+        discountAmount = +maxDiscountValue;
+      // console.log("Discount Amount", discountAmount);
+      setCouponDiscount(discountAmount);
+    }
+    else {
+      Swal.fire({
+        title: "Coupon Doesn't Exist",
+        icon: "error",
+      });
+    }
+
+  }
+
+
+  const handleEnroll = () => {
+    Swal.fire({
+      icon: 'Enroll Click',
+      text: "Login"
+    });
+  }
+
+
+  const handleLogin = (event) => {
+    event.preventDefault();
+    Swal.fire({
+      icon: 'success',
+      text: "Login"
+    });
+  }
+
+
+  const handleRegister = () => {
+    //TO Do
+  }
+
+
   return (
     <div className="bg-[#f6f7ff91] min-h-[100vh]">
       <Navbar />
@@ -71,7 +148,7 @@ const Payment = () => {
               </div>
             </div>
           </div>
-          <div className="max-w-[500px] min-w-[350px]">
+          <div className="max-w-[350px] min-w-[350px]">
             <div className="mt-3">
               <h1 className=" text-black text-base font-[500] ">
                 Select Batch
@@ -95,11 +172,10 @@ const Payment = () => {
                     {batchesData?.map((item, index) => (
                       <option
                         key={index}
-                        className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 m-1 ${
-                          selectedBatch?._id === item?._id
-                            ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
-                            : "text-[#949494]"
-                        }`}
+                        className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 m-1 ${selectedBatch?._id === item?._id
+                          ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
+                          : "text-[#949494]"
+                          }`}
                         value={index}
                         // onClick={() => handleSelectCourse(item)}
                         onMouseDown={() => setSelectedBatch(item)}
@@ -122,8 +198,11 @@ const Payment = () => {
                       className=" bg-transparent w-full p-2 focus:outline-none"
                       type="text"
                       placeholder="Enter Coupon Code"
+                      name="coupon"
+                      value={coupon}
+                      onChange={(e) => setCoupon(e.target.value)}
                     />
-                    <button className=" text-[#5e52ff] bg-[#5e52ff0c] p-2 rounded-sm">
+                    <button onClick={handleApplyCoupon} className=" text-[#5e52ff] bg-[#5e52ff0c] p-2 rounded-sm">
                       Apply
                     </button>
                   </div>
@@ -132,19 +211,31 @@ const Payment = () => {
                   <h1 className=" text-gray-400 mb-1 text-base font-[500] ">
                     Applicable Coupons
                   </h1>
-                  <div className="bg-gradient-to-b from-white to-[#ebf1ff] rounded-[7px] border border-blue px-[10px] py-[12px]">
-                    <div className="flex items-center justify-between uppercase text-[1.25rem] font-bold">
-                      <h3>23.1%</h3>
-                      <h4 className=" text-blue">PRES23</h4>
-                    </div>
-                    <p className=" flex items-center justify-between text-[14px]">
-                      <span>UPTO ₹300</span>
-                      <span>EXPIRES ON 31 Mar 2024</span>
-                    </p>
-                    <p className="mt-[10px] font-[600] text-[1.07rem]">
-                      Valid for first 20 learners daily.{" "}
-                    </p>
+
+                  <div className="flex gap-5 overflow-x-auto pb-3 scrollbar-container">
+                    {
+                      offers?.map((offer, index) =>
+                      ((offer?.suggestDuringCheckout && !offer?.disabled) &&
+                        <div key={index} onClick={() => setCoupon(offer?.code)} className="bg-gradient-to-b from-white to-[#ebf1ff] rounded-[7px] border border-blue px-[10px] py-[12px] min-w-[350px]">
+                          <div className="flex items-center justify-between uppercase text-[1.25rem] font-bold">
+                            <h3>{offer?.discountPercent}%</h3>
+                            <h4 className=" text-blue">{offer?.code}</h4>
+                          </div>
+                          <p className=" flex items-center justify-between text-[14px]">
+                            <span>UPTO ₹{offer?.maxDiscountValue}</span>
+                            {/* <span>EXPIRES ON 31 Mar 2024</span> */}
+                            <span>EXPIRES ON {new Date(offer?.validTill)?.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                          </p>
+                          <p className="mt-[10px] font-[600] text-[1.07rem]">
+                            Valid for first {offer?.maxUseCount} learners.{" "}
+                          </p>
+                        </div>))
+                    }
                   </div>
+
+
+
+
                 </div>
                 <hr className="my-6" />
                 <div className="mt-3">
@@ -160,7 +251,7 @@ const Payment = () => {
                               Total Price
                             </td>
                             <td id="bundle-cost" className="py-2">
-                              ₹1299
+                              ₹{selectedBatch?.price || "N/A"}
                             </td>
                           </tr>
                           <tr
@@ -171,7 +262,7 @@ const Payment = () => {
                           >
                             <td>Coupon Discount</td>
                             <td className="py-2" id="coupon-discount">
-                              ₹0
+                              ₹{couponDiscount >= 0 ? couponDiscount : "N/A"}
                             </td>
                           </tr>
                         </tbody>
@@ -179,7 +270,7 @@ const Payment = () => {
                           <tr>
                             <td className="py-2">Total</td>
                             <td className="py-2" id="total-to-be-paid">
-                              ₹1299.00
+                              ₹{selectedBatch?.price ? ((+selectedBatch?.price) - (+couponDiscount)) : "N/A"}
                             </td>
                           </tr>
                         </tfoot>
@@ -192,10 +283,11 @@ const Payment = () => {
                   <div className="flex justify-between mb-5">
                     <div className="sum-block-details">
                       <p className="m-0">Net Payable amount</p>
-                      <h4 className="m-0 text-2xl">₹999.00</h4>
+                      <h4 className="m-0 text-2xl">₹{selectedBatch?.price ? ((+selectedBatch?.price) - (+couponDiscount)) : "N/A"}</h4>
                     </div>
                     <div>
                       <button
+                        onClick={user ? handleEnroll : () => setLoginOpen(true)}
                         id="enroll-now-btn"
                         className=" px-[18px] py-[9px] text-white font-bold bg-blue rounded-md"
                       >
@@ -209,6 +301,25 @@ const Payment = () => {
           </div>
         </div>
       </div>
+      <DialogLayoutForFromControl
+        open={loginOpen}
+        setOpen={setLoginOpen}
+        title={
+          <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
+            Login
+          </p>
+        }
+        width={450}
+        borderRadius="15px"
+      >
+        <LoginForm
+          email={email}
+          setEmail={setEmail}
+          password={password}
+          setPassword={setPassword}
+          handleLogin={handleLogin}
+        />
+      </DialogLayoutForFromControl>
     </div>
   );
 };
