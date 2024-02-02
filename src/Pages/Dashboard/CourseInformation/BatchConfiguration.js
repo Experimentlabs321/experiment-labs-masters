@@ -184,7 +184,16 @@ const BatchConfiguration = ({
           }}
           className="cursor-pointer bg-[#FFDB70] text-[15px] font-[600] py-[20px] px-[25px] rounded-[15px] flex items-center justify-center shadow-[0px_2px_4px_0px_#00000026]"
         >
-          Select Batch
+          {selectedBatches[0] ? (
+            selectedBatches?.map((batch) => (
+              <span className="mr-1" key={batch?.key}>
+                {batch?.batchName},
+              </span>
+            ))
+          ) : (
+            <span>Select Batch</span>
+          )}
+
           <svg
             className="ml-[20px]"
             xmlns="http://www.w3.org/2000/svg"
@@ -231,9 +240,21 @@ const BatchConfiguration = ({
                       checked={selectedBatches.find(
                         (item) => item?.batchName === option?.batchName
                       )}
-                      // onChange={(e) => handleOptionChangeBatch(e)}
                       onChange={(e) => {
-                        setSelectedBatches([...selectedBatches, option]);
+                        const isChecked = e.target.checked;
+
+                        // Toggle the selection based on whether the batch is already in selectedBatches
+                        setSelectedBatches((prevSelectedBatches) => {
+                          if (isChecked) {
+                            // Add the batch if it's not in the array
+                            return [...prevSelectedBatches, option];
+                          } else {
+                            // Remove the batch if it's in the array
+                            return prevSelectedBatches.filter(
+                              (item) => item?.batchName !== option?.batchName
+                            );
+                          }
+                        });
                       }}
                       className=" mb-1"
                     />
