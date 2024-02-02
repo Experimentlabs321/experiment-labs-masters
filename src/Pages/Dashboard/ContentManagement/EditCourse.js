@@ -9,6 +9,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import uploadFileToS3 from "../../UploadComponent/s3Uploader";
+import FileCopyIcon from "@mui/icons-material/FileCopy";
 
 const EditCourse = () => {
   const { id } = useParams();
@@ -16,6 +17,8 @@ const EditCourse = () => {
   const [isOpenCourseFormat, setisOpenCourseFormat] = useState(false);
   const [isOpenCompletionTracking, setisOpenCompletionTracking] =
     useState(false);
+  const rootUrl = window.location.origin;
+  console.log(rootUrl);
 
   const toggleDropdownCourseSelection = () => {
     setisOpenGeneralCourseInfo(!isOpenGeneralCourseInfo);
@@ -87,6 +90,7 @@ const EditCourse = () => {
       +form.showactivitycompletionconditions?.value;
     const coursePurchaseUrl = "" + form.coursePurchaseUrl?.value;
     const enableDrip = form.enableDrip?.value === "false" ? false : true;
+    const expirationDay = form.expirationDay?.value;
 
     let fileUrl = "";
     if (selectedFile) {
@@ -108,7 +112,8 @@ const EditCourse = () => {
       groups,
       showactivitydates,
       numberOfWeeks,
-      coursePurchaseUrl,
+      // coursePurchaseUrl,
+      expirationDay,
       // weekChapterName: formData,
       showactivityreports,
       enableCompletionTracking,
@@ -282,14 +287,36 @@ const EditCourse = () => {
                       Course purchase url
                     </p>
                   </div>
-
-                  <input
-                    className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                    name="coursePurchaseUrl"
-                    defaultValue={courseData?.coursePurchaseUrl}
-                    type="url"
-                    placeholder="https://www.google.com/"
-                  />
+                  <div className="flex">
+                    <button
+                      onMouseDown={async () => {
+                        try {
+                          await navigator.clipboard.writeText(
+                            `${rootUrl}/payment/${id}`
+                          );
+                          toast.success("Url Copied!");
+                        } catch (err) {
+                          console.error("Unable to copy to clipboard", err);
+                        }
+                      }}
+                      className="mt-6 ms-6 border rounded-l-md w-fit h-[50px] p-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                    >{`${rootUrl}/payment/${id}`}</button>
+                    <button
+                      className="mt-6 border rounded-r-md w-fit h-[50px] p-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                      onClick={async () => {
+                        try {
+                          await navigator.clipboard.writeText(
+                            `${rootUrl}/payment/${id}`
+                          );
+                          toast.success("Url Copied!");
+                        } catch (err) {
+                          console.error("Unable to copy to clipboard", err);
+                        }
+                      }}
+                    >
+                      <FileCopyIcon />
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -431,6 +458,23 @@ const EditCourse = () => {
                       defaultValue={courseData?.courseIDNumber}
                       type="text"
                       placeholder="Eg. 02283847"
+                    ></input>
+                  </div>
+
+                  <div className="mt-20">
+                    <div className="flex items-center gap-4">
+                      <p className="h-2 w-2 bg-black rounded-full"></p>
+                      <p className="font-bold text-lg me-[36px]">
+                        Expiration Day
+                      </p>
+                    </div>
+
+                    <input
+                      className="mt-6 ms-6 border rounded-md w-[272px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                      name="expirationDay"
+                      type="number"
+                      defaultValue={courseData?.expirationDay}
+                      placeholder="Eg. 364"
                     ></input>
                   </div>
                 </div>
