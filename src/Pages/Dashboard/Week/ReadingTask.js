@@ -5,20 +5,20 @@ import Quiz from "./SubFile/Shared/Quiz";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
 import Swal from "sweetalert2";
-import icon from "../../../icon192.png"
+import icon from "../../../icon192.png";
 
 const ReadingTask = ({ taskData }) => {
-
   const { userInfo, user } = useContext(AuthContext);
-  if(userInfo.role !== 'admin'){
-    window.addEventListener("contextmenu", (e) => {
-      e.preventDefault();
-    });
-  };
+  // if (userInfo.role !== "admin") {
+  //   window.addEventListener("contextmenu", (e) => {
+  //     e.preventDefault();
+  //   });
+  // }
   const [openTask, setOpenTask] = useState(
     JSON.parse(localStorage.getItem("task"))
   );
   const [openQuiz, setOpenQuiz] = useState(false);
+  const [isOverlayVisible, setOverlayVisible] = useState(false);
   console.log(taskData);
   const [completionStatus, setCompletionStatus] = useState(false);
   const pdfContainerRef = useRef(null);
@@ -31,15 +31,13 @@ const ReadingTask = ({ taskData }) => {
       setCompletionStatus(true);
   }, [taskData, user]);
 
-
-
-
   const handleCompletion = async () => {
     if (
       !taskData?.completionParameter ||
       taskData?.completionParameter?.completionParameter === "Without Quiz"
     ) {
       setOpenQuiz(false);
+      setOverlayVisible(false);
       const sendData = {
         participantChapter: {
           email: userInfo?.email,
@@ -69,6 +67,7 @@ const ReadingTask = ({ taskData }) => {
         });
     } else {
       setOpenQuiz(!openQuiz);
+      setOverlayVisible(openQuiz);
     }
   };
   return (
@@ -141,23 +140,27 @@ const ReadingTask = ({ taskData }) => {
         </object>
       </div> */}
 
-      <div className="min-h-[72vh] mb-[60px] ">
+<div className='min-h-[72vh] mb-[60px]'>
         {completionStatus ? (
-          <div className="container mx-auto">
-            <button className=" bg-green py-2 px-5 my-4 float-right mr-4 rounded-lg text-lg text-white font-bold ">
+          <div className='container mx-auto'>
+            <button className='bg-green py-2 px-5 my-4 float-right mr-4 rounded-lg text-lg text-white font-bold'>
               Completed <CheckCircleOutlineIcon />
             </button>
           </div>
         ) : (
-          <div className="container mx-auto">
-            <button
-              onClick={() => {
-                handleCompletion();
-              }}
-              className=" bg-green py-2 px-5 my-4 float-right mr-4 rounded-lg text-lg text-white font-bold "
-            >
-              Make as complete <CheckCircleOutlineIcon />
-            </button>
+          <div className='container mx-auto relative'>
+            {isOverlayVisible && (
+              <div className="fixed top-0 left-0 w-full h-full z-[9999] bg-transparent" onClick={handleCompletion}></div>
+            )}
+            {isOverlayVisible ? null : (
+              <iframe
+                src={`https://docs.google.com/viewer?url=${taskData?.additionalFiles}&embedded=true`}
+                title="Your Document"
+                className="h-[68vh] mx-auto border-x-30 mt-40 border-t-30 border-b-50 rounded-lg border-[#292929]"
+                width="90%"
+                height="80vh"
+              ></iframe>
+            )}
             {openQuiz && (
               <Quiz
                 setOpenQuiz={setOpenQuiz}
@@ -166,39 +169,14 @@ const ReadingTask = ({ taskData }) => {
                 questions={taskData?.completionParameter?.questions}
               />
             )}
+            <button
+              onClick={handleCompletion}
+              className='bg-green py-2 px-5 my-4 float-right mr-4 rounded-lg text-lg text-white font-bold'
+            >
+              Mark as complete <CheckCircleOutlineIcon />
+            </button>
           </div>
         )}
-{taskData?.additionalFiles && !openQuiz && (
-  <div className="relative">
-    {taskData?.additionalFiles.endsWith('.pdf') ||
-    taskData?.additionalFiles.endsWith('.ppt') ||
-    taskData?.additionalFiles.endsWith('.docx') ? (
-      <>
-      <iframe
-        src={`https://docs.google.com/viewer?url=${taskData?.additionalFiles}&embedded=true`}
-        title="Your Document"
-        className="h-[68vh] mx-auto border-x-30 mt-40 border-t-30 border-b-50 rounded-lg border-[#292929]"
-        width="90%"
-        height="80vh"
-      ></iframe>
-        <div className="flex items-center text-sm font-semibold gap-1 absolute top-28 right-56 z-10"><img className="w-4" src={icon} alt="icon"/><p>Experiment Labs</p></div>
-      </>
-    ) : (
-      <>
-      <img
-        src={taskData?.additionalFiles}
-        alt=""
-        className="h-[68vh] mx-auto border-x-30 mt-40 border-t-30 border-b-50 rounded-lg border-[#292929]"
-        width="90%"
-        height="80vh"
-      />
-      <div className="flex items-center text-xl font-semibold gap-1 absolute top-24 right-12 z-10"><img className="w-8" src={icon} alt="icon"/><p>Experiment Labs</p></div>
-      </>
-    )}
-
-  </div>
-)}
-<a href="//www.dmca.com/Protection/Status.aspx?ID=f9cd86e6-c90e-4bd4-9098-079a6168195e" title="DMCA.com Protection Status" class="dmca-badge"> <img src ="https://images.dmca.com/Badges/dmca-badge-w100-5x1-10.png?ID=f9cd86e6-c90e-4bd4-9098-079a6168195e"  alt="DMCA.com Protection Status" /></a>  <script src="https://images.dmca.com/Badges/DMCABadgeHelper.min.js"> </script>
       </div>
     </div>
   );

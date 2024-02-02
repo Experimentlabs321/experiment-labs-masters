@@ -12,6 +12,7 @@ import ExperienceUnionCommercePage from "../../Pages/ExperienceUnionCommerce/Exp
 import ExperienceUnionHumanitiesPage from "../../Pages/ExperienceUnionHumanities/ExperienceUnionPage/ExperienceUnionHumanitiesPage";
 import Dashboard from "../../Pages/Dashboard/Dashboard/Dashboard";
 import Offers from "../../Pages/Dashboard/Dashboard/Offers";
+import Profile from "../../Pages/Dashboard/Dashboard/Profile";
 import LeaderBoard from "../../Pages/Dashboard/LeaderBoard/LeaderBoard";
 import Earning from "../../Pages/Dashboard/Earning/Earning";
 import Redemption from "../../Pages/Dashboard/Redemption/Redemption";
@@ -98,6 +99,7 @@ import AffiliateSignUp from "../../Pages/Dashboard/LoginPage/Affiliate/Affiliate
 import ZoomIntegration from "../../Pages/Tester/ZoomIntegration";
 import Feedback from "../../Pages/Dashboard/Feedback/Feedback";
 import LoginWithOrganization from "../../Pages/Login/LoginWithOrganization/LoginWithOrganization";
+import RegisterWithOrganization from "../../Pages/Login/RegisterWithOrganization/RegisterWithOrganization";
 import UpdateOrganization from "../../Pages/Dashboard/UpdateOrganization/UpdateOrganization";
 import ExperimentLabsHome from "../../Pages/Template/ExperimentLabsTemplate/Home/Home/ExperimentLabsHome";
 import OnePagerHome from "../../Pages/Template/OnePager/OnePagerHome/OnePagerHome";
@@ -120,6 +122,8 @@ import CreateCertificate from "../../Pages/Dashboard/CreateCertificate/CreateCer
 import DownloadCertificate from "../../Pages/Dashboard/ApplyCertificate/DownloadCertificate";
 import AdminDashboardHome from "../../Pages/Dashboard/AdminDashboard/AdminDashboardHome";
 import MyStudents from "../../Pages/Dashboard/MyStudents/MyStudents";
+import EditCourse from "../../Pages/Dashboard/ContentManagement/EditCourse";
+import Payment from "../../Pages/Dashboard/Payment/Payment";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -300,6 +304,10 @@ const router = createBrowserRouter([
   {
     path: "/createCourse",
     element: <CreateCourse />,
+  },
+  {
+    path: "/editCourse/:id",
+    element: <EditCourse />,
   },
   {
     path: "/adminDashboardHome",
@@ -578,6 +586,10 @@ const router = createBrowserRouter([
     element: <LoginWithOrganization />,
   },
   {
+    path: "/register/:id",
+    element: <RegisterWithOrganization />,
+  },
+  {
     path: "/updateOrganization",
     element: <UpdateOrganization />,
   },
@@ -612,6 +624,12 @@ const router = createBrowserRouter([
   {
     path: "/myStudents/:paidStudents",
     element: <MyStudents />,
+    path: "/payment/:id",
+    element: <Payment />,
+  },
+  {
+    path: "/profile/:email",
+    element: <Profile/>,
   },
 ]);
 

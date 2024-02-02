@@ -17,6 +17,7 @@ const BatchConfiguration = ({
   const [participant, setParticipant] = useState("");
   const [participants, setParticipants] = useState([]);
   const [participantsData, setParticipantsData] = useState([]);
+  const [showEditBatchDialog, setShowEditBatchDialog] = useState(false);
 
   const { id } = useParams();
   const { user, userInfo, createUser } = useContext(AuthContext);
@@ -54,7 +55,8 @@ const BatchConfiguration = ({
           organizationId: userInfo?.organizationId,
           organizationName: userInfo?.organizationName,
         },
-        participants: participants,
+        price: event?.target?.price?.value,
+        // participants: participants,
       },
     };
 
@@ -67,9 +69,9 @@ const BatchConfiguration = ({
 
     console.log(newBatch);
 
-    sendData?.user?.participants?.forEach((element) => {
-      createUser(element?.email, element?.password);
-    });
+    // sendData?.user?.participants?.forEach((element) => {
+    //   createUser(element?.email, element?.password);
+    // });
 
     if (newBatch?.data?.batch?.acknowledged) {
       toast.success("Batch Added Successfully");
@@ -83,6 +85,45 @@ const BatchConfiguration = ({
 
   const handleEditBatch = async (event) => {
     event.preventDefault();
+    const sendData = {
+      courseId: id,
+      batchName: event?.target?.batchName?.value,
+      batchStartDate: event?.target?.batchStartDate?.value,
+      batchEndDate: event?.target?.batchEndDate?.value,
+      creator: {
+        name: userInfo?.name,
+        email: userInfo?.email,
+        photoURL: userInfo?.photoURL,
+      },
+      organization: {
+        organizationId: userInfo?.organizationId,
+        organizationName: userInfo?.organizationName,
+      },
+      price: event?.target?.price?.value,
+      // participants: participants,
+    };
+
+    console.log(sendData);
+
+    const editBatch = await axios.put(
+      `${process.env.REACT_APP_SERVER_API}/api/v1/batches/updateBatch/batchId/${selectedBatches[0]?._id}`,
+      sendData
+    );
+
+    console.log(editBatch);
+
+    // sendData?.user?.participants?.forEach((element) => {
+    //   createUser(element?.email, element?.password);
+    // });
+
+    if (editBatch?.data?.acknowledged) {
+      toast.success("Batch Updated Successfully");
+      // batchesData?.push(sendData?.batch);
+      setShowEditBatchDialog(false);
+      event.target.reset();
+    }
+
+    // console.log("Add chapter----->", week);
   };
 
   const handleBatchDelete = async (id) => {};
@@ -190,7 +231,10 @@ const BatchConfiguration = ({
                       checked={selectedBatches.find(
                         (item) => item?.batchName === option?.batchName
                       )}
-                      onChange={(e) => handleOptionChangeBatch(e)}
+                      // onChange={(e) => handleOptionChangeBatch(e)}
+                      onChange={(e) => {
+                        setSelectedBatches([...selectedBatches, option]);
+                      }}
                       className=" mb-1"
                     />
                     <div className="flex mb-1 items-center">
@@ -257,7 +301,19 @@ const BatchConfiguration = ({
                     placeholder="Eg. Entrepreneurship Lab"
                   />
                 </div>
-                {!participants[0] && (
+                <div className=" basis-1/2 px-2">
+                  <h1 className=" text-[18px] font-[700] mt-[16px] mb-[8px] ">
+                    Batch Price
+                  </h1>
+                  <input
+                    required
+                    type="number"
+                    name="price"
+                    placeholder="Eg. 5000"
+                    className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+                  />
+                </div>
+                {/* {!participants[0] && (
                   <button
                     onClick={() => {
                       setParticipants([
@@ -430,7 +486,7 @@ const BatchConfiguration = ({
                       </svg>
                     </span>
                   </button>
-                )}
+                )} */}
               </div>
               <div className="w-full flex items-center justify-center mt-[40px]">
                 <input
@@ -459,10 +515,257 @@ const BatchConfiguration = ({
               />
             </svg>
           </button>
-          <button
-            // onClick={() => setEditWeekOpen(true)}
-            className=""
+          {/* Edit batch start */}
+          <DialogLayoutForFromControl
+            title={
+              <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
+                Edit Batch
+              </p>
+            }
+            width={900}
+            setOpen={setShowEditBatchDialog}
+            open={showEditBatchDialog}
           >
+            <form onSubmit={handleEditBatch} className="px-[8px] py-[16px] ">
+              <div className="flex items-center flex-wrap ">
+                <div className=" basis-full px-2">
+                  <h1 className=" text-[18px] font-[700] mt-[16px] mb-[8px] ">
+                    Batch Name
+                  </h1>
+                  <input
+                    required
+                    type="text"
+                    defaultValue={selectedBatches[0]?.batchName}
+                    name="batchName"
+                    placeholder="Eg. Onboarding"
+                    className="bg-[#F6F7FF] font-sans border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+                  />
+                </div>
+                <div className="basis-1/2 px-2">
+                  <h1 className=" text-[18px] font-[700] mt-[16px] mb-[8px] ">
+                    Batch Starting Date
+                  </h1>
+                  <input
+                    required
+                    className="bg-[#F6F7FF] font-sans border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+                    name="batchStartDate"
+                    defaultValue={selectedBatches[0]?.batchStartDate}
+                    type="date"
+                  />
+                </div>
+                <div className="basis-1/2 px-2">
+                  <h1 className=" text-[18px] font-[700] mt-[16px] mb-[8px] ">
+                    Batch Ending Date
+                  </h1>
+                  <input
+                    required
+                    className="bg-[#F6F7FF] font-sans border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+                    name="batchEndDate"
+                    defaultValue={selectedBatches[0]?.batchEndDate}
+                    type="date"
+                  />
+                </div>
+                <div className=" basis-1/2 px-2">
+                  <h1 className=" text-[18px] font-[700] mt-[16px] mb-[8px] ">
+                    Batch Price
+                  </h1>
+                  <input
+                    required
+                    type="number"
+                    name="price"
+                    defaultValue={selectedBatches[0]?.price}
+                    placeholder="Eg. 5000"
+                    className="bg-[#F6F7FF] font-sans border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+                  />
+                </div>
+                <>
+                  {/* {!participants[0] && (
+                  <button
+                    onClick={() => {
+                      setParticipants([
+                        ...participants,
+                        { email: "", name: "" },
+                      ]);
+                      setParticipantsData([
+                        ...participantsData,
+                        {
+                          email: "",
+                          name: "",
+                          phone: "",
+                          password: "",
+                          organizationId: userInfo?.organizationId,
+                          organizationName: userInfo?.organizationName,
+                          role: "user",
+                        },
+                      ]);
+                    }}
+                    className="flex items-center gap-2 mx-2 mt-[24px] bg-[#F6F7FF] border-[1px] border-[#CECECE] rounded-[6px] py-[15px] px-[18px]"
+                  >
+                    Add Participant
+                    <span className="bg-black rounded-full">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="25"
+                        height="25"
+                        viewBox="0 0 25 25"
+                        fill="none"
+                      >
+                        <path
+                          d="M19.6641 11.2275H13.6641V5.22754H11.6641V11.2275H5.66406V13.2275H11.6641V19.2275H13.6641V13.2275H19.6641V11.2275Z"
+                          fill="white"
+                        />
+                      </svg>
+                    </span>
+                  </button>
+                )}
+                {participants.length > 0 && (
+                  <>
+                    <h1 className=" text-[26px] px-2 font-[700] mt-[30px] mb-[4px] ">
+                      Participants List
+                    </h1>
+
+                    {participants?.map((participant, index) => {
+                      return (
+                        <div
+                          key={index}
+                          className="tag-container flex flex-wrap w-full px-1 bg-slate-100 mx-2 rounded-lg my-2 py-3 "
+                        >
+                          <div className="basis-full px-2 flex items-center justify-between">
+                            <h1 className=" text-[20px] font-[700]  ">
+                              Participant {index + 1}
+                            </h1>
+                            <button
+                              onClick={() => removeParticipant(participant)}
+                            >
+                              <span className="cursor-pointer pl-1 text-3xl font-bold">
+                                ×
+                              </span>
+                            </button>
+                          </div>
+                          <div className="basis-1/2 px-2">
+                            <h1 className=" text-[18px] font-[700] mt-[16px] mb-[8px] ">
+                              Email
+                            </h1>
+                            <input
+                              type="email"
+                              required
+                              defaultValue={participant?.email}
+                              onChange={(e) => {
+                                participants[index].email = e.target.value;
+                                participantsData[index].email = e.target.value;
+                              }}
+                              name="email"
+                              placeholder="Email"
+                              className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+                            />
+                          </div>
+                          <div className="basis-1/2 px-2">
+                            <h1 className=" text-[18px] font-[700] mt-[16px] mb-[8px] ">
+                              Name
+                            </h1>
+                            <input
+                              type="text"
+                              required
+                              defaultValue={participant?.name}
+                              onChange={(e) => {
+                                participants[index].name = e.target.value;
+                                participantsData[index].name = e.target.value;
+                              }}
+                              name="name"
+                              placeholder="Name"
+                              className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+                            />
+                          </div>
+                          <div className="basis-1/2 px-2">
+                            <h1 className=" text-[18px] font-[700] mt-[16px] mb-[8px] ">
+                              Password
+                            </h1>
+                            <input
+                              type="password"
+                              required
+                              defaultValue={participant?.password}
+                              onChange={(e) => {
+                                participantsData[index].password =
+                                  e.target.value;
+                              }}
+                              name="password"
+                              placeholder="Password"
+                              className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+                            />
+                          </div>
+                          <div className="basis-1/2 px-2">
+                            <h1 className=" text-[18px] font-[700] mt-[16px] mb-[8px] ">
+                              Phone
+                            </h1>
+                            <input
+                              type="text"
+                              required
+                              defaultValue={participant?.phone}
+                              onChange={(e) => {
+                                participantsData[index].phone = e.target.value;
+                              }}
+                              name="phone"
+                              placeholder="Phone"
+                              className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </>
+                )}
+                {participants[0] && (
+                  <button
+                    onClick={() => {
+                      setParticipants([
+                        ...participants,
+                        { email: "", name: "" },
+                      ]);
+                      setParticipantsData([
+                        ...participantsData,
+                        {
+                          email: "",
+                          name: "",
+                          phone: "",
+                          password: "",
+                          organizationId: userInfo?.organizationId,
+                          organizationName: userInfo?.organizationName,
+                          role: "user",
+                        },
+                      ]);
+                    }}
+                    className="flex items-center gap-2 mx-2 mt-[24px] bg-[#F6F7FF] border-[1px] border-[#CECECE] rounded-[6px] py-[15px] px-[18px]"
+                  >
+                    Add Participant
+                    <span className="bg-black rounded-full">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="25"
+                        height="25"
+                        viewBox="0 0 25 25"
+                        fill="none"
+                      >
+                        <path
+                          d="M19.6641 11.2275H13.6641V5.22754H11.6641V11.2275H5.66406V13.2275H11.6641V19.2275H13.6641V13.2275H19.6641V11.2275Z"
+                          fill="white"
+                        />
+                      </svg>
+                    </span>
+                  </button>
+                )} */}
+                </>
+              </div>
+              <div className="w-full flex items-center justify-center mt-[40px]">
+                <input
+                  type="submit"
+                  value="Add"
+                  className="py-[15px] cursor-pointer px-[48px] text-[20px] font-[700] rounded-[8px] bg-[#3E4DAC] text-white "
+                />
+              </div>
+            </form>
+          </DialogLayoutForFromControl>
+          {/* Edit batch end */}
+          <button onClick={() => setShowEditBatchDialog(true)} className="">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="29"
