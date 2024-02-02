@@ -137,13 +137,17 @@ const DownloadCertificate = () => {
     // Content of your certificate component
     return (
       <div className="relative">
-        <div className="absolute z-40 h-full w-full flex flex-col items-center justify-center">
-          <img className=" min-w-[40px]" src={Locked} alt="something" />
-          <p className=" text-black text-center font-sans mt-4">
-            To unlock the certificate you have to complete at least{" "}
-            {certificateTemplate?.requiredCompletionPercentage}% of the course.
-          </p>
-        </div>
+        {completionPercentage <
+          certificateTemplate?.requiredCompletionPercentage && (
+          <div className="absolute z-40 h-full w-full flex flex-col items-center justify-center">
+            <img className=" min-w-[40px]" src={Locked} alt="something" />
+            <p className=" text-black text-center font-sans mt-4">
+              To unlock the certificate you have to complete at least{" "}
+              {certificateTemplate?.requiredCompletionPercentage}% of the
+              course.
+            </p>
+          </div>
+        )}
         <div
           className={`${
             completionPercentage <
