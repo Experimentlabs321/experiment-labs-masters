@@ -207,7 +207,7 @@ const CertificateEditor = ({
       });
     }
   };
-  console.log(showRecipientNameUnderline);
+  console.log(selectedBatch);
   return (
     <div className="font-sans">
       <h1 className="text-lg font-semibold mb-3">
@@ -221,34 +221,25 @@ const CertificateEditor = ({
         >
           Select course
         </label>
-        <div className="relative inline-block w-full mb-[10px]">
-          <div
-            className="mt-1 p-2 border w-full rounded-md bg-white"
-            onClick={() => setShowCoursesDropDown(!showCoursesDropDown)}
-            // onFocus={() => setShowCoursesDropDown(true)}
-            onBlur={() => setShowCoursesDropDown(false)}
-          >
-            <button className="w-full h-full flex items-center justify-between">
-              {selectedCourse?.courseFullName}
-              <KeyboardArrowDownIcon className=" float-right" />
-            </button>
-          </div>
-          {showCoursesDropDown && (
-            <ul className="absolute top-full left-0 w-full bg-white border border-gray-300 py-1 px-4 rounded mt-1 transition-opacity duration-300 ease-in-out delay-100 z-10 ">
-              {courses?.map((option, index) => (
-                <li
-                  key={index}
-                  className="cursor-pointer py-2 text-[#6A6A6A] text-[14px] border-b font-[400] "
-                  onMouseDown={() => {
-                    setSelectedCourse(option);
-                  }}
-                >
-                  {option?.courseFullName}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+        <select
+          className="mt-1 p-2 border w-full rounded-md bg-white"
+          onChange={(e) => setSelectedCourse(courses[e.target.value])}
+        >
+          <option className="hidden">Select Batch</option>
+          {courses?.map((item, index) => (
+            <option
+              key={index}
+              className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 m-1 ${
+                selectedCourse?._id === item?._id
+                  ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
+                  : "text-[#949494]"
+              }`}
+              value={index}
+            >
+              {item?.courseFullName}
+            </option>
+          ))}
+        </select>
       </div>
 
       {selectedCourse?._id && (
@@ -259,34 +250,25 @@ const CertificateEditor = ({
           >
             Select batch
           </label>
-          <div className="relative inline-block w-full mb-[10px]">
-            <div
-              className="mt-1 p-2 border w-full rounded-md bg-white"
-              onClick={() => setShowBatchesDropDown(!showBatchesDropDown)}
-              // onFocus={() => setShowBatchesDropDown(true)}
-              onBlur={() => setShowBatchesDropDown(false)}
-            >
-              <button className="w-full h-full flex items-center justify-between text-start">
-                {selectedBatch?.batchName}
-                <KeyboardArrowDownIcon />
-              </button>
-            </div>
-            {showBatchesDropDown && (
-              <ul className="absolute top-full left-0 w-full bg-white border border-gray-300 py-1 px-4 rounded mt-1 transition-opacity duration-300 ease-in-out delay-100 z-10 ">
-                {batchesData?.map((option, index) => (
-                  <li
-                    key={index}
-                    className="cursor-pointer py-2 text-[#6A6A6A] text-[14px] border-b font-[400] "
-                    onMouseDown={() => {
-                      setSelectedBatch(option);
-                    }}
-                  >
-                    {option?.batchName}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+          <select
+            className="mt-1 p-2 border w-full rounded-md bg-white"
+            onChange={(e) => setSelectedBatch(batchesData[e.target.value])}
+          >
+            <option className="hidden">Select Batch</option>
+            {batchesData?.map((item, index) => (
+              <option
+                key={index}
+                className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 m-1 ${
+                  selectedBatch?._id === item?._id
+                    ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
+                    : "text-[#949494]"
+                }`}
+                value={index}
+              >
+                {item?.batchName}
+              </option>
+            ))}
+          </select>
         </div>
       )}
 
