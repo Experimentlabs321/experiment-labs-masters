@@ -190,7 +190,7 @@ const AdminCalendarSchedule = () => {
       dateRange: dateRange,
       maximumTime,
       minimumTime,
-      meetingDuration : meetingDuration,
+      meetingDuration: meetingDuration,
       usersession: global,
       events: calendarEvents,
     };
@@ -384,14 +384,14 @@ const AdminCalendarSchedule = () => {
     const meetlink = eventInfo?.event?.extendedProps?.link;
 
 
-console.log(formattedStartDate)
-console.log(formattedEndDate)
+    console.log(formattedStartDate)
+    console.log(formattedEndDate)
 
 
-const startTimeStamp = new Date(formattedStartDate);
-const startTimeString = startTimeStamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', timeZone: 'GMT' });
-const endTimeStamp = new Date(formattedEndDate);
-const endTimeString = endTimeStamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', timeZone: 'GMT' });
+    const startTimeStamp = new Date(formattedStartDate);
+    const startTimeString = startTimeStamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', timeZone: 'GMT' });
+    const endTimeStamp = new Date(formattedEndDate);
+    const endTimeString = endTimeStamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', timeZone: 'GMT' });
 
 
     return (
@@ -405,15 +405,15 @@ const endTimeString = endTimeStamp.toLocaleTimeString([], { hour: '2-digit', min
         }}
       >
         <h1>{eventInfo?.event?.title}</h1>
-        
+
         {
           meetlink
-           ?  
-           <a target="_blank" href={meetlink} rel="noreferrer" className="flex items-center"><span><img src={meetIcon} className="w-[30px]" alt="icon"/></span>  Google Meet</a>
-           :
-           <p>No Meeting Link Available</p>
+            ?
+            <a target="_blank" href={meetlink} rel="noreferrer" className="flex items-center"><span><img src={meetIcon} className="w-[30px]" alt="icon" /></span>  Google Meet</a>
+            :
+            <p>No Meeting Link Available</p>
         }
-       
+
       </div>
     );
   }
@@ -619,31 +619,31 @@ const endTimeString = endTimeStamp.toLocaleTimeString([], { hour: '2-digit', min
                 <div className="my-6 px-5">
                   <h2>Your Calendar Events</h2>
                   <FullCalendar
-  height="600px"
-  plugins={[dayGridPlugin, listPlugin, interactionPlugin]}
-  initialView="dayGridMonth"
-  selectMirror={true}
-  headerToolbar={{
-    start: 'title',
-    center: 'today',
-    end: 'dayGridMonth,dayGridWeek,dayGridDay,list'
-  }}
-  eventContent={renderEventContent}
-  events={calendarEvents?.map((event) => ({
-    title: event?.summary,
-    start: event?.start.dateTime,
-    end: event?.end.dateTime,
-    link: event?.hangoutLink,
-  }))}
-  dateClick={(info) => handleDateClick(info.date)}
-  eventTimeFormat={{
-    hour: 'numeric',
-    minute: '2-digit',
-    meridiem: 'short',
-    hour12: true,
-  }}
-  timeZone="UTC" // Set the appropriate time zone
-/>
+                    height="600px"
+                    plugins={[dayGridPlugin, listPlugin, interactionPlugin]}
+                    initialView="dayGridMonth"
+                    selectMirror={true}
+                    headerToolbar={{
+                      start: 'title',
+                      center: 'today',
+                      end: 'dayGridMonth,dayGridWeek,dayGridDay,list'
+                    }}
+                    eventContent={renderEventContent}
+                    events={calendarEvents?.map((event) => ({
+                      title: event?.summary,
+                      start: event?.start.dateTime,
+                      end: event?.end.dateTime,
+                      link: event?.hangoutLink,
+                    }))}
+                    dateClick={(info) => handleDateClick(info.date)}
+                    eventTimeFormat={{
+                      hour: 'numeric',
+                      minute: '2-digit',
+                      meridiem: 'short',
+                      hour12: true,
+                    }}
+                    timeZone="UTC" // Set the appropriate time zone
+                  />
                   {/* <Calendar
                     localizer={localizer}
                     events={calendarEvents}
@@ -690,7 +690,7 @@ const endTimeString = endTimeStamp.toLocaleTimeString([], { hour: '2-digit', min
                         defaultValue={7}
                       />
                     </div>
-                    
+
                     <div className="">
                       <div className="flex items-center gap-4">
                         <p className="h-2 w-2 bg-black rounded-full"></p>
@@ -704,7 +704,7 @@ const endTimeString = endTimeStamp.toLocaleTimeString([], { hour: '2-digit', min
                         className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
                         name="minimumTime"
                         type="time"
-                        
+
                       />
                     </div>
                     <div className="">
@@ -720,7 +720,7 @@ const endTimeString = endTimeStamp.toLocaleTimeString([], { hour: '2-digit', min
                         className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
                         name="maximumTime"
                         type="time"
-                        
+
                       />
                     </div>
 
