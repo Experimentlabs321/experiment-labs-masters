@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useCallback, useEffect, useState } from "react";
 import {
   createUserWithEmailAndPassword,
   getAuth,
@@ -22,7 +22,6 @@ const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState({});
 
-  // Registering
   const createUser = (email, password) => {
     setLoading(true);
     return createUserWithEmailAndPassword(auth, email, password);
@@ -36,22 +35,26 @@ const AuthProvider = ({ children }) => {
   //Logout
   const logOut = () => {
     setLoading(true);
-    
-    
+
+
     try {
-      const userDevice =  axios.put( `${process.env.REACT_APP_SERVER_API}/api/v1/users/removeDevice/${userInfo?.email}`, { device: userAgent, } );
+      const userDevice = axios.put(`${process.env.REACT_APP_SERVER_API}/api/v1/users/removeDevice/${userInfo?.email}`, { device: userAgent, });
     } catch (error) {
       console.error("Error removing device:", error);
-      
     }
 
+    return signOut(auth);
+  };
+
+  const devicelogOut = () => {
+    setLoading(true);
     return signOut(auth);
   };
 
   // sign in with email and password
   const signIn = (email, password) => {
     setLoading(true);
-   
+
     return signInWithEmailAndPassword(auth, email, password);
   };
 
@@ -66,7 +69,9 @@ const AuthProvider = ({ children }) => {
       auth,
       (currentUser) => {
         setUser(currentUser);
+     
         setLoading(false);
+        
       },
       []
     );
@@ -82,12 +87,18 @@ const AuthProvider = ({ children }) => {
       .get(`${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${user?.email}`)
       .then((user) => {
         setUserInfo(user?.data);
+
         Loading().close();
       })
       .catch((error) => console.error(error));
     Loading().close();
-  }, [user?.email, userInfo?.email]);
 
+  }, [user?.email, userInfo?.email]);
+  // useEffect(() => {
+  //   if (userInfo?.role !== "admin" && userInfo?.devices && !userInfo.devices.includes(userAgent)) {
+  //     devicelogOut();
+  //   }
+  // }, [userInfo?.devices])
   const authInfo = {
     user,
     userInfo,
@@ -97,6 +108,7 @@ const AuthProvider = ({ children }) => {
     logOut,
     signIn,
     providerLogin,
+    devicelogOut,
   };
 
   return (
