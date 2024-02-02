@@ -624,7 +624,6 @@ const router = createBrowserRouter([
   {
     path: "/myStudents/:paidStudents",
     element: <MyStudents />,
- 
   },
   {
     path: "/payment/:id",

@@ -3,7 +3,9 @@ import Layout from '../Layout';
 import OffersTop from './OffersComponent/OffersTop';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-
+import CancelIcon from '@mui/icons-material/Cancel';
+import { red } from '@mui/material/colors';
+import Swal from 'sweetalert2';
 const Profile = () => {
     const { email } = useParams();
     const [profileInfo, setProfileInfo] = useState({});
@@ -14,7 +16,7 @@ const Profile = () => {
                 setProfileInfo(user?.data);
             })
             .catch((error) => console.error(error));
-    }, [email]);
+    }, [email,profileInfo]);
     console.log("profile ", profileInfo);
     // console.log(profileInfo.name);
 
@@ -29,6 +31,31 @@ const Profile = () => {
         const minimumTime = form.minimumTime?.value;
         const maximumTime = form.maximumTime?.value;
         const meetingDuration = form.meetingDuration?.value;
+    };
+    const handleRemoveDevice = (userAgent) => {
+        try {
+            const userDevice = axios.put(
+              `${process.env.REACT_APP_SERVER_API}/api/v1/users/removeDevice/${profileInfo?.email}`,
+              {
+                device: userAgent,
+              }
+            );
+          console.log(userDevice);
+            if (userDevice) {
+                // Show a success message to the user
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Device removed successfully.',
+                    // text: 'You can now login from another device.',
+                });
+            }
+          } catch (error) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Please try again.',
+             
+            });
+          }
     };
     return (
         <div>
@@ -78,10 +105,53 @@ const Profile = () => {
                                         defaultValue={profileInfo?.role}
                                     />
                                 </div>
-                                <div className="items-start justify-start">
-                                    <p className="font-semibold text-lg ">Device Usage</p>
-                                    <p className='mt-1'>Device Connected : {profileInfo?.devices?.length}</p>
+                                <div className="">
+                                <p className="font-semibold text-lg ">Device Usage</p>
+                                <p className='mt-1 w-[500px]'>Device Connected : {profileInfo?.devices?.length}</p>
+                                
+                                <div className='my-1 grid grid-cols-1 gap-3'>
+                                    {
+                                        profileInfo?.devices?.map((device, index) => {
+                                            const cleanedDevice = device.split(' ').slice(1).join(' ');
+                                            return (
+                                                <div className='w-[500px] h-[90px] bg-[#f8f9faa7] rounded-md items-center flex justify-between p-2'>
+                                                    <div className='flex gap-2 font-medium '>
+                                                    <p className='text-lg'>{index + 1}.</p>
+                                                    <p className='w-[80%]'>{cleanedDevice}</p>
+                                                    </div>
+                                                    <button onClick={()=>handleRemoveDevice(device)}>
+                                                        <CancelIcon fontSize="large" sx={{ color: red[500] }}/>
+                                                    </button>
+                                                </div>
+                                            )
+                                        })
+                                    }
                                 </div>
+                                    
+                                </div>
+                                <div className="">
+                                <p className="font-semibold text-lg w-[500px]">Courses : {profileInfo?.courses?.length}</p>
+                                {/* <div className='my-1 grid grid-cols-1 gap-3'>
+                                    {
+                                        profileInfo?.devices?.map((device, index) => {
+                                            const cleanedDevice = device.split(' ').slice(1).join(' ');
+                                            return (
+                                                <div className='w-[500px] h-[90px] bg-[#f8f9faa7] rounded-md items-center flex justify-between p-2'>
+                                                    <div className='flex gap-2 font-medium '>
+                                                    <p className='text-lg'>{index + 1}.</p>
+                                                    <p className='w-[80%]'>{cleanedDevice}</p>
+                                                    </div>
+                                                    <button onClick={()=>handleRemoveDevice(device)}>
+                                                        <CancelIcon fontSize="large" sx={{ color: red[500] }}/>
+                                                    </button>
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </div> */}
+                                    
+                                </div>
+                           
 
                             </div>
 

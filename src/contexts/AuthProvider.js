@@ -12,11 +12,13 @@ import app from "../firebase/firebase.config";
 import axios from "axios";
 import Loading from "../Pages/Shared/Loading/Loading";
 
+
 export const AuthContext = createContext();
 const auth = getAuth(app);
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState({});
+  const userAgent = navigator.userAgent;
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState({});
 
@@ -34,8 +36,15 @@ const AuthProvider = ({ children }) => {
   //Logout
   const logOut = () => {
     setLoading(true);
-    const userAgent = navigator.userAgent;
-    const userDevice =  axios.put( `${process.env.REACT_APP_SERVER_API}/api/v1/users/removeDevice/${userInfo?.email}`, { device: userAgent, } );
+    
+    
+    try {
+      const userDevice =  axios.put( `${process.env.REACT_APP_SERVER_API}/api/v1/users/removeDevice/${userInfo?.email}`, { device: userAgent, } );
+    } catch (error) {
+      console.error("Error removing device:", error);
+      
+    }
+
     return signOut(auth);
   };
 
