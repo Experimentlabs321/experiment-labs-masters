@@ -13,13 +13,16 @@ const CourseAccess = () => {
   const [courses, setCourses] = useState([]);
   const [myCourses, setMyCourses] = useState([]);
   const [showCourses, setShowCourses] = useState([]);
-  const [stateParams, setStateParams] = useState("myCourses");
+  const [stateParams, setStateParams] = useState("allCourses");
   const [clickedCourse, setClickedCourse] = useState();
   const [selectedOption, setSelectedOption] = useState("Category");
+  const [filterData, setFilterData] = useState([]);
   const options = ["Category name"];
   const Role = localStorage.getItem("role");
   const { userInfo } = useContext(AuthContext);
   const location = useLocation();
+
+  console.log(filterData);
   const router = useNavigate();
 
   const toggleOptions = () => {
@@ -41,7 +44,8 @@ const CourseAccess = () => {
         `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
-        setCourses(response?.data);
+       setCourses(response?.data);
+       setFilterData(response?.data);
       })
       .catch((error) => console.error(error));
 
@@ -108,6 +112,18 @@ const CourseAccess = () => {
                   alt="SearchIcon"
                 />
                 <input
+                  onChange={(e) => {
+                    setFilterData(
+                      courses?.filter((course) => {
+                        return Object.keys(course).some((key) =>
+                        course[key]
+                            ?.toString()
+                            .toLowerCase()
+                            .includes(e.target.value.toString().toLowerCase())
+                        );
+                      })
+                    ); 
+                  }}
                   className="rounded-[20px] bg-[#EEEEEE] py-[16px] pl-[40px] pr-[10px]"
                   placeholder="Search"
                   type="text"
@@ -141,7 +157,7 @@ const CourseAccess = () => {
           </div>
           <div className="mt-[80px] flex items-center justify-between">
             <div className="flex gap-8">
-              <button
+             {/*  <button
                 onClick={() => {
                   setStateParams("myCourses");
                   setShowCourses(myCourses);
@@ -153,11 +169,11 @@ const CourseAccess = () => {
                 }`}
               >
                 My Courses
-              </button>
+              </button> */}
               <button
                 onClick={() => {
                   setStateParams("allCourses");
-                  setShowCourses(courses);
+                  setShowCourses(filterData);
                 }}
                 className={`text-[18px] font-[700] ${
                   stateParams === "allCourses"
@@ -204,12 +220,12 @@ const CourseAccess = () => {
           <div className="my-[60px] ">
             <div
               className={`flex flex-wrap ${
-                showCourses.length <= 2
+                filterData.length <= 2
                   ? "justify-start gap-x-14"
                   : "justify-between gap-x-2"
               }  gap-y-5`}
             >
-              {showCourses?.map((course, index) => {
+              {filterData?.map((course, index) => {
                 const date = new Date(course?.courseStartingDate);
                 const options = {
                   year: "numeric",

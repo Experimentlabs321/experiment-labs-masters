@@ -28,6 +28,12 @@ import CareerAnalysisIconLight from "../../assets/Dashboard/CareerAnalysisIconLi
 import CareerAnalysisIconDark from "../../assets/Dashboard/CareerAnalysisIconDark.svg";
 import CourseAccessIconLight from "../../assets/Dashboard/CourseAccessIconLight.svg";
 import CourseAccessIconDark from "../../assets/Dashboard/CourseAccessIconDark.svg";
+import bookLight from "../../assets/Dashboard/BookmarksLight.png";
+import bookDark from "../../assets/Dashboard/bookDark.png";
+import giftDark from "../../assets/Dashboard/giftDark.png";
+import featherDark from "../../assets/Dashboard/featherDark.png";
+import feedbackDark from "../../assets/Dashboard/feedbackDark.png";
+import feedbackLight from "../../assets/Dashboard/feedbackLight.png";
 import userPhoto from "../../assets/Dashboard/UserImage.png";
 import liveClass from "../../assets/ExecutionMentor/liveClass.svg";
 import liveClass1 from "../../assets/ExecutionMentor/liveClass1.svg";
@@ -90,6 +96,7 @@ const Layout = ({ children }) => {
       )
       .then((response) => {
         setOrgData(response?.data);
+        localStorage.setItem('organizationLogo', response?.data?.org_logo);
       })
       .catch((error) => console.error(error));
   }, [userInfo]);
@@ -99,6 +106,7 @@ const Layout = ({ children }) => {
   };
 
   const { id } = useParams();
+  
   // console.log(id)
 
   return (
@@ -515,7 +523,7 @@ const Layout = ({ children }) => {
                               {location.pathname === "/courseAccess" ? (
                                 <img className="" src={book} alt="icon" />
                               ) : (
-                                <img className="" src={book} alt="icon" />
+                                <img className="" src={bookDark} alt="icon" />
                               )}
 
                               <span
@@ -548,7 +556,7 @@ const Layout = ({ children }) => {
                               {location.pathname === "/pointsAndRedemptions" ? (
                                 <img className="" src={gift} alt="icon" />
                               ) : (
-                                <img className="" src={gift} alt="icon" />
+                                <img className="" src={giftDark} alt="icon" />
                               )}
 
                               <span
@@ -584,7 +592,7 @@ const Layout = ({ children }) => {
                               {location.pathname === "/skillsManagement" ? (
                                 <img className="" src={users} alt="icon" />
                               ) : (
-                                <img className="" src={users} alt="icon" />
+                                <img className="" src={usersDark} alt="icon" />
                               )}
 
                               <span
@@ -615,9 +623,9 @@ const Layout = ({ children }) => {
                               className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
                             >
                               {location.pathname === "/feedback" ? (
-                                <img className="" src={feather} alt="icon" />
+                                <img className="" src={feedbackLight} alt="icon" />
                               ) : (
-                                <img className="" src={feather} alt="icon" />
+                                <img className="" src={feedbackDark} alt="icon" />
                               )}
 
                               <span
@@ -647,7 +655,7 @@ const Layout = ({ children }) => {
                               {location.pathname === "/updateOrganization" ? (
                                 <img className="" src={feather} alt="icon" />
                               ) : (
-                                <img className="" src={feather} alt="icon" />
+                                <img className="" src={featherDark} alt="icon" />
                               )}
 
                               <span
