@@ -8,9 +8,11 @@ import './style.css'
 import Swal from "sweetalert2";
 import DialogLayoutForFromControl from "../Shared/DialogLayoutForFromControl";
 import LoginForm from "./LoginForm";
+import RegisterForm from "./RegisterForm";
+import { GoogleAuthProvider } from "firebase/auth";
 
 const Payment = () => {
-  const { userInfo, user } = useContext(AuthContext);
+  const { userInfo, user, signIn, providerLogin, logOut } = useContext(AuthContext);
   const { id } = useParams();
   const [course, setCourse] = useState([]);
   const [batchesData, setBatchesData] = useState([]);
@@ -43,12 +45,26 @@ const Payment = () => {
   }, [id]);
 
 
+  useEffect(() => {
+    if (course?.organization?.organizationId)
+      axios
+        .get(`${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${course?.organization?.organizationId}`)
+        .then((response) => {
+          setOrganizationData(response?.data);
+        })
+        .catch((error) => console.error(error));
+
+  }, [course?.organization?.organizationId]);
+
+
+
   const fetchOffers = async (batchId) => {
     const offers = await axios.get(`${process.env.REACT_APP_SERVER_API}/api/v1/offers/batchId/${batchId}`);
     setOffers(offers?.data?.result);
     setCoupon("");
     setCouponDiscount(0);
   }
+
 
   useEffect(() => {
     fetchOffers(selectedBatch?._id);
@@ -87,27 +103,133 @@ const Payment = () => {
 
   }
 
+  // console.log(organizationData);
 
-  const handleEnroll = () => {
-    Swal.fire({
-      icon: 'Enroll Click',
-      text: "Login"
+
+  const handleEnroll = async (data) => {
+    const { data: { order } } = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/checkout`, {
+      price: selectedBatch.price,
+      paymentInstance: {
+        key_id: organizationData?.paymentInstance?.key_id,
+        key_secret: organizationData?.paymentInstance?.key_secret
+      }
     });
+
+    // console.log("Order =======>", order);
+
+
+    const options = {
+      key: organizationData?.paymentInstance?.key_id,
+      amount: order?.amount,
+      key_secret: organizationData?.paymentInstance?.key_secret,
+      currency: "INR",
+      name: organizationData?.organizationName,
+      description: `Purchase ${course?.courseName}`,
+      image: organizationData?.org_logo,
+      order_id: order.id,
+      callback_url: `${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/verifyPayment`,
+      prefill: {
+        name: data?.name,
+        email: data?.email,
+        contact: data?.phone
+      },
+      notes: {
+        address: "Delhi, India"
+      },
+      theme: {
+        color: organizationData?.titlesColor
+      },
+      handler: function (response) {
+        Swal.fire({
+          title: "Course Added Successfully",
+          icon: "success",
+        });
+      }
+    };
+
+    const rzp1 = new window.Razorpay(options);
+    rzp1.open();
   }
 
 
-  const handleLogin = (event) => {
+  const saveUser = async (email) => {
+    fetch(`${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${email}`)
+      .then((res) => res.json())
+      .then((data) => {
+        localStorage.setItem("role", data?.role);
+        handleEnroll(data);
+      })
+  };
+
+
+  const handleLogin = async (event) => {
     event.preventDefault();
-    Swal.fire({
-      icon: 'success',
-      text: "Login"
-    });
+    const userAgent = window.navigator.userAgent;
+    try {
+      const userDevice = await axios.put(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/users/addDevice/${email}`,
+        {
+          device: userAgent,
+        }
+      );
+
+      // Assuming your server returns a specific status code for device limit reached
+      if (userDevice.status === 200) {
+        await signIn(email, password).then(() => {
+          saveUser(email);
+        });
+      }
+    } catch (error) {
+      // Handle any other errors that may occur during the Axios request
+      console.error('Error during Axios request:', error);
+
+      // Optionally show a generic error message to the user
+      Swal.fire({
+        icon: 'error',
+        title: '3 Device limit reached.',
+        text: 'Please logout from one of your devices and try again.',
+      });
+    }
   }
 
 
   const handleRegister = () => {
     //TO Do
   }
+
+
+  const handleLogout = () => {
+    logOut()
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => console.error(error));
+  };
+
+
+  const handleGoogleSignIn = async () => {
+    const googleProvider = new GoogleAuthProvider();
+    providerLogin(googleProvider)
+      .then(async (result) => {
+        const email = result?.user?.email;
+        const userDetails = await axios.get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${email}`
+        );
+        if (userDetails?.data?.isUser === false) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Not A Registered User',
+            text: 'Please Register before Login',
+          });
+          handleLogout();
+        } else {
+          saveUser(email);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
 
   return (
@@ -287,7 +409,7 @@ const Payment = () => {
                     </div>
                     <div>
                       <button
-                        onClick={user ? handleEnroll : () => setLoginOpen(true)}
+                        onClick={user ? () => handleEnroll(userInfo) : () => setLoginOpen(true)}
                         id="enroll-now-btn"
                         className=" px-[18px] py-[9px] text-white font-bold bg-blue rounded-md"
                       >
@@ -318,6 +440,33 @@ const Payment = () => {
           password={password}
           setPassword={setPassword}
           handleLogin={handleLogin}
+          registerOpen={registerOpen}
+          setRegisterOpen={setRegisterOpen}
+          loginOpen={loginOpen}
+          setLoginOpen={setLoginOpen}
+        />
+      </DialogLayoutForFromControl>
+      <DialogLayoutForFromControl
+        open={registerOpen}
+        setOpen={setRegisterOpen}
+        title={
+          <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
+            Register
+          </p>
+        }
+        width={450}
+        borderRadius="15px"
+      >
+        <RegisterForm
+          email={email}
+          setEmail={setEmail}
+          password={password}
+          setPassword={setPassword}
+          handleLogin={handleLogin}
+          registerOpen={registerOpen}
+          setRegisterOpen={setRegisterOpen}
+          loginOpen={loginOpen}
+          setLoginOpen={setLoginOpen}
         />
       </DialogLayoutForFromControl>
     </div>
