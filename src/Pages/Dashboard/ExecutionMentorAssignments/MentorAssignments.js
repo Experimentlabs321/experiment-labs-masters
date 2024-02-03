@@ -6,6 +6,7 @@ import AssignmentRightNev from "./AssignmentRightNev";
 import eye from "../../../assets/ExecutionMentor/eye.svg";
 import axios from "axios";
 import { AuthContext } from "../../../contexts/AuthProvider";
+import Loading from "../../Shared/Loading/Loading";
 
 const MentorAssignments = () => {
   const [selectedTab, setSelectedTab] = useState("mentorAssignments");
@@ -20,18 +21,24 @@ const MentorAssignments = () => {
   const [allMyStudents, setAllMyStudents] = useState([]);
   const [filteredAssignments, setFilteredAssignment] = useState([]);
 
+
+  console.log(selectedCourse)
+  console.log(selectedBatch)
+  console.log(selectedStatus)
+
   const handleTabClick = (tab) => {
     setSelectedTab(tab);
   };
   ///
   const [assignments, setAssignments] = useState([]);
- 
+
 
   const { userInfo } = useContext(AuthContext);
 
   //console.log(userInfo);
 
   useEffect(() => {
+    Loading();
     axios
       .get(
         `${process.env.REACT_APP_BACKEND_API}/getSubmitAssignment/${userInfo.organizationId}`
@@ -45,6 +52,7 @@ const MentorAssignments = () => {
         // setPendingEvaluations(ass.length)
       })
       .catch((error) => console.error(error));
+    Loading().close();
   }, [userInfo]);
   console.log(userInfo.organizationId);
 
@@ -106,7 +114,7 @@ const MentorAssignments = () => {
       )
       .then((response) => {
         setAllMyStudents(response?.data);
-       
+
       })
       .catch((error) => console.error(error));
   }, [userInfo]);
@@ -132,17 +140,25 @@ const MentorAssignments = () => {
       );
     }
 
+    // status
     var matchingAssignments = assignments?.filter(assignment =>
-      filtered?.some(filteredStudent => assignment?.submitter?._id === filteredStudent?._id )
+      filtered?.some(filteredStudent => assignment?.submitter?._id === filteredStudent?._id)
     );
-     if(selectedStatus === "Submitted"){
-      matchingAssignments = matchingAssignments?.filter((assignment)=>assignment?.submitter?.result === true)
-     }
-     else {
-      matchingAssignments = matchingAssignments?.filter((assignment)=>assignment?.submitter?.result === false)
-     }
+    if (selectedStatus === "Submitted") {
+      matchingAssignments = matchingAssignments?.filter((assignment) => (assignment?.submitter?.result))
+    }
+    if (selectedStatus === "Pending") {
+      matchingAssignments = matchingAssignments?.filter((assignment) => (!assignment?.submitter?.result))
+    }
+    if (matchingAssignments) {
+      setFilteredAssignment(matchingAssignments);
+    }
+    else {
+      console.log("none")
+      setFilteredAssignment(assignments);
+    }
 
-    setFilteredAssignment(matchingAssignments);
+
   };
 
   console.log(filteredAssignments)
@@ -163,6 +179,26 @@ const MentorAssignments = () => {
                 <p>Pending evaluations - {filteredData.length}</p>
               </div>
             </div>
+           {/*  <div>
+              <input
+                onChange={(e) => {
+                  setFilteredAssignment(
+                    filteredAssignments?.filter((student) => {
+                      return Object.keys(student).some((key) =>
+                        student[key]
+                          ?.toString()
+                          .toLowerCase()
+                          .includes(e.target.value.toString().toLowerCase())
+                      );
+                    })
+                  );
+                }}
+                name="Search"
+                placeholder="Search"
+                className="block w-full px-4 py-2 mt-2 rounded-md border bg-white border-[#B7B7B7] focus:border-blue-500 focus:outline-none focus:ring"
+              />
+            </div> */}
+
             <div className=" flex gap-10 pb-3 text-lg mt-10">
               {/*       <Link
                   to="/mentorAssignments"
@@ -206,7 +242,7 @@ const MentorAssignments = () => {
                 className="p-2 border rounded"
                 value={selectedCourse?._id}
                 onChange={(e) => {
-                  const course = courses.find((c) => c._id === e.target.value);
+                  const course = courses?.find((c) => c._id === e.target.value);
                   setSelectedCourse(course);
                 }}
               >
@@ -237,7 +273,7 @@ const MentorAssignments = () => {
               </select>
               <select
                 className="p-2 border rounded"
-                value={selectedBatch?._id}
+                // value={selectedBatch?._id}
                 onChange={(e) => {
 
                   setSelectedStatus(e.currentTarget.value);
