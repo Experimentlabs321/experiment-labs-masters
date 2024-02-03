@@ -139,44 +139,46 @@ const ReadingTask = ({ taskData }) => {
           </p>
         </object>
       </div> */}
-
-<div className='min-h-[72vh] mb-[60px]'>
-        {completionStatus ? (
-          <div className='container mx-auto'>
-            <button className='bg-green py-2 px-5 my-4 float-right mr-4 rounded-lg text-lg text-white font-bold'>
-              Completed <CheckCircleOutlineIcon />
-            </button>
-          </div>
-        ) : (
-          <div className='container mx-auto relative'>
-            {isOverlayVisible && (
-              <div className="fixed top-0 left-0 w-full h-full z-[9999] bg-transparent" onClick={handleCompletion}></div>
-            )}
-            {isOverlayVisible ? null : (
-              <iframe
-                src={`https://docs.google.com/viewer?url=${taskData?.additionalFiles}&embedded=true`}
-                title="Your Document"
-                className="h-[68vh] mx-auto border-x-30 mt-40 border-t-30 border-b-50 rounded-lg border-[#292929]"
-                width="90%"
-                height="80vh"
-              ></iframe>
-            )}
-            {openQuiz && (
-              <Quiz
-                setOpenQuiz={setOpenQuiz}
-                openQuiz={openQuiz}
-                taskData={taskData}
-                questions={taskData?.completionParameter?.questions}
-              />
-            )}
-            <button
+      {completionStatus ? (
+        <div className="container mx-auto relative z-10">
+          <button className="bg-green py-2 px-5 my-4 float-right mr-4 rounded-lg text-lg text-white font-bold">
+            Completed <CheckCircleOutlineIcon />
+          </button>
+        </div>
+      ) : (
+        <button
+          onClick={handleCompletion}
+          className="bg-green py-2 px-5 my-4 float-right mr-4 rounded-lg text-lg text-white font-bold relative z-10"
+        >
+          Mark as complete <CheckCircleOutlineIcon />
+        </button>
+      )}
+      <div className="min-h-[72vh] mb-[60px]">
+        <div className="container mx-auto relative">
+          {isOverlayVisible && (
+            <div
+              className="fixed top-0 left-0 w-full h-full z-[9999] bg-transparent"
               onClick={handleCompletion}
-              className='bg-green py-2 px-5 my-4 float-right mr-4 rounded-lg text-lg text-white font-bold'
-            >
-              Mark as complete <CheckCircleOutlineIcon />
-            </button>
-          </div>
-        )}
+            ></div>
+          )}
+          {isOverlayVisible ? null : (
+            <iframe
+              src={`https://docs.google.com/viewer?url=${taskData?.additionalFiles}&embedded=true`}
+              title="Your Document"
+              className="h-[68vh] mx-auto border-x-30 mt-40 border-t-30 border-b-50 rounded-lg border-[#292929]"
+              width="90%"
+              height="80vh"
+            ></iframe>
+          )}
+          {openQuiz && (
+            <Quiz
+              setOpenQuiz={setOpenQuiz}
+              openQuiz={openQuiz}
+              taskData={taskData}
+              questions={taskData?.completionParameter?.questions}
+            />
+          )}
+        </div>
       </div>
     </div>
   );
