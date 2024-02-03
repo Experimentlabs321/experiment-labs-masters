@@ -76,6 +76,8 @@ const Layout = ({ children }) => {
   const Role = localStorage.getItem("role");
   const createCoursePage = localStorage.getItem("createCoursePage");
   const { userInfo, logOut } = useContext(AuthContext);
+  const [profImg,setprofImg] = useState(null);
+  const [profName,setprofName] = useState(null);
   const navigate = useNavigate();
   //console.log(Role);
   const location = useLocation();
@@ -101,7 +103,10 @@ const Layout = ({ children }) => {
       })
       .catch((error) => console.error(error));
   }, [userInfo]);
-
+  useEffect(() => {
+    setprofImg(userInfo?.profileImg)
+    setprofName(userInfo?.name)
+  }, [userInfo?.name,userInfo?.profileImg]);
   const handleClick = () => {
     setToggleButton(!toggleButton);
   };
@@ -1785,13 +1790,13 @@ const Layout = ({ children }) => {
                     <Link to={`/userprofile/${userInfo?.email}`}>
                       <div className="pt-[90px] flex items-center px-[42px]">
                         <img
-                          className="w-[37px] h-[56px] mr-[10px]"
-                          src={userPhoto}
+                          className="w-[38px] rounded-full h-[42px] mr-[10px]"
+                          src={profImg ? profImg : userPhoto}
                           alt="user"
                         />
                         <div>
                           <h2 className="text-white font-bold text-[16px]">
-                            {userInfo?.name}
+                            {profName ? profName : userInfo?.name}
                           </h2>
                           <p className="text-[#747475] text-[14px]">
                             {userInfo?.email}
