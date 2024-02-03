@@ -97,6 +97,7 @@ const Layout = ({ children }) => {
       .then((response) => {
         setOrgData(response?.data);
         localStorage.setItem('organizationLogo', response?.data?.org_logo);
+        localStorage.setItem('organizationFavicon', response?.data?.favicon);
       })
       .catch((error) => console.error(error));
   }, [userInfo]);
@@ -106,7 +107,8 @@ const Layout = ({ children }) => {
   };
 
   const { id } = useParams();
-  
+  const orgLogo = localStorage.getItem("organizationLogo")
+ 
   // console.log(id)
 
   return (
@@ -150,7 +152,7 @@ const Layout = ({ children }) => {
                   <img
                     // className="h-6 lg:h-8"
                     className="w-[100px]"
-                    src={orgData?.org_logo}
+                    src={orgLogo}
                     alt="icon"
                   />
                   {/* <img className="h-6 lg:h-8" src={logo} alt="icon" /> */}
@@ -175,7 +177,7 @@ const Layout = ({ children }) => {
                         <img
                           // className="h-6 lg:h-8"
                           className="w-[100px]"
-                          src={orgData?.org_logo}
+                          src={orgLogo}
                           alt="icon"
                         />
                       </Link>

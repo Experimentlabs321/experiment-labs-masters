@@ -12,6 +12,7 @@ const UpdateOrganization = () => {
   const { userInfo } = useContext(AuthContext);
   const [orgData, setOrgData] = useState({});
   const [orgLogoUrl, setOrgLogoUrl] = useState("");
+  const [faviconUrl, setFaviconUrl] = useState("");
   const [loginPageOrgLogoUrl, setLoginPageOrgLogoUrl] = useState("");
   const [loginSidebarImage, setLoginSidebarImage] = useState("");
   const [titlesColor, setTitlesColor] = useState("");
@@ -19,6 +20,9 @@ const UpdateOrganization = () => {
   const [currentPage, setCurrentPage] = useState("organizationTheme");
   const [paymentInstance, setPaymentInstance] = useState({});
   const [maxDeviceCount, setMaxDeviceCount] = useState(0);
+  const [paymentNavbarColor, setPaymentNavbarColor] = useState(
+    dashboardTheme?.paymentNavbarColor || "#3E4DAC"
+  );
 
   useEffect(() => {
     axios
@@ -28,9 +32,11 @@ const UpdateOrganization = () => {
       .then((response) => {
         setOrgData(response?.data);
         setOrgLogoUrl(response?.data?.org_logo);
+        setFaviconUrl(response?.data?.favicon);
         setLoginPageOrgLogoUrl(response?.data?.loginPageOrgLogo);
         setLoginSidebarImage(response?.data?.loginSidebarImage);
         setTitlesColor(response?.data?.titlesColor);
+        setPaymentNavbarColor(response?.data?.paymentNavbarColor);
         setDashboardTheme(response?.data?.dashboardTheme || {});
         setPaymentInstance(response?.data?.paymentInstance || {});
         setMaxDeviceCount(response?.data?.maxDeviceCount || 0);
@@ -48,9 +54,11 @@ const UpdateOrganization = () => {
       loginTitle: form.loginTitle?.value,
       loginSubTitle: form.loginSubTitle?.value,
       org_logo: orgLogoUrl,
+      favicon: faviconUrl,
       loginPageOrgLogo: loginPageOrgLogoUrl,
       loginSidebarImage: loginSidebarImage,
       titlesColor: titlesColor,
+      paymentNavbarColor: paymentNavbarColor,
       dashboardTheme: dashboardTheme,
     };
     console.log(orgInfo);
@@ -114,6 +122,46 @@ const UpdateOrganization = () => {
               Organization ID: {orgData?._id}
             </h1>
             <form onSubmit={handleSubmit} className="px-4 mt-1">
+            <div className="flex gap-4">
+                <div className="flex flex-col mt-5 basis-1/2">
+                  <label className="font-bold text-lg">Favicon</label>
+                  <UploadFile setFileUrl={setFaviconUrl}>
+                    <div>
+                      <img
+                        className="mx-auto animate-pulse"
+                        style={{ height: "70px", width: "70px" }}
+                        src="https://i.ibb.co/gJLdW8G/cloud-upload-regular-240.png"
+                        alt=""
+                      />
+                      <p className="text-xl text-gray-400">
+                        Drag & Drop your file
+                      </p>
+                      <p className="py-4">
+                        <span className="rounded-lg bg-gray-400 px-3 py-3 font-semibold">
+                          {/* <BiVideoPlus className="animate-bounce" /> */}
+                          Upload Favicon
+                        </span>
+                      </p>
+                    </div>
+                  </UploadFile>
+                </div>
+                <div className="flex flex-col mt-5 basis-1/2">
+                  <label className="font-bold text-lg">Current Favicon</label>
+                  {faviconUrl ? (
+                    <img
+                      className="mx-auto my-auto max-w-[200px]"
+                      src={faviconUrl}
+                      alt="Logo"
+                    />
+                  ) : (
+                    <p className="text-center font-bold text-lg my-auto">
+                      Favicon has not added!
+                    </p>
+                  )}
+                </div>
+              </div>
+
+
               <div className="flex gap-4">
                 <div className="flex flex-col mt-5 basis-1/2">
                   <label className="font-bold text-lg">Logo</label>
@@ -293,8 +341,24 @@ const UpdateOrganization = () => {
                   </li>
                 </ul>
               </div>
+              <div className=" flex items-center my-5">
+                <label
+                  htmlFor="colorInput"
+                  className="block text-lg font-medium text-gray-700"
+                >
+                  Change payment Navbar Color
+                </label>
+                <input
+                  type="color"
+                  id="paymentNavbarColor"
+                  name="paymentNavbarColor"
+                  defaultValue={paymentNavbarColor}
+                  onChange={(e) => setPaymentNavbarColor(e.target.value)}
+                  className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
+                />
+              </div>
               <input
-                className="bg-green text-white py-3 px-4 font-bold rounded-lg"
+                className="bg-green text-white py-3 px-4 font-bold rounded-lg mb-5"
                 value="Save"
                 type="submit"
               />
