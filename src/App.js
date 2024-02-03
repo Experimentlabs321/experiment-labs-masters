@@ -13,6 +13,7 @@ import {
   useSupabaseClient,
   useSessionContext,
 } from "@supabase/auth-helpers-react";
+import DynamicFavicon from "./DynamicFavicon";
 
 ReactGA.initialize("G-RL7TBN4FCW");
 
@@ -22,6 +23,7 @@ function App() {
   const [calendarEvents, setCalendarEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const session = useSession();
+  const orgLogo = localStorage.getItem("organizationLogo")
   useEffect(() => {
     if(localStorage.getItem("role") === "admin"){
       fetchAndDisplayGoogleCalendarEvents();
@@ -152,6 +154,7 @@ function App() {
   }
   return (
     <div className="max-w-[1920px] mx-auto">
+      <DynamicFavicon />
       <RouterProvider router={router}></RouterProvider>
       <Toaster />
     </div>
