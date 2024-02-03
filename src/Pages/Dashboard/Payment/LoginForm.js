@@ -1,7 +1,7 @@
 import React from 'react';
 import GoogleLogo from "../../../assets/icons/googleIcon.png";
 
-const LoginForm = ({ email, setEmail, password, setPassword, handleLogin, loginOpen, setLoginOpen, registerOpen, setRegisterOpen }) => {
+const LoginForm = ({ email, setEmail, password, setPassword, handleLogin, loginOpen, setLoginOpen, registerOpen, setRegisterOpen, handleGoogleSignIn }) => {
     return (
         <form
             onSubmit={handleLogin}
@@ -46,7 +46,7 @@ const LoginForm = ({ email, setEmail, password, setPassword, handleLogin, loginO
             />
 
             <button
-                // onClick={handleGoogleSignIn}
+                onClick={handleGoogleSignIn}
                 aria-label="Login with Google"
                 type="button"
                 className="flex items-center justify-center w-full p-3 space-x-4 border rounded-xl hover:transition-all hover:delay-200 hover:ease-out hover:bg-slate-200 bg-[#9c9d9e4e] text-black mb-[25px]"

@@ -108,7 +108,8 @@ const Payment = () => {
 
   const handleEnroll = async (data) => {
     const { data: { order } } = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/checkout`, {
-      price: selectedBatch.price,
+      // price: selectedBatch.price,
+      price: 3000,
       paymentInstance: {
         key_id: organizationData?.paymentInstance?.key_id,
         key_secret: organizationData?.paymentInstance?.key_secret
@@ -444,6 +445,7 @@ const Payment = () => {
           setRegisterOpen={setRegisterOpen}
           loginOpen={loginOpen}
           setLoginOpen={setLoginOpen}
+          handleGoogleSignIn={handleGoogleSignIn}
         />
       </DialogLayoutForFromControl>
       <DialogLayoutForFromControl
