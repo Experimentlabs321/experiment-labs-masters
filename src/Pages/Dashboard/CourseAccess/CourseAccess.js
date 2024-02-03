@@ -12,7 +12,7 @@ const CourseAccess = () => {
   const [courses, setCourses] = useState([]);
   const [myCourses, setMyCourses] = useState([]);
   const [showCourses, setShowCourses] = useState([]);
-  const [stateParams, setStateParams] = useState("myCourses");
+  const [stateParams, setStateParams] = useState("allCourses");
   const [clickedCourse, setClickedCourse] = useState();
   const [selectedOption, setSelectedOption] = useState("Category");
   const [filterData, setFilterData] = useState([]);
@@ -21,7 +21,7 @@ const CourseAccess = () => {
   const { userInfo } = useContext(AuthContext);
   const location = useLocation();
 
-  console.log(userInfo);
+  console.log(filterData);
 
   const toggleOptions = () => {
     setIsOpen(!isOpen);
@@ -42,7 +42,8 @@ const CourseAccess = () => {
         `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
-        setCourses(response?.data);
+       setCourses(response?.data);
+       setFilterData(response?.data);
       })
       .catch((error) => console.error(error));
 
@@ -78,16 +79,16 @@ const CourseAccess = () => {
                 />
                 <input
                   onChange={(e) => {
-                   /*  setFilteredStudents(
-                      courses?.filter((student) => {
-                        return Object.keys(student).some((key) =>
-                          student[key]
+                    setFilterData(
+                      courses?.filter((course) => {
+                        return Object.keys(course).some((key) =>
+                        course[key]
                             ?.toString()
                             .toLowerCase()
                             .includes(e.target.value.toString().toLowerCase())
                         );
                       })
-                    ); */
+                    ); 
                   }}
                   className="rounded-[20px] bg-[#EEEEEE] py-[16px] pl-[40px] pr-[10px]"
                   placeholder="Search"
@@ -138,7 +139,7 @@ const CourseAccess = () => {
               <button
                 onClick={() => {
                   setStateParams("allCourses");
-                  setShowCourses(courses);
+                  setShowCourses(filterData);
                 }}
                 className={`text-[18px] font-[700] ${
                   stateParams === "allCourses"
@@ -185,12 +186,12 @@ const CourseAccess = () => {
           <div className="my-[60px] ">
             <div
               className={`flex flex-wrap ${
-                showCourses.length <= 2
+                filterData.length <= 2
                   ? "justify-start gap-x-14"
                   : "justify-between gap-x-2"
               }  gap-y-5`}
             >
-              {showCourses?.map((course, index) => {
+              {filterData?.map((course, index) => {
                 const date = new Date(course?.courseStartingDate);
                 const options = {
                   year: "numeric",

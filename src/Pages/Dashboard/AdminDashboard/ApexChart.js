@@ -136,6 +136,18 @@ const ApexChart = ({ overViewCount }) => {
     const availableMonths = Array.from(new Set(students?.map((student) => new Date(student.dateCreated).getMonth()))).sort((a, b) => a - b);
     
     console.log(availableMonths)
+    
+    const currentDate = new Date();
+const currentMonth = currentDate.getMonth();
+
+
+const desiredMonths = [];
+for (let i = 0; i < 9; i++) {
+  const month = (currentMonth - i + 12) % 12; // Ensure positive result for previous months
+  desiredMonths.push(month);
+}
+
+console.log(desiredMonths);
    /*  const availableEnrollMonths = Array.from(new Set(enrolledStudents?.map((student) => new Date(student.dateCreated).getMonth())));
     console.log(availableEnrollMonths) */
  
