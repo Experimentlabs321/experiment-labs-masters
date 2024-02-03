@@ -118,6 +118,10 @@ const Navbar = (props) => {
   const container =
     window !== undefined ? () => window().document.body : undefined;
   const [orgData, setOrgData] = useState({});
+
+  const orgLogo = localStorage.getItem("organizationLogo")
+  const paymentNavbarLogo = localStorage.getItem("paymentNavbarLogo")
+
   const navItems = [
     !user ? (
       <Button
@@ -140,10 +144,10 @@ const Navbar = (props) => {
             <Button
               // onClick={() => graphyLogin(user?.email, user?.displayName)}
               sx={{
-                bgcolor: "#94A4FF",
+                bgcolor: orgData?.paymentNavbarAccessDashboardButtonColor ? orgData?.paymentNavbarAccessDashboardButtonColor : "#94A4FF",
                 borderRadius: "22.5px",
                 ":hover": { bgcolor: "#94A4FF" },
-                color: "white",
+                color: orgData?.paymentNavbarAccessDashboardButtonTextColor ? orgData?.paymentNavbarAccessDashboardButtonTextColor : "white",
                 width: "100%",
               }}
               className="menu-hover"
@@ -177,10 +181,10 @@ const Navbar = (props) => {
             <Button
               onClick={() => handleLogout()}
               sx={{
-                bgcolor: "#FF557A",
+                bgcolor: orgData?.paymentNavbarLogoutButtonColor ? orgData?.paymentNavbarLogoutButtonColor : "#FF557A",
                 borderRadius: "22.5px",
                 ":hover": { bgcolor: "#94A4FF" },
-                color: "white",
+                color: orgData?.paymentNavbarLogoutButtonTextColor ? orgData?.paymentNavbarLogoutButtonTextColor : "white",
                 width: "100%",
               }}
               className="my-2 block border-b border-gray-100 py-1 font-semibold text-gray-500 hover:text-black md:mx-2"
@@ -205,13 +209,16 @@ const Navbar = (props) => {
       .catch((error) => console.error(error));
   }, [userInfo]);
 
-  
+  console.log(orgData)
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar
         component="nav"
-        sx={{ bgcolor: "#141414", padding: "10px 20px 10px 10px" }}
+        sx={{
+          bgcolor: (orgData?.paymentNavbarColor)? orgData?.paymentNavbarColor :"#3E4DAC",
+          padding: "10px 20px 10px 10px"
+        }}
       >
         <Toolbar>
           <Typography
@@ -220,18 +227,19 @@ const Navbar = (props) => {
             sx={{ flexGrow: 1, color: "black" }}
           >
             <Link className="flex gap-3 items-center" to={"/"}>
-              {orgData?.org_logo ? (
+              {paymentNavbarLogo ? (
                 <img
                   className="h-6 lg:h-8"
-                  src={orgData?.org_logo}
+                  src={paymentNavbarLogo}
                   alt="icon"
                 />
               ) : (
                 <>
-                  <img className="h-6 lg:h-8" src={logo} alt="icon" />
-                  <h1 className="text-logo-white font-semibold">
-                    Experiment Labs
-                  </h1>
+                  <img
+                    className="h-6 lg:h-8"
+                    src={orgLogo}
+                    alt="icon"
+                  />
                 </>
               )}
             </Link>

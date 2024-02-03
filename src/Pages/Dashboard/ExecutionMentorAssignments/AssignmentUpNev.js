@@ -16,7 +16,7 @@ const AssignmentUpNev = (props) => {
   //  console.log(user.photoURL)
 
   return (
-    <div className="px-10  py-4 flex items-center  fixed w-[100%] justify-between bg-[#FFF] top-0  border-b ">
+    <div className="px-10  py-4 flex items-center  fixed w-[100%] justify-between bg-[#FFF] top-0 z-10  border-b ">
       <div className=" p-2">
         <p className="w-[10px]"></p>
        {/*  <SearchIcon />

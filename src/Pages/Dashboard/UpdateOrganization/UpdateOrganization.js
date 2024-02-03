@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import DashboardTheme from "./DashboardTheme";
 import PaymentIntegration from "./PaymentIntegration";
 import DeviceLimit from "./DeviceLimit";
+import Loading from "../../Shared/Loading/Loading";
 
 const UpdateOrganization = () => {
   const { userInfo } = useContext(AuthContext);
@@ -15,16 +16,36 @@ const UpdateOrganization = () => {
   const [faviconUrl, setFaviconUrl] = useState("");
   const [loginPageOrgLogoUrl, setLoginPageOrgLogoUrl] = useState("");
   const [loginSidebarImage, setLoginSidebarImage] = useState("");
+  const [paymentNavbarLogo, setPaymentNavbarLogo] = useState("");
   const [titlesColor, setTitlesColor] = useState("");
   const [dashboardTheme, setDashboardTheme] = useState({});
   const [currentPage, setCurrentPage] = useState("organizationTheme");
   const [paymentInstance, setPaymentInstance] = useState({});
   const [maxDeviceCount, setMaxDeviceCount] = useState(0);
   const [paymentNavbarColor, setPaymentNavbarColor] = useState(
-    dashboardTheme?.paymentNavbarColor || "#3E4DAC"
+    orgData?.paymentNavbarColor || "#3E4DAC"
   );
+  const [paymentNavbarAccessDashboardButtonColor, setPaymentNavbarAccessDashboardButtonColor] = useState(
+    orgData?.paymentNavbarAccessDashboardButtonColor || "#3E4DAC"
+  );
+  const [paymentNavbarAccessDashboardButtonTextColor, setPaymentNavbarAccessDashboardButtonTextColor] = useState(
+    orgData?.paymentNavbarAccessDashboardButtonTextColor || "#fff"
+  );
+  const [paymentNavbarLogoutButtonColor, setPaymentNavbarLogoutButtonColor] = useState(
+    orgData?.paymentNavbarLogoutButtonColor || "#3E4DAC"
+  );
+  const [paymentNavbarLogoutButtonTextColor, setPaymentNavbarLogoutButtonTextColor] = useState(
+    orgData?.paymentNavbarLogoutButtonTextColor || "#fff"
+  );
+  console.log(paymentNavbarAccessDashboardButtonColor)
+  console.log(paymentNavbarAccessDashboardButtonTextColor)
+  console.log(paymentNavbarLogoutButtonColor)
+  console.log(paymentNavbarLogoutButtonTextColor)
+ 
+
 
   useEffect(() => {
+    Loading();
     axios
       .get(
         `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
@@ -35,13 +56,19 @@ const UpdateOrganization = () => {
         setFaviconUrl(response?.data?.favicon);
         setLoginPageOrgLogoUrl(response?.data?.loginPageOrgLogo);
         setLoginSidebarImage(response?.data?.loginSidebarImage);
+        setPaymentNavbarLogo(response?.data?.paymentNavbarLogo);
         setTitlesColor(response?.data?.titlesColor);
         setPaymentNavbarColor(response?.data?.paymentNavbarColor);
+        setPaymentNavbarAccessDashboardButtonColor(response?.data?.paymentNavbarAccessDashboardButtonColor);
+        setPaymentNavbarAccessDashboardButtonTextColor(response?.data?.paymentNavbarAccessDashboardButtonTextColor);
+        setPaymentNavbarLogoutButtonColor(response?.data?.paymentNavbarLogoutButtonColor);
+        setPaymentNavbarLogoutButtonTextColor(response?.data?.paymentNavbarLogoutButtonTextColor);
         setDashboardTheme(response?.data?.dashboardTheme || {});
         setPaymentInstance(response?.data?.paymentInstance || {});
         setMaxDeviceCount(response?.data?.maxDeviceCount || 0);
       })
       .catch((error) => console.error(error));
+      Loading().close();
   }, [userInfo]);
 
   const handleSubmit = async (event) => {
@@ -57,8 +84,13 @@ const UpdateOrganization = () => {
       favicon: faviconUrl,
       loginPageOrgLogo: loginPageOrgLogoUrl,
       loginSidebarImage: loginSidebarImage,
+      paymentNavbarLogo: paymentNavbarLogo,
       titlesColor: titlesColor,
       paymentNavbarColor: paymentNavbarColor,
+      paymentNavbarAccessDashboardButtonColor: paymentNavbarAccessDashboardButtonColor,
+      paymentNavbarAccessDashboardButtonTextColor: paymentNavbarAccessDashboardButtonTextColor,
+      paymentNavbarLogoutButtonColor: paymentNavbarLogoutButtonColor,
+      paymentNavbarLogoutButtonTextColor: paymentNavbarLogoutButtonTextColor,
       dashboardTheme: dashboardTheme,
     };
     console.log(orgInfo);
@@ -262,6 +294,7 @@ const UpdateOrganization = () => {
                   />
                 </div>
               </div>
+
               <div className="flex gap-4">
                 <div className="flex flex-col mt-5 basis-1/2">
                   <label className="font-bold text-lg">
@@ -298,6 +331,47 @@ const UpdateOrganization = () => {
                   ) : (
                     <p className="text-center font-bold text-lg my-auto">
                       Image has not added!
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <div className="flex flex-col mt-5 basis-1/2">
+                  <label className="font-bold text-lg">
+                  Payment Navbar Logo
+                  </label>
+                  <UploadFile setFileUrl={setPaymentNavbarLogo}>
+                    <div>
+                      <img
+                        className="mx-auto animate-pulse"
+                        style={{ height: "70px", width: "70px" }}
+                        src="https://i.ibb.co/gJLdW8G/cloud-upload-regular-240.png"
+                        alt=""
+                      />
+                      <p className="text-xl text-gray-400">
+                        Drag & Drop your file
+                      </p>
+                      <p className="py-4">
+                        <span className="rounded-lg bg-gray-400 px-3 py-3 font-semibold">
+                          {/* <BiVideoPlus className="animate-bounce" /> */}
+                          Upload Image
+                        </span>
+                      </p>
+                    </div>
+                  </UploadFile>
+                </div>
+                <div className="flex flex-col mt-5 basis-1/2">
+                  <label className="font-bold text-lg">Current image</label>
+                  {paymentNavbarLogo ? (
+                    <img
+                      className="mx-auto my-auto max-w-[200px]"
+                      src={paymentNavbarLogo}
+                      alt="Logo"
+                    />
+                  ) : (
+                    <p className="text-center font-bold text-lg my-auto">
+                      Logo has not added!
                     </p>
                   )}
                 </div>
@@ -346,7 +420,7 @@ const UpdateOrganization = () => {
                   htmlFor="colorInput"
                   className="block text-lg font-medium text-gray-700"
                 >
-                  Change payment Navbar Color
+                  Payment Navbar Color
                 </label>
                 <input
                   type="color"
@@ -357,6 +431,72 @@ const UpdateOrganization = () => {
                   className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
                 />
               </div>
+              <div className=" flex items-center my-5">
+                <label
+                  htmlFor="colorInput"
+                  className="block text-lg font-medium text-gray-700"
+                >
+                  Payment Navbar Access Dashboard Button Color 
+                </label>
+                <input
+                  type="color"
+                  id="paymentNavbarAccessDashboardButtonColor"
+                  name="paymentNavbarAccessDashboardButtonColor"
+                  defaultValue={orgData?.paymentNavbarAccessDashboardButtonColor}
+                  onChange={(e) => setPaymentNavbarAccessDashboardButtonColor(e.target.value)}
+                  className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
+                />
+              </div>
+              <div className=" flex items-center my-5">
+                <label
+                  htmlFor="colorInput"
+                  className="block text-lg font-medium text-gray-700"
+                >
+                  Payment Navbar Access Dashboard Button Text Color 
+                </label>
+                <input
+                  type="color"
+                  id="paymentNavbarAccessDashboardButtonTextColor"
+                  name="paymentNavbarAccessDashboardButtonTextColor"
+                  defaultValue={paymentNavbarAccessDashboardButtonTextColor}
+                  onChange={(e) => setPaymentNavbarAccessDashboardButtonTextColor(e.target.value)}
+                  className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
+                />
+              </div>
+              <div className=" flex items-center my-5">
+                <label
+                  htmlFor="colorInput"
+                  className="block text-lg font-medium text-gray-700"
+                >
+                  Payment Navbar Logout Button Color 
+                </label>
+                <input
+                  type="color"
+                  id="paymentNavbarLogoutButtonColor"
+                  name="paymentNavbarLogoutButtonColor"
+                  defaultValue={paymentNavbarLogoutButtonColor}
+                  onChange={(e) => setPaymentNavbarLogoutButtonColor(e.target.value)}
+                  className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
+                />
+              </div>
+              <div className=" flex items-center my-5">
+                <label
+                  htmlFor="colorInput"
+                  className="block text-lg font-medium text-gray-700"
+                >
+                  Payment Navbar Logout Button text Color 
+                </label>
+                <input
+                  type="color"
+                  id="paymentNavbarLogoutButtonTextColor"
+                  name="paymentNavbarLogoutButtonTextColor"
+                  defaultValue={paymentNavbarLogoutButtonTextColor}
+                  onChange={(e) => setPaymentNavbarLogoutButtonTextColor(e.target.value)}
+                  className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
+                />
+              </div>
+             
+
               <input
                 className="bg-green text-white py-3 px-4 font-bold rounded-lg mb-5"
                 value="Save"

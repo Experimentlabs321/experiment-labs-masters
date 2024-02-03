@@ -98,6 +98,8 @@ const Layout = ({ children }) => {
         setOrgData(response?.data);
         localStorage.setItem('organizationLogo', response?.data?.org_logo);
         localStorage.setItem('organizationFavicon', response?.data?.favicon);
+        localStorage.setItem('organizationName', response?.data?.organizationName);
+        localStorage.setItem("paymentNavbarLogo",response?.data?.paymentNavbarLogo)
       })
       .catch((error) => console.error(error));
   }, [userInfo]);
