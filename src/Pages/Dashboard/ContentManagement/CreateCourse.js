@@ -491,6 +491,20 @@ const CreateCourse = () => {
                       placeholder="Eg. 364"
                     ></input>
                   </div>
+
+                  <div className="mt-20">
+                    <div className="flex items-center gap-4">
+                      <p className="h-2 w-2 bg-black rounded-full"></p>
+                      <p className="font-bold text-lg me-[36px]">Price</p>
+                    </div>
+
+                    <input
+                      className="mt-6 ms-6 border rounded-md w-[272px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                      name="price"
+                      type="number"
+                      placeholder="Eg. 5000"
+                    ></input>
+                  </div>
                 </div>
               </div>
             </div>
