@@ -2,10 +2,11 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import Layout from "../Layout";
 import SearchIcon from "../../../assets/Dashboard/SearchIcon.png";
 import CourseTham from "../../../assets/Dashboard/CourseTham.png";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import Locked from "../../../assets/Dashboard/Locked.png";
+import Swal from "sweetalert2";
 
 const CourseAccess = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,6 +23,7 @@ const CourseAccess = () => {
   const location = useLocation();
 
   console.log(filterData);
+  const router = useNavigate();
 
   const toggleOptions = () => {
     setIsOpen(!isOpen);
@@ -55,14 +57,46 @@ const CourseAccess = () => {
         setMyCourses(response?.data);
       })
       .catch((error) => console.error(error));
-  }, [userInfo, location]);
+  }, [userInfo, location, stateParams]);
 
   useEffect(() => {
     stateParams === "myCourses"
       ? setShowCourses(myCourses)
       : setShowCourses(courses);
-  }, [myCourses, courses]);
-  console.log(stateParams);
+  }, [myCourses, courses, stateParams]);
+
+  const daysDifferenceFromEnrolled = (enrolledDate) => {
+    // Get the current date
+    const currentDate = new Date();
+
+    // Replace the following line with the specific date you want to compare
+    const specificDate = new Date(enrolledDate); // Example: January 1, 2023
+
+    // Calculate the difference in milliseconds
+    const timeDifference = currentDate - specificDate;
+
+    // Convert milliseconds to days
+    const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+    console.log(enrolledDate);
+
+    return daysDifference;
+  };
+
+  const handelExpire = (course) => {
+    Swal.fire({
+      title: "Validity Expired",
+      text: "You have to renew if you want to access the course!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Renew now!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        router(`/payment/${course?._id}`);
+      }
+    });
+  };
 
   return (
     <div>
@@ -198,6 +232,15 @@ const CourseAccess = () => {
                   month: "long",
                   day: "numeric",
                 };
+                const enrolledDate = new Date(
+                  userInfo?.courses?.find(
+                    (item) => item?.courseId === course?._id
+                  )?.enrollDate
+                );
+                const remainingDay =
+                  parseInt(course?.expirationDay) -
+                  daysDifferenceFromEnrolled(enrolledDate);
+                console.log(remainingDay);
                 return (
                   <div
                     key={index}
@@ -205,10 +248,14 @@ const CourseAccess = () => {
                   >
                     <Link
                       to={
-                        Role !== "admin" &&
-                        stateParams === "allCourses" &&
-                        !myCourses?.find((item) => item?._id === course?._id)
-                          ? course?.coursePurchaseUrl
+                        Role === "user" && remainingDay < 0
+                          ? {}
+                          : Role !== "admin" &&
+                            stateParams === "allCourses" &&
+                            !myCourses?.find(
+                              (item) => item?._id === course?._id
+                            )
+                          ? `/payment/${course?._id}`
                           : `/questLevels/${course?._id}`
                       }
                       target={
@@ -218,7 +265,12 @@ const CourseAccess = () => {
                           ? "_blank"
                           : "_self"
                       }
-                      onClick={(e) => e.stopPropagation()}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (Role === "user" && remainingDay < 0) {
+                          handelExpire(course);
+                        }
+                      }}
                     >
                       <div className="card-content">
                         <div className="relative">

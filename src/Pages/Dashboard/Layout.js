@@ -106,6 +106,7 @@ const Layout = ({ children }) => {
   };
 
   const { id } = useParams();
+  
   // console.log(id)
 
   return (
