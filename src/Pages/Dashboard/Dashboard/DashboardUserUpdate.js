@@ -218,7 +218,7 @@ const DashboardUserUpdate = ({
                   <RoundAvatar
                     name={userInfo?.name}
                     avatarBg={avatarBg}
-                    imageSrc=""
+                    imageSrc={userInfo?.profileImg}
                   />
                 </div>
                 <div className="flex flex-col lg:flex-row items-center justify-center gap-3 lg:justify-around h-full">
