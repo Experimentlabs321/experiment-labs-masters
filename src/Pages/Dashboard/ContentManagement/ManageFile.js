@@ -411,15 +411,15 @@ const ManageFile = () => {
             <div className="flex items-center justify-center mt-20 mb-10">
               <input
                 type="submit"
+                onClick={() => setSubmitPermission(true)}
                 value="Save"
                 className="px-[30px] py-3 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
               />
-              <input
+              {/* <input
                 type="submit"
-                onClick={() => setSubmitPermission(true)}
                 value="Save & Display"
                 className="px-[30px] py-3 bg-[#FF557A] text-[#fff] text-xl font-bold rounded-lg ms-20"
-              />
+              /> */}
             </div>
           </form>
         </div>
