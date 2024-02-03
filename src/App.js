@@ -60,7 +60,7 @@ function App() {
               }, */
 
             {
-              "src": "https://i.ibb.co/qCjt6fH/icon192.png",
+              "src": orgLogo,
               "type": "image/png",
               "sizes": "192x192",
               "purpose": "maskable"
@@ -73,7 +73,7 @@ function App() {
             },
 
              {
-               "src": 'https://i.ibb.co/nQL81Tw/icon64.png',
+               "src": orgLogo,
                "type": "image/png",
                "sizes": "64x64",
                "purpose":"any"
@@ -108,7 +108,7 @@ function App() {
         setIsLoading(false);
         Loading().close();
       });
-  }, [userInfo]);
+  }, [userInfo,orgLogo]);
 
   if (isLoading) {
     return <div></div>;
