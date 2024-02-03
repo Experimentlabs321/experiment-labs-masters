@@ -97,6 +97,7 @@ const Layout = ({ children }) => {
       .then((response) => {
         setOrgData(response?.data);
         localStorage.setItem('organizationLogo', response?.data?.org_logo);
+        localStorage.setItem('organizationFavicon', response?.data?.favicon);
       })
       .catch((error) => console.error(error));
   }, [userInfo]);
@@ -106,7 +107,8 @@ const Layout = ({ children }) => {
   };
 
   const { id } = useParams();
-  
+  const orgLogo = localStorage.getItem("organizationLogo")
+ 
   // console.log(id)
 
   return (
@@ -115,15 +117,13 @@ const Layout = ({ children }) => {
       <div>
         <div className=" font-sansita">
           <nav
-            className={`bg-[#01090d] border-b border-gray-200 fixed z-30 w-full lg:hidden ${
-              toggleButton ? "" : "hidden"
-            }`}
+            className={`bg-[#01090d] border-b border-gray-200 fixed z-30 w-full lg:hidden ${toggleButton ? "" : "hidden"
+              }`}
           >
             <div className="px-3 py-3 lg:px-5 lg:pl-3">
               <div
-                className={`flex items-center justify-between ${
-                  toggleButton ? "" : "hidden"
-                }`}
+                className={`flex items-center justify-between ${toggleButton ? "" : "hidden"
+                  }`}
               >
                 <button
                   id="toggleSidebarMobile"
@@ -150,7 +150,7 @@ const Layout = ({ children }) => {
                   <img
                     // className="h-6 lg:h-8"
                     className="w-[100px]"
-                    src={orgData?.org_logo}
+                    src={orgLogo}
                     alt="icon"
                   />
                   {/* <img className="h-6 lg:h-8" src={logo} alt="icon" /> */}
@@ -162,9 +162,8 @@ const Layout = ({ children }) => {
           <div className="flex overflow-hidden">
             <aside
               id="sidebar"
-              className={`fixed ${
-                toggleButton ? "hidden" : ""
-              } z-20 h-full top-0 bg-[#141414] shadow-lg left-0 flex lg:flex flex-shrink-0 flex-col w-[324px] transition duration-500 ease-in-out delay-150`}
+              className={`fixed ${toggleButton ? "hidden" : ""
+                } z-20 h-full top-0 bg-[#141414] shadow-lg left-0 flex lg:flex flex-shrink-0 flex-col w-[324px] transition duration-500 ease-in-out delay-150`}
               aria-label="Sidebar"
             >
               <div className=" flex-1 flex flex-col min-h-0 pt-0">
@@ -175,7 +174,7 @@ const Layout = ({ children }) => {
                         <img
                           // className="h-6 lg:h-8"
                           className="w-[100px]"
-                          src={orgData?.org_logo}
+                          src={orgLogo}
                           alt="icon"
                         />
                       </Link>
@@ -197,9 +196,9 @@ const Layout = ({ children }) => {
                             style={
                               location.pathname === "/dashboard"
                                 ? {
-                                    background:
-                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                  }
+                                  background:
+                                    "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                }
                                 : {}
                             }
                             to="/dashboard"
@@ -220,11 +219,10 @@ const Layout = ({ children }) => {
                             )}
 
                             <span
-                              className={`${
-                                location.pathname === "/dashboard"
+                              className={`${location.pathname === "/dashboard"
                                   ? "text-white"
                                   : "text-[#8F8F8F]"
-                              } ml-3 text-[18px] font-[500]`}
+                                } ml-3 text-[18px] font-[500]`}
                             >
                               Dashboard
                             </span>
@@ -275,9 +273,9 @@ const Layout = ({ children }) => {
                                 style={
                                   location.pathname === "/earning"
                                     ? {
-                                        background:
-                                          "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                      }
+                                      background:
+                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                    }
                                     : {}
                                 }
                                 to="/earning"
@@ -298,11 +296,10 @@ const Layout = ({ children }) => {
                                 )}
 
                                 <span
-                                  className={`${
-                                    location.pathname === "/earning"
+                                  className={`${location.pathname === "/earning"
                                       ? "text-white"
                                       : "text-[#8F8F8F]"
-                                  } ml-3 text-[18px] font-[500]`}
+                                    } ml-3 text-[18px] font-[500]`}
                                 >
                                   Earning
                                 </span>
@@ -313,9 +310,9 @@ const Layout = ({ children }) => {
                                 style={
                                   location.pathname === "/redemption"
                                     ? {
-                                        background:
-                                          "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                      }
+                                      background:
+                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                    }
                                     : {}
                                 }
                                 to="/redemption"
@@ -336,11 +333,10 @@ const Layout = ({ children }) => {
                                 )}
 
                                 <span
-                                  className={`${
-                                    location.pathname === "/redemption"
+                                  className={`${location.pathname === "/redemption"
                                       ? "text-white"
                                       : "text-[#8F8F8F]"
-                                  } ml-3 text-[18px] font-[500]`}
+                                    } ml-3 text-[18px] font-[500]`}
                                 >
                                   Redemption
                                 </span>
@@ -354,9 +350,9 @@ const Layout = ({ children }) => {
                               style={
                                 location.pathname === "/skillAnalysis"
                                   ? {
-                                      background:
-                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                    }
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
                                   : {}
                               }
                               to="/skillAnalysis"
@@ -377,11 +373,10 @@ const Layout = ({ children }) => {
                               )}
 
                               <span
-                                className={`${
-                                  location.pathname === "/skillAnalysis"
+                                className={`${location.pathname === "/skillAnalysis"
                                     ? "text-white"
                                     : "text-[#8F8F8F]"
-                                } ml-3 text-[18px] font-[500]`}
+                                  } ml-3 text-[18px] font-[500]`}
                               >
                                 Skill Analysis
                               </span>
@@ -431,9 +426,9 @@ const Layout = ({ children }) => {
                             style={
                               location.pathname === "/courseAccess"
                                 ? {
-                                    background:
-                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                  }
+                                  background:
+                                    "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                }
                                 : {}
                             }
                             to="/courseAccess"
@@ -454,11 +449,10 @@ const Layout = ({ children }) => {
                             )}
 
                             <span
-                              className={`${
-                                location.pathname === "/courseAccess"
+                              className={`${location.pathname === "/courseAccess"
                                   ? "text-white"
                                   : "text-[#8F8F8F]"
-                              } ml-3 text-[18px] font-[500]`}
+                                } ml-3 text-[18px] font-[500]`}
                             >
                               Course Access
                             </span>
@@ -474,9 +468,9 @@ const Layout = ({ children }) => {
                               style={
                                 location.pathname === "/adminDashboardHome"
                                   ? {
-                                      background:
-                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                    }
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
                                   : {}
                               }
                               to="/adminDashboardHome"
@@ -497,11 +491,10 @@ const Layout = ({ children }) => {
                               )}
 
                               <span
-                                className={`${
-                                  location.pathname === "/adminDashboardHome"
+                                className={`${location.pathname === "/adminDashboardHome"
                                     ? "text-white"
                                     : "text-[#8F8F8F]"
-                                } ml-3 text-[18px] font-[500]`}
+                                  } ml-3 text-[18px] font-[500]`}
                               >
                                 Dashboard
                               </span>
@@ -512,9 +505,9 @@ const Layout = ({ children }) => {
                               style={
                                 location.pathname === "/courseAccess"
                                   ? {
-                                      background:
-                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                    }
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
                                   : {}
                               }
                               to="/courseAccess"
@@ -527,11 +520,10 @@ const Layout = ({ children }) => {
                               )}
 
                               <span
-                                className={`${
-                                  location.pathname === "/courseAccess"
+                                className={`${location.pathname === "/courseAccess"
                                     ? "text-white"
                                     : "text-[#8F8F8F]"
-                                } ml-3 text-[18px] font-[500]`}
+                                  } ml-3 text-[18px] font-[500]`}
                               >
                                 Content Management
                               </span>
@@ -541,13 +533,13 @@ const Layout = ({ children }) => {
                             <Link
                               style={
                                 location.pathname === "/pointsAndRedemptions" ||
-                                location.pathname === "/gamifiedSettings" ||
-                                location.pathname === "/earningLogics" ||
-                                location.pathname === "/redemptionLogics"
+                                  location.pathname === "/gamifiedSettings" ||
+                                  location.pathname === "/earningLogics" ||
+                                  location.pathname === "/redemptionLogics"
                                   ? {
-                                      background:
-                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                    }
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
                                   : {}
                               }
                               to="/pointsAndRedemptions "
@@ -560,15 +552,14 @@ const Layout = ({ children }) => {
                               )}
 
                               <span
-                                className={`${
-                                  location.pathname ===
+                                className={`${location.pathname ===
                                     "/pointsAndRedemptions" ||
-                                  location.pathname === "/gamifiedSettings" ||
-                                  location.pathname === "/earningLogics" ||
-                                  location.pathname === "/redemptionLogics"
+                                    location.pathname === "/gamifiedSettings" ||
+                                    location.pathname === "/earningLogics" ||
+                                    location.pathname === "/redemptionLogics"
                                     ? "text-[#fff]"
                                     : "text-[#8F8F8F]"
-                                } ml-3 text-[18px] font-[500]`}
+                                  } ml-3 text-[18px] font-[500]`}
                               >
                                 Points & Redemptions
                               </span>
@@ -578,12 +569,12 @@ const Layout = ({ children }) => {
                             <Link
                               style={
                                 location.pathname === "/skillsManagement" ||
-                                location.pathname === "/skillsCreations" ||
-                                location.pathname === "/skillsImprovementEngine"
+                                  location.pathname === "/skillsCreations" ||
+                                  location.pathname === "/skillsImprovementEngine"
                                   ? {
-                                      background:
-                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                    }
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
                                   : {}
                               }
                               to="/skillsManagement "
@@ -596,14 +587,13 @@ const Layout = ({ children }) => {
                               )}
 
                               <span
-                                className={`${
-                                  location.pathname === "/skillsManagement" ||
-                                  location.pathname === "/skillsCreations" ||
-                                  location.pathname ===
+                                className={`${location.pathname === "/skillsManagement" ||
+                                    location.pathname === "/skillsCreations" ||
+                                    location.pathname ===
                                     "/skillsImprovementEngine"
                                     ? "text-[#fff]"
                                     : "text-[#8F8F8F]"
-                                } ml-3 text-[18px] font-[500]`}
+                                  } ml-3 text-[18px] font-[500]`}
                               >
                                 Skills Management
                               </span>
@@ -614,9 +604,9 @@ const Layout = ({ children }) => {
                               style={
                                 location.pathname === "/feedback"
                                   ? {
-                                      background:
-                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                    }
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
                                   : {}
                               }
                               to="/feedback"
@@ -629,11 +619,10 @@ const Layout = ({ children }) => {
                               )}
 
                               <span
-                                className={`${
-                                  location.pathname === "/feedback"
+                                className={`${location.pathname === "/feedback"
                                     ? "text-[#fff]"
                                     : "text-[#8F8F8F]"
-                                } ml-3 text-[18px] font-[500]`}
+                                  } ml-3 text-[18px] font-[500]`}
                               >
                                 Feedback
                               </span>
@@ -644,9 +633,9 @@ const Layout = ({ children }) => {
                               style={
                                 location.pathname === "/updateOrganization"
                                   ? {
-                                      background:
-                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                    }
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
                                   : {}
                               }
                               to="/updateOrganization"
@@ -659,11 +648,10 @@ const Layout = ({ children }) => {
                               )}
 
                               <span
-                                className={`${
-                                  location.pathname === "/updateOrganization"
+                                className={`${location.pathname === "/updateOrganization"
                                     ? "text-[#fff]"
                                     : "text-[#8F8F8F]"
-                                } ml-3 text-[18px] font-[500]`}
+                                  } ml-3 text-[18px] font-[500]`}
                               >
                                 Update Organization
                               </span>
@@ -707,9 +695,9 @@ const Layout = ({ children }) => {
                               style={
                                 location.pathname === "/schedule"
                                   ? {
-                                      background:
-                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                    }
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
                                   : {}
                               }
                               to="/schedule"
@@ -722,11 +710,10 @@ const Layout = ({ children }) => {
                               )}
 
                               <span
-                                className={`${
-                                  location.pathname === "/schedule"
+                                className={`${location.pathname === "/schedule"
                                     ? "text-white"
                                     : "text-[#8F8F8F]"
-                                } ml-3 text-[18px] font-[500]`}
+                                  } ml-3 text-[18px] font-[500]`}
                               >
                                 Schedule
                               </span>
@@ -736,23 +723,23 @@ const Layout = ({ children }) => {
                             <Link
                               style={
                                 location.pathname === "/mentorAssignments" ||
-                                location.pathname ===
+                                  location.pathname ===
                                   `/assignmentEvaluation1/${id}` ||
-                                location.pathname ===
+                                  location.pathname ===
                                   `/assignmentEvaluation2/${id}`
                                   ? {
-                                      background:
-                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                    }
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
                                   : {}
                               }
                               to="/mentorAssignments"
                               className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
                             >
                               {location.pathname === "/mentorAssignments" ||
-                              location.pathname ===
+                                location.pathname ===
                                 `/assignmentEvaluation1/${id}` ||
-                              location.pathname ===
+                                location.pathname ===
                                 `/assignmentEvaluation2/${id}` ? (
                                 <img
                                   className=""
@@ -768,21 +755,20 @@ const Layout = ({ children }) => {
                               )}
 
                               <span
-                                className={`${
-                                  location.pathname === "/mentorAssignments" ||
-                                  location.pathname ===
+                                className={`${location.pathname === "/mentorAssignments" ||
+                                    location.pathname ===
                                     `/assignmentEvaluation1/${id}` ||
-                                  location.pathname ===
+                                    location.pathname ===
                                     `/assignmentEvaluation2/${id}`
                                     ? "text-white"
                                     : "text-[#8F8F8F]"
-                                } ml-3 text-[18px] font-[500]`}
+                                  } ml-3 text-[18px] font-[500]`}
                               >
                                 Assignments
                               </span>
                             </Link>
                           </li>
-                        {/*   <li>
+                          {/*   <li>
                             <Link
                               style={
                                 location.pathname ===
@@ -823,7 +809,7 @@ const Layout = ({ children }) => {
                               </span>
                             </Link>
                           </li> */}
-                         {/*  <li>
+                          {/*  <li>
                             <Link
                               style={
                                 location.pathname ===
@@ -864,7 +850,7 @@ const Layout = ({ children }) => {
                               </span>
                             </Link>
                           </li> */}
-                         {/*  <li>
+                          {/*  <li>
                             <Link
                               style={
                                 location.pathname === "/addStudent"
@@ -894,7 +880,7 @@ const Layout = ({ children }) => {
                               </span>
                             </Link>
                           </li> */}
-                         {/*  <li>
+                          {/*  <li>
                             <Link
                               style={
                                 location.pathname === "/showcasePage"
@@ -937,9 +923,9 @@ const Layout = ({ children }) => {
                               style={
                                 location.pathname === "/createCertificate"
                                   ? {
-                                      background:
-                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                    }
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
                                   : {}
                               }
                               to="/createCertificate"
@@ -998,11 +984,10 @@ const Layout = ({ children }) => {
                               )}
 
                               <span
-                                className={`${
-                                  location.pathname === "/createCertificate"
+                                className={`${location.pathname === "/createCertificate"
                                     ? "text-white"
                                     : "text-[#8F8F8F]"
-                                } ml-3 text-[18px] font-[500]`}
+                                  } ml-3 text-[18px] font-[500]`}
                               >
                                 Create Certificate
                               </span>
@@ -1013,9 +998,9 @@ const Layout = ({ children }) => {
                               style={
                                 location.pathname === "/myStudents"
                                   ? {
-                                      background:
-                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                    }
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
                                   : {}
                               }
                               to="/myStudents"
@@ -1028,11 +1013,10 @@ const Layout = ({ children }) => {
                               )}
 
                               <span
-                                className={`${
-                                  location.pathname === "/myStudents"
+                                className={`${location.pathname === "/myStudents"
                                     ? "text-[#fff]"
                                     : "text-[#8F8F8F]"
-                                } ml-3 text-[18px] font-[500]`}
+                                  } ml-3 text-[18px] font-[500]`}
                               >
                                 My Learners
                               </span>
@@ -1043,9 +1027,9 @@ const Layout = ({ children }) => {
                               style={
                                 location.pathname === "/offers"
                                   ? {
-                                      background:
-                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                    }
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
                                   : {}
                               }
                               to="/offers"
@@ -1120,11 +1104,10 @@ const Layout = ({ children }) => {
                               )}
 
                               <span
-                                className={`${
-                                  location.pathname === "/offers"
+                                className={`${location.pathname === "/offers"
                                     ? "text-[#fff]"
                                     : "text-[#8F8F8F]"
-                                } ml-3 text-[18px] font-[500]`}
+                                  } ml-3 text-[18px] font-[500]`}
                               >
                                 Offers
                               </span>
@@ -1142,16 +1125,16 @@ const Layout = ({ children }) => {
                               style={
                                 location.pathname ===
                                   "/executionMentorDashboard" ||
-                                location.pathname === "/performanceFeedback" ||
-                                location.pathname === "/students" ||
-                                location.pathname ===
+                                  location.pathname === "/performanceFeedback" ||
+                                  location.pathname === "/students" ||
+                                  location.pathname ===
                                   "/studentsWhoNeedMoreGuidance" ||
-                                location.pathname === "/studentFeedback" ||
-                                location.pathname === "/departmentEvaluation"
+                                  location.pathname === "/studentFeedback" ||
+                                  location.pathname === "/departmentEvaluation"
                                   ? {
-                                      background:
-                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                    }
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
                                   : {}
                               }
                               to="/executionMentorDashboard"
@@ -1159,12 +1142,12 @@ const Layout = ({ children }) => {
                             >
                               {location.pathname ===
                                 "/executionMentorDashboard" ||
-                              location.pathname === "/performanceFeedback" ||
-                              location.pathname === "/students" ||
-                              location.pathname ===
+                                location.pathname === "/performanceFeedback" ||
+                                location.pathname === "/students" ||
+                                location.pathname ===
                                 "/studentsWhoNeedMoreGuidance" ||
-                              location.pathname === "/studentFeedback" ||
-                              location.pathname === "/departmentEvaluation" ? (
+                                location.pathname === "/studentFeedback" ||
+                                location.pathname === "/departmentEvaluation" ? (
                                 <img className="" src={dashboard} alt="icon" />
                               ) : (
                                 <img
@@ -1175,19 +1158,18 @@ const Layout = ({ children }) => {
                               )}
 
                               <span
-                                className={`${
-                                  location.pathname ===
+                                className={`${location.pathname ===
                                     "/executionMentorDashboard" ||
-                                  location.pathname ===
+                                    location.pathname ===
                                     "/performanceFeedback" ||
-                                  location.pathname === "/students" ||
-                                  location.pathname ===
+                                    location.pathname === "/students" ||
+                                    location.pathname ===
                                     "/studentsWhoNeedMoreGuidance" ||
-                                  location.pathname === "/studentFeedback" ||
-                                  location.pathname === "/departmentEvaluation"
+                                    location.pathname === "/studentFeedback" ||
+                                    location.pathname === "/departmentEvaluation"
                                     ? "text-white"
                                     : "text-[#8F8F8F]"
-                                } ml-3 text-[18px] font-[500]`}
+                                  } ml-3 text-[18px] font-[500]`}
                               >
                                 Dashboard
                               </span>
@@ -1197,30 +1179,29 @@ const Layout = ({ children }) => {
                             <Link
                               style={
                                 location.pathname === "/liveClasses" ||
-                                location.pathname === "/upcomingClasses"
+                                  location.pathname === "/upcomingClasses"
                                   ? {
-                                      background:
-                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                    }
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
                                   : {}
                               }
                               to="/liveClasses"
                               className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
                             >
                               {location.pathname === "/liveClasses" ||
-                              location.pathname === "/upcomingClasses" ? (
+                                location.pathname === "/upcomingClasses" ? (
                                 <img className="" src={liveClass} alt="icon" />
                               ) : (
                                 <img className="" src={liveClass1} alt="icon" />
                               )}
 
                               <span
-                                className={`${
-                                  location.pathname === "/liveClasses" ||
-                                  location.pathname === "/upcomingClasses"
+                                className={`${location.pathname === "/liveClasses" ||
+                                    location.pathname === "/upcomingClasses"
                                     ? "text-white"
                                     : "text-[#8F8F8F]"
-                                } ml-3 text-[18px] font-[500]`}
+                                  } ml-3 text-[18px] font-[500]`}
                               >
                                 Live Classes
                               </span>
@@ -1231,9 +1212,9 @@ const Layout = ({ children }) => {
                               style={
                                 location.pathname === "/schedule"
                                   ? {
-                                      background:
-                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                    }
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
                                   : {}
                               }
                               to="/schedule"
@@ -1246,11 +1227,10 @@ const Layout = ({ children }) => {
                               )}
 
                               <span
-                                className={`${
-                                  location.pathname === "/schedule"
+                                className={`${location.pathname === "/schedule"
                                     ? "text-white"
                                     : "text-[#8F8F8F]"
-                                } ml-3 text-[18px] font-[500]`}
+                                  } ml-3 text-[18px] font-[500]`}
                               >
                                 Schedule
                               </span>
@@ -1320,23 +1300,23 @@ const Layout = ({ children }) => {
                             <Link
                               style={
                                 location.pathname === "/mentorAssignments" ||
-                                location.pathname ===
+                                  location.pathname ===
                                   `/assignmentEvaluation1/${id}` ||
-                                location.pathname ===
+                                  location.pathname ===
                                   `/assignmentEvaluation2/${id}`
                                   ? {
-                                      background:
-                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                    }
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
                                   : {}
                               }
                               to="/mentorAssignments"
                               className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
                             >
                               {location.pathname === "/mentorAssignments" ||
-                              location.pathname ===
+                                location.pathname ===
                                 `/assignmentEvaluation1/${id}` ||
-                              location.pathname ===
+                                location.pathname ===
                                 `/assignmentEvaluation2/${id}` ? (
                                 <img
                                   className=""
@@ -1352,15 +1332,14 @@ const Layout = ({ children }) => {
                               )}
 
                               <span
-                                className={`${
-                                  location.pathname === "/mentorAssignments" ||
-                                  location.pathname ===
+                                className={`${location.pathname === "/mentorAssignments" ||
+                                    location.pathname ===
                                     `/assignmentEvaluation1/${id}` ||
-                                  location.pathname ===
+                                    location.pathname ===
                                     `/assignmentEvaluation2/${id}`
                                     ? "text-white"
                                     : "text-[#8F8F8F]"
-                                } ml-3 text-[18px] font-[500]`}
+                                  } ml-3 text-[18px] font-[500]`}
                               >
                                 Assignments
                               </span>
@@ -1438,16 +1417,16 @@ const Layout = ({ children }) => {
                               style={
                                 location.pathname === "/unpaidStudentDashboard"
                                   ? {
-                                      background:
-                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                    }
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
                                   : {}
                               }
                               to="/unpaidStudentDashboard"
                               className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
                             >
                               {location.pathname ===
-                              "/unpaidStudentDashboard" ? (
+                                "/unpaidStudentDashboard" ? (
                                 <img className="" src={dashboard} alt="icon" />
                               ) : (
                                 <img
@@ -1458,12 +1437,11 @@ const Layout = ({ children }) => {
                               )}
 
                               <span
-                                className={`${
-                                  location.pathname ===
-                                  "/unpaidStudentDashboard"
+                                className={`${location.pathname ===
+                                    "/unpaidStudentDashboard"
                                     ? "text-white"
                                     : "text-[#8F8F8F]"
-                                } ml-3 text-[18px] font-[500]`}
+                                  } ml-3 text-[18px] font-[500]`}
                               >
                                 Dashboard
                               </span>
@@ -1474,9 +1452,9 @@ const Layout = ({ children }) => {
                               style={
                                 location.pathname === "/redemption"
                                   ? {
-                                      background:
-                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                    }
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
                                   : {}
                               }
                               to="/unpaidStudentRedemption"
@@ -1493,11 +1471,10 @@ const Layout = ({ children }) => {
                               )}
 
                               <span
-                                className={`${
-                                  location.pathname === "/redemption"
+                                className={`${location.pathname === "/redemption"
                                     ? "text-white"
                                     : "text-[#8F8F8F]"
-                                } ml-3 text-[18px] font-[500]`}
+                                  } ml-3 text-[18px] font-[500]`}
                               >
                                 redemption
                               </span>
@@ -1508,9 +1485,9 @@ const Layout = ({ children }) => {
                               style={
                                 location.pathname === "/coursesAccess"
                                   ? {
-                                      background:
-                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                    }
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
                                   : {}
                               }
                               to="/coursesAccess"
@@ -1531,11 +1508,10 @@ const Layout = ({ children }) => {
                               )}
 
                               <span
-                                className={`${
-                                  location.pathname === "/coursesAccess"
+                                className={`${location.pathname === "/coursesAccess"
                                     ? "text-white"
                                     : "text-[#8F8F8F]"
-                                } ml-3 text-[18px] font-[500]`}
+                                  } ml-3 text-[18px] font-[500]`}
                               >
                                 Courses Access
                               </span>
@@ -1553,16 +1529,16 @@ const Layout = ({ children }) => {
                               style={
                                 location.pathname === "/expertMentorDashboard"
                                   ? {
-                                      background:
-                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                    }
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
                                   : {}
                               }
                               to="/expertMentorDashboard"
                               className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
                             >
                               {location.pathname ===
-                              "/expertMentorDashboard" ? (
+                                "/expertMentorDashboard" ? (
                                 <img className="" src={dashboard} alt="icon" />
                               ) : (
                                 <img
@@ -1573,11 +1549,10 @@ const Layout = ({ children }) => {
                               )}
 
                               <span
-                                className={`${
-                                  location.pathname === "/expertMentorDashboard"
+                                className={`${location.pathname === "/expertMentorDashboard"
                                     ? "text-white"
                                     : "text-[#8F8F8F]"
-                                } ml-3 text-[18px] font-[500]`}
+                                  } ml-3 text-[18px] font-[500]`}
                               >
                                 Dashboard
                               </span>
@@ -1587,18 +1562,18 @@ const Layout = ({ children }) => {
                             <Link
                               style={
                                 location.pathname ===
-                                "/expertMentorResourceCentre"
+                                  "/expertMentorResourceCentre"
                                   ? {
-                                      background:
-                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                    }
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
                                   : {}
                               }
                               to="/expertMentorResourceCentre"
                               className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
                             >
                               {location.pathname ===
-                              "/expertMentorResourceCentre" ? (
+                                "/expertMentorResourceCentre" ? (
                                 <img
                                   className=""
                                   src={resourceCenter1}
@@ -1613,12 +1588,11 @@ const Layout = ({ children }) => {
                               )}
 
                               <span
-                                className={`${
-                                  location.pathname ===
-                                  "/expertMentorResourceCentre"
+                                className={`${location.pathname ===
+                                    "/expertMentorResourceCentre"
                                     ? "text-white"
                                     : "text-[#8F8F8F]"
-                                } ml-3 text-[18px] font-[500]`}
+                                  } ml-3 text-[18px] font-[500]`}
                               >
                                 Resource Centre
                               </span>
@@ -1628,18 +1602,18 @@ const Layout = ({ children }) => {
                             <Link
                               style={
                                 location.pathname ===
-                                "/expertMentorStudentProgress"
+                                  "/expertMentorStudentProgress"
                                   ? {
-                                      background:
-                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                    }
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
                                   : {}
                               }
                               to="/expertMentorStudentProgress"
                               className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
                             >
                               {location.pathname ===
-                              "/expertMentorStudentProgress" ? (
+                                "/expertMentorStudentProgress" ? (
                                 <img
                                   className=""
                                   src={StudentProgress1}
@@ -1654,12 +1628,11 @@ const Layout = ({ children }) => {
                               )}
 
                               <span
-                                className={`${
-                                  location.pathname ===
-                                  "/expertMentorStudentProgress"
+                                className={`${location.pathname ===
+                                    "/expertMentorStudentProgress"
                                     ? "text-white"
                                     : "text-[#8F8F8F]"
-                                } ml-3 text-[18px] font-[500]`}
+                                  } ml-3 text-[18px] font-[500]`}
                               >
                                 Student Progress
                               </span>
@@ -1670,9 +1643,9 @@ const Layout = ({ children }) => {
                               style={
                                 location.pathname === "/showcasePage"
                                   ? {
-                                      background:
-                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                    }
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
                                   : {}
                               }
                               to="/showcasePage"
@@ -1693,11 +1666,10 @@ const Layout = ({ children }) => {
                               )}
 
                               <span
-                                className={`${
-                                  location.pathname === "/showcasePage"
+                                className={`${location.pathname === "/showcasePage"
                                     ? "text-white"
                                     : "text-[#8F8F8F]"
-                                } ml-3 text-[18px] font-[500]`}
+                                  } ml-3 text-[18px] font-[500]`}
                               >
                                 Showcase Page
                               </span>
@@ -1707,30 +1679,29 @@ const Layout = ({ children }) => {
                             <Link
                               style={
                                 location.pathname ===
-                                "/expertMentorStudentFeedback"
+                                  "/expertMentorStudentFeedback"
                                   ? {
-                                      background:
-                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                                    }
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
                                   : {}
                               }
                               to="/expertMentorStudentFeedback"
                               className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
                             >
                               {location.pathname ===
-                              "/expertMentorStudentFeedback" ? (
+                                "/expertMentorStudentFeedback" ? (
                                 <img className="" src={Feedback1} alt="icon" />
                               ) : (
                                 <img className="" src={Feedback} alt="icon" />
                               )}
 
                               <span
-                                className={`${
-                                  location.pathname ===
-                                  "/expertMentorStudentFeedback"
+                                className={`${location.pathname ===
+                                    "/expertMentorStudentFeedback"
                                     ? "text-white"
                                     : "text-[#8F8F8F]"
-                                } ml-3 text-[18px] font-[500]`}
+                                  } ml-3 text-[18px] font-[500]`}
                               >
                                 Feedback
                               </span>
@@ -1811,22 +1782,24 @@ const Layout = ({ children }) => {
                         </ul>
                       </>
                     )}
-
-                    <div className="pt-[90px] flex items-center px-[42px]">
-                      <img
-                        className="w-[37px] h-[56px] mr-[10px]"
-                        src={userPhoto}
-                        alt="user"
-                      />
-                      <div>
-                        <h2 className="text-white font-bold text-[16px]">
-                          {userInfo?.name}
-                        </h2>
-                        <p className="text-[#747475] text-[14px]">
-                          {userInfo?.email}
-                        </p>
+                    <Link to={`/userprofile/${userInfo?.email}`}>
+                      <div className="pt-[90px] flex items-center px-[42px]">
+                        <img
+                          className="w-[37px] h-[56px] mr-[10px]"
+                          src={userPhoto}
+                          alt="user"
+                        />
+                        <div>
+                          <h2 className="text-white font-bold text-[16px]">
+                            {userInfo?.name}
+                          </h2>
+                          <p className="text-[#747475] text-[14px]">
+                            {userInfo?.email}
+                          </p>
+                        </div>
                       </div>
-                    </div>
+                    </Link>
+
                     <button
                       onClick={() => {
                         logOut()
