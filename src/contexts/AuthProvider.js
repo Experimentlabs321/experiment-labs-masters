@@ -6,11 +6,13 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
+  sendPasswordResetEmail,
   updateProfile,
 } from "firebase/auth";
 import app from "../firebase/firebase.config";
 import axios from "axios";
 import Loading from "../Pages/Shared/Loading/Loading";
+import toast from "react-hot-toast";
 
 
 export const AuthContext = createContext();
@@ -49,6 +51,15 @@ const AuthProvider = ({ children }) => {
   const devicelogOut = () => {
     setLoading(true);
     return signOut(auth);
+  };
+  const forgotPassword = () => {
+    sendPasswordResetEmail(auth, auth.currentUser.email)
+    .then(() => {
+      toast.success('A Password Reset Link has been sent to your email.')
+    })
+    .catch((error) => {
+      toast.error(error.message);
+    });
   };
 
   // sign in with email and password
@@ -102,6 +113,7 @@ const AuthProvider = ({ children }) => {
   const authInfo = {
     user,
     userInfo,
+    setUserInfo,
     createUser,
     updateUserProfile,
     loading,
@@ -109,6 +121,7 @@ const AuthProvider = ({ children }) => {
     signIn,
     providerLogin,
     devicelogOut,
+    forgotPassword,
   };
 
   return (

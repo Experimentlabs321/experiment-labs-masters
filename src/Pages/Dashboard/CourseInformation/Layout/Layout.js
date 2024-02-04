@@ -5,14 +5,46 @@ import MyHelmet from "../../../../Components/MyHelmet/MyHelpmet";
 import Aside from "./Aside";
 import axios from "axios";
 import { AuthContext } from "../../../../contexts/AuthProvider";
+import io from "socket.io-client";
+
+const socket = io("http://localhost:5000");
 
 const Layout = ({ children }) => {
   const [toggleButton, setToggleButton] = useState(true);
   const [screenSmall, setScreenSmall] = useState(false);
   const [windowWidth, setWindowWidth] = useState(0);
+  const [notifications, setNotifications] = useState([]);
   const Role = localStorage.getItem("role");
   const { userInfo } = useContext(AuthContext);
   const [orgData, setOrgData] = useState({});
+
+  useEffect(() => {
+    socket.on("notification", (newNotification) => {
+      setNotifications((prevNotifications) => [
+        newNotification,
+        ...prevNotifications,
+      ]);
+    });
+
+    fetchNotifications();
+
+    return () => {
+      socket.off("notification");
+    };
+  }, []);
+
+  const fetchNotifications = async () => {
+    try {
+      axios
+        .get(`http://localhost:5000/api/v1/notifications`)
+        .then((response) => {
+          setNotifications(response?.data);
+        })
+        .catch((error) => console.error(error));
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+    }
+  };
   useEffect(() => {
     axios
       .get(
@@ -37,6 +69,7 @@ const Layout = ({ children }) => {
   const handleClick = () => {
     setToggleButton(!toggleButton);
   };
+  console.log(notifications);
   return (
     <>
       <MyHelmet>Dashboard</MyHelmet>
