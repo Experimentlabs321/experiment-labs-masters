@@ -11,8 +11,9 @@ const DynamicFavicon = () => {
   const role = localStorage.getItem("role");
   const { id } = useParams();
   const orgFavicon = localStorage.getItem("organizationFavicon")
+  const organizationLogo = localStorage.getItem("organizationLogo")
   const orgName = localStorage.getItem("organizationName")
-  
+
  /*  useEffect(() => {
     if ((id || orgId) && role === "Student")
       axios
@@ -43,9 +44,9 @@ const DynamicFavicon = () => {
     link.rel = "icon";
     link.href = orgFavicon
       ? `${orgFavicon}`
-      : "/favicon.ico"; // Update with the path to your new favicon
+      : `${organizationLogo}`; // Update with the path to your new favicon
     document.head.appendChild(link);
-  }, [orgFavicon]);
+  }, [orgFavicon,organizationLogo]);
 
   return (
     <div>
