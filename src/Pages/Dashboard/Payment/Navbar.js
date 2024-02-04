@@ -217,7 +217,8 @@ const Navbar = (props) => {
         component="nav"
         sx={{
           bgcolor: (orgData?.paymentNavbarColor)? orgData?.paymentNavbarColor :"#3E4DAC",
-          padding: "10px 20px 10px 10px"
+          padding: "10px 20px 10px 10px",
+          zIndex:"1"
         }}
       >
         <Toolbar>

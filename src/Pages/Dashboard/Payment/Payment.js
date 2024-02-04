@@ -10,22 +10,27 @@ import DialogLayoutForFromControl from "../Shared/DialogLayoutForFromControl";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import { GoogleAuthProvider } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
 const Payment = () => {
-  const { userInfo, user, signIn, providerLogin, logOut } = useContext(AuthContext);
+  const { userInfo, user, signIn, providerLogin, logOut, createUser } = useContext(AuthContext);
   const { id } = useParams();
   const [course, setCourse] = useState([]);
   const [batchesData, setBatchesData] = useState([]);
   const [organizationData, setOrganizationData] = useState([]);
   const [selectedBatch, setSelectedBatch] = useState({});
   const [offers, setOffers] = useState([]);
+  const [selectOffer, setSelectedOffer] = useState("");
   const [coupon, setCoupon] = useState("");
   const [couponDiscount, setCouponDiscount] = useState(0);
   const [loginOpen, setLoginOpen] = useState(false);
   const [registerOpen, setRegisterOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [error, setError] = useState(false);
+  const navigate = useNavigate();
 
 
   useEffect(() => {
@@ -62,6 +67,7 @@ const Payment = () => {
     const offers = await axios.get(`${process.env.REACT_APP_SERVER_API}/api/v1/offers/batchId/${batchId}`);
     setOffers(offers?.data?.result);
     setCoupon("");
+    setSelectedOffer("");
     setCouponDiscount(0);
   }
 
@@ -86,6 +92,7 @@ const Payment = () => {
     const filteredCoupon = offers.filter((offer) => (offer.code === coupon) && (offer.disabled !== true));
     if (filteredCoupon.length > 0) {
       // console.log(filteredCoupon[0]);
+      setSelectedOffer(filteredCoupon[0]);
       let { discountPercent, maxDiscountValue } = filteredCoupon[0];
       let discountAmount = (+selectedBatch?.price * +discountPercent) / 100;
       // console.log("Discount Amount", discountAmount);
@@ -107,8 +114,9 @@ const Payment = () => {
 
 
   const handleEnroll = async (data) => {
+    console.log("Data =============>", data);
     const { data: { order } } = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/checkout`, {
-      price: selectedBatch.price,
+      price: ((+selectedBatch.price) - (+couponDiscount)),
       paymentInstance: {
         key_id: organizationData?.paymentInstance?.key_id,
         key_secret: organizationData?.paymentInstance?.key_secret
@@ -127,7 +135,8 @@ const Payment = () => {
       description: `Purchase ${course?.courseName}`,
       image: organizationData?.org_logo,
       order_id: order.id,
-      callback_url: `${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/verifyPayment`,
+      // callback_url: `http://localhost:5000/api/v1/users/unpaidUsers/verifyPayment`,
+      // callback_url: `${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/verifyPayment`,
       prefill: {
         name: data?.name,
         email: data?.email,
@@ -139,11 +148,29 @@ const Payment = () => {
       theme: {
         color: organizationData?.titlesColor
       },
-      handler: function (response) {
-        Swal.fire({
-          title: "Course Added Successfully",
-          icon: "success",
-        });
+      handler: async function (response) {
+        response.razorpay_key_secret = organizationData?.paymentInstance?.key_secret;
+        response.courseId = course?._id;
+        response.batchId = selectedBatch?._id;
+        response.email = data?.email;
+        response.userId = data?._id;
+        response.paidAmount = (+order?.amount / 100);
+        response.originalPrice = +selectedBatch?.price;
+        response.discountAmount = +couponDiscount || "";
+        response.couponId = selectOffer._id || "";
+        response.coupon = coupon || "";
+        response.organizationId = organizationData?._id;
+        response.organizationName = organizationData?.organizationName;
+        console.log("Response ========>", response);
+        console.log(selectOffer._id);
+        const res = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/verifyPayment`, response);
+        if (res.data.success) {
+          Swal.fire({
+            title: "Course Added Successfully",
+            icon: "success",
+          });
+          navigate('/courseAccess')
+        }
       }
     };
 
@@ -193,11 +220,6 @@ const Payment = () => {
   }
 
 
-  const handleRegister = () => {
-    //TO Do
-  }
-
-
   const handleLogout = () => {
     logOut()
       .then((res) => {
@@ -230,6 +252,70 @@ const Payment = () => {
         console.error(error);
       });
   };
+
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+
+    const data = {
+      name,
+      phone,
+      email,
+      password,
+      organizationId: organizationData?._id,
+      organizationName: organizationData?.organizationName,
+      role: "user"
+    }
+
+    // console.log(data);
+
+    try {
+      const result = await createUser(email, password);
+      if (result.user.uid) {
+        const res = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/v1/users`, data);
+        // console.log(res);
+        if (res.data.acknowledged) {
+          // console.log(email);
+          saveUser(email);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
+  const handleGoogleRegister = async () => {
+    const googleProvider = new GoogleAuthProvider();
+
+    if (phone.length > 3) {
+      providerLogin(googleProvider)
+        .then(async (result) => {
+          const googleMail = result?.user?.email;
+          const newName = result?.user?.displayName;
+          const userDetails = await axios.get(`${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${email}`);
+          if (userDetails?.data?.isUser === false) {
+            const res = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/v1/users`, {
+              email: googleMail,
+              name: newName,
+              phone,
+              organizationId: organizationData?._id,
+              organizationName: organizationData?.organizationName,
+              role: "user"
+            });
+            if (res.data.acknowledged) {
+              saveUser(googleMail)
+            }
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+    else {
+      setError(true);
+    }
+  }
 
 
   return (
@@ -444,6 +530,7 @@ const Payment = () => {
           setRegisterOpen={setRegisterOpen}
           loginOpen={loginOpen}
           setLoginOpen={setLoginOpen}
+          handleGoogleSignIn={handleGoogleSignIn}
         />
       </DialogLayoutForFromControl>
       <DialogLayoutForFromControl
@@ -462,11 +549,17 @@ const Payment = () => {
           setEmail={setEmail}
           password={password}
           setPassword={setPassword}
-          handleLogin={handleLogin}
+          handleRegister={handleRegister}
           registerOpen={registerOpen}
           setRegisterOpen={setRegisterOpen}
           loginOpen={loginOpen}
           setLoginOpen={setLoginOpen}
+          name={name}
+          setName={setName}
+          phone={phone}
+          setPhone={setPhone}
+          error={error}
+          handleGoogleRegister={handleGoogleRegister}
         />
       </DialogLayoutForFromControl>
     </div>

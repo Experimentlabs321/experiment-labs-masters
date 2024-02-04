@@ -1,7 +1,7 @@
 import React from 'react';
 import GoogleLogo from "../../../assets/icons/googleIcon.png";
 
-const LoginForm = ({ email, setEmail, password, setPassword, handleLogin, loginOpen, setLoginOpen, registerOpen, setRegisterOpen }) => {
+const LoginForm = ({ email, setEmail, password, setPassword, handleLogin, loginOpen, setLoginOpen, registerOpen, setRegisterOpen, handleGoogleSignIn }) => {
     return (
         <form
             onSubmit={handleLogin}
@@ -45,8 +45,17 @@ const LoginForm = ({ email, setEmail, password, setPassword, handleLogin, loginO
                 className="block w-full p-3 text-center rounded-xl text-gray-50 bg-cyan hover:bg-opacity-70 cursor-pointer font-bold hover:transition-all hover:delay-200 hover:ease-out"
             />
 
+            <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-gray-300"></div>
+                </div>
+                <div className="relative flex justify-center text-gray-600 text-sm">
+                    <span className="px-2 bg-white">OR</span>
+                </div>
+            </div>
+
             <button
-                // onClick={handleGoogleSignIn}
+                onClick={handleGoogleSignIn}
                 aria-label="Login with Google"
                 type="button"
                 className="flex items-center justify-center w-full p-3 space-x-4 border rounded-xl hover:transition-all hover:delay-200 hover:ease-out hover:bg-slate-200 bg-[#9c9d9e4e] text-black mb-[25px]"
@@ -59,9 +68,6 @@ const LoginForm = ({ email, setEmail, password, setPassword, handleLogin, loginO
                 <p className="text-[20px]">Continue with Google</p>
             </button>
 
-            <p className="text-center text-error">
-                {/* <small>error</small> */}
-            </p>
             <div className='flex justify-center'>
                 <p>Don't Have an Account ? <span onClick={() => {
                     setLoginOpen(false)
