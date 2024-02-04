@@ -60,7 +60,7 @@ const LoginWithOrganization = () => {
             const result = await createUser(email, password);
             if (result.user.uid) {
                 const res = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/v1/users`, data);
-                if (res.data.acknowledge) {
+                if (res.data.acknowledged) {
                     toast.success("Registered Successfully");
                 }
                 handleLogout();

@@ -45,6 +45,15 @@ const LoginForm = ({ email, setEmail, password, setPassword, handleLogin, loginO
                 className="block w-full p-3 text-center rounded-xl text-gray-50 bg-cyan hover:bg-opacity-70 cursor-pointer font-bold hover:transition-all hover:delay-200 hover:ease-out"
             />
 
+            <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-gray-300"></div>
+                </div>
+                <div className="relative flex justify-center text-gray-600 text-sm">
+                    <span className="px-2 bg-white">OR</span>
+                </div>
+            </div>
+
             <button
                 onClick={handleGoogleSignIn}
                 aria-label="Login with Google"
@@ -59,9 +68,6 @@ const LoginForm = ({ email, setEmail, password, setPassword, handleLogin, loginO
                 <p className="text-[20px]">Continue with Google</p>
             </button>
 
-            <p className="text-center text-error">
-                {/* <small>error</small> */}
-            </p>
             <div className='flex justify-center'>
                 <p>Don't Have an Account ? <span onClick={() => {
                     setLoginOpen(false)

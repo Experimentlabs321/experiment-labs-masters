@@ -211,7 +211,7 @@ const Navbar = (props) => {
       <CssBaseline />
       <AppBar
         component="nav"
-        sx={{ bgcolor: "#141414", padding: "10px 20px 10px 10px" }}
+        sx={{ bgcolor: "#141414", padding: "10px 20px 10px 10px", zIndex:"1" }}
       >
         <Toolbar>
           <Typography
