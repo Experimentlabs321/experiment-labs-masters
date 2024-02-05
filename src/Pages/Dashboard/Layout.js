@@ -114,7 +114,7 @@ const Layout = ({ children }) => {
     axios
       .get(`http://localhost:5000/api/v1/notifications`)
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         setNotifications(response?.data);
       })
       .catch((error) => console.error(error));
