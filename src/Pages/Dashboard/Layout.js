@@ -104,6 +104,10 @@ const Layout = ({ children }) => {
         localStorage.setItem("organizationFavicon", response?.data?.favicon);
         localStorage.setItem("pWASplashscreenLogo", response?.data?.pWASplashscreenLogo);
         localStorage.setItem("pWALogo", response?.data?.pWALogo);
+        localStorage.setItem("loginSubTitle", response?.data?.loginSubTitle);
+        localStorage.setItem("loginTitle", response?.data?.loginTitle);
+        localStorage.setItem("loginPageOrgLogo", response?.data?.loginPageOrgLogo);
+        localStorage.setItem("loginSidebarImage", response?.data?.loginSidebarImage);
         localStorage.setItem(
           "organizationName",
           response?.data?.organizationName
@@ -196,7 +200,7 @@ const Layout = ({ children }) => {
                 <div className="flex-1 flex flex-col pb-4 overflow-y-auto">
                   <div className="flex-1 space-y-1">
                     <div className="py-2 border-b border-[#303031] flex items-center justify-between lg:justify-center">
-                      <Link className="hidden lg:block" to={"/"}>
+                      <Link className="hidden lg:block" to={`${orgData?.orgRootUrl}`}>
                         <img
                           // className="h-6 lg:h-8"
                           className="w-[100px]"
