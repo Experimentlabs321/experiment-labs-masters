@@ -6,8 +6,10 @@ import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
 import Swal from "sweetalert2";
 import icon from "../../../icon192.png";
+import { useNavigate } from "react-router-dom";
 
 const ReadingTask = ({ taskData }) => {
+  const navigate = useNavigate();
   const { userInfo, user } = useContext(AuthContext);
   if (userInfo.role !== "admin") {
     window.addEventListener("contextmenu", (e) => {
@@ -60,11 +62,14 @@ const ReadingTask = ({ taskData }) => {
       console.log(sendData);
       setCompletionStatus(true);
       if (submitCompletion?.data?.acknowledged)
-        Swal.fire({
+        {Swal.fire({
           icon: "success",
           title: "Congratulations!",
           text: "You have completed successfully!",
         });
+        navigate(-1);
+      }
+
     } else {
       setOpenQuiz(!openQuiz);
       setOverlayVisible(openQuiz);

@@ -12,7 +12,11 @@ const LoginWithOrganization = () => {
   const { signIn, providerLogin, logOut } = useContext(AuthContext);
   const navigate = useNavigate();
   const [orgData, setOrgData] = useState({});
-
+  // const orgLogo = localStorage.getItem("organizationLogo")
+  const loginPageOrgLogo = localStorage.getItem("loginPageOrgLogo")
+  const loginSidebarImage = localStorage.getItem("loginSidebarImage")
+  const loginSubTitle = localStorage.getItem("loginSubTitle")
+  const loginTitle  = localStorage.getItem("loginTitle")
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${id}`)
@@ -123,19 +127,19 @@ const LoginWithOrganization = () => {
               className="space-y-5 text-center"
             >
               <h1 className="lg:text-2xl xl:text-3xl xl:leading-snug font-extrabold">
-                {orgData?.loginTitle}
+                {loginTitle ? loginTitle : orgData?.loginTitle}
               </h1>
-              <p className="">{orgData?.loginSubTitle}</p>
+              <p className="">{loginSubTitle ? loginSubTitle : orgData?.loginSubTitle}</p>
               <img
                 className="mx-auto"
-                src={orgData?.loginSidebarImage}
+                src={loginSidebarImage? loginSidebarImage : orgData?.loginSidebarImage}
                 alt="showCase"
               />
             </div>
             {/* <p className="font-medium mt-3">© 2023 Experiment Labs</p> */}
             <img
               className="w-[100px] mx-auto mt-4"
-              src={orgData?.loginPageOrgLogo}
+              src={loginPageOrgLogo ? loginPageOrgLogo : orgData?.loginPageOrgLogo}
               alt="brand"
             />
           </div>
@@ -145,7 +149,7 @@ const LoginWithOrganization = () => {
               <div className="flex items-center justify-center space-x-3">
                 <img
                   className="w-[100px]"
-                  src={orgData?.loginPageOrgLogo}
+                  src={loginPageOrgLogo ? loginPageOrgLogo : orgData?.loginPageOrgLogo}
                   alt="brand"
                 />
               </div>
@@ -200,7 +204,7 @@ const LoginWithOrganization = () => {
                     value="Login"
                     className="block w-full p-3 text-center rounded-xl text-gray-50 bg-cyan hover:bg-opacity-70 cursor-pointer font-bold hover:transition-all hover:delay-200 hover:ease-out"
                   />
-
+                  <p className="font-semibold text-lg text-center">Or</p>
                   <button
                     onClick={handleGoogleSignIn}
                     aria-label="Login with Google"

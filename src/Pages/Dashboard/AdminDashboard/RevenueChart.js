@@ -1,18 +1,19 @@
-// ApexChart.jsx
+//RevenueChart.js
+
+
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import Loading from "../../Shared/Loading/Loading";
 
-const ApexChart = ({ overViewCount }) => {
+const RevenueChart = ({ overViewCount }) => {
     const { userInfo } = useContext(AuthContext);
-    const [students, setStudents] = useState();
+
     const [enrolledStudents, setEnrolledStudents] = useState();
 
-   // console.log(overViewCount)
-    console.log(students)
-   // console.log(enrolledStudents)
+
+    console.log(enrolledStudents)
     useEffect(() => {
         axios
             .get(
@@ -20,15 +21,15 @@ const ApexChart = ({ overViewCount }) => {
             )
             .then((response) => {
 
-                const enrolledStudents = response?.data?.filter((student)=>(student?.courses && student?.courses?.length>0 && student?.role === "user" ))
+                const enrolledStudents = response?.data?.filter((student) => (student?.courses && student?.courses?.length > 0 && student?.role === "user"))
                 setEnrolledStudents(enrolledStudents)
-                setStudents(response?.data);
+
 
             })
             .catch((error) => console.error(error));
     }, [userInfo]);
 
-   
+
 
     //////////////////
 
@@ -56,36 +57,25 @@ const ApexChart = ({ overViewCount }) => {
             filterByWeek(selectedWeek);
         } */
     };
-      /// year 
+
+    /// year 
     const filterByYear = (year) => {
-        //totalStudent
-        const yearFilteredData = students?.filter((student) => {
-            const studentYear = new Date(student.dateCreated).getFullYear().toString();
-            return year ? studentYear === year : true;
-        });
-        setYearlyData(yearFilteredData);
+
         //enroll Student
         const yearFilteredEnrollData = enrolledStudents?.filter((student) => {
             const studentYear = new Date(student.dateCreated).getFullYear().toString();
             return year ? studentYear === year : true;
         });
         setYearlyEnrollData(yearFilteredEnrollData);
-        
+
 
     };
-     
- 
+
+
 
     const filterByMonth = (month) => {
 
         const currentYear = new Date().getFullYear().toString();
-        //total students
-        const monthFilteredData = students?.filter((student) => {
-            const studentYear = new Date(student.dateCreated).getFullYear().toString();
-            const studentMonth = new Date(student.dateCreated).getMonth();
-            return studentYear === currentYear && (month ? studentMonth === month : true);
-        });
-        setMonthlyData(monthFilteredData);
 
         //enroll students
         const monthFilteredEnrollData = enrolledStudents?.filter((student) => {
@@ -98,18 +88,18 @@ const ApexChart = ({ overViewCount }) => {
 
     };
 
-   /*  const filterByWeek = (week) => {
-        const weekFilteredData = students?.filter((student) => {
-            const studentDay = new Date(student.dateCreated).getDay();
-            return week ? week.includes(dayToString(studentDay)) : true;
-        });
-        setWeeklyData(weekFilteredData);
-    };
-
-    const dayToString = (day) => {
-        const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        return daysOfWeek[day];
-    }; */
+    /*  const filterByWeek = (week) => {
+         const weekFilteredData = students?.filter((student) => {
+             const studentDay = new Date(student.dateCreated).getDay();
+             return week ? week.includes(dayToString(studentDay)) : true;
+         });
+         setWeeklyData(weekFilteredData);
+     };
+ 
+     const dayToString = (day) => {
+         const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+         return daysOfWeek[day];
+     }; */
 
     const monthToString = (month) => {
         const monthsOfYear = [
@@ -128,37 +118,37 @@ const ApexChart = ({ overViewCount }) => {
         return daysOfWeek;
     };
 
- /*    const currentWeek = getLocalizedDayNames()?.map((day) => ({
-        day,
-        count: weeklyData?.filter((student) => dayToString(new Date(student.dateCreated).getDay()) === day).length,
-    })); */
+    /*    const currentWeek = getLocalizedDayNames()?.map((day) => ({
+           day,
+           count: weeklyData?.filter((student) => dayToString(new Date(student.dateCreated).getDay()) === day).length,
+       })); */
 
-    const availableMonths = Array.from(new Set(students?.map((student) => new Date(student.dateCreated).getMonth()))).sort((a, b) => a - b);
-    
-    console.log(availableMonths)
-    
+    //  const availableMonths = Array.from(new Set(students?.map((student) => new Date(student.dateCreated).getMonth()))).sort((a, b) => a - b);
+
+
+
     const currentDate = new Date();
-const currentMonth = currentDate.getMonth();
+    const currentMonth = currentDate.getMonth();
 
 
-const desiredMonths = [];
-for (let i = 0; i < 9; i++) {
-  const month = (currentMonth - i + 12) % 12; // Ensure positive result for previous months
-  desiredMonths.push(month);
-}
+    const desiredMonths = [];
+    for (let i = 0; i < 9; i++) {
+        const month = (currentMonth - i + 12) % 12; // Ensure positive result for previous months
+        desiredMonths.push(month);
+    }
 
-console.log(desiredMonths);
-   /*  const availableEnrollMonths = Array.from(new Set(enrolledStudents?.map((student) => new Date(student.dateCreated).getMonth())));
-    console.log(availableEnrollMonths) */
- 
+    console.log(desiredMonths);
+    /*  const availableEnrollMonths = Array.from(new Set(enrolledStudents?.map((student) => new Date(student.dateCreated).getMonth())));
+     console.log(availableEnrollMonths) */
+
     const availableWeeks = getLocalizedDayNames();
 
 
     ////////////////////////////////////////////////////////////////
     const [chartState, setChartData] = useState();
     //total students
-    const [yearsArray, setYearsArray] = useState([]);
-    const [totalValuesArray, setTotalValuesYearArray] = useState([]);
+    const [yearsArray, setYearsRevenueArray] = useState([]);
+    const [totalValuesArray, setTotalValuesYearRevenueArray] = useState([]);
     //total enroll
     const [yearsForEnrollArray, setYearsForEnrollArray] = useState([]);
     const [totalValuesForEnrollArray, setTotalValuesYearForEnrollArray] = useState([]);
@@ -166,117 +156,141 @@ console.log(desiredMonths);
     //total students
     const [monthArray, setMonthArray] = useState([]);
     const [totalValuesMonthArray, setTotalValuesMonthArray] = useState([]);
-    
+
     //Enroll students
     const [monthForEnrollArray, setMonthForEnrollArray] = useState([]);
     const [totalValuesMonthForEnrollArray, setTotalValuesMonthForEnrollArray] = useState([]);
-    
 
-     //for year
 
+    //for year
     useEffect(() => {
-        if(selectedFilter === "Year"){
+        if (selectedFilter === "Year" && enrolledStudents) {
             Loading();
-            //total students
-            const years = Array.from(new Set(students?.map((student) => new Date(student.dateCreated).getFullYear().toString())));
-            const totalValues = years?.map((year) => students?.filter((student) => new Date(student.dateCreated).getFullYear().toString() === year).length);
-    
-            setYearsArray(years);
-            setTotalValuesYearArray(totalValues);
 
-            //enrolled student
-            const yearsForEnroll = Array.from(new Set(enrolledStudents?.map((student) => new Date(student.dateCreated).getFullYear().toString())));
-            const totalForEnrollValues = years?.map((year) => enrolledStudents?.filter((student) => new Date(student.dateCreated).getFullYear().toString() === year).length);
-    
-            setYearsForEnrollArray(yearsForEnroll);
-            setTotalValuesYearForEnrollArray(totalForEnrollValues);
+            // Extract years and paidAmount from the courses array
+            const courseYears = enrolledStudents?.map((student) => {
+                return {
+                    year: new Date(student.courses[0]?.enrollDate).getFullYear().toString(),
+                    paidAmount: student.courses[0]?.paidAmount || 0
+                };
+            });
+
+            // Group data by year and calculate the sum of paidAmount for each year
+            const groupedData = courseYears.reduce((acc, current) => {
+                const year = current.year;
+                const paidAmount = current.paidAmount;
+
+                if (!acc[year]) {
+                    acc[year] = {
+                        year: year,
+                        paidAmountSum: 0
+                    };
+                }
+
+                acc[year].paidAmountSum += paidAmount;
+
+                return acc;
+            }, {});
+
+            // Extract years for the previous 3 years and the next 1 year
+            const currentYear = new Date().getFullYear();
+            const previous3Years = Array.from({ length: 3 }, (_, index) => (currentYear - index - 1).toString());
+            const next1Year = (currentYear + 1).toString();
+
+            // Filter grouped data for the previous 3 years and the next 1 year
+            const filteredData = Object.keys(groupedData)
+                .filter((year) => previous3Years.includes(year) || year === next1Year)
+                .reduce((acc, year) => {
+                    acc[year] = groupedData[year];
+                    return acc;
+                }, {});
+
+            // Convert filtered data to arrays for YearsRevenueArray and TotalValuesYearRevenueArray
+            const years = Object.keys(filteredData);
+            const paidAmountSumEachYear = years.map((year) => filteredData[year].paidAmountSum);
+
+            setYearsRevenueArray(years);
+            setTotalValuesYearRevenueArray(paidAmountSumEachYear);
 
             Loading().close();
         }
-      
-       
-    }, [students,selectedFilter,enrolledStudents]);
+    }, [enrolledStudents, selectedFilter]);
 
 
-   
+
+
+
+
+
     //for month 
-    useEffect(() => {
-        if(selectedFilter === "Month"){
-         
-          ///total Students
-            const names = availableMonths.map(month => monthToString(month));
-            setMonthArray(names);
-
-            const values = availableMonths?.map(month =>
-                monthlyData?.filter(student => new Date(student.dateCreated).getMonth() === month).length
-            );
-            setTotalValuesMonthArray(values);
-
-            // enroll students
-            const namesForEnroll = availableMonths.map(month => monthToString(month));
-            setMonthForEnrollArray(namesForEnroll);
-
-            const valuesForEnroll = availableMonths?.map(month =>
-                monthlyData?.filter(student => new Date(student.dateCreated).getMonth() === month).length
-            );
-            setTotalValuesMonthForEnrollArray(valuesForEnroll);
-          
-
+    /*    useEffect(() => {
+           if(selectedFilter === "Month"){
+            
+           
+              
+               const namesForEnroll = availableMonths.map(month => monthToString(month));
+               setMonthForEnrollArray(namesForEnroll);
+   
+               const valuesForEnroll = availableMonths?.map(month =>
+                   monthlyData?.filter(student => new Date(student.dateCreated).getMonth() === month).length
+               );
+               setTotalValuesMonthForEnrollArray(valuesForEnroll);
+             
+   
+           
+           }
         
+           
+       }, [selectedFilter, monthlyData,]); */
+
+    console.log(totalValuesArray)
+    console.log(yearsArray)
+
+
+    /// for week
+    /* useEffect(() => {
+     
+      const today = new Date();
+      const currentWeekStart = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay());
+      const currentWeekEnd = new Date(currentWeekStart);
+      currentWeekEnd.setDate(currentWeekStart.getDate() + 6);
+  
+      const studentsInCurrentWeek = students?.filter(student => {
+        const studentDateCreated = new Date(student.dateCreated);
+        return studentDateCreated >= currentWeekStart && studentDateCreated <= currentWeekEnd;
+      });
+  
+     
+      const dayCounts = {};
+  
+      
+      studentsInCurrentWeek?.forEach(student => {
+        const studentDate = new Date(student.dateCreated);
+        const dayOfWeek = studentDate.getDay(); 
+  
+      
+        const adjustedDay = (dayOfWeek + 6) % 7 + 1;
+  
+      
+        if (dayCounts[adjustedDay]) {
+          dayCounts[adjustedDay]++;
+        } else {
+          dayCounts[adjustedDay] = 1;
         }
+      });
+  
      
-        
-    }, [selectedFilter, monthlyData,availableMonths]);
+      const days = Object.keys(dayCounts).map(day => parseInt(day, 10));
+      const studentCounts = Object.values(dayCounts);
+  
+      console.log('Days:', days);
+      console.log('Student Counts:', studentCounts);
+    }, [students]); */
 
-    console.log(monthArray)
-    console.log(totalValuesMonthArray)
-    console.log(monthForEnrollArray)
-    console.log(totalValuesMonthForEnrollArray)
-    
-  /// for week
-  useEffect(() => {
-    // Filter students for the current week
-    const today = new Date();
-    const currentWeekStart = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay());
-    const currentWeekEnd = new Date(currentWeekStart);
-    currentWeekEnd.setDate(currentWeekStart.getDate() + 6);
 
-    const studentsInCurrentWeek = students?.filter(student => {
-      const studentDateCreated = new Date(student.dateCreated);
-      return studentDateCreated >= currentWeekStart && studentDateCreated <= currentWeekEnd;
-    });
 
-    // Initialize an object to store counts for each day
-    const dayCounts = {};
 
-    // Loop through students in the current week and categorize by day
-    studentsInCurrentWeek?.forEach(student => {
-      const studentDate = new Date(student.dateCreated);
-      const dayOfWeek = studentDate.getDay(); // 0 for Sunday, 1 for Monday, and so on
-
-      // Adjust dayOfWeek to make day 1 as Saturday
-      const adjustedDay = (dayOfWeek + 6) % 7 + 1;
-
-      // Increment count for the day
-      if (dayCounts[adjustedDay]) {
-        dayCounts[adjustedDay]++;
-      } else {
-        dayCounts[adjustedDay] = 1;
-      }
-    });
-
-    // Separate the data into two arrays
-    const days = Object.keys(dayCounts).map(day => parseInt(day, 10));
-    const studentCounts = Object.values(dayCounts);
-
-    console.log('Days:', days);
-    console.log('Student Counts:', studentCounts);
-  }, [students]);
-
- 
-     
-
-     useEffect(() => {
+    useEffect(() => {
         //total students
         let dataValue = yearsArray;
         let dataTotalValues = totalValuesArray;
@@ -284,7 +298,7 @@ console.log(desiredMonths);
         let dataForEnrollValue = yearsForEnrollArray;
         let dataTotalForEnrollValues = totalValuesForEnrollArray;
 
-        if(selectedFilter === "Year"){
+        if (selectedFilter === "Year") {
             //total students
             dataValue = yearsArray;
             dataTotalValues = totalValuesArray;
@@ -293,7 +307,7 @@ console.log(desiredMonths);
             dataTotalForEnrollValues = totalValuesForEnrollArray
 
         }
-        if(selectedFilter === "Month"){
+        if (selectedFilter === "Month") {
             //total students
             dataValue = monthArray;
             dataTotalValues = totalValuesMonthArray;
@@ -302,7 +316,7 @@ console.log(desiredMonths);
             dataTotalForEnrollValues = totalValuesMonthForEnrollArray;
 
         }
-       
+
         setChartData({
 
             series: [
@@ -314,7 +328,7 @@ console.log(desiredMonths);
                     name: "Enrolled Students",
                     data: dataTotalForEnrollValues,
                 },
-            
+
             ],
             options: {
                 chart: {
@@ -386,26 +400,25 @@ console.log(desiredMonths);
             },
         });
 
-    }, [selectedFilter, yearsArray, totalValuesArray, yearsForEnrollArray,monthArray,monthForEnrollArray,totalValuesMonthArray,totalValuesMonthForEnrollArray,totalValuesForEnrollArray]) 
+    }, [selectedFilter, yearsArray, totalValuesArray, yearsForEnrollArray, monthArray, monthForEnrollArray, totalValuesMonthArray, totalValuesMonthForEnrollArray, totalValuesForEnrollArray])
 
 
 
     return (
         <div>
-             <h1 className="my-3 text-2xl font-bold">Total Students Vs Enrolled Students</h1>
+            <h1 className="my-3 mt-5 text-2xl font-bold">Total Revenue Vs Total Discount</h1>
             <div className="mb-5 flex gap-5 items-center">
-               
                 <label>Select Filter:</label>
                 <select className="p-2 border rounded" onChange={(e) => setSelectedFilter(e.target.value)} value={selectedFilter}>
-                 
+
                     <option value="Year">Year</option>
                     <option value="Month">Month</option>
                     {/* <option value="Week">Week</option> */}
                 </select>
 
-              {/* P */}
+                {/* P */}
 
-              {/*   {selectedFilter === 'Week' && (
+                {/*   {selectedFilter === 'Week' && (
                     <div>
                       
                         <h3>Current Week</h3>
@@ -417,20 +430,6 @@ console.log(desiredMonths);
                     </div>
                 )} */}
             </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -449,4 +448,4 @@ console.log(desiredMonths);
     );
 };
 
-export default ApexChart;
+export default RevenueChart;

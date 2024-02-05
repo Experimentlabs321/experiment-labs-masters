@@ -53,18 +53,18 @@ function App() {
           "name": data?.organizationName,
           "icons": [
             {
-              "src": pWASplashscreenLogo, // Splash screen logo
+              "src": 'https://i.ibb.co/qCjt6fH/icon192.png',
               "type": "image/png",
               "sizes": "192x192",
               "purpose": "maskable"
             },
             {
-              "src": pWALogo, // Regular icon
+              "src": 'https://i.ibb.co/5K6F5M6/icon512.png',
               "type": "image/png",
               "sizes": "512x512"
             },
             {
-              "src": pWALogo, // Regular icon for smaller size
+              "src": 'https://i.ibb.co/nQL81Tw/icon64.png',
               "type": "image/png",
               "sizes": "64x64",
               "purpose": "any"

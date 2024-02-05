@@ -8,8 +8,10 @@ import DashboardTheme from "./DashboardTheme";
 import PaymentIntegration from "./PaymentIntegration";
 import DeviceLimit from "./DeviceLimit";
 import Loading from "../../Shared/Loading/Loading";
+import { useNavigate } from "react-router-dom";
 
 const UpdateOrganization = () => {
+  const navigate = useNavigate();
   const { userInfo } = useContext(AuthContext);
   const [orgData, setOrgData] = useState({});
   const [orgLogoUrl, setOrgLogoUrl] = useState("");
@@ -92,6 +94,7 @@ const UpdateOrganization = () => {
       pWALogo: pWALogo,
       pWASplashscreenLogo: pWASplashscreenLogo,
       titlesColor: titlesColor,
+      orgRootUrl :form.orgRootUrl?.value,
       paymentNavbarColor: paymentNavbarColor,
       paymentNavbarAccessDashboardButtonColor: paymentNavbarAccessDashboardButtonColor,
       paymentNavbarAccessDashboardButtonTextColor: paymentNavbarAccessDashboardButtonTextColor,
@@ -108,6 +111,7 @@ const UpdateOrganization = () => {
 
     if (updateOrg?.data?.acknowledged) {
       toast.success("Organization edited Successfully");
+      navigate(-1)
       // event.target.reset();
     }
   };
@@ -464,7 +468,26 @@ const UpdateOrganization = () => {
                   )}
                 </div>
               </div>
-
+              <div className="flex gap-4">
+                <div className="flex flex-col mt-5 basis-1/2">
+                  <label className="font-bold text-lg">Organization Root Url</label>
+                  <input
+                    type="text"
+                    defaultValue={orgData?.orgRootUrl}
+                    name="orgRootUrl"
+                    className="border rounded-md max-w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]"
+                  />
+                </div>
+                <div className="flex flex-col mt-5 basis-1/2">
+                  {/* <label className="font-bold text-lg">Login sub-title</label>
+                  <input
+                    type="text"
+                    name="loginSubTitle"
+                    defaultValue={orgData?.loginSubTitle}
+                    className="border rounded-md max-w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]"
+                  /> */}
+                </div>
+              </div>
               <div className="flex flex-col mt-5">
                 <label className="font-bold text-lg">
                   Title & sub-title color
@@ -504,6 +527,7 @@ const UpdateOrganization = () => {
                   </li>
                 </ul>
               </div>
+
               <div className=" flex items-center my-5">
                 <label
                   htmlFor="colorInput"
