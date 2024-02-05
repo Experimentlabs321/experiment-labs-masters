@@ -5,8 +5,10 @@ import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
 import Swal from "sweetalert2";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import { useNavigate } from "react-router-dom";
 const VideoTask = ({ taskData, something }) => {
   console.log(taskData);
+  const navigate = useNavigate();
   const { userInfo, user } = useContext(AuthContext);
   if (userInfo.role !== "admin") {
     window.addEventListener("contextmenu", (e) => {
@@ -59,11 +61,12 @@ const VideoTask = ({ taskData, something }) => {
       console.log(sendData);
       setCompletionStatus(true);
       if (submitCompletion?.data?.acknowledged)
-        Swal.fire({
+        {Swal.fire({
           icon: "success",
           title: "Congratulations!",
           text: "You have completed successfully!",
         });
+      navigate(-1)}
     } else {
       setOpenQuiz(!openQuiz);
       setOverlayVisible(openQuiz);
