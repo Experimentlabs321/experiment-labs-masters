@@ -22,6 +22,8 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const session = useSession();
   const orgLogo = localStorage.getItem("organizationLogo")
+  const pWASplashscreenLogo = localStorage.getItem("pWASplashscreenLogo")
+  const pWALogo = localStorage.getItem("pWALogo")
   useEffect(() => {
     if(localStorage.getItem("role") === "admin"){
       fetchAndDisplayGoogleCalendarEvents();
@@ -51,18 +53,18 @@ function App() {
           "name": data?.organizationName,
           "icons": [
             {
-              "src": orgLogo,
+              "src": pWASplashscreenLogo,
               "type": "image/png",
               "sizes": "192x192",
               "purpose": "maskable"
             },
             {
-              "src": orgLogo,
+              "src": pWALogo,
               "type": "image/png",
               "sizes": "512x512"
             },
             {
-              "src": orgLogo,
+              "src": pWALogo,
               "type": "image/png",
               "sizes": "64x64",
               "purpose": "any"
