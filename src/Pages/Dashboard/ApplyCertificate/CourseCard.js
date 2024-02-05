@@ -75,14 +75,14 @@ const CourseCard = ({ course }) => {
           <p className="text-[#7A7A7A] text-[12px] font-[500] mb-[16px]">
             {course?.courseDescription}
           </p>
-          <div className="flex items-center justify-between">
+          {/* <div className="flex items-center justify-between">
             <p className="bg-[#E1D7FF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
               {course?.courseCategory}
             </p>
             <button className="bg-[#CEDBFF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
               {date?.toLocaleDateString("en-US", options)}
             </button>
-          </div>
+          </div> */}
         </div>
       </Link>
     </div>
