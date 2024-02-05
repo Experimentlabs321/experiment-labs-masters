@@ -25,7 +25,7 @@ function App() {
   const pWASplashscreenLogo = localStorage.getItem("pWASplashscreenLogo")
   const pWALogo = localStorage.getItem("pWALogo")
   useEffect(() => {
-    if(localStorage.getItem("role") === "admin"){
+    if (localStorage.getItem("role") === "admin") {
       fetchAndDisplayGoogleCalendarEvents();
     }
     // fetchPrimaryCalendarInfo();
@@ -35,7 +35,7 @@ function App() {
 
     setIsLoading(true);
     Loading();
-    
+
     fetch(`${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`)
       .then((response) => response.json())
       .then((data) => {
@@ -53,18 +53,18 @@ function App() {
           "name": data?.organizationName,
           "icons": [
             {
-              "src": pWASplashscreenLogo,
+              "src": pWASplashscreenLogo, // Splash screen logo
               "type": "image/png",
               "sizes": "192x192",
               "purpose": "maskable"
             },
             {
-              "src": pWALogo,
+              "src": pWALogo, // Regular icon
               "type": "image/png",
               "sizes": "512x512"
             },
             {
-              "src": pWALogo,
+              "src": pWALogo, // Regular icon for smaller size
               "type": "image/png",
               "sizes": "64x64",
               "purpose": "any"
@@ -76,13 +76,6 @@ function App() {
           "background_color": "#000000",
           "prefer_related_applications": true
         };
-        
-        
-
-        //
-        
-
-        //
 
         const dynamicJsonDataLink = document.createElement('link');
         dynamicJsonDataLink.id = 'manifest';
@@ -100,7 +93,7 @@ function App() {
         setIsLoading(false);
         Loading().close();
       });
-  }, [userInfo,orgLogo]);
+  }, [userInfo, orgLogo]);
 
   if (isLoading) {
     return <div></div>;
