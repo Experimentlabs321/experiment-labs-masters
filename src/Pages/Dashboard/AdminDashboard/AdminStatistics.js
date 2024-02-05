@@ -4,6 +4,7 @@ import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
 import { Link, useHistory } from "react-router-dom";
 import ApexChart from "./ApexChart";
+import RevenueChart from "./RevenueChart";
 
 
 
@@ -75,6 +76,23 @@ const AdminStatistics = () => {
                         {overViewCount?.enrollStudents ? overViewCount?.enrollStudents : "0"}
                     </div>
                 </Link>
+                <Link to='' className="w-[160px] justify-center items-stretch shadow-sm bg-[#5c0aea] flex flex-col px-2 rounded-md py-4">
+                    <div className="justify-between items-stretch flex gap-5">
+                        <div className="text-white text-sm font-medium tracking-widest">
+                            Total Revenue
+                        </div>
+                        <img
+                            loading="lazy"
+                            src="https://cdn.builder.io/api/v1/image/assets/TEMP/db26dcaf06bcfb06dcf05364f8b5adebd0dae4e7fd89ad91201a634754a6cda5?"
+                            className="aspect-[0.94] object-contain object-center w-4 overflow-hidden self-center shrink-0 max-w-full my-auto"
+                            alt="icon"
+                        />
+                    </div>
+                    <div className="text-white text-3xl font-bold tracking-[2.96px] whitespace-nowrap mt-3">
+                       ${overViewCount?.totalPaidAmount ? overViewCount?.totalPaidAmount : "0"}
+                    </div>
+                </Link>
+
                 <Link
                     to="/mentorAssignments"
                     className="w-[160px] justify-center items-stretch shadow-sm bg-[#6278FF] flex flex-col px-2 rounded-md py-4"
@@ -134,6 +152,7 @@ const AdminStatistics = () => {
             </div>
             <div className="my-10">
             <ApexChart overViewCount={overViewCount} />
+            {/* <RevenueChart/> */}
 
             </div>
         </div>

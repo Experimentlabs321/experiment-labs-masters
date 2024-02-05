@@ -27,6 +27,19 @@ const AuthProvider = ({ children }) => {
   const createUser = (email, password) => {
     setLoading(true);
     return createUserWithEmailAndPassword(auth, email, password);
+    // const createUserFunction = createUserWithEmailAndPassword(auth, email, password);
+    // const unsubscribe = onAuthStateChanged(
+    //   auth,
+    //   (currentUser) => {
+    //     setUser(currentUser);
+     
+    //     setLoading(false);
+        
+    //   },
+    //   []
+    // );
+    // unsubscribe();
+    // return createUserFunction;
   };
 
   //Adding image and name
@@ -122,6 +135,9 @@ const AuthProvider = ({ children }) => {
     providerLogin,
     devicelogOut,
     forgotPassword,
+    setUser,
+    auth,
+    setLoading
   };
 
   return (
