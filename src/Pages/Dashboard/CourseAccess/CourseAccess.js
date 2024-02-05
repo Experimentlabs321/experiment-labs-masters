@@ -6,6 +6,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import Locked from "../../../assets/Dashboard/Locked.png";
+import Expired from "../../../assets/Dashboard/Expired.png";
 import Swal from "sweetalert2";
 
 const CourseAccess = () => {
@@ -256,7 +257,7 @@ const CourseAccess = () => {
                       to={
                         Role === "user" && remainingDay < 0
                           ? {}
-                          : Role !== "admin" &&
+                          : Role === "user" &&
                             stateParams === "allCourses" &&
                             !myCourses?.find(
                               (item) => item?._id === course?._id
@@ -265,7 +266,7 @@ const CourseAccess = () => {
                           : `/questLevels/${course?._id}`
                       }
                       target={
-                        Role !== "admin" &&
+                        Role === "user" &&
                         stateParams === "allCourses" &&
                         !myCourses?.find((item) => item?._id === course?._id)
                           ? "_blank"
@@ -289,7 +290,7 @@ const CourseAccess = () => {
                             }
                             alt="CourseTham"
                           />
-                          {Role !== "admin" &&
+                          {Role === "user" &&
                             stateParams === "allCourses" &&
                             !myCourses?.find(
                               (item) => item?._id === course?._id
@@ -302,6 +303,15 @@ const CourseAccess = () => {
                                 />
                               </div>
                             )}
+                          {Role === "user" && remainingDay < 0 && (
+                            <div className="w-full h-full absolute top-0 flex items-center justify-center bg-[#ffffffb6]">
+                              <img
+                                className=" "
+                                src={Expired}
+                                alt="CourseTham"
+                              />
+                            </div>
+                          )}
                         </div>
                         <h1 className="text-[#3E4DAC] text-[16px] font-[800] mt-[16px] mb-[12px]">
                           {course?.courseFullName}
