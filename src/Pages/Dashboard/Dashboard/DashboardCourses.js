@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import CourseTham from "../../../assets/Dashboard/CourseTham.png";
 import SearchIcon from "../../../assets/Dashboard/SearchIcon.png";
 import Locked from "../../../assets/Dashboard/Locked.png";
+import Expired from "../../../assets/Dashboard/Expired.png";
 import Swal from "sweetalert2";
 
 const DashboardCourses = ({ myCoursesChecked, allCoursesChecked }) => {
@@ -194,6 +195,15 @@ const DashboardCourses = ({ myCoursesChecked, allCoursesChecked }) => {
                               />
                             </div>
                           )}
+                          {Role === "user" && remainingDay < 0 && (
+                            <div className="w-full h-full absolute top-0 flex items-center justify-center bg-[#ffffffb6]">
+                              <img
+                                className=" "
+                                src={Expired}
+                                alt="CourseTham"
+                              />
+                            </div>
+                          )}
                         </div>
                         <h1 className="text-[#3E4DAC] text-[16px] font-[800] mt-[16px] mb-[12px]">
                           {course?.courseFullName}
@@ -298,6 +308,15 @@ const DashboardCourses = ({ myCoursesChecked, allCoursesChecked }) => {
                               <img
                                 className=" w-[50px]"
                                 src={Locked}
+                                alt="CourseTham"
+                              />
+                            </div>
+                          )}
+                          {Role === "user" && remainingDay < 0 && (
+                            <div className="w-full h-full absolute top-0 flex items-center justify-center bg-[#ffffffb6]">
+                              <img
+                                className=" "
+                                src={Expired}
                                 alt="CourseTham"
                               />
                             </div>
