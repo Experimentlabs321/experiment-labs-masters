@@ -164,6 +164,22 @@ const ManageReading = () => {
       console.log(newTask);
 
       if (newTask?.data?.result?.acknowledged) {
+        const newNotification = await axios.post(
+          `http://localhost:5000/api/v1/notifications/addNotification`,
+          {
+            message: `New reading material added in ${course?.courseFullName}.`,
+            dateTime: new Date(),
+            recipient: {
+              type: "Students",
+              organizationId: course?.organization?.organizationId,
+              courseId: course?._id,
+              batches: selectedBatches,
+            },
+            type: "Create Task",
+            readBy: [],
+          }
+        );
+        console.log(newNotification);
         toast.success("Reading material added Successfully!");
         event.target.reset();
       }
