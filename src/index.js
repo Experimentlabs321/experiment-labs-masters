@@ -10,7 +10,7 @@ import "@fontsource/roboto/700.css";
 import AuthProvider from "./contexts/AuthProvider";
 import { createClient } from "@supabase/supabase-js";
 import { SessionContextProvider } from "@supabase/auth-helpers-react";
-
+import { NotificationProvider } from "./contexts/NotificationContext";
 
 const supabase = createClient(
   "https://qzgeifdgviycxooauyum.supabase.co",
@@ -22,7 +22,9 @@ root.render(
   <React.StrictMode>
     <AuthProvider>
       <SessionContextProvider supabaseClient={supabase}>
-        <App />
+        <NotificationProvider>
+          <App />
+        </NotificationProvider>
       </SessionContextProvider>
     </AuthProvider>
   </React.StrictMode>
