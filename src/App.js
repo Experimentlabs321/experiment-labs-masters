@@ -1,5 +1,3 @@
-
-
 import { RouterProvider } from "react-router-dom";
 import router from "./Router/Router/Router";
 import { Toaster } from "react-hot-toast";
@@ -24,8 +22,10 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const session = useSession();
   const orgLogo = localStorage.getItem("organizationLogo")
+  const pWASplashscreenLogo = localStorage.getItem("pWASplashscreenLogo")
+  const pWALogo = localStorage.getItem("pWALogo")
   useEffect(() => {
-    if(localStorage.getItem("role") === "admin"){
+    if (localStorage.getItem("role") === "admin") {
       fetchAndDisplayGoogleCalendarEvents();
     }
     // fetchPrimaryCalendarInfo();
@@ -35,7 +35,7 @@ function App() {
 
     setIsLoading(true);
     Loading();
-    
+
     fetch(`${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`)
       .then((response) => response.json())
       .then((data) => {
@@ -52,45 +52,30 @@ function App() {
           "short_name": data?.organizationName,
           "name": data?.organizationName,
           "icons": [
-            /*   {
-                "src": "experimentLabsIcon196.png",
-                "sizes": "196x196",
-                "type": "image/png"
-                "purpose": "maskable"
-              }, */
-
             {
-              "src": orgLogo,
+              "src": pWASplashscreenLogo, // Splash screen logo
               "type": "image/png",
               "sizes": "192x192",
               "purpose": "maskable"
             },
-
             {
-              "src": "https://i.ibb.co/5K6F5M6/icon512.png",
+              "src": pWALogo, // Regular icon
               "type": "image/png",
               "sizes": "512x512"
             },
-
-             {
-               "src": orgLogo,
-               "type": "image/png",
-               "sizes": "64x64",
-               "purpose":"any"
-             },    
-           
+            {
+              "src": pWALogo, // Regular icon for smaller size
+              "type": "image/png",
+              "sizes": "64x64",
+              "purpose": "any"
+            },
           ],
-          "start_url": "http://localhost:3000/", 
+          "start_url": "http://localhost:3000/",
           "display": "standalone",
           "theme_color": "#000000",
           "background_color": "#000000",
           "prefer_related_applications": true
-        }
-
-        //
-        
-
-        //
+        };
 
         const dynamicJsonDataLink = document.createElement('link');
         dynamicJsonDataLink.id = 'manifest';
@@ -108,7 +93,7 @@ function App() {
         setIsLoading(false);
         Loading().close();
       });
-  }, [userInfo,orgLogo]);
+  }, [userInfo, orgLogo]);
 
   if (isLoading) {
     return <div></div>;
@@ -162,5 +147,3 @@ function App() {
 }
 
 export default App;
-
-

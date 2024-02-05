@@ -425,7 +425,7 @@ const Payment = () => {
                     {
                       offers?.map((offer, index) =>
                       ((offer?.suggestDuringCheckout && !offer?.disabled) &&
-                        <div key={index} onClick={() => setCoupon(offer?.code)} className="bg-gradient-to-b from-white to-[#ebf1ff] rounded-[7px] border border-blue px-[10px] py-[12px] min-w-[350px]">
+                        <div key={index} onClick={() => setCoupon(offer?.code)} className="bg-gradient-to-b from-white to-[#ebf1ff] rounded-[7px] border border-blue px-[10px] py-[12px] min-w-[300px]">
                           <div className="flex items-center justify-between uppercase text-[1.25rem] font-bold">
                             <h3>{offer?.discountPercent}%</h3>
                             <h4 className=" text-blue">{offer?.code}</h4>

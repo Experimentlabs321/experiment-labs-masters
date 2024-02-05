@@ -6,6 +6,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import Locked from "../../../assets/Dashboard/Locked.png";
+import Expired from "../../../assets/Dashboard/Expired.png";
 import Swal from "sweetalert2";
 
 const CourseAccess = () => {
@@ -13,12 +14,14 @@ const CourseAccess = () => {
   const [courses, setCourses] = useState([]);
   const [myCourses, setMyCourses] = useState([]);
   const [showCourses, setShowCourses] = useState([]);
-  const [stateParams, setStateParams] = useState("allCourses");
   const [clickedCourse, setClickedCourse] = useState();
   const [selectedOption, setSelectedOption] = useState("Category");
   const [filterData, setFilterData] = useState([]);
   const options = ["Category name"];
   const Role = localStorage.getItem("role");
+  const [stateParams, setStateParams] = useState(
+    Role === "user" ? "myCourses" : "allCourses"
+  );
   const { userInfo } = useContext(AuthContext);
   const location = useLocation();
 
@@ -37,15 +40,15 @@ const CourseAccess = () => {
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const stateParam = queryParams.get("state");
-    setStateParams(stateParam || stateParams);
+    // setStateParams(stateParam || stateParams);
 
     axios
       .get(
         `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
-       setCourses(response?.data);
-       setFilterData(response?.data);
+        setCourses(response?.data);
+        setFilterData(response?.data);
       })
       .catch((error) => console.error(error));
 
@@ -63,7 +66,7 @@ const CourseAccess = () => {
     stateParams === "myCourses"
       ? setShowCourses(myCourses)
       : setShowCourses(courses);
-  }, [myCourses, courses, stateParams]);
+  }, [myCourses, courses, stateParams, Role]);
 
   const daysDifferenceFromEnrolled = (enrolledDate) => {
     // Get the current date
@@ -98,6 +101,8 @@ const CourseAccess = () => {
     });
   };
 
+  console.log(myCourses);
+
   return (
     <div>
       <Layout>
@@ -116,13 +121,13 @@ const CourseAccess = () => {
                     setFilterData(
                       courses?.filter((course) => {
                         return Object.keys(course).some((key) =>
-                        course[key]
+                          course[key]
                             ?.toString()
                             .toLowerCase()
                             .includes(e.target.value.toString().toLowerCase())
                         );
                       })
-                    ); 
+                    );
                   }}
                   className="rounded-[20px] bg-[#EEEEEE] py-[16px] pl-[40px] pr-[10px]"
                   placeholder="Search"
@@ -157,19 +162,21 @@ const CourseAccess = () => {
           </div>
           <div className="mt-[80px] flex items-center justify-between">
             <div className="flex gap-8">
-             {/*  <button
-                onClick={() => {
-                  setStateParams("myCourses");
-                  setShowCourses(myCourses);
-                }}
-                className={`text-[18px] font-[700] ${
-                  stateParams === "myCourses"
-                    ? "text-[#3E4DAC] underline"
-                    : "text-black no-underline"
-                }`}
-              >
-                My Courses
-              </button> */}
+              {Role === "user" && (
+                <button
+                  onClick={() => {
+                    setStateParams("myCourses");
+                    setShowCourses(myCourses);
+                  }}
+                  className={`text-[18px] font-[700] ${
+                    stateParams === "myCourses"
+                      ? "text-[#3E4DAC] underline"
+                      : "text-black no-underline"
+                  }`}
+                >
+                  My Courses
+                </button>
+              )}
               <button
                 onClick={() => {
                   setStateParams("allCourses");
@@ -220,12 +227,12 @@ const CourseAccess = () => {
           <div className="my-[60px] ">
             <div
               className={`flex flex-wrap ${
-                filterData.length <= 2
+                showCourses.length <= 2
                   ? "justify-start gap-x-14"
                   : "justify-between gap-x-2"
               }  gap-y-5`}
             >
-              {filterData?.map((course, index) => {
+              {showCourses?.map((course, index) => {
                 const date = new Date(course?.courseStartingDate);
                 const options = {
                   year: "numeric",
@@ -250,7 +257,7 @@ const CourseAccess = () => {
                       to={
                         Role === "user" && remainingDay < 0
                           ? {}
-                          : Role !== "admin" &&
+                          : Role === "user" &&
                             stateParams === "allCourses" &&
                             !myCourses?.find(
                               (item) => item?._id === course?._id
@@ -259,7 +266,7 @@ const CourseAccess = () => {
                           : `/questLevels/${course?._id}`
                       }
                       target={
-                        Role !== "admin" &&
+                        Role === "user" &&
                         stateParams === "allCourses" &&
                         !myCourses?.find((item) => item?._id === course?._id)
                           ? "_blank"
@@ -283,7 +290,7 @@ const CourseAccess = () => {
                             }
                             alt="CourseTham"
                           />
-                          {Role !== "admin" &&
+                          {Role === "user" &&
                             stateParams === "allCourses" &&
                             !myCourses?.find(
                               (item) => item?._id === course?._id
@@ -296,6 +303,15 @@ const CourseAccess = () => {
                                 />
                               </div>
                             )}
+                          {Role === "user" && remainingDay < 0 && (
+                            <div className="w-full h-full absolute top-0 flex items-center justify-center bg-[#ffffffb6]">
+                              <img
+                                className=" "
+                                src={Expired}
+                                alt="CourseTham"
+                              />
+                            </div>
+                          )}
                         </div>
                         <h1 className="text-[#3E4DAC] text-[16px] font-[800] mt-[16px] mb-[12px]">
                           {course?.courseFullName}
