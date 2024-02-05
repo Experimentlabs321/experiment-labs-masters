@@ -73,7 +73,7 @@ const DashboardCourses = ({ myCoursesChecked, allCoursesChecked }) => {
 
   return (
     <div className="px-8">
-      {myCoursesChecked && (
+      {(myCoursesChecked && myCourses.length > 0) ? (
         <>
           <div className="flex items-center justify-between pt-20 lg:pt-[40px]  ">
             <h1 className="text-[28px] font-[700] ">My courses</h1>
@@ -124,11 +124,10 @@ const DashboardCourses = ({ myCoursesChecked, allCoursesChecked }) => {
           </div>
           <div className="my-[60px] ">
             <div
-              className={`flex flex-wrap ${
-                myCourses.length <= 2
-                  ? "justify-start gap-x-14"
-                  : "justify-between gap-x-2"
-              }  gap-y-5`}
+              className={`flex flex-wrap ${myCourses.length <= 2
+                ? "justify-start gap-x-14"
+                : "justify-between gap-x-2"
+                }  gap-y-5`}
             >
               {myCourses.slice(0, 3)?.map((course, index) => {
                 const date = new Date(course?.courseStartingDate);
@@ -156,10 +155,10 @@ const DashboardCourses = ({ myCoursesChecked, allCoursesChecked }) => {
                         Role === "user" && remainingDay < 0
                           ? {}
                           : !myCourses?.find(
-                              (item) => item?._id === course?._id
-                            )
-                          ? `/payment/${course?._id}`
-                          : `/questLevels/${course?._id}`
+                            (item) => item?._id === course?._id
+                          )
+                            ? `/payment/${course?._id}`
+                            : `/questLevels/${course?._id}`
                       }
                       target={
                         !myCourses?.find((item) => item?._id === course?._id)
@@ -187,14 +186,14 @@ const DashboardCourses = ({ myCoursesChecked, allCoursesChecked }) => {
                           {!myCourses?.find(
                             (item) => item?._id === course?._id
                           ) && (
-                            <div className="w-full h-full absolute top-0 flex items-center justify-center bg-[#ffffffb6]">
-                              <img
-                                className=" w-[50px]"
-                                src={Locked}
-                                alt="CourseTham"
-                              />
-                            </div>
-                          )}
+                              <div className="w-full h-full absolute top-0 flex items-center justify-center bg-[#ffffffb6]">
+                                <img
+                                  className=" w-[50px]"
+                                  src={Locked}
+                                  alt="CourseTham"
+                                />
+                              </div>
+                            )}
                           {Role === "user" && remainingDay < 0 && (
                             <div className="w-full h-full absolute top-0 flex items-center justify-center bg-[#ffffffb6]">
                               <img
@@ -211,14 +210,14 @@ const DashboardCourses = ({ myCoursesChecked, allCoursesChecked }) => {
                         <p className="text-[#7A7A7A] text-[12px] font-[500] mb-[16px]">
                           {course?.courseDescription}
                         </p>
-                        <div className="flex items-center justify-between">
+                        {/* <div className="flex items-center justify-between">
                           <p className="bg-[#E1D7FF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
                             {course?.courseCategory}
                           </p>
                           <button className="bg-[#CEDBFF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
                             {date?.toLocaleDateString("en-US", options)}
                           </button>
-                        </div>
+                        </div> */}
                       </div>
                     </Link>
                   </div>
@@ -227,7 +226,20 @@ const DashboardCourses = ({ myCoursesChecked, allCoursesChecked }) => {
             </div>
           </div>
         </>
-      )}
+      ) :
+        (
+          <div className="pt-20 lg:pt-[40px]">
+            <h1 className="text-[28px] font-[700] ">My courses</h1>
+            <div className="flex flex-col items-center justify-center p-6">
+
+              <p className="text-gray-600 mb-4">You don't have any Active Courses</p>
+              <Link to={"/courseAccess?state=allCourses"} className="bg-blue text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition duration-300">
+                Explore Courses
+              </Link>
+            </div>
+          </div>
+        )
+      }
       {allCoursesChecked && (
         <>
           <div className="flex items-center justify-between pt-20 lg:pt-[40px]  ">
@@ -241,11 +253,10 @@ const DashboardCourses = ({ myCoursesChecked, allCoursesChecked }) => {
           </div>
           <div className="my-[60px] ">
             <div
-              className={`flex flex-wrap ${
-                courses.length <= 2
-                  ? "justify-start gap-x-14"
-                  : "justify-between gap-x-2"
-              }  gap-y-5`}
+              className={`flex flex-wrap ${courses.length <= 2
+                ? "justify-start gap-x-14"
+                : "justify-between gap-x-2"
+                }  gap-y-5`}
             >
               {courses?.slice(0, 3)?.map((course, index) => {
                 const date = new Date(course?.courseStartingDate);
@@ -273,10 +284,10 @@ const DashboardCourses = ({ myCoursesChecked, allCoursesChecked }) => {
                         Role === "user" && remainingDay < 0
                           ? {}
                           : !myCourses?.find(
-                              (item) => item?._id === course?._id
-                            )
-                          ? `/payment/${course?._id}`
-                          : `/questLevels/${course?._id}`
+                            (item) => item?._id === course?._id
+                          )
+                            ? `/payment/${course?._id}`
+                            : `/questLevels/${course?._id}`
                       }
                       target={
                         !myCourses?.find((item) => item?._id === course?._id)
@@ -304,14 +315,14 @@ const DashboardCourses = ({ myCoursesChecked, allCoursesChecked }) => {
                           {!myCourses?.find(
                             (item) => item?._id === course?._id
                           ) && (
-                            <div className="w-full h-full absolute top-0 flex items-center justify-center bg-[#ffffffb6]">
-                              <img
-                                className=" w-[50px]"
-                                src={Locked}
-                                alt="CourseTham"
-                              />
-                            </div>
-                          )}
+                              <div className="w-full h-full absolute top-0 flex items-center justify-center bg-[#ffffffb6]">
+                                <img
+                                  className=" w-[50px]"
+                                  src={Locked}
+                                  alt="CourseTham"
+                                />
+                              </div>
+                            )}
                           {Role === "user" && remainingDay < 0 && (
                             <div className="w-full h-full absolute top-0 flex items-center justify-center bg-[#ffffffb6]">
                               <img
@@ -328,14 +339,14 @@ const DashboardCourses = ({ myCoursesChecked, allCoursesChecked }) => {
                         <p className="text-[#7A7A7A] text-[12px] font-[500] mb-[16px]">
                           {course?.courseDescription}
                         </p>
-                        <div className="flex items-center justify-between">
+                        {/* <div className="flex items-center justify-between">
                           <p className="bg-[#E1D7FF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
                             {course?.courseCategory}
                           </p>
                           <button className="bg-[#CEDBFF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
                             {date?.toLocaleDateString("en-US", options)}
                           </button>
-                        </div>
+                        </div> */}
                       </div>
                     </Link>
                   </div>
