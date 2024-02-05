@@ -244,26 +244,65 @@ const DashboardCourses = ({ myCoursesChecked, allCoursesChecked }) => {
                   month: "long",
                   day: "numeric",
                 };
-
+                const enrolledDate = new Date(
+                  userInfo?.courses?.find(
+                    (item) => item?.courseId === course?._id
+                  )?.enrollDate
+                );
+                const remainingDay =
+                  parseInt(course?.expirationDay) -
+                  daysDifferenceFromEnrolled(enrolledDate);
+                console.log(remainingDay);
                 return (
                   <div
                     key={index}
                     className="bg-[#F6F7FF] rounded-[20px] p-[20px] max-w-[340px] shadow-[4px_4px_4px_0px_#0000001a]"
                   >
                     <Link
-                      to={`/questLevels/${course?._id}`}
-                      onClick={(e) => e.stopPropagation()}
+                      to={
+                        Role === "user" && remainingDay < 0
+                          ? {}
+                          : !myCourses?.find(
+                              (item) => item?._id === course?._id
+                            )
+                          ? `/payment/${course?._id}`
+                          : `/questLevels/${course?._id}`
+                      }
+                      target={
+                        !myCourses?.find((item) => item?._id === course?._id)
+                          ? "_blank"
+                          : "_self"
+                      }
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (Role === "user" && remainingDay < 0) {
+                          handelExpire(course);
+                        }
+                      }}
                     >
                       <div className="card-content">
-                        <img
-                          className="w-full rounded-lg"
-                          src={
-                            course?.courseThumbnail
-                              ? course?.courseThumbnail
-                              : CourseTham
-                          }
-                          alt="CourseTham"
-                        />
+                        <div className="relative">
+                          <img
+                            className="w-full rounded-lg"
+                            src={
+                              course?.courseThumbnail
+                                ? course?.courseThumbnail
+                                : CourseTham
+                            }
+                            alt="CourseTham"
+                          />
+                          {!myCourses?.find(
+                            (item) => item?._id === course?._id
+                          ) && (
+                            <div className="w-full h-full absolute top-0 flex items-center justify-center bg-[#ffffffb6]">
+                              <img
+                                className=" w-[50px]"
+                                src={Locked}
+                                alt="CourseTham"
+                              />
+                            </div>
+                          )}
+                        </div>
                         <h1 className="text-[#3E4DAC] text-[16px] font-[800] mt-[16px] mb-[12px]">
                           {course?.courseFullName}
                         </h1>
@@ -280,34 +319,6 @@ const DashboardCourses = ({ myCoursesChecked, allCoursesChecked }) => {
                         </div>
                       </div>
                     </Link>
-
-                    <div
-                      className={`${
-                        Role === "admin" ? "block" : "hidden"
-                      } relative`}
-                    >
-                      <button
-                        // onClick={(e) => {
-                        //     e.stopPropagation();
-                        //     if (clickedCourse === course) setClickedCourse(null);
-                        //     else setClickedCourse(course);
-                        // }}
-                        className="bg-black relative mt-[24px] p-[3px] rounded-full float-right"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="20"
-                          height="20"
-                          viewBox="0 0 20 20"
-                          fill="none"
-                        >
-                          <path
-                            d="M9.9987 8.33301C9.08203 8.33301 8.33203 9.08301 8.33203 9.99967C8.33203 10.9163 9.08203 11.6663 9.9987 11.6663C10.9154 11.6663 11.6654 10.9163 11.6654 9.99967C11.6654 9.08301 10.9154 8.33301 9.9987 8.33301ZM9.9987 3.33301C9.08203 3.33301 8.33203 4.08301 8.33203 4.99967C8.33203 5.91634 9.08203 6.66634 9.9987 6.66634C10.9154 6.66634 11.6654 5.91634 11.6654 4.99967C11.6654 4.08301 10.9154 3.33301 9.9987 3.33301ZM9.9987 13.333C9.08203 13.333 8.33203 14.083 8.33203 14.9997C8.33203 15.9163 9.08203 16.6663 9.9987 16.6663C10.9154 16.6663 11.6654 15.9163 11.6654 14.9997C11.6654 14.083 10.9154 13.333 9.9987 13.333Z"
-                            fill="white"
-                          />
-                        </svg>
-                      </button>
-                    </div>
                   </div>
                 );
               })}
