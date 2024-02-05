@@ -1,5 +1,3 @@
-
-
 import { RouterProvider } from "react-router-dom";
 import router from "./Router/Router/Router";
 import { Toaster } from "react-hot-toast";
@@ -52,40 +50,32 @@ function App() {
           "short_name": data?.organizationName,
           "name": data?.organizationName,
           "icons": [
-            /*   {
-                "src": "experimentLabsIcon196.png",
-                "sizes": "196x196",
-                "type": "image/png"
-                "purpose": "maskable"
-              }, */
-
             {
               "src": orgLogo,
               "type": "image/png",
               "sizes": "192x192",
               "purpose": "maskable"
             },
-
             {
-              "src": "https://i.ibb.co/5K6F5M6/icon512.png",
+              "src": orgLogo,
               "type": "image/png",
               "sizes": "512x512"
             },
-
-             {
-               "src": orgLogo,
-               "type": "image/png",
-               "sizes": "64x64",
-               "purpose":"any"
-             },    
-           
+            {
+              "src": orgLogo,
+              "type": "image/png",
+              "sizes": "64x64",
+              "purpose": "any"
+            },
           ],
-          "start_url": "http://localhost:3000/", 
+          "start_url": "http://localhost:3000/",
           "display": "standalone",
           "theme_color": "#000000",
           "background_color": "#000000",
           "prefer_related_applications": true
-        }
+        };
+        
+        
 
         //
         
@@ -162,5 +152,3 @@ function App() {
 }
 
 export default App;
-
-
