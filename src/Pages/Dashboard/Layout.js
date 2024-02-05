@@ -67,6 +67,7 @@ import { Badge } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { AuthContext } from "../../contexts/AuthProvider";
 import axios from "axios";
+import { useNotification } from "../../contexts/NotificationContext";
 
 const Layout = ({ children }) => {
   const [toggleButton, setToggleButton] = useState(true);
@@ -78,8 +79,8 @@ const Layout = ({ children }) => {
   const { userInfo, logOut } = useContext(AuthContext);
   const [profImg, setprofImg] = useState(null);
   const [profName, setprofName] = useState(null);
-  const [notifications, setNotifications] = useState([]);
   const navigate = useNavigate();
+  const { notifications } = useNotification();
   //console.log(Role);
   const location = useLocation();
   useEffect(() => {
@@ -111,13 +112,12 @@ const Layout = ({ children }) => {
         );
       })
       .catch((error) => console.error(error));
-    axios
-      .get(`http://localhost:5000/api/v1/notifications`)
-      .then((response) => {
-        console.log(response);
-        setNotifications(response?.data);
-      })
-      .catch((error) => console.error(error));
+    // axios
+    //   .get(`http://localhost:5000/api/v1/notifications`)
+    //   .then((response) => {
+    //     setNotifications(response?.data);
+    //   })
+    //   .catch((error) => console.error(error));
   }, [userInfo]);
   useEffect(() => {
     setprofImg(userInfo?.profileImg);
@@ -129,8 +129,6 @@ const Layout = ({ children }) => {
 
   const { id } = useParams();
   const orgLogo = localStorage.getItem("organizationLogo");
-
-  useEffect(() => {}, [userInfo]);
 
   console.log(notifications);
 

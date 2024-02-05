@@ -19,6 +19,8 @@ const Layout = ({ children }) => {
   const [orgData, setOrgData] = useState({});
 
   useEffect(() => {
+    socket.on("connection", () => console.log("socket connected"));
+    console.log("something");
     socket.on("notification", (newNotification) => {
       setNotifications((prevNotifications) => [
         newNotification,
