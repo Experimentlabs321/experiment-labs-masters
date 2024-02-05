@@ -28,7 +28,7 @@ const SkillsStatistics = ({ skillsData, selectedCourse }) => {
         const chapterName = {};
         // setAssignment(response?.data)
         const chapters = response?.data;
-        chapters.map((chap) => {
+        chapters?.map((chap) => {
           chapterName[chap.chapterName] = chap._id;
           chap.tasks.map((task) => {
             if (task.taskType === "Assignment") {
