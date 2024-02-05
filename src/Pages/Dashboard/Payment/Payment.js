@@ -9,11 +9,12 @@ import Swal from "sweetalert2";
 import DialogLayoutForFromControl from "../Shared/DialogLayoutForFromControl";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
-import { GoogleAuthProvider } from "firebase/auth";
+import { GoogleAuthProvider, onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import Loading from "../../Shared/Loading/Loading";
 
 const Payment = () => {
-  const { userInfo, user, signIn, providerLogin, logOut, createUser } = useContext(AuthContext);
+  const { userInfo, user, signIn, providerLogin, logOut, createUser, setUserInfo } = useContext(AuthContext);
   const { id } = useParams();
   const [course, setCourse] = useState([]);
   const [batchesData, setBatchesData] = useState([]);
@@ -51,16 +52,14 @@ const Payment = () => {
 
 
   useEffect(() => {
-    if (course?.organization?.organizationId)
-      axios
-        .get(`${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${course?.organization?.organizationId}`)
-        .then((response) => {
-          setOrganizationData(response?.data);
-        })
-        .catch((error) => console.error(error));
+    axios
+      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${course?.organization?.organizationId}`)
+      .then((response) => {
+        setOrganizationData(response?.data);
+      })
+      .catch((error) => console.error(error));
 
-  }, [course?.organization?.organizationId]);
-
+  }, [selectedBatch, course]);
 
 
   const fetchOffers = async (batchId) => {
@@ -86,8 +85,6 @@ const Payment = () => {
   };
 
 
-  // console.log(selectedBatch);
-
   const handleApplyCoupon = () => {
     const filteredCoupon = offers.filter((offer) => (offer.code === coupon) && (offer.disabled !== true));
     if (filteredCoupon.length > 0) {
@@ -110,11 +107,10 @@ const Payment = () => {
 
   }
 
-  // console.log(organizationData);
-
 
   const handleEnroll = async (data) => {
     console.log("Data =============>", data);
+    Loading();
     const { data: { order } } = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/checkout`, {
       price: ((+selectedBatch.price) - (+couponDiscount)),
       paymentInstance: {
@@ -122,8 +118,6 @@ const Payment = () => {
         key_secret: organizationData?.paymentInstance?.key_secret
       }
     });
-
-    // console.log("Order =======>", order);
 
 
     const options = {
@@ -134,9 +128,7 @@ const Payment = () => {
       name: organizationData?.organizationName,
       description: `Purchase ${course?.courseName}`,
       image: organizationData?.org_logo,
-      order_id: order.id,
-      // callback_url: `http://localhost:5000/api/v1/users/unpaidUsers/verifyPayment`,
-      // callback_url: `${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/verifyPayment`,
+      order_id: order?.id,
       prefill: {
         name: data?.name,
         email: data?.email,
@@ -163,8 +155,12 @@ const Payment = () => {
         response.organizationName = organizationData?.organizationName;
         console.log("Response ========>", response);
         console.log(selectOffer._id);
+        Loading();
         const res = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/verifyPayment`, response);
+        if (res)
+          Loading().close();
         if (res.data.success) {
+          setUserInfo(res.data.userData);
           Swal.fire({
             title: "Course Added Successfully",
             icon: "success",
@@ -176,6 +172,7 @@ const Payment = () => {
 
     const rzp1 = new window.Razorpay(options);
     rzp1.open();
+    Loading().close();
   }
 
 
@@ -184,6 +181,8 @@ const Payment = () => {
       .then((res) => res.json())
       .then((data) => {
         localStorage.setItem("role", data?.role);
+        console.log("Role =====>", data?.role);
+        setUserInfo(data);
         handleEnroll(data);
       })
   };
@@ -213,8 +212,8 @@ const Payment = () => {
       // Optionally show a generic error message to the user
       Swal.fire({
         icon: 'error',
-        title: '3 Device limit reached.',
-        text: 'Please logout from one of your devices and try again.',
+        title: 'User Not Found',
+        text: 'Invalid Email or Password',
       });
     }
   }
@@ -261,7 +260,6 @@ const Payment = () => {
       name,
       phone,
       email,
-      password,
       organizationId: organizationData?._id,
       organizationName: organizationData?.organizationName,
       role: "user"
@@ -270,15 +268,18 @@ const Payment = () => {
     // console.log(data);
 
     try {
-      const result = await createUser(email, password);
-      if (result.user.uid) {
-        const res = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/v1/users`, data);
-        // console.log(res);
-        if (res.data.acknowledged) {
-          // console.log(email);
-          saveUser(email);
-        }
-      }
+      createUser(email, password)
+        .then(
+          async (result) => {
+            const res = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/v1/users`, data);
+            if (res.data.acknowledged) {
+              saveUser(result?.user?.email);
+            }
+          }
+        )
+        .catch((error) => {
+          console.error(error);
+        });
     } catch (error) {
       console.log(error);
     }
@@ -344,14 +345,14 @@ const Payment = () => {
                   <p className="text-[#7A7A7A] text-[12px] font-[500] mb-[16px]">
                     {course?.courseDescription}
                   </p>
-                  <div className="flex items-center justify-between">
+                  {/* <div className="flex items-center justify-between">
                     <p className="bg-[#E1D7FF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
                       {course?.courseCategory}
                     </p>
                     <button className="bg-[#CEDBFF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
                       {date?.toLocaleDateString("en-US", options)}
                     </button>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
@@ -415,7 +416,7 @@ const Payment = () => {
                     </button>
                   </div>
                 </div>
-                <div className="mt-3">
+                {offers.length > 0 && <div className="mt-3">
                   <h1 className=" text-gray-400 mb-1 text-base font-[500] ">
                     Applicable Coupons
                   </h1>
@@ -424,7 +425,7 @@ const Payment = () => {
                     {
                       offers?.map((offer, index) =>
                       ((offer?.suggestDuringCheckout && !offer?.disabled) &&
-                        <div key={index} onClick={() => setCoupon(offer?.code)} className="bg-gradient-to-b from-white to-[#ebf1ff] rounded-[7px] border border-blue px-[10px] py-[12px] min-w-[350px]">
+                        <div key={index} onClick={() => setCoupon(offer?.code)} className="bg-gradient-to-b from-white to-[#ebf1ff] rounded-[7px] border border-blue px-[10px] py-[12px] min-w-[300px]">
                           <div className="flex items-center justify-between uppercase text-[1.25rem] font-bold">
                             <h3>{offer?.discountPercent}%</h3>
                             <h4 className=" text-blue">{offer?.code}</h4>
@@ -444,7 +445,7 @@ const Payment = () => {
 
 
 
-                </div>
+                </div>}
                 <hr className="my-6" />
                 <div className="mt-3">
                   <div className="p-3 border rounded-md shadow">
