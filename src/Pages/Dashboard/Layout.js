@@ -102,6 +102,8 @@ const Layout = ({ children }) => {
         setOrgData(response?.data);
         localStorage.setItem("organizationLogo", response?.data?.org_logo);
         localStorage.setItem("organizationFavicon", response?.data?.favicon);
+        localStorage.setItem("pWASplashscreenLogo", response?.data?.pWASplashscreenLogo);
+        localStorage.setItem("pWALogo", response?.data?.pWALogo);
         localStorage.setItem(
           "organizationName",
           response?.data?.organizationName

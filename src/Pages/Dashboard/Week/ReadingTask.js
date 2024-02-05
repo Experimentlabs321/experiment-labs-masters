@@ -9,11 +9,11 @@ import icon from "../../../icon192.png";
 
 const ReadingTask = ({ taskData }) => {
   const { userInfo, user } = useContext(AuthContext);
-  // if (userInfo.role !== "admin") {
-  //   window.addEventListener("contextmenu", (e) => {
-  //     e.preventDefault();
-  //   });
-  // }
+  if (userInfo.role !== "admin") {
+    window.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+    });
+  }
   const [openTask, setOpenTask] = useState(
     JSON.parse(localStorage.getItem("task"))
   );
