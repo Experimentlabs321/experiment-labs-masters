@@ -17,6 +17,8 @@ const UpdateOrganization = () => {
   const [loginPageOrgLogoUrl, setLoginPageOrgLogoUrl] = useState("");
   const [loginSidebarImage, setLoginSidebarImage] = useState("");
   const [paymentNavbarLogo, setPaymentNavbarLogo] = useState("");
+  const [pWALogo, setPWALogo] = useState("");
+  const [pWASplashscreenLogo, setPWASplashscreenLogo] = useState("");
   const [titlesColor, setTitlesColor] = useState("");
   const [dashboardTheme, setDashboardTheme] = useState({});
   const [currentPage, setCurrentPage] = useState("organizationTheme");
@@ -57,6 +59,8 @@ const UpdateOrganization = () => {
         setLoginPageOrgLogoUrl(response?.data?.loginPageOrgLogo);
         setLoginSidebarImage(response?.data?.loginSidebarImage);
         setPaymentNavbarLogo(response?.data?.paymentNavbarLogo);
+        setPWALogo(response?.data?.pWALogo);
+        setPWASplashscreenLogo(response?.data?.pWASplashscreenLogo);
         setTitlesColor(response?.data?.titlesColor);
         setPaymentNavbarColor(response?.data?.paymentNavbarColor);
         setPaymentNavbarAccessDashboardButtonColor(response?.data?.paymentNavbarAccessDashboardButtonColor);
@@ -85,6 +89,8 @@ const UpdateOrganization = () => {
       loginPageOrgLogo: loginPageOrgLogoUrl,
       loginSidebarImage: loginSidebarImage,
       paymentNavbarLogo: paymentNavbarLogo,
+      pWALogo: pWALogo,
+      pWASplashscreenLogo: pWASplashscreenLogo,
       titlesColor: titlesColor,
       paymentNavbarColor: paymentNavbarColor,
       paymentNavbarAccessDashboardButtonColor: paymentNavbarAccessDashboardButtonColor,
@@ -339,7 +345,7 @@ const UpdateOrganization = () => {
               <div className="flex gap-4">
                 <div className="flex flex-col mt-5 basis-1/2">
                   <label className="font-bold text-lg">
-                  Payment Navbar Logo
+                  Payment navbar logo
                   </label>
                   <UploadFile setFileUrl={setPaymentNavbarLogo}>
                     <div>
@@ -376,6 +382,89 @@ const UpdateOrganization = () => {
                   )}
                 </div>
               </div>
+
+              <div className="flex gap-4">
+                <div className="flex flex-col mt-5 basis-1/2">
+                  <label className="font-bold text-lg">
+                  Progressive web app logo
+                  </label>
+                  <UploadFile setFileUrl={setPWALogo}>
+                    <div>
+                      <img
+                        className="mx-auto animate-pulse"
+                        style={{ height: "70px", width: "70px" }}
+                        src="https://i.ibb.co/gJLdW8G/cloud-upload-regular-240.png"
+                        alt=""
+                      />
+                      <p className="text-xl text-gray-400">
+                        Drag & Drop your file
+                      </p>
+                      <p className="py-4">
+                        <span className="rounded-lg bg-gray-400 px-3 py-3 font-semibold">
+                          {/* <BiVideoPlus className="animate-bounce" /> */}
+                          Upload Image
+                        </span>
+                      </p>
+                    </div>
+                  </UploadFile>
+                </div>
+                <div className="flex flex-col mt-5 basis-1/2">
+                  <label className="font-bold text-lg">Current image</label>
+                  {pWALogo ? (
+                    <img
+                      className="mx-auto my-auto max-w-[200px]"
+                      src={pWALogo}
+                      alt="Logo"
+                    />
+                  ) : (
+                    <p className="text-center font-bold text-lg my-auto">
+                      Logo has not added!
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <div className="flex flex-col mt-5 basis-1/2">
+                  <label className="font-bold text-lg">
+                  Progressive web app splash screen logo
+                  </label>
+                  <UploadFile setFileUrl={setPWASplashscreenLogo}>
+                    <div>
+                      <img
+                        className="mx-auto animate-pulse"
+                        style={{ height: "70px", width: "70px" }}
+                        src="https://i.ibb.co/gJLdW8G/cloud-upload-regular-240.png"
+                        alt=""
+                      />
+                      <p className="text-xl text-gray-400">
+                        Drag & Drop your file
+                      </p>
+                      <p className="py-4">
+                        <span className="rounded-lg bg-gray-400 px-3 py-3 font-semibold">
+                          {/* <BiVideoPlus className="animate-bounce" /> */}
+                          Upload Image
+                        </span>
+                      </p>
+                    </div>
+                  </UploadFile>
+                </div>
+                <div className="flex flex-col mt-5 basis-1/2">
+                  <label className="font-bold text-lg">Current image</label>
+                  {pWASplashscreenLogo ? (
+                    <img
+                      className="mx-auto my-auto max-w-[200px]"
+                      src={pWASplashscreenLogo}
+                      alt="Logo"
+                    />
+                  ) : (
+                    <p className="text-center font-bold text-lg my-auto">
+                      Logo has not added!
+                    </p>
+                  )}
+                </div>
+              </div>
+
               <div className="flex flex-col mt-5">
                 <label className="font-bold text-lg">
                   Title & sub-title color
