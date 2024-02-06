@@ -12,6 +12,7 @@ import RegisterForm from "./RegisterForm";
 import { GoogleAuthProvider, onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../Shared/Loading/Loading";
+import HighlightOffRoundedIcon from '@mui/icons-material/HighlightOffRounded';
 
 const Payment = () => {
   const { userInfo, user, signIn, providerLogin, logOut, createUser, setUserInfo } = useContext(AuthContext);
@@ -416,19 +417,19 @@ const Payment = () => {
                     Apply Coupon
                   </h1>
                   <div className="flex mt-1 border w-full rounded-md bg-white">
-                    {/* <div> */}
+                    <div className="flex justify-between bg-transparent w-full p-2 focus:outline-none">
                       <input
-                        className=" bg-transparent w-full p-2 focus:outline-none"
+                        className="outline-none"
                         type="text"
                         placeholder="Enter Coupon Code"
                         name="coupon"
                         value={coupon}
                         onChange={(e) => setCoupon(e.target.value)}
                       />
-                      {/* <div>
-                        X
-                      </div> */}
-                    {/* </div> */}
+                      <div onClick={()=>setCoupon("")} className="cursor-pointer">
+                        {coupon.length >=1 && <HighlightOffRoundedIcon/>}
+                      </div>
+                    </div>
                     <button onClick={handleApplyCoupon} className=" text-[#5e52ff] bg-[#5e52ff0c] p-2 rounded-sm">
                       Apply
                     </button>
