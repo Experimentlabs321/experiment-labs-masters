@@ -108,6 +108,7 @@ const Layout = ({ children }) => {
         localStorage.setItem("loginTitle", response?.data?.loginTitle);
         localStorage.setItem("loginPageOrgLogo", response?.data?.loginPageOrgLogo);
         localStorage.setItem("loginSidebarImage", response?.data?.loginSidebarImage);
+        localStorage.setItem("orgRootUrl", response?.data?.orgRootUrl);
         localStorage.setItem(
           "organizationName",
           response?.data?.organizationName
