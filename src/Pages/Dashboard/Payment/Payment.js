@@ -351,10 +351,10 @@ const Payment = () => {
 
   return (
     <div className="bg-[#f6f7ff91] min-h-[100vh]">
-       <Helmet>
-          <meta charSet="utf-8" />
-          <title>Payment</title>
-        </Helmet>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Payment</title>
+      </Helmet>
       <Navbar
         setLoginOpen={setLoginOpen}
         organizationData={organizationData}
@@ -449,7 +449,10 @@ const Payment = () => {
                         value={coupon}
                         onChange={(e) => setCoupon(e.target.value)}
                       />
-                      <div onClick={() => setCoupon("")} className="cursor-pointer">
+                      <div onClick={() => {
+                        setCoupon("")
+                        setCouponDiscount(0)
+                      }} className="cursor-pointer">
                         {coupon.length >= 1 && <HighlightOffRoundedIcon />}
                       </div>
                     </div>
@@ -467,7 +470,15 @@ const Payment = () => {
                     {
                       offers?.map((offer, index) =>
                       ((offer?.suggestDuringCheckout && !offer?.disabled) &&
-                        <div key={index} onClick={() => setCoupon(offer?.code)} className="bg-gradient-to-b from-white to-[#ebf1ff] rounded-[7px] border border-blue px-[10px] py-[12px] min-w-[300px]">
+                        <div key={index}
+                          onClick={() => {
+                            (+offer?.maxUseCount < +offer?.usedCount) ? Swal.fire({
+                              icon: "error",
+                              title: "Error",
+                              text: "Coupon is already been used Maximum Time"
+                            }) : setCoupon(offer?.code)
+                          }}
+                          className="bg-gradient-to-b from-white to-[#ebf1ff] rounded-[7px] border border-blue px-[10px] py-[12px] min-w-[300px]">
                           <div className="flex items-center justify-between uppercase text-[1.25rem] font-bold">
                             <h3>{offer?.discountPercent}%</h3>
                             <h4 className=" text-blue">{offer?.code}</h4>
@@ -478,7 +489,7 @@ const Payment = () => {
                             <span>EXPIRES ON {new Date(offer?.validTill)?.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                           </p>
                           <p className="mt-[10px] font-[600] text-[1.07rem]">
-                            Valid for first {offer?.maxUseCount} learners.{" "}
+                            Valid for first {+offer?.maxUseCount - +offer?.usedCount} learners.{" "}
                           </p>
                         </div>))
                     }
