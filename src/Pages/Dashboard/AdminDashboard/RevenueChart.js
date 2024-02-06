@@ -179,7 +179,7 @@ const RevenueChart = ({ overViewCount }) => {
                 },
                 {
                     name: "Total Discount",
-                    data: dataTotalValues,
+                    data: [],
                 },
 
             ],
