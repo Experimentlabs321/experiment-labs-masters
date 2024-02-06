@@ -25,7 +25,7 @@ const Navbar = (props) => {
   const navigate = useNavigate();
   const drawerWidth = 240;
   const { window } = props;
-  const { organizationData } = props;
+  const { organizationData, setLoginOpen } = props;
   console.log(organizationData)
 
   const handleDrawerToggle = () => {
@@ -143,7 +143,7 @@ const Navbar = (props) => {
   const navItems = [
     !user ? (
       <Button
-        // onClick={handleClickOpen}
+        onClick={() => setLoginOpen(true)}
         sx={{
           bgcolor: "#FF557A",
           borderRadius: "22.5px",
@@ -234,7 +234,7 @@ const Navbar = (props) => {
       <AppBar
         component="nav"
         sx={{
-          bgcolor: (organizationData?.paymentNavbarColor)? organizationData?.paymentNavbarColor :"#3E4DAC",
+          bgcolor: (organizationData?.paymentNavbarColor) ? organizationData?.paymentNavbarColor : "#3E4DAC",
           padding: "10px 20px 10px 10px",
           zIndex: "1"
         }}

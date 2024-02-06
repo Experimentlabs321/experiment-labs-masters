@@ -90,10 +90,10 @@ const Payment = () => {
     if (filteredCoupon.length > 0) {
       // console.log(filteredCoupon[0]);
       setSelectedOffer(filteredCoupon[0]);
-      let { discountPercent, maxDiscountValue } = filteredCoupon[0];
+      let { discountPercent, maxDiscountValue, minCourseValue } = filteredCoupon[0];
       let discountAmount = (+selectedBatch?.price * +discountPercent) / 100;
       // console.log("Discount Amount", discountAmount);
-      if (discountAmount > +maxDiscountValue)
+      if ((discountAmount > +maxDiscountValue) && (+minCourseValue <= +selectedBatch?.price))
         discountAmount = +maxDiscountValue;
       // console.log("Discount Amount", discountAmount);
       setCouponDiscount(discountAmount);
@@ -321,7 +321,10 @@ const Payment = () => {
 
   return (
     <div className="bg-[#f6f7ff91] min-h-[100vh]">
-      <Navbar organizationData={organizationData}/>
+      <Navbar
+        setLoginOpen={setLoginOpen}
+        organizationData={organizationData}
+      />
       <div className="container mx-auto px-4 py-28">
         <div className="flex flex-col md:flex-row md:justify-center gap-20">
           <div>
