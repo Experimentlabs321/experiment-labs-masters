@@ -39,7 +39,7 @@ const AssignmentTask = ({ taskData }) => {
         `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/assignments/taskId/${taskId}`
       );
       console.log(res);
-      if(res.data.success){
+      if (res.data.success) {
         navigate(-1);
       }
     } catch (error) {
@@ -70,8 +70,8 @@ const AssignmentTask = ({ taskData }) => {
       <div className=" border-b-[1px] mt-[40px] ">
         <div
           className={`flex px-4 ${isFixed && window.innerWidth <= 768
-              ? "fixed top-[100px] bg-white"
-              : ""
+            ? "fixed top-[100px] bg-white"
+            : ""
             }`}
           style={
             window.innerWidth <= 768
@@ -90,20 +90,26 @@ const AssignmentTask = ({ taskData }) => {
           >
             Instructions
           </button>
-          <button
-            onClick={() => setView("Submission")}
-            className={`${view === "Submission" && "border-b-2 border-black"
-              } text-[22px] font-[500] mr-[120px] pb-[10px]`}
-          >
-            Submission
-          </button>
-          <button
-            onClick={() => setView("Review Submission")}
-            className={`${view === "Review Submission" && "border-b-2 border-black"
-              } text-[22px] font-[500] mr-[120px] pb-[10px]`}
-          >
-            Review Submission
-          </button>
+          {
+            (userInfo.role !== "admin") && <>
+              <button
+                onClick={() => setView("Submission")}
+                className={`${view === "Submission" && "border-b-2 border-black"
+                  } text-[22px] font-[500] mr-[120px] pb-[10px]`}
+              >
+                Submission
+              </button>
+              <button
+                onClick={() => setView("Review Submission")}
+                className={`${view === "Review Submission" && "border-b-2 border-black"
+                  } text-[22px] font-[500] mr-[120px] pb-[10px]`}
+              >
+                Review Submission
+              </button>
+            </>
+          }
+
+
           <button
             onClick={() => setView("My Submission")}
             className={`${view === "My Submission" && "border-b-2 border-black"

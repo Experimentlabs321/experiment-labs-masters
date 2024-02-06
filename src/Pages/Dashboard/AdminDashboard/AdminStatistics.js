@@ -5,6 +5,7 @@ import axios from "axios";
 import { Link, useHistory } from "react-router-dom";
 import ApexChart from "./ApexChart";
 import RevenueChart from "./RevenueChart";
+import inrIcon from '../../../assets/Dashboard/inrIcon.png'
 
 
 
@@ -88,8 +89,9 @@ const AdminStatistics = () => {
                             alt="icon"
                         />
                     </div>
-                    <div className="text-white text-3xl font-bold tracking-[2.96px] whitespace-nowrap mt-3">
-                       ${overViewCount?.totalPaidAmount ? overViewCount?.totalPaidAmount : "0"}
+                    <div className="text-white text-3xl font-bold tracking-[2.96px] whitespace-nowrap mt-3 flex items-center">
+                        <img className="w-[20px] text-[#fff]" src={inrIcon} alt="icon"/>
+                       {overViewCount?.totalPaidAmount ? overViewCount?.totalPaidAmount : "0"}
                     </div>
                 </Link>
 
@@ -152,7 +154,7 @@ const AdminStatistics = () => {
             </div>
             <div className="my-10">
             <ApexChart overViewCount={overViewCount} />
-            {/* <RevenueChart/> */}
+            <RevenueChart/>
 
             </div>
         </div>
