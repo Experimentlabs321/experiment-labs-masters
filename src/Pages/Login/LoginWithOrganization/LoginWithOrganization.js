@@ -6,6 +6,7 @@ import { GoogleAuthProvider } from "firebase/auth";
 import toast from "react-hot-toast";
 import GoogleLogo from "../../../assets/icons/googleIcon.png";
 import Swal from "sweetalert2";
+import Loading from "../../Shared/Loading/Loading";
 
 const LoginWithOrganization = () => {
   const { id } = useParams();
@@ -13,11 +14,11 @@ const LoginWithOrganization = () => {
   const navigate = useNavigate();
   const [orgData, setOrgData] = useState({});
   // const orgLogo = localStorage.getItem("organizationLogo")
-  const loginPageOrgLogo = localStorage.getItem("loginPageOrgLogo")
-  const loginSidebarImage = localStorage.getItem("loginSidebarImage")
-  const loginSubTitle = localStorage.getItem("loginSubTitle")
-  const loginTitle = localStorage.getItem("loginTitle")
-  const orgRootUrl = localStorage.getItem("orgRootUrl")
+  const loginPageOrgLogo = localStorage.getItem("loginPageOrgLogo");
+  const loginSidebarImage = localStorage.getItem("loginSidebarImage");
+  const loginSubTitle = localStorage.getItem("loginSubTitle");
+  const loginTitle = localStorage.getItem("loginTitle");
+  const orgRootUrl = localStorage.getItem("orgRootUrl");
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${id}`)
@@ -28,16 +29,19 @@ const LoginWithOrganization = () => {
   }, [id]);
 
   const handleLoginSubmit = async (e) => {
+    Loading();
     e.preventDefault();
     const userAgent = window.navigator.userAgent;
-    console.log("shihab   ", window.navigator)
+    console.log("shihab   ", window.navigator);
     const platform = window.navigator.platform;
-    const randomString = Math.random().toString(20).substring(2, 14) + Math.random().toString(20).substring(2, 14);
+    const randomString =
+      Math.random().toString(20).substring(2, 14) +
+      Math.random().toString(20).substring(2, 14);
 
     // const deviceID = `${userAgent}-${platform}-${randomString}`;
     // console.log("device id",deviceID)
     // console.log("platform",platform)
-    console.log("platform ", userAgent)
+    console.log("platform ", userAgent);
 
     const form = e?.target;
     const email = form.email.value;
@@ -59,24 +63,24 @@ const LoginWithOrganization = () => {
         });
       }
     } catch (error) {
+      Loading().close();
       // Handle any other errors that may occur during the Axios request
-      console.error('Error during Axios request:', error);
+      console.error("Error during Axios request:", error);
 
       // Optionally show a generic error message to the user
       Swal.fire({
-        icon: 'error',
-        title: '3 Device limit reached.',
-        text: 'Please logout from one of your devices and try again.',
+        icon: "error",
+        title: "Device limit crossed.",
+        text: "Please logout from one of your devices and try again.",
       });
     }
-
-
   };
 
   const saveUser = async (email) => {
     fetch(`${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${email}`)
       .then((res) => res.json())
       .then((data) => {
+        Loading().close();
         localStorage.setItem("role", data?.role);
         if (data?.role === "admin") navigate("/adminDashboardHome");
         else navigate("/dashboard");
@@ -91,7 +95,6 @@ const LoginWithOrganization = () => {
       })
       .catch((error) => console.error(error));
   };
-
 
   const handleGoogleSignIn = async () => {
     const googleProvider = new GoogleAuthProvider();
@@ -113,7 +116,6 @@ const LoginWithOrganization = () => {
       });
   };
 
-
   return (
     <div>
       <div className="flex min-h-screen">
@@ -130,20 +132,30 @@ const LoginWithOrganization = () => {
               <h1 className="lg:text-2xl xl:text-3xl xl:leading-snug font-extrabold">
                 {loginTitle ? loginTitle : orgData?.loginTitle}
               </h1>
-              <p className="">{loginSubTitle ? loginSubTitle : orgData?.loginSubTitle}</p>
+              <p className="">
+                {loginSubTitle ? loginSubTitle : orgData?.loginSubTitle}
+              </p>
               <img
                 className="mx-auto"
-                src={loginSidebarImage ? loginSidebarImage : orgData?.loginSidebarImage}
+                src={
+                  loginSidebarImage
+                    ? loginSidebarImage
+                    : orgData?.loginSidebarImage
+                }
                 alt="showCase"
               />
             </div>
             {/* <p className="font-medium mt-3">© 2023 Experiment Labs</p> */}
             <Link to={`${orgRootUrl ? orgRootUrl : orgData?.orgRootUrl}`}>
-            <img
-              className="w-[100px] mx-auto mt-4"
-              src={loginPageOrgLogo ? loginPageOrgLogo : orgData?.loginPageOrgLogo}
-              alt="brand"
-            />
+              <img
+                className="w-[100px] mx-auto mt-4"
+                src={
+                  loginPageOrgLogo
+                    ? loginPageOrgLogo
+                    : orgData?.loginPageOrgLogo
+                }
+                alt="brand"
+              />
             </Link>
           </div>
           {/* <!-- Login --> */}
@@ -153,7 +165,11 @@ const LoginWithOrganization = () => {
                 <Link to={`${orgRootUrl ? orgRootUrl : orgData?.orgRootUrl}`}>
                   <img
                     className="w-[100px]"
-                    src={loginPageOrgLogo ? loginPageOrgLogo : orgData?.loginPageOrgLogo}
+                    src={
+                      loginPageOrgLogo
+                        ? loginPageOrgLogo
+                        : orgData?.loginPageOrgLogo
+                    }
                     alt="brand"
                   />
                 </Link>
