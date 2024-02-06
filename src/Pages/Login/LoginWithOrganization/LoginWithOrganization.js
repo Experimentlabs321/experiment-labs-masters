@@ -19,7 +19,7 @@ const LoginWithOrganization = () => {
   const loginSubTitle = localStorage.getItem("loginSubTitle");
   const loginTitle = localStorage.getItem("loginTitle");
   const orgRootUrl = localStorage.getItem("orgRootUrl");
- 
+
   console.log(orgRootUrl);
   useEffect(() => {
     axios
@@ -241,7 +241,10 @@ const LoginWithOrganization = () => {
                     />
                     <p className="text-[20px]">Continue with Google</p>
                   </button>
-
+                  <div className='flex justify-center'>
+                    <p className="font-medium text-lg">Don't have an account? <Link to={`/register/${id}`} className='text-blue cursor-pointer'>Register</Link>
+                    </p>
+                  </div>
                   <p className="text-center text-error">
                     {/* <small>error</small> */}
                   </p>
