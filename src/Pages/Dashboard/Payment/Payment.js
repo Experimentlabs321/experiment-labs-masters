@@ -59,7 +59,7 @@ const Payment = () => {
       })
       .catch((error) => console.error(error));
 
-  }, [selectedBatch, course]);
+  }, [course]);
 
 
   const fetchOffers = async (batchId) => {
@@ -93,10 +93,20 @@ const Payment = () => {
       let { discountPercent, maxDiscountValue, minCourseValue } = filteredCoupon[0];
       let discountAmount = (+selectedBatch?.price * +discountPercent) / 100;
       // console.log("Discount Amount", discountAmount);
-      if ((discountAmount > +maxDiscountValue) && (+minCourseValue <= +selectedBatch?.price))
+      if ((discountAmount > +maxDiscountValue))
         discountAmount = +maxDiscountValue;
+
       // console.log("Discount Amount", discountAmount);
-      setCouponDiscount(discountAmount);
+      if (+minCourseValue <= +selectedBatch?.price)
+        setCouponDiscount(discountAmount);
+      else{
+        Swal.fire({
+          title:`Error`,
+          text: `Minimum Course Price should be  ₹${minCourseValue}`,
+          icon: "error",
+        });
+        setCouponDiscount(0);
+      }
     }
     else {
       Swal.fire({
@@ -406,14 +416,19 @@ const Payment = () => {
                     Apply Coupon
                   </h1>
                   <div className="flex mt-1 border w-full rounded-md bg-white">
-                    <input
-                      className=" bg-transparent w-full p-2 focus:outline-none"
-                      type="text"
-                      placeholder="Enter Coupon Code"
-                      name="coupon"
-                      value={coupon}
-                      onChange={(e) => setCoupon(e.target.value)}
-                    />
+                    {/* <div> */}
+                      <input
+                        className=" bg-transparent w-full p-2 focus:outline-none"
+                        type="text"
+                        placeholder="Enter Coupon Code"
+                        name="coupon"
+                        value={coupon}
+                        onChange={(e) => setCoupon(e.target.value)}
+                      />
+                      {/* <div>
+                        X
+                      </div> */}
+                    {/* </div> */}
                     <button onClick={handleApplyCoupon} className=" text-[#5e52ff] bg-[#5e52ff0c] p-2 rounded-sm">
                       Apply
                     </button>
