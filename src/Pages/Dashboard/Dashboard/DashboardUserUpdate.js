@@ -141,107 +141,109 @@ const DashboardUserUpdate = ({
           alt="vector"
         />
       </div>
-      <div className="relative inline-block w-full mb-[10px]">
-        <div
-          className="flex items-center justify-right mt-5 w-full "
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          <button className="cursor-pointer bg-[#FF557A] text-[15px] font-[700] py-3 px-4 rounded-full flex items-center justify-center shadow-[0px_2px_4px_0px_#00000026]">
-            {selectedCourse?.courseFullName}{" "}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-            >
-              <path
-                d="M8.71484 17.9847L14.5187 12.1808L8.71484 6.37695"
-                stroke="white"
-                stroke-width="1.93462"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-          </button>
-        </div>
-        {isOpen && (
-          <ul className="absolute top-full left-0 w-full bg-gray-200 border border-gray-300 py-1 px-4 rounded mt-1 transition-opacity duration-300 ease-in-out delay-100 z-10 ">
-            {courses?.map((option, index) => (
-              <li
-                key={index}
-                className="cursor-pointer py-2 text-[#6A6A6A] text-[14px] font-[400] "
-                onClick={() => {
-                  setSelectedCourse(option);
-                  localStorage.setItem("course", option?.courseFullName);
-                }}
-              >
-                {option?.courseFullName}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
 
       {addCourseCompletion && (
-        <div>
-          <div
-            style={{
-              filter: "drop-shadow(3.75217px 3.75217px 0px #000000)",
-              backgroundColor: courseCompletionBgColor,
-            }}
-            className="h-[132px] lg:h-[185px] mt-[20px] lg:mt-[80px] rounded-[14px]"
-          >
-            {!isAvatar ? (
-              <>
-                <img
-                  className="float-left mt-[-50px] hidden lg:block"
-                  src={dashboardImages?.userImg}
-                  alt="person"
-                />
-
-                <img
-                  className=" float-left mt-[-13px] lg:hidden"
-                  src={dashboardImages?.userImgMobile}
-                  alt="person"
-                />
-                <div className="flex flex-col lg:flex-row items-center justify-center gap-3 lg:justify-around h-full">
-                  <h1 className="lg:text-[26px] text-[15px] font-[600] text-white text-center z-[1]">
-                    {courseCompletionText}{" "}
-                    <span className="text-[#FFDB70]">0%</span> complete
-                  </h1>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="float-left hidden lg:flex h-full ml-4 items-center">
-                  <RoundAvatar
-                    name={userInfo?.name}
-                    avatarBg={avatarBg}
-                    imageSrc={userInfo?.profileImg}
+        <>
+          <div className="relative inline-block w-full mb-[10px]">
+            <div
+              className="flex items-center justify-right mt-5 w-full "
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              <button className="cursor-pointer bg-[#FF557A] text-[15px] font-[700] py-3 px-4 rounded-full flex items-center justify-center shadow-[0px_2px_4px_0px_#00000026]">
+                {selectedCourse?.courseFullName}{" "}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <path
+                    d="M8.71484 17.9847L14.5187 12.1808L8.71484 6.37695"
+                    stroke="white"
+                    stroke-width="1.93462"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
                   />
-                </div>
-                <div className="flex flex-col lg:flex-row items-center justify-center gap-3 lg:justify-around h-full">
-                  <h1 className="lg:text-[26px] text-[15px] font-[600] text-white text-center z-[1]">
-                    {courseCompletionText}{" "}
-                    <span className="text-[#FFDB70]">0%</span> complete
-                  </h1>
-                </div>
-              </>
+                </svg>
+              </button>
+            </div>
+            {isOpen && (
+              <ul className="absolute top-full left-0 w-full bg-gray-200 border border-gray-300 py-1 px-4 rounded mt-1 transition-opacity duration-300 ease-in-out delay-100 z-10 ">
+                {courses?.map((option, index) => (
+                  <li
+                    key={index}
+                    className="cursor-pointer py-2 text-[#6A6A6A] text-[14px] font-[400] "
+                    onClick={() => {
+                      setSelectedCourse(option);
+                      localStorage.setItem("course", option?.courseFullName);
+                    }}
+                  >
+                    {option?.courseFullName}
+                  </li>
+                ))}
+              </ul>
             )}
-            {/* <div className="flex flex-col lg:flex-row items-center justify-center gap-3 lg:justify-around h-full">
+          </div>
+
+          <div>
+            <div
+              style={{
+                filter: "drop-shadow(3.75217px 3.75217px 0px #000000)",
+                backgroundColor: courseCompletionBgColor,
+              }}
+              className="h-[132px] lg:h-[185px] mt-[20px] lg:mt-[80px] rounded-[14px]"
+            >
+              {!isAvatar ? (
+                <>
+                  <img
+                    className="float-left mt-[-50px] hidden lg:block"
+                    src={dashboardImages?.userImg}
+                    alt="person"
+                  />
+
+                  <img
+                    className=" float-left mt-[-13px] lg:hidden"
+                    src={dashboardImages?.userImgMobile}
+                    alt="person"
+                  />
+                  <div className="flex flex-col lg:flex-row items-center justify-center gap-3 lg:justify-around h-full">
+                    <h1 className="lg:text-[26px] text-[15px] font-[600] text-white text-center z-[1]">
+                      {courseCompletionText}{" "}
+                      <span className="text-[#FFDB70]">0%</span> complete
+                    </h1>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="float-left hidden lg:flex h-full ml-4 items-center">
+                    <RoundAvatar
+                      name={userInfo?.name}
+                      avatarBg={avatarBg}
+                      imageSrc={userInfo?.profileImg}
+                    />
+                  </div>
+                  <div className="flex flex-col lg:flex-row items-center justify-center gap-3 lg:justify-around h-full">
+                    <h1 className="lg:text-[26px] text-[15px] font-[600] text-white text-center z-[1]">
+                      {courseCompletionText}{" "}
+                      <span className="text-[#FFDB70]">0%</span> complete
+                    </h1>
+                  </div>
+                </>
+              )}
+              {/* <div className="flex flex-col lg:flex-row items-center justify-center gap-3 lg:justify-around h-full">
               <h1 className="lg:text-[26px] text-[15px] font-[600] text-white text-center z-[1]">
                 {courseCompletionText}{" "}
                 <span className="text-[#FFDB70]">{currentCourseCompletion}%</span>{" "}
                 complete
               </h1> */}
-            {/* <DashboardPrimaryButton
+              {/* <DashboardPrimaryButton
               bgColor="#FFDB70"
               shadow="0px 7.50435px 0px #F08323"
             >
               Open Feedback
             </DashboardPrimaryButton> */}
-            {/* <DialogLayout
+              {/* <DialogLayout
               title={
                 <p className="bg-[#6278FF] h-[69px] lg:h-[95px] text-center text-[18px] lg:text-[25px] font-[700] flex items-center justify-center text-white py-5">
                   Modal from layout
@@ -258,28 +260,29 @@ const DashboardUserUpdate = ({
             <Button variant="outlined" onClick={handleClickOpen}>
               Open dialog
             </Button> */}
-            {/* </div> */}
-            {courseCompletionDesign && (
-              <>
-                <img
-                  className=" absolute left-32 lg:left-60 top-0 z-0 w-[22px] lg:w-[57px]"
-                  src={Flower}
-                  alt="Flower"
-                />
-                <img
-                  className=" absolute bottom-1 right-8 lg:right-52 z-0 w-[22px] lg:w-[57px]"
-                  src={Star}
-                  alt="Star"
-                />
-                <img
-                  className=" absolute top-0 right-0 z-0 w-[22px] lg:w-[57px]"
-                  src={Flower1}
-                  alt="Flower1"
-                />
-              </>
-            )}
+              {/* </div> */}
+              {courseCompletionDesign && (
+                <>
+                  <img
+                    className=" absolute left-32 lg:left-60 top-0 z-0 w-[22px] lg:w-[57px]"
+                    src={Flower}
+                    alt="Flower"
+                  />
+                  <img
+                    className=" absolute bottom-1 right-8 lg:right-52 z-0 w-[22px] lg:w-[57px]"
+                    src={Star}
+                    alt="Star"
+                  />
+                  <img
+                    className=" absolute top-0 right-0 z-0 w-[22px] lg:w-[57px]"
+                    src={Flower1}
+                    alt="Flower1"
+                  />
+                </>
+              )}
+            </div>
           </div>
-        </div>
+        </>
       )}
 
       {(addOpenBox || addJoinQuest) && (
