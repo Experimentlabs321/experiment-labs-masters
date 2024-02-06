@@ -86,6 +86,8 @@ const EditCourse = () => {
     const numberOfWeeks = +form.numberofWeeks?.value;
     const showactivityreports = +form.showactivityreports?.value;
     const enableCompletionTracking = +form.enableCompletionTracking?.value;
+
+    const price = form.price?.value;
     const showactivitycompletionconditions =
       +form.showactivitycompletionconditions?.value;
     const coursePurchaseUrl = "" + form.coursePurchaseUrl?.value;
@@ -109,6 +111,7 @@ const EditCourse = () => {
       courseIDNumber,
       courseFormat,
       gradesFormat,
+      price,
       groups,
       showactivitydates,
       numberOfWeeks,
@@ -477,6 +480,21 @@ const EditCourse = () => {
                       placeholder="Eg. 364"
                     ></input>
                   </div>
+
+                  <div className="mt-20">
+                    <div className="flex items-center gap-4">
+                      <p className="h-2 w-2 bg-black rounded-full"></p>
+                      <p className="font-bold text-lg me-[36px]">Price</p>
+                    </div>
+
+                    <input
+                      className="mt-6 ms-6 border rounded-md w-[272px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                      name="price"
+                      type="number"
+                      defaultValue={courseData?.price}
+                      placeholder="Eg. 5000"
+                    ></input>
+                  </div>
                 </div>
               </div>
             </div>
@@ -813,14 +831,14 @@ const EditCourse = () => {
             <input
               type="submit"
               value="Save"
+              onClick={() => setSubmitPermission(true)}
               className="px-[30px] py-3 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
             />
-            <input
+            {/* <input
               type="submit"
-              onClick={() => setSubmitPermission(true)}
               value="Save & Display"
               className="px-[30px] py-3 bg-[#FF557A] text-[#fff] text-xl font-bold rounded-lg ms-20"
-            />
+            /> */}
           </div>
         </form>
       </Layout>

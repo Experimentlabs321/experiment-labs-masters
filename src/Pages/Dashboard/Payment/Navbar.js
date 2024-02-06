@@ -139,6 +139,7 @@ const Navbar = (props) => {
 
   const orgLogo = localStorage.getItem("organizationLogo")
   const paymentNavbarLogo = localStorage.getItem("paymentNavbarLogo")
+  const orgRootUrl = localStorage.getItem("orgRootUrl")
 
   const navItems = [
     !user ? (
@@ -227,7 +228,7 @@ const Navbar = (props) => {
       .catch((error) => console.error(error));
   }, [userInfo]);
 
-  // console.log(orgData)
+  console.log(orgData)
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -245,7 +246,7 @@ const Navbar = (props) => {
             component="div"
             sx={{ flexGrow: 1, color: "black" }}
           >
-            <Link className="flex gap-3 items-center" to={"/"}>
+            <Link className="flex gap-3 items-center" to={`${orgRootUrl ? orgRootUrl : '/'}`}>
               {organizationData?.paymentNavbarLogo ? (
                 <img
                   className="h-6 lg:h-8"

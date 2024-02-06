@@ -111,7 +111,6 @@ const EditVideo = () => {
       )
       .then((response) => {
         setVideoData(response?.data);
-        setSelectedFile(response?.data?.additionalFiles);
         setSelectedBatches(response?.data?.batches);
         setSkillParameterData(response?.data?.skillParameterData);
         setEarningParameterData(response?.data?.earningParameterData);
@@ -156,7 +155,7 @@ const EditVideo = () => {
     const ManageVideo = {
       videoTopicName,
       taskName: videoTopicName,
-      additionalFiles: fileUrl,
+      additionalFiles: selectedFile ? fileUrl : videoData?.additionalFiles,
       skillParameterData: skillParameterData,
       earningParameterData: earningParameterData,
       chapterId: id,
@@ -381,6 +380,11 @@ const EditVideo = () => {
                     ) : (
                       selectedFile && <p>Selected file: {selectedFile.name}</p>
                     )}
+                    {selectedFile && (
+                      <p className=" text-center break-words max-w-full overflow-hidden">
+                        Selected file: {selectedFile.name}
+                      </p>
+                    )}
                     {!selectedFile && (
                       <>
                         <div className="flex gap-2 justify-center w-full">
@@ -475,14 +479,14 @@ const EditVideo = () => {
               <input
                 type="submit"
                 value="Save"
+                onClick={() => setSubmitPermission(true)}
                 className="px-[30px] py-3 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
               />
-              <input
+              {/* <input
                 type="submit"
-                onClick={() => setSubmitPermission(true)}
                 value="Save & Display"
                 className="px-[30px] py-3 bg-[#FF557A] text-[#fff] text-xl font-bold rounded-lg ms-20"
-              />
+              /> */}
             </div>
           </form>
         </div>

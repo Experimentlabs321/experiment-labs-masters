@@ -12,6 +12,7 @@ import uploadFileToS3 from "../../UploadComponent/s3Uploader";
 import { toast } from "react-hot-toast";
 import ReadingTask from "../Week/ReadingTask";
 import CompletionParameter from "./Components/Shared/CompletionParameter";
+import Loading from "../../Shared/Loading/Loading";
 
 const ManageReading = () => {
   // upload file
@@ -135,6 +136,7 @@ const ManageReading = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    Loading();
     const form = event.target;
     let fileUrl = "";
     if (selectedFile) fileUrl = await uploadFileToS3(selectedFile);
@@ -164,31 +166,31 @@ const ManageReading = () => {
       console.log(newTask);
 
       if (newTask?.data?.result?.acknowledged) {
-        const newNotification = await axios.post(
-          `http://localhost:5000/api/v1/notifications/addNotification`,
-          {
-            message: `New reading material added in ${course?.courseFullName}.`,
-            dateTime: new Date(),
-            recipient: {
-              type: "Students",
-              organizationId: course?.organization?.organizationId,
-              courseId: course?._id,
-              batches: selectedBatches,
-            },
-            type: "Create Task",
-            readBy: [],
-          }
-        );
-        console.log(newNotification);
+        // const newNotification = await axios.post(
+        //   `http://localhost:5000/api/v1/notifications/addNotification`,
+        //   {
+        //     message: `New reading material added in ${course?.courseFullName}.`,
+        //     dateTime: new Date(),
+        //     recipient: {
+        //       type: "Students",
+        //       organizationId: course?.organization?.organizationId,
+        //       courseId: course?._id,
+        //       batches: selectedBatches,
+        //     },
+        //     type: "Create Task",
+        //     readBy: [],
+        //   }
+        // );
+        // console.log(newNotification);
         toast.success("Reading material added Successfully!");
         event.target.reset();
       }
-
+      Loading().close();
       console.log(manageReading);
     }
   };
 
-  console.log(selectedBatches);
+  console.log(selectedFile);
 
   return (
     <div>
@@ -354,6 +356,7 @@ const ManageReading = () => {
                     ) : (
                       selectedFile && <p>Selected file: {selectedFile.name}</p>
                     )}
+                    {selectedFile && <p>Selected file: {selectedFile.name}</p>}
                     {!selectedFile && (
                       <>
                         <div className="flex gap-2 justify-center w-full">
@@ -367,7 +370,7 @@ const ManageReading = () => {
                             className="w-[1%]"
                             style={{ fontSize: "0", opacity: "0" }}
                             type="file"
-                            accept=".jpg, .jpeg, .png, .ppt, .png"
+                            // accept=".jpg, .jpeg, .png, .ppt, .png"
                             name="input-file-upload"
                             id="input-file-upload"
                             onChange={handleFileChange}

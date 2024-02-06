@@ -11,6 +11,7 @@ import AssignmentTask from "../../Week/AssignmentTask";
 import SkillBasedParameter from "../Components/Shared/SkillBasedParameter";
 import ItemEarningParameter from "../Components/Shared/ItemEarningParameter";
 import General from "../Components/Assignment/General";
+import Loading from "../../../Shared/Loading/Loading";
 
 const EditAssignment = () => {
   const [isOpenGeneral, setisOpenGeneral] = useState(true);
@@ -166,8 +167,9 @@ const EditAssignment = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // let fileUrl = "";
-    // if (selectedFile) fileUrl = await uploadFileToS3(selectedFile);
+    Loading();
+    let fileUrl = "";
+    if (selectedFile) fileUrl = await uploadFileToS3(selectedFile);
 
     const form = event.target;
 
@@ -183,7 +185,7 @@ const EditAssignment = () => {
       assignmentTotalPointsMarks,
       AssignmentEndingDateTime,
       instructions: instructions,
-      file: assignmentData?.file,
+      file: selectedFile ? fileUrl : assignmentData?.file,
       skillParameterData: skillParameterData,
       earningParameterData: earningParameterData,
       chapterId: chapter?._id,
@@ -208,6 +210,7 @@ const EditAssignment = () => {
 
       console.log(manageAssignment);
     }
+    Loading().close();
   };
 
   console.log(selectedBatches);
@@ -403,14 +406,14 @@ const EditAssignment = () => {
               <input
                 type="submit"
                 value="Save"
+                onClick={() => setSubmitPermission(true)}
                 className="px-[30px] py-3 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
               />
-              <input
+              {/* <input
                 type="submit"
-                onClick={() => setSubmitPermission(true)}
                 value="Save & Display"
                 className="px-[30px] py-3 bg-[#FF557A] text-[#fff] text-xl font-bold rounded-lg ms-20"
-              />
+              /> */}
             </div>
           </form>
         </div>

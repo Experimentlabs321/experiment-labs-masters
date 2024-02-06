@@ -13,6 +13,7 @@ import uploadFileToS3 from "../../UploadComponent/s3Uploader";
 import { toast } from "react-hot-toast";
 import AudioTask from "../Week/AudioTask";
 import CompletionParameter from "./Components/Shared/CompletionParameter";
+import Loading from "../../Shared/Loading/Loading";
 
 const ManageAudio = () => {
   // upload file
@@ -133,6 +134,7 @@ const ManageAudio = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    Loading();
     let fileUrl = "";
     if (selectedFile) fileUrl = await uploadFileToS3(selectedFile);
     const form = event.target;
@@ -160,13 +162,14 @@ const ManageAudio = () => {
       );
       console.log(newTask);
 
-      if (newTask?.data?.acknowledged) {
+      if (newTask) {
         toast.success("Audio added Successfully");
         event.target.reset();
       }
 
       console.log(ManageAudio);
     }
+    Loading().close();
   };
 
   return (
@@ -334,6 +337,11 @@ const ManageAudio = () => {
                       </>
                     ) : (
                       selectedFile && <p>Selected file: {selectedFile.name}</p>
+                    )}
+                    {selectedFile && (
+                      <p className=" text-center break-words max-w-full overflow-hidden">
+                        Selected file: {selectedFile.name}
+                      </p>
                     )}
                     {!selectedFile && (
                       <>

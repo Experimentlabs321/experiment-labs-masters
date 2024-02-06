@@ -10,6 +10,7 @@ import ItemEarningParameter from "../Components/Shared/ItemEarningParameter";
 import uploadFileToS3 from "../../../UploadComponent/s3Uploader";
 import { toast } from "react-hot-toast";
 import AudioTask from "../../Week/AudioTask";
+import Loading from "../../../Shared/Loading/Loading";
 
 const EditAudio = () => {
   // upload file
@@ -94,7 +95,6 @@ const EditAudio = () => {
       )
       .then((response) => {
         setAudioData(response?.data);
-        setSelectedFile(response?.data?.additionalFiles);
         setSelectedBatches(response?.data?.batches);
         setSkillParameterData(response?.data?.skillParameterData);
         setEarningParameterData(response?.data?.earningParameterData);
@@ -129,6 +129,7 @@ const EditAudio = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    Loading();
     let fileUrl = "";
     if (selectedFile) fileUrl = await uploadFileToS3(selectedFile);
     const form = event.target;
@@ -138,7 +139,7 @@ const EditAudio = () => {
     const ManageAudio = {
       audioTopicName,
       taskName: audioTopicName,
-      additionalFiles: fileUrl,
+      additionalFiles: selectedFile ? fileUrl : audioData?.additionalFiles,
       skillParameterData: skillParameterData,
       earningParameterData: earningParameterData,
       chapterId: id,
@@ -161,6 +162,7 @@ const EditAudio = () => {
 
       console.log(ManageAudio);
     }
+    Loading().close();
   };
 
   return (
@@ -329,6 +331,11 @@ const EditAudio = () => {
                     ) : (
                       selectedFile && <p>Selected file: {selectedFile.name}</p>
                     )}
+                    {selectedFile && (
+                      <p className=" text-center break-words max-w-full overflow-hidden">
+                        Selected file: {selectedFile.name}
+                      </p>
+                    )}
                     {!selectedFile && (
                       <>
                         <div className="flex gap-2 justify-center w-full">
@@ -412,14 +419,14 @@ const EditAudio = () => {
               <input
                 type="submit"
                 value="Save"
+                onClick={() => setSubmitPermission(true)}
                 className="px-[30px] py-3 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
               />
-              <input
+              {/* <input
                 type="submit"
-                onClick={() => setSubmitPermission(true)}
                 value="Save & Display"
                 className="px-[30px] py-3 bg-[#FF557A] text-[#fff] text-xl font-bold rounded-lg ms-20"
-              />
+              /> */}
             </div>
           </form>
         </div>
