@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import { GoogleAuthProvider } from "firebase/auth";
 import toast from "react-hot-toast";
@@ -16,7 +16,8 @@ const LoginWithOrganization = () => {
   const loginPageOrgLogo = localStorage.getItem("loginPageOrgLogo")
   const loginSidebarImage = localStorage.getItem("loginSidebarImage")
   const loginSubTitle = localStorage.getItem("loginSubTitle")
-  const loginTitle  = localStorage.getItem("loginTitle")
+  const loginTitle = localStorage.getItem("loginTitle")
+  const orgRootUrl = localStorage.getItem("orgRootUrl")
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${id}`)
@@ -90,7 +91,7 @@ const LoginWithOrganization = () => {
       })
       .catch((error) => console.error(error));
   };
-  
+
 
   const handleGoogleSignIn = async () => {
     const googleProvider = new GoogleAuthProvider();
@@ -132,26 +133,30 @@ const LoginWithOrganization = () => {
               <p className="">{loginSubTitle ? loginSubTitle : orgData?.loginSubTitle}</p>
               <img
                 className="mx-auto"
-                src={loginSidebarImage? loginSidebarImage : orgData?.loginSidebarImage}
+                src={loginSidebarImage ? loginSidebarImage : orgData?.loginSidebarImage}
                 alt="showCase"
               />
             </div>
             {/* <p className="font-medium mt-3">© 2023 Experiment Labs</p> */}
+            <Link to={`${orgRootUrl ? orgRootUrl : orgData?.orgRootUrl}`}>
             <img
               className="w-[100px] mx-auto mt-4"
               src={loginPageOrgLogo ? loginPageOrgLogo : orgData?.loginPageOrgLogo}
               alt="brand"
             />
+            </Link>
           </div>
           {/* <!-- Login --> */}
           <div className="flex flex-1 flex-col items-center justify-center px-10 relative">
             <div className="flex lg:hidden justify-center items-center w-full py-4">
               <div className="flex items-center justify-center space-x-3">
-                <img
-                  className="w-[100px]"
-                  src={loginPageOrgLogo ? loginPageOrgLogo : orgData?.loginPageOrgLogo}
-                  alt="brand"
-                />
+                <Link to={`${orgRootUrl ? orgRootUrl : orgData?.orgRootUrl}`}>
+                  <img
+                    className="w-[100px]"
+                    src={loginPageOrgLogo ? loginPageOrgLogo : orgData?.loginPageOrgLogo}
+                    alt="brand"
+                  />
+                </Link>
               </div>
             </div>
             {/* <!-- Login box --> */}
