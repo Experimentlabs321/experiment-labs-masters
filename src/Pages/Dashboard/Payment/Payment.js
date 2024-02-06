@@ -35,6 +35,8 @@ const Payment = () => {
   const [error, setError] = useState(false);
   const navigate = useNavigate();
 
+  const dateCreated = new Date();
+
 
   useEffect(() => {
     axios
@@ -265,7 +267,8 @@ const Payment = () => {
             name: newName,
             organizationId: organizationData?._id,
             organizationName: organizationData?.organizationName,
-            role: "user"
+            role: "user",
+            dateCreated
           });
           if (res.data.acknowledged) {
             saveUser(googleMail)
@@ -289,7 +292,8 @@ const Payment = () => {
       email,
       organizationId: organizationData?._id,
       organizationName: organizationData?.organizationName,
-      role: "user"
+      role: "user",
+      dateCreated
     }
 
     // console.log(data);

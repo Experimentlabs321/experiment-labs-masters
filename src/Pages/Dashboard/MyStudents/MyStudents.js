@@ -72,7 +72,7 @@ const MyStudents = () => {
         `${process.env.REACT_APP_SERVER_API}/api/v1/users/students/${userInfo?.organizationId}`
       )
       .then((response) => {
-        console.log(response?.data);
+        response?.data.reverse();
         if (paidStudents) {
           const paidStudents = response?.data?.filter(
             (student) => student?.courses && student?.courses[0]
@@ -86,7 +86,7 @@ const MyStudents = () => {
         }
       })
       .catch((error) => console.error(error));
-  }, [userInfo]);
+  }, [userInfo,paidStudents]);
 
   const applyFilters = async (topic, batch, status) => {
     let filtered = allMyStudents;
@@ -163,6 +163,9 @@ const MyStudents = () => {
 
     return daysDifference;
   };
+
+  
+    console.log(filteredStudents?.reverse())
   return (
     <div>
       <Layout>
@@ -307,7 +310,7 @@ const MyStudents = () => {
                   <tbody>
                     {filteredStudents &&
                       filteredStudents[0] &&
-                      filteredStudents?.map((student, index) => {
+                      filteredStudents?.reverse()?.map((student, index) => {
                         const formattedDate = new Date(
                           student?.dateCreated
                         )?.toLocaleDateString();
