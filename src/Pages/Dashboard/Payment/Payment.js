@@ -53,14 +53,15 @@ const Payment = () => {
 
 
   useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${course?.organization?.organizationId}`)
-      .then((response) => {
-        setOrganizationData(response?.data);
-      })
-      .catch((error) => console.error(error));
+    if (course?.organization?.organizationId)
+      axios
+        .get(`${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${course?.organization?.organizationId}`)
+        .then((response) => {
+          setOrganizationData(response?.data);
+        })
+        .catch((error) => console.error(error));
 
-  }, [course]);
+  }, [course, course?.organization?.organizationId]);
 
 
   const fetchOffers = async (batchId) => {
@@ -100,9 +101,9 @@ const Payment = () => {
       // console.log("Discount Amount", discountAmount);
       if (+minCourseValue <= +selectedBatch?.price)
         setCouponDiscount(discountAmount);
-      else{
+      else {
         Swal.fire({
-          title:`Error`,
+          title: `Error`,
           text: `Minimum Course Price should be  ₹${minCourseValue}`,
           icon: "error",
         });
@@ -248,12 +249,18 @@ const Payment = () => {
           `${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${email}`
         );
         if (userDetails?.data?.isUser === false) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Not A Registered User',
-            text: 'Please Register before Login',
+          const googleMail = result?.user?.email;
+          const newName = result?.user?.displayName;
+          const res = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/v1/users`, {
+            email: googleMail,
+            name: newName,
+            organizationId: organizationData?._id,
+            organizationName: organizationData?.organizationName,
+            role: "user"
           });
-          handleLogout();
+          if (res.data.acknowledged) {
+            saveUser(googleMail)
+          }
         } else {
           saveUser(email);
         }
@@ -318,6 +325,9 @@ const Payment = () => {
             if (res.data.acknowledged) {
               saveUser(googleMail)
             }
+          }
+          else {
+            saveUser(email);
           }
         })
         .catch((error) => {
@@ -426,8 +436,8 @@ const Payment = () => {
                         value={coupon}
                         onChange={(e) => setCoupon(e.target.value)}
                       />
-                      <div onClick={()=>setCoupon("")} className="cursor-pointer">
-                        {coupon.length >=1 && <HighlightOffRoundedIcon/>}
+                      <div onClick={() => setCoupon("")} className="cursor-pointer">
+                        {coupon.length >= 1 && <HighlightOffRoundedIcon />}
                       </div>
                     </div>
                     <button onClick={handleApplyCoupon} className=" text-[#5e52ff] bg-[#5e52ff0c] p-2 rounded-sm">
