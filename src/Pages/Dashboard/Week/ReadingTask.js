@@ -7,6 +7,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import icon from "../../../icon192.png";
 import { useNavigate } from "react-router-dom";
+import Loading from "../../Shared/Loading/Loading";
 
 const ReadingTask = ({ taskData }) => {
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ const ReadingTask = ({ taskData }) => {
   }, [taskData, user]);
 
   const handleCompletion = async () => {
+    Loading();
     if (
       !taskData?.completionParameter ||
       taskData?.completionParameter?.completionParameter === "Without Quiz"
@@ -61,19 +63,21 @@ const ReadingTask = ({ taskData }) => {
       console.log(submitCompletion);
       console.log(sendData);
       setCompletionStatus(true);
-      if (submitCompletion?.data?.acknowledged)
-        {Swal.fire({
+      if (submitCompletion?.data?.acknowledged) {
+        Loading().close();
+        Swal.fire({
           icon: "success",
           title: "Congratulations!",
           text: "You have completed successfully!",
         });
-        navigate(-1);
+        // navigate(-1);
       }
-
     } else {
+      Loading().close();
       setOpenQuiz(!openQuiz);
       setOverlayVisible(openQuiz);
     }
+    Loading().close();
   };
   return (
     <div>
@@ -166,15 +170,17 @@ const ReadingTask = ({ taskData }) => {
               onClick={handleCompletion}
             ></div>
           )}
-          {isOverlayVisible ? null : (
-            <iframe
-              src={`https://docs.google.com/viewer?url=${taskData?.additionalFiles}&embedded=true`}
-              title="Your Document"
-              className="h-[68vh] mx-auto border-x-30 mt-40 border-t-30 border-b-50 rounded-lg border-[#292929]"
-              width="90%"
-              height="80vh"
-            ></iframe>
-          )}
+          {isOverlayVisible
+            ? null
+            : taskData?.additionalFiles && (
+                <iframe
+                  src={`https://docs.google.com/viewer?url=${taskData?.additionalFiles}&embedded=true`}
+                  title="Your Document"
+                  className="h-[68vh] mx-auto border-x-30 mt-40 border-t-30 border-b-50 rounded-lg border-[#292929]"
+                  width="90%"
+                  height="80vh"
+                ></iframe>
+              )}
           {openQuiz && (
             <Quiz
               setOpenQuiz={setOpenQuiz}

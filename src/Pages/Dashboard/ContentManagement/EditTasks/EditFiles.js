@@ -10,6 +10,7 @@ import Layout from "../../Layout";
 import FilesTask from "../../Week/FilesTask";
 import SkillBasedParameter from "../Components/Shared/SkillBasedParameter";
 import ItemEarningParameter from "../Components/Shared/ItemEarningParameter";
+import Loading from "../../../Shared/Loading/Loading";
 
 const EditFiles = () => {
   // upload file
@@ -104,7 +105,7 @@ const EditFiles = () => {
       )
       .then((response) => {
         setFileData(response?.data);
-        setSelectedFile(response?.data?.additionalFiles);
+        // setSelectedFile(response?.data?.additionalFiles);
         setSelectedBatches(response?.data?.batches);
         setSkillParameterData(response?.data?.skillParameterData);
         setEarningParameterData(response?.data?.earningParameterData);
@@ -139,6 +140,7 @@ const EditFiles = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    Loading();
     let fileUrl = "";
     if (selectedFile) fileUrl = await uploadFileToS3(selectedFile);
     const form = event.target;
@@ -147,7 +149,7 @@ const EditFiles = () => {
     const ManageFile = {
       fileName,
       taskName: fileName,
-      additionalFiles: fileUrl,
+      additionalFiles: selectedFile ? fileUrl : fileData?.additionalFiles,
       skillParameterData: skillParameterData,
       earningParameterData: earningParameterData,
       chapterId: id,
@@ -162,13 +164,14 @@ const EditFiles = () => {
         ManageFile
       );
 
-      if (newTask?.data?.acknowledged) {
+      if (newTask) {
         toast.success("File added Successfully");
         event.target.reset();
       }
 
       console.log(ManageFile);
     }
+    Loading().close();
   };
 
   return (
@@ -332,6 +335,11 @@ const EditFiles = () => {
                     ) : (
                       selectedFile && <p>Selected file: {selectedFile.name}</p>
                     )}
+                    {selectedFile && (
+                      <p className=" text-center break-words max-w-full overflow-hidden">
+                        Selected file: {selectedFile.name}
+                      </p>
+                    )}
                     {!selectedFile && (
                       <>
                         <div className="flex gap-2 justify-center w-full">
@@ -418,14 +426,14 @@ const EditFiles = () => {
               <input
                 type="submit"
                 value="Save"
+                onClick={() => setSubmitPermission(true)}
                 className="px-[30px] py-3 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
               />
-              <input
+              {/* <input
                 type="submit"
-                onClick={() => setSubmitPermission(true)}
                 value="Save & Display"
                 className="px-[30px] py-3 bg-[#FF557A] text-[#fff] text-xl font-bold rounded-lg ms-20"
-              />
+              /> */}
             </div>
           </form>
         </div>

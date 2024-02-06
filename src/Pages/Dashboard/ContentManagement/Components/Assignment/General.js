@@ -197,6 +197,11 @@ const General = ({
                   ) : (
                     selectedFile && <p>Selected file: {selectedFile.name}</p>
                   )}
+                  {selectedFile && (
+                    <p className=" text-center break-words max-w-full overflow-hidden">
+                      Selected file: {selectedFile.name}
+                    </p>
+                  )}
                   {!selectedFile && (
                     <>
                       <div className="flex gap-2 justify-center w-full">

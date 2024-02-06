@@ -102,7 +102,10 @@ const Layout = ({ children }) => {
         setOrgData(response?.data);
         localStorage.setItem("organizationLogo", response?.data?.org_logo);
         localStorage.setItem("organizationFavicon", response?.data?.favicon);
-        localStorage.setItem("pWASplashscreenLogo", response?.data?.pWASplashscreenLogo);
+        localStorage.setItem(
+          "pWASplashscreenLogo",
+          response?.data?.pWASplashscreenLogo
+        );
         localStorage.setItem("pWALogo", response?.data?.pWALogo);
         localStorage.setItem("loginSubTitle", response?.data?.loginSubTitle);
         localStorage.setItem("loginTitle", response?.data?.loginTitle);
@@ -137,7 +140,7 @@ const Layout = ({ children }) => {
   const { id } = useParams();
   const orgLogo = localStorage.getItem("organizationLogo");
 
-  console.log(notifications);
+  // console.log(notifications);
 
   return (
     <>
@@ -201,7 +204,10 @@ const Layout = ({ children }) => {
                 <div className="flex-1 flex flex-col pb-4 overflow-y-auto">
                   <div className="flex-1 space-y-1">
                     <div className="py-2 border-b border-[#303031] flex items-center justify-between lg:justify-center">
-                      <Link className="hidden lg:block" to={`${orgData?.orgRootUrl}`}>
+                      <Link
+                        className="hidden lg:block"
+                        to={`${orgData?.orgRootUrl}`}
+                      >
                         <img
                           // className="h-6 lg:h-8"
                           className="w-[100px]"

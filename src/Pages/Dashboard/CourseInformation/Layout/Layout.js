@@ -18,22 +18,22 @@ const Layout = ({ children }) => {
   const { userInfo } = useContext(AuthContext);
   const [orgData, setOrgData] = useState({});
 
-  useEffect(() => {
-    socket.on("connection", () => console.log("socket connected"));
-    console.log("something");
-    socket.on("notification", (newNotification) => {
-      setNotifications((prevNotifications) => [
-        newNotification,
-        ...prevNotifications,
-      ]);
-    });
+  // useEffect(() => {
+  //   socket.on("connection", () => console.log("socket connected"));
+  //   console.log("something");
+  //   socket.on("notification", (newNotification) => {
+  //     setNotifications((prevNotifications) => [
+  //       newNotification,
+  //       ...prevNotifications,
+  //     ]);
+  //   });
 
-    fetchNotifications();
+  //   fetchNotifications();
 
-    return () => {
-      socket.off("notification");
-    };
-  }, []);
+  //   return () => {
+  //     socket.off("notification");
+  //   };
+  // }, []);
 
   const fetchNotifications = async () => {
     try {
@@ -71,7 +71,7 @@ const Layout = ({ children }) => {
   const handleClick = () => {
     setToggleButton(!toggleButton);
   };
-  console.log(notifications);
+  // console.log(notifications);
   return (
     <>
       <MyHelmet>Dashboard</MyHelmet>

@@ -11,6 +11,7 @@ import ReadingTask from "../../Week/ReadingTask";
 import TextEditor from "../../../Shared/TextEditor/TextEditor";
 import SkillBasedParameter from "../Components/Shared/SkillBasedParameter";
 import ItemEarningParameter from "../Components/Shared/ItemEarningParameter";
+import Loading from "../../../Shared/Loading/Loading";
 
 const EditReading = () => {
   // upload file
@@ -99,7 +100,6 @@ const EditReading = () => {
         setReadingData(response?.data);
         setReadingMaterial(response?.data?.readingMaterial);
         setSelectedBatches(response?.data?.batches);
-        setSelectedFile(response?.data?.additionalFiles);
         setSkillParameterData(response?.data?.skillParameterData);
         setEarningParameterData(response?.data?.earningParameterData);
       });
@@ -133,15 +133,16 @@ const EditReading = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    Loading();
     const form = event.target;
-    // let fileUrl = "";
-    // if (selectedFile) fileUrl = await uploadFileToS3(selectedFile);
+    let fileUrl = "";
+    if (selectedFile) fileUrl = await uploadFileToS3(selectedFile);
     const readingTopicName = form.readingTopicName?.value;
 
     const manageReading = {
       readingTopicName,
       taskName: readingTopicName,
-      additionalFiles: readingData?.additionalFiles,
+      additionalFiles: selectedFile ? fileUrl : readingData?.additionalFiles,
       skillParameterData: skillParameterData,
       earningParameterData: earningParameterData,
       readingMaterial: readingMaterial,
@@ -165,6 +166,7 @@ const EditReading = () => {
 
       console.log(manageReading);
     }
+    Loading().close();
   };
 
   console.log(selectedBatches);
@@ -336,6 +338,11 @@ const EditReading = () => {
                     ) : (
                       selectedFile && <p>Selected file: {selectedFile.name}</p>
                     )}
+                    {selectedFile && (
+                      <p className=" text-center break-words max-w-full overflow-hidden">
+                        Selected file: {selectedFile.name}
+                      </p>
+                    )}
                     {!selectedFile && (
                       <>
                         <div className="flex gap-2 justify-center w-full">
@@ -445,14 +452,14 @@ const EditReading = () => {
               <input
                 type="submit"
                 value="Save"
+                onClick={() => setSubmitPermission(true)}
                 className="px-[30px] py-3 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
               />
-              <input
+              {/* <input
                 type="submit"
-                onClick={() => setSubmitPermission(true)}
                 value="Save & Display"
                 className="px-[30px] py-3 bg-[#FF557A] text-[#fff] text-xl font-bold rounded-lg ms-20"
-              />
+              /> */}
             </div>
           </form>
         </div>
