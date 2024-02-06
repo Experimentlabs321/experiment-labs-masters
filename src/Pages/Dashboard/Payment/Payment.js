@@ -122,20 +122,24 @@ const Payment = () => {
 
 
   const handleEnroll = async (data) => {
+    console.log("Went to Line 124");
     console.log("Data =============>", data);
     Loading();
+    // const { data: { order } } = await axios.post(`http://localhost:5000/api/v1/users/unpaidUsers/checkout`, {
     const { data: { order } } = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/checkout`, {
-      price: ((+selectedBatch.price) - (+couponDiscount)),
+      price: +((+selectedBatch.price) - (+couponDiscount)),
       paymentInstance: {
         key_id: organizationData?.paymentInstance?.key_id,
         key_secret: organizationData?.paymentInstance?.key_secret
       }
     });
 
+    console.log("Went to Line 135", order);
+
 
     const options = {
       key: organizationData?.paymentInstance?.key_id,
-      amount: order?.amount,
+      amount: +order?.amount,
       key_secret: organizationData?.paymentInstance?.key_secret,
       currency: "INR",
       name: organizationData?.organizationName,
@@ -183,8 +187,12 @@ const Payment = () => {
       }
     };
 
+    console.log("Went to Line 188", options);
+
     const rzp1 = new window.Razorpay(options);
+    console.log("Went to Line 191", rzp1);
     rzp1.open();
+    console.log("Went to Line 192 ");
     Loading().close();
   }
 
