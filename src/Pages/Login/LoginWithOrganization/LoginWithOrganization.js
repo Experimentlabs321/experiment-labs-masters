@@ -148,7 +148,7 @@ const LoginWithOrganization = () => {
               />
             </div>
             {/* <p className="font-medium mt-3">© 2023 Experiment Labs</p> */}
-            <Link to={`${orgRootUrl ? orgRootUrl : orgData?.orgRootUrl ? orgData?.orgRootUrl : '/'}`}>
+            <a href={`${orgRootUrl ? orgRootUrl : orgData?.orgRootUrl ? orgData?.orgRootUrl : '/'}`}>
               <img
                 className="w-[100px] mx-auto mt-4"
                 src={
@@ -158,13 +158,13 @@ const LoginWithOrganization = () => {
                 }
                 alt="brand"
               />
-            </Link>
+            </a>
           </div>
           {/* <!-- Login --> */}
           <div className="flex flex-1 flex-col items-center justify-center px-10 relative">
             <div className="flex lg:hidden justify-center items-center w-full py-4">
               <div className="flex items-center justify-center space-x-3">
-                <Link to={`${orgRootUrl ? orgRootUrl : orgData?.orgRootUrl ? orgData?.orgRootUrl : '/'}`}>
+                <a href={`${orgRootUrl ? orgRootUrl : orgData?.orgRootUrl ? orgData?.orgRootUrl : '/'}`}>
                   <img
                     className="w-[100px]"
                     src={
@@ -174,7 +174,7 @@ const LoginWithOrganization = () => {
                     }
                     alt="brand"
                   />
-                </Link>
+                </a>
               </div>
             </div>
             {/* <!-- Login box --> */}
