@@ -215,7 +215,7 @@ const OffersTable = ({ offerData, setOfferData, getAllOffers }) => {
                                     </div>
                                 </td>
                                 <td className="py-2 px-4 text-left">{offer?.validTill}</td>
-                                <td className="py-2 px-4 text-left">{(new Date(offer?.createdAt) <= new Date(offer?.validTill) && !offer?.disabled) ? "Yes" : "No"}</td>
+                                <td className="py-2 px-4 text-left">{((new Date(offer?.validTill) >= new Date() && !(offer?.disabled))) ? "Yes" : "No"}</td>
                                 <td className="py-2 px-4 text-left">{offer?.usedCount || 0}</td>
                                 <td className="py-2 px-4 text-left">
                                     <div>
