@@ -11,6 +11,7 @@ import uploadFileToS3 from "../../UploadComponent/s3Uploader";
 import { toast } from "react-hot-toast";
 import FilesTask from "../Week/FilesTask";
 import CompletionParameter from "./Components/Shared/CompletionParameter";
+import Loading from "../../Shared/Loading/Loading";
 
 const ManageFile = () => {
   // upload file
@@ -131,6 +132,7 @@ const ManageFile = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    Loading();
     let fileUrl = "";
     if (selectedFile) fileUrl = await uploadFileToS3(selectedFile);
     const form = event.target;
@@ -156,13 +158,14 @@ const ManageFile = () => {
         ManageFile
       );
 
-      if (newTask?.data?.acknowledged) {
+      if (newTask) {
         toast.success("File added Successfully");
         event.target.reset();
       }
 
       console.log(ManageFile);
     }
+    Loading().close();
   };
 
   return (
@@ -325,6 +328,11 @@ const ManageFile = () => {
                       </>
                     ) : (
                       selectedFile && <p>Selected file: {selectedFile.name}</p>
+                    )}
+                    {selectedFile && (
+                      <p className=" text-center break-words max-w-full overflow-hidden">
+                        Selected file: {selectedFile.name}
+                      </p>
                     )}
                     {!selectedFile && (
                       <>

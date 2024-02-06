@@ -14,6 +14,7 @@ import { toast } from "react-hot-toast";
 import VideoTask from "../Week/VideoTask";
 import DialogLayout from "../Shared/DialogLayout";
 import CompletionParameter from "./Components/Shared/CompletionParameter";
+import Loading from "../../Shared/Loading/Loading";
 
 const ManageVideo = () => {
   // upload file
@@ -136,6 +137,7 @@ const ManageVideo = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    Loading();
     let fileUrl = "";
     console.log(selectedFile);
     if (selectedFile) fileUrl = await uploadFileToS3(selectedFile);
@@ -166,13 +168,14 @@ const ManageVideo = () => {
       );
       console.log(newTask);
 
-      if (newTask?.data?.acknowledged) {
+      if (newTask) {
         toast.success("Video added Successfully");
         event.target.reset();
       }
 
       console.log(ManageVideo);
     }
+    Loading().close();
   };
 
   const handleAddYoutubeLink = (e) => {
@@ -351,7 +354,7 @@ const ManageVideo = () => {
                     <p className="font-bold text-lg me-[36px]">Upload Video</p>
                   </div>
                   <div
-                    className="w-3/4 h-[253px] bg-[#F6F7FF] flex flex-col items-center justify-center rounded-b-lg mt-6 ms-6"
+                    className="max-w-[350px] p-2 min-h-[253px] bg-[#F6F7FF] flex flex-col items-center justify-center rounded-b-lg mt-6 ms-6"
                     onDragEnter={handleDragEnter}
                     onDragLeave={handleDragLeave}
                     onDragOver={handleDragOver}
@@ -371,6 +374,11 @@ const ManageVideo = () => {
                       </>
                     ) : (
                       selectedFile && <p>Selected file: {selectedFile.name}</p>
+                    )}
+                    {selectedFile && (
+                      <p className=" text-center break-words max-w-full overflow-hidden">
+                        Selected file: {selectedFile.name}
+                      </p>
                     )}
                     {!selectedFile && (
                       <>
