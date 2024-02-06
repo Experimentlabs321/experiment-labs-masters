@@ -179,14 +179,14 @@ console.log(desiredMonths);
             Loading();
             //total students
             const years = Array.from(new Set(students?.map((student) => new Date(student.dateCreated).getFullYear().toString())));
-            const totalValues = years?.map((year) => students?.filter((student) => new Date(student.dateCreated).getFullYear().toString() === year).length);
+            const totalValues = years?.map((year) => students?.filter((student) => new Date(student.dateCreated).getFullYear().toString() === year)?.length);
     
             setYearsArray(years);
             setTotalValuesYearArray(totalValues);
 
             //enrolled student
             const yearsForEnroll = Array.from(new Set(enrolledStudents?.map((student) => new Date(student.dateCreated).getFullYear().toString())));
-            const totalForEnrollValues = years?.map((year) => enrolledStudents?.filter((student) => new Date(student.dateCreated).getFullYear().toString() === year).length);
+            const totalForEnrollValues = years?.map((year) => enrolledStudents?.filter((student) => new Date(student.dateCreated).getFullYear().toString() === year)?.length);
     
             setYearsForEnrollArray(yearsForEnroll);
             setTotalValuesYearForEnrollArray(totalForEnrollValues);
@@ -208,7 +208,7 @@ console.log(desiredMonths);
             setMonthArray(names);
 
             const values = availableMonths?.map(month =>
-                monthlyData?.filter(student => new Date(student.dateCreated).getMonth() === month).length
+                monthlyData?.filter(student => new Date(student.dateCreated).getMonth() === month)?.length
             );
             setTotalValuesMonthArray(values);
 
@@ -217,7 +217,7 @@ console.log(desiredMonths);
             setMonthForEnrollArray(namesForEnroll);
 
             const valuesForEnroll = availableMonths?.map(month =>
-                monthlyData?.filter(student => new Date(student.dateCreated).getMonth() === month).length
+                monthlyData?.filter(student => new Date(student.dateCreated).getMonth() === month)?.length
             );
             setTotalValuesMonthForEnrollArray(valuesForEnroll);
           

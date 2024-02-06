@@ -31,289 +31,142 @@ const RevenueChart = ({ overViewCount }) => {
 
 
 
-    //////////////////
 
     const [selectedFilter, setSelectedFilter] = useState('Year');
-    const [selectedYear, setSelectedYear] = useState('');
-    const [selectedMonth, setSelectedMonth] = useState('');
-    const [selectedWeek, setSelectedWeek] = useState('');
 
-    const [yearlyData, setYearlyData] = useState([]);
-    const [yearlyEnrollData, setYearlyEnrollData] = useState([]);
-    const [monthlyData, setMonthlyData] = useState([]);
-    const [monthlyEnrollData, setMonthlyEnrollData] = useState([]);
-    const [weeklyData, setWeeklyData] = useState([]);
-
-    useEffect(() => {
-        filterData();
-    }, [selectedFilter, selectedYear, selectedMonth, selectedWeek]);
-
-    const filterData = () => {
-        if (selectedFilter === 'Year') {
-            filterByYear(selectedYear);
-        } else if (selectedFilter === 'Month') {
-            filterByMonth(selectedMonth);
-        }/*  else if (selectedFilter === 'Week') {
-            filterByWeek(selectedWeek);
-        } */
-    };
-
-    /// year 
-    const filterByYear = (year) => {
-
-        //enroll Student
-        const yearFilteredEnrollData = enrolledStudents?.filter((student) => {
-            const studentYear = new Date(student.dateCreated).getFullYear().toString();
-            return year ? studentYear === year : true;
-        });
-        setYearlyEnrollData(yearFilteredEnrollData);
-
-
-    };
-
-
-
-    const filterByMonth = (month) => {
-
-        const currentYear = new Date().getFullYear().toString();
-
-        //enroll students
-        const monthFilteredEnrollData = enrolledStudents?.filter((student) => {
-            const studentYear = new Date(student.dateCreated).getFullYear().toString();
-            const studentMonth = new Date(student.dateCreated).getMonth();
-            return studentYear === currentYear && (month ? studentMonth === month : true);
-        });
-        setMonthlyEnrollData(monthFilteredEnrollData);
-
-
-    };
-
-    /*  const filterByWeek = (week) => {
-         const weekFilteredData = students?.filter((student) => {
-             const studentDay = new Date(student.dateCreated).getDay();
-             return week ? week.includes(dayToString(studentDay)) : true;
-         });
-         setWeeklyData(weekFilteredData);
-     };
- 
-     const dayToString = (day) => {
-         const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-         return daysOfWeek[day];
-     }; */
-
-    const monthToString = (month) => {
-        const monthsOfYear = [
-            'January', 'February', 'March', 'April', 'May', 'June',
-            'July', 'August', 'September', 'October', 'November', 'December'
-        ];
-        return monthsOfYear[month];
-    };
-
-    const getLocalizedDayNames = () => {
-        const dayFormatter = new Intl.DateTimeFormat('en-US', { weekday: 'short' });
-        const daysOfWeek = [];
-        for (let i = 0; i < 7; i++) {
-            daysOfWeek.push(dayFormatter.format(new Date(2022, 0, i + 1))); // Assuming 2022 is not a leap year
-        }
-        return daysOfWeek;
-    };
-
-    /*    const currentWeek = getLocalizedDayNames()?.map((day) => ({
-           day,
-           count: weeklyData?.filter((student) => dayToString(new Date(student.dateCreated).getDay()) === day).length,
-       })); */
-
-    //  const availableMonths = Array.from(new Set(students?.map((student) => new Date(student.dateCreated).getMonth()))).sort((a, b) => a - b);
-
-
-
-    const currentDate = new Date();
-    const currentMonth = currentDate.getMonth();
-
-
-    const desiredMonths = [];
-    for (let i = 0; i < 9; i++) {
-        const month = (currentMonth - i + 12) % 12; // Ensure positive result for previous months
-        desiredMonths.push(month);
-    }
-
-    console.log(desiredMonths);
-    /*  const availableEnrollMonths = Array.from(new Set(enrolledStudents?.map((student) => new Date(student.dateCreated).getMonth())));
-     console.log(availableEnrollMonths) */
-
-    const availableWeeks = getLocalizedDayNames();
-
-
-    ////////////////////////////////////////////////////////////////
     const [chartState, setChartData] = useState();
     //total students
     const [yearsArray, setYearsRevenueArray] = useState([]);
     const [totalValuesArray, setTotalValuesYearRevenueArray] = useState([]);
-    //total enroll
-    const [yearsForEnrollArray, setYearsForEnrollArray] = useState([]);
-    const [totalValuesForEnrollArray, setTotalValuesYearForEnrollArray] = useState([]);
 
-    //total students
-    const [monthArray, setMonthArray] = useState([]);
-    const [totalValuesMonthArray, setTotalValuesMonthArray] = useState([]);
-
-    //Enroll students
-    const [monthForEnrollArray, setMonthForEnrollArray] = useState([]);
-    const [totalValuesMonthForEnrollArray, setTotalValuesMonthForEnrollArray] = useState([]);
+    const [monthsRevenueArray, setMonthsRevenueArray] = useState([]);
+    const [monthlyValuesRevenueArray, setMonthlyValuesRevenueArray] = useState([]);
 
 
-    //for year
+
+    //for year total revenue
     useEffect(() => {
         if (selectedFilter === "Year" && enrolledStudents) {
             Loading();
-
+    
             // Extract years and paidAmount from the courses array
-            const courseYears = enrolledStudents?.map((student) => {
-                return {
-                    year: new Date(student.courses[0]?.enrollDate).getFullYear().toString(),
-                    paidAmount: student.courses[0]?.paidAmount || 0
-                };
+            const courseYears = enrolledStudents.flatMap(student => {
+                return student.courses.map(course => ({
+                    year: new Date(course.enrollDate).getFullYear().toString(),
+                    paidAmount: course.paidAmount || 0
+                }));
             });
-
+    
             // Group data by year and calculate the sum of paidAmount for each year
             const groupedData = courseYears.reduce((acc, current) => {
                 const year = current.year;
                 const paidAmount = current.paidAmount;
-
+    
                 if (!acc[year]) {
                     acc[year] = {
                         year: year,
                         paidAmountSum: 0
                     };
                 }
-
+    
                 acc[year].paidAmountSum += paidAmount;
-
+    
                 return acc;
             }, {});
-
-            // Extract years for the previous 3 years and the next 1 year
-            const currentYear = new Date().getFullYear();
-            const previous3Years = Array.from({ length: 3 }, (_, index) => (currentYear - index - 1).toString());
-            const next1Year = (currentYear + 1).toString();
-
-            // Filter grouped data for the previous 3 years and the next 1 year
-            const filteredData = Object.keys(groupedData)
-                .filter((year) => previous3Years.includes(year) || year === next1Year)
-                .reduce((acc, year) => {
-                    acc[year] = groupedData[year];
-                    return acc;
-                }, {});
-
-            // Convert filtered data to arrays for YearsRevenueArray and TotalValuesYearRevenueArray
-            const years = Object.keys(filteredData);
-            const paidAmountSumEachYear = years.map((year) => filteredData[year].paidAmountSum);
-
+    
+            // Extract unique years
+            const uniqueYears = Array.from(new Set(courseYears.map(course => course.year)));
+    
+            // Calculate previous, current, and next year counts
+            const years = uniqueYears.flatMap(year => {
+                const previousYear = (parseInt(year) - 1).toString();
+                const nextYear = (parseInt(year) + 1).toString();
+                return [previousYear, year, nextYear];
+            }).filter(year => !isNaN(parseInt(year)));
+    
+            // Convert grouped data to arrays for TotalValuesYearRevenueArray
+            const paidAmountSumEachYear = years.map(year => groupedData[year]?.paidAmountSum || 0);
+    
             setYearsRevenueArray(years);
             setTotalValuesYearRevenueArray(paidAmountSumEachYear);
-
+    
             Loading().close();
         }
     }, [enrolledStudents, selectedFilter]);
-
-
-
-
-
-
-
-    //for month 
-    /*    useEffect(() => {
-           if(selectedFilter === "Month"){
-            
-           
-              
-               const namesForEnroll = availableMonths.map(month => monthToString(month));
-               setMonthForEnrollArray(namesForEnroll);
-   
-               const valuesForEnroll = availableMonths?.map(month =>
-                   monthlyData?.filter(student => new Date(student.dateCreated).getMonth() === month).length
-               );
-               setTotalValuesMonthForEnrollArray(valuesForEnroll);
-             
-   
-           
-           }
-        
-           
-       }, [selectedFilter, monthlyData,]); */
-
-    console.log(totalValuesArray)
-    console.log(yearsArray)
-
-
-    /// for week
-    /* useEffect(() => {
-     
-      const today = new Date();
-      const currentWeekStart = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay());
-      const currentWeekEnd = new Date(currentWeekStart);
-      currentWeekEnd.setDate(currentWeekStart.getDate() + 6);
-  
-      const studentsInCurrentWeek = students?.filter(student => {
-        const studentDateCreated = new Date(student.dateCreated);
-        return studentDateCreated >= currentWeekStart && studentDateCreated <= currentWeekEnd;
-      });
-  
-     
-      const dayCounts = {};
-  
-      
-      studentsInCurrentWeek?.forEach(student => {
-        const studentDate = new Date(student.dateCreated);
-        const dayOfWeek = studentDate.getDay(); 
-  
-      
-        const adjustedDay = (dayOfWeek + 6) % 7 + 1;
-  
-      
-        if (dayCounts[adjustedDay]) {
-          dayCounts[adjustedDay]++;
-        } else {
-          dayCounts[adjustedDay] = 1;
+    
+    // for month total revenue
+    useEffect(() => {
+        if (selectedFilter === "Month" && enrolledStudents) {
+            Loading();
+    
+            const currentYear = new Date().getFullYear();
+    
+            // Create an array of 12 months for the current year
+            const months = Array.from({ length: 12 }, (_, index) => {
+                const monthIndex = index + 1;
+                return new Date(currentYear, index, 1).toLocaleString('en-US', { month: 'long' });
+            });
+    
+            // Extract months and paidAmount from the courses array
+            const courseMonths = enrolledStudents.flatMap(student => {
+                return student.courses.map(course => ({
+                    month: new Date(course.enrollDate).toLocaleString('en-US', { month: 'long' }),
+                    paidAmount: course.paidAmount || 0
+                }));
+            });
+    
+            // Group data by month and calculate the sum of paidAmount for each month
+            const groupedData = courseMonths.reduce((acc, current) => {
+                const month = current.month;
+                const paidAmount = current.paidAmount;
+    
+                if (!acc[month]) {
+                    acc[month] = {
+                        month: month,
+                        paidAmountSum: 0
+                    };
+                }
+    
+                acc[month].paidAmountSum += paidAmount;
+    
+                return acc;
+            }, {});
+    
+            // Set revenue count for each month of the current year
+            const monthlyRevenueCount = months.map(month => groupedData[month]?.paidAmountSum || 0);
+    
+            setMonthsRevenueArray(months);
+            setMonthlyValuesRevenueArray(monthlyRevenueCount);
+    
+            Loading().close();
         }
-      });
-  
-     
-      const days = Object.keys(dayCounts).map(day => parseInt(day, 10));
-      const studentCounts = Object.values(dayCounts);
-  
-      console.log('Days:', days);
-      console.log('Student Counts:', studentCounts);
-    }, [students]); */
+    }, [enrolledStudents, selectedFilter]);
+    
+    
 
 
+    console.log(monthsRevenueArray)
+    console.log(monthlyValuesRevenueArray)
 
 
     useEffect(() => {
-        //total students
+        //total revenue for year
         let dataValue = yearsArray;
         let dataTotalValues = totalValuesArray;
-        //enroll
-        let dataForEnrollValue = yearsForEnrollArray;
-        let dataTotalForEnrollValues = totalValuesForEnrollArray;
+        
+        // total revenue for month
+
 
         if (selectedFilter === "Year") {
-            //total students
+            //total revenue
             dataValue = yearsArray;
             dataTotalValues = totalValuesArray;
-            // enroll
-            dataForEnrollValue = yearsForEnrollArray;
-            dataTotalForEnrollValues = totalValuesForEnrollArray
+         
 
         }
         if (selectedFilter === "Month") {
-            //total students
-            dataValue = monthArray;
-            dataTotalValues = totalValuesMonthArray;
-            //enroll
-            dataForEnrollValue = monthForEnrollArray;
-            dataTotalForEnrollValues = totalValuesMonthForEnrollArray;
+            dataValue = monthsRevenueArray;
+            dataTotalValues= monthlyValuesRevenueArray;
 
         }
 
@@ -321,12 +174,12 @@ const RevenueChart = ({ overViewCount }) => {
 
             series: [
                 {
-                    name: "Total Students",
+                    name: "Total Revenue",
                     data: dataTotalValues,
                 },
                 {
-                    name: "Enrolled Students",
-                    data: dataTotalForEnrollValues,
+                    name: "Total Discount",
+                    data: dataTotalValues,
                 },
 
             ],
@@ -400,7 +253,7 @@ const RevenueChart = ({ overViewCount }) => {
             },
         });
 
-    }, [selectedFilter, yearsArray, totalValuesArray, yearsForEnrollArray, monthArray, monthForEnrollArray, totalValuesMonthArray, totalValuesMonthForEnrollArray, totalValuesForEnrollArray])
+    }, [selectedFilter, yearsArray, totalValuesArray,monthlyValuesRevenueArray,monthsRevenueArray ])
 
 
 
