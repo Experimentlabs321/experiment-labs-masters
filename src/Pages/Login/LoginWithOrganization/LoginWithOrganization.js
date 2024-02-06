@@ -19,6 +19,8 @@ const LoginWithOrganization = () => {
   const loginSubTitle = localStorage.getItem("loginSubTitle");
   const loginTitle = localStorage.getItem("loginTitle");
   const orgRootUrl = localStorage.getItem("orgRootUrl");
+ 
+  console.log(orgRootUrl);
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${id}`)
@@ -27,7 +29,7 @@ const LoginWithOrganization = () => {
       })
       .catch((error) => console.error(error));
   }, [id]);
-
+  console.log(orgData);
   const handleLoginSubmit = async (e) => {
     Loading();
     e.preventDefault();
@@ -146,7 +148,7 @@ const LoginWithOrganization = () => {
               />
             </div>
             {/* <p className="font-medium mt-3">© 2023 Experiment Labs</p> */}
-            <Link to={`${orgRootUrl ? orgRootUrl : orgData?.orgRootUrl}`}>
+            <Link to={`${orgRootUrl ? orgRootUrl : orgData?.orgRootUrl ? orgData?.orgRootUrl : '/'}`}>
               <img
                 className="w-[100px] mx-auto mt-4"
                 src={
@@ -162,7 +164,7 @@ const LoginWithOrganization = () => {
           <div className="flex flex-1 flex-col items-center justify-center px-10 relative">
             <div className="flex lg:hidden justify-center items-center w-full py-4">
               <div className="flex items-center justify-center space-x-3">
-                <Link to={`${orgRootUrl ? orgRootUrl : orgData?.orgRootUrl}`}>
+                <Link to={`${orgRootUrl ? orgRootUrl : orgData?.orgRootUrl ? orgData?.orgRootUrl : '/'}`}>
                   <img
                     className="w-[100px]"
                     src={
