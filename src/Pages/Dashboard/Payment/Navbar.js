@@ -25,6 +25,8 @@ const Navbar = (props) => {
   const navigate = useNavigate();
   const drawerWidth = 240;
   const { window } = props;
+  const { organizationData } = props;
+  console.log(organizationData)
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
@@ -181,10 +183,10 @@ const Navbar = (props) => {
             <Button
               onClick={() => handleLogout()}
               sx={{
-                bgcolor: orgData?.paymentNavbarLogoutButtonColor ? orgData?.paymentNavbarLogoutButtonColor : "#FF557A",
+                bgcolor: organizationData?.paymentNavbarLogoutButtonColor ? organizationData?.paymentNavbarLogoutButtonColor : "#FF557A",
                 borderRadius: "22.5px",
                 ":hover": { bgcolor: "#94A4FF" },
-                color: orgData?.paymentNavbarLogoutButtonTextColor ? orgData?.paymentNavbarLogoutButtonTextColor : "white",
+                color: organizationData?.paymentNavbarLogoutButtonTextColor ? organizationData?.paymentNavbarLogoutButtonTextColor : "white",
                 width: "100%",
               }}
               className="my-2 block border-b border-gray-100 py-1 font-semibold text-gray-500 hover:text-black md:mx-2"
@@ -216,7 +218,7 @@ const Navbar = (props) => {
       <AppBar
         component="nav"
         sx={{
-          bgcolor: (orgData?.paymentNavbarColor)? orgData?.paymentNavbarColor :"#3E4DAC",
+          bgcolor: (organizationData?.paymentNavbarColor)? organizationData?.paymentNavbarColor :"#3E4DAC",
           padding: "10px 20px 10px 10px",
           zIndex:"1"
         }}
@@ -228,10 +230,10 @@ const Navbar = (props) => {
             sx={{ flexGrow: 1, color: "black" }}
           >
             <Link className="flex gap-3 items-center" to={"/"}>
-              {paymentNavbarLogo ? (
+              {organizationData?.paymentNavbarLogo ? (
                 <img
                   className="h-6 lg:h-8"
-                  src={paymentNavbarLogo}
+                  src={organizationData?.paymentNavbarLogo}
                   alt="icon"
                 />
               ) : (

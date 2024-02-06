@@ -320,7 +320,7 @@ const Payment = () => {
 
   return (
     <div className="bg-[#f6f7ff91] min-h-[100vh]">
-      <Navbar />
+      <Navbar organizationData={organizationData}/>
       <div className="container mx-auto px-4 py-28">
         <div className="flex flex-col md:flex-row md:justify-center gap-20">
           <div>
