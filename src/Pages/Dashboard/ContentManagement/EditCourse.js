@@ -86,6 +86,8 @@ const EditCourse = () => {
     const numberOfWeeks = +form.numberofWeeks?.value;
     const showactivityreports = +form.showactivityreports?.value;
     const enableCompletionTracking = +form.enableCompletionTracking?.value;
+
+    const price = form.price?.value;
     const showactivitycompletionconditions =
       +form.showactivitycompletionconditions?.value;
     const coursePurchaseUrl = "" + form.coursePurchaseUrl?.value;
@@ -109,6 +111,7 @@ const EditCourse = () => {
       courseIDNumber,
       courseFormat,
       gradesFormat,
+      price,
       groups,
       showactivitydates,
       numberOfWeeks,
