@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import { GoogleAuthProvider } from "firebase/auth";
 import toast from "react-hot-toast";
@@ -51,7 +51,7 @@ const LoginWithOrganization = () => {
             password,
             organizationId: id,
             organizationName: orgData?.organizationName,
-            role:"user"
+            role: "user"
         }
 
         console.log(data);
@@ -235,7 +235,7 @@ const LoginWithOrganization = () => {
                                         value="Register"
                                         className="block w-full p-3 text-center rounded-xl text-gray-50 bg-cyan hover:bg-opacity-70 font-bold hover:transition-all hover:delay-200 hover:ease-out"
                                     />
-
+<p className="font-semibold text-lg text-center">Or</p>
                                     <button
                                         onClick={handleGoogleRegister}
                                         aria-label="Login with Google"
@@ -245,7 +245,10 @@ const LoginWithOrganization = () => {
                                         <img className="w-[20px] h-[20px]" src={GoogleLogo} alt="" />
                                         <p className="text-[20px]">Register with Google</p>
                                     </button>
-
+                                    <div className='flex justify-center'>
+                                        <p className="font-medium text-lg">Already have an account? <Link to={`/login/${id}`} className='text-blue cursor-pointer'>Login</Link>
+                                        </p>
+                                    </div>
                                     <p className="text-center text-error">
                                         {/* <small>error</small> */}
                                     </p>
