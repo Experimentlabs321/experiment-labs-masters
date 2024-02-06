@@ -55,6 +55,22 @@ const Navbar = (props) => {
   };
 
 
+  const handleDashboard = () => {
+    const Role = localStorage.getItem("role");
+    if (Role === "admin") {
+      navigate("/userManagement");
+    } else if (Role === "execution mentor") {
+      navigate("/executionMentorDashboard");
+    } else if (Role === "unpaid student") {
+      navigate("/unpaidStudentDashboard");
+    } else if (Role === "expert mentor") {
+      navigate("/expertMentorDashboard");
+    } else {
+      navigate("/dashboard");
+    }
+  };
+
+
   const navItems2 = [
     <>
       {userInfo && (
@@ -155,7 +171,7 @@ const Navbar = (props) => {
               className="menu-hover"
             >
               <button
-                //   onClick={handleDashboard}
+                onClick={handleDashboard}
                 className=""
               >
                 {" "}
@@ -211,7 +227,7 @@ const Navbar = (props) => {
       .catch((error) => console.error(error));
   }, [userInfo]);
 
-  console.log(orgData)
+  // console.log(orgData)
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -220,7 +236,7 @@ const Navbar = (props) => {
         sx={{
           bgcolor: (organizationData?.paymentNavbarColor)? organizationData?.paymentNavbarColor :"#3E4DAC",
           padding: "10px 20px 10px 10px",
-          zIndex:"1"
+          zIndex: "1"
         }}
       >
         <Toolbar>
