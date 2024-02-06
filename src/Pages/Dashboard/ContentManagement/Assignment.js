@@ -23,6 +23,7 @@ import SkillBasedParameter from "./Components/Shared/SkillBasedParameter";
 import ItemEarningParameter from "./Components/Shared/ItemEarningParameter";
 import uploadFileToS3 from "../../UploadComponent/s3Uploader";
 import AssignmentTask from "../Week/AssignmentTask";
+import Loading from "../../Shared/Loading/Loading";
 
 const Assignment = () => {
   const [isOpenGeneral, setisOpenGeneral] = useState(true);
@@ -59,6 +60,7 @@ const Assignment = () => {
   const [schedule, setSchedule] = useState([]);
 
   useEffect(() => {
+    Loading();
     axios
       .get(
         `${
@@ -67,6 +69,7 @@ const Assignment = () => {
       )
       .then((response) => {
         setBatchesData(response?.data);
+        Loading().close();
       })
       .catch((error) => console.error(error));
   }, [chapter?.courseId]);
@@ -155,6 +158,7 @@ const Assignment = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    Loading();
     let fileUrl = "";
     if (selectedFile) fileUrl = await uploadFileToS3(selectedFile);
 
@@ -198,6 +202,7 @@ const Assignment = () => {
 
       console.log(manageAssignment);
     }
+    Loading().close();
   };
 
   console.log(chapter);

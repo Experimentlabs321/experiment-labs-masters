@@ -8,6 +8,7 @@ import { AuthContext } from "../../../contexts/AuthProvider";
 import Locked from "../../../assets/Dashboard/Locked.png";
 import Expired from "../../../assets/Dashboard/Expired.png";
 import Swal from "sweetalert2";
+import Loading from "../../Shared/Loading/Loading";
 
 const CourseAccess = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,9 +39,10 @@ const CourseAccess = () => {
   };
 
   useEffect(() => {
+    Loading();
     const queryParams = new URLSearchParams(location.search);
     const stateParam = queryParams.get("state");
-    // setStateParams(stateParam || stateParams);
+    setStateParams(stateParam || stateParams);
 
     axios
       .get(
@@ -49,18 +51,19 @@ const CourseAccess = () => {
       .then((response) => {
         setCourses(response?.data);
         setFilterData(response?.data);
-      })
-      .catch((error) => console.error(error));
 
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/userId/${userInfo._id}`
-      )
-      .then((response) => {
-        setMyCourses(response?.data);
+        axios
+          .get(
+            `${process.env.REACT_APP_SERVER_API}/api/v1/courses/userId/${userInfo._id}`
+          )
+          .then((response) => {
+            setMyCourses(response?.data);
+            Loading().close();
+          })
+          .catch((error) => console.error(error));
       })
       .catch((error) => console.error(error));
-  }, [userInfo, location, stateParams]);
+  }, [userInfo, location]);
 
   useEffect(() => {
     stateParams === "myCourses"
