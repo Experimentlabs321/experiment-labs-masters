@@ -170,6 +170,13 @@ const BatchConfiguration = ({
     );
     setParticipants(newParameters);
   };
+  const getCurrentDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
 
   return (
     <div
@@ -308,6 +315,7 @@ const BatchConfiguration = ({
                     name="batchStartDate"
                     type="date"
                     placeholder="Eg. Entrepreneurship Lab"
+                    min={getCurrentDate()}
                   />
                 </div>
                 <div className="basis-1/2 px-2">
@@ -320,6 +328,7 @@ const BatchConfiguration = ({
                     name="batchEndDate"
                     type="date"
                     placeholder="Eg. Entrepreneurship Lab"
+                    min={getCurrentDate()}
                   />
                 </div>
                 <div className=" basis-1/2 px-2">
@@ -571,6 +580,7 @@ const BatchConfiguration = ({
                     className="bg-[#F6F7FF] font-sans border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
                     name="batchStartDate"
                     defaultValue={selectedBatches[0]?.batchStartDate}
+                    min={getCurrentDate()}
                     type="date"
                   />
                 </div>
@@ -584,6 +594,7 @@ const BatchConfiguration = ({
                     name="batchEndDate"
                     defaultValue={selectedBatches[0]?.batchEndDate}
                     type="date"
+                    min={getCurrentDate()}
                   />
                 </div>
                 <div className=" basis-1/2 px-2">
