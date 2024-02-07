@@ -102,7 +102,7 @@ const EditAssignment = () => {
           setSelectedBatches(response?.data?.batches);
           setSchedule(response?.data?.schedule);
           setInstructions(response?.data?.instructions);
-          setSelectedFile(response?.data?.file);
+          // setSelectedFile(response?.data?.file);
           setSkillParameterData(response?.data?.skillParameterData);
           setEarningParameterData(response?.data?.earningParameterData);
           setContentStage(
