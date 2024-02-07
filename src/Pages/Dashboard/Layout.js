@@ -109,8 +109,14 @@ const Layout = ({ children }) => {
         localStorage.setItem("pWALogo", response?.data?.pWALogo);
         localStorage.setItem("loginSubTitle", response?.data?.loginSubTitle);
         localStorage.setItem("loginTitle", response?.data?.loginTitle);
-        localStorage.setItem("loginPageOrgLogo", response?.data?.loginPageOrgLogo);
-        localStorage.setItem("loginSidebarImage", response?.data?.loginSidebarImage);
+        localStorage.setItem(
+          "loginPageOrgLogo",
+          response?.data?.loginPageOrgLogo
+        );
+        localStorage.setItem(
+          "loginSidebarImage",
+          response?.data?.loginSidebarImage
+        );
         localStorage.setItem("orgRootUrl", response?.data?.orgRootUrl);
         localStorage.setItem(
           "organizationName",
@@ -500,8 +506,85 @@ const Layout = ({ children }) => {
                             </span>
                           </Link>
                         </li>
+                        <li>
+                          <Link
+                            style={
+                              location.pathname === "/applyCertificate"
+                                ? {
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
+                                : {}
+                            }
+                            to="/applyCertificate"
+                            className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
+                          >
+                            {location.pathname === "/applyCertificate" ? (
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="icon icon-tabler icon-tabler-certificate"
+                                width="44"
+                                height="44"
+                                viewBox="0 0 24 24"
+                                stroke-width="1.5"
+                                stroke="#ffffff"
+                                fill="none"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              >
+                                <path
+                                  stroke="none"
+                                  d="M0 0h24v24H0z"
+                                  fill="none"
+                                />
+                                <path d="M15 15m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                                <path d="M13 17.5v4.5l2 -1.5l2 1.5v-4.5" />
+                                <path d="M10 19h-5a2 2 0 0 1 -2 -2v-10c0 -1.1 .9 -2 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -1 1.73" />
+                                <path d="M6 9l12 0" />
+                                <path d="M6 12l3 0" />
+                                <path d="M6 15l2 0" />
+                              </svg>
+                            ) : (
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="icon icon-tabler icon-tabler-certificate"
+                                width="44"
+                                height="44"
+                                viewBox="0 0 24 24"
+                                stroke-width="1.5"
+                                stroke="#9e9e9e"
+                                fill="none"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              >
+                                <path
+                                  stroke="none"
+                                  d="M0 0h24v24H0z"
+                                  fill="none"
+                                />
+                                <path d="M15 15m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                                <path d="M13 17.5v4.5l2 -1.5l2 1.5v-4.5" />
+                                <path d="M10 19h-5a2 2 0 0 1 -2 -2v-10c0 -1.1 .9 -2 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -1 1.73" />
+                                <path d="M6 9l12 0" />
+                                <path d="M6 12l3 0" />
+                                <path d="M6 15l2 0" />
+                              </svg>
+                            )}
+
+                            <span
+                              className={`${
+                                location.pathname === "/applyCertificate"
+                                  ? "text-white"
+                                  : "text-[#8F8F8F]"
+                              } ml-3 text-[18px] font-[500]`}
+                            >
+                              Apply Certificate
+                            </span>
+                          </Link>
+                        </li>
                       </ul>
                     )}
+
                     {Role === "admin" && (
                       <>
                         <ul className="space-y-2 px-[22px] py-2 text-white">
