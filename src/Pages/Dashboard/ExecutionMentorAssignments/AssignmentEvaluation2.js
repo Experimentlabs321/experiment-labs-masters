@@ -187,7 +187,7 @@ const AssignmentEvaluation2 = () => {
         //  const parameters = skillsName.parameters.map((item) => item?.parameterName === parameter?.parameterName)
         skillsName?.parameters?.map(
           (par) =>
-            (par.parameterValue = categoryValue / skillsName?.parameters.length)
+            (par.parameterValue = categoryValue / skillsName?.parameters?.length)
         );
         //  parameters.parameterValue = +(e.target?.value);
 
@@ -606,7 +606,7 @@ const AssignmentEvaluation2 = () => {
                     </button>
                   </div>
                 )}
-                {!mainAssignments?.skillParameterData.length && (
+                {!mainAssignments?.skillParameterData?.length && (
                   <div className="mt-10 ">
                     <button
                       variant="outlined"
@@ -925,8 +925,7 @@ const AssignmentEvaluation2 = () => {
                                                               changeCategoryName ===
                                                                 selectedSkillName
                                                                 ? categoryValue /
-                                                                skill?.parameters
-                                                                  .length
+                                                                skill?.parameters?.length
                                                                 : ""
                                                             }
                                                             onChange={(e) =>
@@ -941,8 +940,7 @@ const AssignmentEvaluation2 = () => {
                                                           {error && (
                                                             <>
                                                               {categoryValue /
-                                                                skill?.parameters
-                                                                  .length >
+                                                                skill?.parameters?.length >
                                                                 parameter.parameterValue && (
                                                                   <span className="text-[red] text-[10px]">
                                                                     error

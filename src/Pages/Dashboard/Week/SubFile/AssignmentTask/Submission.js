@@ -4,6 +4,7 @@ import { toast } from "react-hot-toast";
 import axios from "axios";
 import { useContext } from "react";
 import { AuthContext } from "../../../../../contexts/AuthProvider";
+import Loading from "../../../../Shared/Loading/Loading";
 
 const Submission = ({ taskData }) => {
   const [fileLoading, setFileLoading] = useState(false);
@@ -48,6 +49,7 @@ const Submission = ({ taskData }) => {
   };
 
   const handleSubmit = async () => {
+    Loading();
     let fileUrl = "";
     if (selectedFile) fileUrl = await uploadFileToS3(selectedFile);
 
@@ -59,6 +61,7 @@ const Submission = ({ taskData }) => {
       weekName: JSON.parse(localStorage.getItem("currentWeek"))?.weekName,
       fileUrl: fileUrl,
       submitter: userInfo,
+      submissionDateTime: new Date(),
     };
 
     const sendMail = await axios.post(
@@ -85,12 +88,14 @@ const Submission = ({ taskData }) => {
           email: userInfo?.email,
           participantId: userInfo?._id,
           status: "In Progress",
+          submissionDateTime: new Date(),
         },
         participantTask: {
           participant: {
             email: userInfo?.email,
             participantId: userInfo?._id,
             status: "In Progress",
+            submissionDateTime: new Date(),
           },
         },
       };
@@ -105,12 +110,12 @@ const Submission = ({ taskData }) => {
         toast.success("Assignment Submitted Successfully");
       }
 
+      Loading().close();
+
       console.log(manageAssignment);
     }
   };
-  console.log(
-    `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/Assignment/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`
-  );
+  console.log(taskData);
 
   return (
     <div>

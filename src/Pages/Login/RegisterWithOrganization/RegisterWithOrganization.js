@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import GoogleLogo from "../../../assets/icons/googleIcon.png";
 import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
+import Loading from "../../Shared/Loading/Loading";
 
 const LoginWithOrganization = () => {
     const { id } = useParams();
@@ -17,6 +18,7 @@ const LoginWithOrganization = () => {
     const [phone, setPhone] = useState("");
     const [error, setError] = useState(false);
     const dateCreated = new Date();
+    
     useEffect(() => {
         axios
             .get(`${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${id}`)
@@ -28,17 +30,19 @@ const LoginWithOrganization = () => {
 
 
     const handleLogout = () => {
+        Loading();
         logOut()
             .then((res) => {
                 console.log(res);
             })
             .catch((error) => console.error(error));
+        Loading().close();
     };
 
 
     const handleRegister = async (e) => {
         e.preventDefault();
-
+        Loading();
         const form = e?.target;
         const name = form.name.value;
         const email = form.email.value;
@@ -64,15 +68,20 @@ const LoginWithOrganization = () => {
                 if (res.data.acknowledged) {
                     toast.success("Registered Successfully");
                 }
+                else {
+                    toast.success("Registered Failed");
+                }
                 handleLogout();
             }
         } catch (error) {
             console.log(error);
         }
+        Loading().close();
     };
 
 
     const handleGoogleRegister = async () => {
+        Loading();
         const googleProvider = new GoogleAuthProvider();
 
         if (phone.length > 3) {
@@ -94,6 +103,9 @@ const LoginWithOrganization = () => {
                         if (res.data.acknowledge) {
                             toast.success("Registered Successfully");
                         }
+                        else {
+                            toast.success("Registered Failed");
+                        }
                         handleLogout();
                     }
                 })
@@ -104,6 +116,7 @@ const LoginWithOrganization = () => {
         else {
             setError(true);
         }
+        Loading().close();
     }
 
 
@@ -237,7 +250,7 @@ const LoginWithOrganization = () => {
                                         value="Register"
                                         className="block w-full p-3 text-center rounded-xl text-gray-50 bg-cyan hover:bg-opacity-70 font-bold hover:transition-all hover:delay-200 hover:ease-out"
                                     />
-<p className="font-semibold text-lg text-center">Or</p>
+                                    <p className="font-semibold text-lg text-center">Or</p>
                                     <button
                                         onClick={handleGoogleRegister}
                                         aria-label="Login with Google"

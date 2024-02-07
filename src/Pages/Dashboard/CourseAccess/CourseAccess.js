@@ -61,8 +61,11 @@ const CourseAccess = () => {
             Loading().close();
           })
           .catch((error) => console.error(error));
+        Loading().close();
       })
       .catch((error) => console.error(error));
+
+    Loading().close();
   }, [userInfo, location]);
 
   useEffect(() => {

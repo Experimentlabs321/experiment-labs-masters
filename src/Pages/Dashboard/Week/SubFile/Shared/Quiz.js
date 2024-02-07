@@ -1,8 +1,8 @@
 import React, { useContext, useState } from "react";
-import DialogLayout from "../../../Shared/DialogLayout";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { AuthContext } from "../../../../../contexts/AuthProvider";
+import DialogLayoutForFromControl from "../../../Shared/DialogLayoutForFromControl";
 
 const Quiz = ({ taskData, questions, setOpenQuiz, openQuiz }) => {
   const { user, userInfo } = useContext(AuthContext);
@@ -20,68 +20,6 @@ const Quiz = ({ taskData, questions, setOpenQuiz, openQuiz }) => {
   const [question, setQuestion] = useState(
     questions ? allQuestions[currentQuestion] : null
   );
-
-  const data = {
-    _id: { $oid: "64f97a1ed66a470d37e8ff4a" },
-    courseId: "64f8193adfefb4ac83e0d309",
-    weekId: "64f97a1ed66a470d37e8ff49",
-    chapterName: "Product, Solution and Technology 101",
-    creator: {
-      name: "Naman Jain",
-      email: "naman.j@experimentlabs.in",
-      photoURL: null,
-    },
-    date: { $date: { $numberLong: "1694071326987" } },
-    tasks: [
-      {
-        taskId: "650fbc2e6593030e05b4f1f1",
-        taskType: "Classes",
-        taskName: "Level 4 - Product, Solution and Technology 101",
-        participants: [
-          {
-            participantEmail: "email",
-            participantId: "id",
-            status: "Completed/Pending",
-          },
-        ],
-      },
-      {
-        taskId: "650fbda284e5dfb4359f5bdc",
-        taskType: "Reading",
-        taskName: "Level 4 - Product, Solution and Technology 101",
-      },
-      {
-        taskId: "650fcc146c0c0106688a25ba",
-        taskType: "Reading",
-        taskName: "Sample Product requirement document - Food Delivery",
-      },
-      {
-        taskId: "650fcc5ead777c29ab453861",
-        taskType: "Assignment",
-        taskName: "Writing PRDs for P0 tasks",
-      },
-      {
-        taskId: "650fcf51b411c9d8e29141a7",
-        taskType: "Assignment",
-        taskName: "Solution breakdown and prioritising",
-      },
-      {
-        taskId: "650fcfb2aa325c1b2c2cd147",
-        taskType: "Assignment",
-        taskName: "Logo for your product",
-      },
-      {
-        taskId: "650fd03fa607cad70ccaf95b",
-        taskType: "Assignment",
-        taskName: "Build your landing pages",
-      },
-      {
-        taskId: "650fd11eaa325c1b2c2cd148",
-        taskType: "Reading",
-        taskName: "Product Management as a career ",
-      },
-    ],
-  };
 
   const handleOptionChange = (e) => {
     setSelectedOption(e.target.value);
@@ -182,8 +120,12 @@ const Quiz = ({ taskData, questions, setOpenQuiz, openQuiz }) => {
   };
   return (
     <div>
-      <DialogLayout open={openQuiz} setOpen={setOpenQuiz} width={650}>
-        <div className="max-w-[650px] py-10 mx-auto">
+      <DialogLayoutForFromControl
+        open={openQuiz}
+        setOpen={setOpenQuiz}
+        width={650}
+      >
+        <div className="max-w-[650px] w-full py-10 mx-auto">
           <h1 className="text-[#FF557A] text-center h-[50px] text-[22px] font-[700] ">
             Question {question.questionNo}
           </h1>
@@ -325,7 +267,7 @@ const Quiz = ({ taskData, questions, setOpenQuiz, openQuiz }) => {
             </div>
           </div>
         </div>
-      </DialogLayout>
+      </DialogLayoutForFromControl>
     </div>
   );
 };

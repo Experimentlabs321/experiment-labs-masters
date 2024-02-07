@@ -9,17 +9,17 @@ import {
   useSessionContext,
 } from "@supabase/auth-helpers-react";
 import DateTimePicker from "react-datetime-picker";
-import FullCalendar from '@fullcalendar/react';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import listPlugin from '@fullcalendar/list';
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import listPlugin from "@fullcalendar/list";
 import interactionPlugin from "@fullcalendar/interaction";
-import 'react-datetime-picker/dist/DateTimePicker.css';
-import 'react-calendar/dist/Calendar.css';
-import 'react-clock/dist/Clock.css';
+import "react-datetime-picker/dist/DateTimePicker.css";
+import "react-calendar/dist/Calendar.css";
+import "react-clock/dist/Clock.css";
 import toast from "react-hot-toast";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import required from "../../../assets/ContentManagement/required.png";
-import meetIcon from "../../../assets/Dashboard/meetIcon.png"
+import meetIcon from "../../../assets/Dashboard/meetIcon.png";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -30,26 +30,25 @@ import '@fullcalendar/daygrid/main.css'; */
 let global;
 const customStyles = {
   overlay: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Set the background color and opacity of the overlay
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Set the background color and opacity of the overlay
     zIndex: 1000, // Set a higher z-index value
   },
   content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
-    backgroundColor: 'white', // Set the background color of the modal content
-    border: '1px solid #ccc',
-    borderRadius: '5px',
-    padding: '10px',
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+    backgroundColor: "white", // Set the background color of the modal content
+    border: "1px solid #ccc",
+    borderRadius: "5px",
+    padding: "10px",
     zIndex: 1001, // Set a higher z-index value
   },
 };
 const localizer = momentLocalizer(moment);
 const AdminCalendarSchedule = () => {
-
   const { id } = useParams();
   const { user, userInfo } = useContext(AuthContext);
   const [chapter, setChapter] = useState({});
@@ -84,7 +83,8 @@ const AdminCalendarSchedule = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API
+        `${
+          process.env.REACT_APP_SERVER_API
         }/api/v1/batches/courseId/${localStorage.getItem("courseId")}`
       )
       .then((response) => {
@@ -127,7 +127,6 @@ const AdminCalendarSchedule = () => {
           {
             batchName: optionValue?.batchName,
             batchId: optionValue?._id,
-
           },
         ]);
       } else {
@@ -138,7 +137,6 @@ const AdminCalendarSchedule = () => {
           {
             batchName: optionValue?.batchName,
             batchId: optionValue?._id,
-
           },
         ]);
       }
@@ -156,7 +154,9 @@ const AdminCalendarSchedule = () => {
 
     if (isSelected) {
       // If the day is already selected, remove it from the array
-      const updatedSelection = selectedHoliday.filter((selectedDay) => selectedDay !== day.day);
+      const updatedSelection = selectedHoliday.filter(
+        (selectedDay) => selectedDay !== day.day
+      );
       setSelectedHoliday(updatedSelection);
     } else {
       // If the day is not selected, add it to the array
@@ -164,13 +164,16 @@ const AdminCalendarSchedule = () => {
     }
   };
 
-
-  console.log(selectedHoliday)
+  console.log(selectedHoliday);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const futureCalendarEvents = calendarEvents.filter((event) => {
+      const eventStartDate = new Date(event.start.dateTime || event.start.date); // Adjust based on your event object structure
+      return eventStartDate >= today;
+    });
     const form = event.target;
 
     const scheduleName = form.scheduleName?.value;
@@ -178,7 +181,7 @@ const AdminCalendarSchedule = () => {
     const minimumTime = form.minimumTime?.value;
     const maximumTime = form.maximumTime?.value;
     const meetingDuration = form.meetingDuration?.value;
-
+console.log(futureCalendarEvents);
     const manageSchedule = {
       scheduleName,
       taskName: scheduleName,
@@ -192,7 +195,7 @@ const AdminCalendarSchedule = () => {
       minimumTime,
       meetingDuration: meetingDuration,
       usersession: global,
-      events: calendarEvents,
+      events: futureCalendarEvents,
     };
 
     setAssignmentData(manageSchedule);
@@ -207,7 +210,10 @@ const AdminCalendarSchedule = () => {
       if (newSchedule?.data?.result?.acknowledged) {
         toast.success("Schedule added Successfully");
         event.target.reset();
-        navigate(`/questLevels/${chapter?.courseId}`)
+        navigate(`/questLevels/${chapter?.courseId}`);
+      }
+      else{
+        toast.error("Something went wrong");
       }
 
       console.log(manageSchedule);
@@ -215,10 +221,10 @@ const AdminCalendarSchedule = () => {
   };
 
   // console.log(chapter);
-  console.log("Start", start)
-  console.log("End", end)
-  console.log("Event", eventName)
-  console.log("Description", eventDescription)
+  console.log("Start", start);
+  console.log("End", end);
+  console.log("Event", eventName);
+  console.log("Description", eventDescription);
   // Call this function when your component mounts to fetch and display events
   // The empty dependency array ensures that this effect runs only once
 
@@ -244,7 +250,7 @@ const AdminCalendarSchedule = () => {
       // return () => clearInterval(refreshInterval);
     }
   }, [session, isModalOpen]);
-  console.log('session before ', session);
+  console.log("session before ", session);
 
   if (isLoading) {
     return <></>;
@@ -281,28 +287,27 @@ const AdminCalendarSchedule = () => {
   //   }
   // }
 
-
   const googleSignIn = async () => {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+        provider: "google",
         options: {
-          scopes: 'https://www.googleapis.com/auth/calendar',
+          scopes: "https://www.googleapis.com/auth/calendar",
           persistSession: true,
         },
       });
 
       if (error) {
-        console.error('Error during Google Sign-In:', error.message);
-        alert('Error logging in to Google provider with Supabase');
+        console.error("Error during Google Sign-In:", error.message);
+        alert("Error logging in to Google provider with Supabase");
       } else {
         // If there is no error, the sign-in is successful
-        console.log('Google Sign-In successful!');
+        console.log("Google Sign-In successful!");
         console.log(calendarEvents); // Log calendarEvents here or perform any other actions
       }
     } catch (error) {
-      console.error('Unexpected error during Google Sign-In:', error.message);
-      alert('Unexpected error. Please try again.');
+      console.error("Unexpected error during Google Sign-In:", error.message);
+      alert("Unexpected error. Please try again.");
     }
   };
 
@@ -315,8 +320,6 @@ const AdminCalendarSchedule = () => {
     await supabase.auth.signOut();
     // You might want to redirect or perform other actions after sign out
   }
-
-
 
   async function fetchPrimaryCalendarInfo() {
     try {
@@ -342,9 +345,7 @@ const AdminCalendarSchedule = () => {
     }
   }
 
-
   async function fetchGoogleCalendarEvents() {
-
     const response = await fetch(
       "https://www.googleapis.com/calendar/v3/calendars/primary/events",
       {
@@ -355,7 +356,7 @@ const AdminCalendarSchedule = () => {
         },
       }
     );
-    console.log(session)
+    console.log(session);
     if (!response.ok) {
       throw new Error("Failed to fetch Google Calendar events");
     }
@@ -368,13 +369,12 @@ const AdminCalendarSchedule = () => {
   async function fetchAndDisplayGoogleCalendarEvents() {
     try {
       const events = await fetchGoogleCalendarEvents();
-      setCalendarError(false)
+      setCalendarError(false);
       setCalendarEvents(events);
     } catch (error) {
-      setCalendarError(true)
+      setCalendarError(true);
     }
   }
-
 
   function renderEventContent(eventInfo) {
     console.log(calendarEvents);
@@ -383,41 +383,52 @@ const AdminCalendarSchedule = () => {
     const formattedEndDate = eventInfo?.event?.end?.toUTCString();
     const meetlink = eventInfo?.event?.extendedProps?.link;
 
-
-    console.log(formattedStartDate)
-    console.log(formattedEndDate)
-
+    console.log(formattedStartDate);
+    console.log(formattedEndDate);
 
     const startTimeStamp = new Date(formattedStartDate);
-    const startTimeString = startTimeStamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', timeZone: 'GMT' });
+    const startTimeString = startTimeStamp.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZone: "GMT",
+    });
     const endTimeStamp = new Date(formattedEndDate);
-    const endTimeString = endTimeStamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', timeZone: 'GMT' });
-
+    const endTimeString = endTimeStamp.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZone: "GMT",
+    });
 
     return (
       <div
         style={{
-          width: '100%',
-          backgroundColor: 'blue', // Set the background color of the event
-          color: 'white', // Set the text color of the event
-          borderRadius: '5px',
-          paddingLeft: '5px',
+          width: "100%",
+          backgroundColor: "blue", // Set the background color of the event
+          color: "white", // Set the text color of the event
+          borderRadius: "5px",
+          paddingLeft: "5px",
         }}
       >
         <h1>{eventInfo?.event?.title}</h1>
 
-        {
-          meetlink
-            ?
-            <a target="_blank" href={meetlink} rel="noreferrer" className="flex items-center"><span><img src={meetIcon} className="w-[30px]" alt="icon" /></span>  Google Meet</a>
-            :
-            <p>No Meeting Link Available</p>
-        }
-
+        {meetlink ? (
+          <a
+            target="_blank"
+            href={meetlink}
+            rel="noreferrer"
+            className="flex items-center"
+          >
+            <span>
+              <img src={meetIcon} className="w-[30px]" alt="icon" />
+            </span>{" "}
+            Google Meet
+          </a>
+        ) : (
+          <p>No Meeting Link Available</p>
+        )}
       </div>
     );
   }
-
 
   const handleDateClick = (date) => {
     setSelectedDate(date);
@@ -429,75 +440,77 @@ const AdminCalendarSchedule = () => {
   async function createCalendarEvent() {
     console.log("Creating calendar event");
     const event = {
-      'summary': eventName,
-      'description': eventDescription,
-      'start': {
-        'dateTime': start.toISOString(),
-        'timeZone': Intl.DateTimeFormat().resolvedOptions().timeZone
+      summary: eventName,
+      description: eventDescription,
+      start: {
+        dateTime: start.toISOString(),
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       },
-      'end': {
-        'dateTime': end.toISOString(),
-        'timeZone': Intl.DateTimeFormat().resolvedOptions().timeZone
-      }
+      end: {
+        dateTime: end.toISOString(),
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      },
     };
 
     try {
-      const response = await fetch("https://www.googleapis.com/calendar/v3/calendars/primary/events", {
-        method: "POST",
-        headers: {
-          'Authorization': `Bearer ${session.provider_token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(event),
-      });
+      const response = await fetch(
+        "https://www.googleapis.com/calendar/v3/calendars/primary/events",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${session.provider_token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(event),
+        }
+      );
 
-      console.log('Response status:', response.status);
+      console.log("Response status:", response.status);
 
       // Store the response text in a variable
       const responseBody = await response.text();
-      console.log('Response body:', responseBody);
+      console.log("Response body:", responseBody);
 
       if (!response.ok) {
-        throw new Error(`Failed to create Google Calendar event: ${response.statusText}`);
+        throw new Error(
+          `Failed to create Google Calendar event: ${response.statusText}`
+        );
       }
 
       // Parse the response text as JSON
       const data = JSON.parse(responseBody);
-      console.log('API response:', data);
+      console.log("API response:", data);
       alert("Event created, check your Google Calendar!");
     } catch (error) {
-      console.error('Error creating event:', error.message);
+      console.error("Error creating event:", error.message);
       alert("Error creating event. Please try again.");
     }
   }
 
   const days = [
     {
-      "day": "Saturday",
+      day: "Saturday",
     },
     {
-      "day": "Sunday",
+      day: "Sunday",
     },
     {
-      "day": "Monday",
+      day: "Monday",
     },
     {
-      "day": "Tuesday",
+      day: "Tuesday",
     },
     {
-      "day": "Wednesday",
+      day: "Wednesday",
     },
 
     {
-      "day": "Thursday",
+      day: "Thursday",
     },
     {
-      "day": "Friday",
+      day: "Friday",
     },
-
-  ]
-
-
+  ];
 
   return (
     <div>
@@ -624,9 +637,9 @@ const AdminCalendarSchedule = () => {
                     initialView="dayGridMonth"
                     selectMirror={true}
                     headerToolbar={{
-                      start: 'title',
-                      center: 'today',
-                      end: 'dayGridMonth,dayGridWeek,dayGridDay,list'
+                      start: "title",
+                      center: "today",
+                      end: "dayGridMonth,dayGridWeek,dayGridDay,list",
                     }}
                     eventContent={renderEventContent}
                     events={calendarEvents?.map((event) => ({
@@ -637,9 +650,9 @@ const AdminCalendarSchedule = () => {
                     }))}
                     dateClick={(info) => handleDateClick(info.date)}
                     eventTimeFormat={{
-                      hour: 'numeric',
-                      minute: '2-digit',
-                      meridiem: 'short',
+                      hour: "numeric",
+                      minute: "2-digit",
+                      meridiem: "short",
                       hour12: true,
                     }}
                     timeZone="UTC" // Set the appropriate time zone
@@ -658,7 +671,9 @@ const AdminCalendarSchedule = () => {
                     <div className="">
                       <div className="flex items-center gap-4">
                         <p className="h-2 w-2 bg-black rounded-full"></p>
-                        <p className="font-bold text-lg me-[36px]">Schedule Name</p>
+                        <p className="font-bold text-lg me-[36px]">
+                          Schedule Name
+                        </p>
                         <img src={required} alt="required" />
                       </div>
 
@@ -677,13 +692,14 @@ const AdminCalendarSchedule = () => {
                     <div className="">
                       <div className="flex items-center gap-4">
                         <p className="h-2 w-2 bg-black rounded-full"></p>
-                        <p className="font-bold text-lg me-[36px]">Date range</p>
+                        <p className="font-bold text-lg me-[36px]">
+                          Date range
+                        </p>
                         <img src={required} alt="required" />
                       </div>
 
                       <input
                         required
-
                         className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
                         name="dateRange"
                         type="number"
@@ -694,40 +710,42 @@ const AdminCalendarSchedule = () => {
                     <div className="">
                       <div className="flex items-center gap-4">
                         <p className="h-2 w-2 bg-black rounded-full"></p>
-                        <p className="font-bold text-lg me-[36px]">Minimum Time</p>
+                        <p className="font-bold text-lg me-[36px]">
+                          Minimum Time
+                        </p>
                         <img src={required} alt="required" />
                       </div>
 
                       <input
                         required
-
                         className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
                         name="minimumTime"
                         type="time"
-
                       />
                     </div>
                     <div className="">
                       <div className="flex items-center gap-4">
                         <p className="h-2 w-2 bg-black rounded-full"></p>
-                        <p className="font-bold text-lg me-[36px]">Maximum Time</p>
+                        <p className="font-bold text-lg me-[36px]">
+                          Maximum Time
+                        </p>
                         <img src={required} alt="required" />
                       </div>
 
                       <input
                         required
-
                         className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
                         name="maximumTime"
                         type="time"
-
                       />
                     </div>
 
                     <div className="">
                       <div className="flex items-center gap-4">
                         <p className="h-2 w-2 bg-black rounded-full"></p>
-                        <p className="font-bold text-lg me-[36px]">Meeting Duration Length</p>
+                        <p className="font-bold text-lg me-[36px]">
+                          Meeting Duration Length
+                        </p>
                         <img src={required} alt="required" />
                       </div>
 
@@ -740,46 +758,44 @@ const AdminCalendarSchedule = () => {
                       />
                     </div>
                     <div className="">
-
                       <div className="flex items-center gap-4">
                         <p className="h-2 w-2 bg-black rounded-full"></p>
-                        <p className="font-bold text-lg me-[36px]">Select holidays</p>
+                        <p className="font-bold text-lg me-[36px]">
+                          Select holidays
+                        </p>
                         <img src={required} alt="icon" />
                       </div>
                       <ul className="flex gap-4 flex-wrap ">
-                        {
-                          days?.map((day) => (
-                            <li className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] ">
-                              <input
-                                type="checkbox"
-                                id="student"
-                                name={day?.day}
-                                value={day?.day}
-                                checked={selectedHoliday?.find(
-                                  (item) => item?.day === day?.day
-                                )}
-                                onChange={(e) => handleOptionChangeHoliday(day)}
-                                className=" mb-1"
-                              />
-                              <div className="flex mb-1 items-center">
-                                <label className="ms-4" htmlFor={day?.day}>
-                                  {day?.day}
-                                </label>
-                              </div>
-                            </li>
-                          ))
-                        }
-
+                        {days?.map((day) => (
+                          <li className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] ">
+                            <input
+                              type="checkbox"
+                              id="student"
+                              name={day?.day}
+                              value={day?.day}
+                              checked={selectedHoliday?.find(
+                                (item) => item?.day === day?.day
+                              )}
+                              onChange={(e) => handleOptionChangeHoliday(day)}
+                              className=" mb-1"
+                            />
+                            <div className="flex mb-1 items-center">
+                              <label className="ms-4" htmlFor={day?.day}>
+                                {day?.day}
+                              </label>
+                            </div>
+                          </li>
+                        ))}
                       </ul>
-
                     </div>
-
                   </div>
 
                   <div className="my-5">
                     <div className="flex items-center gap-4">
                       <p className="h-2 w-2 bg-black rounded-full"></p>
-                      <p className="font-bold text-lg me-[36px]">Select Batch</p>
+                      <p className="font-bold text-lg me-[36px]">
+                        Select Batch
+                      </p>
                       <img src={required} alt="icon" />
                     </div>
                     <ul className="flex gap-4 flex-wrap ">
@@ -793,13 +809,19 @@ const AdminCalendarSchedule = () => {
                                 name={option?.batchName}
                                 value={option?.batchName}
                                 checked={selectedBatches?.find(
-                                  (item) => item?.batchName === option?.batchName
+                                  (item) =>
+                                    item?.batchName === option?.batchName
                                 )}
-                                onChange={(e) => handleOptionChangeBatch(e, option)}
+                                onChange={(e) =>
+                                  handleOptionChangeBatch(e, option)
+                                }
                                 className=" mb-1"
                               />
                               <div className="flex mb-1 items-center">
-                                <label className="ms-4" htmlFor={option?.batchName}>
+                                <label
+                                  className="ms-4"
+                                  htmlFor={option?.batchName}
+                                >
                                   {option?.batchName}
                                 </label>
                               </div>
@@ -810,20 +832,26 @@ const AdminCalendarSchedule = () => {
                     </ul>
                   </div>
 
-
-
                   <div className="flex items-center gap-10 justify-center mt-20 mb-10">
-                    <button className="bg-sky-600 px-4 py-3 text-white text-lg rounded-lg" onClick={() => signOut()}>Sign out </button>
-                    <button className="px-[30px] py-3 bg-[#FF557A] text-[#fff] text-xl font-bold rounded-lg ms-20 " type="submit" onClick={() => setSubmitPermission(true)}>Save</button>
-
+                    {/* <button className="bg-sky-600 px-4 py-3 text-white text-lg rounded-lg" onClick={() => signOut()}>Sign out </button> */}
+                    <button
+                      className="px-[30px] py-3 bg-[#FF557A] text-[#fff] text-xl font-bold rounded-lg ms-20 "
+                      type="submit"
+                      onClick={() => setSubmitPermission(true)}
+                    >
+                      Save
+                    </button>
                   </div>
                 </form>
-
-
               </>
             ) : (
               <div className="grid justify-center items-center">
-                <button className="bg-sky-600 px-5 py-3 text-white text-lg rounded-lg" onClick={() => googleSignIn()}>Sync with google </button>
+                <button
+                  className="bg-sky-600 px-5 py-3 text-white text-lg rounded-lg"
+                  onClick={() => googleSignIn()}
+                >
+                  Sync with google{" "}
+                </button>
               </div>
             )}
 
@@ -833,12 +861,13 @@ const AdminCalendarSchedule = () => {
               onRequestClose={() => setIsModalOpen(false)}
               style={customStyles} // Apply custom styles to the modal
               shouldCloseOnOverlayClick={false}
-
             >
               <div>
-                <h2 className="text-center mb-3 font-medium text-lg text-blue">Add Event</h2>
+                <h2 className="text-center mb-3 font-medium text-lg text-blue">
+                  Add Event
+                </h2>
                 <p>Date: {selectedDate && selectedDate.toLocaleDateString()}</p>
-                <div className='flex justify-between gap-2 my-1'>
+                <div className="flex justify-between gap-2 my-1">
                   <label>
                     Event Name:
                     <input
@@ -876,23 +905,18 @@ const AdminCalendarSchedule = () => {
                   disableClock={true}
                   disableCalendar={true}
                 />
-
               </div>
               <div className="grid items-center justify-center">
-                <button className="bg-orange-500 text-white text-lg px-4 py-2 rounded-md my-2" onClick={() => createCalendarEvent()}>Add Event</button>
+                <button
+                  className="bg-orange-500 text-white text-lg px-4 py-2 rounded-md my-2"
+                  onClick={() => createCalendarEvent()}
+                >
+                  Add Event
+                </button>
               </div>
             </Modal>
           </div>
-
-
-
-
-
-
-
         </div>
-
-
       </Layout>
     </div>
   );
