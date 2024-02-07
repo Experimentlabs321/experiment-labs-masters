@@ -50,7 +50,7 @@ const ReviewSubmission = (taskData) => {
         console.log(response?.data);
       })
       .catch((error) => console.error(error));
-  }, [userInfo._id]);
+  }, [userInfo._id, taskData.taskData._id]);
 
   const review = submittedResult?.submitter?.result?.review;
 
@@ -309,6 +309,22 @@ const ReviewSubmission = (taskData) => {
   }, [taskData]);
   console.log(mainSkillItemDataLabels);
   console.log(mainSkillItemDataValues);
+  
+  function formatDateTime(dateTimeString) {
+    const dateObject = new Date(dateTimeString);
+  
+    const options = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true // Use 12-hour format with AM/PM
+    };
+  
+    return dateObject.toLocaleString('en-US', options);
+  }
 
   return (
     <div>
@@ -319,6 +335,7 @@ const ReviewSubmission = (taskData) => {
               <div className=" shadow-lg mb-[45px] ">
                 <div className=" p-[33px] bg-[#F1F3FF] text-[16px] font-[400] rounded-t-[5px] ">
                   <p>{review?.feedback}</p>
+                  <p>{submittedResult?.submitter?.result?.status}</p>
                 </div>
                 <div className=" py-[16px] px-[25px] flex items-center gap-[20px] ">
                   <img
@@ -331,7 +348,7 @@ const ReviewSubmission = (taskData) => {
                       {review?.resultSubmitterName}
                     </h1>
                     <h2 className=" text-[#7C7C7C] text-[16] font-[400] ">
-                      {review?.dateAndTime}
+                      {formatDateTime(review?.dateAndTime)}
                     </h2>
                   </div>
                 </div>
@@ -341,6 +358,7 @@ const ReviewSubmission = (taskData) => {
               <div className=" shadow-lg mb-[45px] ">
                 <div className=" p-[33px] bg-[#F1F3FF] text-[16px] font-[400] rounded-t-[5px] ">
                   <p>{submittedResult?.submitter?.result?.feedback}</p>
+                  <p>{submittedResult?.submitter?.result?.status}</p>
                 </div>
                 <div className=" py-[16px] px-[25px] flex items-center gap-[20px] ">
                   <img
@@ -356,7 +374,7 @@ const ReviewSubmission = (taskData) => {
                       {submittedResult?.submitter?.result?.resultSubmitterName}
                     </h1>
                     <h2 className=" text-[#7C7C7C] text-[16] font-[400] ">
-                      {submittedResult?.submitter?.result?.dateAndTime}
+                      {formatDateTime(submittedResult?.submitter?.result?.dateAndTime)}
                     </h2>
                   </div>
                 </div>
@@ -547,7 +565,7 @@ const ReviewSubmission = (taskData) => {
                   {newSkillItemDataLabels?.map((item, index) => (
                     <div className="w-full mt-[24px]" key={index}>
                       <h1 className="text-[15] pb-[10px] flex items-center justify-between font-[500]">
-                        {item} {}
+                        {item} { }
                         <span className="text-[#3E4DAC]">
                           {Math.round(
                             (100 * SkillItemResult[item]) / +mainSkillItem[item]
@@ -561,7 +579,7 @@ const ReviewSubmission = (taskData) => {
                           style={{
                             width: `${Math.round(
                               (100 * SkillItemResult[item]) /
-                                +mainSkillItem[item]
+                              +mainSkillItem[item]
                             )}%`,
                           }}
                         ></div>
