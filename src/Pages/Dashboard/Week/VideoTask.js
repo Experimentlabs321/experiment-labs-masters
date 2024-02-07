@@ -47,12 +47,14 @@ const VideoTask = ({ taskData, something }) => {
           email: userInfo?.email,
           participantId: userInfo?._id,
           status: "Completed",
+          completionDateTime: new Date(),
         },
         participantTask: {
           participant: {
             email: userInfo?.email,
             participantId: userInfo?._id,
             status: "Completed",
+            completionDateTime: new Date(),
           },
         },
       };
@@ -64,19 +66,20 @@ const VideoTask = ({ taskData, something }) => {
       console.log(sendData);
       setCompletionStatus(true);
       if (submitCompletion?.data?.acknowledged) {
-        Loading().close();
+        setCompletionStatus(true);
         Swal.fire({
           icon: "success",
           title: "Congratulations!",
           text: "You have completed successfully!",
         });
-        navigate(-1);
+        // navigate(-1);
       }
     } else {
       Loading().close();
       setOpenQuiz(!openQuiz);
       setOverlayVisible(openQuiz);
     }
+    Loading().close();
   };
   return (
     <div>
@@ -109,20 +112,23 @@ const VideoTask = ({ taskData, something }) => {
             </button>
           )}
           <div className="relative">
-            <video
-              className=" mx-auto rounded-lg border-[#292929]"
-              width="90%"
-              height="80vh"
-              controls
-              controlsList="nodownload"
-              disablePictureInPicture
-            >
-              <source
-                src={taskData?.additionalFiles}
-                // src="https://www.youtube.com/embed/0OK91ijimIU"
-                type="video/mp4"
-              />
-            </video>
+            {taskData?.additionalFiles && (
+              <video
+                key={taskData?.additionalFiles}
+                className=" mx-auto rounded-lg border-[#292929]"
+                width="90%"
+                height="80vh"
+                controls
+                controlsList="nodownload"
+                disablePictureInPicture
+              >
+                <source
+                  src={taskData?.additionalFiles}
+                  // src="https://www.youtube.com/embed/0OK91ijimIU"
+                  type="video/mp4"
+                />
+              </video>
+            )}
             {/* <div className="flex items-center text-sm font-bold gap-1 absolute top-3 right-20 z-10">
               <img className="w-4" src={icon} alt="icon" />
               <p>Experiment Labs</p>
@@ -134,6 +140,7 @@ const VideoTask = ({ taskData, something }) => {
       {openQuiz && (
         <Quiz
           setOpenQuiz={setOpenQuiz}
+          setCompletionStatus={setCompletionStatus}
           openQuiz={openQuiz}
           taskData={taskData}
           questions={taskData?.completionParameter?.questions}
