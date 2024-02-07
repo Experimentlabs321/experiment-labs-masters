@@ -13,6 +13,7 @@ import { GoogleAuthProvider, onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../Shared/Loading/Loading";
 import HighlightOffRoundedIcon from '@mui/icons-material/HighlightOffRounded';
+import { Helmet } from "react-helmet";
 
 const Payment = () => {
   const { userInfo, user, signIn, providerLogin, logOut, createUser, setUserInfo } = useContext(AuthContext);
@@ -342,6 +343,10 @@ const Payment = () => {
 
   return (
     <div className="bg-[#f6f7ff91] min-h-[100vh]">
+       <Helmet>
+          <meta charSet="utf-8" />
+          <title>Payment</title>
+        </Helmet>
       <Navbar
         setLoginOpen={setLoginOpen}
         organizationData={organizationData}

@@ -26,7 +26,12 @@ const Navbar = (props) => {
   const drawerWidth = 240;
   const { window } = props;
   const { organizationData, setLoginOpen } = props;
+
   console.log(organizationData)
+  localStorage.setItem("organizationFavicon", organizationData?.favicon);
+  localStorage.setItem("paymentNavbarLogo",organizationData?.paymentNavbarLogo);
+  
+
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
@@ -163,10 +168,10 @@ const Navbar = (props) => {
             <Button
               // onClick={() => graphyLogin(user?.email, user?.displayName)}
               sx={{
-                bgcolor: orgData?.paymentNavbarAccessDashboardButtonColor ? orgData?.paymentNavbarAccessDashboardButtonColor : "#94A4FF",
+                bgcolor: organizationData?.paymentNavbarAccessDashboardButtonColor ? organizationData?.paymentNavbarAccessDashboardButtonColor : "#94A4FF",
                 borderRadius: "22.5px",
                 ":hover": { bgcolor: "#94A4FF" },
-                color: orgData?.paymentNavbarAccessDashboardButtonTextColor ? orgData?.paymentNavbarAccessDashboardButtonTextColor : "white",
+                color: organizationData?.paymentNavbarAccessDashboardButtonTextColor ? organizationData?.paymentNavbarAccessDashboardButtonTextColor : "white",
                 width: "100%",
               }}
               className="menu-hover"
@@ -246,11 +251,11 @@ const Navbar = (props) => {
             component="div"
             sx={{ flexGrow: 1, color: "black" }}
           >
-            <Link className="flex gap-3 items-center" to={`${orgRootUrl ? orgRootUrl : '/'}`}>
-              {organizationData?.paymentNavbarLogo ? (
+            <a  href={`${organizationData?.orgRootUrl ? organizationData?.orgRootUrl : '/'}`} className="flex gap-3 items-center">
+              {paymentNavbarLogo ? (
                 <img
                   className="h-6 lg:h-8"
-                  src={organizationData?.paymentNavbarLogo}
+                  src={paymentNavbarLogo}
                   alt="icon"
                 />
               ) : (
@@ -262,7 +267,7 @@ const Navbar = (props) => {
                   />
                 </>
               )}
-            </Link>
+            </a>
           </Typography>
           <Box sx={{ display: { xs: "none", sm: "block" }, color: "black" }}>
             {navItems.map((item) => (
