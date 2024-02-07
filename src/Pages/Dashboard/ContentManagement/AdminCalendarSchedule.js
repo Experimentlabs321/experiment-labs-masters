@@ -168,7 +168,12 @@ const AdminCalendarSchedule = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const futureCalendarEvents = calendarEvents.filter((event) => {
+      const eventStartDate = new Date(event.start.dateTime || event.start.date); // Adjust based on your event object structure
+      return eventStartDate >= today;
+    });
     const form = event.target;
 
     const scheduleName = form.scheduleName?.value;
@@ -176,7 +181,7 @@ const AdminCalendarSchedule = () => {
     const minimumTime = form.minimumTime?.value;
     const maximumTime = form.maximumTime?.value;
     const meetingDuration = form.meetingDuration?.value;
-
+console.log(futureCalendarEvents);
     const manageSchedule = {
       scheduleName,
       taskName: scheduleName,
@@ -190,7 +195,7 @@ const AdminCalendarSchedule = () => {
       minimumTime,
       meetingDuration: meetingDuration,
       usersession: global,
-      events: calendarEvents,
+      events: futureCalendarEvents,
     };
 
     setAssignmentData(manageSchedule);
@@ -206,6 +211,9 @@ const AdminCalendarSchedule = () => {
         toast.success("Schedule added Successfully");
         event.target.reset();
         navigate(`/questLevels/${chapter?.courseId}`);
+      }
+      else{
+        toast.error("Something went wrong");
       }
 
       console.log(manageSchedule);
