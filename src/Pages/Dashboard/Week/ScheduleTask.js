@@ -370,7 +370,7 @@ const ScheduleTask = ({ taskData, week }) => {
               },
               // recurrence: ["RRULE:FREQ=DAILY;COUNT=2"],
               attendees: [
-                // { email: "naman.j@experimentlabs.in" },
+                { email: "naman.j@experimentlabs.in" },
                 // { email: "gaurav@experimentlabs.in" },
                 { email: user?.email },
                 {
@@ -445,7 +445,7 @@ const ScheduleTask = ({ taskData, week }) => {
                         organizationName: userInfo?.organizationName,
                       },
                       attendees: [
-                        // { email: "naman.j@experimentlabs.in" },
+                        { email: "naman.j@experimentlabs.in" },
                         // { email: "gaurav@experimentlabs.in" },
                         { email: user?.email },
                         { email: "alrafi4@gmail.com" },
