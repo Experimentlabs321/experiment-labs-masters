@@ -63,6 +63,12 @@ const LoginWithOrganization = () => {
         await signIn(email, password).then(() => {
           saveUser(email);
         });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Device limit crossed.",
+          text: "Please logout from one of your devices and try again.",
+        });
       }
     } catch (error) {
       Loading().close();
@@ -72,8 +78,8 @@ const LoginWithOrganization = () => {
       // Optionally show a generic error message to the user
       Swal.fire({
         icon: "error",
-        title: "Device limit crossed.",
-        text: "Please logout from one of your devices and try again.",
+        title: "Wrong Email or Password",
+        text: "Please enter correct email and password.",
       });
     }
   };
@@ -99,6 +105,7 @@ const LoginWithOrganization = () => {
   };
 
   const handleGoogleSignIn = async () => {
+    Loading();
     const googleProvider = new GoogleAuthProvider();
     providerLogin(googleProvider)
       .then(async (result) => {
@@ -116,6 +123,8 @@ const LoginWithOrganization = () => {
       .catch((error) => {
         console.error(error);
       });
+
+    Loading().close();
   };
 
   return (
@@ -148,7 +157,15 @@ const LoginWithOrganization = () => {
               />
             </div>
             {/* <p className="font-medium mt-3">© 2023 Experiment Labs</p> */}
-            <a href={`${orgRootUrl ? orgRootUrl : orgData?.orgRootUrl ? orgData?.orgRootUrl : '/'}`}>
+            <a
+              href={`${
+                orgRootUrl
+                  ? orgRootUrl
+                  : orgData?.orgRootUrl
+                  ? orgData?.orgRootUrl
+                  : "/"
+              }`}
+            >
               <img
                 className="w-[100px] mx-auto mt-4"
                 src={
@@ -164,7 +181,15 @@ const LoginWithOrganization = () => {
           <div className="flex flex-1 flex-col items-center justify-center px-10 relative">
             <div className="flex lg:hidden justify-center items-center w-full py-4">
               <div className="flex items-center justify-center space-x-3">
-                <a href={`${orgRootUrl ? orgRootUrl : orgData?.orgRootUrl ? orgData?.orgRootUrl : '/'}`}>
+                <a
+                  href={`${
+                    orgRootUrl
+                      ? orgRootUrl
+                      : orgData?.orgRootUrl
+                      ? orgData?.orgRootUrl
+                      : "/"
+                  }`}
+                >
                   <img
                     className="w-[100px]"
                     src={
@@ -241,8 +266,15 @@ const LoginWithOrganization = () => {
                     />
                     <p className="text-[20px]">Continue with Google</p>
                   </button>
-                  <div className='flex justify-center'>
-                    <p className="font-medium text-lg">Don't have an account? <Link to={`/register/${id}`} className='text-blue cursor-pointer'>Register</Link>
+                  <div className="flex justify-center">
+                    <p className="font-medium text-lg">
+                      Don't have an account?{" "}
+                      <Link
+                        to={`/register/${id}`}
+                        className="text-blue cursor-pointer"
+                      >
+                        Register
+                      </Link>
                     </p>
                   </div>
                   <p className="text-center text-error">
