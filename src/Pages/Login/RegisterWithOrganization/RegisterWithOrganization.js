@@ -18,7 +18,7 @@ const LoginWithOrganization = () => {
     const [phone, setPhone] = useState("");
     const [error, setError] = useState(false);
     const dateCreated = new Date();
-    
+
     useEffect(() => {
         axios
             .get(`${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${id}`)
@@ -72,6 +72,7 @@ const LoginWithOrganization = () => {
                     toast.success("Registered Failed");
                 }
                 handleLogout();
+                console.log(res);
             }
         } catch (error) {
             console.log(error);
