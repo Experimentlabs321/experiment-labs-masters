@@ -61,6 +61,7 @@ const Submission = ({ taskData }) => {
       weekName: JSON.parse(localStorage.getItem("currentWeek"))?.weekName,
       fileUrl: fileUrl,
       submitter: userInfo,
+      submissionDateTime: new Date(),
     };
 
     const sendMail = await axios.post(
@@ -87,12 +88,14 @@ const Submission = ({ taskData }) => {
           email: userInfo?.email,
           participantId: userInfo?._id,
           status: "In Progress",
+          submissionDateTime: new Date(),
         },
         participantTask: {
           participant: {
             email: userInfo?.email,
             participantId: userInfo?._id,
             status: "In Progress",
+            submissionDateTime: new Date(),
           },
         },
       };
@@ -112,9 +115,7 @@ const Submission = ({ taskData }) => {
       console.log(manageAssignment);
     }
   };
-  console.log(
-    `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/Assignment/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`
-  );
+  console.log(taskData);
 
   return (
     <div>
