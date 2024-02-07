@@ -4,6 +4,7 @@ import { toast } from "react-hot-toast";
 import axios from "axios";
 import { useContext } from "react";
 import { AuthContext } from "../../../../../contexts/AuthProvider";
+import Loading from "../../../../Shared/Loading/Loading";
 
 const Submission = ({ taskData }) => {
   const [fileLoading, setFileLoading] = useState(false);
@@ -48,6 +49,7 @@ const Submission = ({ taskData }) => {
   };
 
   const handleSubmit = async () => {
+    Loading();
     let fileUrl = "";
     if (selectedFile) fileUrl = await uploadFileToS3(selectedFile);
 
@@ -104,6 +106,8 @@ const Submission = ({ taskData }) => {
       if (newAssignment?.data?.acknowledged) {
         toast.success("Assignment Submitted Successfully");
       }
+
+      Loading().close();
 
       console.log(manageAssignment);
     }

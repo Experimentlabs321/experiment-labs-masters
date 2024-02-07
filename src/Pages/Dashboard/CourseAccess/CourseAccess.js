@@ -63,6 +63,8 @@ const CourseAccess = () => {
           .catch((error) => console.error(error));
       })
       .catch((error) => console.error(error));
+
+    Loading().close();
   }, [userInfo, location]);
 
   useEffect(() => {

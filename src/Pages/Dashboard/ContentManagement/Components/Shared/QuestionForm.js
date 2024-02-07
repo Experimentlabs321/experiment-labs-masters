@@ -273,7 +273,8 @@ const QuestionForm = ({
           </div>
           <div className="flex justify-end mb-5 w-full gap-4">
             <button
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault();
                 if (currentQuestion > 0) handleBackQuestion();
               }}
               className={`bg-[#FF557A] ${
@@ -298,7 +299,8 @@ const QuestionForm = ({
               Back
             </button>
             <button
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault();
                 if (currentQuestion < questions?.length - 1)
                   handleNextQuestion();
               }}

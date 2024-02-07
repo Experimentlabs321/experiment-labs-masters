@@ -65,6 +65,7 @@ const ReadingTask = ({ taskData }) => {
       setCompletionStatus(true);
       if (submitCompletion?.data?.acknowledged) {
         Loading().close();
+        setCompletionStatus(true);
         Swal.fire({
           icon: "success",
           title: "Congratulations!",
@@ -170,17 +171,15 @@ const ReadingTask = ({ taskData }) => {
               onClick={handleCompletion}
             ></div>
           )}
-          {isOverlayVisible
-            ? null
-            : taskData?.additionalFiles && (
-                <iframe
-                  src={`https://docs.google.com/viewer?url=${taskData?.additionalFiles}&embedded=true`}
-                  title="Your Document"
-                  className="h-[68vh] mx-auto border-x-30 mt-40 border-t-30 border-b-50 rounded-lg border-[#292929]"
-                  width="90%"
-                  height="80vh"
-                ></iframe>
-              )}
+          {taskData?.additionalFiles && (
+            <iframe
+              src={`https://docs.google.com/viewer?url=${taskData?.additionalFiles}&embedded=true`}
+              title="Your Document"
+              className="h-[68vh] mx-auto border-x-30 mt-40 border-t-30 border-b-50 rounded-lg border-[#292929]"
+              width="90%"
+              height="80vh"
+            ></iframe>
+          )}
           {openQuiz && (
             <Quiz
               setOpenQuiz={setOpenQuiz}
