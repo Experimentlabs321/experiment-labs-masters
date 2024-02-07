@@ -356,7 +356,7 @@ const EditFiles = () => {
                             }
                             style={{ fontSize: "0", opacity: "0" }}
                             type="file"
-                            accept=".jpg, .jpeg, .png"
+                            // accept=".jpg, .jpeg, .png"
                             name="input-file-upload"
                             id="input-file-upload"
                             onChange={handleFileChange}

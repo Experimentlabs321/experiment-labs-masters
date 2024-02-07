@@ -6,6 +6,8 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { useNavigate } from "react-router-dom";
+import Loading from "../../Shared/Loading/Loading";
+import Quiz from "./SubFile/Shared/Quiz";
 const VideoTask = ({ taskData, something }) => {
   console.log(taskData);
   const navigate = useNavigate();
@@ -33,6 +35,7 @@ const VideoTask = ({ taskData, something }) => {
   }, [taskData, user]);
 
   const handleCompletion = async () => {
+    Loading();
     if (
       !taskData?.completionParameter ||
       taskData?.completionParameter?.completionParameter === "Without Quiz"
@@ -60,14 +63,17 @@ const VideoTask = ({ taskData, something }) => {
       console.log(submitCompletion);
       console.log(sendData);
       setCompletionStatus(true);
-      if (submitCompletion?.data?.acknowledged)
-        {Swal.fire({
+      if (submitCompletion?.data?.acknowledged) {
+        Loading().close();
+        Swal.fire({
           icon: "success",
           title: "Congratulations!",
           text: "You have completed successfully!",
         });
-      navigate(-1)}
+        navigate(-1);
+      }
     } else {
+      Loading().close();
       setOpenQuiz(!openQuiz);
       setOverlayVisible(openQuiz);
     }
@@ -75,7 +81,7 @@ const VideoTask = ({ taskData, something }) => {
   return (
     <div>
       {taskData?.additionalFiles && (
-        <div className="h-[70vh] mb-[60px] ">
+        <div className=" mb-[60px] ">
           {/* <iframe
             className="h-[68vh] mx-auto border-x-[30px] mt-[40px] border-t-[30px] border-b-[50px] rounded-lg border-[#292929]"
             width="90%"
@@ -104,7 +110,7 @@ const VideoTask = ({ taskData, something }) => {
           )}
           <div className="relative">
             <video
-              className="h-[68vh] mx-auto border-x-30 mt-40 border-t-30 border-b-50 rounded-lg border-[#292929]"
+              className=" mx-auto rounded-lg border-[#292929]"
               width="90%"
               height="80vh"
               controls
@@ -122,6 +128,15 @@ const VideoTask = ({ taskData, something }) => {
             </div> */}
           </div>
         </div>
+      )}
+
+      {openQuiz && (
+        <Quiz
+          setOpenQuiz={setOpenQuiz}
+          openQuiz={openQuiz}
+          taskData={taskData}
+          questions={taskData?.completionParameter?.questions}
+        />
       )}
     </div>
   );
