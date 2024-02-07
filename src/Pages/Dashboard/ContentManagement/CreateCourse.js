@@ -122,7 +122,7 @@ const CreateCourse = () => {
     const courseEndingDate = form.courseEndingDate?.value;
     const courseDescription = form.courseDescription?.value;
     const courseCategory = form.courseCategory?.value;
-    const courseVisibility = +form.courseVisibility?.value;
+    const courseVisibility = form.courseVisibility?.value === "false" ? false : true;
     const courseIDNumber = form.courseIDNumber?.value;
     const courseFormat = form.courseFormat?.value;
     const gradesFormat = form.gradesFormat?.value;
@@ -224,9 +224,8 @@ const CreateCourse = () => {
             {isOpenGeneralCourseInfo && <img src={arrowDown} alt=""></img>}
 
             <i
-              className={`dropdown-arrow ${
-                isOpenGeneralCourseInfo ? "open" : ""
-              }`}
+              className={`dropdown-arrow ${isOpenGeneralCourseInfo ? "open" : ""
+                }`}
             ></i>
           </div>
           {isOpenGeneralCourseInfo && (
@@ -336,10 +335,14 @@ const CreateCourse = () => {
                     placeholder="https://www.google.com/"
                   />
                 </div>
+
+
+
+
               </div>
 
               <div>
-                <div className="">
+                {/* <div className="">
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
                     <p className="font-bold text-lg me-[36px]">
@@ -353,14 +356,14 @@ const CreateCourse = () => {
                       required
                       className="w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold focus:outline-0"
                       name="courseCategory"
-                      // id="option"
+                    // id="option"
                     >
                       <option className="" value="Web Development">
                         Web Development
                       </option>
-                      {/* <option value="Parent"></option>
-                      <option value="Counselor"></option>
-                      <option value="Others"></option> */}
+                      // <option value="Parent"></option>
+                      // <option value="Counselor"></option>
+                      // <option value="Others"></option> 
                     </select>
                     <div
                       onClick={openModaladdcoursecategory}
@@ -404,9 +407,9 @@ const CreateCourse = () => {
                       </div>
                     )}
                   </div>
-                </div>
+                </div> */}
 
-                <div className="mt-20">
+                <div>
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
 
@@ -438,23 +441,22 @@ const CreateCourse = () => {
                       Course Visibility
                     </p>
                   </div>
-
                   <div className=" items-center flex gap-2  mt-2 ms-6  w-[319px] h-[50px] ps-2 text-[#535353] focus:outline-0 ">
                     <div className="">
                       <input
                         type="radio"
-                        id="Show"
+                        id="Yes"
                         name="courseVisibility"
-                        value="1"
+                        value={true}
                       />
                       <lebel> Show</lebel>
                     </div>
                     <div className=" ms-[55px]">
                       <input
                         type="radio"
-                        id="Hide"
+                        id="No"
                         name="courseVisibility"
-                        value="0"
+                        value={false}
                       />
                       <lebel> Hide</lebel>
                     </div>
@@ -505,6 +507,8 @@ const CreateCourse = () => {
                       placeholder="Eg. 5000"
                     ></input>
                   </div>
+
+
                 </div>
               </div>
             </div>
@@ -550,7 +554,7 @@ const CreateCourse = () => {
                       required
                       className="select select-bordered w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold"
                       name="courseFormat"
-                      //id="option"
+                    //id="option"
                     >
                       <option value="weeks">Weekly format</option>
                       <option value="Parent"></option>
@@ -606,7 +610,7 @@ const CreateCourse = () => {
                       required
                       className="w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold"
                       name="groups"
-                      // id="option"
+                    // id="option"
                     >
                       <option className="" value="No Groups">
                         No Groups
@@ -725,9 +729,8 @@ const CreateCourse = () => {
             {isOpenCompletionTracking && <img src={arrowDown} alt=""></img>}
 
             <i
-              className={`dropdown-arrow ${
-                isOpenCompletionTracking ? "open" : ""
-              }`}
+              className={`dropdown-arrow ${isOpenCompletionTracking ? "open" : ""
+                }`}
             ></i>
           </div>
 
