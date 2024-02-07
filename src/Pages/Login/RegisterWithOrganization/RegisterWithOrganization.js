@@ -32,9 +32,7 @@ const LoginWithOrganization = () => {
     const handleLogout = () => {
         Loading();
         logOut()
-            .then((res) => {
-                console.log(res);
-            })
+            .then()
             .catch((error) => console.error(error));
         Loading().close();
     };
@@ -47,6 +45,7 @@ const LoginWithOrganization = () => {
         const name = form.name.value;
         const email = form.email.value;
         const password = form.password.value;
+        const userAgent = window.navigator.userAgent;
 
         const data = {
             name,
@@ -65,8 +64,15 @@ const LoginWithOrganization = () => {
             const result = await createUser(email, password);
             if (result.user.uid) {
                 const res = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/v1/users`, data);
+                const userDevice = await axios.put(
+                    `${process.env.REACT_APP_SERVER_API}/api/v1/users/addDevice/${email}`,
+                    {
+                        device: userAgent,
+                    }
+                );
                 if (res.data.acknowledged) {
                     toast.success("Registered Successfully");
+                    navigate(`/login/${id}`)
                 }
                 else {
                     toast.success("Registered Failed");
@@ -84,6 +90,7 @@ const LoginWithOrganization = () => {
     const handleGoogleRegister = async () => {
         Loading();
         const googleProvider = new GoogleAuthProvider();
+        const userAgent = window.navigator.userAgent;
 
         if (phone.length > 3) {
             providerLogin(googleProvider)
@@ -91,6 +98,12 @@ const LoginWithOrganization = () => {
                     const email = result?.user?.email;
                     const newName = result?.user?.displayName;
                     const userDetails = await axios.get(`${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${email}`);
+                    const userDevice = await axios.put(
+                        `${process.env.REACT_APP_SERVER_API}/api/v1/users/addDevice/${email}`,
+                        {
+                            device: userAgent,
+                        }
+                    );
                     if (userDetails?.data?.isUser === false) {
                         const res = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/v1/users`, {
                             email,
@@ -101,8 +114,9 @@ const LoginWithOrganization = () => {
                             role: "user",
                             dateCreated
                         });
-                        if (res.data.acknowledge) {
+                        if (res.data.acknowledged) {
                             toast.success("Registered Successfully");
+                            navigate(`/login/${id}`)
                         }
                         else {
                             toast.success("Registered Failed");
