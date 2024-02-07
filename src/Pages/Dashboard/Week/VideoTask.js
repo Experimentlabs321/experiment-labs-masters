@@ -115,6 +115,7 @@ const VideoTask = ({ taskData, something }) => {
               height="80vh"
               controls
               controlsList="nodownload"
+              disablePictureInPicture
             >
               <source
                 src={taskData?.additionalFiles}

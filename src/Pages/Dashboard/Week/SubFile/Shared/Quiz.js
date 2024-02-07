@@ -3,8 +3,15 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import { AuthContext } from "../../../../../contexts/AuthProvider";
 import DialogLayoutForFromControl from "../../../Shared/DialogLayoutForFromControl";
+import Loading from "../../../../Shared/Loading/Loading";
 
-const Quiz = ({ taskData, questions, setOpenQuiz, openQuiz }) => {
+const Quiz = ({
+  taskData,
+  questions,
+  setOpenQuiz,
+  openQuiz,
+  setCompletionStatus,
+}) => {
   const { user, userInfo } = useContext(AuthContext);
   const [openTask, setOpenTask] = useState(
     JSON.parse(localStorage.getItem("task"))
@@ -71,6 +78,7 @@ const Quiz = ({ taskData, questions, setOpenQuiz, openQuiz }) => {
   };
 
   const handleSubmit = async () => {
+    Loading();
     if (point >= taskData?.completionParameter?.passMarks) {
       setOpenQuiz(false);
       const sendData = {
@@ -78,12 +86,14 @@ const Quiz = ({ taskData, questions, setOpenQuiz, openQuiz }) => {
           email: userInfo?.email,
           participantId: userInfo?._id,
           status: "Completed",
+          completionDateTime: new Date(),
         },
         participantTask: {
           participant: {
             email: userInfo?.email,
             participantId: userInfo?._id,
             status: "Completed",
+            completionDateTime: new Date(),
           },
           questions: allQuestions,
         },
@@ -98,6 +108,8 @@ const Quiz = ({ taskData, questions, setOpenQuiz, openQuiz }) => {
         sendData
       );
       console.log(submitCompletion);
+      setCompletionStatus(true);
+      Loading().close();
       Swal.fire({
         icon: "success",
         title: "Congratulations!",
@@ -105,6 +117,7 @@ const Quiz = ({ taskData, questions, setOpenQuiz, openQuiz }) => {
       });
     } else {
       setOpenQuiz(false);
+      Loading().close();
       Swal.fire({
         icon: "warning",
         title: "Oops!",
