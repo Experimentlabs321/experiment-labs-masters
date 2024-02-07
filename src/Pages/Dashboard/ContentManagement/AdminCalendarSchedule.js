@@ -165,15 +165,24 @@ const AdminCalendarSchedule = () => {
   };
 
   console.log(selectedHoliday);
-
+  const getCurrentDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const futureCalendarEvents = calendarEvents.filter((event) => {
-      const eventStartDate = new Date(event.start.dateTime || event.start.date); // Adjust based on your event object structure
-      return eventStartDate >= today;
-    });
+    const currentDate = getCurrentDate();
+
+  // Filter calendarEvents to include only those that start on or after the current date
+  const futureCalendarEvents = calendarEvents.filter((event) => {
+    // Extract the date part from the start.dateTime or start.date
+    const eventStartDate = event.start.dateTime ? event.start.dateTime.substring(0, 10) : event.start.date;
+    return eventStartDate >= currentDate;
+  });
+    
     const form = event.target;
 
     const scheduleName = form.scheduleName?.value;
@@ -181,7 +190,8 @@ const AdminCalendarSchedule = () => {
     const minimumTime = form.minimumTime?.value;
     const maximumTime = form.maximumTime?.value;
     const meetingDuration = form.meetingDuration?.value;
-console.log(futureCalendarEvents);
+console.log("future ",futureCalendarEvents);
+console.log("csads ",calendarEvents);
     const manageSchedule = {
       scheduleName,
       taskName: scheduleName,
@@ -303,7 +313,7 @@ console.log(futureCalendarEvents);
       } else {
         // If there is no error, the sign-in is successful
         console.log("Google Sign-In successful!");
-        console.log(calendarEvents); // Log calendarEvents here or perform any other actions
+        // console.log(calendarEvents); // Log calendarEvents here or perform any other actions
       }
     } catch (error) {
       console.error("Unexpected error during Google Sign-In:", error.message);
