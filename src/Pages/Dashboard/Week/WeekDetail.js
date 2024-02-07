@@ -12,6 +12,7 @@ import FilesTask from "./FilesTask";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import ScheduleTask from "./ScheduleTask";
+import Loading from "../../Shared/Loading/Loading";
 
 const skillsCategories = [
   {
@@ -96,7 +97,6 @@ const item = {
   },
 };
 
-
 const WeekDetail = ({
   toggleButton,
   setToggleButton,
@@ -156,6 +156,7 @@ const WeekDetail = ({
   };
 
   useEffect(() => {
+    Loading();
     let taskTypeForAPI;
     console.log(openTask?.taskType);
     switch (openTask?.taskType) {
@@ -196,6 +197,7 @@ const WeekDetail = ({
       )
       .then((response) => {
         setTaskData(response?.data);
+        Loading().close();
       })
       .catch((error) => console.error(error));
   }, [openTask, openTask?.taskType]);
@@ -339,7 +341,9 @@ const WeekDetail = ({
         {openTask?.taskType === "Video" && <VideoTask taskData={taskData} />}
         {openTask?.taskType === "Audio" && <AudioTask taskData={taskData} />}
         {openTask?.taskType === "Files" && <FilesTask taskData={taskData} />}
-        {openTask?.taskType === "Schedule" && <ScheduleTask taskData={taskData} week={week} />}
+        {openTask?.taskType === "Schedule" && (
+          <ScheduleTask taskData={taskData} week={week} />
+        )}
       </div>
     </div>
   );
