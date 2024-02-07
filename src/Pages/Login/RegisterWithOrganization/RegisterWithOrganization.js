@@ -16,7 +16,7 @@ const LoginWithOrganization = () => {
     const [name, setName] = useState("");
     const [phone, setPhone] = useState("");
     const [error, setError] = useState(false);
-
+    const dateCreated = new Date();
     useEffect(() => {
         axios
             .get(`${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${id}`)
@@ -51,7 +51,8 @@ const LoginWithOrganization = () => {
             password,
             organizationId: id,
             organizationName: orgData?.organizationName,
-            role: "user"
+            role: "user",
+            dateCreated
         }
 
         console.log(data);
@@ -87,7 +88,8 @@ const LoginWithOrganization = () => {
                             phone,
                             organizationId: id,
                             organizationName: orgData?.organizationName,
-                            role: "user"
+                            role: "user",
+                            dateCreated
                         });
                         if (res.data.acknowledge) {
                             toast.success("Registered Successfully");
