@@ -67,7 +67,7 @@ import { Badge } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { AuthContext } from "../../contexts/AuthProvider";
 import axios from "axios";
-import { useNotification } from "../../contexts/NotificationContext";
+// import { useNotification } from "../../contexts/NotificationContext";
 
 const Layout = ({ children }) => {
   const [toggleButton, setToggleButton] = useState(true);
@@ -80,7 +80,7 @@ const Layout = ({ children }) => {
   const [profImg, setprofImg] = useState(null);
   const [profName, setprofName] = useState(null);
   const navigate = useNavigate();
-  const { notifications } = useNotification();
+  // const { notifications } = useNotification();
   //console.log(Role);
   const location = useLocation();
   useEffect(() => {
