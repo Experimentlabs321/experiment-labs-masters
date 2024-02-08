@@ -211,6 +211,23 @@ const Assignment = () => {
       console.log(newAssignment);
       if (newAssignment?.data?.result?.acknowledged) {
         toast.success("Assignment added Successfully");
+        const newNotification = await axios.post(
+          `http://localhost:5000/api/v1/notifications/addNotification`,
+          {
+            message: `New reading material added in course ${course?.courseFullName}.`,
+            dateTime: new Date(),
+            recipient: {
+              type: "Students",
+              organizationId: orgData?._id,
+              courseId: course?._id,
+              batches: selectedBatches,
+            },
+            type: "Create Task",
+            readBy: [],
+            notificationTriggeredBy: user?.email,
+          }
+        );
+        console.log(newNotification);
         event.target.reset();
       }
 
@@ -219,7 +236,19 @@ const Assignment = () => {
     Loading().close();
   };
 
-  console.log(chapter);
+  console.log({
+    message: `New reading material added in course ${course?.courseFullName}.`,
+    dateTime: new Date(),
+    recipient: {
+      type: "Students",
+      organizationId: orgData?._id,
+      courseId: course?._id,
+      batches: selectedBatches,
+    },
+    type: "Create Task",
+    readBy: [],
+    notificationTriggeredBy: user?.email,
+  });
 
   return (
     <div>

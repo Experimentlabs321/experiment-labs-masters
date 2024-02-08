@@ -147,28 +147,28 @@ const Layout = ({ children }) => {
   const orgLogo = localStorage.getItem("organizationLogo");
 
   console.log(notifications);
-  useEffect(() => {
-    if (userInfo?.role === "user" && notifications[0]?.type === "Create Task") {
-      if (
-        notifications[0]?.recipient?.organizationId === userInfo?.organizationId
-      ) {
-        if (notifications[0]?.recipient?.type === "Students") {
-          console.log(notifications[0]?.type);
-          const findStudentCourse = userInfo?.courses?.find(
-            (course) =>
-              course?.courseId === notifications[0]?.recipient?.courseId
-          );
-          if (findStudentCourse) {
-            const findStudentBatch = notifications[0]?.recipient?.batches?.find(
-              (batch) => batch?.batchId === findStudentCourse?.batchId
-            );
-            console.log(findStudentBatch);
-          }
-        } else if (notifications[0]?.recipient?.type === "Specific Student") {
-        }
-      }
-    }
-  }, [notifications]);
+  // useEffect(() => {
+  //   if (userInfo?.role === "user" && notifications[0]?.type === "Create Task") {
+  //     if (
+  //       notifications[0]?.recipient?.organizationId === userInfo?.organizationId
+  //     ) {
+  //       if (notifications[0]?.recipient?.type === "Students") {
+  //         console.log(notifications[0]?.type);
+  //         const findStudentCourse = userInfo?.courses?.find(
+  //           (course) =>
+  //             course?.courseId === notifications[0]?.recipient?.courseId
+  //         );
+  //         if (findStudentCourse) {
+  //           const findStudentBatch = notifications[0]?.recipient?.batches?.find(
+  //             (batch) => batch?.batchId === findStudentCourse?.batchId
+  //           );
+  //           console.log(findStudentBatch);
+  //         }
+  //       } else if (notifications[0]?.recipient?.type === "Specific Student") {
+  //       }
+  //     }
+  //   }
+  // }, [notifications]);
 
   return (
     <>
