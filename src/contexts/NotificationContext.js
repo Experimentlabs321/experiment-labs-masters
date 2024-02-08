@@ -46,7 +46,6 @@ export const NotificationProvider = ({ children }) => {
             userInfo?.data?.organizationId
           ) {
             if (newNotification?.recipient?.type === "Students") {
-              console.log(newNotification?.type);
               const findStudentCourse = userInfo?.data?.courses?.find(
                 (course) =>
                   course?.courseId === newNotification?.recipient?.courseId
@@ -56,6 +55,7 @@ export const NotificationProvider = ({ children }) => {
                   newNotification?.recipient?.batches?.find(
                     (batch) => batch?.batchId === findStudentCourse?.batchId
                   );
+                console.log(findStudentBatch);
                 if (findStudentBatch) {
                   setNotifications((prevNotifications) => [
                     newNotification,
