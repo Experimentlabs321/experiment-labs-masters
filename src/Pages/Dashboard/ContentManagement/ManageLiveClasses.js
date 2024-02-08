@@ -37,6 +37,7 @@ const ManageLiveClasses = () => {
   const [isOpenclassTimings, setisOpenclassTimings] = useState(false);
   const [isOpenevaluationParameter, setisOpenevaluationParameter] =
     useState(false);
+  const [orgData, setOrgData] = useState({});
 
   const toggleDropdownGeneral = () => {
     setisOpenGeneral(!isOpenGeneral);
@@ -272,6 +273,7 @@ const ManageLiveClasses = () => {
       })
       .catch((error) => console.error(error));
   }, [id, userInfo, userInfo?.email]);
+
   useEffect(() => {
     axios
       .get(
@@ -284,6 +286,7 @@ const ManageLiveClasses = () => {
       })
       .catch((error) => console.error(error));
   }, [chapter?.courseId]);
+
   useEffect(() => {
     axios
       .get(
@@ -291,6 +294,17 @@ const ManageLiveClasses = () => {
       )
       .then((response) => {
         setMentors(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [userInfo]);
+
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
+      )
+      .then((response) => {
+        setOrgData(response?.data);
       })
       .catch((error) => console.error(error));
   }, [userInfo]);
@@ -655,40 +669,46 @@ const ManageLiveClasses = () => {
             </div>
           )}
 
-          <div
-            className="select-option flex items-center gap-[40px] mt-12"
-            onClick={toggleDropdownevaluationParameter}
-          >
-            <h1 className=" h-[60px] w-[60px] bg-[#E1E6FF] rounded-full flex justify-center items-center text-[25px]">
-              3
-            </h1>
-            <p className="text-[25px] font-bold">Evaluation Parameter</p>
-            {!isOpenevaluationParameter && (
-              <img className="w-6" src={arrowright}></img>
-            )}
+          {(orgData?.showPointsAndRedemptions ||
+            orgData?.showSkillsManagement) && (
+            <div
+              className="select-option flex items-center gap-[40px] mt-12"
+              onClick={toggleDropdownevaluationParameter}
+            >
+              <h1 className=" h-[60px] w-[60px] bg-[#E1E6FF] rounded-full flex justify-center items-center text-[25px]">
+                3
+              </h1>
+              <p className="text-[25px] font-bold">Evaluation Parameter</p>
+              {!isOpenevaluationParameter && (
+                <img className="w-6" src={arrowright}></img>
+              )}
 
-            {isOpenevaluationParameter && <img src={arrowDown}></img>}
+              {isOpenevaluationParameter && <img src={arrowDown}></img>}
 
-            <i
-              className={`dropdown-arrow ${
-                isOpenevaluationParameter ? "open" : ""
-              }`}
-            ></i>
-          </div>
+              <i
+                className={`dropdown-arrow ${
+                  isOpenevaluationParameter ? "open" : ""
+                }`}
+              ></i>
+            </div>
+          )}
 
           {isOpenevaluationParameter && (
             <div className="dropdown-menu mt-[71px] mb-[45px] ">
-              <SkillBasedParameter
-                selectedData={skillParameterData}
-                setSelectedData={setSkillParameterData}
-                categories={skillCategories}
-              />
-
-              <ItemEarningParameter
-                selectedData={earningParameterData}
-                setSelectedData={setEarningParameterData}
-                categories={earningCategories}
-              />
+              {orgData?.showSkillsManagement && (
+                <SkillBasedParameter
+                  selectedData={skillParameterData}
+                  setSelectedData={setSkillParameterData}
+                  categories={skillCategories}
+                />
+              )}
+              {orgData?.showPointsAndRedemptions && (
+                <ItemEarningParameter
+                  selectedData={earningParameterData}
+                  setSelectedData={setEarningParameterData}
+                  categories={earningCategories}
+                />
+              )}
             </div>
           )}
 

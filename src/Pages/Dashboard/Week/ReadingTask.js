@@ -145,6 +145,19 @@ const ReadingTask = ({ taskData }) => {
               height="80vh"
             ></iframe>
           )}
+          {/* <iframe
+            id="document"
+            // key={additionalFile}
+            key={taskData?._id || additionalFile}
+            src="https://experiment-labs-my-bucket.s3.eu-north-1.amazonaws.com/_Level+1+-+Getting+Started+Edvanta.pdf"
+            // src={`https://docs.google.com/viewer?url=${
+            //   taskData?.additionalFiles ? taskData?.additionalFiles : ""
+            // }&embedded=true`
+            title="Your Document"
+            className="h-[68vh] mx-auto border-x-30 mt-40 border-[10px] border-b-50 rounded-lg border-[#292929]"
+            width="90%"
+            height="80vh"
+          ></iframe> */}
           {openQuiz && (
             <Quiz
               setOpenQuiz={setOpenQuiz}

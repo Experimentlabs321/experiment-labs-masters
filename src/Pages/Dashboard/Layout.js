@@ -67,7 +67,7 @@ import { Badge } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { AuthContext } from "../../contexts/AuthProvider";
 import axios from "axios";
-// import { useNotification } from "../../contexts/NotificationContext";
+import { useNotification } from "../../contexts/NotificationContext";
 
 const Layout = ({ children }) => {
   const [toggleButton, setToggleButton] = useState(true);
@@ -80,7 +80,7 @@ const Layout = ({ children }) => {
   const [profImg, setprofImg] = useState(null);
   const [profName, setprofName] = useState(null);
   const navigate = useNavigate();
-  // const { notifications } = useNotification();
+  const { notifications } = useNotification();
   //console.log(Role);
   const location = useLocation();
   useEffect(() => {
@@ -146,7 +146,29 @@ const Layout = ({ children }) => {
   const { id } = useParams();
   const orgLogo = localStorage.getItem("organizationLogo");
 
-  // console.log(notifications);
+  console.log(notifications);
+  useEffect(() => {
+    if (userInfo?.role === "user" && notifications[0]?.type === "Create Task") {
+      if (
+        notifications[0]?.recipient?.organizationId === userInfo?.organizationId
+      ) {
+        if (notifications[0]?.recipient?.type === "Students") {
+          console.log(notifications[0]?.type);
+          const findStudentCourse = userInfo?.courses?.find(
+            (course) =>
+              course?.courseId === notifications[0]?.recipient?.courseId
+          );
+          if (findStudentCourse) {
+            const findStudentBatch = notifications[0]?.recipient?.batches?.find(
+              (batch) => batch?.batchId === findStudentCourse?.batchId
+            );
+            console.log(findStudentBatch);
+          }
+        } else if (notifications[0]?.recipient?.type === "Specific Student") {
+        }
+      }
+    }
+  }, [notifications]);
 
   return (
     <>
