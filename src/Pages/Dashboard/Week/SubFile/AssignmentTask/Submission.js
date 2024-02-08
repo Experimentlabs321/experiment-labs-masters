@@ -68,7 +68,7 @@ const Submission = ({ taskData }) => {
       `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
       {
         from: `${user?.email}`,
-        to: `naman.j@experimentlabs.in,gaurav@experimentlabs.in,shihab77023@gmail.com`,
+        to: `naman.j@experimentlabs.in,gaurav@experimentlabs.in`,
         subject: `Submission of ${taskData?.taskName}`,
         message: `${userInfo?.name} has submitted assignment of the task ${taskData?.taskName}. Please review the submission.`,
       }
