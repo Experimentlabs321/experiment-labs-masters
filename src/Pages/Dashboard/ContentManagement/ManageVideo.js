@@ -69,6 +69,7 @@ const ManageVideo = () => {
   const [completionParameter, setCompletionParameter] = useState({});
   const [batchesData, setBatchesData] = useState([]);
   const [selectedBatches, setSelectedBatches] = useState([]);
+  const [orgData, setOrgData] = useState({});
 
   useEffect(() => {
     axios
@@ -98,6 +99,7 @@ const ManageVideo = () => {
       })
       .catch((error) => console.error(error));
   }, [id, userInfo, userInfo?.email]);
+
   useEffect(() => {
     if (chapter?.courseId)
       axios
@@ -108,6 +110,7 @@ const ManageVideo = () => {
           setCourse(response?.data);
         });
   }, [chapter]);
+
   useEffect(() => {
     axios
       .get(
@@ -118,6 +121,17 @@ const ManageVideo = () => {
       })
       .catch((error) => console.error(error));
   }, [chapter]);
+
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
+      )
+      .then((response) => {
+        setOrgData(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [userInfo]);
 
   const handleOptionChangeBatch = (event, optionValue) => {
     // const optionValue = event.target.value;
@@ -451,19 +465,26 @@ const ManageVideo = () => {
               </div>
             </div>
             <div className="px-4 my-10">
-              <p className="text-[25px] font-bold mb-10">
-                Evaluation Parameter
-              </p>
-              <SkillBasedParameter
-                selectedData={skillParameterData}
-                setSelectedData={setSkillParameterData}
-                categories={skillCategories}
-              />
-              <ItemEarningParameter
-                selectedData={earningParameterData}
-                setSelectedData={setEarningParameterData}
-                categories={earningCategories}
-              />
+              {(orgData?.showPointsAndRedemptions ||
+                orgData?.showSkillsManagement) && (
+                <p className="text-[25px] font-bold mb-10">
+                  Evaluation Parameter
+                </p>
+              )}
+              {orgData?.showSkillsManagement && (
+                <SkillBasedParameter
+                  selectedData={skillParameterData}
+                  setSelectedData={setSkillParameterData}
+                  categories={skillCategories}
+                />
+              )}
+              {orgData?.showPointsAndRedemptions && (
+                <ItemEarningParameter
+                  selectedData={earningParameterData}
+                  setSelectedData={setEarningParameterData}
+                  categories={earningCategories}
+                />
+              )}
             </div>
             <div className="px-4 my-10">
               <CompletionParameter
