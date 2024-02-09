@@ -58,6 +58,7 @@ const Assignment = () => {
   const [batchesData, setBatchesData] = useState([]);
   const [selectedBatches, setSelectedBatches] = useState([]);
   const [schedule, setSchedule] = useState([]);
+  const [orgData, setOrgData] = useState({});
 
   useEffect(() => {
     Loading();
@@ -73,6 +74,7 @@ const Assignment = () => {
       })
       .catch((error) => console.error(error));
   }, [chapter?.courseId]);
+
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
@@ -103,6 +105,7 @@ const Assignment = () => {
       })
       .catch((error) => console.error(error));
   }, [id, userInfo, userInfo?.email]);
+
   useEffect(() => {
     if (chapter?.courseId)
       axios
@@ -113,6 +116,17 @@ const Assignment = () => {
           setCourse(response?.data);
         });
   }, [chapter]);
+
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
+      )
+      .then((response) => {
+        setOrgData(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [userInfo]);
 
   const handleOptionChangeBatch = (event, optionValue) => {
     // const optionValue = event.target.value;
@@ -197,6 +211,23 @@ const Assignment = () => {
       console.log(newAssignment);
       if (newAssignment?.data?.result?.acknowledged) {
         toast.success("Assignment added Successfully");
+        const newNotification = await axios.post(
+          `http://localhost:5000/api/v1/notifications/addNotification`,
+          {
+            message: `New reading material added in course ${course?.courseFullName}.`,
+            dateTime: new Date(),
+            recipient: {
+              type: "Students",
+              organizationId: orgData?._id,
+              courseId: course?._id,
+              batches: selectedBatches,
+            },
+            type: "Create Task",
+            readBy: [],
+            notificationTriggeredBy: user?.email,
+          }
+        );
+        console.log(newNotification);
         event.target.reset();
       }
 
@@ -205,7 +236,19 @@ const Assignment = () => {
     Loading().close();
   };
 
-  console.log(chapter);
+  console.log({
+    message: `New reading material added in course ${course?.courseFullName}.`,
+    dateTime: new Date(),
+    recipient: {
+      type: "Students",
+      organizationId: orgData?._id,
+      courseId: course?._id,
+      batches: selectedBatches,
+    },
+    type: "Create Task",
+    readBy: [],
+    notificationTriggeredBy: user?.email,
+  });
 
   return (
     <div>
@@ -355,39 +398,47 @@ const Assignment = () => {
                 setContentStage={setContentStage}
               />
             )}
-            <div
-              className="select-option flex items-center gap-[40px] mt-12"
-              onClick={toggleDropdownevaluationParameter}
-            >
-              <h1 className=" h-[60px] w-[60px] bg-[#E1E6FF] rounded-full flex justify-center items-center text-[25px]">
-                2
-              </h1>
-              <p className="text-[25px] font-bold">Evaluation Parameter</p>
-              {!isOpenEvaluationParameter && (
-                <img className="w-6" src={arrowright} alt="arrow" />
-              )}
+            {(orgData?.showPointsAndRedemptions ||
+              orgData?.showSkillsManagement) && (
+              <div
+                className="select-option flex items-center gap-[40px] mt-12"
+                onClick={toggleDropdownevaluationParameter}
+              >
+                <h1 className=" h-[60px] w-[60px] bg-[#E1E6FF] rounded-full flex justify-center items-center text-[25px]">
+                  2
+                </h1>
+                <p className="text-[25px] font-bold">Evaluation Parameter</p>
+                {!isOpenEvaluationParameter && (
+                  <img className="w-6" src={arrowright} alt="arrow" />
+                )}
 
-              {isOpenEvaluationParameter && <img src={arrowDown} alt="arrow" />}
+                {isOpenEvaluationParameter && (
+                  <img src={arrowDown} alt="arrow" />
+                )}
 
-              <i
-                className={`dropdown-arrow ${
-                  isOpenEvaluationParameter ? "open" : ""
-                }`}
-              ></i>
-            </div>
+                <i
+                  className={`dropdown-arrow ${
+                    isOpenEvaluationParameter ? "open" : ""
+                  }`}
+                ></i>
+              </div>
+            )}
             {isOpenEvaluationParameter && (
               <div className="dropdown-menu mt-[71px] mb-[45px] ">
-                <SkillBasedParameter
-                  selectedData={skillParameterData}
-                  setSelectedData={setSkillParameterData}
-                  categories={skillCategories}
-                />
-
-                <ItemEarningParameter
-                  selectedData={earningParameterData}
-                  setSelectedData={setEarningParameterData}
-                  categories={earningCategories}
-                />
+                {orgData?.showSkillsManagement && (
+                  <SkillBasedParameter
+                    selectedData={skillParameterData}
+                    setSelectedData={setSkillParameterData}
+                    categories={skillCategories}
+                  />
+                )}
+                {orgData?.showPointsAndRedemptions && (
+                  <ItemEarningParameter
+                    selectedData={earningParameterData}
+                    setSelectedData={setEarningParameterData}
+                    categories={earningCategories}
+                  />
+                )}
               </div>
             )}
 

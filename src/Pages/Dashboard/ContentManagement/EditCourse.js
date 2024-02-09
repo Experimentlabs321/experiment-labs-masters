@@ -54,6 +54,7 @@ const EditCourse = () => {
   const [submitPermission, setSubmitPermission] = useState(false);
   const [courseData, setCourseData] = useState({});
   const [enableDrip, setEnableDrip] = useState();
+  const [courseVisibility, setCourseVisibility] = useState();
   const router = useNavigate();
 
   useEffect(() => {
@@ -62,6 +63,7 @@ const EditCourse = () => {
       .then((response) => {
         setCourseData(response?.data);
         setEnableDrip(response?.data?.enableDrip);
+        setCourseVisibility(response?.data?.courseVisibility);
       })
       .catch((error) => console.error(error));
   }, [id]);
@@ -77,7 +79,7 @@ const EditCourse = () => {
     const courseEndingDate = form.courseEndingDate?.value;
     const courseDescription = form.courseDescription?.value;
     const courseCategory = form.courseCategory?.value;
-    const courseVisibility = +form.courseVisibility?.value;
+    // const courseVisibility = +form.courseVisibility?.value;
     const courseIDNumber = form.courseIDNumber?.value;
     const courseFormat = form.courseFormat?.value;
     const gradesFormat = form.gradesFormat?.value;
@@ -92,6 +94,7 @@ const EditCourse = () => {
       +form.showactivitycompletionconditions?.value;
     const coursePurchaseUrl = "" + form.coursePurchaseUrl?.value;
     const enableDrip = form.enableDrip?.value === "false" ? false : true;
+    const courseVisibility = form.courseVisibility?.value === "false" ? false : true;
     const expirationDay = form.expirationDay?.value;
 
     let fileUrl = "";
@@ -182,9 +185,8 @@ const EditCourse = () => {
             {isOpenGeneralCourseInfo && <img src={arrowDown} alt=""></img>}
 
             <i
-              className={`dropdown-arrow ${
-                isOpenGeneralCourseInfo ? "open" : ""
-              }`}
+              className={`dropdown-arrow ${isOpenGeneralCourseInfo ? "open" : ""
+                }`}
             ></i>
           </div>
           {isOpenGeneralCourseInfo && (
@@ -339,7 +341,7 @@ const EditCourse = () => {
                       className="w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold focus:outline-0"
                       name="courseCategory"
                       defaultValue={courseData?.courseCategory}
-                      // id="option"
+                    // id="option"
                     >
                       <option className="" value="Web Development">
                         Web Development
@@ -430,18 +432,22 @@ const EditCourse = () => {
                     <div className="">
                       <input
                         type="radio"
-                        id="Show"
+                        id="Yes"
                         name="courseVisibility"
-                        value="1"
+                        value={true}
+                        checked={courseVisibility === true}
+                        onChange={() => setCourseVisibility(true)}
                       />
                       <lebel> Show</lebel>
                     </div>
                     <div className=" ms-[55px]">
                       <input
                         type="radio"
-                        id="Hide"
+                        id="No"
                         name="courseVisibility"
-                        value="0"
+                        value={false}
+                        checked={courseVisibility === false}
+                        onChange={() => setCourseVisibility(false)}
                       />
                       <lebel> Hide</lebel>
                     </div>
@@ -541,7 +547,7 @@ const EditCourse = () => {
                       className="select select-bordered w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold"
                       name="courseFormat"
                       defaultValue={courseData?.courseFormat}
-                      //id="option"
+                    //id="option"
                     >
                       <option value="weeks">Weekly format</option>
                       <option value="Parent"></option>
@@ -599,7 +605,7 @@ const EditCourse = () => {
                       className="w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold"
                       name="groups"
                       defaultValue={courseData?.groups}
-                      // id="option"
+                    // id="option"
                     >
                       <option className="" value="No Groups">
                         No Groups
@@ -719,9 +725,8 @@ const EditCourse = () => {
             {isOpenCompletionTracking && <img src={arrowDown} alt=""></img>}
 
             <i
-              className={`dropdown-arrow ${
-                isOpenCompletionTracking ? "open" : ""
-              }`}
+              className={`dropdown-arrow ${isOpenCompletionTracking ? "open" : ""
+                }`}
             ></i>
           </div>
 
