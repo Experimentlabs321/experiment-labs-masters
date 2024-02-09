@@ -23,10 +23,6 @@ import meetIcon from "../../../assets/Dashboard/meetIcon.png";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-
-/* import '@fullcalendar/common/main.css';  
-import '@fullcalendar/daygrid/main.css'; */
-
 let global;
 const customStyles = {
   overlay: {
@@ -50,6 +46,7 @@ const customStyles = {
 const localizer = momentLocalizer(moment);
 const AdminCalendarSchedule = () => {
   const { id } = useParams();
+  const [timeZone, setTimeZone] = useState('UTC');
   const { user, userInfo } = useContext(AuthContext);
   const [chapter, setChapter] = useState({});
   const [course, setCourse] = useState({});
@@ -60,8 +57,8 @@ const AdminCalendarSchedule = () => {
   const [selectedBatches, setSelectedBatches] = useState([]);
   const [selectedHoliday, setSelectedHoliday] = useState([]);
   const [schedule, setSchedule] = useState([]);
-
   const navigate = useNavigate();
+  const [calendarfetch, setCalendarFetch] = useState(false);
   const [start, setStart] = useState(new Date());
   const [end, setEnd] = useState(new Date());
   const [eventName, setEventName] = useState("");
@@ -75,16 +72,16 @@ const AdminCalendarSchedule = () => {
   const [calendarError, setCalendarError] = useState(false);
   global = session;
   const supabase = useSupabaseClient();
-
   const { isLoading } = useSessionContext();
-  useEffect(() => {
-    console.log(rafi);
-  }, [rafi]);
+  useEffect(()=>{
+    if(calendarfetch === true) {
+      googleSignIn();
+    }
+  },[calendarfetch])
   useEffect(() => {
     axios
       .get(
-        `${
-          process.env.REACT_APP_SERVER_API
+        `${process.env.REACT_APP_SERVER_API
         }/api/v1/batches/courseId/${localStorage.getItem("courseId")}`
       )
       .then((response) => {
@@ -111,11 +108,9 @@ const AdminCalendarSchedule = () => {
           setCourse(response?.data);
         });
   }, [chapter]);
-
   const handleOptionChangeBatch = (event, optionValue) => {
     // const optionValue = event.target.value;
     const isChecked = event.target.checked;
-
     if (isChecked) {
       if (selectedBatches) {
         setSelectedBatches([
@@ -163,7 +158,6 @@ const AdminCalendarSchedule = () => {
       setSelectedHoliday((prevSelection) => [...prevSelection, day.day]);
     }
   };
-
   console.log(selectedHoliday);
   const getCurrentDate = () => {
     const today = new Date();
@@ -172,30 +166,35 @@ const AdminCalendarSchedule = () => {
     const day = String(today.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   };
+    // Function to check if a given date is in the past
+// Function to check if a given date is in the past
+const isPastDay = (date) => {
+  const currentDate = new Date();
+  const comparisonDate = new Date(date);
+  return comparisonDate < currentDate;
+};
+
+// Function to handle the day rendering
+const handleDayRender = (info) => {
+  const date = info.date.toISOString().split('T')[0];
+  const isPastDayValue = isPastDay(date);
+
+  if (isPastDayValue) {
+    info.el.style.backgroundColor = 'lightgray'; // Apply your desired color for past days
+  }
+};
   const handleSubmit = async (event) => {
     event.preventDefault();
     const currentDate = getCurrentDate();
-
-  // Filter calendarEvents to include only those that start on or after the current date
-  const futureCalendarEvents = calendarEvents.filter((event) => {
-    // Extract the date part from the start.dateTime or start.date
-    const eventStartDate = event.start.dateTime ? event.start.dateTime.substring(0, 10) : event.start.date;
-    return eventStartDate >= currentDate;
-  });
-    
     const form = event.target;
-
     const scheduleName = form.scheduleName?.value;
     const dateRange = form.dateRange?.value;
     const minimumTime = form.minimumTime?.value;
     const maximumTime = form.maximumTime?.value;
     const meetingDuration = form.meetingDuration?.value;
-console.log("future ",futureCalendarEvents);
-console.log("csads ",calendarEvents);
     const manageSchedule = {
       scheduleName,
       taskName: scheduleName,
-
       chapterId: chapter?._id,
       courseId: chapter?.courseId,
       batches: selectedBatches,
@@ -205,12 +204,10 @@ console.log("csads ",calendarEvents);
       minimumTime,
       meetingDuration: meetingDuration,
       usersession: global,
-      events: futureCalendarEvents,
+      events: calendarEvents,
     };
-
     setAssignmentData(manageSchedule);
     console.log(manageSchedule);
-
     if (submitPermission) {
       const newSchedule = await axios.post(
         `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/schedule`,
@@ -222,25 +219,19 @@ console.log("csads ",calendarEvents);
         event.target.reset();
         navigate(`/questLevels/${chapter?.courseId}`);
       }
-      else{
+      else {
         toast.error("Something went wrong");
       }
-
       console.log(manageSchedule);
     }
   };
-
-  // console.log(chapter);
   console.log("Start", start);
   console.log("End", end);
   console.log("Event", eventName);
   console.log("Description", eventDescription);
-  // Call this function when your component mounts to fetch and display events
-  // The empty dependency array ensures that this effect runs only once
-
   useEffect(() => {
+    
     if (!session?.provider_token) {
-      // If there's no session, sign in again
       googleSignIn();
     } else {
       // If there's a session, fetch and display events
@@ -249,54 +240,12 @@ console.log("csads ",calendarEvents);
       if (calendarError) {
         googleSignIn();
       }
-      // checkAndRefreshToken(); // Call this function initially
-
-      // // Set up an interval to periodically refresh the token
-      // const refreshInterval = setInterval(() => {
-      //   checkAndRefreshToken();
-      // }, 30 * 60 * 1000); // Refresh every 30 minutes (adjust as needed)
-
-      // // Cleanup the interval when the component unmounts
-      // return () => clearInterval(refreshInterval);
     }
   }, [session, isModalOpen]);
-  console.log("session before ", session);
 
   if (isLoading) {
     return <></>;
   }
-
-  // async function checkAndRefreshToken() {
-  //   const currentTime = Math.floor(Date.now() / 1000);
-
-  //   if (session.expires_at && session.expires_at < currentTime) {
-  //     try {
-  //       const refreshResponse = await fetch("https://qzgeifdgviycxooauyum.supabase.co/auth/v1/token", {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify({
-  //           refresh_token: session.refresh_token,
-  //         }),
-  //       });
-
-  //       if (refreshResponse.ok) {
-  //         const newTokens = await refreshResponse.json();
-
-  //         // Update session with new tokens
-  //         session.access_token = newTokens.access_token;
-  //         session.expires_at = currentTime + newTokens.expires_in;
-  //       } else {
-  //         // Handle refresh token failure
-  //         console.error("Failed to refresh access token");
-  //       }
-  //     } catch (error) {
-  //       console.error("Error during token refresh:", error.message);
-  //     }
-  //   }
-  // }
-
   const googleSignIn = async () => {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
@@ -320,17 +269,12 @@ console.log("csads ",calendarEvents);
       alert("Unexpected error. Please try again.");
     }
   };
-
-  // Use useEffect to log rafi whenever it changes
   if (googleSignIn) {
     console.log("done signin");
   }
-
   async function signOut() {
     await supabase.auth.signOut();
-    // You might want to redirect or perform other actions after sign out
   }
-
   async function fetchPrimaryCalendarInfo() {
     try {
       const response = await fetch(
@@ -346,46 +290,56 @@ console.log("csads ",calendarEvents);
       if (!response.ok) {
         throw new Error("Failed to fetch primary calendar information");
       }
-
       const calendarInfo = await response.json();
       const primaryCalendarId = calendarInfo.id;
       setCalendarId(primaryCalendarId);
     } catch (error) {
       console.error(error.message);
+      setCalendarFetch(true);
     }
   }
-
   async function fetchGoogleCalendarEvents() {
-    const response = await fetch(
-      "https://www.googleapis.com/calendar/v3/calendars/primary/events",
-      {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + session.provider_token,
-          // Access token for Google
-        },
-      }
-    );
+    const currentDate = new Date().toISOString();
+    const url = new URL("https://www.googleapis.com/calendar/v3/calendars/primary/events");
+
+    url.searchParams.append("timeMin", currentDate);
+    url.searchParams.append("singleEvents", true);
+    url.searchParams.append("orderBy", "startTime");
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + session.provider_token,
+      },
+    });
+
     console.log(session);
+
     if (!response.ok) {
       throw new Error("Failed to fetch Google Calendar events");
     }
 
     const data = await response.json();
-    console.log(data);
-    return data.items || [];
-  }
 
+    // Extract time zone from the first event (assuming all events have the same time zone)
+    const timeZone = data.items.length > 0 ? data.items[0].start.timeZone : 'UTC';
+
+    console.log(data);
+
+    return { events: data.items || [], timeZone };
+  }
   async function fetchAndDisplayGoogleCalendarEvents() {
     try {
       const events = await fetchGoogleCalendarEvents();
       setCalendarError(false);
-      setCalendarEvents(events);
+      setCalendarEvents(events.events || []);  // Use events.events to ensure it's an array
+      setTimeZone(events.timeZone);
     } catch (error) {
+      console.error(error);
       setCalendarError(true);
+      setCalendarEvents([]);  // Set calendarEvents to an empty array on error
     }
   }
-
   function renderEventContent(eventInfo) {
     console.log(calendarEvents);
 
@@ -439,14 +393,12 @@ console.log("csads ",calendarEvents);
       </div>
     );
   }
-
   const handleDateClick = (date) => {
     setSelectedDate(date);
     setStart(date);
     setEnd(date);
     setIsModalOpen(true);
   };
-
   async function createCalendarEvent() {
     console.log("Creating calendar event");
     const event = {
@@ -521,7 +473,6 @@ console.log("csads ",calendarEvents);
       day: "Friday",
     },
   ];
-
   return (
     <div>
       <Layout>
@@ -642,39 +593,32 @@ console.log("csads ",calendarEvents);
                 <div className="my-6 px-5">
                   <h2>Your Calendar Events</h2>
                   <FullCalendar
-                    height="600px"
-                    plugins={[dayGridPlugin, listPlugin, interactionPlugin]}
-                    initialView="dayGridMonth"
-                    selectMirror={true}
-                    headerToolbar={{
-                      start: "title",
-                      center: "today",
-                      end: "dayGridMonth,dayGridWeek,dayGridDay,list",
-                    }}
-                    eventContent={renderEventContent}
-                    events={calendarEvents?.map((event) => ({
-                      title: event?.summary,
-                      start: event?.start.dateTime,
-                      end: event?.end.dateTime,
-                      link: event?.hangoutLink,
-                    }))}
-                    dateClick={(info) => handleDateClick(info.date)}
-                    eventTimeFormat={{
-                      hour: "numeric",
-                      minute: "2-digit",
-                      meridiem: "short",
-                      hour12: true,
-                    }}
-                    timeZone="UTC" // Set the appropriate time zone
-                  />
-                  {/* <Calendar
-                    localizer={localizer}
-                    events={calendarEvents}
-                    step={60}
-                    startAccessor="start"
-                    endAccessor="end"
-                    style={{ height: 750, maxWidth: 700 }}
-                  /> */}
+                      height="600px"
+                      plugins={[dayGridPlugin, listPlugin, interactionPlugin]}
+                      initialView="dayGridMonth"
+                      selectMirror={true}
+                      headerToolbar={{
+                        start: "title",
+                        center: "today",
+                        end: "dayGridMonth,dayGridWeek,dayGridDay,list",
+                      }}
+                      eventContent={renderEventContent}
+                      events={calendarEvents?.map((event) => ({
+                        title: event?.summary,
+                        start: event?.start.dateTime,
+                        end: event?.end.dateTime,
+                        link: event?.hangoutLink,
+                      }))}
+                      dateClick={(info) => handleDateClick(info.date)}
+                      eventTimeFormat={{
+                        hour: "numeric",
+                        minute: "2-digit",
+                        meridiem: "short",
+                        hour12: true,
+                      }}
+                      timeZone={timeZone} // Use timeZone state
+                      dayRender={handleDayRender}
+                    />
                 </div>
                 <form onSubmit={handleSubmit} className="ms-[40px]  mt-12">
                   <div className="grid grid-cols-2 gap-10">
@@ -864,67 +808,6 @@ console.log("csads ",calendarEvents);
                 </button>
               </div>
             )}
-
-            <Modal
-              ariaHideApp={false}
-              isOpen={isModalOpen}
-              onRequestClose={() => setIsModalOpen(false)}
-              style={customStyles} // Apply custom styles to the modal
-              shouldCloseOnOverlayClick={false}
-            >
-              <div>
-                <h2 className="text-center mb-3 font-medium text-lg text-blue">
-                  Add Event
-                </h2>
-                <p>Date: {selectedDate && selectedDate.toLocaleDateString()}</p>
-                <div className="flex justify-between gap-2 my-1">
-                  <label>
-                    Event Name:
-                    <input
-                      className="border border-black"
-                      type="text"
-                      value={eventName}
-                      onChange={(e) => setEventName(e.target.value)}
-                    />
-                  </label>
-                  <label className="my-1">
-                    Event Description:
-                    <input
-                      className="border border-black"
-                      type="text"
-                      value={eventDescription}
-                      onChange={(e) => setEventDescription(e.target.value)}
-                    />
-                  </label>
-                </div>
-                <p className="mt-1">Event Start Time</p>
-                <DateTimePicker
-                  className="border-black mb-1"
-                  onChange={(date) => setStart(date)}
-                  value={start}
-                  disableClock={true}
-                  disableCalendar={true}
-                />
-                <p className="mt-1">Event End Time</p>
-                <DateTimePicker
-                  className="border-black  mb-1"
-                  onChange={(date) => {
-                    setEnd(date);
-                  }}
-                  value={end}
-                  disableClock={true}
-                  disableCalendar={true}
-                />
-              </div>
-              <div className="grid items-center justify-center">
-                <button
-                  className="bg-orange-500 text-white text-lg px-4 py-2 rounded-md my-2"
-                  onClick={() => createCalendarEvent()}
-                >
-                  Add Event
-                </button>
-              </div>
-            </Modal>
           </div>
         </div>
       </Layout>
