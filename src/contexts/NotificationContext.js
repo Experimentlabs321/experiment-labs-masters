@@ -11,6 +11,9 @@ const NotificationContext = createContext();
 export const NotificationProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
   const [notifications, setNotifications] = useState([]);
+  const [unreadNotifications, setUnreadNotifications] = useState([]);
+  const [numberOfUnreadNotification, setNumberOfUnreadNotification] =
+    useState(0);
   // const [userInfo, setUserInfo] = useState({});
 
   // useEffect(() => {
@@ -61,6 +64,11 @@ export const NotificationProvider = ({ children }) => {
                     newNotification,
                     ...prevNotifications,
                   ]);
+                  setUnreadNotifications((prevNotifications) => [
+                    newNotification,
+                    ...prevNotifications,
+                  ]);
+                  setNumberOfUnreadNotification(unreadNotifications?.length);
                 }
               }
             } else if (
@@ -71,6 +79,16 @@ export const NotificationProvider = ({ children }) => {
         }
       })
       .catch((error) => console.error(error));
+  };
+
+  const countUnreadNotification = async () => {
+    const unreadNotifications = notifications?.filter(
+      (notification) =>
+        !notification?.readBy?.find(
+          (viewedBy) => viewedBy?.email === user?.email
+        )
+    );
+    console.log(unreadNotifications?.length);
   };
 
   useEffect(() => {
@@ -120,19 +138,33 @@ export const NotificationProvider = ({ children }) => {
 
     fetchNotifications();
 
+    countUnreadNotification();
     return () => {
       socket.off("notification");
     };
   }, [user]);
+
   const fetchNotifications = async () => {
     console.log(user);
     try {
-      axios
+      await axios
         .get(
           `http://localhost:5000/api/v1/notifications/getNotification/userEmail/${user?.email}`
         )
-        .then((response) => {
-          setNotifications(response?.data?.notifications);
+        .then(async (response) => {
+          if (response?.data?.notifications) {
+            setNotifications(response?.data?.notifications);
+            const unreadNotifications =
+              await response?.data?.notifications?.filter(
+                (notification) =>
+                  !notification?.readBy?.find(
+                    (viewedBy) => viewedBy?.email === user?.email
+                  )
+              );
+            setUnreadNotifications(unreadNotifications);
+            setNumberOfUnreadNotification(unreadNotifications?.length);
+            console.log(unreadNotifications?.length);
+          }
         })
         .catch((error) => console.error(error));
     } catch (error) {
@@ -146,6 +178,8 @@ export const NotificationProvider = ({ children }) => {
     <NotificationContext.Provider
       value={{
         notifications,
+        unreadNotifications,
+        numberOfUnreadNotification,
       }}
     >
       {children}
