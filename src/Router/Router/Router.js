@@ -125,6 +125,7 @@ import MyStudents from "../../Pages/Dashboard/MyStudents/MyStudents";
 import EditCourse from "../../Pages/Dashboard/ContentManagement/EditCourse";
 import Payment from "../../Pages/Dashboard/Payment/Payment";
 import UserProfile from "../../Pages/Dashboard/Dashboard/UserProfile";
+import Announcements from "../../Pages/Dashboard/Announcements/Announcements";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -630,14 +631,17 @@ const router = createBrowserRouter([
     path: "/payment/:id",
     element: <Payment />,
   },
-  
   {
     path: "/profile/:email",
-    element: <Profile/>,
+    element: <Profile />,
   },
   {
     path: "/userprofile/:email",
-    element: <UserProfile/>,
+    element: <UserProfile />,
+  },
+  {
+    path: "/announcements",
+    element: <Announcements />,
   },
 ]);
 
