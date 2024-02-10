@@ -46,6 +46,7 @@ const EditAssignment = () => {
   const [selectedBatches, setSelectedBatches] = useState([]);
   const [schedule, setSchedule] = useState([]);
   const [contentStage, setContentStage] = useState([]);
+  const [orgData, setOrgData] = useState({});
 
   const [openTask, setOpenTask] = useState(
     JSON.parse(localStorage.getItem("task"))
@@ -81,6 +82,7 @@ const EditAssignment = () => {
     // })
     // .catch((error) => console.error(error));
   }, [currentWeek]);
+
   useEffect(() => {
     if (chapter?.courseId)
       axios
@@ -91,6 +93,7 @@ const EditAssignment = () => {
           setCourse(response?.data);
         });
   }, [chapter]);
+
   useEffect(() => {
     if (openTask?.taskId)
       axios
@@ -112,6 +115,7 @@ const EditAssignment = () => {
           );
         });
   }, [openTask]);
+
   useEffect(() => {
     axios
       .get(
@@ -122,6 +126,17 @@ const EditAssignment = () => {
       })
       .catch((error) => console.error(error));
   }, [currentWeek]);
+
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
+      )
+      .then((response) => {
+        setOrgData(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [userInfo]);
 
   const handleOptionChangeBatch = (event, optionValue) => {
     // const optionValue = event.target.value;
@@ -364,41 +379,50 @@ const EditAssignment = () => {
                 setContentStage={setContentStage}
               />
             )}
-            <div
-              className="select-option flex items-center gap-[40px] mt-12"
-              onClick={toggleDropdownevaluationParameter}
-            >
-              <h1 className=" h-[60px] w-[60px] bg-[#E1E6FF] rounded-full flex justify-center items-center text-[25px]">
-                2
-              </h1>
-              <p className="text-[25px] font-bold">Evaluation Parameter</p>
-              {!isOpenEvaluationParameter && (
-                <img className="w-6" src={arrowright} alt="arrow" />
-              )}
+            {(orgData?.showPointsAndRedemptions ||
+              orgData?.showSkillsManagement) && (
+              <div
+                className="select-option flex items-center gap-[40px] mt-12"
+                onClick={toggleDropdownevaluationParameter}
+              >
+                <h1 className=" h-[60px] w-[60px] bg-[#E1E6FF] rounded-full flex justify-center items-center text-[25px]">
+                  2
+                </h1>
+                <p className="text-[25px] font-bold">Evaluation Parameter</p>
+                {!isOpenEvaluationParameter && (
+                  <img className="w-6" src={arrowright} alt="arrow" />
+                )}
 
-              {isOpenEvaluationParameter && <img src={arrowDown} alt="arrow" />}
+                {isOpenEvaluationParameter && (
+                  <img src={arrowDown} alt="arrow" />
+                )}
 
-              <i
-                className={`dropdown-arrow ${
-                  isOpenEvaluationParameter ? "open" : ""
-                }`}
-              ></i>
-            </div>
+                <i
+                  className={`dropdown-arrow ${
+                    isOpenEvaluationParameter ? "open" : ""
+                  }`}
+                ></i>
+              </div>
+            )}
             {isOpenEvaluationParameter && (
               <div className="dropdown-menu mt-[71px] mb-[45px] ">
-                <SkillBasedParameter
-                  forEdit={true}
-                  selectedData={skillParameterData}
-                  setSelectedData={setSkillParameterData}
-                  categories={skillCategories}
-                />
+                {orgData?.showSkillsManagement && (
+                  <SkillBasedParameter
+                    forEdit={true}
+                    selectedData={skillParameterData}
+                    setSelectedData={setSkillParameterData}
+                    categories={skillCategories}
+                  />
+                )}
 
-                <ItemEarningParameter
-                  forEdit={true}
-                  selectedData={earningParameterData}
-                  setSelectedData={setEarningParameterData}
-                  categories={earningCategories}
-                />
+                {orgData?.showPointsAndRedemptions && (
+                  <ItemEarningParameter
+                    forEdit={true}
+                    selectedData={earningParameterData}
+                    setSelectedData={setEarningParameterData}
+                    categories={earningCategories}
+                  />
+                )}
               </div>
             )}
 

@@ -23,7 +23,6 @@ const ReadingTask = ({ taskData }) => {
   );
   const [openQuiz, setOpenQuiz] = useState(false);
   const [isOverlayVisible, setOverlayVisible] = useState(false);
-  console.log(taskData);
   const [completionStatus, setCompletionStatus] = useState(false);
   const pdfContainerRef = useRef(null);
   useEffect(() => {
@@ -38,13 +37,19 @@ const ReadingTask = ({ taskData }) => {
       setAdditionalFile(
         `https://docs.google.com/viewer?url=${taskData?.additionalFiles}&embedded=true`
       );
+    } else {
+      setAdditionalFile("");
     }
-  }, [taskData, user]);
+  }, [taskData, taskData?._id, user]);
 
   useEffect(() => {
     const specificDiv = document.getElementById("document");
     if (specificDiv) {
-      console.log("Specific div has loaded.");
+      console.log(
+        "Specific div has loaded.",
+        additionalFile,
+        taskData?.additionalFiles
+      );
       // You can perform actions related to the specific div here
     }
   }, [taskData, user]);
@@ -74,12 +79,11 @@ const ReadingTask = ({ taskData }) => {
         },
       };
       const submitCompletion = await axios.post(
-        `https://experiment-labs-master-server.vercel.app/chapter/${taskData?.chapterId}/task/${taskData?._id}/add-participant/${openTask?.taskType}`,
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/${openTask?.taskType}/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`,
         sendData
       );
-      console.log(submitCompletion);
-      console.log(sendData);
-      setCompletionStatus(true);
+      Loading().close();
+      // setCompletionStatus(true);
       if (submitCompletion?.data?.acknowledged) {
         setCompletionStatus(true);
         Swal.fire({
@@ -88,15 +92,19 @@ const ReadingTask = ({ taskData }) => {
           text: "You have completed successfully!",
         });
         // navigate(-1);
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops!",
+          text: "Some thing wrong happen please try again later!",
+        });
       }
     } else {
       Loading().close();
       setOpenQuiz(!openQuiz);
       setOverlayVisible(openQuiz);
     }
-    Loading().close();
   };
-
   console.log(additionalFile);
   return (
     <div>
@@ -125,14 +133,31 @@ const ReadingTask = ({ taskData }) => {
           {additionalFile && (
             <iframe
               id="document"
-              key={additionalFile}
+              // key={additionalFile}
+              key={taskData?._id || additionalFile}
               src={additionalFile}
+              // src={`https://docs.google.com/viewer?url=${
+              //   taskData?.additionalFiles ? taskData?.additionalFiles : ""
+              // }&embedded=true`
               title="Your Document"
-              className="h-[68vh] mx-auto border-x-30 mt-40 border-t-30 border-b-50 rounded-lg border-[#292929]"
+              className="h-[68vh] mx-auto border-x-30 mt-40 border-[10px] border-b-50 rounded-lg border-[#292929]"
               width="90%"
               height="80vh"
             ></iframe>
           )}
+          {/* <iframe
+            id="document"
+            // key={additionalFile}
+            key={taskData?._id || additionalFile}
+            src="https://experiment-labs-my-bucket.s3.eu-north-1.amazonaws.com/_Level+1+-+Getting+Started+Edvanta.pdf"
+            // src={`https://docs.google.com/viewer?url=${
+            //   taskData?.additionalFiles ? taskData?.additionalFiles : ""
+            // }&embedded=true`
+            title="Your Document"
+            className="h-[68vh] mx-auto border-x-30 mt-40 border-[10px] border-b-50 rounded-lg border-[#292929]"
+            width="90%"
+            height="80vh"
+          ></iframe> */}
           {openQuiz && (
             <Quiz
               setOpenQuiz={setOpenQuiz}
