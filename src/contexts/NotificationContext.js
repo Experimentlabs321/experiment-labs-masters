@@ -76,6 +76,29 @@ export const NotificationProvider = ({ children }) => {
             ) {
             }
           }
+        } else if (
+          userInfo?.data?.role === "admin" &&
+          newNotification?.type === "Submission"
+        ) {
+          if (
+            newNotification?.recipient?.organizationId ===
+            userInfo?.data?.organizationId
+          ) {
+            if (newNotification?.recipient?.type === "Admins") {
+              setNotifications((prevNotifications) => [
+                newNotification,
+                ...prevNotifications,
+              ]);
+              setUnreadNotifications((prevNotifications) => [
+                newNotification,
+                ...prevNotifications,
+              ]);
+              setNumberOfUnreadNotification(unreadNotifications?.length);
+            } else if (
+              newNotification?.recipient?.type === "Specific Student"
+            ) {
+            }
+          }
         }
       })
       .catch((error) => console.error(error));
@@ -92,7 +115,13 @@ export const NotificationProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    socket = io("http://localhost:5000");
+    // socket = io("https://test-server-henna-nine.vercel.app");
+    const socket = io("https://test-server-tg7l.onrender.com", {
+      withCredentials: true,
+      extraHeaders: {
+        "my-custom-header": "abcd",
+      },
+    });
     socket.on("connection", () => console.log("socket connected"));
     console.log("something");
     socket.on("notification", (newNotification) => {
@@ -149,10 +178,11 @@ export const NotificationProvider = ({ children }) => {
     try {
       await axios
         .get(
-          `http://localhost:5000/api/v1/notifications/getNotification/userEmail/${user?.email}`
+          `https://test-server-tg7l.onrender.com/api/v1/notifications/getNotification/userEmail/${user?.email}`
         )
         .then(async (response) => {
           if (response?.data?.notifications) {
+            response?.data?.notifications?.reverse();
             setNotifications(response?.data?.notifications);
             const unreadNotifications =
               await response?.data?.notifications?.filter(

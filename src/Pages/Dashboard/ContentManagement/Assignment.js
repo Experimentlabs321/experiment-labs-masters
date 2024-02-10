@@ -212,10 +212,11 @@ const Assignment = () => {
       if (newAssignment?.data?.result?.acknowledged) {
         toast.success("Assignment added Successfully");
         const newNotification = await axios.post(
-          `http://localhost:5000/api/v1/notifications/addNotification`,
+          `https://test-server-tg7l.onrender.com/api/v1/notifications/addNotification`,
           {
             message: `New reading material added in course ${course?.courseFullName}.`,
             dateTime: new Date(),
+            redirectLink: `/questLevels/${course?._id}?week=${chapter?.weekId}`,
             recipient: {
               type: "Students",
               organizationId: orgData?._id,
