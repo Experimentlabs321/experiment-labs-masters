@@ -83,8 +83,13 @@ const Layout = ({ children }) => {
   const [profName, setprofName] = useState(null);
   const [showNotification, setShowNotification] = useState(false);
   const navigate = useNavigate();
-  const { notifications, numberOfUnreadNotification, unreadNotifications } =
-    useNotification();
+  const {
+    notifications,
+    numberOfUnreadNotification,
+    unreadNotifications,
+    announcements,
+    unreadAnnouncements,
+  } = useNotification();
   //console.log(Role);
   const location = useLocation();
   useEffect(() => {
@@ -150,7 +155,12 @@ const Layout = ({ children }) => {
   const { id } = useParams();
   const orgLogo = localStorage.getItem("organizationLogo");
 
-  console.log(notifications, numberOfUnreadNotification, unreadNotifications);
+  console.log(
+    notifications,
+    numberOfUnreadNotification,
+    unreadNotifications,
+    announcements
+  );
   const formatNotificationCreationDate = (date) => {
     const currentDate = new Date();
     const givenDate = new Date(date);
@@ -272,7 +282,7 @@ const Layout = ({ children }) => {
                         </Badge>
                       </button>
                       {showNotification && (
-                        <div className="absolute top-[70px] w-[95%] h-80 rounded-md p-1 m-1 overflow-y-auto bg-white">
+                        <div className="absolute z-10 top-[70px] w-[95%] h-80 rounded-md p-1 m-1 overflow-y-auto bg-white">
                           <h1 className="text-xl font-bold p-1">
                             Notifications
                           </h1>
@@ -415,6 +425,14 @@ const Layout = ({ children }) => {
                               } ml-3 text-[18px] font-[500]`}
                             >
                               Announcements
+                              <span className=" ml-5 ">
+                                <Badge
+                                  badgeContent={unreadAnnouncements?.length}
+                                  color="error"
+                                >
+                                  <span className=" ml-5 "></span>
+                                </Badge>
+                              </span>
                             </span>
                           </Link>
                         </li>
