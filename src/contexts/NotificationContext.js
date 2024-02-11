@@ -12,24 +12,10 @@ export const NotificationProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
   const [notifications, setNotifications] = useState([]);
   const [unreadNotifications, setUnreadNotifications] = useState([]);
+  const [announcements, setAnnouncements] = useState([]);
+  const [unreadAnnouncements, setUnreadAnnouncements] = useState([]);
   const [numberOfUnreadNotification, setNumberOfUnreadNotification] =
     useState(0);
-  // const [userInfo, setUserInfo] = useState({});
-
-  // useEffect(() => {
-  //   Loading();
-  //   axios
-  //     .get(
-  //       `${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${user?.email}`
-  //     )
-  //     .then((user) => {
-  //       setUserInfo(user?.data);
-
-  //       Loading().close();
-  //     })
-  //     .catch((error) => console.error(error));
-  //   Loading().close();
-  // }, [user?.email, userInfo?.email]);
 
   const notificationFilter = (newNotification) => {
     axios
@@ -104,6 +90,31 @@ export const NotificationProvider = ({ children }) => {
       .catch((error) => console.error(error));
   };
 
+  const announcementFilter = (newAnnouncement) => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${user?.email}`
+      )
+      .then((userInfo) => {
+        console.log(newAnnouncement, user, userInfo?.data);
+        // setUserInfo(user?.data);
+
+        if (
+          userInfo?.data?.organizationId === newAnnouncement?.organizationId
+        ) {
+          setAnnouncements((prevAnnouncements) => [
+            newAnnouncement,
+            ...prevAnnouncements,
+          ]);
+          setUnreadAnnouncements((prevAnnouncements) => [
+            newAnnouncement,
+            ...prevAnnouncements,
+          ]);
+        }
+      })
+      .catch((error) => console.error(error));
+  };
+
   const countUnreadNotification = async () => {
     const unreadNotifications = notifications?.filter(
       (notification) =>
@@ -123,49 +134,20 @@ export const NotificationProvider = ({ children }) => {
       },
     });
     socket.on("connection", () => console.log("socket connected"));
-    console.log("something");
     socket.on("notification", (newNotification) => {
-      // console.log(newNotification, userInfo);
       notificationFilter(newNotification);
-      // Filter notification based on user information
-      // if (
-      //   userInfo?.role === "user" &&
-      //   newNotification?.type === "Create Task"
-      // ) {
-      //   if (
-      //     newNotification?.recipient?.organizationId ===
-      //     userInfo?.organizationId
-      //   ) {
-      //     if (newNotification?.recipient?.type === "Students") {
-      //       console.log(newNotification?.type);
-      //       const findStudentCourse = userInfo?.courses?.find(
-      //         (course) =>
-      //           course?.courseId === newNotification?.recipient?.courseId
-      //       );
-      //       if (findStudentCourse) {
-      //         const findStudentBatch =
-      //           newNotification?.recipient?.batches?.find(
-      //             (batch) => batch?.batchId === findStudentCourse?.batchId
-      //           );
-      //         if (findStudentBatch) {
-      //           setNotifications((prevNotifications) => [
-      //             newNotification,
-      //             ...prevNotifications,
-      //           ]);
-      //         }
-      //       }
-      //     } else if (newNotification?.recipient?.type === "Specific Student") {
-      //     }
-      //   }
-      // }
-      // setNotifications((prevNotifications) => [
-      //   newNotification,
-      //   ...prevNotifications,
-      // ]);
+    });
+    socket.on("notification", (newNotification) => {
+      notificationFilter(newNotification);
+    });
+    socket.on("announcement", (newAnnouncement) => {
+      announcementFilter(newAnnouncement);
+      // notificationFilter(newAnnouncement);
     });
     // socket.emit("testing", { message: "this is message" });
 
     fetchNotifications();
+    fetchAnnouncements();
 
     countUnreadNotification();
     return () => {
@@ -202,6 +184,40 @@ export const NotificationProvider = ({ children }) => {
     }
   };
 
+  const fetchAnnouncements = async () => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${user?.email}`
+      )
+      .then(async (userInfo) => {
+        console.log(userInfo?.data);
+        try {
+          await axios
+            .get(
+              `https://test-server-tg7l.onrender.com/api/v1/announcements/getAnnouncement/organizationId/${userInfo?.data?.organizationId}`
+            )
+            .then(async (response) => {
+              if (response?.data?.announcements) {
+                response?.data?.announcements?.reverse();
+                setAnnouncements(response?.data?.announcements);
+                const unreadAnnouncements =
+                  await response?.data?.announcements?.filter(
+                    (announcement) =>
+                      !announcement?.readBy?.find(
+                        (viewedBy) => viewedBy?.email === user?.email
+                      )
+                  );
+                setUnreadAnnouncements(unreadAnnouncements);
+              }
+            })
+            .catch((error) => console.error(error));
+        } catch (error) {
+          console.error("Error fetching notifications:", error);
+        }
+      })
+      .catch((error) => console.error(error));
+  };
+
   console.log(notifications);
 
   return (
@@ -210,6 +226,8 @@ export const NotificationProvider = ({ children }) => {
         notifications,
         unreadNotifications,
         numberOfUnreadNotification,
+        announcements,
+        unreadAnnouncements,
       }}
     >
       {children}
