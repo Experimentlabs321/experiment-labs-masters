@@ -17,6 +17,7 @@ import axios from "axios";
 import emailjs from "@emailjs/browser";
 import { toast } from "react-hot-toast";
 import ReactGA from "react-ga4";
+import Swal from "sweetalert2";
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -43,9 +44,10 @@ const Overview = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    console.log("Clicked");
     ReactGA.event({
       category: "Click",
-      action: "Submit Data From Connect With Counselor",
+      action: "Submit Data From Navbar",
       label: "Submit Data",
     });
     const form = event.target;
@@ -64,10 +66,10 @@ const Overview = () => {
       Time: new Date(),
     };
 
-    console.log(data);
+    console.log("Gone Here ===============>", data);
 
     fetch(
-      "https://sheet.best/api/sheets/5c4ca56d-67bb-4f49-a538-9fdde568c68d",
+      `${process.env.REACT_APP_SERVER_API}/api/v1/users/interactions`,
       {
         method: "POST",
         headers: {
@@ -76,44 +78,37 @@ const Overview = () => {
         body: JSON.stringify(data),
       }
     )
-      .then((data) => {
-        // The response comes here
-        console.log(data);
+      .then(async (res) => {
+        console.log("Submit ===============>", res);
+        const sendMail = await axios.post(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+          {
+            from: `${email}`,
+            to: `naman.j@experimentlabs.in`,
+            subject: `${name} wants to Learn more about Experiment Labs`,
+            message: `
+            Name: ${name},
+            Number: "+91" + ${number},
+            Email: ${email},
+            Option: ${option},
+            City: ${city},
+            Tme: ${new Date()},
+            `,
+          }
+        );
+        console.log("Send Mail ===============>", sendMail);
+        if (sendMail?.data?.success) {
+          Swal.fire({
+            icon: "success",
+            text: "Thanks For your response!",
+          });
+        }
+        handleClose();
       })
       .catch((error) => {
         // Errors are reported there
         console.log(error);
       });
-
-    const templateParams = {
-      from_name: name,
-      message: `
-            Name: ${name},
-            Number: ${"+91" + number},
-            Email: ${email},
-            ${option},
-            City: ${city},
-            Time: ${new Date()},
-            `,
-    };
-
-    emailjs
-      .send(
-        "service_s3bklnu",
-        "template_l0yacbb",
-        templateParams,
-        "U0g6Ht1DVmnBbENk0"
-      )
-      .then(
-        (result) => {
-          console.log(result.text);
-          // toast.success("Successfully Added Your Info");
-          event.target.reset();
-        },
-        (error) => {
-          console.log(error.text);
-        }
-      );
   };
 
   const [open2, setOpen2] = React.useState(false);
@@ -134,10 +129,11 @@ const Overview = () => {
 
   const handleSubmit2 = event => {
     event.preventDefault();
+    console.log("Clicked");
     ReactGA.event({
       category: "Click",
-      action: "Download Career Handbook from Science & Innovation Hero",
-      label: 'Submit Data'
+      action: "Submit Data From Navbar",
+      label: "Submit Data",
     });
     const form = event.target;
     const name = form.name.value;
@@ -148,51 +144,55 @@ const Overview = () => {
 
     const data = {
       Name: name,
-      Number: '+91' + number,
+      Number: "+91" + number,
       Email: email,
       Option: option,
       City: city,
       Time: new Date(),
     };
 
-    console.log(data);
+    console.log("Gone Here ===============>", data);
 
-    fetch("https://sheet.best/api/sheets/5c4ca56d-67bb-4f49-a538-9fdde568c68d", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-      .then((data) => {
-        // The response comes here
-        console.log(data);
+    fetch(
+      `${process.env.REACT_APP_SERVER_API}/api/v1/users/interactions`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    )
+      .then(async (res) => {
+        console.log("Submit ===============>", res);
+        const sendMail = await axios.post(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+          {
+            from: `${email}`,
+            to: `naman.j@experimentlabs.in`,
+            subject: `${name} wants to Learn more about Experiment Labs`,
+            message: `
+            Name: ${name},
+            Number: "+91" + ${number},
+            Email: ${email},
+            Option: ${option},
+            City: ${city},
+            Tme: ${new Date()},
+            `,
+          }
+        );
+        console.log("Send Mail ===============>", sendMail);
+        if (sendMail?.data?.success) {
+          Swal.fire({
+            icon: "success",
+            text: "Thanks For your response!",
+          });
+        }
+        handleClose2();
       })
       .catch((error) => {
         // Errors are reported there
         console.log(error);
-      });
-
-
-    const templateParams = {
-      from_name: name,
-      message: `
-            Name: ${name},
-            Number: ${'+91' + number},
-            Email: ${email},
-            ${option},
-            City: ${city},
-            Time: ${new Date()},
-            `
-    };
-
-    emailjs.send('service_s3bklnu', 'template_l0yacbb', templateParams, 'U0g6Ht1DVmnBbENk0')
-      .then((result) => {
-        console.log(result.text);
-        // toast.success("Message Sent");
-        event.target.reset();
-      }, (error) => {
-        console.log(error.text);
       });
 
     const a = document.createElement('a');

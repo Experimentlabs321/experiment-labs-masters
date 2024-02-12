@@ -12,6 +12,8 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import LiveTvIcon from "@mui/icons-material/LiveTv";
 import emailjs from "@emailjs/browser";
+import Swal from "sweetalert2";
+import axios from "axios"
 
 import ReactGA from "react-ga4";
 
@@ -19,9 +21,10 @@ const SummerStartUp = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    console.log("Clicked");
     ReactGA.event({
       category: "Click",
-      action: "Submit Data From Get Career In Science and Innovation",
+      action: "Submit Data From Navbar",
       label: "Submit Data",
     });
     const form = event.target;
@@ -40,10 +43,10 @@ const SummerStartUp = () => {
       Time: new Date(),
     };
 
-    console.log(data);
+    console.log("Gone Here ===============>", data);
 
     fetch(
-      "https://sheet.best/api/sheets/5c4ca56d-67bb-4f49-a538-9fdde568c68d",
+      `${process.env.REACT_APP_SERVER_API}/api/v1/users/interactions`,
       {
         method: "POST",
         headers: {
@@ -52,44 +55,37 @@ const SummerStartUp = () => {
         body: JSON.stringify(data),
       }
     )
-      .then((data) => {
-        // The response comes here
-        console.log(data);
+      .then(async (res) => {
+        console.log("Submit ===============>", res);
+        const sendMail = await axios.post(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+          {
+            from: `${email}`,
+            to: `naman.j@experimentlabs.in`,
+            subject: `${name} wants to Learn more about Experiment Labs`,
+            message: `
+            Name: ${name},
+            Number: "+91" + ${number},
+            Email: ${email},
+            Option: ${option},
+            City: ${city},
+            Tme: ${new Date()},
+            `,
+          }
+        );
+        console.log("Send Mail ===============>", sendMail);
+        if (sendMail?.data?.success) {
+          Swal.fire({
+            icon: "success",
+            text: "Thanks For your response!",
+          });
+        }
+        // handleClose();
       })
       .catch((error) => {
         // Errors are reported there
         console.log(error);
       });
-
-    const templateParams = {
-      from_name: name,
-      message: `
-            Name: ${name},
-            Number: ${"+91" + number},
-            Email: ${email},
-            ${option},
-            City: ${city},
-            Time: ${new Date()},
-            `,
-    };
-
-    emailjs
-      .send(
-        "service_s3bklnu",
-        "template_l0yacbb",
-        templateParams,
-        "U0g6Ht1DVmnBbENk0"
-      )
-      .then(
-        (result) => {
-          console.log(result.text);
-          // toast.success("Successfully Added Your Info");
-          event.target.reset();
-        },
-        (error) => {
-          console.log(error.text);
-        }
-      );
   };
   return (
     <div className="text-white">
@@ -207,27 +203,27 @@ const SummerStartUp = () => {
                 </div>
               </div>
               <div className="mt-6">
-              <label htmlFor="option">Select One<span className="text-red-600">*</span>
-              </label>
-              <div className=" flex gap-2 mt-4 border px-3 py-3 rounded-md">
+                <label htmlFor="option">Select One<span className="text-red-600">*</span>
+                </label>
+                <div className=" flex gap-2 mt-4 border px-3 py-3 rounded-md">
                   <CallIcon />
                   <select
-                required
-                className="w-full bg-[#424242] border-0 focus:outline-0"
-                name="option"
-                id="option"
-              >
-                <option className="bg" value="Student">Student</option>
-                <option value="Parent">Parent</option>
-                <option value="Counselor">Counselor</option>
-                <option value="Others">Others</option>
-              </select>
+                    required
+                    className="w-full bg-[#424242] border-0 focus:outline-0"
+                    name="option"
+                    id="option"
+                  >
+                    <option className="bg" value="Student">Student</option>
+                    <option value="Parent">Parent</option>
+                    <option value="Counselor">Counselor</option>
+                    <option value="Others">Others</option>
+                  </select>
                 </div>
-             
-            </div>
-            <div className="mt-6">
+
+              </div>
+              <div className="mt-6">
                 <label>
-                 City<span className="text-red-600">*</span>
+                  City<span className="text-red-600">*</span>
                 </label>
                 <div className="flex gap-2 mt-4 border px-3 py-3 rounded-md">
                   <Person3Icon />
