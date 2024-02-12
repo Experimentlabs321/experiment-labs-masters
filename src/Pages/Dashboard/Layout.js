@@ -793,6 +793,52 @@ const Layout = ({ children }) => {
                           <li>
                             <Link
                               style={
+                                location.pathname === "/announcements"
+                                  ? {
+                                      background:
+                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                    }
+                                  : {}
+                              }
+                              to="/announcements"
+                              className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
+                            >
+                              {location.pathname === "/announcements" ? (
+                                <img
+                                  className=""
+                                  src={AnnouncementsIconLight}
+                                  alt="icon"
+                                />
+                              ) : (
+                                <img
+                                  className=""
+                                  src={AnnouncementsIconDark}
+                                  alt="icon"
+                                />
+                              )}
+
+                              <span
+                                className={`${
+                                  location.pathname === "/announcements"
+                                    ? "text-white"
+                                    : "text-[#8F8F8F]"
+                                } ml-3 text-[18px] font-[500]`}
+                              >
+                                Announcements
+                                <span className=" ml-5 ">
+                                  <Badge
+                                    badgeContent={unreadAnnouncements?.length}
+                                    color="error"
+                                  >
+                                    <span className=" ml-5 "></span>
+                                  </Badge>
+                                </span>
+                              </span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              style={
                                 location.pathname === "/courseAccess"
                                   ? {
                                       background:
