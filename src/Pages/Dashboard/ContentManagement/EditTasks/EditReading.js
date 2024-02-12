@@ -70,6 +70,7 @@ const EditReading = () => {
   );
   const [batchesData, setBatchesData] = useState([]);
   const [selectedBatches, setSelectedBatches] = useState([]);
+  const [orgData, setOrgData] = useState({});
 
   useEffect(() => {
     const fetchData = {
@@ -91,6 +92,7 @@ const EditReading = () => {
       .then((res) => setEarningCategories(res?.data))
       .catch((error) => console.error(error));
   }, [currentWeek]);
+
   useEffect(() => {
     axios
       .get(
@@ -104,6 +106,7 @@ const EditReading = () => {
         setEarningParameterData(response?.data?.earningParameterData);
       });
   }, [openTask]);
+
   useEffect(() => {
     axios
       .get(
@@ -114,6 +117,17 @@ const EditReading = () => {
       })
       .catch((error) => console.error(error));
   }, [currentWeek]);
+
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
+      )
+      .then((response) => {
+        setOrgData(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [userInfo]);
 
   const handleOptionChangeBatch = (event, optionValue) => {
     // const optionValue = event.target.value;
@@ -431,21 +445,29 @@ const EditReading = () => {
             </div>
 
             <div className="px-4 my-10">
-              <p className="text-[25px] font-bold mb-10">
-                Evaluation Parameter
-              </p>
-              <SkillBasedParameter
-                forEdit={true}
-                selectedData={skillParameterData}
-                setSelectedData={setSkillParameterData}
-                categories={skillCategories}
-              />
-              <ItemEarningParameter
-                forEdit={true}
-                selectedData={earningParameterData}
-                setSelectedData={setEarningParameterData}
-                categories={earningCategories}
-              />
+              {(orgData?.showPointsAndRedemptions ||
+                orgData?.showSkillsManagement) && (
+                <p className="text-[25px] font-bold mb-10">
+                  Evaluation Parameter
+                </p>
+              )}
+              {orgData?.showSkillsManagement && (
+                <SkillBasedParameter
+                  forEdit={true}
+                  selectedData={skillParameterData}
+                  setSelectedData={setSkillParameterData}
+                  categories={skillCategories}
+                />
+              )}
+
+              {orgData?.showPointsAndRedemptions && (
+                <ItemEarningParameter
+                  forEdit={true}
+                  selectedData={earningParameterData}
+                  setSelectedData={setEarningParameterData}
+                  categories={earningCategories}
+                />
+              )}
             </div>
 
             <div className="flex items-center justify-center mt-20 mb-10">

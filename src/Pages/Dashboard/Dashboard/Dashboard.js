@@ -97,6 +97,7 @@ const Dashboard = () => {
   const [currentWeekCompletion, setCurrentWeekCompletion] = useState(0);
   const [currentCourseCompletion, setCurrentCourseCompletion] = useState(0);
   const [dashboardTheme, setDashboardTheme] = useState({});
+  const [courseAccessUrl, setCourseAccessUrl] = useState(``);
 
   const handleViewAllLevel = () => {
     setViewAllLevel(true);
@@ -232,6 +233,7 @@ const Dashboard = () => {
       )
       .then((response) => {
         setDashboardTheme(response?.data?.dashboardTheme || {});
+        setCourseAccessUrl(response?.data?.courseAccessUrl || "");
       })
       .catch((error) => console.error(error));
   }, [userInfo]);
@@ -443,6 +445,7 @@ const Dashboard = () => {
           <div>
             {dashboardTheme?.addCourses && (
               <DashboardCourses
+                courseAccessUrl={courseAccessUrl}
                 myCoursesChecked={dashboardTheme?.myCoursesChecked}
                 allCoursesChecked={dashboardTheme?.allCoursesChecked}
               />

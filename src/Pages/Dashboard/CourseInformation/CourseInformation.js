@@ -10,6 +10,7 @@ import LiveTestTask from "../../../assets/Dashboard/LiveTestTask.png";
 import VideoTask from "../../../assets/Dashboard/VideoTask.png";
 import AudioTask from "../../../assets/Dashboard/AudioTask.png";
 import FilesTask from "../../../assets/Dashboard/FilesTask.png";
+import ScheduleTask from "../../../assets/Dashboard/ScheduleTask.png";
 import Layout from "./Layout/Layout";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import DialogLayout from "../Shared/DialogLayout";
@@ -879,11 +880,11 @@ const CourseInformation = () => {
                               )}
                             </h1>
                           </div>
-                          {Role === "user" && (
+                          {/* {Role === "user" && (
                             <button className="bg-[#E1E6FF] w-[150px] h-[50px] text-[16px] font-[600] text-center rounded-[8px] ">
                               In Progress
                             </button>
-                          )}
+                          )} */}
                         </div>
                         <div className="sub-items">
                           {Role === "admin" &&
@@ -989,7 +990,7 @@ const CourseInformation = () => {
                                       {task?.taskType === "Schedule" && (
                                         <img
                                           className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
-                                          src={calendar}
+                                          src={ScheduleTask}
                                           alt="Schedule"
                                         />
                                       )}
@@ -1196,10 +1197,12 @@ const CourseInformation = () => {
                                                     />
                                                   </div>
                                                 ) : (
-                                                  <img
-                                                    src={InProgress}
-                                                    alt="InProgress"
-                                                  />
+                                                  <div className="w-full flex items-center justify-start gap-6">
+                                                    <img
+                                                      src={InProgress}
+                                                      alt="InProgress"
+                                                    />
+                                                  </div>
                                                 )}
                                               </>
                                             ) : (
@@ -1285,7 +1288,7 @@ const CourseInformation = () => {
                                       {task?.taskType === "Schedule" && (
                                         <img
                                           className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
-                                          src={calendar}
+                                          src={ScheduleTask}
                                           alt="Task"
                                         />
                                       )}

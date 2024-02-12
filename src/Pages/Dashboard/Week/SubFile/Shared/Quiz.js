@@ -98,23 +98,27 @@ const Quiz = ({
           questions: allQuestions,
         },
       };
-      console.log("passed");
-      console.log(
-        `https://experiment-labs-master-server.vercel.app/chapter/${taskData?.chapterId}/task/${taskData?._id}/add-participant/${openTask?.taskType}`
-      );
-      console.log(sendData);
       const submitCompletion = await axios.post(
-        `https://experiment-labs-master-server.vercel.app/chapter/${taskData?.chapterId}/task/${taskData?._id}/add-participant/${openTask?.taskType}`,
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/${openTask?.taskType}/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`,
         sendData
       );
-      console.log(submitCompletion);
-      setCompletionStatus(true);
       Loading().close();
-      Swal.fire({
-        icon: "success",
-        title: "Congratulations!",
-        text: "You have completed successfully!",
-      });
+      // setCompletionStatus(true);
+      if (submitCompletion?.data?.acknowledged) {
+        setCompletionStatus(true);
+        Swal.fire({
+          icon: "success",
+          title: "Congratulations!",
+          text: "You have completed successfully!",
+        });
+        // navigate(-1);
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops!",
+          text: "Some thing wrong happen please try again later!",
+        });
+      }
     } else {
       setOpenQuiz(false);
       Loading().close();

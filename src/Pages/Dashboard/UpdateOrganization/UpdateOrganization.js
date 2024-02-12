@@ -41,11 +41,12 @@ const UpdateOrganization = () => {
   const [paymentNavbarLogoutButtonTextColor, setPaymentNavbarLogoutButtonTextColor] = useState(
     orgData?.paymentNavbarLogoutButtonTextColor || "#fff"
   );
+  const [courseAccessUrl, setCourseAccessUrl] = useState(`/courseAccess?state=allCourses`);
   console.log(paymentNavbarAccessDashboardButtonColor)
   console.log(paymentNavbarAccessDashboardButtonTextColor)
   console.log(paymentNavbarLogoutButtonColor)
   console.log(paymentNavbarLogoutButtonTextColor)
- 
+
 
 
   useEffect(() => {
@@ -72,9 +73,10 @@ const UpdateOrganization = () => {
         setDashboardTheme(response?.data?.dashboardTheme || {});
         setPaymentInstance(response?.data?.paymentInstance || {});
         setMaxDeviceCount(response?.data?.maxDeviceCount || 0);
+        setCourseAccessUrl(response?.data?.courseAccessUrl || "/courseAccess?state=allCourses")
       })
       .catch((error) => console.error(error));
-      Loading().close();
+    Loading().close();
   }, [userInfo]);
 
   const handleSubmit = async (event) => {
@@ -94,13 +96,14 @@ const UpdateOrganization = () => {
       pWALogo: pWALogo,
       pWASplashscreenLogo: pWASplashscreenLogo,
       titlesColor: titlesColor,
-      orgRootUrl :form.orgRootUrl?.value,
+      orgRootUrl: form.orgRootUrl?.value,
       paymentNavbarColor: paymentNavbarColor,
       paymentNavbarAccessDashboardButtonColor: paymentNavbarAccessDashboardButtonColor,
       paymentNavbarAccessDashboardButtonTextColor: paymentNavbarAccessDashboardButtonTextColor,
       paymentNavbarLogoutButtonColor: paymentNavbarLogoutButtonColor,
       paymentNavbarLogoutButtonTextColor: paymentNavbarLogoutButtonTextColor,
       dashboardTheme: dashboardTheme,
+      courseAccessUrl
     };
     console.log(orgInfo);
 
@@ -164,7 +167,7 @@ const UpdateOrganization = () => {
               Organization ID: {orgData?._id}
             </h1>
             <form onSubmit={handleSubmit} className="px-4 mt-1">
-            <div className="flex gap-4">
+              <div className="flex gap-4">
                 <div className="flex flex-col mt-5 basis-1/2">
                   <label className="font-bold text-lg">Favicon</label>
                   <UploadFile setFileUrl={setFaviconUrl}>
@@ -349,7 +352,7 @@ const UpdateOrganization = () => {
               <div className="flex gap-4">
                 <div className="flex flex-col mt-5 basis-1/2">
                   <label className="font-bold text-lg">
-                  Payment navbar logo
+                    Payment navbar logo
                   </label>
                   <UploadFile setFileUrl={setPaymentNavbarLogo}>
                     <div>
@@ -390,7 +393,7 @@ const UpdateOrganization = () => {
               <div className="flex gap-4">
                 <div className="flex flex-col mt-5 basis-1/2">
                   <label className="font-bold text-lg">
-                  Progressive web app logo
+                    Progressive web app logo
                   </label>
                   <UploadFile setFileUrl={setPWALogo}>
                     <div>
@@ -431,7 +434,7 @@ const UpdateOrganization = () => {
               <div className="flex gap-4">
                 <div className="flex flex-col mt-5 basis-1/2">
                   <label className="font-bold text-lg">
-                  Progressive web app splash screen logo
+                    Progressive web app splash screen logo
                   </label>
                   <UploadFile setFileUrl={setPWASplashscreenLogo}>
                     <div>
@@ -487,6 +490,16 @@ const UpdateOrganization = () => {
                     className="border rounded-md max-w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]"
                   /> */}
                 </div>
+              </div>
+              <div className="flex flex-col mt-5 basis-1/2">
+                <label className="font-bold text-lg">Course Access Url</label>
+                <input
+                  type="text"
+                  defaultValue={courseAccessUrl}
+                  onChange={(e)=>setCourseAccessUrl(courseAccessUrl)}
+                  name="orgRootUrl"
+                  className="border rounded-md max-w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]"
+                />
               </div>
               <div className="flex flex-col mt-5">
                 <label className="font-bold text-lg">
@@ -549,7 +562,7 @@ const UpdateOrganization = () => {
                   htmlFor="colorInput"
                   className="block text-lg font-medium text-gray-700"
                 >
-                  Payment Navbar Access Dashboard Button Color 
+                  Payment Navbar Access Dashboard Button Color
                 </label>
                 <input
                   type="color"
@@ -565,7 +578,7 @@ const UpdateOrganization = () => {
                   htmlFor="colorInput"
                   className="block text-lg font-medium text-gray-700"
                 >
-                  Payment Navbar Access Dashboard Button Text Color 
+                  Payment Navbar Access Dashboard Button Text Color
                 </label>
                 <input
                   type="color"
@@ -581,7 +594,7 @@ const UpdateOrganization = () => {
                   htmlFor="colorInput"
                   className="block text-lg font-medium text-gray-700"
                 >
-                  Payment Navbar Logout Button Color 
+                  Payment Navbar Logout Button Color
                 </label>
                 <input
                   type="color"
@@ -597,7 +610,7 @@ const UpdateOrganization = () => {
                   htmlFor="colorInput"
                   className="block text-lg font-medium text-gray-700"
                 >
-                  Payment Navbar Logout Button text Color 
+                  Payment Navbar Logout Button text Color
                 </label>
                 <input
                   type="color"
@@ -608,7 +621,7 @@ const UpdateOrganization = () => {
                   className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
                 />
               </div>
-             
+
 
               <input
                 className="bg-green text-white py-3 px-4 font-bold rounded-lg mb-5"

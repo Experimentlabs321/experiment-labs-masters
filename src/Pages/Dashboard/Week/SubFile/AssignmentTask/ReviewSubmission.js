@@ -12,6 +12,7 @@ const ReviewSubmission = (taskData) => {
   const [earningItemResult, setEarningItemResult] = useState({});
   const [SkillItemResult, setSkillItemResult] = useState({});
   const [mainSkillItem, setMainSkillItem] = useState({});
+  const [orgData, setOrgData] = useState({});
 
   console.log(userInfo._id);
 
@@ -307,23 +308,34 @@ const ReviewSubmission = (taskData) => {
       });
     }
   }, [taskData]);
+
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
+      )
+      .then((response) => {
+        setOrgData(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [userInfo]);
   console.log(mainSkillItemDataLabels);
   console.log(mainSkillItemDataValues);
-  
+
   function formatDateTime(dateTimeString) {
     const dateObject = new Date(dateTimeString);
-  
+
     const options = {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: true // Use 12-hour format with AM/PM
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true, // Use 12-hour format with AM/PM
     };
-  
-    return dateObject.toLocaleString('en-US', options);
+
+    return dateObject.toLocaleString("en-US", options);
   }
 
   return (
@@ -374,7 +386,9 @@ const ReviewSubmission = (taskData) => {
                       {submittedResult?.submitter?.result?.resultSubmitterName}
                     </h1>
                     <h2 className=" text-[#7C7C7C] text-[16] font-[400] ">
-                      {formatDateTime(submittedResult?.submitter?.result?.dateAndTime)}
+                      {formatDateTime(
+                        submittedResult?.submitter?.result?.dateAndTime
+                      )}
                     </h2>
                   </div>
                 </div>
@@ -383,49 +397,53 @@ const ReviewSubmission = (taskData) => {
 
             {/* z */}
           </div>
-          {submittedResult?.submitter?.result && (
-            <div className=" col-span-4 pl-6 2xl:pl-10 ">
-              <div className=" py-[28px] w-full h-full shadow-lg ">
-                <div className="pb-[40px] border-b-[1px] px-[24px] ">
-                  <h1 className="flex items-center gap-[16px] text-[#3E4DAC] text-[18px] font-[700] ">
-                    Item Earning Parameter{" "}
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 20 20"
-                      fill="none"
-                    >
-                      <path
-                        d="M4.83333 7.25122L9.66667 12.0846L14.5 7.25122"
-                        stroke="#282828"
-                        stroke-width="1.61111"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-                    </svg>
-                  </h1>
-                  <div
-                    className="flex items-center justify-center mx-auto"
-                    style={{ width: "250px", height: "200px" }}
-                  >
-                    <canvas ref={chartRef} />
-                  </div>
-                  <div className="flex items-center justify-center">
-                    <div className="bg-white w-[115px] h-[115px] mt-[-198px] text-center rounded-full flex flex-col items-center justify-center  ">
-                      <h1 className="text-[#3E4DAC] text-[27px] font-[700] ">
-                        {totalSum}
-                      </h1>
-                      <h1 className=" text-[#717171] text-[12px] font-[500] ">
-                        Points
-                      </h1>
-                    </div>
-                  </div>
-                  <div className=" w-[230px] mx-auto ">
-                    <h1 className="text-[16px] font-[600] ">
-                      Total Points Earned
-                    </h1>
-                    {/*    {submittedResult?.submitter?.result?.earningParameterData?.map((item, index) => (
+          {(orgData?.showPointsAndRedemptions ||
+            orgData?.showSkillsManagement) && (
+            <>
+              {submittedResult?.submitter?.result && (
+                <div className=" col-span-4 pl-6 2xl:pl-10 ">
+                  <div className=" py-[28px] w-full h-full shadow-lg ">
+                    {orgData?.showSkillsManagement && (
+                      <div className="pb-[40px] border-b-[1px] px-[24px] ">
+                        <h1 className="flex items-center gap-[16px] text-[#3E4DAC] text-[18px] font-[700] ">
+                          Item Earning Parameter{" "}
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 20 20"
+                            fill="none"
+                          >
+                            <path
+                              d="M4.83333 7.25122L9.66667 12.0846L14.5 7.25122"
+                              stroke="#282828"
+                              stroke-width="1.61111"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                          </svg>
+                        </h1>
+                        <div
+                          className="flex items-center justify-center mx-auto"
+                          style={{ width: "250px", height: "200px" }}
+                        >
+                          <canvas ref={chartRef} />
+                        </div>
+                        <div className="flex items-center justify-center">
+                          <div className="bg-white w-[115px] h-[115px] mt-[-198px] text-center rounded-full flex flex-col items-center justify-center  ">
+                            <h1 className="text-[#3E4DAC] text-[27px] font-[700] ">
+                              {totalSum}
+                            </h1>
+                            <h1 className=" text-[#717171] text-[12px] font-[500] ">
+                              Points
+                            </h1>
+                          </div>
+                        </div>
+                        <div className=" w-[230px] mx-auto ">
+                          <h1 className="text-[16px] font-[600] ">
+                            Total Points Earned
+                          </h1>
+                          {/*    {submittedResult?.submitter?.result?.earningParameterData?.map((item, index) => (
   
                         item.earningItems.map(ma =>
                         (
@@ -437,7 +455,7 @@ const ReviewSubmission = (taskData) => {
   
   
                       ))} */}
-                    {/*   {
+                          {/*   {
                          submittedResult?.submitter?.result?.earningParameterData.map((item) => (
                          // console.log(item.earningItems)
                          //<p>{item.categoryName}</p>
@@ -469,34 +487,34 @@ const ReviewSubmission = (taskData) => {
                          ))
                       } */}
 
-                    {newEarningItemDataLabels.map((item, index) => (
-                      <div className="flex items-center justify-between text-[15] font-[500] key={index} ">
-                        <div className="flex items-center gap-[12px] ">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="7"
-                            height="7"
-                            viewBox="0 0 7 7"
-                            fill="none"
-                          >
-                            <circle
-                              cx="3.5"
-                              cy="3.5"
-                              r="3.5"
-                              fill={`${colorDataChart[index].Color}`}
-                            />
-                          </svg>
+                          {newEarningItemDataLabels.map((item, index) => (
+                            <div className="flex items-center justify-between text-[15] font-[500] key={index} ">
+                              <div className="flex items-center gap-[12px] ">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="7"
+                                  height="7"
+                                  viewBox="0 0 7 7"
+                                  fill="none"
+                                >
+                                  <circle
+                                    cx="3.5"
+                                    cy="3.5"
+                                    r="3.5"
+                                    fill={`${colorDataChart[index].Color}`}
+                                  />
+                                </svg>
 
-                          <h1>{item}</h1>
-                        </div>
+                                <h1>{item}</h1>
+                              </div>
 
-                        <h1 className="text-[#3E4DAC]">
-                          {newEarningItemDataValues[index]}
-                        </h1>
-                      </div>
-                    ))}
+                              <h1 className="text-[#3E4DAC]">
+                                {newEarningItemDataValues[index]}
+                              </h1>
+                            </div>
+                          ))}
 
-                    {/* <div className="flex items-center justify-between text-[15] font-[500] ">
+                          {/* <div className="flex items-center justify-between text-[15] font-[500] ">
                       <div className="flex items-center gap-[12px] ">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -511,7 +529,7 @@ const ReviewSubmission = (taskData) => {
                       </div>
                       <h1 className="text-[#3E4DAC]">40</h1>
                     </div> */}
-                    {/*   <div className="flex items-center justify-between text-[15] font-[500] ">
+                          {/*   <div className="flex items-center justify-between text-[15] font-[500] ">
                       <div className="flex items-center gap-[12px] ">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -541,52 +559,58 @@ const ReviewSubmission = (taskData) => {
                       </div>
                       <h1 className="text-[#3E4DAC]">5</h1>
                     </div> */}
-                  </div>
-                </div>
-                <div className=" px-[24px] pt-[30px]">
-                  <h1 className="flex items-center gap-[16px] mb-[10px] text-[#3E4DAC] text-[18px] font-[700] ">
-                    Skill Based Parameter{" "}
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 20 20"
-                      fill="none"
-                    >
-                      <path
-                        d="M4.83333 7.25122L9.66667 12.0846L14.5 7.25122"
-                        stroke="#282828"
-                        stroke-width="1.61111"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-                    </svg>
-                  </h1>
-                  {newSkillItemDataLabels?.map((item, index) => (
-                    <div className="w-full mt-[24px]" key={index}>
-                      <h1 className="text-[15] pb-[10px] flex items-center justify-between font-[500]">
-                        {item} { }
-                        <span className="text-[#3E4DAC]">
-                          {Math.round(
-                            (100 * SkillItemResult[item]) / +mainSkillItem[item]
-                          )}{" "}
-                          %
-                        </span>
-                      </h1>
-                      <div className={`w-full bg-[#EEEEEE] rounded-lg h-2`}>
-                        <div
-                          className={`bg-[${colorData[index].progressBarColor}] h-2 rounded-lg`}
-                          style={{
-                            width: `${Math.round(
-                              (100 * SkillItemResult[item]) /
-                              +mainSkillItem[item]
-                            )}%`,
-                          }}
-                        ></div>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                  {/*  <div className="w-full mt-[24px]">
+                    )}
+
+                    {orgData?.showPointsAndRedemptions && (
+                      <div className=" px-[24px] pt-[30px]">
+                        <h1 className="flex items-center gap-[16px] mb-[10px] text-[#3E4DAC] text-[18px] font-[700] ">
+                          Skill Based Parameter{" "}
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 20 20"
+                            fill="none"
+                          >
+                            <path
+                              d="M4.83333 7.25122L9.66667 12.0846L14.5 7.25122"
+                              stroke="#282828"
+                              stroke-width="1.61111"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                          </svg>
+                        </h1>
+                        {newSkillItemDataLabels?.map((item, index) => (
+                          <div className="w-full mt-[24px]" key={index}>
+                            <h1 className="text-[15] pb-[10px] flex items-center justify-between font-[500]">
+                              {item} {}
+                              <span className="text-[#3E4DAC]">
+                                {Math.round(
+                                  (100 * SkillItemResult[item]) /
+                                    +mainSkillItem[item]
+                                )}{" "}
+                                %
+                              </span>
+                            </h1>
+                            <div
+                              className={`w-full bg-[#EEEEEE] rounded-lg h-2`}
+                            >
+                              <div
+                                className={`bg-[${colorData[index].progressBarColor}] h-2 rounded-lg`}
+                                style={{
+                                  width: `${Math.round(
+                                    (100 * SkillItemResult[item]) /
+                                      +mainSkillItem[item]
+                                  )}%`,
+                                }}
+                              ></div>
+                            </div>
+                          </div>
+                        ))}
+                        {/*  <div className="w-full mt-[24px]">
                     <h1 className=" text-[15] pb-[10px] flex items-center justify-between font-[500]">
                       Verbal Communication{" "}
                       <span className="text-[#3E4DAC]">25%</span>
@@ -632,9 +656,12 @@ const ReviewSubmission = (taskData) => {
                       </div>
                     </div>
                   </div> */}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </div>
+              )}
+            </>
           )}
         </div>
       )}

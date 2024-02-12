@@ -91,75 +91,75 @@ const Feature = ({featureData}) => {
 
   const form = useRef();
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const form = event.target;
-    const name = form.name.value;
-    const number = form.number.value;
-    const email = form.email.value;
-    const option = form.option.value;
-    const city = form.city.value;
+  // const handleSubmit = (event) => {
+  //   event.preventDefault();
+  //   const form = event.target;
+  //   const name = form.name.value;
+  //   const number = form.number.value;
+  //   const email = form.email.value;
+  //   const option = form.option.value;
+  //   const city = form.city.value;
 
-    const data = {
-      Name: name,
-      Number: "+91" + number,
-      Email: email,
-      Option: option,
-      City: city,
-      Time: new Date(),
-    };
+  //   const data = {
+  //     Name: name,
+  //     Number: "+91" + number,
+  //     Email: email,
+  //     Option: option,
+  //     City: city,
+  //     Time: new Date(),
+  //   };
 
-    console.log(data);
+  //   console.log(data);
 
-    fetch(
-      "https://sheet.best/api/sheets/5c4ca56d-67bb-4f49-a538-9fdde568c68d",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }
-    )
-      .then((data) => {
-        // The response comes here
-        console.log(data);
-      })
-      .catch((error) => {
-        // Errors are reported there
-        console.log(error);
-      });
+  //   fetch(
+  //     "",
+  //     {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(data),
+  //     }
+  //   )
+  //     .then((data) => {
+  //       // The response comes here
+  //       console.log(data);
+  //     })
+  //     .catch((error) => {
+  //       // Errors are reported there
+  //       console.log(error);
+  //     });
 
-    const templateParams = {
-      from_name: name,
-      message: `
-            Name: ${name},
-            Number: ${"+91" + number},
-            Email: ${email},
-            ${option},
-            City: ${city},
-            Time: ${new Date()},
-            `,
-    };
+  //   const templateParams = {
+  //     from_name: name,
+  //     message: `
+  //           Name: ${name},
+  //           Number: ${"+91" + number},
+  //           Email: ${email},
+  //           ${option},
+  //           City: ${city},
+  //           Time: ${new Date()},
+  //           `,
+  //   };
 
-    emailjs
-      .send(
-        "service_s3bklnu",
-        "template_l0yacbb",
-        templateParams,
-        "U0g6Ht1DVmnBbENk0"
-      )
-      .then(
-        (result) => {
-          console.log(result.text);
-          toast.success("Message Sent");
-          event.target.reset();
-        },
-        (error) => {
-          console.log(error.text);
-        }
-      );
-  };
+  //   emailjs
+  //     .send(
+  //       "service_s3bklnu",
+  //       "template_l0yacbb",
+  //       templateParams,
+  //       "U0g6Ht1DVmnBbENk0"
+  //     )
+  //     .then(
+  //       (result) => {
+  //         console.log(result.text);
+  //         toast.success("Message Sent");
+  //         event.target.reset();
+  //       },
+  //       (error) => {
+  //         console.log(error.text);
+  //       }
+  //     );
+  // };
 
   return (
     <div className="mt-20" ref={containerRef}>
