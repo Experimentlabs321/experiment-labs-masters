@@ -1,8 +1,8 @@
 import { AuthContext } from "../../../contexts/AuthProvider";
 import React, { useContext, useEffect, useState } from "react";
-
+import AdjustIcon from '@mui/icons-material/Adjust';
 import { Link, useNavigate, useParams } from "react-router-dom";
-
+import AccessAlarmOutlinedIcon from '@mui/icons-material/AccessAlarmOutlined';
 import axios from "axios";
 import Modal from "react-modal";
 import {
@@ -15,6 +15,7 @@ import DateTimePicker from "react-datetime-picker";
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from "@fullcalendar/interaction";
+import { red } from '@mui/material/colors';
 import 'react-datetime-picker/dist/DateTimePicker.css';
 import 'react-calendar/dist/Calendar.css';
 import RightArrowWhite from "../../../assets/Dashboard/RightArrowWhite.png";
@@ -44,12 +45,12 @@ const matchInputWithBusySlots = (inputDate, inputTime, busyTimeSlots) => {
     const dateParts = busyStartDateString.split(' ');
     const busyStartDateStringFormatted = `${dateParts[0]} ${dateParts[2][0].toUpperCase() + dateParts[2].substring(1)} ${dateParts[1]} ${dateParts[3]}`;
     console.log('Input Date:', inputDateString);
-  //  console.log('Busy Date:', busyStartDateStringFormatted);
+    //  console.log('Busy Date:', busyStartDateStringFormatted);
     if (inputDateString === busyStartDateStringFormatted) {
       flag = 1;
     }
     const busyStartTime = busyStartDateTimeString.split(' ')[4];
-   // console.log('busy start: ', busyStartTime);
+    // console.log('busy start: ', busyStartTime);
     const busyEndTime = busyEndDateTimeString.split(' ')[4];
 
     //console.log(flag);
@@ -69,13 +70,14 @@ const matchInputWithBusySlots = (inputDate, inputTime, busyTimeSlots) => {
 
 const ScheduleTask = ({ taskData, week }) => {
   const adminMail = taskData?.usersession?.user?.email;
-  const meetingLength  = taskData?.meetingDuration;
-  console.log("Meeting duration : ",Number(meetingLength));
- // console.log(adminMail);
+  const meetingLength = taskData?.meetingDuration;
+  console.log("Meeting duration : ", Number(meetingLength));
+  // console.log(adminMail);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
   const [maxDateString, setMaxDateString] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [busyTimeSlots, setBusyTimeSlots] = useState([]);
+  const [userRequesterEvents, setUserRequesterEvents] = useState([]);
   const session = useSession();
   const supabase = useSupabaseClient();
   console.log("Task data ", taskData)
@@ -90,10 +92,10 @@ const ScheduleTask = ({ taskData, week }) => {
   const navigate = useNavigate();
   const [date, setDate] = useState(""); // State for the date
   const [time, setTime] = useState(""); // State for the time
-  const [checkTime, setCheckTime] = useState(false); 
-  const [timeRangeError, setTimeRangeError] = useState(false); 
-  const [minTime, setMinTime] = useState(""); 
-  const [maxTime, setMaxTime] = useState(""); 
+  const [checkTime, setCheckTime] = useState(false);
+  const [timeRangeError, setTimeRangeError] = useState(false);
+  const [minTime, setMinTime] = useState("");
+  const [maxTime, setMaxTime] = useState("");
   const [reservedEvent, setReservedEvent] = useState(null);
   const [startTime, setStartTime] = useState();
   const [currentWeek, setCurrentWeek] = useState(null);
@@ -111,19 +113,23 @@ const ScheduleTask = ({ taskData, week }) => {
       // Set initial maxDateString when the component mounts
       setMaxDateString(initialMaxDateString);
 
-      // Set the min and max attributes for the date input
-      document.getElementById('date').min = getCurrentDate();
-      document.getElementById('date').max = initialMaxDateString;
+      // Set the min and max attributes for the date input after the DOM is loaded
+      const dateInput = document.getElementById('date');
+      if (dateInput) {
+        dateInput.min = getCurrentDate();
+        dateInput.max = initialMaxDateString;
+      }
     }
   }, [taskData]);
+
   const handleDateChange = (event) => {
     const selectedDate = event.target.value;
-  
+
     // Replace this with your date string
     const options = { weekday: 'long', timeZone: 'UTC' }; // Set the timeZone option
-  
+
     const selectedDay = new Date(selectedDate).toLocaleDateString('en-US', options);
-  
+
     // Check if the selected day is an off-day
     if (taskData?.offDays?.includes(selectedDay)) {
       alert(`You cannot select ${selectedDay} as it is an off-day.`);
@@ -133,13 +139,13 @@ const ScheduleTask = ({ taskData, week }) => {
       setMaxDateString("");  // Reset maxDateString state
       return;
     }
-  
+
     // Check if the selected date is within the valid date range
     const currentDate = getCurrentDate();  // Assuming you have the getCurrentDate function
     const maxDateOffset = parseInt(taskData?.dateRange, 10) || 0;
     const maxDateObject = new Date(currentDate);  // Use currentDate as the starting point
     maxDateObject.setDate(maxDateObject.getDate() + maxDateOffset);
-  
+
     if (new Date(selectedDate) > maxDateObject) {
       alert(`You cannot select a date beyond the allowed range.`);
       // Clear the selected date
@@ -148,7 +154,7 @@ const ScheduleTask = ({ taskData, week }) => {
       setMaxDateString("");  // Reset maxDateString state
       return;
     }
-  
+
     setDate(selectedDate);
     const maxDateString = maxDateObject.toISOString().split('T')[0];
     document.getElementById('date').min = getCurrentDate();
@@ -159,10 +165,10 @@ const ScheduleTask = ({ taskData, week }) => {
 
   // Update the time state when the time input changes
   const handleTimeChange = (event) => {
-   
+
     const selectedTime = event.target.value;
 
-   console.log(selectedTime)
+    console.log(selectedTime)
     const minTime = taskData?.minimumTime;
     const maxTime = taskData?.maximumTime;
     setMaxTime(maxTime)
@@ -174,10 +180,10 @@ const ScheduleTask = ({ taskData, week }) => {
     if (selectedTimeDate < minTimeDate || selectedTimeDate > maxTimeDate) {
       setCheckTime(true)
       setTimeRangeError(true)
-     //alert(`Please choose a time between ${minTime} and ${maxTime}.`);
+      //alert(`Please choose a time between ${minTime} and ${maxTime}.`);
       // Reset the time to the initial state or do nothing
       document.getElementById('time').value = minTime;
-    //  setTime(null);
+      //  setTime(null);
     } else {
       setTimeRangeError(false)
       setCheckTime(false)
@@ -186,7 +192,7 @@ const ScheduleTask = ({ taskData, week }) => {
       matchInputWithBusySlots(date, selectedTime, busyTimeSlots);
     }
   };
- console.log("input time " ,time)
+  console.log("input time ", time)
 
   useEffect(() => {
     if (localStorage.getItem("role") === "admin") {
@@ -226,7 +232,7 @@ const ScheduleTask = ({ taskData, week }) => {
       };
     }).filter(Boolean);
 
-    //console.log("Busy Time Slots:", busyTimeSlots); // Log the busy time slots
+    // console.log("Busy Time Slots:", busyTimeSlots); // Log the busy time slots
 
     // Assuming week.start and week.end are available as Date objects
     const allTimeSlots = generateAllTimeSlots(week.start, week.end);
@@ -235,12 +241,11 @@ const ScheduleTask = ({ taskData, week }) => {
 
     const filteredTimeSlots = filterBusyTimeSlots(allTimeSlots, busyTimeSlots, reservedEvent);
 
-  //  console.log("Filtered Time Slots:", filteredTimeSlots); // Log the filtered time slots
+    //  console.log("Filtered Time Slots:", filteredTimeSlots); // Log the filtered time slots
 
     setBusyTimeSlots(busyTimeSlots);
-   
-  }, [taskData, matching]);
 
+  }, [taskData, matching]);
   const googleSignIn = async () => {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
@@ -260,18 +265,25 @@ const ScheduleTask = ({ taskData, week }) => {
       alert('Unexpected error. Please try again.');
     }
   };
+  useEffect(() => {
+    // Check if the user is the requester in any of the events
+    const userRequesterEvents = taskData?.events?.filter(
+      (event) => event.requester === user?.email
+    );
+
+    // Update the state variable with user requester events
+    setUserRequesterEvents(userRequesterEvents);
+    console.log("my events ", userRequesterEvents);
+  }, [taskData, user]);
   const generateAllTimeSlots = (start, end) => {
     const timeSlots = [];
     let currentTime = new Date(start);
-
     while (currentTime <= end) {
       timeSlots.push(new Date(currentTime));
       currentTime.setMinutes(currentTime.getMinutes() + Number(meetingLength)); // Assuming 30-minute time slots
     }
-
     return timeSlots;
   };
-
   // Function to filter out busy time slots
   const filterBusyTimeSlots = (allTimeSlots, busyTimeSlots, reservedEvent) => {
     return allTimeSlots.filter((timeSlot) => {
@@ -313,25 +325,21 @@ const ScheduleTask = ({ taskData, week }) => {
         timeSlot.getTime() < reservedEnd.getTime()
       );
     }
-
     return false;
   };
-
-
-
   const addEvent = async () => {
-    if(checkTime){
+    if (checkTime) {
       Swal.fire({
         icon: "error",
         title: "Invalid time!",
         text: `Please choose a time between ${minTime} and ${maxTime}.`,
-      }); 
-    } 
+      });
+    }
     else {
       console.log(date)
       console.log(time)
       if (date && time) {
-        
+
         const combinedDateTimeUTC = new Date(`${date}T${time}Z`);
         const endDateTimeUTC = new Date(combinedDateTimeUTC);
         endDateTimeUTC.setMinutes(endDateTimeUTC.getMinutes() + Number(meetingLength));
@@ -346,7 +354,7 @@ const ScheduleTask = ({ taskData, week }) => {
           return;
         }
         const refreshToken = process.env.REACT_APP_refreshToken;
-  
+
         fetch("https://oauth2.googleapis.com/token", {
           method: "POST",
           headers: {
@@ -356,7 +364,7 @@ const ScheduleTask = ({ taskData, week }) => {
         })
           .then((response) => response.json())
           .then((data) => {
-  
+
             var event = {
               summary: `${userInfo?.name} <> Experiment Labs`,
               location: "",
@@ -376,7 +384,7 @@ const ScheduleTask = ({ taskData, week }) => {
                 {
                   email: adminMail
                 },
-                { email: "alrafi4@gmail.com" },
+                // { email: "alrafi4@gmail.com" },
               ],
               reminders: {
                 useDefault: true,
@@ -391,8 +399,8 @@ const ScheduleTask = ({ taskData, week }) => {
                 },
               },
             };
-  
-  
+
+
             const newAccessToken = data.access_token;
             function initiate() {
               const sendData = async (event) => {
@@ -404,7 +412,7 @@ const ScheduleTask = ({ taskData, week }) => {
                   `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
                   {
                     from: `${user?.email}`,
-                    to: `${user?.email},shihab77023@gmail.com,alrafi4@gmail.com,${adminMail}`,
+                    to: `${user?.email},naman.j@experimentlabs.in,${adminMail}`,
                     subject: `Event request`,
                     message: `A event is going to held for doubt clearing at ${combinedDateTimeUTC.toISOString()} to ${endDateTimeUTC.toISOString()}. Meeting link ${event?.hangoutLink
                       }`,
@@ -421,7 +429,7 @@ const ScheduleTask = ({ taskData, week }) => {
                     title: "Request Sent!",
                     text: "Your slot request has been sent!",
                   });
-                 // navigate(-1);
+                  // navigate(-1);
                 }
               };
               gapi.client
@@ -448,7 +456,7 @@ const ScheduleTask = ({ taskData, week }) => {
                         { email: "naman.j@experimentlabs.in" },
                         // { email: "gaurav@experimentlabs.in" },
                         { email: user?.email },
-                        { email: "alrafi4@gmail.com" },
+                        // { email: "alrafi4@gmail.com" },
                         {
                           email: adminMail
                         },
@@ -457,8 +465,8 @@ const ScheduleTask = ({ taskData, week }) => {
                       hangoutLink: response?.result?.hangoutLink,
                       requester: user?.email,
                     };
-  
-  
+
+
                     sendData(event);
                     return [true, response];
                   },
@@ -469,11 +477,11 @@ const ScheduleTask = ({ taskData, week }) => {
                 );
             }
             gapi.load("client", initiate);
-            navigate(-1)  
+            navigate(-1)
           })
-          
+
           .catch((error) => {
-  
+
             console.error("Token refresh error:", error);
           });
       } else {
@@ -485,7 +493,7 @@ const ScheduleTask = ({ taskData, week }) => {
       }
 
     }
-  
+
   };
   const getCurrentDate = () => {
     const today = new Date();
@@ -495,101 +503,130 @@ const ScheduleTask = ({ taskData, week }) => {
     return `${year}-${month}-${day}`;
   };
 
-
+  const isUserRequester = taskData?.events?.some(
+    (event) => event.requester === user?.email
+  );
+  console.log("is there my event", isUserRequester);
   return (
     <div className="flex justify-center my-5">
-      <div className="w-[250px] lg:w-[355px] min-w-[250px] lg:min-w-min h-[370px] lg:h-[515px]">
-        <h1 className="text-[18px] lg:text-[25px] font-[700] text-center pb-[25px]">
-          Request slots
-        </h1>
-        <div
-          style={{
-            filter: "drop-shadow(3.75217px 3.75217px 0px #000000)",
-          }}
-          className="bg-[#0E2749] w-full h-[400px] rounded-[14px] py-[15px] px-[15px] mb-10 lg:p-[30px] flex flex-col justify-between items-center gap-5"
-        >
+      {userRequesterEvents?.length > 0 ? (
+        // Render content specific to events where the user is the requester
+        <div className="grid grid-cols-1 my-5 justify-items-center gap-5 items-center">
+          {/* <p>You are the requester in the following events:</p> */}
+          {userRequesterEvents?.map((event, index) => (
 
-          <div className="w-full relative">
-            <p className="text-[#C0C0C0] text-[18px] font-[600] pb-[18px]">
-              Date
-            </p>
-            <div className="relative inline-flex w-full">
-              <input
-                required
-                onChange={handleDateChange}
-                className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
-                name="date"
-                id="date"
-                type="date"
-                min={getCurrentDate()}
-                max={maxDateString}
-              />
+            <div key={index} className="shadow-lg w-[400px] bg-sky-400 text-white rounded-md p-2 ">
+              <p className="flex gap-1 items-center justify-center mt-2"><AdjustIcon sx={{ color: red[400] }} ></AdjustIcon>Meeting with {event?.organization?.organizationName}</p>
+              <div className="flex justify-center items-center gap-2">
+                {/* <AccessAlarmOutlinedIcon /> */}
+                <div className=" my-3">
+                  <p className="font-semibold">From : <span className="text-sm">{new Date(event.start).toUTCString()}</span></p>
+                  <p className="font-semibold">To : <span className="text-sm">{new Date(event.end).toUTCString()}</span></p>
+                </div>
+              </div>
+              <div className="flex justify-center items-center mt-3">
+                <Link to={event?.hangoutLink} className=" text-white bg-black px-3 py-2 rounded-md">
+                  Go to Meet Link
+                </Link>
+              </div>
             </div>
-            <p className="text-[#C0C0C0] text-[18px] font-[600] py-[18px]">
-              Time
-            </p>
-            <div className="relative inline-flex w-full">
-              <input
-                required
-                onChange={handleTimeChange}
-                className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
-                name="time"
-                min={taskData?.minimumTime}
-                max={taskData?.maximumTime}
-                id="time"
-                type="time"
-                defaultValue={taskData?.minimumTime} // Set the default value to 9:00 AM
-              />
-            </div>
-          </div>
-          {reservedEvent ? (
-            <a
-              href={reservedEvent?.hangoutLink}
-              target="_blank"
-              rel="noreferrer"
-              style={{ boxShadow: "0px 6.32482px 0px #CA5F98" }}
-              className="bg-[#0F3934] w-full py-[15px] px-[23px] rounded-[13px] text-[12px] lg:text-[18px] font-[700] z-[1]"
-            >
-              <p className="flex items-center justify-center text-white">
-                Join Meeting{" "}
-                <img
-                  className="pl-1 w-[21px] lg:w-[32px]"
-                  src={RightArrowWhite}
-                  alt="RightArrowBlack"
-                />
+          ))}
+
+          {/* Add any additional content or components specific to user requester events */}
+        </div>
+      ) : (
+        <div className="w-[250px] lg:w-[355px] min-w-[250px] lg:min-w-min h-[370px] lg:h-[515px]">
+          <h1 className="text-[18px] lg:text-[25px] font-[700] text-center pb-[25px]">
+            Request slots
+          </h1>
+          <div
+            style={{
+              filter: "drop-shadow(3.75217px 3.75217px 0px #000000)",
+            }}
+            className="bg-[#0E2749] w-full h-[400px] rounded-[14px] py-[15px] px-[15px] mb-10 lg:p-[30px] flex flex-col justify-between items-center gap-5"
+          >
+
+            <div className="w-full relative">
+              <p className="text-[#C0C0C0] text-[18px] font-[600] pb-[18px]">
+                Date
               </p>
-            </a>
-          ) : (
-            <>
-              {matching || timeRangeError ? <>
-              {timeRangeError ? <p className="text-white">Please choose a time between {minTime} and {maxTime}.</p>
-              :
-              <p className="text-white">Admin is Busy at that time</p>
-
-              }
-              
-
-              </> : <DashboardPrimaryButton
-                bgColor="#3E4DAC"
-                shadow="0px 6.32482px 0px #CA5F98"
-                width="full"
-                onClick={addEvent}
-                disabled={!selectedTimeSlot || isTimeSlotBusy(selectedTimeSlot) || isTimeSlotReserved(selectedTimeSlot)}
+              <div className="relative inline-flex w-full">
+                <input
+                  required
+                  onChange={handleDateChange}
+                  className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
+                  name="date"
+                  id="date"
+                  type="date"
+                  min={getCurrentDate()}
+                  max={maxDateString}
+                />
+              </div>
+              <p className="text-[#C0C0C0] text-[18px] font-[600] py-[18px]">
+                Time
+              </p>
+              <div className="relative inline-flex w-full">
+                <input
+                  required
+                  onChange={handleTimeChange}
+                  className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
+                  name="time"
+                  min={taskData?.minimumTime}
+                  max={taskData?.maximumTime}
+                  id="time"
+                  type="time"
+                  defaultValue={taskData?.minimumTime} // Set the default value to 9:00 AM
+                />
+              </div>
+            </div>
+            {reservedEvent ? (
+              <a
+                href={reservedEvent?.hangoutLink}
+                target="_blank"
+                rel="noreferrer"
+                style={{ boxShadow: "0px 6.32482px 0px #CA5F98" }}
+                className="bg-[#0F3934] w-full py-[15px] px-[23px] rounded-[13px] text-[12px] lg:text-[18px] font-[700] z-[1]"
               >
                 <p className="flex items-center justify-center text-white">
-                  Request Event{" "}
+                  Join Meeting{" "}
                   <img
                     className="pl-1 w-[21px] lg:w-[32px]"
                     src={RightArrowWhite}
                     alt="RightArrowBlack"
                   />
                 </p>
-              </DashboardPrimaryButton>}
-            </>
-          )}
+              </a>
+            ) : (
+              <>
+                {matching || timeRangeError ? <>
+                  {timeRangeError ? <p className="text-white">Please choose a time between {minTime} and {maxTime}.</p>
+                    :
+                    <p className="text-white">Admin is Busy at that time</p>
 
-        </div>
-      </div>
+                  }
+
+
+                </> : <DashboardPrimaryButton
+                  bgColor="#3E4DAC"
+                  shadow="0px 6.32482px 0px #CA5F98"
+                  width="full"
+                  onClick={addEvent}
+                  disabled={!selectedTimeSlot || isTimeSlotBusy(selectedTimeSlot) || isTimeSlotReserved(selectedTimeSlot)}
+                >
+                  <p className="flex items-center justify-center text-white">
+                    Request Event{" "}
+                    <img
+                      className="pl-1 w-[21px] lg:w-[32px]"
+                      src={RightArrowWhite}
+                      alt="RightArrowBlack"
+                    />
+                  </p>
+                </DashboardPrimaryButton>}
+              </>
+            )}
+
+          </div>
+        </div>)}
 
     </div>
   );

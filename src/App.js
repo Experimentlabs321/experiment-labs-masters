@@ -98,27 +98,40 @@ function App() {
   if (isLoading) {
     return <div></div>;
   }
+  const getCurrentDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
   async function fetchGoogleCalendarEvents() {
-
-    const response = await fetch(
-      "https://www.googleapis.com/calendar/v3/calendars/primary/events",
-      {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + session.provider_token,
-          // Access token for Google
-        },
-      }
-    );
-    console.log(session)
+    const currentDate = new Date().toISOString();
+    const url = new URL("https://www.googleapis.com/calendar/v3/calendars/primary/events");
+  
+    // Append parameters to the URL using URLSearchParams
+    url.searchParams.append("timeMin", currentDate);
+    url.searchParams.append("singleEvents", true);
+    url.searchParams.append("orderBy", "startTime");
+  
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + session.provider_token,
+      },
+    });
+  
+    console.log(session);
+  
     if (!response.ok) {
       throw new Error("Failed to fetch Google Calendar events");
     }
-
+  
     const data = await response.json();
     console.log(data);
     return data.items || [];
   }
+  
 
   async function fetchAndDisplayGoogleCalendarEvents() {
     try {

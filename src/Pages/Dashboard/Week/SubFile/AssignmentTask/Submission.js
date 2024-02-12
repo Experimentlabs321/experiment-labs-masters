@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import uploadFileToS3 from "../../../../UploadComponent/s3Uploader";
 import { toast } from "react-hot-toast";
 import axios from "axios";
@@ -15,7 +15,29 @@ const Submission = ({ taskData }) => {
   const [openTask, setOpenTask] = useState(
     JSON.parse(localStorage.getItem("task"))
   );
-  console.log(taskData);
+  const [course, setCourse] = useState({});
+  const [batch, setBatch] = useState({});
+
+  useEffect(() => {
+    const findCourseAndBatch = userInfo?.courses?.find(
+      (item) => item?.courseId === taskData?.courseId
+    );
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${findCourseAndBatch?.courseId}`
+      )
+      .then((res) => setCourse(res?.data))
+      .catch((error) => console.error(error));
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/batches/batchId/${findCourseAndBatch?.batchId}`
+      )
+      .then((response) => {
+        setBatch(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [taskData, userInfo]);
+  console.log(course, batch);
 
   const handleDragEnter = (e) => {
     e.preventDefault();
@@ -107,6 +129,21 @@ const Submission = ({ taskData }) => {
       console.log(submitCompletion);
 
       if (newAssignment?.data?.acknowledged) {
+        const newNotification = await axios.post(
+          `https://test-server-tg7l.onrender.com/api/v1/notifications/addNotification`,
+          {
+            message: `${userInfo?.name} has submitted an assignment of the task ${taskData?.taskName} of the course ${course?.courseFullName} batch ${batch[0]?.batchName}.`,
+            dateTime: new Date(),
+            recipient: {
+              type: "Admins",
+              organizationId: userInfo?.organizationId,
+            },
+            type: "Submission",
+            readBy: [],
+            triggeredBy: user?.email,
+          }
+        );
+        console.log(newNotification);
         toast.success("Assignment Submitted Successfully");
       }
 

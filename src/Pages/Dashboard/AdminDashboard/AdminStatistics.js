@@ -6,12 +6,22 @@ import { Link, useHistory } from "react-router-dom";
 import ApexChart from "./ApexChart";
 import RevenueChart from "./RevenueChart";
 import inrIcon from '../../../assets/Dashboard/inrIcon.png'
+import Loading from "../../Shared/Loading/Loading";
 
 
 
 const AdminStatistics = () => {
     const { userInfo } = useContext(AuthContext);
     const [overViewCount, setOverViewCount] = useState();
+    const [students, setStudents] = useState();
+    const [selectedFilter, setSelectedFilter] = useState('Last 7 Days');
+    const [totalStudents, setTotalStudents] = useState();
+    const [totalEnrolledStudents, setTotalEnrolledStudents] = useState();
+    const [totalRevenue, setTotalRevenue] = useState();
+    const [paidStudents, setPaidStudents] = useState();
+    const [fromDate, setFromDate] = useState('');
+    const [toDate, setToDate] = useState('');
+
 
 
 
@@ -28,18 +38,63 @@ const AdminStatistics = () => {
             .catch((error) => console.error(error));
     }, [userInfo]);
 
-    console.log(overViewCount);
-    // ...
+    // console.log(overViewCount);
+
+    useEffect(() => {
+        Loading();
+        axios
+            .get(
+                `${process.env.REACT_APP_SERVER_API}/api/v1/users/students/${userInfo?.organizationId}`
+            )
+            .then((response) => {
 
 
+                setStudents(response?.data);
 
-   
-
+            })
+            .catch((error) => console.error(error));
+        Loading().close();
+    }, [userInfo]);
+    useEffect(() => {
+        Loading();
+        axios
+            .get(
+                `${process.env.REACT_APP_SERVER_API}/api/v1/users/getAllPaidInfo/organizationId/${userInfo?.organizationId}`
+            )
+            .then((response) => {
+                setPaidStudents(response?.data)
+            })
+            .catch((error) => console.error(error));
+        Loading().close();
+    }, [userInfo]);
 
 
     return (
         <div>
             <h1 className="text-3xl font-bold my-10"> Overview </h1>
+            <div className="mb-5 flex gap-5 items-center">
+
+                <label className="font-bold">Select Filter:</label>
+                <select className="p-2 border rounded" onChange={(e) => setSelectedFilter(e.target.value)} value={selectedFilter}>
+
+                    <option value="Last 7 Days">Last 7 Days</option>
+                    <option value="Last 30 Days">Last 30 Days</option>
+                    <option value="Last 11 Months">Last year</option>
+                    <option value="Overall">Overall</option>
+                    <option value="Custom date">Custom date</option>
+
+                </select>
+
+            </div>
+            {
+                selectedFilter === "Custom date" && (
+                    <div className="flex gap-5 my-5">
+                    <p><span>From Date :</span><input className="p-2 border rounded ms-2" type="datetime-local" value={fromDate} onChange={e => setFromDate(e.target.value)} /></p>
+                    <p><span>To Date:</span><input className="p-2 border rounded ms-2" type="datetime-local" value={toDate} onChange={e => setToDate(e.target.value)} /></p>
+                </div>
+                )
+            }
+
 
             <div className="flex gap-5">
                 <Link
@@ -58,7 +113,7 @@ const AdminStatistics = () => {
                         />
                     </div>
                     <div className="text-white text-3xl font-bold tracking-[2.96px] whitespace-nowrap mt-3">
-                        {overViewCount?.totalStudent ? overViewCount?.totalStudent : "0"}
+                        {totalStudents ? totalStudents : "0"}
                     </div>
                 </Link>
                 <Link to={`/myStudents/${"paidStudents"}`} className="w-[160px] justify-center items-stretch shadow-sm bg-[#0A98EA] flex flex-col px-2 rounded-md py-4">
@@ -74,7 +129,7 @@ const AdminStatistics = () => {
                         />
                     </div>
                     <div className="text-white text-3xl font-bold tracking-[2.96px] whitespace-nowrap mt-3">
-                        {overViewCount?.enrollStudents ? overViewCount?.enrollStudents : "0"}
+                        {totalEnrolledStudents ? totalEnrolledStudents : "0"}
                     </div>
                 </Link>
                 <Link to='' className="w-[160px] justify-center items-stretch shadow-sm bg-[#5c0aea] flex flex-col px-2 rounded-md py-4">
@@ -90,14 +145,14 @@ const AdminStatistics = () => {
                         />
                     </div>
                     <div className="text-white text-3xl font-bold tracking-[2.96px] whitespace-nowrap mt-3 flex items-center">
-                        <img className="w-[20px] text-[#fff]" src={inrIcon} alt="icon"/>
-                       {overViewCount?.totalPaidAmount ? overViewCount?.totalPaidAmount : "0"}
+                        <img className="w-[20px] text-[#fff]" src={inrIcon} alt="icon" />
+                        {totalRevenue ? totalRevenue : "0"}
                     </div>
                 </Link>
 
                 <Link
                     to="/mentorAssignments"
-                    className="w-[160px] justify-center items-stretch shadow-sm bg-[#6278FF] flex flex-col px-2 rounded-md py-4"
+                    className="w-[160px] justify-center ms-10 items-stretch shadow-sm bg-[#6278FF] flex flex-col px-2 rounded-md py-4"
                 >
                     <div className="justify-between items-stretch flex gap-5">
                         <div className="text-white text-sm font-medium tracking-widest">
@@ -153,8 +208,24 @@ const AdminStatistics = () => {
                 </div> */}
             </div>
             <div className="my-10">
-            <ApexChart overViewCount={overViewCount} />
-            <RevenueChart/>
+                <ApexChart
+
+                    selectedFilter={selectedFilter}
+                    students={students}
+                    setTotalStudents={setTotalStudents}
+                    setTotalEnrolledStudents={setTotalEnrolledStudents}
+                    toDate={toDate}
+                    fromDate={fromDate}
+
+                />
+                <RevenueChart
+
+                    selectedFilter={selectedFilter}
+                    paidStudents={paidStudents}
+                    setTotalRevenue={setTotalRevenue}
+                    fromDate={fromDate}
+                    toDate={toDate}
+                />
 
             </div>
         </div>

@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import Layout from "../Layout";
 import Level from "./Level";
 import DashboardUserUpdate from "./DashboardUserUpdate";
+import AdjustIcon from '@mui/icons-material/Adjust';
 import TechnicalUpdate from "./TechnicalUpdate";
 import UpcomingQuest from "../../../assets/Dashboard/UpcomingQuest.png";
 import RightArrowBlack from "../../../assets/Dashboard/RightArrowBlack.png";
@@ -17,6 +18,7 @@ import OpenBox from "../../../assets/Dashboard/OpenBox.png";
 import WeekUpdate from "../../../assets/Dashboard/WeekUpdate.png";
 import Challenges from "../../../assets/Dashboard/Challenges.png";
 import DashboardCourses from "./DashboardCourses";
+import { Link } from "react-router-dom";
 const Dashboard = () => {
   const data = [
     {
@@ -88,6 +90,7 @@ const Dashboard = () => {
   // const [length, setLength] = useState(data.length < 5 ? data.length : 5);
   const [length, setLength] = useState(data.length);
   const [courses, setCourses] = useState([]);
+  const [userRequesterEvents, setUserRequesterEvents] = useState([]);
   const { userInfo, user } = useContext(AuthContext);
   const [selectedCourse, setSelectedCourse] = useState({});
   const [isOpen, setIsOpen] = useState(false);
@@ -237,7 +240,17 @@ const Dashboard = () => {
       })
       .catch((error) => console.error(error));
   }, [userInfo]);
-  console.log(dashboardTheme);
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/events/email/${userInfo?.email}`
+      )
+      .then((response) => {
+        setUserRequesterEvents(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [userInfo]);
+  console.log(userRequesterEvents);
   return (
     <div>
       <Layout>
@@ -259,9 +272,8 @@ const Dashboard = () => {
             </div>
             {dashboardTheme?.showLabJourney && (
               <div
-                className={`lg:border-b-2 lg:border-l-2 lg:border-[#E8E8E8] pt-10 pb-10 px-4 text-center lg:max-h-[732px] overflow-x-scroll lg:overflow-y-scroll ${
-                  viewAllLevel ? "labJourney" : "labJourneyRemoveScroll"
-                } `}
+                className={`lg:border-b-2 lg:border-l-2 lg:border-[#E8E8E8] pt-10 pb-10 px-4 text-center lg:max-h-[732px] overflow-x-scroll lg:overflow-y-scroll ${viewAllLevel ? "labJourney" : "labJourneyRemoveScroll"
+                  } `}
               >
                 <h1 className="text-[18px] lg:text-[26px] font-[700]">
                   Lab Journey
@@ -282,24 +294,20 @@ const Dashboard = () => {
                 <div className="mt-[20px] bg-[#D7ECFF] labJourney rounded-lg px-[10px] flex lg:hidden overflow-x-scroll h-[155px]">
                   {data?.map((singleData, i) => (
                     <div
-                      className={`${
-                        i % 2 === 0
+                      className={`${i % 2 === 0
                           ? "flex-col border-b-white border-b-0 rounded-t-full"
                           : " flex-col-reverse border-t-white border-t-0 rounded-b-full self-end"
-                      } h-[92px] relative flex ml-[-5.26px] p-[5px] border-[#0F3934] border-[5px] overflow-visible my-4`}
+                        } h-[92px] relative flex ml-[-5.26px] p-[5px] border-[#0F3934] border-[5px] overflow-visible my-4`}
                     >
                       <div
                         // style={[{ boxShadow: "1.70448px 1.70448px 0px #000000" }]}
-                        className={`rounded-[50%] w-[44px] h-[44px] lg:w-[71px] lg:h-[69px] flex flex-col items-center justify-center text-[8px] lg:text-[17px] font-[700] underline underline-offset-4 z-[1] ${
-                          singleData?.status === "Completed" &&
+                        className={`rounded-[50%] w-[44px] h-[44px] lg:w-[71px] lg:h-[69px] flex flex-col items-center justify-center text-[8px] lg:text-[17px] font-[700] underline underline-offset-4 z-[1] ${singleData?.status === "Completed" &&
                           " decoration-white text-white bg-[#3E4DAC]"
-                        } ${
-                          singleData?.status === "Ongoing" && "  bg-[#FFDB70]"
-                        } ${
-                          singleData?.status === "Locked"
+                          } ${singleData?.status === "Ongoing" && "  bg-[#FFDB70]"
+                          } ${singleData?.status === "Locked"
                             ? "lockShadow border-x-4 border-y-4 bg-[#D9D9D9] text-[#706F6F]"
                             : "normalShadow"
-                        }`}
+                          }`}
                       >
                         {singleData?.status === "Ongoing" && (
                           <h1 className="text-[8px] lg:text-[13px] ">
@@ -314,10 +322,9 @@ const Dashboard = () => {
                           />
                         )}
                         <h1
-                          className={`${
-                            singleData?.status !== "Completed" &&
+                          className={`${singleData?.status !== "Completed" &&
                             "text-[8px] lg:text-[13px]"
-                          }`}
+                            }`}
                         >
                           {singleData?.score}
                         </h1>
@@ -326,38 +333,61 @@ const Dashboard = () => {
                         )}
                       </div>
                       <h1
-                        className={`underline underline-offset-2 rounded-[9px] z-0 text-[8px] lg:text-[12px] font-[700] py-1 ${
-                          singleData?.status === "Completed" && "bg-[#9CAAFF]"
-                        } ${
-                          singleData?.status === "Ongoing" && "bg-[#FFC13D]"
-                        } ${
-                          singleData?.status === "Locked" && "bg-[#D9D9D9]"
-                        } ${i % 2 === 0 ? "mt-[10px]" : "mb-[10px]"}`}
+                        className={`underline underline-offset-2 rounded-[9px] z-0 text-[8px] lg:text-[12px] font-[700] py-1 ${singleData?.status === "Completed" && "bg-[#9CAAFF]"
+                          } ${singleData?.status === "Ongoing" && "bg-[#FFC13D]"
+                          } ${singleData?.status === "Locked" && "bg-[#D9D9D9]"
+                          } ${i % 2 === 0 ? "mt-[10px]" : "mb-[10px]"}`}
                       >
                         {singleData?.name}
                       </h1>
                     </div>
                   ))}
                 </div>
+                {/* <div>
+                  {userRequesterEvents?.length > 0 ? (
+                   
+                    <div className="grid grid-cols-1 my-5 justify-items-center gap-5 items-center">
+
+                      {userRequesterEvents?.map((event, index) => (
+
+                        <div key={index} className="shadow-lg w-[400px] bg-sky-400 text-white rounded-md p-2 ">
+                          <p className="flex gap-1 items-center justify-center mt-2"><AdjustIcon sx={{ color: red[400] }} ></AdjustIcon>Meeting with {event?.organization?.organizationName}</p>
+                          <div className="flex justify-center items-center gap-2">
+                      
+                            <div className=" my-3">
+                              <p className="font-semibold">From : <span className="text-sm">{new Date(event.start).toUTCString()}</span></p>
+                              <p className="font-semibold">To : <span className="text-sm">{new Date(event.end).toUTCString()}</span></p>
+                            </div>
+                          </div>
+                          <div className="flex justify-center items-center mt-3">
+                            <Link to={event?.hangoutLink} className=" text-white bg-black px-3 py-2 rounded-md">
+                              Go to Meet Link
+                            </Link>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : <></>}
+                </div> */}
               </div>
             )}
           </div>
           {(dashboardTheme?.addRequestSlots ||
             dashboardTheme?.addChallenges) && (
-            <div className="lg:grid lg:grid-cols-3 gap-2 mb-[150px] lg:mb-0">
-              {(dashboardTheme?.addRequestSlots ||
-                dashboardTheme?.addChallenges) && (
-                <div className="lg:col-span-2 pt-10 px-4">
-                  <TechnicalUpdate
-                    dashboardImages={dashboardImages}
-                    currentWeekCompletion={currentWeekCompletion}
-                    selectedCourse={selectedCourse}
-                    weeks={weeks}
-                    dashboardTheme={dashboardTheme}
-                  />
-                </div>
-              )}
-              {/* <div className=" lg:border-b-2 lg:border-l-2 lg:border-[#E8E8E8] pt-10 px-4">
+              <div className="lg:grid lg:grid-cols-3 gap-2 mb-[150px] lg:mb-0">
+                {(dashboardTheme?.addRequestSlots ||
+                  dashboardTheme?.addChallenges) && (
+                    <div className="lg:col-span-2 pt-10 px-4">
+                      <TechnicalUpdate
+                        dashboardImages={dashboardImages}
+                        currentWeekCompletion={currentWeekCompletion}
+                        selectedCourse={selectedCourse}
+                        weeks={weeks}
+                        dashboardTheme={dashboardTheme}
+                      />
+                    </div>
+                  )}
+                {/* <div className=" lg:border-b-2 lg:border-l-2 lg:border-[#E8E8E8] pt-10 px-4">
               <div className="w-full flex justify-center">
                 <div className="w-full lg:max-w-[355px] lg:h-[515px]">
                   <h1 className="text-[18px] lg:text-[25px] font-[700] text-center pb-[32px]">
@@ -440,8 +470,8 @@ const Dashboard = () => {
                 </div>
               </div>
             </div> */}
-            </div>
-          )}
+              </div>
+            )}
           <div>
             {dashboardTheme?.addCourses && (
               <DashboardCourses
