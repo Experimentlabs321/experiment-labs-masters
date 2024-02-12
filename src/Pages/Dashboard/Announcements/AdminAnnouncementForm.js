@@ -3,6 +3,7 @@ import TextEditor from "../../Shared/TextEditor/TextEditor";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
 import toast from "react-hot-toast";
+import uploadFileToS3 from "../../UploadComponent/s3Uploader";
 
 const AdminAnnouncementForm = () => {
   const { user, userInfo } = useContext(AuthContext);
@@ -28,16 +29,8 @@ const AdminAnnouncementForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Logic to submit the announcement to the backend
-    console.log({
-      title: "",
-      description: "",
-      dateTime: new Date(),
-      urgency: "",
-      organizationId: userInfo?.organizationId,
-      readBy: [],
-      triggeredBy: user?.email,
-    });
+    let imageUrl = "";
+    if (selectedFile) imageUrl = await uploadFileToS3(selectedFile);
 
     const newAnnouncement = await axios.post(
       `https://test-server-tg7l.onrender.com/api/v1/announcements/addAnnouncement`,
@@ -49,6 +42,7 @@ const AdminAnnouncementForm = () => {
         organizationId: userInfo?.organizationId,
         readBy: [],
         triggeredBy: user?.email,
+        imageUrl,
       }
     );
     console.log(newAnnouncement);
