@@ -28,7 +28,7 @@ let matching = false;
 const matchInputWithBusySlots = (inputDate, inputTime, busyTimeSlots) => {
 
   let flag = 0;
-  console.log("input",inputDate, inputTime)
+  console.log("input", inputDate, inputTime)
   const inputDateTime = new Date(`${inputDate}T${inputTime}`);
   console.log('Input DateTime:', inputDateTime);
 
@@ -397,21 +397,97 @@ const ScheduleTask = ({ taskData, week }) => {
     }
     return false;
   };
-  const formatUtcDateTimeString = (utcDateTimeString) => {
-    const utcDateTime = new Date(utcDateTimeString);
+  function formatUtcDateTimeString(dateTimeString) {
+    const utcDateTime = new Date(dateTimeString);
 
-    // Format the date and time in 12-hour format
-    const options = {
+    if (isNaN(utcDateTime)) {
+      console.error("Invalid dateTimeString:", dateTimeString);
+      return "Invalid Date";
+    }
+
+    const formatInTimeZone = (dateTime, timeZone, label) => (
+      `${dateTime.toLocaleString('en-US', {
+        timeZone,
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+      })} (${label})`
+    );
+
+    const formattedUTC = formatInTimeZone(utcDateTime, "UTC", "UTC");
+    const formattedIndia = formatInTimeZone(utcDateTime, "Asia/Kolkata", "IST");
+    const formattedKorea = formatInTimeZone(utcDateTime, "Asia/Seoul", "KST");
+    const formattedBangladesh = formatInTimeZone(utcDateTime, "Asia/Dhaka", "BDT");
+
+    return `UTC: ${formattedUTC}, India: ${formattedIndia}, Korea: ${formattedKorea}, Bangladesh: ${formattedBangladesh}`;
+  }
+  function formatUtcDateTimeStringToListItems(dateTimeString) {
+    const utcDateTime = new Date(dateTimeString);
+  
+    if (isNaN(utcDateTime.getTime())) {
+      console.error("Invalid dateTimeString:", dateTimeString);
+      return ["Invalid Date"];
+    }
+  
+    const formatInTimeZone = (dateTime, timeZone, label) => (
+      `${dateTime.toLocaleString('en-US', {
+        timeZone,
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+      })} (${label})`
+    );
+  
+    return [
+      formatInTimeZone(utcDateTime, "UTC", "UTC"),
+      formatInTimeZone(utcDateTime, "Asia/Kolkata", "India-time"),
+      formatInTimeZone(utcDateTime, "Asia/Seoul", "Korea-time"),
+      formatInTimeZone(utcDateTime, "Asia/Dhaka", "Bangladesh-time"),
+    ];
+  }
+
+  const formatDateTimeWithTimeZones = (dateTime) => {
+    // Convert dateTime to UTC for universal understanding
+    const utcTime = dateTime.toISOString();
+    // Format the date and time in a user-friendly way, in UTC
+    const formattedUtcTime = new Date(utcTime).toLocaleString('en-US', {
+      timeZone: "UTC",
       year: 'numeric',
-      month: 'short',
+      month: 'long',
       day: 'numeric',
       hour: 'numeric',
-      minute: 'numeric',
+      minute: '2-digit',
       hour12: true,
-      timeZone: 'UTC'
-    };
+    }) + ' (UTC)';
 
-    return utcDateTime.toLocaleString('en-US', options);
+    // Add a few major time zones for reference if you wish
+    const dhakaTime = new Date(utcTime).toLocaleString('en-US', {
+      timeZone: "Asia/Dhaka",
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    }) + ' (BDT)'; // Bangladesh Time
+
+    const kolkataTime = new Date(utcTime).toLocaleString('en-US', {
+      timeZone: "Asia/Kolkata",
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    }) + ' (IST)'; // Indian Standard Time
+
+    const seoulTime = new Date(utcTime).toLocaleString('en-US', {
+      timeZone: "Asia/Seoul",
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    }) + ' (KST)'; // Korea Standard Time
+    return `${formattedUtcTime}, India-time: ${kolkataTime}, Korea-time: ${seoulTime}, Bangladesh-time: ${dhakaTime}`;
   };
   const addEvent = async () => {
     if (checkTime) {
@@ -422,23 +498,24 @@ const ScheduleTask = ({ taskData, week }) => {
       });
     }
     else {
-      console.log('select date',date)
-      console.log('select time',time)
+      console.log('select date', date)
+      console.log('select time', time)
       if (date && time) {
         console.log("iamin");
         const selectedTimeDatee = new Date(`${date}T${time}`); // Keep the Z for UTC
         console.log("selected time date", selectedTimeDatee);
-        // If you need to work with the date/time in UTC
-        const utcHours = selectedTimeDatee.getUTCHours();
-        const utcMinutes = selectedTimeDatee.getUTCMinutes();
-  
-        // Calculating the end time in UTC
         const endDateTimeUTC = new Date(selectedTimeDatee);
         endDateTimeUTC.setUTCMinutes(endDateTimeUTC.getUTCMinutes() + Number(meetingLength));
         console.log("end time", endDateTimeUTC);
         const currentDateTime = new Date();
         const timeDifferenceInMilliseconds = selectedTimeDatee.getTime() - currentDateTime.getTime();
-
+        const eventStartTime = formatDateTimeWithTimeZones(selectedTimeDatee);
+        const eventEndTime = formatDateTimeWithTimeZones(endDateTimeUTC);
+        console.log("event s ", eventStartTime)
+        console.log("event e ", eventEndTime)
+        // // Use these formatted strings in your communication
+        // console.log(`Event Start: ${formattedStartTime}`); // For logging or display
+        // console.log(`Event End: ${formattedEndTime}`);
         if (timeDifferenceInMilliseconds < 0) {
           Swal.fire({
             icon: "error",
@@ -447,10 +524,7 @@ const ScheduleTask = ({ taskData, week }) => {
           });
           return;
         }
-
-
         const refreshToken = process.env.REACT_APP_refreshToken;
-
         fetch("https://oauth2.googleapis.com/token", {
           method: "POST",
           headers: {
@@ -460,7 +534,6 @@ const ScheduleTask = ({ taskData, week }) => {
         })
           .then((response) => response.json())
           .then((data) => {
-            console.log(selectedTimeDatee.toUTCString(), " isostring ", selectedTimeDatee.toISOString(), endDateTimeUTC.toUTCString(), endDateTimeUTC.toISOString())
             var event = {
               summary: `${userInfo?.name} Doubt Clearing Session`,
               location: "",
@@ -490,12 +563,10 @@ const ScheduleTask = ({ taskData, week }) => {
                 },
               },
             };
-            console.log("Upper mean ",event);
             console.log(data)
             const newAccessToken = data.access_token;
             function initiate() {
               const sendData = async (event) => {
-                console.log("duksiiiiiiiiiiiiii")
                 const response = await axios.post(
                   `${process.env.REACT_APP_BACKEND_API}/events`,
                   event
@@ -506,7 +577,7 @@ const ScheduleTask = ({ taskData, week }) => {
                     from: `${user?.email}`,
                     to: `${user?.email},naman.j@experimentlabs.in,${adminMail}`,
                     subject: `Event request`,
-                    message: `A event is going to held for doubt clearing at ${formatUtcDateTimeString(selectedTimeDatee.toUTCString())} to ${formatUtcDateTimeString(endDateTimeUTC.toUTCString())}. Meeting link ${event?.hangoutLink
+                    message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
                       }`,
                   }
                 );
@@ -518,15 +589,14 @@ const ScheduleTask = ({ taskData, week }) => {
                     `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/addEvent`,
                     event
                   );
-                  console.log("new event created ", newEvent);
+                  // console.log("new event created ", newEvent);
                   Swal.fire({
                     icon: "success",
                     title: "Request Sent!",
                     text: "Your slot request has been sent!",
                   });
+                  navigate(-1);
                 }
-                //   // navigate(-1);
-
               };
               gapi.client
                 .request({
@@ -568,8 +638,6 @@ const ScheduleTask = ({ taskData, week }) => {
                       hangoutLink: response?.result?.hangoutLink,
                       requester: user?.email,
                     };
-
-                    console.log("lower mean ",event);
                     sendData(event);
                     return [true, response];
                   },
@@ -582,9 +650,7 @@ const ScheduleTask = ({ taskData, week }) => {
             gapi.load("client", initiate);
             // navigate(-1)
           })
-
           .catch((error) => {
-
             console.error("Token refresh error:", error);
           });
       } else {
@@ -594,9 +660,7 @@ const ScheduleTask = ({ taskData, week }) => {
           text: "Please enter valid date & time for event!",
         });
       }
-
     }
-
   };
   const getCurrentDate = () => {
     const today = new Date();
@@ -647,16 +711,27 @@ const ScheduleTask = ({ taskData, week }) => {
           {/* <p>You are the requester in the following events:</p> */}
           {userRequesterEvents?.map((event, index) => (
 
-            <div key={index} className=" shadow-lg outline-double outline-offset-2 outline-2 outline-emerald-500  w-[300px] rounded p-2 ">
+            <div key={index} className=" shadow-lg outline-double outline-offset-2 outline-2 outline-emerald-500  w-[380px] rounded p-2 ">
               <p className="flex gap-1 items-center text-sm"><FiberManualRecordIcon sx={{ color: red[400] }} ></FiberManualRecordIcon>Meeting with {event?.organization?.organizationName}</p>
               <div className="flex items-center gap-2">
-                <AccessAlarmOutlinedIcon />
+                
                 <div className="mt-3 mb-1 ">
-                  <p className="font-medium text-sm flex justify-between gap-2"><span className="font-semibold text-[14px]">From </span>
-                    <span className="text-sm">{formatUtcDateTimeString(new Date(event.start).toUTCString())}</span>
+                  <p className="font-medium text-sm flex justify-evenly gap-2">
+                    <div className="flex justify-between gap-2"><AccessAlarmOutlinedIcon fontSize="small" /><span className="font-semibold text-[14px]">Starts </span></div>
+                    <ul className="text-sm">
+                      {formatUtcDateTimeStringToListItems(event.start.dateTime).map((item, index) => (
+                        <li key={index}>{item}</li>
+                      ))}
+                    </ul>
                   </p>
-                  <p className="font-medium text-sm flex justify-between gap-2"><span className="font-semibold text-[14px]">To </span><span className="text-sm">{formatUtcDateTimeString(new Date(event.end).toUTCString())}</span></p>
-                  <p className="font-medium text-sm"></p>
+                  <p className="font-medium text-sm flex justify-evenly gap-2">
+                  <div className="flex justify-between  gap-2"><AccessAlarmOutlinedIcon fontSize="small"/><span className="font-semibold text-[14px]">Ends </span></div>
+                    <ul className="text-sm">
+      {formatUtcDateTimeStringToListItems(event.end.dateTime).map((item, index) => (
+        <li key={index}>{item}</li>
+      ))}
+    </ul>
+                  </p>
                 </div>
               </div>
               <div className="w-11/12 mx-auto mt-3 text-white bg-sky-600  rounded-md">
