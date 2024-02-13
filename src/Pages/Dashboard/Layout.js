@@ -155,12 +155,6 @@ const Layout = ({ children }) => {
   const { id } = useParams();
   const orgLogo = localStorage.getItem("organizationLogo");
 
-  console.log(
-    notifications,
-    numberOfUnreadNotification,
-    unreadNotifications,
-    announcements
-  );
   const formatNotificationCreationDate = (date) => {
     const currentDate = new Date();
     const givenDate = new Date(date);
