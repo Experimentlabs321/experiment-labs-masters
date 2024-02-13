@@ -43,6 +43,8 @@ const customStyles = {
     zIndex: 1001, // Set a higher z-index value
   },
 };
+
+
 const localizer = momentLocalizer(moment);
 const AdminCalendarSchedule = () => {
   const { id } = useParams();
@@ -73,11 +75,11 @@ const AdminCalendarSchedule = () => {
   global = session;
   const supabase = useSupabaseClient();
   const { isLoading } = useSessionContext();
-  useEffect(()=>{
-    if(calendarfetch === true) {
+  useEffect(() => {
+    if (calendarfetch === true) {
       googleSignIn();
     }
-  },[calendarfetch])
+  }, [calendarfetch])
   useEffect(() => {
     axios
       .get(
@@ -166,23 +168,23 @@ const AdminCalendarSchedule = () => {
     const day = String(today.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   };
-    // Function to check if a given date is in the past
-// Function to check if a given date is in the past
-const isPastDay = (date) => {
-  const currentDate = new Date();
-  const comparisonDate = new Date(date);
-  return comparisonDate < currentDate;
-};
+  // Function to check if a given date is in the past
+  // Function to check if a given date is in the past
+  const isPastDay = (date) => {
+    const currentDate = new Date();
+    const comparisonDate = new Date(date);
+    return comparisonDate < currentDate;
+  };
 
-// Function to handle the day rendering
-const handleDayRender = (info) => {
-  const date = info.date.toISOString().split('T')[0];
-  const isPastDayValue = isPastDay(date);
+  // Function to handle the day rendering
+  const handleDayRender = (info) => {
+    const date = info.date.toISOString().split('T')[0];
+    const isPastDayValue = isPastDay(date);
 
-  if (isPastDayValue) {
-    info.el.style.backgroundColor = 'lightgray'; // Apply your desired color for past days
-  }
-};
+    if (isPastDayValue) {
+      info.el.style.backgroundColor = 'lightgray'; // Apply your desired color for past days
+    }
+  };
   const handleSubmit = async (event) => {
     event.preventDefault();
     const currentDate = getCurrentDate();
@@ -230,7 +232,7 @@ const handleDayRender = (info) => {
   console.log("Event", eventName);
   console.log("Description", eventDescription);
   useEffect(() => {
-    
+
     if (!session?.provider_token) {
       googleSignIn();
     } else {
@@ -342,27 +344,21 @@ const handleDayRender = (info) => {
   }
   function renderEventContent(eventInfo) {
     console.log(calendarEvents);
-
-    const formattedStartDate = eventInfo?.event?.start?.toUTCString();
-    const formattedEndDate = eventInfo?.event?.end?.toUTCString();
+  
+    const options = {
+      timeZone: eventInfo?.event?.start?.timeZone,
+      hour12: false,
+      hour: 'numeric',
+      minute: 'numeric',
+    };
+  
+    const formattedStartDate = new Intl.DateTimeFormat('en-US', options).format(new Date(eventInfo?.event?.start));
+    const formattedEndDate = new Intl.DateTimeFormat('en-US', options).format(new Date(eventInfo?.event?.end));
     const meetlink = eventInfo?.event?.extendedProps?.link;
-
+  
     console.log(formattedStartDate);
     console.log(formattedEndDate);
-
-    const startTimeStamp = new Date(formattedStartDate);
-    const startTimeString = startTimeStamp.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      timeZone: "GMT",
-    });
-    const endTimeStamp = new Date(formattedEndDate);
-    const endTimeString = endTimeStamp.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      timeZone: "GMT",
-    });
-
+  
     return (
       <div
         style={{
@@ -374,7 +370,7 @@ const handleDayRender = (info) => {
         }}
       >
         <h1>{eventInfo?.event?.title}</h1>
-
+  
         {meetlink ? (
           <a
             target="_blank"
@@ -393,6 +389,9 @@ const handleDayRender = (info) => {
       </div>
     );
   }
+  
+  
+  
   const handleDateClick = (date) => {
     setSelectedDate(date);
     setStart(date);
@@ -593,32 +592,31 @@ const handleDayRender = (info) => {
                 <div className="my-6 px-5">
                   <h2>Your Calendar Events</h2>
                   <FullCalendar
-                      height="600px"
-                      plugins={[dayGridPlugin, listPlugin, interactionPlugin]}
-                      initialView="dayGridMonth"
-                      selectMirror={true}
-                      headerToolbar={{
-                        start: "title",
-                        center: "today",
-                        end: "dayGridMonth,dayGridWeek,dayGridDay,list",
-                      }}
-                      eventContent={renderEventContent}
-                      events={calendarEvents?.map((event) => ({
-                        title: event?.summary,
-                        start: event?.start.dateTime,
-                        end: event?.end.dateTime,
-                        link: event?.hangoutLink,
-                      }))}
-                      dateClick={(info) => handleDateClick(info.date)}
-                      eventTimeFormat={{
-                        hour: "numeric",
-                        minute: "2-digit",
-                        meridiem: "short",
-                        hour12: true,
-                      }}
-                      timeZone={timeZone} // Use timeZone state
-                      dayRender={handleDayRender}
-                    />
+                    height="600px"
+                    plugins={[dayGridPlugin, listPlugin, interactionPlugin]}
+                    initialView="dayGridMonth"
+                    selectMirror={true}
+                    headerToolbar={{
+                      start: "title",
+                      center: "today",
+                      end: "dayGridMonth,dayGridWeek,dayGridDay,list",
+                    }}
+                    eventContent={renderEventContent}
+                    events={calendarEvents?.map((event) => ({
+                      title: event?.summary,
+                      start: event?.start.dateTime,
+                      end: event?.end.dateTime,
+                      link: event?.hangoutLink,
+                    }))}
+                    dateClick={(info) => handleDateClick(info.date)}
+                    eventTimeFormat={{
+                      hour: "numeric",
+                      minute: "2-digit",
+                      meridiem: "short",
+                    }}
+                    timeZone={timeZone} // Use timeZone state
+                    dayRender={handleDayRender}
+                  />
                 </div>
                 <form onSubmit={handleSubmit} className="ms-[40px]  mt-12">
                   <div className="grid grid-cols-2 gap-10">
