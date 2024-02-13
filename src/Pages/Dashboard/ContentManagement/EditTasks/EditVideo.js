@@ -8,11 +8,12 @@ import SkillBasedParameter from "../Components/Shared/SkillBasedParameter";
 import ItemEarningParameter from "../Components/Shared/ItemEarningParameter";
 import axios from "axios";
 import { AuthContext } from "../../../../contexts/AuthProvider";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import uploadFileToS3 from "../../../UploadComponent/s3Uploader";
 import { toast } from "react-hot-toast";
 import VideoTask from "../../Week/VideoTask";
 import DialogLayout from "../../Shared/DialogLayout";
+import Loading from "../../../Shared/Loading/Loading";
 
 const EditVideo = () => {
   // upload file
@@ -64,6 +65,7 @@ const EditVideo = () => {
   const [videoData, setVideoData] = useState({});
   const [openAddYoutubeLink, setOpenAddYoutubeLink] = useState(false);
   const [youtubeVideoLink, setYoutubeVideoLink] = useState(null);
+  const [taskDrip, setTaskDrip] = useState();
   const [openTask, setOpenTask] = useState(
     JSON.parse(localStorage.getItem("task"))
   );
@@ -117,6 +119,7 @@ const EditVideo = () => {
         setSelectedBatches(response?.data?.batches);
         setSkillParameterData(response?.data?.skillParameterData);
         setEarningParameterData(response?.data?.earningParameterData);
+        setTaskDrip(response?.data?.taskDrip);
       });
   }, [openTask]);
 
@@ -158,8 +161,11 @@ const EditVideo = () => {
     }
   };
 
+  const navigate = useNavigate();
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+    Loading();
     let fileUrl = "";
     console.log(selectedFile);
     if (selectedFile) fileUrl = await uploadFileToS3(selectedFile);
@@ -175,24 +181,25 @@ const EditVideo = () => {
       earningParameterData: earningParameterData,
       chapterId: id,
       batches: selectedBatches,
+      taskDrip
     };
 
-    console.log(ManageVideo);
+    console.log("Video Data =================>",ManageVideo);
 
     setVideoData(ManageVideo);
 
     if (submitPermission) {
-      const newTask = await axios.post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/videos`,
+      const newTask = await axios.put(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/videos/taskId/${videoData?._id}`,
         ManageVideo
       );
       console.log(newTask);
 
-      if (newTask?.data?.acknowledged) {
+      if (newTask?.data?.result?.acknowledged) {
         toast.success("Video added Successfully");
-        event.target.reset();
       }
-
+      Loading().close();
+      navigate(-1);
       console.log(ManageVideo);
     }
   };
@@ -438,6 +445,7 @@ const EditVideo = () => {
                 </div>
               </div>
             </div>
+
             <div className="me-20 py-[35px] ps-[40px]">
               <div>
                 <div className="flex items-center gap-4">
@@ -473,13 +481,68 @@ const EditVideo = () => {
                 </ul>
               </div>
             </div>
+
+
+            <div className="space-y-4 mb-8 ps-[40px]">
+              <fieldset>
+                <div className="flex items-center gap-4 mb-5">
+                  <p className="h-2 w-2 bg-black rounded-full"></p>
+                  <p className="font-bold text-lg me-[36px]">Enable Drip</p>
+                  <img src={required} alt="" />
+                </div>
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center">
+                    <input
+                      type="radio"
+                      id="radioYes"
+                      name="radioOption"
+                      checked={taskDrip === true}
+                      onChange={() => setTaskDrip(true)}
+                      disabled={course?.enableDrip}
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
+                    />
+                    <label
+                      htmlFor="radioYes"
+                      className={`ml-2 text-sm font-medium ${course?.enableDrip ? 'text-gray-400' : 'text-gray-900'}`}
+                    >
+                      Yes
+                    </label>
+                  </div>
+
+                  <div className="flex items-center">
+                    <input
+                      type="radio"
+                      id="radioNo"
+                      name="radioOption"
+                      checked={taskDrip === false}
+                      onChange={() => setTaskDrip(false)}
+                      disabled={course?.enableDrip}
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
+                    />
+                    <label
+                      htmlFor="radioNo"
+                      className={`ml-2 text-sm font-medium ${course?.enableDrip ? 'text-gray-400' : 'text-gray-900'}`}
+                    >
+                      No
+                    </label>
+                  </div>
+                </div>
+              </fieldset>
+
+              {course?.enableDrip && (
+                <p className="text-sm text-red-500">
+                  Course Drip Must Be Turned Off to add Task Drip.
+                </p>
+              )}
+            </div>
+
             <div className="px-4 my-10">
               {(orgData?.showPointsAndRedemptions ||
                 orgData?.showSkillsManagement) && (
-                <p className="text-[25px] font-bold mb-10">
-                  Evaluation Parameter
-                </p>
-              )}
+                  <p className="text-[25px] font-bold mb-10">
+                    Evaluation Parameter
+                  </p>
+                )}
               {orgData?.showSkillsManagement && (
                 <SkillBasedParameter
                   forEdit={true}
@@ -503,7 +566,7 @@ const EditVideo = () => {
                 type="submit"
                 value="Save"
                 onClick={() => setSubmitPermission(true)}
-                className="px-[30px] py-3 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
+                className="px-[30px] py-3 bg-[#3E4DAC] hover:bg-opacity-70 text-[#fff] cursor-pointer text-xl font-bold rounded-lg"
               />
               {/* <input
                 type="submit"

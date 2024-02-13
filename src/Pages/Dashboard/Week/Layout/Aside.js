@@ -351,7 +351,7 @@ const Aside = ({
                             return (
                               <div
                                 key={index}
-                                onClick={() => { ((isPreviousTaskCompleted && isPrevChapterCompleted) || !(courseData?.enableDrip)) ? setOpenTask(task) : toast.error("Complete the Previous Task") }}
+                                onClick={() => { ((isPreviousTaskCompleted && isPrevChapterCompleted) || !(courseData?.enableDrip || task?.taskDrip)) ? setOpenTask(task) : toast.error("Complete the Previous Task") }}
                                 className={`${openTask?.taskId === task?.taskId
                                   ? "bg-[#FFFDCF] border-[#3E4DAC] border-l-[12px] pl-[8px]"
                                   : "pl-[20px]"
@@ -367,8 +367,8 @@ const Aside = ({
                                           }  border p-[5px] rounded-full `}
                                         src={
                                           openTask?.taskId === task?.taskId
-                                            ? (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip)) ? ReadingActive : lock)
-                                            : (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip)) ? Reading : lock)
+                                            ? (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip || task?.taskDrip)) ? ReadingActive : lock)
+                                            : (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip || task?.taskDrip)) ? Reading : lock)
                                         }
                                         alt="TaskIcon"
                                       />
@@ -381,8 +381,8 @@ const Aside = ({
                                           }  border p-[5px] rounded-full `}
                                         src={
                                           openTask?.taskId === task?.taskId
-                                            ? (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip)) ? AssignmentActive : lock)
-                                            : (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip)) ? Assignment : lock)
+                                            ? (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip || task?.taskDrip)) ? AssignmentActive : lock)
+                                            : (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip || task?.taskDrip)) ? Assignment : lock)
                                         }
                                         alt="TaskIcon"
                                       />
@@ -395,8 +395,8 @@ const Aside = ({
                                           }  border p-[5px] rounded-full `}
                                         src={
                                           openTask?.taskId === task?.taskId
-                                            ? (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip)) ? ClassesActive : lock)
-                                            : (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip)) ? Classes : lock)
+                                            ? (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip || task?.taskDrip)) ? ClassesActive : lock)
+                                            : (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip || task?.taskDrip)) ? Classes : lock)
                                         }
                                         alt="TaskIcon"
                                       />
@@ -409,8 +409,8 @@ const Aside = ({
                                           }  border p-[5px] rounded-full `}
                                         src={
                                           openTask?.taskId === task?.taskId
-                                            ? (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip)) ? QuizActive : lock)
-                                            : (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip)) ? Quiz : lock)
+                                            ? (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip || task?.taskDrip)) ? QuizActive : lock)
+                                            : (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip || task?.taskDrip)) ? Quiz : lock)
                                         }
                                         alt="TaskIcon"
                                       />
@@ -423,8 +423,8 @@ const Aside = ({
                                           }  border p-[5px] rounded-full `}
                                         src={
                                           openTask?.taskId === task?.taskId
-                                            ? (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip)) ? LiveTestActive : lock)
-                                            : (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip)) ? LiveTest : lock)
+                                            ? (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip || task?.taskDrip)) ? LiveTestActive : lock)
+                                            : (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip || task?.taskDrip)) ? LiveTest : lock)
                                         }
                                         alt="TaskIcon"
                                       />
@@ -437,8 +437,8 @@ const Aside = ({
                                           }  border p-[5px] rounded-full `}
                                         src={
                                           openTask?.taskId === task?.taskId
-                                            ? (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip)) ? VideoActive : lock)
-                                            : (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip)) ? Video : lock)
+                                            ? (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip || task?.taskDrip)) ? VideoActive : lock)
+                                            : (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip || task?.taskDrip)) ? Video : lock)
                                         }
                                         alt="TaskIcon"
                                       />
@@ -451,8 +451,8 @@ const Aside = ({
                                           }  border p-[5px] rounded-full `}
                                         src={
                                           openTask?.taskId === task?.taskId
-                                            ? (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip)) ? AudioActive : lock)
-                                            : (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip)) ? Audio : lock)
+                                            ? (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip || task?.taskDrip)) ? AudioActive : lock)
+                                            : (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip || task?.taskDrip)) ? Audio : lock)
                                         }
                                         alt="TaskIcon"
                                       />
@@ -465,8 +465,8 @@ const Aside = ({
                                           }  border p-[5px] rounded-full `}
                                         src={
                                           openTask?.taskId === task?.taskId
-                                            ? (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip)) ? FilesActive : lock)
-                                            : (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip)) ? Files : lock)
+                                            ? (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip || task?.taskDrip)) ? FilesActive : lock)
+                                            : (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip || task?.taskDrip)) ? Files : lock)
                                         }
                                         alt="TaskIcon"
                                       />
@@ -479,8 +479,8 @@ const Aside = ({
                                           }  border p-[5px] rounded-full `}
                                         src={
                                           openTask?.taskId === task?.taskId
-                                            ? (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip)) ? calendar : lock)
-                                            : (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip)) ? calendar : lock)
+                                            ? (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip || task?.taskDrip)) ? calendar : lock)
+                                            : (((isPreviousTaskCompleted && isPrevChapterCompleted)||!(courseData?.enableDrip || task?.taskDrip)) ? calendar : lock)
                                         }
                                         alt="TaskIcon"
                                       />

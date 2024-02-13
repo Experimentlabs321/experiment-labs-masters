@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import uploadFileToS3 from "../../UploadComponent/s3Uploader";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
+import Loading from "../../Shared/Loading/Loading";
 
 const EditCourse = () => {
   const { id } = useParams();
@@ -71,6 +72,7 @@ const EditCourse = () => {
   /// handle Submit
   const handleSubmit = async (event) => {
     event.preventDefault();
+    Loading();
     const form = event.target;
 
     const courseFullName = "" + form.courseFullName?.value;
@@ -155,6 +157,7 @@ const EditCourse = () => {
 
       console.log("Add Course----->", addCourse);
     }
+    Loading().close();
   };
 
   return (
@@ -837,7 +840,7 @@ const EditCourse = () => {
               type="submit"
               value="Save"
               onClick={() => setSubmitPermission(true)}
-              className="px-[30px] py-3 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
+              className="px-[30px] py-3 bg-[#3E4DAC] hover:bg-opacity-70 text-[#fff] cursor-pointer text-xl font-bold rounded-lg"
             />
             {/* <input
               type="submit"
