@@ -168,7 +168,7 @@ const Dashboard = () => {
     let totalCompleted = 0;
     let totalTask = 0;
     if (chapters) {
-      chapters.forEach((item) => {
+      chapters?.forEach((item) => {
         console.log(item);
         item?.tasks?.forEach((task) => {
           totalTask++;
