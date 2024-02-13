@@ -23,9 +23,6 @@ export const NotificationProvider = ({ children }) => {
         `${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${user?.email}`
       )
       .then((userInfo) => {
-        console.log(newNotification, user, userInfo?.data);
-        // setUserInfo(user?.data);
-
         if (
           userInfo?.data?.role === "user" &&
           newNotification?.type === "Create Task"
@@ -96,9 +93,6 @@ export const NotificationProvider = ({ children }) => {
         `${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${user?.email}`
       )
       .then((userInfo) => {
-        console.log(newAnnouncement, user, userInfo?.data);
-        // setUserInfo(user?.data);
-
         if (
           userInfo?.data?.organizationId === newAnnouncement?.organizationId
         ) {
@@ -122,7 +116,6 @@ export const NotificationProvider = ({ children }) => {
           (viewedBy) => viewedBy?.email === user?.email
         )
     );
-    console.log(unreadNotifications?.length);
   };
 
   useEffect(() => {
@@ -142,7 +135,6 @@ export const NotificationProvider = ({ children }) => {
     });
     socket.on("announcement", (newAnnouncement) => {
       announcementFilter(newAnnouncement);
-      // notificationFilter(newAnnouncement);
     });
     // socket.emit("testing", { message: "this is message" });
 
@@ -156,7 +148,6 @@ export const NotificationProvider = ({ children }) => {
   }, [user]);
 
   const fetchNotifications = async () => {
-    console.log(user);
     try {
       await axios
         .get(
@@ -175,7 +166,6 @@ export const NotificationProvider = ({ children }) => {
               );
             setUnreadNotifications(unreadNotifications);
             setNumberOfUnreadNotification(unreadNotifications?.length);
-            console.log(unreadNotifications?.length);
           }
         })
         .catch((error) => console.error(error));
@@ -217,8 +207,6 @@ export const NotificationProvider = ({ children }) => {
       })
       .catch((error) => console.error(error));
   };
-
-  console.log(notifications);
 
   return (
     <NotificationContext.Provider

@@ -4,8 +4,9 @@ import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
 import toast from "react-hot-toast";
 import uploadFileToS3 from "../../UploadComponent/s3Uploader";
+import Loading from "../../Shared/Loading/Loading";
 
-const AdminAnnouncementForm = () => {
+const AdminAnnouncementForm = ({ setShowAnnouncementForm }) => {
   const { user, userInfo } = useContext(AuthContext);
   const [announcement, setAnnouncement] = useState({
     title: "",
@@ -29,6 +30,7 @@ const AdminAnnouncementForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    Loading();
     let imageUrl = "";
     if (selectedFile) imageUrl = await uploadFileToS3(selectedFile);
 
@@ -49,13 +51,8 @@ const AdminAnnouncementForm = () => {
     if (newAnnouncement?.data?.acknowledged) {
       toast.success("Announcement Published Successfully");
     }
-
-    // Reset form fields after submission
-    setAnnouncement({
-      description: "",
-      imageUrl: "",
-      link: "",
-    });
+    setShowAnnouncementForm(false);
+    Loading().close();
   };
 
   return (
