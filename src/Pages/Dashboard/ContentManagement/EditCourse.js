@@ -326,7 +326,7 @@ const EditCourse = () => {
               </div>
 
               <div>
-                <div className="">
+                {/* <div className="">
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
                     <p className="font-bold text-lg me-[36px]">
@@ -346,9 +346,9 @@ const EditCourse = () => {
                       <option className="" value="Web Development">
                         Web Development
                       </option>
-                      {/* <option value="Parent"></option>
+                      <option value="Parent"></option>
                       <option value="Counselor"></option>
-                      <option value="Others"></option> */}
+                      <option value="Others"></option> 
                     </select>
                     <div
                       onClick={openModaladdcoursecategory}
@@ -392,7 +392,7 @@ const EditCourse = () => {
                       </div>
                     )}
                   </div>
-                </div>
+                </div> */}
 
                 <div className="mt-20">
                   <div className="flex items-center gap-4">

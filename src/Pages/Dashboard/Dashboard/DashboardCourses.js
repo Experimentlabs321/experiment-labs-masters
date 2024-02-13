@@ -8,7 +8,7 @@ import Locked from "../../../assets/Dashboard/Locked.png";
 import Expired from "../../../assets/Dashboard/Expired.png";
 import Swal from "sweetalert2";
 
-const DashboardCourses = ({ myCoursesChecked, allCoursesChecked }) => {
+const DashboardCourses = ({ myCoursesChecked, allCoursesChecked, courseAccessUrl }) => {
   const [courses, setCourses] = useState([]);
   const [myCourses, setMyCourses] = useState([]);
   const Role = localStorage.getItem("role");
@@ -233,9 +233,14 @@ const DashboardCourses = ({ myCoursesChecked, allCoursesChecked }) => {
             <div className="flex flex-col items-center justify-center p-6">
 
               <p className="text-gray-600 mb-4">You don't have any Active Courses</p>
-              <Link to={"/courseAccess?state=allCourses"} className="bg-blue text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition duration-300">
-                Explore Courses
-              </Link>
+              {!courseAccessUrl ?
+                <Link to={"/courseAccess?state=allCourses"} className="bg-blue text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition duration-300">
+                  Explore Courses
+                </Link> :
+                <a href={courseAccessUrl} target="_blank" rel="noreferrer" className="bg-blue text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition duration-300">
+                  Explore Courses
+                </a>
+              }
             </div>
           </div>
         )

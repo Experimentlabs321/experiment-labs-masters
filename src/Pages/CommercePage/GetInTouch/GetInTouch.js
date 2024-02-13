@@ -13,6 +13,7 @@ import axios from "axios";
 import emailjs from "@emailjs/browser";
 import { toast } from "react-hot-toast";
 import ReactGA from "react-ga4";
+import Swal from "sweetalert2";
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -39,31 +40,32 @@ const GetInTouch = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    console.log("Clicked");
     ReactGA.event({
       category: "Click",
-      action: "Submit Data From Get Career In Science and Innovation",
+      action: "Submit Data From Navbar",
       label: "Submit Data",
     });
     const form = event.target;
     const name = form.name.value;
     const number = form.number.value;
     const email = form.email.value;
-    // const option = form.option.value;
-    // const city = form.city.value;
+    const option = form.option.value;
+    const city = form.city.value;
 
     const data = {
       Name: name,
       Number: "+91" + number,
       Email: email,
-      Option: "",
-      City: "",
+      Option: option,
+      City: city,
       Time: new Date(),
     };
 
-    console.log(data);
+    console.log("Gone Here ===============>", data);
 
     fetch(
-      "https://sheet.best/api/sheets/5c4ca56d-67bb-4f49-a538-9fdde568c68d",
+      `${process.env.REACT_APP_SERVER_API}/api/v1/users/interactions`,
       {
         method: "POST",
         headers: {
@@ -72,42 +74,37 @@ const GetInTouch = () => {
         body: JSON.stringify(data),
       }
     )
-      .then((data) => {
-        // The response comes here
-        console.log(data);
+      .then(async (res) => {
+        console.log("Submit ===============>", res);
+        const sendMail = await axios.post(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+          {
+            from: `${email}`,
+            to: `naman.j@experimentlabs.in`,
+            subject: `${name} wants to Learn more about Experiment Labs`,
+            message: `
+            Name: ${name},
+            Number: "+91" + ${number},
+            Email: ${email},
+            Option: ${option},
+            City: ${city},
+            Tme: ${new Date()},
+            `,
+          }
+        );
+        console.log("Send Mail ===============>", sendMail);
+        if (sendMail?.data?.success) {
+          Swal.fire({
+            icon: "success",
+            text: "Thanks For your response!",
+          });
+        }
+        // handleClose();
       })
       .catch((error) => {
         // Errors are reported there
         console.log(error);
       });
-
-    const templateParams = {
-      from_name: name,
-      message: `
-            Name: ${name},
-            Number: ${"+91" + number},
-            Email: ${email},
-            Time: ${new Date()},
-            `,
-    };
-
-    emailjs
-      .send(
-        "service_s3bklnu",
-        "template_l0yacbb",
-        templateParams,
-        "U0g6Ht1DVmnBbENk0"
-      )
-      .then(
-        (result) => {
-          console.log(result.text);
-          // toast.success("Successfully Added Your Info");
-          event.target.reset();
-        },
-        (error) => {
-          console.log(error.text);
-        }
-      );
   };
   return (
     // <div style={{ background: `url(${img})`, objectFit: 'cover' }} className='pt-40 flex items-center justify-center pb-40'>
@@ -127,7 +124,7 @@ const GetInTouch = () => {
           </p>
         </div>
         <div className="w-full">
-        <form onSubmit={handleSubmit} className="text-dark p-8 rounded-md border-custom-blue  border-opacity-40 w-full lg:max-w-[480px]">
+          <form onSubmit={handleSubmit} className="text-dark p-8 rounded-md border-custom-blue  border-opacity-40 w-full lg:max-w-[480px]">
             <div>
               <label className="ml-5 text-white">Name</label>
               <div className="flex gap-2  border-2xl bg-[white] px-2 py-2 rounded-3xl">

@@ -26,6 +26,8 @@ import SkillAnalysisIconLight from "../../assets/Dashboard/SkillAnalysisIconLigh
 import SkillAnalysisIconDark from "../../assets/Dashboard/SkillAnalysisIconDark.svg";
 import CareerAnalysisIconLight from "../../assets/Dashboard/CareerAnalysisIconLight.svg";
 import CareerAnalysisIconDark from "../../assets/Dashboard/CareerAnalysisIconDark.svg";
+import AnnouncementsIconLight from "../../assets/Dashboard/AnnouncementsLight.png";
+import AnnouncementsIconDark from "../../assets/Dashboard/AnnouncementsDark.png";
 import CourseAccessIconLight from "../../assets/Dashboard/CourseAccessIconLight.svg";
 import CourseAccessIconDark from "../../assets/Dashboard/CourseAccessIconDark.svg";
 import bookLight from "../../assets/Dashboard/BookmarksLight.png";
@@ -81,8 +83,13 @@ const Layout = ({ children }) => {
   const [profName, setprofName] = useState(null);
   const [showNotification, setShowNotification] = useState(false);
   const navigate = useNavigate();
-  const { notifications, numberOfUnreadNotification, unreadNotifications } =
-    useNotification();
+  const {
+    notifications,
+    numberOfUnreadNotification,
+    unreadNotifications,
+    announcements,
+    unreadAnnouncements,
+  } = useNotification();
   //console.log(Role);
   const location = useLocation();
   useEffect(() => {
@@ -148,29 +155,34 @@ const Layout = ({ children }) => {
   const { id } = useParams();
   const orgLogo = localStorage.getItem("organizationLogo");
 
-  console.log(notifications, numberOfUnreadNotification, unreadNotifications);
-  // useEffect(() => {
-  //   if (userInfo?.role === "user" && notifications[0]?.type === "Create Task") {
-  //     if (
-  //       notifications[0]?.recipient?.organizationId === userInfo?.organizationId
-  //     ) {
-  //       if (notifications[0]?.recipient?.type === "Students") {
-  //         console.log(notifications[0]?.type);
-  //         const findStudentCourse = userInfo?.courses?.find(
-  //           (course) =>
-  //             course?.courseId === notifications[0]?.recipient?.courseId
-  //         );
-  //         if (findStudentCourse) {
-  //           const findStudentBatch = notifications[0]?.recipient?.batches?.find(
-  //             (batch) => batch?.batchId === findStudentCourse?.batchId
-  //           );
-  //           console.log(findStudentBatch);
-  //         }
-  //       } else if (notifications[0]?.recipient?.type === "Specific Student") {
-  //       }
-  //     }
-  //   }
-  // }, [notifications]);
+  const formatNotificationCreationDate = (date) => {
+    const currentDate = new Date();
+    const givenDate = new Date(date);
+
+    const diffInMilliseconds = currentDate - givenDate;
+    const diffInSeconds = Math.floor(diffInMilliseconds / 1000);
+    const diffInMinutes = Math.floor(diffInSeconds / 60);
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    const diffInDays = Math.floor(diffInHours / 24);
+    const diffInMonths = Math.floor(diffInDays / 30);
+    const diffInYears = Math.floor(diffInDays / 365);
+
+    if (diffInDays === 0) {
+      return "Today";
+    } else if (diffInDays === 1) {
+      return "Yesterday";
+    } else if (diffInDays < 30) {
+      return `${diffInDays} day${diffInDays > 1 ? "s" : ""} ago`;
+    } else if (diffInMonths === 1) {
+      return "1 month ago";
+    } else if (diffInMonths < 12) {
+      return `${diffInMonths} months ago`;
+    } else if (diffInYears === 1) {
+      return "1 year ago";
+    } else {
+      return `${diffInYears} years ago`;
+    }
+  };
 
   return (
     <>
@@ -253,7 +265,7 @@ const Layout = ({ children }) => {
                       </Link>
                       <button
                         onClick={() => setShowNotification(!showNotification)}
-                        onBlur={() => setShowNotification(false)}
+                        // onBlur={() => setShowNotification(false)}
                         className=""
                       >
                         <Badge
@@ -264,12 +276,13 @@ const Layout = ({ children }) => {
                         </Badge>
                       </button>
                       {showNotification && (
-                        <div className="absolute top-[70px] w-[95%] h-80 rounded-md p-1 m-1 overflow-y-auto bg-white">
+                        <div className="absolute z-10 top-[70px] w-[95%] h-80 rounded-md p-1 m-1 overflow-y-auto bg-white">
                           <h1 className="text-xl font-bold p-1">
                             Notifications
                           </h1>
                           {notifications?.map((notification, index) => (
-                            <div
+                            <Link
+                              to={notification?.redirectLink}
                               key={index}
                               className="p-1 my-2 border border-gray-500 shadow rounded flex "
                             >
@@ -304,9 +317,19 @@ const Layout = ({ children }) => {
                                     />
                                   </svg>
                                 </span>
-                                {notification?.message}
+                                <span>
+                                  <span className=" text-base">
+                                    {notification?.message}
+                                  </span>
+                                  <br />
+                                  <span className=" text-xs font-semibold text-sky-500">
+                                    {formatNotificationCreationDate(
+                                      notification?.dateTime
+                                    )}
+                                  </span>
+                                </span>
                               </p>
-                            </div>
+                            </Link>
                           ))}
                         </div>
                       )}
@@ -358,6 +381,52 @@ const Layout = ({ children }) => {
                               } ml-3 text-[18px] font-[500]`}
                             >
                               Dashboard
+                            </span>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            style={
+                              location.pathname === "/announcements"
+                                ? {
+                                    background:
+                                      "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                  }
+                                : {}
+                            }
+                            to="/announcements"
+                            className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
+                          >
+                            {location.pathname === "/announcements" ? (
+                              <img
+                                className=""
+                                src={AnnouncementsIconLight}
+                                alt="icon"
+                              />
+                            ) : (
+                              <img
+                                className=""
+                                src={AnnouncementsIconDark}
+                                alt="icon"
+                              />
+                            )}
+
+                            <span
+                              className={`${
+                                location.pathname === "/announcements"
+                                  ? "text-white"
+                                  : "text-[#8F8F8F]"
+                              } ml-3 text-[18px] font-[500]`}
+                            >
+                              Announcements
+                              <span className=" ml-5 ">
+                                <Badge
+                                  badgeContent={unreadAnnouncements?.length}
+                                  color="error"
+                                >
+                                  <span className=" ml-5 "></span>
+                                </Badge>
+                              </span>
                             </span>
                           </Link>
                         </li>
@@ -712,6 +781,52 @@ const Layout = ({ children }) => {
                                 } ml-3 text-[18px] font-[500]`}
                               >
                                 Dashboard
+                              </span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              style={
+                                location.pathname === "/announcements"
+                                  ? {
+                                      background:
+                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                    }
+                                  : {}
+                              }
+                              to="/announcements"
+                              className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
+                            >
+                              {location.pathname === "/announcements" ? (
+                                <img
+                                  className=""
+                                  src={AnnouncementsIconLight}
+                                  alt="icon"
+                                />
+                              ) : (
+                                <img
+                                  className=""
+                                  src={AnnouncementsIconDark}
+                                  alt="icon"
+                                />
+                              )}
+
+                              <span
+                                className={`${
+                                  location.pathname === "/announcements"
+                                    ? "text-white"
+                                    : "text-[#8F8F8F]"
+                                } ml-3 text-[18px] font-[500]`}
+                              >
+                                Announcements
+                                <span className=" ml-5 ">
+                                  <Badge
+                                    badgeContent={unreadAnnouncements?.length}
+                                    color="error"
+                                  >
+                                    <span className=" ml-5 "></span>
+                                  </Badge>
+                                </span>
                               </span>
                             </Link>
                           </li>

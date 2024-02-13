@@ -160,6 +160,21 @@ const MentorAssignments = () => {
 
 
   };
+  function formatDateTime(dateTimeString) {
+    const dateObject = new Date(dateTimeString);
+  
+    const options = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true // Use 12-hour format with AM/PM
+    };
+  
+    return dateObject.toLocaleString('en-US', options);
+  }
 
   console.log(filteredAssignments)
 
@@ -385,7 +400,7 @@ const MentorAssignments = () => {
                             {assignment?.taskName}
                           </td>
                           <td className="py-4 px-6 border-b text-left">
-                            none
+                          {formatDateTime(assignment?.submissionDateTime)}
                           </td>
 
                           <td className="py-4 px-6 border-b text-left">
