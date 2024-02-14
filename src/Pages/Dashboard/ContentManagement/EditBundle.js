@@ -5,8 +5,10 @@ import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
 import uploadFileToS3 from "../../UploadComponent/s3Uploader";
 import toast from "react-hot-toast";
+import { useParams } from "react-router-dom";
 
-const CreateBundle = () => {
+const EditBundle = () => {
+  const { id } = useParams();
   const [selectedCourses, setSelectedCourses] = useState([]);
   const [selectedBatches, setSelectedBatches] = useState([]);
   const [availableCourses, setAvailableCourses] = useState([]);
@@ -18,8 +20,20 @@ const CreateBundle = () => {
   const [selectedCoursesAndBatches, setSelectedCoursesAndBatches] = useState(
     []
   );
+  const [bundleData, setBundleData] = useState({});
+  const [bundleVisibility, setBundleVisibility] = useState();
 
   const { user, userInfo } = useContext(AuthContext);
+
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/bundles/bundleId/${id}`)
+      .then((response) => {
+        setBundleData(response?.data);
+        setBundleVisibility(response?.data?.courseVisibility);
+      })
+      .catch((error) => console.error(error));
+  }, [id]);
 
   useEffect(() => {
     axios
@@ -160,7 +174,7 @@ const CreateBundle = () => {
     }
   };
 
-  console.log(selectedBatches, selectedCoursesAndBatches);
+  console.log(bundleData);
 
   return (
     <div>
@@ -286,6 +300,7 @@ const CreateBundle = () => {
                     required
                     className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                     name="bundleFullName"
+                    defaultValue={bundleData?.bundleFullName}
                     type="text"
                     placeholder="Eg. Entrepreneurship Lab"
                   />
@@ -305,6 +320,7 @@ const CreateBundle = () => {
                     required
                     className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                     name="bundleShortName"
+                    defaultValue={bundleData?.bundleShortName}
                     type="text"
                     placeholder="Eg. Entrepreneurship Lab"
                   />
@@ -323,6 +339,7 @@ const CreateBundle = () => {
                     required
                     className="mt-6 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                     name="bundleStartingDate"
+                    defaultValue={bundleData?.bundleStartingDate}
                     type="datetime-local"
                     placeholder="Eg. Entrepreneurship Lab"
                   />
@@ -340,6 +357,7 @@ const CreateBundle = () => {
                   <input
                     className="mt-6 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                     name="bundleEndingDate"
+                    defaultValue={bundleData?.bundleEndingDate}
                     type="datetime-local"
                     placeholder="Eg. Entrepreneurship Lab"
                   />
@@ -356,6 +374,7 @@ const CreateBundle = () => {
                   <input
                     className="mt-6 ms-6 border rounded-md w-[90%] h-[97px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                     name="bundleDescription"
+                    defaultValue={bundleData?.bundleDescription}
                     type="text"
                     placeholder="Eg. This Lab will teach you about...."
                   />
@@ -567,4 +586,4 @@ const CreateBundle = () => {
   );
 };
 
-export default CreateBundle;
+export default EditBundle;
