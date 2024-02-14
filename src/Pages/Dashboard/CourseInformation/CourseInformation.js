@@ -463,7 +463,7 @@ const CourseInformation = () => {
                     </button>
                   </div>
                   <div className="flex items-center mt-[-10px] ">
-                    <div className="flex items-center text-black text-[16px] font-[600] mr-[32px] ">
+                   {/*  <div className="flex items-center text-black text-[16px] font-[600] mr-[32px] ">
                       <h1 className="mr-[16px]">Preview Mode</h1>
                       {preview ? (
                         <svg
@@ -513,7 +513,7 @@ const CourseInformation = () => {
                           />
                         </svg>
                       )}
-                    </div>
+                    </div> */}
                     {/* Add task dialog start */}
                     <DialogLayout
                       open={addTaskOpen}

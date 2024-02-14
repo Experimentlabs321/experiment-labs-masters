@@ -15,6 +15,7 @@ import Loading from "../../Shared/Loading/Loading";
 import HighlightOffRoundedIcon from '@mui/icons-material/HighlightOffRounded';
 import { Helmet } from "react-helmet";
 import NavbarSkeletonLoader from "./NavbarSkeletonLoader";
+import ForgotPassword from "./ForgotPassword";
 
 const Payment = () => {
   const { userInfo, user, signIn, providerLogin, logOut, createUser, setUserInfo } = useContext(AuthContext);
@@ -35,6 +36,8 @@ const Payment = () => {
   const [phone, setPhone] = useState("");
   const [error, setError] = useState(false);
   const navigate = useNavigate();
+  const [forgotPassOpen, setForgotPassOpen] = useState(false);
+
 
   const dateCreated = new Date();
 
@@ -592,8 +595,14 @@ const Payment = () => {
               loginOpen={loginOpen}
               setLoginOpen={setLoginOpen}
               handleGoogleSignIn={handleGoogleSignIn}
+              setForgotPassOpen={setForgotPassOpen}
             />
           </DialogLayoutForFromControl>
+          {
+            (forgotPassOpen) && (
+              <ForgotPassword setForgotPassOpen={setForgotPassOpen} forgotPassOpen={forgotPassOpen}/>
+            )
+          }
           <DialogLayoutForFromControl
             open={registerOpen}
             setOpen={setRegisterOpen}
