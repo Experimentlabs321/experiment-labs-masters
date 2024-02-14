@@ -239,20 +239,29 @@ const AdminCalendarSchedule = () => {
   console.log("End", end);
   console.log("Event", eventName);
   console.log("Description", eventDescription);
-  useEffect(() => {
+  // useEffect(() => {
 
-    if (!session?.provider_token) {
-      googleSignIn();
-    } else {
-      // If there's a session, fetch and display events
+  //   if (!session?.provider_token) {
+  //     googleSignIn();
+  //   } else {
+  //     // If there's a session, fetch and display events
+  //     fetchAndDisplayGoogleCalendarEvents();
+  //     fetchPrimaryCalendarInfo();
+  //     if (calendarError) {
+  //       googleSignIn();
+  //     }
+  //   }
+  // }, [session, calendarError, calendarfetch]);
+  useEffect(() => {
+    // Ensure session exists before attempting to fetch calendar data
+    if (session?.provider_token) {
       fetchAndDisplayGoogleCalendarEvents();
       fetchPrimaryCalendarInfo();
-      if (calendarError) {
-        googleSignIn();
-      }
+    } else {
+      // Attempt to sign in if no valid session exists
+      googleSignIn();
     }
-  }, [session, isModalOpen]);
-
+  }, []);
   if (isLoading) {
     return <></>;
   }

@@ -590,12 +590,12 @@ const ScheduleTask = ({ taskData, week }) => {
                     event
                   );
                   // console.log("new event created ", newEvent);
-                  Swal.fire({
+                  await Swal.fire({
                     icon: "success",
                     title: "Request Sent!",
                     text: "Your slot request has been sent!",
                   });
-                  navigate(-1);
+                  navigate('/courseAccess');
                 }
               };
               gapi.client
