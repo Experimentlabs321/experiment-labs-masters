@@ -830,7 +830,7 @@ const CourseAccess = () => {
                           </div>
                         </div>
                       ) : (
-                        course?.courseVisibility !== false && (
+                        course?.bundleVisibility !== false && (
                           <div
                             key={index}
                             className="bg-[#F6F7FF] rounded-[20px] p-[20px] max-w-[340px] shadow-[4px_4px_4px_0px_#0000001a]"
@@ -840,12 +840,12 @@ const CourseAccess = () => {
                                 Role === "user" && remainingDay < 0
                                   ? {}
                                   : Role === "user" &&
-                                    stateParams === "allCourses" &&
-                                    !myCourses?.find(
-                                      (item) => item?._id === course?._id
+                                    stateParams === "bundles" &&
+                                    !userInfo?.courses?.find(
+                                      (item) => item?.bundleId === course?._id
                                     )
-                                  ? `/payment/${course?._id}`
-                                  : `/questLevels/${course?._id}`
+                                  ? `/bundle/payment/${course?._id}`
+                                  : `/courseAccess`
                               }
                               target={
                                 Role === "user" &&
