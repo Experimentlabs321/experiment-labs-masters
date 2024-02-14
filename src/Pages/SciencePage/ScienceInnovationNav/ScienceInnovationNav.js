@@ -43,6 +43,9 @@ import emailjs from "@emailjs/browser";
 import { toast } from "react-hot-toast";
 import ReactGA from "react-ga4";
 import Swal from "sweetalert2";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -50,6 +53,11 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const ScienceInnovationNav = (props) => {
   const [state, setState] = React.useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
 
   const scrollToSection = (sectionId) => {
     scroll.scrollTo(sectionId, {
@@ -726,13 +734,27 @@ const ScienceInnovationNav = (props) => {
               <label className="text-[18px] mb-[9px]" htmlFor="password">
                 Password
               </label>
-              <input
-                type="password"
-                name="password"
-                onChange={handleOnChange}
-                className=" text-[black] text-[17px] text-center leading-[38px] rounded-[25px] mb-[19px]"
-                placeholder="Enter password"
-              />
+              <div className="w-full flex items-center justify-items-center gap-1 bg-[#fff] h-[38px] rounded-[25px] mb-[19px]">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  onChange={handleOnChange}
+                  className=" w-full text-[black] text-[17px] text-center leading-[38px] rounded-[25px] "
+                  placeholder="Enter password"
+                />
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                   className="text-[#000] mb-"
+                >
+                  {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                </button>
+
+              </div>
+
+
+
+
               <button
                 onClick={() => {
                   handleClose();
@@ -800,6 +822,7 @@ const ScienceInnovationNav = (props) => {
               <label className="text-[18px] mb-[9px]" htmlFor="password">
                 Password
               </label>
+
               <input
                 type="password"
                 name="password"

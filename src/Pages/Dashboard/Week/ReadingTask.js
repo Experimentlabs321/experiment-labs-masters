@@ -9,7 +9,7 @@ import icon from "../../../icon192.png";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../Shared/Loading/Loading";
 
-const ReadingTask = ({ taskData }) => {
+const ReadingTask = ({ taskData, chapterId }) => {
   const navigate = useNavigate();
   const [additionalFile, setAdditionalFile] = useState("");
   const { userInfo, user } = useContext(AuthContext);
@@ -91,7 +91,7 @@ const ReadingTask = ({ taskData }) => {
           title: "Congratulations!",
           text: "You have completed successfully!",
         });
-        // navigate(-1);
+        // navigate(`/questLevels/${chapterId}`);
       } else {
         Swal.fire({
           icon: "error",

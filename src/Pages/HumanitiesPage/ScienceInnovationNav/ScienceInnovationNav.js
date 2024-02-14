@@ -43,6 +43,8 @@ import axios from "axios";
 import emailjs from "@emailjs/browser";
 import { toast } from "react-hot-toast";
 import ReactGA from "react-ga4";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -57,7 +59,10 @@ const ScienceInnovationNav = (props) => {
       smooth: "easeInOutQuart", // Adjust the easing function as needed
     });
   };
-
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
   const [activeSection, setActiveSection] = useState("");
 
   const handleSetActiveSection = (sectionId) => {
@@ -727,13 +732,23 @@ const ScienceInnovationNav = (props) => {
               <label className="text-[18px] mb-[9px]" htmlFor="password">
                 Password
               </label>
+              <div className="w-full flex items-center justify-center gap-3 bg-[#fff] h-[38px] rounded-[25px] mb-[19px]">
               <input
-                type="password"
+               type={showPassword ? "text" : "password"}
                 name="password"
                 onChange={handleOnChange}
-                className=" text-[black] text-[17px] text-center leading-[38px] rounded-[25px] mb-[19px]"
+                className=" text-[black] text-[17px] text-center leading-[38px] rounded-[25px]"
                 placeholder="Enter password"
               />
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                   className="text-[#000] "
+                >
+                  {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                </button>
+              </div>
+            
               <button
                 onClick={() => {
                   handleClose();

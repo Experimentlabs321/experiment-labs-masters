@@ -21,6 +21,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import uploadFileToS3 from "../../UploadComponent/s3Uploader";
+import Loading from "../../Shared/Loading/Loading";
 
 // const client = new S3Client({
 //   region: "eu-north-1",
@@ -114,6 +115,7 @@ const CreateCourse = () => {
   /// handle Submit
   const handleSubmit = async (event) => {
     event.preventDefault();
+    Loading();
     const form = event.target;
 
     const courseFullName = "" + form.courseFullName?.value;
@@ -194,6 +196,7 @@ const CreateCourse = () => {
 
       console.log("Add Course----->", addCourse);
     }
+    Loading().close();
   };
 
   return (
@@ -836,7 +839,7 @@ const CreateCourse = () => {
               type="submit"
               value="Save"
               onClick={() => setSubmitPermission(true)}
-              className="px-[30px] py-3 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
+              className="px-[30px] py-3 bg-[#3E4DAC] hover:bg-opacity-70 text-[#fff] cursor-pointer text-xl font-bold rounded-lg"
             />
             {/* <input
               type="submit"

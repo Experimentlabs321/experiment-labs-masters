@@ -2,11 +2,16 @@ import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthProvider";
-import { GoogleAuthProvider } from "firebase/auth";
+import { GoogleAuthProvider, getAuth, sendPasswordResetEmail } from "firebase/auth";
 import toast from "react-hot-toast";
 import GoogleLogo from "../../../assets/icons/googleIcon.png";
 import Swal from "sweetalert2";
 import Loading from "../../Shared/Loading/Loading";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { Dialog, useMediaQuery, useTheme } from "@mui/material";
+import app from "../../../firebase/firebase.config";
+
 
 const LoginWithOrganization = () => {
   const { id } = useParams();
@@ -19,6 +24,34 @@ const LoginWithOrganization = () => {
   const loginSubTitle = localStorage.getItem("loginSubTitle");
   const loginTitle = localStorage.getItem("loginTitle");
   const orgRootUrl = localStorage.getItem("orgRootUrl");
+  const [showPassword, setShowPassword] = useState(false);
+  const [open, setOpen] = useState(false);
+  const auth = getAuth(app);
+
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+    const email = e.target.email.value;
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        toast.success('A Password Reset Link has been sent to your email.')
+        e.target.reset();
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+  };
 
   console.log(orgRootUrl);
   useEffect(() => {
@@ -127,6 +160,12 @@ const LoginWithOrganization = () => {
     Loading().close();
   };
 
+
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <div>
       <div className="flex min-h-screen">
@@ -158,13 +197,12 @@ const LoginWithOrganization = () => {
             </div>
             {/* <p className="font-medium mt-3">© 2023 Experiment Labs</p> */}
             <a
-              href={`${
-                orgRootUrl
-                  ? orgRootUrl
-                  : orgData?.orgRootUrl
+              href={`${orgRootUrl
+                ? orgRootUrl
+                : orgData?.orgRootUrl
                   ? orgData?.orgRootUrl
                   : "/"
-              }`}
+                }`}
             >
               <img
                 className="w-[100px] mx-auto mt-4"
@@ -182,13 +220,12 @@ const LoginWithOrganization = () => {
             <div className="flex lg:hidden justify-center items-center w-full py-4">
               <div className="flex items-center justify-center space-x-3">
                 <a
-                  href={`${
-                    orgRootUrl
-                      ? orgRootUrl
-                      : orgData?.orgRootUrl
+                  href={`${orgRootUrl
+                    ? orgRootUrl
+                    : orgData?.orgRootUrl
                       ? orgData?.orgRootUrl
                       : "/"
-                  }`}
+                    }`}
                 >
                   <img
                     className="w-[100px]"
@@ -237,50 +274,68 @@ const LoginWithOrganization = () => {
                     <label htmlFor="password" className="block">
                       Password
                     </label>
-                    <input
-                      type="password"
-                      name="password"
-                      id="password"
-                      defaultValue=""
-                      placeholder="Password"
-                      className="border w-full px-4 py-3 rounded-xl border-gray-300 bg-gray-50 text-gray-800 focus:border-red-600"
-                      required
-                    />
+                    <div className="relative">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        id="password"
+                        defaultValue=""
+                        placeholder="Password"
+                        className="border w-full px-4 py-3 rounded-xl border-gray-300 bg-gray-50 text-gray-800 focus:border-red-600"
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={togglePasswordVisibility}
+                        className="absolute inset-y-0 right-0 px-4 py-3"
+                      >
+                        {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                      </button>
+                    </div>
                   </div>
                   <input
                     type="submit"
                     value="Login"
                     className="block w-full p-3 text-center rounded-xl text-gray-50 bg-cyan hover:bg-opacity-70 cursor-pointer font-bold hover:transition-all hover:delay-200 hover:ease-out"
                   />
-                  <p className="font-semibold text-lg text-center">Or</p>
-                  <button
-                    onClick={handleGoogleSignIn}
-                    aria-label="Login with Google"
-                    type="button"
-                    className="flex items-center justify-center w-full p-3 space-x-4 border rounded-xl hover:transition-all hover:delay-200 hover:ease-out hover:bg-slate-200 bg-[#9c9d9e4e] text-black mb-[25px]"
-                  >
-                    <img
-                      className="w-[20px] h-[20px]"
-                      src={GoogleLogo}
-                      alt=""
-                    />
-                    <p className="text-[20px]">Continue with Google</p>
-                  </button>
-                  <div className="flex justify-center">
-                    <p className="font-medium text-lg">
-                      Don't have an account?{" "}
-                      <Link
-                        to={`/register/${id}`}
-                        className="text-blue cursor-pointer"
-                      >
-                        Register
-                      </Link>
-                    </p>
-                  </div>
-                  <p className="text-center text-error">
-                    {/* <small>error</small> */}
-                  </p>
                 </form>
+                <p className="font-semibold text-lg text-center">Or</p>
+                <button
+                  onClick={handleGoogleSignIn}
+                  aria-label="Login with Google"
+                  type="button"
+                  className="flex items-center justify-center w-full p-3 space-x-4 border rounded-xl hover:transition-all hover:delay-200 hover:ease-out hover:bg-slate-200 bg-[#9c9d9e4e] text-black mb-[25px]"
+                >
+                  <img
+                    className="w-[20px] h-[20px]"
+                    src={GoogleLogo}
+                    alt=""
+                  />
+                  <p className="text-[20px]">Continue with Google</p>
+                </button>
+                <div className="text-center">
+                  <button onClick={() => {
+
+                    handleClickOpen();
+                  }} 
+               
+                  className="text-blue hover:border-b mb-[1px] border-blue">Forgot password?</button>
+                </div>
+                <div className="flex justify-center">
+                  <p className="font-medium text-lg">
+                    Don't have an account?{" "}
+                    <Link
+                      to={`/register/${id}`}
+                      className="text-blue cursor-pointer"
+                    >
+                      Register
+                    </Link>
+                  </p>
+                </div>
+                <p className="text-center text-error">
+                  {/* <small>error</small> */}
+                </p>
+
                 {/* <div
                   style={{ marginTop: 0 }}
                   className="flex justify-center items-center "
@@ -320,6 +375,60 @@ const LoginWithOrganization = () => {
                 </button> */}
               </div>
             </div>
+
+            {/* Forgotten password */}
+            <Dialog
+              fullScreen={fullScreen}
+              open={open}
+              // onClose={handleClose}
+              aria-labelledby="responsive-dialog-title"
+              sx={{ width: "100%", borderRadius: "22px" }}
+            >
+              <div className="w-[400px] h-full text-white flex items-center  ">
+                <div className="w-full">
+                  <span
+                    onClick={handleClose}
+                    className=" cursor-pointer absolute top-3 right-5 text-[30px] text-[#000]"
+                  >
+                    x
+                  </span>
+                  <h1 className="text-blue text-[27px] font-semibold p-8 "
+                  
+                  >Forgot Password?</h1>
+                  <p className="border-b"></p>
+                  {/* <p className="text-blue text-[16px] mb-[45px] border-b">
+
+                    Please enter your email address.
+                  </p> */}
+                  <form onSubmit={(e) => handleResetPassword(e)} className="flex flex-col gap-2 w-full p-8 ">
+                 
+                    <label className="text-[18px] mb-[9px] text-[#000]" htmlFor="email">
+                      Enter Your Email
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      //   onChange={handleOnChange}
+                      className=" w-full rounded-xl border px-4 py-3 border-gray-300 bg-gray-50 text-gray-800 focus:border-red-600"
+                      placeholder="Enter your email"
+                    />
+
+                    <button
+                      onClick={() => {
+                        //  handleClose();
+                        //    handleClickOpen1();
+                      }}
+                      className="block w-full p-3 text-center rounded-xl text-gray-50 bg-cyan hover:bg-opacity-70 cursor-pointer font-bold hover:transition-all hover:delay-200 hover:ease-out mt-5"
+                    >
+                      Reset
+                    </button>
+                  </form>
+
+                </div>
+              </div>
+
+
+            </Dialog>
 
             {/* <!-- Footer --> */}
             <div className="flex justify-center flex-col m-auto my-5 text-center text-lg ">
