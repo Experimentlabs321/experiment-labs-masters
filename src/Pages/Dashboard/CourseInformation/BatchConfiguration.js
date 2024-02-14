@@ -102,29 +102,31 @@ const BatchConfiguration = ({
       price: event?.target?.price?.value,
       // participants: participants,
     };
-
+  
     console.log(sendData);
-
-    const editBatch = await axios.put(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/batches/updateBatch/batchId/${selectedBatches[0]?._id}`,
-      sendData
-    );
-
-    console.log(editBatch);
-
-    // sendData?.user?.participants?.forEach((element) => {
-    //   createUser(element?.email, element?.password);
-    // });
-
-    if (editBatch?.data?.acknowledged) {
-      toast.success("Batch Updated Successfully");
-      // batchesData?.push(sendData?.batch);
-      setShowEditBatchDialog(false);
-      event.target.reset();
+  
+    try {
+      const editBatch = await axios.put(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/batches/updateBatch/batchId/${selectedBatches[0]?._id}`,
+        sendData
+      );
+  
+      console.log(editBatch); // Log the response data
+  
+      if (editBatch?.status===200) {
+        toast.success("Batch Updated Successfully");
+        // batchesData?.push(sendData?.batch);
+        setShowEditBatchDialog(false);
+        event.target.reset();
+      } else {
+        toast.error("Failed to update batch");
+      }
+    } catch (error) {
+      console.error("Error updating batch:", error);
+      toast.error("An error occurred while updating the batch");
     }
-
-    // console.log("Add chapter----->", week);
   };
+  
 
   const handleBatchDelete = async (id) => {};
 

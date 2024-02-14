@@ -20,6 +20,8 @@ import { Dialog, useMediaQuery, useTheme } from "@mui/material";
 import {
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
+  getAuth,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 import CryptoJS from "crypto-js";
 import MailIcon from "@mui/icons-material/Mail";
@@ -30,6 +32,9 @@ import ReactGA from "react-ga4";
 import toast from "react-hot-toast";
 import axios from "axios";
 import Swal from "sweetalert2";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import app from "../../../firebase/firebase.config";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -39,7 +44,36 @@ const NavBar = (props) => {
   const { userInfo } = useContext(AuthContext);
   const [state, setState] = React.useState(false);
   const [role, setRole] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [open3, setOpen3] = useState(false);
 
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+  const auth = getAuth(app);
+
+
+  const handleClickOpen3 = () => {
+    setOpen3(true);
+  };
+
+  const handleClose3 = () => {
+    setOpen3(false);
+  };
+
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+    const email = e.target.email.value;
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        toast.success('A Password Reset Link has been sent to your email.')
+        e.target.reset();
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+  };
   const toggleDrawer = (open) => (event) => {
     if (
       event.type === "keydown" &&
@@ -1037,23 +1071,39 @@ const NavBar = (props) => {
               <label className="text-[18px] mb-[9px]" htmlFor="password">
                 Password
               </label>
-              <input
-                type="password"
-                name="password"
-                onChange={handleOnChange}
-                className=" text-[black] text-[17px] text-center leading-[38px] rounded-[25px] mb-[19px]"
-                placeholder="Enter password"
-              />
+              <div className="w-full flex items-center justify-center gap-2 bg-[#fff] h-[38px] rounded-[25px] mb-[19px]">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  onChange={handleOnChange}
+                  className=" text-[black] text-[17px] text-center leading-[38px] rounded-[25px] "
+                  placeholder="Enter password"
+                />
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  className="text-[#000] ms-5"
+                >
+                  {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                </button>
+              </div>
+
               <button
                 onClick={() => {
                   handleClose();
                   handleClickOpen1();
                 }}
-                className="text-[20px] bg-[#FF557A] w-fit self-center py-[8px] px-[40px] rounded-[25px] mb-[18px]"
+                className="text-[20px] bg-[#FF557A] w-fit self-center py-[8px] px-[40px] rounded-[25px] "
               >
                 Login
               </button>
             </form>
+            <div className="text-center my-2">
+              <button onClick={() => {
+
+                handleClickOpen3();
+              }} className="text-[#FF557A]">Forgotten password?</button>
+            </div>
             <p>
               Don't have an account?{" "}
               <span
@@ -1259,6 +1309,55 @@ const NavBar = (props) => {
             ></iframe>
           </div>
         </div>
+      </Dialog>
+
+      <Dialog
+        fullScreen={fullScreen}
+        open={open3}
+        // onClose={handleClose}
+        aria-labelledby="responsive-dialog-title"
+        sx={{ width: "100%", borderRadius: "22px" }}
+      >
+        <div className="w-full lg:min-w-[400px]  h-full lg:min-h-[475px] bg-[#141414] text-white  mx-auto border-2 border-white p-8 flex justify-center items-center  ">
+          <div className="text-center">
+            <span
+              onClick={handleClose3}
+              className=" cursor-pointer absolute top-3 right-5 text-[20px]"
+            >
+              x
+            </span>
+            <h1 className="text-[#FF557A] text-[27px]">Forgotten Password</h1>
+            <p className="text-[#FF557A] text-[16px] mb-[45px]">
+
+              Please enter your email address.
+            </p>
+            <form onSubmit={(e) => handleResetPassword(e)} className="flex flex-col gap-2">
+              <label className="text-[18px] mb-[9px]" htmlFor="email">
+                Enter Your Email
+              </label>
+              <input
+                type="email"
+                name="email"
+                //   onChange={handleOnChange}
+                className=" text-[black] text-[17px] text-center leading-[38px] rounded-[25px] mb-[19px]"
+                placeholder="Enter your email"
+              />
+
+              <button
+                onClick={() => {
+                  //  handleClose();
+                  //    handleClickOpen1();
+                }}
+                className="text-[20px] bg-[#FF557A] w-fit self-center py-[8px] px-[40px] rounded-[25px] mb-[18px]"
+              >
+                Reset
+              </button>
+            </form>
+
+          </div>
+        </div>
+
+
       </Dialog>
     </Box>
   );
