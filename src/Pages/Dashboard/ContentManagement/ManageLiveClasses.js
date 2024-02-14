@@ -28,6 +28,7 @@ import axios from "axios";
 import SkillBasedParameter from "./Components/Shared/SkillBasedParameter";
 import ItemEarningParameter from "./Components/Shared/ItemEarningParameter";
 import toast from "react-hot-toast";
+import Loading from "../../Shared/Loading/Loading";
 
 const ManageLiveClasses = () => {
   const { id } = useParams();
@@ -38,6 +39,24 @@ const ManageLiveClasses = () => {
   const [isOpenevaluationParameter, setisOpenevaluationParameter] =
     useState(false);
   const [orgData, setOrgData] = useState({});
+  // ----   code by shihab   ----
+  const { user, userInfo } = useContext(AuthContext);
+  const [chapter, setChapter] = useState({});
+  const [skillCategories, setSkillCategories] = useState([]);
+  const [earningCategories, setEarningCategories] = useState([]);
+  const [skillParameterData, setSkillParameterData] = useState([]);
+  const [earningParameterData, setEarningParameterData] = useState([]);
+  const [instructions, setInstructions] = useState("");
+  const [course, setCourse] = useState({});
+  const [preview, setPreview] = useState(false);
+  const [submitPermission, setSubmitPermission] = useState(false);
+  const [classesData, setClassesData] = useState({});
+  const [batchesData, setBatchesData] = useState([]);
+  const [selectedBatch, setSelectedBatch] = useState({});
+  const [mentors, setMentors] = useState([]);
+  const [selectedMentors, setSelectedMentors] = useState([]);
+  const [taskDrip, setTaskDrip] = useState(false);
+  const [enableDrip, setEnableDrip] = useState();
 
   const toggleDropdownGeneral = () => {
     setisOpenGeneral(!isOpenGeneral);
@@ -160,10 +179,12 @@ const ManageLiveClasses = () => {
     } catch (error) {
       console.error("Error creating meeting:", error);
     }
+    Loading().close();
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    Loading();
     const form = event.target;
 
     const className = form.className?.value;
@@ -228,22 +249,7 @@ const ManageLiveClasses = () => {
     connectZoom();
   };
 
-  // ----   code by shihab   ----
-  const { user, userInfo } = useContext(AuthContext);
-  const [chapter, setChapter] = useState({});
-  const [skillCategories, setSkillCategories] = useState([]);
-  const [earningCategories, setEarningCategories] = useState([]);
-  const [skillParameterData, setSkillParameterData] = useState([]);
-  const [earningParameterData, setEarningParameterData] = useState([]);
-  const [instructions, setInstructions] = useState("");
-  const [course, setCourse] = useState({});
-  const [preview, setPreview] = useState(false);
-  const [submitPermission, setSubmitPermission] = useState(false);
-  const [classesData, setClassesData] = useState({});
-  const [batchesData, setBatchesData] = useState([]);
-  const [selectedBatch, setSelectedBatch] = useState({});
-  const [mentors, setMentors] = useState([]);
-  const [selectedMentors, setSelectedMentors] = useState([]);
+
 
   useEffect(() => {
     axios
@@ -255,6 +261,12 @@ const ManageLiveClasses = () => {
           courseId: response?.data?.courseId,
         };
         if (fetchData && userInfo?.organizationId && chapter?.courseId) {
+          axios
+            .get(
+              `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${chapter?.courseId}`
+            )
+            .then((res) => setCourse(res?.data))
+            .catch((error) => console.error(error));
           axios
             .get(
               `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
@@ -272,13 +284,12 @@ const ManageLiveClasses = () => {
         }
       })
       .catch((error) => console.error(error));
-  }, [id, userInfo, userInfo?.email]);
+  }, [chapter?.courseId, id, userInfo, userInfo.email]);
 
   useEffect(() => {
     axios
       .get(
-        `${
-          process.env.REACT_APP_SERVER_API
+        `${process.env.REACT_APP_SERVER_API
         }/api/v1/batches/courseId/${localStorage.getItem("courseId")}`
       )
       .then((response) => {
@@ -593,6 +604,62 @@ const ManageLiveClasses = () => {
                     placeholder="Email"
                   />
                 </div>
+
+
+
+
+              </div>
+              <div className="space-y-4 mb-8">
+                <fieldset>
+                  <div className="flex items-center gap-4 mb-5">
+                    <p className="h-2 w-2 bg-black rounded-full"></p>
+                    <p className="font-bold text-lg me-[36px]">Enable Drip</p>
+                    <img src={required} alt="" />
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <div className="flex items-center">
+                      <input
+                        type="radio"
+                        id="radioYes"
+                        name="radioOption"
+                        checked={taskDrip === true}
+                        onChange={() => setTaskDrip(true)}
+                        disabled={course?.enableDrip}
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
+                      />
+                      <label
+                        htmlFor="radioYes"
+                        className={`ml-2 text-sm font-medium ${enableDrip ? 'text-gray-400' : 'text-gray-900'}`}
+                      >
+                        Yes
+                      </label>
+                    </div>
+
+                    <div className="flex items-center">
+                      <input
+                        type="radio"
+                        id="radioNo"
+                        name="radioOption"
+                        checked={taskDrip === false}
+                        onChange={() => setTaskDrip(false)}
+                        disabled={course?.enableDrip}
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
+                      />
+                      <label
+                        htmlFor="radioNo"
+                        className={`ml-2 text-sm font-medium ${enableDrip ? 'text-gray-400' : 'text-gray-900'}`}
+                      >
+                        No
+                      </label>
+                    </div>
+                  </div>
+                </fieldset>
+
+                {course?.enableDrip && (
+                  <p className="text-sm text-red-500">
+                    Course Drip Must Be Turned Off to add Task Drip.
+                  </p>
+                )}
               </div>
             </div>
           )}
@@ -671,27 +738,26 @@ const ManageLiveClasses = () => {
 
           {(orgData?.showPointsAndRedemptions ||
             orgData?.showSkillsManagement) && (
-            <div
-              className="select-option flex items-center gap-[40px] mt-12"
-              onClick={toggleDropdownevaluationParameter}
-            >
-              <h1 className=" h-[60px] w-[60px] bg-[#E1E6FF] rounded-full flex justify-center items-center text-[25px]">
-                3
-              </h1>
-              <p className="text-[25px] font-bold">Evaluation Parameter</p>
-              {!isOpenevaluationParameter && (
-                <img className="w-6" src={arrowright}></img>
-              )}
+              <div
+                className="select-option flex items-center gap-[40px] mt-12"
+                onClick={toggleDropdownevaluationParameter}
+              >
+                <h1 className=" h-[60px] w-[60px] bg-[#E1E6FF] rounded-full flex justify-center items-center text-[25px]">
+                  3
+                </h1>
+                <p className="text-[25px] font-bold">Evaluation Parameter</p>
+                {!isOpenevaluationParameter && (
+                  <img className="w-6" src={arrowright}></img>
+                )}
 
-              {isOpenevaluationParameter && <img src={arrowDown}></img>}
+                {isOpenevaluationParameter && <img src={arrowDown}></img>}
 
-              <i
-                className={`dropdown-arrow ${
-                  isOpenevaluationParameter ? "open" : ""
-                }`}
-              ></i>
-            </div>
-          )}
+                <i
+                  className={`dropdown-arrow ${isOpenevaluationParameter ? "open" : ""
+                    }`}
+                ></i>
+              </div>
+            )}
 
           {isOpenevaluationParameter && (
             <div className="dropdown-menu mt-[71px] mb-[45px] ">
@@ -717,7 +783,7 @@ const ManageLiveClasses = () => {
               type="submit"
               value="Save"
               onClick={() => setSubmitPermission(true)}
-              className="px-[30px] py-3 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
+              className="px-[30px] py-3 bg-[#3E4DAC] hover:bg-opacity-70 text-[#fff] cursor-pointer text-xl font-bold rounded-lg"
             />
             {/* <input
               type="submit"

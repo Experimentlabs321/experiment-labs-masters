@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import required from "../../../../assets/ContentManagement/required.png";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { AuthContext } from "../../../../contexts/AuthProvider";
@@ -69,6 +69,7 @@ const EditFiles = () => {
   const [batchesData, setBatchesData] = useState([]);
   const [selectedBatches, setSelectedBatches] = useState([]);
   const [orgData, setOrgData] = useState({});
+  const [taskDrip, setTaskDrip] = useState();
 
   useEffect(() => {
     const fetchData = {
@@ -113,6 +114,7 @@ const EditFiles = () => {
         setSelectedBatches(response?.data?.batches);
         setSkillParameterData(response?.data?.skillParameterData);
         setEarningParameterData(response?.data?.earningParameterData);
+        setTaskDrip(response?.data?.taskDrip);
       });
   }, [openTask]);
 
@@ -154,6 +156,8 @@ const EditFiles = () => {
     }
   };
 
+  const navigate = useNavigate();
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     Loading();
@@ -170,24 +174,26 @@ const EditFiles = () => {
       earningParameterData: earningParameterData,
       chapterId: id,
       batches: selectedBatches,
+      taskDrip
     };
 
     setFileData(ManageFile);
 
     if (submitPermission) {
-      const newTask = await axios.post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/files`,
+      const newTask = await axios.put(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/files/taskId/${fileData?._id}`,
         ManageFile
       );
 
-      if (newTask) {
+      if (newTask?.data?.result?.acknowledged) {
         toast.success("File added Successfully");
-        event.target.reset();
+        // event.target.reset();
       }
 
       console.log(ManageFile);
     }
     Loading().close();
+    navigate(-1);
   };
 
   return (
@@ -386,6 +392,8 @@ const EditFiles = () => {
                 </div>
               </div>
             </div>
+
+
             <div className="me-20 py-[35px] ps-[40px]">
               <div>
                 <div className="flex items-center gap-4">
@@ -421,13 +429,67 @@ const EditFiles = () => {
                 </ul>
               </div>
             </div>
+
+            <div className="space-y-4 mb-8 ps-[40px]">
+              <fieldset>
+                <div className="flex items-center gap-4 mb-5">
+                  <p className="h-2 w-2 bg-black rounded-full"></p>
+                  <p className="font-bold text-lg me-[36px]">Enable Drip</p>
+                  <img src={required} alt="" />
+                </div>
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center">
+                    <input
+                      type="radio"
+                      id="radioYes"
+                      name="radioOption"
+                      checked={taskDrip === true}
+                      onChange={() => setTaskDrip(true)}
+                      disabled={course?.enableDrip}
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
+                    />
+                    <label
+                      htmlFor="radioYes"
+                      className={`ml-2 text-sm font-medium ${course?.enableDrip ? 'text-gray-400' : 'text-gray-900'}`}
+                    >
+                      Yes
+                    </label>
+                  </div>
+
+                  <div className="flex items-center">
+                    <input
+                      type="radio"
+                      id="radioNo"
+                      name="radioOption"
+                      checked={taskDrip === false}
+                      onChange={() => setTaskDrip(false)}
+                      disabled={course?.enableDrip}
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
+                    />
+                    <label
+                      htmlFor="radioNo"
+                      className={`ml-2 text-sm font-medium ${course?.enableDrip ? 'text-gray-400' : 'text-gray-900'}`}
+                    >
+                      No
+                    </label>
+                  </div>
+                </div>
+              </fieldset>
+
+              {course?.enableDrip && (
+                <p className="text-sm text-red-500">
+                  Course Drip Must Be Turned Off to add Task Drip.
+                </p>
+              )}
+            </div>
+
             <div className="px-4 my-10">
               {(orgData?.showPointsAndRedemptions ||
                 orgData?.showSkillsManagement) && (
-                <p className="text-[25px] font-bold mb-10">
-                  Evaluation Parameter
-                </p>
-              )}
+                  <p className="text-[25px] font-bold mb-10">
+                    Evaluation Parameter
+                  </p>
+                )}
               {orgData?.showSkillsManagement && (
                 <SkillBasedParameter
                   forEdit={true}
@@ -451,7 +513,7 @@ const EditFiles = () => {
                 type="submit"
                 value="Save"
                 onClick={() => setSubmitPermission(true)}
-                className="px-[30px] py-3 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
+                className="px-[30px] py-3 bg-[#3E4DAC] hover:bg-opacity-70 text-[#fff] cursor-pointer text-xl font-bold rounded-lg"
               />
               {/* <input
                 type="submit"

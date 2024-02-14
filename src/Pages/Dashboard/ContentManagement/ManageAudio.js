@@ -5,7 +5,7 @@ import Audioimg from "../../../assets/ContentManagement/audio.png";
 import { useContext, useEffect, useRef, useState } from "react";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { AuthContext } from "../../../contexts/AuthProvider";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import SkillBasedParameter from "./Components/Shared/SkillBasedParameter";
 import ItemEarningParameter from "./Components/Shared/ItemEarningParameter";
@@ -67,6 +67,7 @@ const ManageAudio = () => {
   const [batchesData, setBatchesData] = useState([]);
   const [selectedBatches, setSelectedBatches] = useState([]);
   const [orgData, setOrgData] = useState({});
+  const [taskDrip, setTaskDrip] = useState(false);
 
   useEffect(() => {
     axios
@@ -146,6 +147,8 @@ const ManageAudio = () => {
     }
   };
 
+  const navigate = useNavigate();
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     Loading();
@@ -165,6 +168,7 @@ const ManageAudio = () => {
       completionParameter: completionParameter,
       courseId: chapter?.courseId,
       batches: selectedBatches,
+      taskDrip
     };
 
     setAudioData(ManageAudio);
@@ -178,7 +182,7 @@ const ManageAudio = () => {
 
       if (newTask) {
         toast.success("Audio added Successfully");
-        event.target.reset();
+        navigate(-1);
       }
 
       console.log(ManageAudio);
@@ -383,6 +387,7 @@ const ManageAudio = () => {
                 </div>
               </div>
             </div>
+
             <div className="me-20 py-[35px] ps-[40px]">
               <div>
                 <div className="flex items-center gap-4">
@@ -418,13 +423,67 @@ const ManageAudio = () => {
                 </ul>
               </div>
             </div>
+
+            <div className="ml-[40px] space-y-4 mb-8">
+              <fieldset>
+                <div className="flex items-center gap-4 mb-5">
+                  <p className="h-2 w-2 bg-black rounded-full"></p>
+                  <p className="font-bold text-lg me-[36px]">Enable Drip</p>
+                  <img src={required} alt="" />
+                </div>
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center">
+                    <input
+                      type="radio"
+                      id="radioYes"
+                      name="radioOption"
+                      checked={taskDrip === true}
+                      onChange={() => setTaskDrip(true)}
+                      disabled={course?.enableDrip}
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
+                    />
+                    <label
+                      htmlFor="radioYes"
+                      className={`ml-2 text-sm font-medium ${course?.enableDrip ? 'text-gray-400' : 'text-gray-900'}`}
+                    >
+                      Yes
+                    </label>
+                  </div>
+
+                  <div className="flex items-center">
+                    <input
+                      type="radio"
+                      id="radioNo"
+                      name="radioOption"
+                      checked={taskDrip === false}
+                      onChange={() => setTaskDrip(false)}
+                      disabled={course?.enableDrip}
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
+                    />
+                    <label
+                      htmlFor="radioNo"
+                      className={`ml-2 text-sm font-medium ${course?.enableDrip ? 'text-gray-400' : 'text-gray-900'}`}
+                    >
+                      No
+                    </label>
+                  </div>
+                </div>
+              </fieldset>
+
+              {course?.enableDrip && (
+                <p className="text-sm text-red-500">
+                  Course Drip Must Be Turned Off to add Task Drip.
+                </p>
+              )}
+            </div>
+
             <div className="px-4 my-10">
               {(orgData?.showPointsAndRedemptions ||
                 orgData?.showSkillsManagement) && (
-                <p className="text-[25px] font-bold mb-10">
-                  Evaluation Parameter
-                </p>
-              )}
+                  <p className="text-[25px] font-bold mb-10">
+                    Evaluation Parameter
+                  </p>
+                )}
               {orgData?.showSkillsManagement && (
                 <SkillBasedParameter
                   selectedData={skillParameterData}
@@ -450,7 +509,7 @@ const ManageAudio = () => {
                 type="submit"
                 value="Save"
                 onClick={() => setSubmitPermission(true)}
-                className="px-[30px] py-3 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
+                className="px-[30px] py-3 bg-[#3E4DAC] hover:bg-opacity-70 text-[#fff] cursor-pointer text-xl font-bold rounded-lg"
               />
               {/* <input
                 type="submit"
