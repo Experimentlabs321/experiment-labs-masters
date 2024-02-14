@@ -6,6 +6,7 @@ import axios from "axios";
 import uploadFileToS3 from "../../UploadComponent/s3Uploader";
 import toast from "react-hot-toast";
 import { useParams } from "react-router-dom";
+import FileCopyIcon from "@mui/icons-material/FileCopy";
 
 const EditBundle = () => {
   const { id } = useParams();
@@ -24,13 +25,19 @@ const EditBundle = () => {
   const [bundleVisibility, setBundleVisibility] = useState();
 
   const { user, userInfo } = useContext(AuthContext);
+  const rootUrl = window.location.origin;
 
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_SERVER_API}/api/v1/bundles/bundleId/${id}`)
       .then((response) => {
         setBundleData(response?.data);
-        setBundleVisibility(response?.data?.courseVisibility);
+        if (
+          response?.data?.bundleVisibility === "true" ||
+          response?.data?.bundleVisibility === true
+        )
+          setBundleVisibility(true);
+        else setBundleVisibility(false);
       })
       .catch((error) => console.error(error));
   }, [id]);
@@ -45,6 +52,21 @@ const EditBundle = () => {
       })
       .catch((error) => console.error(error));
   }, [userInfo]);
+
+  useEffect(() => {
+    setSelectedCourses(
+      availableCourses?.filter((item) =>
+        bundleData?.courses?.find(
+          (bundleItem) => bundleItem?.courseId === item?._id
+        )
+      )
+    );
+    const previousSelectedBatch = [];
+    bundleData?.courses?.forEach((element) => {
+      previousSelectedBatch.push(element?.batchId);
+    });
+    setSelectedBatches(previousSelectedBatch);
+  }, [availableCourses, bundleData]);
 
   const handleCourseInputChange = (event) => {
     if (event.target.value.length > 0) setCourseDropdown(true);
@@ -123,7 +145,7 @@ const EditBundle = () => {
     const bundleStartingDate = form.bundleStartingDate.value;
     const bundleEndingDate = form.bundleEndingDate.value;
     const bundleDescription = form.bundleDescription.value;
-    const bundlePurchaseUrl = form.bundlePurchaseUrl.value;
+    // const bundlePurchaseUrl = form.bundlePurchaseUrl.value;
     const bundleVisibility = form.bundleVisibility.value;
     const bundleIDNumber = form.bundleIDNumber.value;
     const expirationDay = form.expirationDay.value;
@@ -140,7 +162,7 @@ const EditBundle = () => {
       bundleStartingDate,
       bundleEndingDate,
       bundleDescription,
-      bundlePurchaseUrl,
+      bundlePurchaseUrl: bundleData?.bundlePurchaseUrl,
       bundleVisibility,
       bundleIDNumber,
       expirationDay,
@@ -174,7 +196,7 @@ const EditBundle = () => {
     }
   };
 
-  console.log(bundleData);
+  console.log(availableCourses);
 
   return (
     <div>
@@ -387,13 +409,44 @@ const EditBundle = () => {
                       Bundle or Package purchase url
                     </p>
                   </div>
-
-                  <input
+                  <div className="flex">
+                    <button
+                      onMouseDown={async (e) => {
+                        e.preventDefault();
+                        try {
+                          await navigator.clipboard.writeText(
+                            `${rootUrl}/bundle/payment/${id}`
+                          );
+                          toast.success("Url Copied!");
+                        } catch (err) {
+                          console.error("Unable to copy to clipboard", err);
+                        }
+                      }}
+                      className="mt-6 ms-6 border rounded-l-md w-fit h-[50px] p-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                    >{`${rootUrl}/bundle/payment/${id}`}</button>
+                    <button
+                      className="mt-6 border rounded-r-md w-fit h-[50px] p-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                      onClick={async (e) => {
+                        e.preventDefault();
+                        try {
+                          await navigator.clipboard.writeText(
+                            `${rootUrl}/bundle/payment/${id}`
+                          );
+                          toast.success("Url Copied!");
+                        } catch (err) {
+                          console.error("Unable to copy to clipboard", err);
+                        }
+                      }}
+                    >
+                      <FileCopyIcon />
+                    </button>
+                  </div>
+                  {/* <input
                     className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                     name="bundlePurchaseUrl"
                     type="url"
                     placeholder="https://www.google.com/"
-                  />
+                  /> */}
                 </div>
               </div>
 
@@ -504,6 +557,8 @@ const EditBundle = () => {
                         id="Yes"
                         name="bundleVisibility"
                         value={true}
+                        checked={bundleVisibility === true}
+                        onChange={() => setBundleVisibility(true)}
                       />
                       <lebel> Show</lebel>
                     </div>
@@ -513,6 +568,8 @@ const EditBundle = () => {
                         id="No"
                         name="bundleVisibility"
                         value={false}
+                        checked={bundleVisibility === false}
+                        onChange={() => setBundleVisibility(false)}
                       />
                       <lebel> Hide</lebel>
                     </div>
