@@ -22,12 +22,13 @@ import RightArrowWhite from "../../../assets/Dashboard/RightArrowWhite.png";
 import Swal from "sweetalert2";
 import { gapi } from "gapi-script";
 import DashboardPrimaryButton from "../Shared/DashboardPrimaryButton";
-
-
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import googlemeet from "../../../assets/icons/googlemeet.png";
 let matching = false;
 const matchInputWithBusySlots = (inputDate, inputTime, busyTimeSlots) => {
 
   let flag = 0;
+  console.log("input", inputDate, inputTime)
   const inputDateTime = new Date(`${inputDate}T${inputTime}`);
   console.log('Input DateTime:', inputDateTime);
 
@@ -79,6 +80,7 @@ const ScheduleTask = ({ taskData, week }) => {
   const [busyTimeSlots, setBusyTimeSlots] = useState([]);
   const [userRequesterEvents, setUserRequesterEvents] = useState([]);
   const session = useSession();
+  const [selectedDate, setSelectedDate] = useState("");
   const supabase = useSupabaseClient();
   console.log("Task data ", taskData)
   const { user, userInfo } = useContext(AuthContext);
@@ -96,6 +98,7 @@ const ScheduleTask = ({ taskData, week }) => {
   const [timeRangeError, setTimeRangeError] = useState(false);
   const [minTime, setMinTime] = useState("");
   const [maxTime, setMaxTime] = useState("");
+  const [selectedTimeDate, setselectedTimeDate] = useState("");
   const [reservedEvent, setReservedEvent] = useState(null);
   const [startTime, setStartTime] = useState();
   const [currentWeek, setCurrentWeek] = useState(null);
@@ -137,6 +140,7 @@ const ScheduleTask = ({ taskData, week }) => {
       document.getElementById('date').value = "";
       setDate(null);
       setMaxDateString("");  // Reset maxDateString state
+      setSelectedDate("");   // Add this line to set the selected date to an empty string
       return;
     }
 
@@ -152,6 +156,7 @@ const ScheduleTask = ({ taskData, week }) => {
       document.getElementById('date').value = "";
       setDate(null);
       setMaxDateString("");  // Reset maxDateString state
+      setSelectedDate("");   // Add this line to set the selected date to an empty string
       return;
     }
 
@@ -160,38 +165,103 @@ const ScheduleTask = ({ taskData, week }) => {
     document.getElementById('date').min = getCurrentDate();
     document.getElementById('date').max = maxDateString;
     setMaxDateString(maxDateString);
+    setSelectedDate(selectedDate); // Set the selected date
     matchInputWithBusySlots(selectedDate, time, busyTimeSlots);
+  };
+  const convert12HourTo24Hour = (time12h) => {
+    const [time, modifier] = time12h.split(' ');
+
+    let [hours, minutes] = time.split(':');
+
+    if (hours === '12') {
+      hours = '00';
+    }
+
+    if (modifier === 'PM') {
+      hours = parseInt(hours, 10) + 12;
+    }
+
+    return `${hours}:${minutes}:00`;
   };
 
   // Update the time state when the time input changes
   const handleTimeChange = (event) => {
+    const selectedTime12h = event.target.value;
+    console.log(`Setting time to ${selectedTime12h}`);
 
-    const selectedTime = event.target.value;
+    const selectedTime24h = convert12HourTo24Hour(selectedTime12h);
+    console.log(`Converted time to 24-hour format: ${selectedTime24h}`);
 
-    console.log(selectedTime)
     const minTime = taskData?.minimumTime;
     const maxTime = taskData?.maximumTime;
-    setMaxTime(maxTime)
-    setMinTime(minTime)
-    const selectedTimeDate = new Date(`2000-01-01T${selectedTime}`);
-    const minTimeDate = new Date(`2000-01-01T${minTime}`);
-    const maxTimeDate = new Date(`2000-01-01T${maxTime}`);
+    setMaxTime(maxTime);
+    setMinTime(minTime);
 
-    if (selectedTimeDate < minTimeDate || selectedTimeDate > maxTimeDate) {
-      setCheckTime(true)
-      setTimeRangeError(true)
-      //alert(`Please choose a time between ${minTime} and ${maxTime}.`);
+    console.log("Selected Date:", selectedDate);
+
+    handleTimeSelection(selectedTime24h, selectedDate, minTime, maxTime); // Pass selectedDate
+
+    // Rest of your code...
+  };
+
+  const handleTimeSelection = (selectedTime, selectedDate, minTime, maxTime) => {
+    const selectedT = new Date(`${selectedDate}T${selectedTime}`);
+    setselectedTimeDate(selectedT);
+    const minTimeDate = new Date(`${selectedDate}T${minTime}`);
+    const maxTimeDate = new Date(`${selectedDate}T${maxTime}`);
+    console.log(selectedT);
+    console.log(minTimeDate, maxTimeDate);
+    if (selectedT < minTimeDate || selectedT > maxTimeDate) {
+      console.log('entered')
+      setCheckTime(true);
+      setTimeRangeError(true);
       // Reset the time to the initial state or do nothing
       document.getElementById('time').value = minTime;
-      //  setTime(null);
     } else {
-      setTimeRangeError(false)
-      setCheckTime(false)
+      console.log('adssssssentered')
+      setTimeRangeError(false);
+      setCheckTime(false);
       setTime(selectedTime);
-      console.log("handletimechange", selectedTime);
-      matchInputWithBusySlots(date, selectedTime, busyTimeSlots);
+      console.log("handleTimeSelection", selectedTime);
+      matchInputWithBusySlots(selectedDate, selectedTime, busyTimeSlots);
     }
   };
+
+
+  //  const handleBTimeChange = (event) => {
+
+  //     const selectedTime = event.target.value;
+
+  //     console.log(selectedTime)
+  //     const minTime = taskData?.minimumTime;
+  //     const maxTime = taskData?.maximumTime;
+  //     setMaxTime(maxTime)
+  //     setMinTime(minTime)
+  //     const selectedTimeDate = new Date(`2000-01-01T${selectedTime}`);
+  //     const minTimeDate = new Date(`2000-01-01T${minTime}`);
+  //     const maxTimeDate = new Date(`2000-01-01T${maxTime}`);
+
+  //     if (selectedTimeDate < minTimeDate || selectedTimeDate > maxTimeDate) {
+  //       setCheckTime(true)
+  //       setTimeRangeError(true)
+  //       //alert(`Please choose a time between ${minTime} and ${maxTime}.`);
+  //       // Reset the time to the initial state or do nothing
+  //       document.getElementById('time').value = minTime;
+  //       //  setTime(null);
+  //     } else {
+  //       setTimeRangeError(false)
+  //       setCheckTime(false)
+  //       setTime(selectedTime);
+  //       console.log("handletimechange", selectedTime);
+  //       matchInputWithBusySlots(date, selectedTime, busyTimeSlots);
+  //     }
+  //   };
+
+
+
+
+
+
   console.log("input time ", time)
 
   useEffect(() => {
@@ -327,6 +397,98 @@ const ScheduleTask = ({ taskData, week }) => {
     }
     return false;
   };
+  function formatUtcDateTimeString(dateTimeString) {
+    const utcDateTime = new Date(dateTimeString);
+
+    if (isNaN(utcDateTime)) {
+      console.error("Invalid dateTimeString:", dateTimeString);
+      return "Invalid Date";
+    }
+
+    const formatInTimeZone = (dateTime, timeZone, label) => (
+      `${dateTime.toLocaleString('en-US', {
+        timeZone,
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+      })} (${label})`
+    );
+
+    const formattedUTC = formatInTimeZone(utcDateTime, "UTC", "UTC");
+    const formattedIndia = formatInTimeZone(utcDateTime, "Asia/Kolkata", "IST");
+    const formattedKorea = formatInTimeZone(utcDateTime, "Asia/Seoul", "KST");
+    const formattedBangladesh = formatInTimeZone(utcDateTime, "Asia/Dhaka", "BDT");
+
+    return `UTC: ${formattedUTC}, India: ${formattedIndia}, Korea: ${formattedKorea}, Bangladesh: ${formattedBangladesh}`;
+  }
+  function formatUtcDateTimeStringToListItems(dateTimeString) {
+    const utcDateTime = new Date(dateTimeString);
+  
+    if (isNaN(utcDateTime.getTime())) {
+      console.error("Invalid dateTimeString:", dateTimeString);
+      return ["Invalid Date"];
+    }
+  
+    const formatInTimeZone = (dateTime, timeZone, label) => (
+      `${dateTime.toLocaleString('en-US', {
+        timeZone,
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+      })} (${label})`
+    );
+  
+    return [
+      formatInTimeZone(utcDateTime, "UTC", "UTC"),
+      formatInTimeZone(utcDateTime, "Asia/Kolkata", "India-time"),
+      formatInTimeZone(utcDateTime, "Asia/Seoul", "Korea-time"),
+      formatInTimeZone(utcDateTime, "Asia/Dhaka", "Bangladesh-time"),
+    ];
+  }
+
+  const formatDateTimeWithTimeZones = (dateTime) => {
+    // Convert dateTime to UTC for universal understanding
+    const utcTime = dateTime.toISOString();
+    // Format the date and time in a user-friendly way, in UTC
+    const formattedUtcTime = new Date(utcTime).toLocaleString('en-US', {
+      timeZone: "UTC",
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    }) + ' (UTC)';
+
+    // Add a few major time zones for reference if you wish
+    const dhakaTime = new Date(utcTime).toLocaleString('en-US', {
+      timeZone: "Asia/Dhaka",
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    }) + ' (BDT)'; // Bangladesh Time
+
+    const kolkataTime = new Date(utcTime).toLocaleString('en-US', {
+      timeZone: "Asia/Kolkata",
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    }) + ' (IST)'; // Indian Standard Time
+
+    const seoulTime = new Date(utcTime).toLocaleString('en-US', {
+      timeZone: "Asia/Seoul",
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    }) + ' (KST)'; // Korea Standard Time
+    return `${formattedUtcTime}, India-time: ${kolkataTime}, Korea-time: ${seoulTime}, Bangladesh-time: ${dhakaTime}`;
+  };
   const addEvent = async () => {
     if (checkTime) {
       Swal.fire({
@@ -336,15 +498,24 @@ const ScheduleTask = ({ taskData, week }) => {
       });
     }
     else {
-      console.log(date)
-      console.log(time)
+      console.log('select date', date)
+      console.log('select time', time)
       if (date && time) {
-
-        const combinedDateTimeUTC = new Date(`${date}T${time}Z`);
-        const endDateTimeUTC = new Date(combinedDateTimeUTC);
-        endDateTimeUTC.setMinutes(endDateTimeUTC.getMinutes() + Number(meetingLength));
+        console.log("iamin");
+        const selectedTimeDatee = new Date(`${date}T${time}`); // Keep the Z for UTC
+        console.log("selected time date", selectedTimeDatee);
+        const endDateTimeUTC = new Date(selectedTimeDatee);
+        endDateTimeUTC.setUTCMinutes(endDateTimeUTC.getUTCMinutes() + Number(meetingLength));
+        console.log("end time", endDateTimeUTC);
         const currentDateTime = new Date();
-        const timeDifferenceInMilliseconds = combinedDateTimeUTC - currentDateTime;
+        const timeDifferenceInMilliseconds = selectedTimeDatee.getTime() - currentDateTime.getTime();
+        const eventStartTime = formatDateTimeWithTimeZones(selectedTimeDatee);
+        const eventEndTime = formatDateTimeWithTimeZones(endDateTimeUTC);
+        console.log("event s ", eventStartTime)
+        console.log("event e ", eventEndTime)
+        // // Use these formatted strings in your communication
+        // console.log(`Event Start: ${formattedStartTime}`); // For logging or display
+        // console.log(`Event End: ${formattedEndTime}`);
         if (timeDifferenceInMilliseconds < 0) {
           Swal.fire({
             icon: "error",
@@ -354,7 +525,6 @@ const ScheduleTask = ({ taskData, week }) => {
           return;
         }
         const refreshToken = process.env.REACT_APP_refreshToken;
-
         fetch("https://oauth2.googleapis.com/token", {
           method: "POST",
           headers: {
@@ -364,27 +534,21 @@ const ScheduleTask = ({ taskData, week }) => {
         })
           .then((response) => response.json())
           .then((data) => {
-
             var event = {
-              summary: `${userInfo?.name} <> Experiment Labs`,
+              summary: `${userInfo?.name} Doubt Clearing Session`,
               location: "",
               start: {
-                dateTime: combinedDateTimeUTC.toISOString(),
+                dateTime: selectedTimeDatee,
                 timeZone: "UTC",
               },
               end: {
-                dateTime: endDateTimeUTC.toISOString(),
+                dateTime: endDateTimeUTC,
                 timeZone: "UTC",
               },
-              // recurrence: ["RRULE:FREQ=DAILY;COUNT=2"],
               attendees: [
                 { email: "naman.j@experimentlabs.in" },
-                // { email: "gaurav@experimentlabs.in" },
                 { email: user?.email },
-                {
-                  email: adminMail
-                },
-                // { email: "alrafi4@gmail.com" },
+                { email: adminMail },
               ],
               reminders: {
                 useDefault: true,
@@ -399,8 +563,7 @@ const ScheduleTask = ({ taskData, week }) => {
                 },
               },
             };
-
-
+            console.log(data)
             const newAccessToken = data.access_token;
             function initiate() {
               const sendData = async (event) => {
@@ -414,22 +577,25 @@ const ScheduleTask = ({ taskData, week }) => {
                     from: `${user?.email}`,
                     to: `${user?.email},naman.j@experimentlabs.in,${adminMail}`,
                     subject: `Event request`,
-                    message: `A event is going to held for doubt clearing at ${combinedDateTimeUTC.toISOString()} to ${endDateTimeUTC.toISOString()}. Meeting link ${event?.hangoutLink
+                    message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
                       }`,
                   }
                 );
-                if (sendMail?.data?.Success && response?.data?.acknowledged) {
+                console.log("send ", sendMail)
+
+                console.log('res ', response)
+                if (sendMail?.data?.success && response?.data?.acknowledged) {
                   const newEvent = await axios.post(
                     `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/addEvent`,
                     event
                   );
-                  console.log("new event created ", newEvent);
+                  // console.log("new event created ", newEvent);
                   Swal.fire({
                     icon: "success",
                     title: "Request Sent!",
                     text: "Your slot request has been sent!",
                   });
-                  // navigate(-1);
+                  navigate(-1);
                 }
               };
               gapi.client
@@ -444,10 +610,17 @@ const ScheduleTask = ({ taskData, week }) => {
                 })
                 .then(
                   (response) => {
+                    console.log(response)
                     var event = {
                       title: `${userInfo?.name} <> Experiment Labs <> Doubt clearing <> ${response?.result?.hangoutLink}`,
-                      start: new Date(combinedDateTimeUTC),
-                      end: new Date(endDateTimeUTC),
+                      start: {
+                        dateTime: selectedTimeDatee,
+                        timeZone: "UTC",
+                      },
+                      end: {
+                        dateTime: endDateTimeUTC,
+                        timeZone: "UTC",
+                      },
                       organization: {
                         organizationId: userInfo?.organizationId,
                         organizationName: userInfo?.organizationName,
@@ -465,8 +638,6 @@ const ScheduleTask = ({ taskData, week }) => {
                       hangoutLink: response?.result?.hangoutLink,
                       requester: user?.email,
                     };
-
-
                     sendData(event);
                     return [true, response];
                   },
@@ -477,11 +648,9 @@ const ScheduleTask = ({ taskData, week }) => {
                 );
             }
             gapi.load("client", initiate);
-            navigate(-1)
+            // navigate(-1)
           })
-
           .catch((error) => {
-
             console.error("Token refresh error:", error);
           });
       } else {
@@ -491,9 +660,7 @@ const ScheduleTask = ({ taskData, week }) => {
           text: "Please enter valid date & time for event!",
         });
       }
-
     }
-
   };
   const getCurrentDate = () => {
     const today = new Date();
@@ -507,6 +674,35 @@ const ScheduleTask = ({ taskData, week }) => {
     (event) => event.requester === user?.email
   );
   console.log("is there my event", isUserRequester);
+  const formatTime = (dateTime) => {
+    const options = {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true, // Set to false if you want 24-hour format
+    };
+
+    return dateTime.toLocaleTimeString('en-US', options);
+  };
+
+  const generateTimeOptions = () => {
+    const options = [];
+    const minTime = taskData?.minimumTime;
+    const maxTime = taskData?.maximumTime;
+
+    if (minTime && maxTime) {
+      let currentTime = new Date(`2000-01-01T${minTime}`);
+      const endTime = new Date(`2000-01-01T${maxTime}`);
+
+      while (currentTime <= endTime) {
+        const timeString = currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        options.push(<option key={timeString} value={timeString}>{timeString}</option>);
+        currentTime.setMinutes(currentTime.getMinutes() + 30);
+      }
+    }
+
+    return options;
+  };
+
   return (
     <div className="flex justify-center my-5">
       {userRequesterEvents?.length > 0 ? (
@@ -515,18 +711,32 @@ const ScheduleTask = ({ taskData, week }) => {
           {/* <p>You are the requester in the following events:</p> */}
           {userRequesterEvents?.map((event, index) => (
 
-            <div key={index} className="shadow-lg w-[400px] bg-sky-400 text-white rounded-md p-2 ">
-              <p className="flex gap-1 items-center justify-center mt-2"><AdjustIcon sx={{ color: red[400] }} ></AdjustIcon>Meeting with {event?.organization?.organizationName}</p>
-              <div className="flex justify-center items-center gap-2">
-                {/* <AccessAlarmOutlinedIcon /> */}
-                <div className=" my-3">
-                  <p className="font-semibold">From : <span className="text-sm">{new Date(event.start).toUTCString()}</span></p>
-                  <p className="font-semibold">To : <span className="text-sm">{new Date(event.end).toUTCString()}</span></p>
+            <div key={index} className=" shadow-lg outline-double outline-offset-2 outline-2 outline-emerald-500  w-[380px] rounded p-2 ">
+              <p className="flex gap-1 items-center text-sm"><FiberManualRecordIcon sx={{ color: red[400] }} ></FiberManualRecordIcon>Meeting with {event?.organization?.organizationName}</p>
+              <div className="flex items-center gap-2">
+                
+                <div className="mt-3 mb-1 ">
+                  <p className="font-medium text-sm flex justify-evenly gap-2">
+                    <div className="flex justify-between gap-2"><AccessAlarmOutlinedIcon fontSize="small" /><span className="font-semibold text-[14px]">Starts </span></div>
+                    <ul className="text-sm">
+                      {formatUtcDateTimeStringToListItems(event.start.dateTime).map((item, index) => (
+                        <li key={index}>{item}</li>
+                      ))}
+                    </ul>
+                  </p>
+                  <p className="font-medium text-sm flex justify-evenly gap-2">
+                  <div className="flex justify-between  gap-2"><AccessAlarmOutlinedIcon fontSize="small"/><span className="font-semibold text-[14px]">Ends </span></div>
+                    <ul className="text-sm">
+      {formatUtcDateTimeStringToListItems(event.end.dateTime).map((item, index) => (
+        <li key={index}>{item}</li>
+      ))}
+    </ul>
+                  </p>
                 </div>
               </div>
-              <div className="flex justify-center items-center mt-3">
-                <Link to={event?.hangoutLink} className=" text-white bg-black px-3 py-2 rounded-md">
-                  Go to Meet Link
+              <div className="w-11/12 mx-auto mt-3 text-white bg-sky-600  rounded-md">
+                <Link to={event?.hangoutLink} className="flex gap-2 items-center justify-center py-[6px]">
+                  <img src={googlemeet} className="w-[21px] h-[21px]" alt="googlemeet"></img><p>Go to Meet Link</p>
                 </Link>
               </div>
             </div>
@@ -566,9 +776,21 @@ const ScheduleTask = ({ taskData, week }) => {
                 Time
               </p>
               <div className="relative inline-flex w-full">
-                <input
+                <select
                   required
                   onChange={handleTimeChange}
+                  className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
+                  name="time"
+                  id="time"
+                  defaultValue={taskData?.minimumTime}
+                >
+                  {generateTimeOptions()}
+                </select>
+              </div>
+              {/* <div className="relative inline-flex w-full">
+                <input
+                  required
+                  onChange={handleBTimeChange}
                   className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
                   name="time"
                   min={taskData?.minimumTime}
@@ -577,7 +799,7 @@ const ScheduleTask = ({ taskData, week }) => {
                   type="time"
                   defaultValue={taskData?.minimumTime} // Set the default value to 9:00 AM
                 />
-              </div>
+              </div> */}
             </div>
             {reservedEvent ? (
               <a

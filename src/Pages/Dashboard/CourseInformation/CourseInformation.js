@@ -540,22 +540,21 @@ const CourseInformation = () => {
                           >
                             <div
                               style={{ background: taskType?.theme }}
-                              className={`  ${
-                                (taskType?.name === "Quiz" ||
-                                  taskType?.name === "Live Test") &&
+                              className={`  ${(taskType?.name === "Quiz" ||
+                                taskType?.name === "Live Test") &&
                                 "opacity-40"
-                              } flex items-center rounded-[12px] justify-center p-[18px]`}
+                                } flex items-center rounded-[12px] justify-center p-[18px]`}
                             >
                               <img src={taskType?.icon} alt="icon" />
                             </div>
                             {(taskType?.name === "Quiz" ||
                               taskType?.name === "Live Test") && (
-                              <img
-                                className="absolute w-7 top-[45%] left-[37%]"
-                                src={lock}
-                                alt="lock"
-                              />
-                            )}
+                                <img
+                                  className="absolute w-7 top-[45%] left-[37%]"
+                                  src={lock}
+                                  alt="lock"
+                                />
+                              )}
                             <h1 className="text-[13px] font-[700] mt-[20px] text-center">
                               {taskType?.name}
                             </h1>
@@ -1168,7 +1167,7 @@ const CourseInformation = () => {
                                 chapterIndex === 0 ||
                                 chapters?.[chapterIndex - 1]?.tasks?.[
                                   chapters?.[chapterIndex - 1]?.tasks?.length -
-                                    1
+                                  1
                                 ]?.participants?.some(
                                   (item) =>
                                     item?.participantId === userInfo?._id &&
@@ -1215,7 +1214,7 @@ const CourseInformation = () => {
                                                   isPreviousTaskCompleted &&
                                                   isPrevChapterCompleted
                                                 ) &&
-                                                  courseData?.enableDrip && (
+                                                  (courseData?.enableDrip || task?.taskDrip) && (
                                                     <img
                                                       className="w-[35px]"
                                                       src={lock}
@@ -1292,10 +1291,10 @@ const CourseInformation = () => {
                                           alt="Task"
                                         />
                                       )}
-                                      {courseData?.enableDrip && (
+                                      {(courseData?.enableDrip) && (
                                         <div className="">
                                           {isPreviousTaskCompleted &&
-                                          isPrevChapterCompleted ? (
+                                            isPrevChapterCompleted ? (
                                             <Link
                                               onClick={() => {
                                                 localStorage.setItem(
@@ -1339,34 +1338,55 @@ const CourseInformation = () => {
                                           </p>
                                         </div>
                                       )}
-                                      {!courseData?.enableDrip && (
-                                        <div>
-                                          <Link
-                                            onClick={() => {
-                                              localStorage.setItem(
-                                                "chapter",
-                                                chapter?.chapterName
-                                              );
-                                              localStorage.setItem(
-                                                "task",
-                                                JSON.stringify(task)
-                                              );
-                                              localStorage.setItem(
-                                                "currentWeek",
-                                                JSON.stringify(currentWeek)
-                                              );
-                                              localStorage.setItem(
-                                                "courseId",
-                                                JSON.stringify(courseData?._id)
-                                              );
-                                            }}
-                                            to={`/week/${currentWeek?._id}`}
-                                            className="text-[#3E4DAC] text-[22px] font-[700]"
-                                          >
-                                            {task?.taskName}
-                                          </Link>
+
+                                      {(!courseData?.enableDrip) && (
+                                        <div className="">
+                                          {((isPreviousTaskCompleted &&
+                                            isPrevChapterCompleted) || !task?.taskDrip) ? (
+                                            <Link
+                                              onClick={() => {
+                                                localStorage.setItem(
+                                                  "chapter",
+                                                  chapter?.chapterName
+                                                );
+                                                localStorage.setItem(
+                                                  "task",
+                                                  JSON.stringify(task)
+                                                );
+                                                localStorage.setItem(
+                                                  "currentWeek",
+                                                  JSON.stringify(currentWeek)
+                                                );
+                                                localStorage.setItem(
+                                                  "courseId",
+                                                  JSON.stringify(
+                                                    courseData?._id
+                                                  )
+                                                );
+                                              }}
+                                              to={`/week/${currentWeek?._id}`}
+                                              className="text-[#3E4DAC] text-[22px] font-[700]"
+                                            >
+                                              {task?.taskName}
+                                            </Link>
+                                          ) : (
+                                            <span
+                                              onClick={() =>
+                                                toast.error(
+                                                  "Complete The Previous Task"
+                                                )
+                                              }
+                                              className="text-[#3E4DAC] text-[22px] font-[700]"
+                                            >
+                                              {task?.taskName}
+                                            </span>
+                                          )}
+                                          <p className="text-[#626262] text-[18px] font-[500]">
+                                            {task?.taskType}
+                                          </p>
                                         </div>
                                       )}
+
                                     </div>
                                     {!toggleButton && (
                                       <div className="mx-2 flex items-center justify-center ">

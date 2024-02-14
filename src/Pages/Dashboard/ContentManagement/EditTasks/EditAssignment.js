@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import arrowDown from "../../../../assets/SkillsManagement/arrow.svg";
 import arrowright from "../../../../assets/SkillsManagement/arrowright.svg";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import Layout from "../../Layout";
@@ -47,6 +47,8 @@ const EditAssignment = () => {
   const [schedule, setSchedule] = useState([]);
   const [contentStage, setContentStage] = useState([]);
   const [orgData, setOrgData] = useState({});
+  const [taskDrip, setTaskDrip] = useState();
+  const [enableDrip , setEnableDrip] = useState();
 
   const [openTask, setOpenTask] = useState(
     JSON.parse(localStorage.getItem("task"))
@@ -108,6 +110,7 @@ const EditAssignment = () => {
           // setSelectedFile(response?.data?.file);
           setSkillParameterData(response?.data?.skillParameterData);
           setEarningParameterData(response?.data?.earningParameterData);
+          setTaskDrip(response?.data?.taskDrip);
           setContentStage(
             response?.data?.contentStage === undefined
               ? []
@@ -180,6 +183,8 @@ const EditAssignment = () => {
     }
   };
 
+  const navigate = useNavigate();
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     Loading();
@@ -207,6 +212,7 @@ const EditAssignment = () => {
       batches: selectedBatches,
       schedule: schedule,
       contentStage,
+      taskDrip
     };
 
     setAssignmentData(manageAssignment);
@@ -220,7 +226,7 @@ const EditAssignment = () => {
       console.log(newAssignment);
       if (newAssignment?.data?.result?.acknowledged) {
         toast.success("Assignment edited Successfully");
-        event.target.reset();
+        navigate(-1);
       }
 
       console.log(manageAssignment);
@@ -377,6 +383,9 @@ const EditAssignment = () => {
                 setSelectedFile={setSelectedFile}
                 contentStage={contentStage}
                 setContentStage={setContentStage}
+                enableDrip={course?.enableDrip}
+                taskDrip={taskDrip}
+                setTaskDrip={setTaskDrip}
               />
             )}
             {(orgData?.showPointsAndRedemptions ||
@@ -431,7 +440,7 @@ const EditAssignment = () => {
                 type="submit"
                 value="Save"
                 onClick={() => setSubmitPermission(true)}
-                className="px-[30px] py-3 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
+                className="px-[30px] py-3 bg-[#3E4DAC] hover:bg-opacity-70 text-[#fff] cursor-pointer text-xl font-bold rounded-lg"
               />
               {/* <input
                 type="submit"

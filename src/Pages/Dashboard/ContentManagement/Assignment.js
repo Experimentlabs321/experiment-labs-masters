@@ -14,7 +14,7 @@ import DialogContent from "@mui/material/DialogContent";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import General from "./Components/Assignment/General";
@@ -59,6 +59,8 @@ const Assignment = () => {
   const [selectedBatches, setSelectedBatches] = useState([]);
   const [schedule, setSchedule] = useState([]);
   const [orgData, setOrgData] = useState({});
+  const [taskDrip , setTaskDrip] = useState(false);
+  const [enableDrip , setEnableDrip] = useState();
 
   useEffect(() => {
     Loading();
@@ -169,6 +171,7 @@ const Assignment = () => {
       );
     }
   };
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -198,6 +201,7 @@ const Assignment = () => {
       batches: selectedBatches,
       schedule: schedule,
       contentStage,
+      taskDrip
     };
 
     setAssignmentData(manageAssignment);
@@ -229,7 +233,7 @@ const Assignment = () => {
           }
         );
         console.log(newNotification);
-        event.target.reset();
+        navigate(-1);
       }
 
       console.log(manageAssignment);
@@ -397,6 +401,9 @@ const Assignment = () => {
                 setSelectedFile={setSelectedFile}
                 contentStage={contentStage}
                 setContentStage={setContentStage}
+                enableDrip={course?.enableDrip}
+                taskDrip={taskDrip}
+                setTaskDrip={setTaskDrip}
               />
             )}
             {(orgData?.showPointsAndRedemptions ||
@@ -448,7 +455,7 @@ const Assignment = () => {
                 type="submit"
                 value="Save"
                 onClick={() => setSubmitPermission(true)}
-                className="px-[30px] py-3 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
+                className="px-[30px] py-3 bg-[#3E4DAC] hover:bg-opacity-70 text-[#fff] cursor-pointer text-xl font-bold rounded-lg"
               />
               {/* <input
                 type="submit"
