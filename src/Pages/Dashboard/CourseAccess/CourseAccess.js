@@ -44,33 +44,6 @@ const CourseAccess = () => {
     const stateParam = queryParams.get("state");
     if (stateParam) setStateParams(stateParam);
 
-    // axios
-    //   .get(
-    //     `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
-    //   )
-    //   .then((response) => {
-    //     setCourses(response?.data);
-    //     setFilterData(response?.data);
-
-    //     axios
-    //       .get(
-    //         `${process.env.REACT_APP_SERVER_API}/api/v1/courses/userId/${userInfo._id}`
-    //       )
-    //       .then((response) => {
-    //         setMyCourses(response?.data);
-    //         axios
-    //           .get(
-    //             `${process.env.REACT_APP_SERVER_API}/api/v1/bundles/organizationId/${userInfo.organizationId}`
-    //           )
-    //           .then((response) => {
-    //             setBundles(response?.data);
-    //           })
-    //           .catch((error) => console.error(error));
-    //       })
-    //       .catch((error) => console.error(error));
-    //   })
-    //   .catch((error) => console.error(error));
-
     const fetchAllData = async () => {
       await axios
         .get(
