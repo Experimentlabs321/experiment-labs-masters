@@ -22,7 +22,9 @@ const EditCourse = () => {
   console.log(rootUrl);
   const [courseCategories, setCourseCategories] = useState();
   const [courseCategoryInput, setCourseCategoryInput] = useState('');
-  
+
+  const [categoryName, setCategoryName] = useState();
+
   const toggleDropdownCourseSelection = () => {
     setisOpenGeneralCourseInfo(!isOpenGeneralCourseInfo);
   };
@@ -161,7 +163,7 @@ const EditCourse = () => {
     }
     Loading().close();
   };
- 
+
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_SERVER_API}/api/v1/CourseCategory/getCourseCategory/organizationId/${userInfo?.organizationId}`)
@@ -173,8 +175,8 @@ const EditCourse = () => {
   }, [userInfo]);
 
 
- 
- 
+
+
   const handleSubmitCourseCategory = async () => {
     const addCourseCategory = {
       courseCategoryName: courseCategoryInput,
@@ -197,6 +199,7 @@ const EditCourse = () => {
       if (response.data === "Course category added successfully") {
         toast.success("Category added Successfully");
         // Reset the form after successful submission
+        setCategoryName(addCourseCategory?.courseCategoryName)
         setCourseCategoryInput('');
       } else {
         toast.error('Error submitting Category');
@@ -390,12 +393,24 @@ const EditCourse = () => {
                       required
                       className="w-full bg-[#F6F7FF] text-base font-semibold focus:outline-0"
                       name="courseCategory"
-                     
+
                     >
                       {/* Default option */}
-                      <option  defaultValue={courseData?.courseCategory || ""}>
-                      {courseData?.courseCategory?courseData?.courseCategory:""}
-                      </option>
+
+
+                      {
+                        (categoryName) ?
+                          <option value={categoryName}>
+                            {categoryName}
+                          </option>
+                          :
+
+                          <option defaultValue={courseData?.courseCategory || ""}>
+                            {courseData?.courseCategory ? courseData?.courseCategory : ""}
+                          </option>
+
+                      }
+
                       {/* Map over courseCategories and render options */}
                       {courseCategories?.courseCategories?.map((category) => (
                         <option

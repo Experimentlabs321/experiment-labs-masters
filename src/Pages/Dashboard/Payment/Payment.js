@@ -630,6 +630,7 @@ const Payment = () => {
               setPhone={setPhone}
               error={error}
               handleGoogleRegister={handleGoogleRegister}
+              setForgotPassOpen={setForgotPassOpen}
             />
           </DialogLayoutForFromControl>
         </div>
