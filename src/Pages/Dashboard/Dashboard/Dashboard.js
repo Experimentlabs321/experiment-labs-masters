@@ -7,6 +7,10 @@ import TechnicalUpdate from "./TechnicalUpdate";
 import UpcomingQuest from "../../../assets/Dashboard/UpcomingQuest.png";
 import RightArrowBlack from "../../../assets/Dashboard/RightArrowBlack.png";
 import DashboardPrimaryButton from "../Shared/DashboardPrimaryButton";
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import AccessAlarmOutlinedIcon from '@mui/icons-material/AccessAlarmOutlined';
+import googlemeet from "../../../assets/icons/googlemeet.png";
+import { red } from '@mui/material/colors';
 import "./style.css";
 import Lock from "../../../assets/Dashboard/lock.png";
 import axios from "axios";
@@ -242,15 +246,52 @@ const Dashboard = () => {
   }, [userInfo]);
   useEffect(() => {
     axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/events/email/${userInfo?.email}`
-      )
+      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/events/email/${userInfo?.email}`)
       .then((response) => {
-        setUserRequesterEvents(response?.data);
+        const filteredEvents = response?.data.filter(event => {
+          const eventStartDate = new Date(event.start.dateTime).getTime();
+          const currentDate = new Date(getCurrentDate()).getTime();
+          return eventStartDate >= currentDate;
+        });
+        setUserRequesterEvents(filteredEvents);
       })
       .catch((error) => console.error(error));
   }, [userInfo]);
   console.log(userRequesterEvents);
+  const getCurrentDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+  function formatUtcDateTimeStringToListItems(dateTimeString) {
+    const utcDateTime = new Date(dateTimeString);
+  
+    if (isNaN(utcDateTime.getTime())) {
+      console.error("Invalid dateTimeString:", dateTimeString);
+      return ["Invalid Date"];
+    }
+  
+    const formatInTimeZone = (dateTime, timeZone, label) => (
+      `${dateTime.toLocaleString('en-US', {
+        timeZone,
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+      })} (${label})`
+    );
+  
+    return [
+      // formatInTimeZone(utcDateTime, "UTC", "UTC"),
+      formatInTimeZone(utcDateTime, "Asia/Kolkata", "India-time"),
+      // formatInTimeZone(utcDateTime, "Asia/Seoul", "Korea-time"),
+      // formatInTimeZone(utcDateTime, "Asia/Dhaka", "Bangladesh-time"),
+    ];
+  }
   return (
     <div>
       <Layout>
@@ -295,8 +336,8 @@ const Dashboard = () => {
                   {data?.map((singleData, i) => (
                     <div
                       className={`${i % 2 === 0
-                          ? "flex-col border-b-white border-b-0 rounded-t-full"
-                          : " flex-col-reverse border-t-white border-t-0 rounded-b-full self-end"
+                        ? "flex-col border-b-white border-b-0 rounded-t-full"
+                        : " flex-col-reverse border-t-white border-t-0 rounded-b-full self-end"
                         } h-[92px] relative flex ml-[-5.26px] p-[5px] border-[#0F3934] border-[5px] overflow-visible my-4`}
                     >
                       <div
@@ -343,32 +384,52 @@ const Dashboard = () => {
                     </div>
                   ))}
                 </div>
-                {/* <div>
-                  {userRequesterEvents?.length > 0 ? (
-                   
-                    <div className="grid grid-cols-1 my-5 justify-items-center gap-5 items-center">
 
+                <div>
+                  {userRequesterEvents?.length > 0 ? (
+                    // Render content specific to events where the user is the requester
+                    <div className="grid grid-cols-1 my-5 justify-items-center gap-5 items-center">
+                      {/* <p>You are the requester in the following events:</p> */}
                       {userRequesterEvents?.map((event, index) => (
 
-                        <div key={index} className="shadow-lg w-[400px] bg-sky-400 text-white rounded-md p-2 ">
-                          <p className="flex gap-1 items-center justify-center mt-2"><AdjustIcon sx={{ color: red[400] }} ></AdjustIcon>Meeting with {event?.organization?.organizationName}</p>
-                          <div className="flex justify-center items-center gap-2">
-                      
-                            <div className=" my-3">
-                              <p className="font-semibold">From : <span className="text-sm">{new Date(event.start).toUTCString()}</span></p>
-                              <p className="font-semibold">To : <span className="text-sm">{new Date(event.end).toUTCString()}</span></p>
+                        <div key={index} className=" shadow-lg outline-double outline-offset-2 outline-2 outline-emerald-500  w-[380px] rounded p-2 ">
+                          <p className="flex gap-1 items-center text-sm"><FiberManualRecordIcon sx={{ color: red[400] }} ></FiberManualRecordIcon>Meeting with {event?.organization?.organizationName}</p>
+                          <div className="flex items-center gap-2">
+
+                            <div className="mt-3 mb-1 ">
+                              <p className="font-medium text-sm flex justify-between  gap-2 my-1">
+                                <div className="flex justify-between gap-2"><AccessAlarmOutlinedIcon fontSize="small" />
+                                <span className="font-semibold text-[14px]">Starts </span></div>
+                                <ul className="text-[13px]">
+                                  {formatUtcDateTimeStringToListItems(event.start.dateTime).map((item, index) => (
+                                    <li key={index}>{item}</li>
+                                  ))}
+                                </ul>
+                              </p>
+                              <p className="font-medium text-sm flex  justify-between gap-2 mt-2">
+                                <div className="flex  justify-between gap-2"><AccessAlarmOutlinedIcon fontSize="small" />
+                                <span className="font-semibold text-[14px]">Ends </span></div>
+                                <ul className="text-[13px]">
+                                  {formatUtcDateTimeStringToListItems(event.end.dateTime).map((item, index) => (
+                                    <li key={index}>{item}</li>
+                                  ))}
+                                </ul>
+                              </p>
                             </div>
                           </div>
-                          <div className="flex justify-center items-center mt-3">
-                            <Link to={event?.hangoutLink} className=" text-white bg-black px-3 py-2 rounded-md">
-                              Go to Meet Link
+                          <div className="w-11/12 mx-auto mt-3 text-white bg-sky-600  rounded-md">
+                            <Link to={event?.hangoutLink} className="flex gap-2 items-center justify-center py-[6px]">
+                              <img src={googlemeet} className="w-[21px] h-[21px]" alt="googlemeet"></img><p>Go to Meet Link</p>
                             </Link>
                           </div>
                         </div>
                       ))}
+
+                      {/* Add any additional content or components specific to user requester events */}
                     </div>
-                  ) : <></>}
-                </div> */}
+                  )
+                    : <></>}
+                </div>
               </div>
             )}
           </div>

@@ -10,7 +10,7 @@ import {
   useSupabaseClient,
   useSessionContext,
 } from "@supabase/auth-helpers-react";
-
+import Loading from "../../Shared/Loading/Loading";
 import DateTimePicker from "react-datetime-picker";
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -426,12 +426,12 @@ const ScheduleTask = ({ taskData, week }) => {
   }
   function formatUtcDateTimeStringToListItems(dateTimeString) {
     const utcDateTime = new Date(dateTimeString);
-  
+
     if (isNaN(utcDateTime.getTime())) {
       console.error("Invalid dateTimeString:", dateTimeString);
       return ["Invalid Date"];
     }
-  
+
     const formatInTimeZone = (dateTime, timeZone, label) => (
       `${dateTime.toLocaleString('en-US', {
         timeZone,
@@ -443,12 +443,12 @@ const ScheduleTask = ({ taskData, week }) => {
         hour12: true,
       })} (${label})`
     );
-  
+
     return [
-      formatInTimeZone(utcDateTime, "UTC", "UTC"),
+      // formatInTimeZone(utcDateTime, "UTC", "UTC"),
       formatInTimeZone(utcDateTime, "Asia/Kolkata", "India-time"),
-      formatInTimeZone(utcDateTime, "Asia/Seoul", "Korea-time"),
-      formatInTimeZone(utcDateTime, "Asia/Dhaka", "Bangladesh-time"),
+      // formatInTimeZone(utcDateTime, "Asia/Seoul", "Korea-time"),
+      // formatInTimeZone(utcDateTime, "Asia/Dhaka", "Bangladesh-time"),
     ];
   }
 
@@ -487,7 +487,7 @@ const ScheduleTask = ({ taskData, week }) => {
       minute: '2-digit',
       hour12: true,
     }) + ' (KST)'; // Korea Standard Time
-    return `${formattedUtcTime}, India-time: ${kolkataTime}, Korea-time: ${seoulTime}, Bangladesh-time: ${dhakaTime}`;
+    return `India-time: ${kolkataTime}`;
   };
   const addEvent = async () => {
     if (checkTime) {
@@ -501,6 +501,7 @@ const ScheduleTask = ({ taskData, week }) => {
       console.log('select date', date)
       console.log('select time', time)
       if (date && time) {
+        Loading();
         console.log("iamin");
         const selectedTimeDatee = new Date(`${date}T${time}`); // Keep the Z for UTC
         console.log("selected time date", selectedTimeDatee);
@@ -517,6 +518,7 @@ const ScheduleTask = ({ taskData, week }) => {
         // console.log(`Event Start: ${formattedStartTime}`); // For logging or display
         // console.log(`Event End: ${formattedEndTime}`);
         if (timeDifferenceInMilliseconds < 0) {
+          Loading().close();
           Swal.fire({
             icon: "error",
             title: "Invalid Date and time!",
@@ -585,6 +587,7 @@ const ScheduleTask = ({ taskData, week }) => {
 
                 console.log('res ', response)
                 if (sendMail?.data?.success && response?.data?.acknowledged) {
+                  Loading().close();
                   const newEvent = await axios.post(
                     `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/addEvent`,
                     event
@@ -595,6 +598,7 @@ const ScheduleTask = ({ taskData, week }) => {
                     title: "Request Sent!",
                     text: "Your slot request has been sent!",
                   });
+                  
                   navigate('/courseAccess');
                 }
               };
@@ -651,9 +655,11 @@ const ScheduleTask = ({ taskData, week }) => {
             // navigate(-1)
           })
           .catch((error) => {
+            Loading().close();
             console.error("Token refresh error:", error);
           });
       } else {
+        Loading().close();
         Swal.fire({
           icon: "error",
           title: "Invalid Date and time!",
@@ -714,9 +720,9 @@ const ScheduleTask = ({ taskData, week }) => {
             <div key={index} className=" shadow-lg outline-double outline-offset-2 outline-2 outline-emerald-500  w-[380px] rounded p-2 ">
               <p className="flex gap-1 items-center text-sm"><FiberManualRecordIcon sx={{ color: red[400] }} ></FiberManualRecordIcon>Meeting with {event?.organization?.organizationName}</p>
               <div className="flex items-center gap-2">
-                
+
                 <div className="mt-3 mb-1 ">
-                  <p className="font-medium text-sm flex justify-evenly gap-2">
+                  <p className="font-medium text-sm flex justify-between mt-2 gap-2">
                     <div className="flex justify-between gap-2"><AccessAlarmOutlinedIcon fontSize="small" /><span className="font-semibold text-[14px]">Starts </span></div>
                     <ul className="text-sm">
                       {formatUtcDateTimeStringToListItems(event.start.dateTime).map((item, index) => (
@@ -724,13 +730,13 @@ const ScheduleTask = ({ taskData, week }) => {
                       ))}
                     </ul>
                   </p>
-                  <p className="font-medium text-sm flex justify-evenly gap-2">
-                  <div className="flex justify-between  gap-2"><AccessAlarmOutlinedIcon fontSize="small"/><span className="font-semibold text-[14px]">Ends </span></div>
+                  <p className="font-medium text-sm flex justify-between mt-2 gap-2">
+                    <div className="flex justify-between  gap-2"><AccessAlarmOutlinedIcon fontSize="small" /><span className="font-semibold text-[14px]">Ends </span></div>
                     <ul className="text-sm">
-      {formatUtcDateTimeStringToListItems(event.end.dateTime).map((item, index) => (
-        <li key={index}>{item}</li>
-      ))}
-    </ul>
+                      {formatUtcDateTimeStringToListItems(event.end.dateTime).map((item, index) => (
+                        <li key={index}>{item}</li>
+                      ))}
+                    </ul>
                   </p>
                 </div>
               </div>
