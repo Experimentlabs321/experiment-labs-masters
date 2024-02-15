@@ -5,8 +5,9 @@ import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
 import uploadFileToS3 from "../../UploadComponent/s3Uploader";
 import toast from "react-hot-toast";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
+import backIcon from "../../../assets/Dashboard/backIcon.svg";
 
 const EditBundle = () => {
   const { id } = useParams();
@@ -23,15 +24,18 @@ const EditBundle = () => {
   );
   const [bundleData, setBundleData] = useState({});
   const [bundleVisibility, setBundleVisibility] = useState();
+  const [count, setCount] = useState(0);
 
   const { user, userInfo } = useContext(AuthContext);
   const rootUrl = window.location.origin;
+  const router = useNavigate();
 
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_SERVER_API}/api/v1/bundles/bundleId/${id}`)
       .then((response) => {
         setBundleData(response?.data);
+        setSelectedCoursesAndBatches(response?.data?.courses);
         if (
           response?.data?.bundleVisibility === "true" ||
           response?.data?.bundleVisibility === true
@@ -48,25 +52,33 @@ const EditBundle = () => {
         `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
+        const previousSelectedCourse = response?.data?.filter((item) =>
+          bundleData?.courses?.find(
+            (bundleItem) => bundleItem?.courseId === item?._id
+          )
+        );
+        previousSelectedCourse?.forEach(async (element, index) => {
+          const { data } = await axios.get(
+            `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${element._id}`
+          );
+          console.log("element: ", data);
+          previousSelectedCourse[index].batches = data;
+          setSelectedCourses([...previousSelectedCourse]);
+        });
+        const previousSelectedBatch = [];
+        bundleData?.courses?.forEach((element) => {
+          previousSelectedBatch.push(element?.batchId);
+        });
+        setSelectedBatches(previousSelectedBatch);
         setAvailableCourses(response?.data);
       })
       .catch((error) => console.error(error));
-  }, [userInfo]);
+  }, [userInfo, bundleData]);
 
-  useEffect(() => {
-    setSelectedCourses(
-      availableCourses?.filter((item) =>
-        bundleData?.courses?.find(
-          (bundleItem) => bundleItem?.courseId === item?._id
-        )
-      )
-    );
-    const previousSelectedBatch = [];
-    bundleData?.courses?.forEach((element) => {
-      previousSelectedBatch.push(element?.batchId);
-    });
-    setSelectedBatches(previousSelectedBatch);
-  }, [availableCourses, bundleData]);
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setSelectedFile(file);
+  };
 
   const handleCourseInputChange = (event) => {
     if (event.target.value.length > 0) setCourseDropdown(true);
@@ -148,7 +160,6 @@ const EditBundle = () => {
     // const bundlePurchaseUrl = form.bundlePurchaseUrl.value;
     const bundleVisibility = form.bundleVisibility.value;
     const bundleIDNumber = form.bundleIDNumber.value;
-    const expirationDay = form.expirationDay.value;
     const price = form.price.value;
 
     let fileUrl = "";
@@ -165,7 +176,6 @@ const EditBundle = () => {
       bundlePurchaseUrl: bundleData?.bundlePurchaseUrl,
       bundleVisibility,
       bundleIDNumber,
-      expirationDay,
       price,
       bundleThumbnail: fileUrl,
       creator: {
@@ -179,15 +189,15 @@ const EditBundle = () => {
       courses: selectedCoursesAndBatches,
     };
     if (submitPermission) {
-      const newBundle = await axios.post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/bundles`,
+      const updateBundle = await axios.put(
+        `http://localhost:5000/api/v1/bundles/updateBundle/bundleId/${id}`,
         addBundle
       );
-      console.log("new course --> ", newBundle);
-      console.log(newBundle?.data?.course?.acknowledged);
 
-      if (newBundle?.data?.acknowledged) {
-        toast.success("Bundle added Successfully");
+      console.log(updateBundle);
+
+      if (updateBundle?.data?.acknowledged) {
+        toast.success("Bundle Updated Successfully");
         // router("/courseAccess");
         form.reset();
       }
@@ -196,12 +206,19 @@ const EditBundle = () => {
     }
   };
 
-  console.log(availableCourses);
+  console.log(selectedCourses);
 
   return (
     <div>
       <Layout>
-        <div className="text-[#3E4DAC] text-[26px] font-bold border-b border-b-[#A4A4A4] py-[35px] ps-[40px]">
+        <div className="text-[#3E4DAC] flex items-center gap-4 text-[26px] font-bold border-b border-b-[#A4A4A4] py-[35px] ps-[40px]">
+          <button>
+            <img
+              onClick={() => router("/courseAccess")}
+              src={backIcon}
+              alt=""
+            />
+          </button>{" "}
           <p>Create/Edit Bundle</p>
         </div>
         <form onSubmit={handleSubmit} className="">
@@ -237,13 +254,13 @@ const EditBundle = () => {
                           ?.toLowerCase()
                           ?.includes(courseInput?.toLowerCase())
                       )
-                      .map((course, index) => (
+                      ?.map((course, index) => (
                         <div
                           key={index}
                           className={`px-4 py-2 cursor-pointer hover:bg-gray-100`}
                           onMouseDown={() => handleCourseSelect(course)}
                         >
-                          {course.courseFullName}
+                          {course?.courseFullName}
                         </div>
                       ))}
                   </div>
@@ -528,7 +545,7 @@ const EditBundle = () => {
                   </div>
 
                   <div
-                    // onChange={handleFileChange}
+                    onChange={handleFileChange}
                     className=" flex gap-2  mt-6 ms-6 border rounded-md w-[319px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]  "
                   >
                     <div className=" flex items-center">
@@ -586,24 +603,9 @@ const EditBundle = () => {
                     <input
                       className="mt-6 ms-6 border rounded-md w-[272px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                       name="bundleIDNumber"
+                      defaultValue={bundleData?.bundleIDNumber}
                       type="text"
                       placeholder="Eg. 02283847"
-                    ></input>
-                  </div>
-
-                  <div className="mt-20">
-                    <div className="flex items-center gap-4">
-                      <p className="h-2 w-2 bg-black rounded-full"></p>
-                      <p className="font-bold text-lg me-[36px]">
-                        Expiration Day
-                      </p>
-                    </div>
-
-                    <input
-                      className="mt-6 ms-6 border rounded-md w-[272px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                      name="expirationDay"
-                      type="number"
-                      placeholder="Eg. 364"
                     ></input>
                   </div>
 
@@ -614,8 +616,9 @@ const EditBundle = () => {
                     </div>
 
                     <input
-                      className="mt-6 ms-6 border rounded-md w-[272px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                      className="mt-6 ms-6 font-sans border rounded-md w-[272px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                       name="price"
+                      defaultValue={bundleData?.price}
                       type="number"
                       placeholder="Eg. 5000"
                     ></input>
