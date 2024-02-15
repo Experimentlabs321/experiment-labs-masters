@@ -39,6 +39,8 @@ const CreateCourse = () => {
   //const [isOpenNumberofWeeksChapters, setisOpenNumberofWeeksChapters] = useState(false);
   const [courseCategoryInput, setCourseCategoryInput] = useState('');
   const [courseCategories, setCourseCategories] = useState();
+  const [categoryName, setCategoryName] = useState();
+
   const toggleDropdownCourseSelection = () => {
     setisOpenGeneralCourseInfo(!isOpenGeneralCourseInfo);
   };
@@ -192,7 +194,7 @@ const CreateCourse = () => {
 
       if (newCourse?.data?.course?.acknowledged) {
 
-        
+
         toast.success("Course added Successfully");
         router("/courseAccess");
         form.reset();
@@ -229,7 +231,10 @@ const CreateCourse = () => {
       if (response.data === "Course category added successfully") {
         toast.success("Category added Successfully");
         // Reset the form after successful submission
+        setCategoryName(addCourseCategory?.courseCategoryName)
         setCourseCategoryInput('');
+
+
       } else {
         toast.error('Error submitting Category');
       }
@@ -243,7 +248,7 @@ const CreateCourse = () => {
       .get(`${process.env.REACT_APP_SERVER_API}/api/v1/CourseCategory/getCourseCategory/organizationId/${userInfo?.organizationId}`)
       .then((response) => {
         setCourseCategories(response?.data);
-      
+
       })
       .catch((error) => console.error(error));
   }, [userInfo]);
@@ -411,17 +416,26 @@ const CreateCourse = () => {
                       name="courseCategory"
                     // id="option"
                     >
-                      <option value="">
-                       Select Category
-                      </option>
+
                       {
-                        courseCategories?.courseCategories?.map((category)=>(
+                        (categoryName) ?
+                          <option value={categoryName}>
+                            {categoryName}
+                          </option>
+                          :
+                          <option value="">
+                            Select Category
+                          </option>
+
+                      }
+                      {
+                        courseCategories?.courseCategories?.map((category) => (
                           <option className="text-[#3E4DAC]" value={category?.categoryName}>{category?.categoryName}</option>
 
                         ))
                       }
-                     
-                     
+
+
                     </select>
                     <div
                       onClick={openModalAddCourseCategory}
@@ -464,13 +478,13 @@ const CreateCourse = () => {
                               />
                               <div className="flex justify-center mt-5">
 
-                              <button  
-                              className="px-[20px] py-3 bg-[#3E4DAC] hover:bg-opacity-70 text-[#fff] cursor-pointer text-xl font-bold rounded-lg"
-                               onClick={handleSubmitCourseCategory}>Add</button>
+                                <button
+                                  className="px-[20px] py-3 bg-[#3E4DAC] hover:bg-opacity-70 text-[#fff] cursor-pointer text-xl font-bold rounded-lg"
+                                  onClick={handleSubmitCourseCategory}>Add</button>
 
 
                               </div>
-                            
+
                             </div>
 
 

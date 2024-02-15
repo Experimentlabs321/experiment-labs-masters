@@ -1,10 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import toast from "react-hot-toast";
 import GoogleLogo from "../../../assets/icons/googleIcon.png";
 import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
-const RegisterForm = ({ email, setEmail, password, setPassword, name, setName, phone, setPhone, loginOpen, setLoginOpen, registerOpen, setRegisterOpen, handleRegister, handleGoogleSignIn, error, handleGoogleRegister }) => {
+const RegisterForm = ({ email, setEmail, password, setPassword, name, setName, phone, setPhone, loginOpen, setLoginOpen, registerOpen, setRegisterOpen, handleRegister, handleGoogleSignIn, error, handleGoogleRegister, setForgotPassOpen }) => {
+
+    const [showPassword, setShowPassword] = useState(false);
+
+
+    const handleClickOpen = () => {
+        setForgotPassOpen(true);
+    };
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
     return (
 
         <form
@@ -61,22 +74,43 @@ const RegisterForm = ({ email, setEmail, password, setPassword, name, setName, p
                 <label htmlFor="password" className="block">
                     Password
                 </label>
-                <input
-                    type="password"
-                    name="password"
-                    id="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter Password"
-                    className="border w-full px-4 py-3 rounded-xl border-gray-300 bg-gray-50 text-gray-800 focus:border-red-600"
-                    required
-                />
+
+                <div className='relative'>
+                    <input
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        id="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Enter Password"
+                        className="border w-full px-4 py-3 rounded-xl border-gray-300 bg-gray-50 text-gray-800 focus:border-red-600"
+                        required
+                    />
+                    <button
+                        type="button"
+                        onClick={togglePasswordVisibility}
+                        className="absolute inset-y-0 right-0 px-4 py-3"
+                    >
+                        {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                    </button>
+                </div>
             </div>
             <input
                 type="submit"
                 value="Register"
-                className="block w-full p-3 text-center rounded-xl text-gray-50 bg-cyan hover:bg-opacity-70 font-bold hover:transition-all hover:delay-200 hover:ease-out"
+                className="block w-full p-3 text-center rounded-xl text-gray-50 bg-cyan hover:bg-opacity-70 font-bold hover:transition-all hover:delay-200 hover:ease-out cursor-pointer"
             />
+
+
+
+            <div className="text-center mb-5">
+                <button onClick={() => {
+                    setRegisterOpen(false)
+                    handleClickOpen();
+                }}
+
+                    className="text-blue hover:border-b mb-[1px] border-blue">Forgot password?</button>
+            </div>
 
             <div className="relative">
                 <div className="absolute inset-0 flex items-center">
