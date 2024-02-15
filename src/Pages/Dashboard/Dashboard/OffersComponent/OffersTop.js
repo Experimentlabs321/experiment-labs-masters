@@ -6,6 +6,7 @@ import DialogLayoutForFromControl from "../../Shared/DialogLayoutForFromControl"
 import axios from "axios";
 import { AuthContext } from "../../../../contexts/AuthProvider";
 import Swal from "sweetalert2";
+import Loading from "../../../Shared/Loading/Loading";
 
 const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
   const [open, setOpen] = useState(false);
@@ -25,6 +26,7 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
   const [bundleInput, setBundleInput] = useState("");
   const [bundleDropdown, setBundleDropdown] = useState(false);
   const [selectedBundles, setSelectedBundles] = useState([]);
+  const [bundleIds, setBundleIds] = useState([]);
 
   // State for validation errors
   const [errors, setErrors] = useState({});
@@ -72,6 +74,7 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    Loading();
 
     // Validate input values
     const validationErrors = {};
@@ -100,11 +103,11 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
       validationErrors.maxUseCount = "Max use count must be a valid number.";
     }
 
-    if (selectedCourses.length <= 0) {
+    if (selectedCourses.length <= 0 && selectedBundles.length <= 0) {
       validationErrors.courseAdded = "No Course Added.";
     }
 
-    if (selectedBatches.length <= 0) {
+    if (selectedBatches.length <= 0 && selectedBundles.length <= 0) {
       validationErrors.batchAdded = "No Batch Added.";
     }
 
@@ -115,6 +118,8 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
       setCode(newCode);
     }
 
+    console.log(validationErrors);
+
     // If there are no validation errors, you can proceed with the form submission
     if (Object.keys(validationErrors).length === 0 && code.length >= 1) {
       // Perform any logic with the form values here
@@ -123,6 +128,7 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
         suggestDuringCheckout,
         code,
         selectedBatches,
+        bundleIds,
         discountPercent,
         maxDiscountValue,
         minCourseValue,
@@ -149,6 +155,7 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
         });
       }
 
+      Loading().close();
       // Reset the form values
       setDiscountPercent("");
       setMaxDiscountValue("");
@@ -157,6 +164,7 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
       setMaxUseCount("");
       setSelectedCourses([]);
       setSelectedBatches([]);
+      setBundleIds([]);
       setCourseInput("");
       setSuggestDuringCheckout(false);
       setCode("");
@@ -192,8 +200,9 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
     setBundleInput("");
     setBundleDropdown(false);
 
-    if (!selectedBundles?.includes(selectedBundle)) {
+    if (!selectedBundles?.includes(selectedBundle) && !bundleIds?.includes(selectedBundle._id)) {
       setSelectedBundles([...selectedBundles, selectedBundle]);
+      setBundleIds([...bundleIds, selectedBundle._id]);
     }
   };
 
@@ -208,7 +217,11 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
     const newSelectedBundles = selectedBundles.filter(
       (bundle) => bundle !== removedBundle
     );
+    const newBundleIds = bundleIds.filter(
+      (bundle) => bundle !== removedBundle._id
+    );
     setSelectedBundles(newSelectedBundles);
+    setBundleIds(newBundleIds);
   };
 
   const handleBatches = (batch) => {
@@ -317,6 +330,7 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
                 onBlur={() => setBundleDropdown(false)}
                 value={bundleInput}
                 autoComplete="off"
+                disabled={selectedCourses.length >= 1}
                 name="Bundles"
                 placeholder="Start typing to select bundless"
                 className="block w-full px-4 py-2 mt-2 rounded-md border bg-white border-[#B7B7B7] focus:border-blue-500 focus:outline-none focus:ring"
@@ -380,6 +394,7 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
                 value={courseInput}
                 autoComplete="off"
                 name="Courses"
+                disabled={bundleIds.length >= 1}
                 placeholder="Start typing to select courses"
                 className="block w-full px-4 py-2 mt-2 rounded-md border bg-white border-[#B7B7B7] focus:border-blue-500 focus:outline-none focus:ring"
               />
@@ -440,10 +455,9 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
                             return (
                               <div
                                 onClick={() => handleBatches(batch)}
-                                className={`px-2 py-1 border-2 rounded-full cursor-pointer ${
-                                  selectedBatches?.includes(batch._id) &&
+                                className={`px-2 py-1 border-2 rounded-full cursor-pointer ${selectedBatches?.includes(batch._id) &&
                                   "bg-[#39249957]"
-                                }`}
+                                  }`}
                                 key={batchIndex}
                               >
                                 {batch.batchName}
@@ -476,9 +490,8 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
               id="discountPercent"
               value={discountPercent}
               onChange={(e) => setDiscountPercent(e.target.value)}
-              className={`mt-1 p-2 border ${
-                errors.discountPercent ? "border-red-500" : "border-gray-300"
-              } rounded-md w-full`}
+              className={`mt-1 p-2 border ${errors.discountPercent ? "border-red-500" : "border-gray-300"
+                } rounded-md w-full`}
             />
             {errors.discountPercent && (
               <p className="text-red-500 text-sm">{errors.discountPercent}</p>
@@ -498,9 +511,8 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
               id="maxDiscountValue"
               value={maxDiscountValue}
               onChange={(e) => setMaxDiscountValue(e.target.value)}
-              className={`mt-1 p-2 border ${
-                errors.maxDiscountValue ? "border-red-500" : "border-gray-300"
-              } rounded-md w-full`}
+              className={`mt-1 p-2 border ${errors.maxDiscountValue ? "border-red-500" : "border-gray-300"
+                } rounded-md w-full`}
             />
             {errors.maxDiscountValue && (
               <p className="text-red-500 text-sm">{errors.maxDiscountValue}</p>
@@ -520,9 +532,8 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
               id="minCourseValue"
               value={minCourseValue}
               onChange={(e) => setMinCourseValue(e.target.value)}
-              className={`mt-1 p-2 border ${
-                errors.minCourseValue ? "border-red-500" : "border-gray-300"
-              } rounded-md w-full`}
+              className={`mt-1 p-2 border ${errors.minCourseValue ? "border-red-500" : "border-gray-300"
+                } rounded-md w-full`}
             />
             {errors.minCourseValue && (
               <p className="text-red-500 text-sm">{errors.minCourseValue}</p>
@@ -542,9 +553,8 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
               id="validTill"
               value={validTill}
               onChange={(e) => setValidTill(e.target.value)}
-              className={`mt-1 p-2 border ${
-                errors.validTill ? "border-red-500" : "border-gray-300"
-              } rounded-md w-full`}
+              className={`mt-1 p-2 border ${errors.validTill ? "border-red-500" : "border-gray-300"
+                } rounded-md w-full`}
               placeholder="yyyy-mm-dd"
               min={new Date().toISOString().split("T")[0]}
             />
@@ -566,9 +576,8 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
               id="maxUseCount"
               value={maxUseCount}
               onChange={(e) => setMaxUseCount(e.target.value)}
-              className={`mt-1 p-2 border ${
-                errors.maxUseCount ? "border-red-500" : "border-gray-300"
-              } rounded-md w-full`}
+              className={`mt-1 p-2 border ${errors.maxUseCount ? "border-red-500" : "border-gray-300"
+                } rounded-md w-full`}
             />
             {errors.maxUseCount && (
               <p className="text-red-500 text-sm">{errors.maxUseCount}</p>
