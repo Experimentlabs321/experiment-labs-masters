@@ -50,6 +50,7 @@ const AdminCalendarSchedule = () => {
   const { id } = useParams();
   const [timeZone, setTimeZone] = useState('UTC');
   const { user, userInfo } = useContext(AuthContext);
+
   const [chapter, setChapter] = useState({});
   const [course, setCourse] = useState({});
   const [preview, setPreview] = useState(false);
@@ -75,6 +76,13 @@ const AdminCalendarSchedule = () => {
   global = session;
   const supabase = useSupabaseClient();
   const { isLoading } = useSessionContext();
+  const [previousLocation, setPreviousLocation] = useState(null);
+
+  // Save current location before redirecting to Google sign-in
+  useEffect(() => {
+    setPreviousLocation(window.location.pathname);
+  }, []);
+
   useEffect(() => {
     if (calendarfetch === true) {
       googleSignIn();
@@ -231,24 +239,35 @@ const AdminCalendarSchedule = () => {
   console.log("End", end);
   console.log("Event", eventName);
   console.log("Description", eventDescription);
-  useEffect(() => {
+  // useEffect(() => {
 
-    if (!session?.provider_token) {
-      googleSignIn();
-    } else {
-      // If there's a session, fetch and display events
+  //   if (!session?.provider_token) {
+  //     googleSignIn();
+  //   } else {
+  //     // If there's a session, fetch and display events
+  //     fetchAndDisplayGoogleCalendarEvents();
+  //     fetchPrimaryCalendarInfo();
+  //     if (calendarError) {
+  //       googleSignIn();
+  //     }
+  //   }
+  // }, [session, calendarError, calendarfetch]);
+  useEffect(() => {
+    // Ensure session exists before attempting to fetch calendar data
+    if (session?.provider_token) {
       fetchAndDisplayGoogleCalendarEvents();
       fetchPrimaryCalendarInfo();
-      if (calendarError) {
-        googleSignIn();
-      }
+    } else {
+      // Attempt to sign in if no valid session exists
+      googleSignIn();
     }
-  }, [session, isModalOpen]);
-
+  }, []);
   if (isLoading) {
     return <></>;
   }
   const googleSignIn = async () => {
+    const preAuthUrl = window.location.pathname; // You might want to store the full location object or pathname
+    localStorage.setItem('preAuthUrl', preAuthUrl);
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
@@ -264,6 +283,7 @@ const AdminCalendarSchedule = () => {
       } else {
         // If there is no error, the sign-in is successful
         console.log("Google Sign-In successful!");
+        navigate(previousLocation);
         // console.log(calendarEvents); // Log calendarEvents here or perform any other actions
       }
     } catch (error) {
@@ -344,21 +364,21 @@ const AdminCalendarSchedule = () => {
   }
   function renderEventContent(eventInfo) {
     console.log(calendarEvents);
-  
+
     const options = {
       timeZone: eventInfo?.event?.start?.timeZone,
       hour12: false,
       hour: 'numeric',
       minute: 'numeric',
     };
-  
+
     const formattedStartDate = new Intl.DateTimeFormat('en-US', options).format(new Date(eventInfo?.event?.start));
     const formattedEndDate = new Intl.DateTimeFormat('en-US', options).format(new Date(eventInfo?.event?.end));
     const meetlink = eventInfo?.event?.extendedProps?.link;
-  
+
     console.log(formattedStartDate);
     console.log(formattedEndDate);
-  
+
     return (
       <div
         style={{
@@ -370,7 +390,7 @@ const AdminCalendarSchedule = () => {
         }}
       >
         <h1>{eventInfo?.event?.title}</h1>
-  
+
         {meetlink ? (
           <a
             target="_blank"
@@ -389,9 +409,9 @@ const AdminCalendarSchedule = () => {
       </div>
     );
   }
-  
-  
-  
+
+
+
   const handleDateClick = (date) => {
     setSelectedDate(date);
     setStart(date);

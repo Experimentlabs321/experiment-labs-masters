@@ -11,8 +11,11 @@ import LifeAtUnion from "../LifeAtUnion/LifeAtUnion";
 import ExperienceUnion from "../ExperienceUnion/ExperienceUnion";
 import Campus from "../../SciencePage/Campus/Campus";
 import ReactGA from "react-ga4";
-
+import { useNavigate } from 'react-router-dom';
+import { useSession } from '@supabase/auth-helpers-react';
 const Home = () => {
+  const navigate = useNavigate();
+  const session = useSession();
   // const featureRef = useRef(null);
 
   // const handleButtonClick = () => {
@@ -20,7 +23,21 @@ const Home = () => {
   //     const headerHeight = 80;
   //     window.scrollTo({ top: featurePosition - headerHeight, behavior: 'smooth' });
   // };
+  useEffect(() => {
+    const handleRedirectAfterSignIn = () => {
+      // If the user is signed in
+      if (session?.user) {
+        const preAuthUrl = localStorage.getItem('preAuthUrl');
+        if (preAuthUrl) {
+          navigate(preAuthUrl);
+          localStorage.removeItem('preAuthUrl'); // Clean up
+        }
+      }
+    };
 
+    // Call the redirect handler when the component mounts and whenever the session changes
+    handleRedirectAfterSignIn();
+  }, [session, navigate]);
   useEffect(() => {
     window.scrollTo(0, 0);
     ReactGA.send({ hitType: "pageview", page: "/", title: "Home" });
