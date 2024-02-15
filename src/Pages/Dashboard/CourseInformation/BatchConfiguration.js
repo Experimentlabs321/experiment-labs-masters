@@ -103,6 +103,7 @@ const BatchConfiguration = ({
       // participants: participants,
     };
   
+    
     console.log(sendData);
   
     try {

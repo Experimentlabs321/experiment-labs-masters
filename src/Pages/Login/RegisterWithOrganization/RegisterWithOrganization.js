@@ -2,12 +2,16 @@ import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthProvider";
-import { GoogleAuthProvider } from "firebase/auth";
+import { GoogleAuthProvider, getAuth, sendPasswordResetEmail } from "firebase/auth";
 import toast from "react-hot-toast";
 import GoogleLogo from "../../../assets/icons/googleIcon.png";
 import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
 import Loading from "../../Shared/Loading/Loading";
+import app from "../../../firebase/firebase.config";
+import { Dialog, useMediaQuery, useTheme } from "@mui/material";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 const LoginWithOrganization = () => {
     const { id } = useParams();
@@ -18,6 +22,40 @@ const LoginWithOrganization = () => {
     const [phone, setPhone] = useState("");
     const [error, setError] = useState(false);
     const dateCreated = new Date();
+
+
+    const [showPassword, setShowPassword] = useState(false);
+    const [open, setOpen] = useState(false);
+    const auth = getAuth(app);
+
+    const theme = useTheme();
+    const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleResetPassword = async (e) => {
+        e.preventDefault();
+        const email = e.target.email.value;
+        sendPasswordResetEmail(auth, email)
+            .then(() => {
+                toast.success('A Password Reset Link has been sent to your email.')
+                e.target.reset();
+            })
+            .catch((error) => {
+                toast.error(error.message);
+            });
+    };
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
 
     useEffect(() => {
         axios
@@ -181,7 +219,7 @@ const LoginWithOrganization = () => {
                             </div>
                         </div>
                         {/* <!-- Login box --> */}
-                        <div className="flex flex-1 flex-col  justify-center space-y-5 max-w-md py-8">
+                        <div className="flex flex-1 flex-col  justify-center space-y-5 max-w-md ">
                             <div className="flex flex-col space-y-2 text-center">
                                 <h2 className="text-2xl md:text-4xl font-bold">
                                     Register your account
@@ -195,7 +233,7 @@ const LoginWithOrganization = () => {
                                     onSubmit={handleRegister}
                                     noValidate=""
                                     action=""
-                                    className="space-y-6 ng-untouched ng-pristine ng-valid"
+                                    className="space-y-4 ng-untouched ng-pristine ng-valid"
                                 >
                                     <div className="space-y-3 text-sm">
                                         <label htmlFor="username" className="block">
@@ -246,44 +284,72 @@ const LoginWithOrganization = () => {
                                             className="w-full rounded-xl border px-4 py-3 border-gray-300 bg-gray-50 text-gray-800 focus:border-red-600"
                                             required
                                         />
+
                                     </div>
                                     <div className="space-y-3 text-sm">
                                         <label htmlFor="password" className="block">
                                             Password
                                         </label>
-                                        <input
+                                        {/*     <input
                                             type="password"
                                             name="password"
                                             id="password"
                                             placeholder="Password"
                                             className="border w-full px-4 py-3 rounded-xl border-gray-300 bg-gray-50 text-gray-800 focus:border-red-600"
                                             required
-                                        />
+                                        /> */}
+                                        <div className="relative">
+                                            <input
+                                                type={showPassword ? "text" : "password"}
+                                                name="password"
+                                                id="password"
+
+                                                placeholder="Password"
+                                                className="border w-full px-4 py-3 rounded-xl border-gray-300 bg-gray-50 text-gray-800 focus:border-red-600"
+                                                required
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={togglePasswordVisibility}
+                                                className="absolute inset-y-0 right-0 px-4 py-3"
+                                            >
+                                                {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                                            </button>
+                                        </div>
                                     </div>
                                     <input
                                         type="submit"
                                         value="Register"
-                                        className="block w-full p-3 text-center rounded-xl text-gray-50 bg-cyan hover:bg-opacity-70 font-bold hover:transition-all hover:delay-200 hover:ease-out"
+                                        className="block w-full p-3 text-center rounded-xl text-gray-50 bg-cyan hover:bg-opacity-70 font-bold hover:transition-all hover:delay-200 hover:ease-out cursor-pointer"
                                     />
-                                    <p className="font-semibold text-lg text-center">Or</p>
-                                    <button
-                                        onClick={handleGoogleRegister}
-                                        aria-label="Login with Google"
-                                        type="button"
-                                        className="flex items-center justify-center w-full p-3 space-x-4 border rounded-xl hover:transition-all hover:delay-200 hover:ease-out hover:bg-slate-200 bg-[#9c9d9e4e] text-black mb-[25px]"
-                                    >
-                                        <img className="w-[20px] h-[20px]" src={GoogleLogo} alt="" />
-                                        <p className="text-[20px]">Register with Google</p>
-                                    </button>
-                                    <div className='flex justify-center'>
-                                        <p className="font-medium text-lg">Already have an account? <Link to={`/login/${id}`} className='text-blue cursor-pointer'>Login</Link>
-                                        </p>
-                                    </div>
-                                    <p className="text-center text-error">
-                                        {/* <small>error</small> */}
-                                    </p>
-
                                 </form>
+                                <p className="font-semibold text-lg text-center">Or</p>
+                                <button
+                                    onClick={handleGoogleRegister}
+                                    aria-label="Login with Google"
+                                    type="button"
+                                    className="flex items-center justify-center w-full p-3 space-x-4 border rounded-xl hover:transition-all hover:delay-200 hover:ease-out hover:bg-slate-200 bg-[#9c9d9e4e] text-black mb-[25px]"
+                                >
+                                    <img className="w-[20px] h-[20px]" src={GoogleLogo} alt="" />
+                                    <p className="text-[20px]">Register with Google</p>
+                                </button>
+                                <div className="text-center">
+                                    <button onClick={() => {
+
+                                        handleClickOpen();
+                                    }}
+
+                                        className="text-blue hover:border-b mb-[1px] border-blue">Forgot password?</button>
+                                </div>
+                                <div className='flex justify-center'>
+                                    <p className="font-medium text-lg">Already have an account? <Link to={`/login/${id}`} className='text-blue cursor-pointer'>Login</Link>
+                                    </p>
+                                </div>
+                                <p className="text-center text-error">
+                                    {/* <small>error</small> */}
+                                </p>
+
+
                                 {/* <div
                   style={{ marginTop: 0 }}
                   className="flex justify-center items-center "
@@ -323,9 +389,62 @@ const LoginWithOrganization = () => {
                 </button> */}
                             </div>
                         </div>
+                        {/* Forgotten password */}
+                        <Dialog
+                            fullScreen={fullScreen}
+                            open={open}
+                            // onClose={handleClose}
+                            aria-labelledby="responsive-dialog-title"
+                            sx={{ width: "100%", borderRadius: "22px" }}
+                        >
+                            <div className="w-[400px] h-full text-white flex items-center  ">
+                                <div className="w-full">
+                                    <span
+                                        onClick={handleClose}
+                                        className=" cursor-pointer absolute top-3 right-5 text-[30px] text-[#000]"
+                                    >
+                                        x
+                                    </span>
+                                    <h1 className="text-blue text-[27px] font-semibold p-8 "
+
+                                    >Forgot Password?</h1>
+                                    <p className="border-b"></p>
+                                    {/* <p className="text-blue text-[16px] mb-[45px] border-b">
+
+                    Please enter your email address.
+                  </p> */}
+                                    <form onSubmit={(e) => handleResetPassword(e)} className="flex flex-col gap-2 w-full p-8 ">
+
+                                        <label className="text-[18px] mb-[9px] text-[#000]" htmlFor="email">
+                                            Enter Your Email
+                                        </label>
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            //   onChange={handleOnChange}
+                                            className=" w-full rounded-xl border px-4 py-3 border-gray-300 bg-gray-50 text-gray-800 focus:border-red-600"
+                                            placeholder="Enter your email"
+                                        />
+
+                                        <button
+                                            onClick={() => {
+                                                //  handleClose();
+                                                //    handleClickOpen1();
+                                            }}
+                                            className="block w-full p-3 text-center rounded-xl text-gray-50 bg-cyan hover:bg-opacity-70 cursor-pointer font-bold hover:transition-all hover:delay-200 hover:ease-out mt-5"
+                                        >
+                                            Reset
+                                        </button>
+                                    </form>
+
+                                </div>
+                            </div>
+
+
+                        </Dialog>
 
                         {/* <!-- Footer --> */}
-                        <div className="flex justify-center flex-col m-auto my-5 text-center text-lg ">
+                        <div className="flex justify-center flex-col m-auto mb-5 text-center text-lg ">
                             <p className="font-bold mb-1">
                                 Built by{" "}
                                 <a href="https://experimentlabs.in/" className="underline">

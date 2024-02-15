@@ -24,6 +24,7 @@ const CourseAccess = () => {
   const [stateParams, setStateParams] = useState(
     Role === "user" ? "myCourses" : "allCourses"
   );
+  const [courseCategories, setCourseCategories] = useState();
   const { userInfo } = useContext(AuthContext);
   const location = useLocation();
 
@@ -43,33 +44,6 @@ const CourseAccess = () => {
     const queryParams = new URLSearchParams(location.search);
     const stateParam = queryParams.get("state");
     if (stateParam) setStateParams(stateParam);
-
-    // axios
-    //   .get(
-    //     `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
-    //   )
-    //   .then((response) => {
-    //     setCourses(response?.data);
-    //     setFilterData(response?.data);
-
-    //     axios
-    //       .get(
-    //         `${process.env.REACT_APP_SERVER_API}/api/v1/courses/userId/${userInfo._id}`
-    //       )
-    //       .then((response) => {
-    //         setMyCourses(response?.data);
-    //         axios
-    //           .get(
-    //             `${process.env.REACT_APP_SERVER_API}/api/v1/bundles/organizationId/${userInfo.organizationId}`
-    //           )
-    //           .then((response) => {
-    //             setBundles(response?.data);
-    //           })
-    //           .catch((error) => console.error(error));
-    //       })
-    //       .catch((error) => console.error(error));
-    //   })
-    //   .catch((error) => console.error(error));
 
     const fetchAllData = async () => {
       await axios
@@ -108,6 +82,34 @@ const CourseAccess = () => {
     else if (stateParams === "allCourses") setShowCourses(courses);
     else if (stateParams === "bundles") setShowCourses(bundles);
   }, [myCourses, courses, stateParams, Role, bundles]);
+
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/CourseCategory/getCourseCategory/organizationId/${userInfo?.organizationId}`
+      )
+      .then((response) => {
+        setCourseCategories(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [userInfo]);
+
+  useEffect(() => {
+    if (selectedOption !== "Category") {
+      if (stateParams === "myCourses") {
+        const filteredCourses = myCourses?.filter(
+          (item) => item?.courseCategory === selectedOption
+        );
+        setShowCourses(filteredCourses);
+      } else if (stateParams === "allCourses") {
+        const filteredCourses = courses?.filter(
+          (item) => item?.courseCategory === selectedOption
+        );
+        setShowCourses(filteredCourses);
+      }
+    }
+  }, [selectedOption]);
+  console.log(selectedOption);
 
   // useEffect(() => {
   //   if (stateParams === "myCourses") {
@@ -159,7 +161,6 @@ const CourseAccess = () => {
 
     // Convert milliseconds to days
     const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-    console.log(enrolledDate);
 
     return daysDifference;
   };
@@ -179,8 +180,6 @@ const CourseAccess = () => {
       }
     });
   };
-
-  console.log(bundles);
 
   return (
     <div>
@@ -293,7 +292,7 @@ const CourseAccess = () => {
               >
                 All Courses
               </button>
-              <button
+              {/* <button
                 onClick={() => {
                   setStateParams("bundles");
                   setShowCourses(bundles);
@@ -305,7 +304,7 @@ const CourseAccess = () => {
                 }`}
               >
                 Bundles
-              </button>
+              </button> */}
               {/* <button className="pr-[60px] text-[18px] font-[500] ">
                 Active
               </button>
@@ -325,14 +324,14 @@ const CourseAccess = () => {
                 <span className="text-[#3E4DAC] ">{selectedOption}</span>
               </div>
               {isOpen && (
-                <ul className="absolute top-full left-0 w-full border border-[#FF557A] bg-white border-t-0 py-1 px-4 rounded-b-[8px] mt-1 transform translate-y-[-10px] shadow-[0px_2px_4px_0px_#00000026]">
-                  {options.map((option, index) => (
+                <ul className="absolute top-full z-10 left-0 w-full border border-[#FF557A] bg-white border-t-0 py-1 px-4 rounded-b-[8px] mt-1 transform translate-y-[-10px] shadow-[0px_2px_4px_0px_#00000026]">
+                  {courseCategories?.courseCategories?.map((option, index) => (
                     <li
                       key={index}
                       className="cursor-pointer py-2 text-[#6A6A6A] text-[14px] font-[400] "
-                      onClick={() => selectOption(option)}
+                      onClick={() => selectOption(option?.categoryName)}
                     >
-                      {option}
+                      {option?.categoryName}
                     </li>
                   ))}
                 </ul>
@@ -340,7 +339,22 @@ const CourseAccess = () => {
             </div>
           </div>
 
-          <div className="my-[60px] ">
+          <div className="mb-[60px] mt-[20px] ">
+            {stateParams === "allCourses" && (
+              <button
+                onClick={() => {
+                  setStateParams("bundles");
+                  setShowCourses(bundles);
+                }}
+                className={`text-[18px] font-[700] bg-[#677bff0a] rounded-md px-2 py-1 mb-5 ${
+                  stateParams !== "bundles"
+                    ? "text-[#3E4DAC] "
+                    : "text-black no-underline"
+                }`}
+              >
+                Show Bundles
+              </button>
+            )}
             {stateParams !== "bundles" && (
               <div
                 className={`flex flex-wrap ${
@@ -364,7 +378,6 @@ const CourseAccess = () => {
                   const remainingDay =
                     parseInt(course?.expirationDay) -
                     daysDifferenceFromEnrolled(enrolledDate);
-                  console.log(remainingDay);
                   return (
                     <>
                       {Role === "admin" ? (

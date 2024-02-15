@@ -20,6 +20,10 @@ const EditCourse = () => {
     useState(false);
   const rootUrl = window.location.origin;
   console.log(rootUrl);
+  const [courseCategories, setCourseCategories] = useState();
+  const [courseCategoryInput, setCourseCategoryInput] = useState('');
+
+  const [categoryName, setCategoryName] = useState();
 
   const toggleDropdownCourseSelection = () => {
     setisOpenGeneralCourseInfo(!isOpenGeneralCourseInfo);
@@ -150,7 +154,7 @@ const EditCourse = () => {
       console.log(newCourse?.data?.course?.acknowledged);
 
       if (newCourse?.data?.acknowledged) {
-        toast.success("Course added Successfully");
+        toast.success("Course Edited Successfully");
         router("/courseAccess");
         form.reset();
       }
@@ -159,6 +163,52 @@ const EditCourse = () => {
     }
     Loading().close();
   };
+
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/CourseCategory/getCourseCategory/organizationId/${userInfo?.organizationId}`)
+      .then((response) => {
+        setCourseCategories(response?.data);
+
+      })
+      .catch((error) => console.error(error));
+  }, [userInfo]);
+
+
+
+
+  const handleSubmitCourseCategory = async () => {
+    const addCourseCategory = {
+      courseCategoryName: courseCategoryInput,
+      creator: {
+        name: user?.displayName,
+        email: user?.email,
+        photoURL: user?.photoURL,
+      },
+      organization: {
+        organizationId: userInfo?.organizationId,
+        organizationName: userInfo?.organizationName,
+      },
+    };
+
+    console.log(addCourseCategory);
+
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/v1/CourseCategory/addCourseCategory/organizationId/${userInfo?.organizationId}`, addCourseCategory);
+      console.log(response)
+      if (response.data === "Course category added successfully") {
+        toast.success("Category added Successfully");
+        // Reset the form after successful submission
+        setCategoryName(addCourseCategory?.courseCategoryName)
+        setCourseCategoryInput('');
+      } else {
+        toast.error('Error submitting Category');
+      }
+    } catch (error) {
+      console.error('Error submitting course:', error);
+    }
+  };
+
 
   return (
     <div>
@@ -329,7 +379,7 @@ const EditCourse = () => {
               </div>
 
               <div>
-                {/* <div className="">
+                <div className="">
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
                     <p className="font-bold text-lg me-[36px]">
@@ -338,21 +388,42 @@ const EditCourse = () => {
                     <img src={required} alt="" />
                   </div>
 
-                  <div className=" flex gap-2  mt-6 ms-6 border rounded-md w-[381px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]  ">
+                  <div className=" flex gap-2  mt-6 ms-6 border rounded-md w-[319px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]  ">
                     <select
                       required
-                      className="w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold focus:outline-0"
+                      className="w-full bg-[#F6F7FF] text-base font-semibold focus:outline-0"
                       name="courseCategory"
-                      defaultValue={courseData?.courseCategory}
-                    // id="option"
+
                     >
-                      <option className="" value="Web Development">
-                        Web Development
-                      </option>
-                      <option value="Parent"></option>
-                      <option value="Counselor"></option>
-                      <option value="Others"></option> 
+                      {/* Default option */}
+
+
+                      {
+                        (categoryName) ?
+                          <option value={categoryName}>
+                            {categoryName}
+                          </option>
+                          :
+
+                          <option defaultValue={courseData?.courseCategory || ""}>
+                            {courseData?.courseCategory ? courseData?.courseCategory : ""}
+                          </option>
+
+                      }
+
+                      {/* Map over courseCategories and render options */}
+                      {courseCategories?.courseCategories?.map((category) => (
+                        <option
+                          key={category?.categoryName}
+                          className="text-[#3E4DAC]"
+                          value={category?.categoryName}
+                        >
+                          {category?.categoryName}
+                        </option>
+                      ))}
                     </select>
+
+
                     <div
                       onClick={openModaladdcoursecategory}
                       className="w-[96px] bg-[#FFDB70] text-[] text-base font-semibold flex gap-2 justify-center items-center"
@@ -384,18 +455,31 @@ const EditCourse = () => {
                               </p>
                             </div>
 
-                            <input
-                              className="mt-6 border rounded-md w-[358px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                              name="courseCategory"
-                              type="text"
-                              placeholder="Eg. Entrepreneurship Lab"
-                            ></input>
+                            <div>
+                              <input
+                                className="mt-6 border rounded-md w-[358px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                                name="courseCategory"
+                                type="text"
+                                placeholder="Eg. Entrepreneurship Lab"
+                                value={courseCategoryInput}
+                                onChange={(e) => setCourseCategoryInput(e.target.value)}
+                              />
+                              <div className="flex justify-center mt-5">
+
+                                <button
+                                  className="px-[20px] py-3 bg-[#3E4DAC] hover:bg-opacity-70 text-[#fff] cursor-pointer text-xl font-bold rounded-lg"
+                                  onClick={handleSubmitCourseCategory}>Add</button>
+
+
+                              </div>
+
+                            </div>
                           </div>
                         </div>
                       </div>
                     )}
                   </div>
-                </div> */}
+                </div>
 
                 <div className="mt-20">
                   <div className="flex items-center gap-4">

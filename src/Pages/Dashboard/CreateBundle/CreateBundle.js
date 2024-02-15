@@ -32,6 +32,11 @@ const CreateBundle = () => {
       .catch((error) => console.error(error));
   }, [userInfo]);
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setSelectedFile(file);
+  };
+
   const handleCourseInputChange = (event) => {
     if (event.target.value.length > 0) setCourseDropdown(true);
     setCourseInput(event.target.value);
@@ -112,7 +117,6 @@ const CreateBundle = () => {
     const bundlePurchaseUrl = form.bundlePurchaseUrl.value;
     const bundleVisibility = form.bundleVisibility.value;
     const bundleIDNumber = form.bundleIDNumber.value;
-    const expirationDay = form.expirationDay.value;
     const price = form.price.value;
 
     let fileUrl = "";
@@ -129,7 +133,6 @@ const CreateBundle = () => {
       bundlePurchaseUrl,
       bundleVisibility,
       bundleIDNumber,
-      expirationDay,
       price,
       bundleThumbnail: fileUrl,
       creator: {
@@ -456,7 +459,7 @@ const CreateBundle = () => {
                   </div>
 
                   <div
-                    // onChange={handleFileChange}
+                    onChange={handleFileChange}
                     className=" flex gap-2  mt-6 ms-6 border rounded-md w-[319px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]  "
                   >
                     <div className=" flex items-center">
@@ -512,22 +515,6 @@ const CreateBundle = () => {
                       name="bundleIDNumber"
                       type="text"
                       placeholder="Eg. 02283847"
-                    ></input>
-                  </div>
-
-                  <div className="mt-20">
-                    <div className="flex items-center gap-4">
-                      <p className="h-2 w-2 bg-black rounded-full"></p>
-                      <p className="font-bold text-lg me-[36px]">
-                        Expiration Day
-                      </p>
-                    </div>
-
-                    <input
-                      className="mt-6 ms-6 border rounded-md w-[272px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                      name="expirationDay"
-                      type="number"
-                      placeholder="Eg. 364"
                     ></input>
                   </div>
 
