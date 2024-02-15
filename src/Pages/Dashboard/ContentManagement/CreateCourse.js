@@ -111,6 +111,7 @@ const CreateCourse = () => {
 
   const { user, userInfo } = useContext(AuthContext);
   const [submitPermission, setSubmitPermission] = useState(false);
+  const [enableDrip, setEnableDrip] = useState(false);
   const router = useNavigate();
 
   console.log(userInfo);
@@ -136,7 +137,7 @@ const CreateCourse = () => {
     const numberOfWeeks = +form.numberofWeeks?.value;
     const showactivityreports = +form.showactivityreports?.value;
     const enableCompletionTracking = +form.enableCompletionTracking?.value;
-    const enableDrip = form.enableDrip?.value === "false" ? false : true;
+    // const enableDrip = enableDrip === "false" ? false : true;
     const showactivitycompletionconditions =
       +form.showactivitycompletionconditions?.value;
     const coursePurchaseUrl = +form.coursePurchaseUrl?.value;
@@ -865,7 +866,8 @@ const CreateCourse = () => {
                         type="radio"
                         id="Yes"
                         name="enableDrip"
-                        value={true}
+                        checked={enableDrip === true}
+                        onChange={() => setEnableDrip(true)}
                       />
                       <lebel> Yes</lebel>
                     </div>
@@ -874,7 +876,8 @@ const CreateCourse = () => {
                         type="radio"
                         id="No"
                         name="enableDrip"
-                        value={false}
+                        checked={enableDrip === false}
+                        onChange={() => setEnableDrip(false)}
                       />
                       <lebel> No</lebel>
                     </div>

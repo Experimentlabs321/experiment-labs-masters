@@ -105,7 +105,7 @@ const ReadingTask = ({ taskData, chapterId }) => {
       setOverlayVisible(openQuiz);
     }
   };
-  console.log(additionalFile);
+  console.log(taskData);
   return (
     <div>
       {completionStatus ? (
@@ -122,30 +122,31 @@ const ReadingTask = ({ taskData, chapterId }) => {
           Mark as complete <CheckCircleOutlineIcon />
         </button>
       )}
-      <div className="min-h-[72vh] mb-[60px]">
-        <div className="container mx-auto relative">
-          {isOverlayVisible && (
-            <div
-              className="fixed top-0 left-0 w-full h-full z-[9999] bg-transparent"
-              onClick={handleCompletion}
-            ></div>
-          )}
-          {additionalFile && (
-            <iframe
-              id="document"
-              // key={additionalFile}
-              key={taskData?._id || additionalFile}
-              src={additionalFile}
-              // src={`https://docs.google.com/viewer?url=${
-              //   taskData?.additionalFiles ? taskData?.additionalFiles : ""
-              // }&embedded=true`
-              title="Your Document"
-              className="h-[68vh] mx-auto border-x-30 mt-40 border-[10px] border-b-50 rounded-lg border-[#292929]"
-              width="90%"
-              height="80vh"
-            ></iframe>
-          )}
-          {/* <iframe
+      {additionalFile && (
+        <div className="min-h-[72vh] mb-[60px]">
+          <div className="container mx-auto relative">
+            {isOverlayVisible && (
+              <div
+                className="fixed top-0 left-0 w-full h-full z-[9999] bg-transparent"
+                onClick={handleCompletion}
+              ></div>
+            )}
+            {additionalFile && (
+              <iframe
+                id="document"
+                // key={additionalFile}
+                key={taskData?._id || additionalFile}
+                src={additionalFile}
+                // src={`https://docs.google.com/viewer?url=${
+                //   taskData?.additionalFiles ? taskData?.additionalFiles : ""
+                // }&embedded=true`
+                title="Your Document"
+                className="h-[68vh] mx-auto border-x-30 mt-40 border-[10px] border-b-50 rounded-lg border-[#292929]"
+                width="90%"
+                height="80vh"
+              ></iframe>
+            )}
+            {/* <iframe
             id="document"
             // key={additionalFile}
             key={taskData?._id || additionalFile}
@@ -158,16 +159,20 @@ const ReadingTask = ({ taskData, chapterId }) => {
             width="90%"
             height="80vh"
           ></iframe> */}
-          {openQuiz && (
-            <Quiz
-              setOpenQuiz={setOpenQuiz}
-              setCompletionStatus={setCompletionStatus}
-              openQuiz={openQuiz}
-              taskData={taskData}
-              questions={taskData?.completionParameter?.questions}
-            />
-          )}
+            {openQuiz && (
+              <Quiz
+                setOpenQuiz={setOpenQuiz}
+                setCompletionStatus={setCompletionStatus}
+                openQuiz={openQuiz}
+                taskData={taskData}
+                questions={taskData?.completionParameter?.questions}
+              />
+            )}
+          </div>
         </div>
+      )}
+      <div className="px-4 py-20">
+        <div dangerouslySetInnerHTML={{ __html: taskData?.readingMaterial }} />
       </div>
     </div>
   );
