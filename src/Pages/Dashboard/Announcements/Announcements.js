@@ -5,6 +5,8 @@ import { useNotification } from "../../../contexts/NotificationContext";
 import DialogLayoutForFromControl from "../Shared/DialogLayoutForFromControl";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Loading from "../../Shared/Loading/Loading";
 
 const Announcements = () => {
   const { user, userInfo } = useContext(AuthContext);
@@ -36,6 +38,22 @@ const Announcements = () => {
     if (markAsRead) {
       fetchAnnouncements();
     }
+  };
+
+  const handleMarkAsRemove = async (announcement) => {
+    Loading();
+    const markAsRead = await axios.put(
+      `https://test-server-tg7l.onrender.com/api/v1/announcements/makeAsRemove/announcementId/${announcement?._id}`,
+      {
+        userEmail: user?.email,
+      }
+    );
+    console.log(markAsRead);
+
+    if (markAsRead) {
+      await fetchAnnouncements();
+    }
+    Loading().close();
   };
 
   return (
@@ -117,11 +135,6 @@ const Announcements = () => {
             return (
               <div key={index} className="">
                 <div
-                  onClick={() => {
-                    setDisplayingAnnouncement(announcement);
-                    setShowAnnouncementDetailsDialog(true);
-                    handleMarkAsRead(announcement);
-                  }}
                   className={` ${
                     !announcement?.readBy?.find((item) => item === user?.email)
                       ? "bg-sky-50"
@@ -130,39 +143,62 @@ const Announcements = () => {
                 >
                   <div className=" col-span-4 h-full bg-[#EAEAEA]">
                     <img
+                      onClick={() => {
+                        setDisplayingAnnouncement(announcement);
+                        setShowAnnouncementDetailsDialog(true);
+                        handleMarkAsRead(announcement);
+                      }}
                       alt="Announcement Img"
                       className=" h-full mx-auto object-contain"
                       src={announcement?.imageUrl}
                     />
                   </div>
                   <div className=" col-span-8 my-[10px] mx-[20px]">
-                    <div className=" flex justify-between items-center gap-[16px]">
-                      <div className=" pt-[6px] text-[16px] font-medium ">
-                        {announcement?.title}
+                    <div
+                      onClick={() => {
+                        setDisplayingAnnouncement(announcement);
+                        setShowAnnouncementDetailsDialog(true);
+                        handleMarkAsRead(announcement);
+                      }}
+                    >
+                      <div className=" flex justify-between items-center gap-[16px]">
+                        <div className=" pt-[6px] text-[16px] font-medium ">
+                          {announcement?.title}
+                        </div>
+                        <div
+                          className={` bg-[#F7E7E9] text-[#E63946] w-fit h-fit py-[6px] px-[8px] mt-1 rounded text-[12px] whitespace-nowrap font-bold uppercase`}
+                        >
+                          {announcement?.urgency} URGENCY
+                        </div>
                       </div>
-                      <div
-                        className={` bg-[#F7E7E9] text-[#E63946] w-fit h-fit py-[6px] px-[8px] mt-1 rounded text-[12px] whitespace-nowrap font-bold uppercase`}
-                      >
-                        {announcement?.urgency} URGENCY
+                      <div className=" my-2">
+                        <div
+                          className="h-[100px] overflow-hidden m-0 text-[14px] text-gray-500 font-normal"
+                          dangerouslySetInnerHTML={{
+                            __html: announcement?.description,
+                          }}
+                        />
                       </div>
                     </div>
-                    <div className=" my-2">
-                      <div
-                        className="h-[100px] overflow-hidden m-0 text-[14px] text-gray-500 font-normal"
-                        dangerouslySetInnerHTML={{
-                          __html: announcement?.description,
+                    <div className="relative w-full">
+                      <small className="text-[14px] font-medium text-gray-500 font-sans">
+                        <span className="mr-1">
+                          {handleDate(announcement?.dateTime)}
+                        </span>
+                        •
+                        <span className="ml-1">
+                          {handleTime(announcement?.dateTime)}
+                        </span>
+                      </small>
+                      <small
+                        onClick={() => {
+                          handleMarkAsRemove();
                         }}
-                      />
+                        className=" cursor-pointer float-right z-10 absolute right-0"
+                      >
+                        <DeleteIcon />
+                      </small>
                     </div>
-                    <small className="text-[14px] font-medium text-gray-500 font-sans">
-                      <span className="mr-1">
-                        {handleDate(announcement?.dateTime)}
-                      </span>
-                      •
-                      <span className="ml-1">
-                        {handleTime(announcement?.dateTime)}
-                      </span>
-                    </small>
                   </div>
                 </div>
               </div>
