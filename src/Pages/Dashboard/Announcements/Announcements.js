@@ -44,6 +44,7 @@ const Announcements = () => {
         <div className="p-4">
           <div className="flex items-center justify-between h-24 ">
             <h1 className="text-3xl font-bold">Announcements</h1>
+
             {userInfo?.role === "admin" && (
               <button
                 onClick={() => setShowAnnouncementForm(true)}
@@ -53,11 +54,14 @@ const Announcements = () => {
               </button>
             )}
           </div>
+
           {showAnnouncementForm && (
             <AdminAnnouncementForm
               setShowAnnouncementForm={setShowAnnouncementForm}
             />
           )}
+
+          {/* Detail announcement dialog start */}
           <DialogLayoutForFromControl
             title={
               <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
@@ -107,18 +111,23 @@ const Announcements = () => {
               </div>
             </div>
           </DialogLayoutForFromControl>
+          {/* Detail announcement dialog end */}
+
           {announcements?.map((announcement, index) => {
             return (
-              <div
-                onClick={() => {
-                  setDisplayingAnnouncement(announcement);
-                  setShowAnnouncementDetailsDialog(true);
-                  handleMarkAsRead(announcement);
-                }}
-                key={index}
-                className=" cursor-pointer"
-              >
-                <div className=" bg-[#f9fafb] grid grid-cols-12 mb-5 w-[700px] border border-[#E5E8EC] rounded-md">
+              <div key={index} className="">
+                <div
+                  onClick={() => {
+                    setDisplayingAnnouncement(announcement);
+                    setShowAnnouncementDetailsDialog(true);
+                    handleMarkAsRead(announcement);
+                  }}
+                  className={` ${
+                    !announcement?.readBy?.find((item) => item === user?.email)
+                      ? "bg-sky-50"
+                      : "bg-[#f9fafb]"
+                  } cursor-pointer  grid grid-cols-12 mb-5 w-[700px] border border-[#E5E8EC] rounded-md`}
+                >
                   <div className=" col-span-4 h-full bg-[#EAEAEA]">
                     <img
                       alt="Announcement Img"
@@ -131,7 +140,9 @@ const Announcements = () => {
                       <div className=" pt-[6px] text-[16px] font-medium ">
                         {announcement?.title}
                       </div>
-                      <div className=" bg-[#F7E7E9] text-[#E63946] w-fit h-fit py-[6px] px-[8px] mt-1 rounded text-[12px] whitespace-nowrap font-bold uppercase">
+                      <div
+                        className={` bg-[#F7E7E9] text-[#E63946] w-fit h-fit py-[6px] px-[8px] mt-1 rounded text-[12px] whitespace-nowrap font-bold uppercase`}
+                      >
                         {announcement?.urgency} URGENCY
                       </div>
                     </div>

@@ -168,7 +168,7 @@ const ManageAudio = () => {
       completionParameter: completionParameter,
       courseId: chapter?.courseId,
       batches: selectedBatches,
-      taskDrip
+      taskDrip,
     };
 
     setAudioData(ManageAudio);
@@ -182,6 +182,24 @@ const ManageAudio = () => {
 
       if (newTask) {
         toast.success("Audio added Successfully");
+        const newNotification = await axios.post(
+          `https://test-server-tg7l.onrender.com/api/v1/notifications/addNotification`,
+          {
+            message: `New audio material added in course ${course?.courseFullName}.`,
+            dateTime: new Date(),
+            redirectLink: `/questLevels/${course?._id}?week=${chapter?.weekId}`,
+            recipient: {
+              type: "Students",
+              organizationId: orgData?._id,
+              courseId: course?._id,
+              batches: selectedBatches,
+            },
+            type: "Create Task",
+            readBy: [],
+            notificationTriggeredBy: user?.email,
+          }
+        );
+        console.log(newNotification);
         navigate(-1);
       }
 
@@ -444,7 +462,9 @@ const ManageAudio = () => {
                     />
                     <label
                       htmlFor="radioYes"
-                      className={`ml-2 text-sm font-medium ${course?.enableDrip ? 'text-gray-400' : 'text-gray-900'}`}
+                      className={`ml-2 text-sm font-medium ${
+                        course?.enableDrip ? "text-gray-400" : "text-gray-900"
+                      }`}
                     >
                       Yes
                     </label>
@@ -462,7 +482,9 @@ const ManageAudio = () => {
                     />
                     <label
                       htmlFor="radioNo"
-                      className={`ml-2 text-sm font-medium ${course?.enableDrip ? 'text-gray-400' : 'text-gray-900'}`}
+                      className={`ml-2 text-sm font-medium ${
+                        course?.enableDrip ? "text-gray-400" : "text-gray-900"
+                      }`}
                     >
                       No
                     </label>
@@ -480,10 +502,10 @@ const ManageAudio = () => {
             <div className="px-4 my-10">
               {(orgData?.showPointsAndRedemptions ||
                 orgData?.showSkillsManagement) && (
-                  <p className="text-[25px] font-bold mb-10">
-                    Evaluation Parameter
-                  </p>
-                )}
+                <p className="text-[25px] font-bold mb-10">
+                  Evaluation Parameter
+                </p>
+              )}
               {orgData?.showSkillsManagement && (
                 <SkillBasedParameter
                   selectedData={skillParameterData}
