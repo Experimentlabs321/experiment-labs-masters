@@ -96,7 +96,7 @@ const Submission = ({ taskData }) => {
       }
     );
 
-    console.log(sendMail);
+    console.log(fileUrl);
 
     if (manageAssignment && fileUrl) {
       console.log(manageAssignment);
