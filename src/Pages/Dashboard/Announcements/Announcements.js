@@ -4,10 +4,12 @@ import AdminAnnouncementForm from "./AdminAnnouncementForm";
 import { useNotification } from "../../../contexts/NotificationContext";
 import DialogLayoutForFromControl from "../Shared/DialogLayoutForFromControl";
 import { AuthContext } from "../../../contexts/AuthProvider";
+import axios from "axios";
 
 const Announcements = () => {
-  const { userInfo } = useContext(AuthContext);
-  const { announcements, unreadAnnouncements } = useNotification();
+  const { user, userInfo } = useContext(AuthContext);
+  const { announcements, unreadAnnouncements, fetchAnnouncements } =
+    useNotification();
   const [showAnnouncementForm, setShowAnnouncementForm] = useState(false);
   const [showAnnouncementDetailsDialog, setShowAnnouncementDetailsDialog] =
     useState(false);
@@ -21,6 +23,19 @@ const Announcements = () => {
   const handleTime = (dateTime) => {
     const time = new Date(dateTime).toLocaleTimeString();
     return time;
+  };
+
+  const handleMarkAsRead = async (announcement) => {
+    const markAsRead = await axios.put(
+      `https://test-server-tg7l.onrender.com/api/v1/announcements/makeAsRead/announcementId/${announcement?._id}`,
+      {
+        userEmail: user?.email,
+      }
+    );
+
+    if (markAsRead) {
+      fetchAnnouncements();
+    }
   };
 
   return (
@@ -98,6 +113,7 @@ const Announcements = () => {
                 onClick={() => {
                   setDisplayingAnnouncement(announcement);
                   setShowAnnouncementDetailsDialog(true);
+                  handleMarkAsRead(announcement);
                 }}
                 key={index}
                 className=" cursor-pointer"
