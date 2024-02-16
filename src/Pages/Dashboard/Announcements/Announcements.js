@@ -42,15 +42,15 @@ const Announcements = () => {
 
   const handleMarkAsRemove = async (announcement) => {
     Loading();
-    const markAsRead = await axios.put(
+    const markAsRemove = await axios.put(
       `https://test-server-tg7l.onrender.com/api/v1/announcements/makeAsRemove/announcementId/${announcement?._id}`,
       {
         userEmail: user?.email,
       }
     );
-    console.log(markAsRead);
 
-    if (markAsRead) {
+    if (markAsRemove) {
+      await handleMarkAsRead(announcement);
       await fetchAnnouncements();
     }
     Loading().close();
@@ -132,77 +132,80 @@ const Announcements = () => {
           {/* Detail announcement dialog end */}
 
           {announcements?.map((announcement, index) => {
-            return (
-              <div key={index} className="">
-                <div
-                  className={` ${
-                    !announcement?.readBy?.find((item) => item === user?.email)
-                      ? "bg-sky-50"
-                      : "bg-[#f9fafb]"
-                  } cursor-pointer  grid grid-cols-12 mb-5 w-[700px] border border-[#E5E8EC] rounded-md`}
-                >
-                  <div className=" col-span-4 h-full bg-[#EAEAEA]">
-                    <img
-                      onClick={() => {
-                        setDisplayingAnnouncement(announcement);
-                        setShowAnnouncementDetailsDialog(true);
-                        handleMarkAsRead(announcement);
-                      }}
-                      alt="Announcement Img"
-                      className=" h-full mx-auto object-contain"
-                      src={announcement?.imageUrl}
-                    />
-                  </div>
-                  <div className=" col-span-8 my-[10px] mx-[20px]">
-                    <div
-                      onClick={() => {
-                        setDisplayingAnnouncement(announcement);
-                        setShowAnnouncementDetailsDialog(true);
-                        handleMarkAsRead(announcement);
-                      }}
-                    >
-                      <div className=" flex justify-between items-center gap-[16px]">
-                        <div className=" pt-[6px] text-[16px] font-medium ">
-                          {announcement?.title}
-                        </div>
-                        <div
-                          className={` bg-[#F7E7E9] text-[#E63946] w-fit h-fit py-[6px] px-[8px] mt-1 rounded text-[12px] whitespace-nowrap font-bold uppercase`}
-                        >
-                          {announcement?.urgency} URGENCY
-                        </div>
-                      </div>
-                      <div className=" my-2">
-                        <div
-                          className="h-[100px] overflow-hidden m-0 text-[14px] text-gray-500 font-normal"
-                          dangerouslySetInnerHTML={{
-                            __html: announcement?.description,
-                          }}
-                        />
-                      </div>
-                    </div>
-                    <div className="relative w-full">
-                      <small className="text-[14px] font-medium text-gray-500 font-sans">
-                        <span className="mr-1">
-                          {handleDate(announcement?.dateTime)}
-                        </span>
-                        •
-                        <span className="ml-1">
-                          {handleTime(announcement?.dateTime)}
-                        </span>
-                      </small>
-                      <small
+            if (!announcement?.removeBy?.find((item) => item === user?.email))
+              return (
+                <div key={index} className="">
+                  <div
+                    className={` ${
+                      !announcement?.readBy?.find(
+                        (item) => item === user?.email
+                      )
+                        ? "bg-sky-50"
+                        : "bg-[#f9fafb]"
+                    } cursor-pointer  grid grid-cols-12 mb-5 w-[700px] border border-[#E5E8EC] rounded-md`}
+                  >
+                    <div className=" col-span-4 h-full bg-[#EAEAEA]">
+                      <img
                         onClick={() => {
-                          handleMarkAsRemove();
+                          setDisplayingAnnouncement(announcement);
+                          setShowAnnouncementDetailsDialog(true);
+                          handleMarkAsRead(announcement);
                         }}
-                        className=" cursor-pointer float-right z-10 absolute right-0"
+                        alt="Announcement Img"
+                        className=" h-full mx-auto object-contain"
+                        src={announcement?.imageUrl}
+                      />
+                    </div>
+                    <div className=" col-span-8 my-[10px] mx-[20px]">
+                      <div
+                        onClick={() => {
+                          setDisplayingAnnouncement(announcement);
+                          setShowAnnouncementDetailsDialog(true);
+                          handleMarkAsRead(announcement);
+                        }}
                       >
-                        <DeleteIcon />
-                      </small>
+                        <div className=" flex justify-between items-center gap-[16px]">
+                          <div className=" pt-[6px] text-[16px] font-medium ">
+                            {announcement?.title}
+                          </div>
+                          <div
+                            className={` bg-[#F7E7E9] text-[#E63946] w-fit h-fit py-[6px] px-[8px] mt-1 rounded text-[12px] whitespace-nowrap font-bold uppercase`}
+                          >
+                            {announcement?.urgency} URGENCY
+                          </div>
+                        </div>
+                        <div className=" my-2">
+                          <div
+                            className="h-[100px] overflow-hidden m-0 text-[14px] text-gray-500 font-normal"
+                            dangerouslySetInnerHTML={{
+                              __html: announcement?.description,
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="relative w-full">
+                        <small className="text-[14px] font-medium text-gray-500 font-sans">
+                          <span className="mr-1">
+                            {handleDate(announcement?.dateTime)}
+                          </span>
+                          •
+                          <span className="ml-1">
+                            {handleTime(announcement?.dateTime)}
+                          </span>
+                        </small>
+                        <small
+                          onClick={() => {
+                            handleMarkAsRemove(announcement);
+                          }}
+                          className=" cursor-pointer float-right z-10 absolute right-0"
+                        >
+                          <DeleteIcon />
+                        </small>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            );
+              );
           })}
         </div>
       </Layout>
