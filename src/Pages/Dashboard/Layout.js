@@ -70,6 +70,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import { AuthContext } from "../../contexts/AuthProvider";
 import axios from "axios";
 import { useNotification } from "../../contexts/NotificationContext";
+import Loading from "../Shared/Loading/Loading";
 
 const Layout = ({ children }) => {
   const [toggleButton, setToggleButton] = useState(true);
@@ -78,7 +79,7 @@ const Layout = ({ children }) => {
   const [orgData, setOrgData] = useState({});
   const Role = localStorage.getItem("role");
   const createCoursePage = localStorage.getItem("createCoursePage");
-  const { userInfo, logOut } = useContext(AuthContext);
+  const { user, userInfo, logOut } = useContext(AuthContext);
   const [profImg, setprofImg] = useState(null);
   const [profName, setprofName] = useState(null);
   const [showNotification, setShowNotification] = useState(false);
@@ -89,6 +90,7 @@ const Layout = ({ children }) => {
     unreadNotifications,
     announcements,
     unreadAnnouncements,
+    fetchNotifications,
   } = useNotification();
   //console.log(Role);
   const location = useLocation();
@@ -182,6 +184,21 @@ const Layout = ({ children }) => {
     } else {
       return `${diffInYears} years ago`;
     }
+  };
+
+  const handleMarkAsRead = async (notification) => {
+    Loading();
+    const markAsRead = await axios.put(
+      `https://test-server-tg7l.onrender.com/api/v1/notifications/makeAsRead/notificationId/${notification?._id}`,
+      {
+        userEmail: user?.email,
+      }
+    );
+
+    if (markAsRead) {
+      await fetchNotifications();
+    }
+    Loading().close();
   };
 
   return (
@@ -281,10 +298,14 @@ const Layout = ({ children }) => {
                             Notifications
                           </h1>
                           {notifications?.map((notification, index) => (
-                            <Link
-                              to={notification?.redirectLink}
+                            <div
+                              onClick={async () => {
+                                await handleMarkAsRead(notification);
+                                navigate(notification?.redirectLink);
+                              }}
+                              // to={notification?.redirectLink}
                               key={index}
-                              className="p-1 my-2 border border-gray-500 shadow rounded flex "
+                              className=" cursor-pointer p-1 my-2 border border-gray-500 shadow rounded flex "
                             >
                               <p className="flex items-center gap-1">
                                 <span className="border rounded-full border-black">
@@ -329,7 +350,7 @@ const Layout = ({ children }) => {
                                   </span>
                                 </span>
                               </p>
-                            </Link>
+                            </div>
                           ))}
                         </div>
                       )}
