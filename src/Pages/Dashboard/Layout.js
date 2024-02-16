@@ -305,9 +305,13 @@ const Layout = ({ children }) => {
                               }}
                               // to={notification?.redirectLink}
                               key={index}
-                              className=" cursor-pointer p-1 my-2 border border-gray-500 shadow rounded flex "
+                              className={` ${
+                                !notification?.readBy?.find(
+                                  (item) => item === user?.email
+                                ) && "bg-sky-50"
+                              } cursor-pointer p-1 my-2 border border-gray-500 shadow rounded flex `}
                             >
-                              <p className="flex items-center gap-1">
+                              <p className="flex items-center gap-1 font-sans">
                                 <span className="border rounded-full border-black">
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"

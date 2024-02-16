@@ -246,10 +246,32 @@ const ManageLiveClasses = () => {
 
     localStorage.setItem("manageClass", JSON.stringify(manageClass));
     // console.log(JSON.parse(localStorage.getItem('manageClass')));
-    connectZoom();
+    await connectZoom();
+
+    const newNotification = await axios.post(
+      `https://test-server-tg7l.onrender.com/api/v1/notifications/addNotification`,
+      {
+        message: `New reading material added in course ${course?.courseFullName}.`,
+        dateTime: new Date(),
+        redirectLink: `/questLevels/${course?._id}?week=${chapter?.weekId}`,
+        recipient: {
+          type: "Students",
+          organizationId: orgData?._id,
+          courseId: course?._id,
+          batches: [
+            {
+              batchName: selectedBatch?.batchName,
+              batchId: selectedBatch?._id,
+            },
+          ],
+        },
+        type: "Create Task",
+        readBy: [],
+        notificationTriggeredBy: user?.email,
+      }
+    );
+    console.log(newNotification);
   };
-
-
 
   useEffect(() => {
     axios
@@ -289,7 +311,8 @@ const ManageLiveClasses = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API
+        `${
+          process.env.REACT_APP_SERVER_API
         }/api/v1/batches/courseId/${localStorage.getItem("courseId")}`
       )
       .then((response) => {
@@ -604,10 +627,6 @@ const ManageLiveClasses = () => {
                     placeholder="Email"
                   />
                 </div>
-
-
-
-
               </div>
               <div className="space-y-4 mb-8">
                 <fieldset>
@@ -629,7 +648,9 @@ const ManageLiveClasses = () => {
                       />
                       <label
                         htmlFor="radioYes"
-                        className={`ml-2 text-sm font-medium ${enableDrip ? 'text-gray-400' : 'text-gray-900'}`}
+                        className={`ml-2 text-sm font-medium ${
+                          enableDrip ? "text-gray-400" : "text-gray-900"
+                        }`}
                       >
                         Yes
                       </label>
@@ -647,7 +668,9 @@ const ManageLiveClasses = () => {
                       />
                       <label
                         htmlFor="radioNo"
-                        className={`ml-2 text-sm font-medium ${enableDrip ? 'text-gray-400' : 'text-gray-900'}`}
+                        className={`ml-2 text-sm font-medium ${
+                          enableDrip ? "text-gray-400" : "text-gray-900"
+                        }`}
                       >
                         No
                       </label>
@@ -738,26 +761,27 @@ const ManageLiveClasses = () => {
 
           {(orgData?.showPointsAndRedemptions ||
             orgData?.showSkillsManagement) && (
-              <div
-                className="select-option flex items-center gap-[40px] mt-12"
-                onClick={toggleDropdownevaluationParameter}
-              >
-                <h1 className=" h-[60px] w-[60px] bg-[#E1E6FF] rounded-full flex justify-center items-center text-[25px]">
-                  3
-                </h1>
-                <p className="text-[25px] font-bold">Evaluation Parameter</p>
-                {!isOpenevaluationParameter && (
-                  <img className="w-6" src={arrowright}></img>
-                )}
+            <div
+              className="select-option flex items-center gap-[40px] mt-12"
+              onClick={toggleDropdownevaluationParameter}
+            >
+              <h1 className=" h-[60px] w-[60px] bg-[#E1E6FF] rounded-full flex justify-center items-center text-[25px]">
+                3
+              </h1>
+              <p className="text-[25px] font-bold">Evaluation Parameter</p>
+              {!isOpenevaluationParameter && (
+                <img className="w-6" src={arrowright}></img>
+              )}
 
-                {isOpenevaluationParameter && <img src={arrowDown}></img>}
+              {isOpenevaluationParameter && <img src={arrowDown}></img>}
 
-                <i
-                  className={`dropdown-arrow ${isOpenevaluationParameter ? "open" : ""
-                    }`}
-                ></i>
-              </div>
-            )}
+              <i
+                className={`dropdown-arrow ${
+                  isOpenevaluationParameter ? "open" : ""
+                }`}
+              ></i>
+            </div>
+          )}
 
           {isOpenevaluationParameter && (
             <div className="dropdown-menu mt-[71px] mb-[45px] ">
