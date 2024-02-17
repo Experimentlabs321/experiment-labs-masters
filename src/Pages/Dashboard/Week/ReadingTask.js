@@ -52,7 +52,7 @@ const ReadingTask = ({ taskData, chapterId }) => {
       );
       // You can perform actions related to the specific div here
     }
-  }, [taskData, user]);
+  }, [taskData, user, additionalFile]);
 
   const handleCompletion = async () => {
     Loading();
@@ -105,7 +105,7 @@ const ReadingTask = ({ taskData, chapterId }) => {
       setOverlayVisible(openQuiz);
     }
   };
-  console.log(taskData);
+  console.log(taskData?.additionalFiles);
   return (
     <div>
       {completionStatus ? (
@@ -122,6 +122,7 @@ const ReadingTask = ({ taskData, chapterId }) => {
           Mark as complete <CheckCircleOutlineIcon />
         </button>
       )}
+
       {additionalFile && (
         <div className="min-h-[72vh] mb-[60px]">
           <div className="container mx-auto relative">
@@ -131,21 +132,30 @@ const ReadingTask = ({ taskData, chapterId }) => {
                 onClick={handleCompletion}
               ></div>
             )}
+
             {additionalFile && (
-              <iframe
-                id="document"
-                // key={additionalFile}
-                key={taskData?._id || additionalFile}
-                src={additionalFile}
-                // src={`https://docs.google.com/viewer?url=${
-                //   taskData?.additionalFiles ? taskData?.additionalFiles : ""
-                // }&embedded=true`
-                title="Your Document"
-                className="h-[68vh] mx-auto border-x-30 mt-40 border-[10px] border-b-50 rounded-lg border-[#292929]"
-                width="90%"
-                height="80vh"
-              ></iframe>
+              (taskData?.additionalFiles.endsWith('.png') ||
+                taskData?.additionalFiles.endsWith('.jpg') ||
+                taskData?.additionalFiles.endsWith('.jpeg') ||
+                taskData?.additionalFiles.endsWith('.gif') ||
+                taskData?.additionalFiles.endsWith('.bmp')) ? (
+
+                <div className="">
+                  <img src={taskData?.additionalFiles} alt="Img" className="w-[90%] mx-auto h-[68vh] border-[10px] border-b-50 rounded-lg border-[#292929]" />
+                </div>
+              ) : (
+                <iframe
+                  id="document"
+                  key={taskData?._id || additionalFile}
+                  src={additionalFile}
+                  title="Your Document"
+                  className="h-[68vh] mx-auto border-x-30 mt-40 border-[10px] border-b-50 rounded-lg border-[#292929]"
+                  width="90%"
+                  height="80vh"
+                ></iframe>
+              )
             )}
+
             {/* <iframe
             id="document"
             // key={additionalFile}
