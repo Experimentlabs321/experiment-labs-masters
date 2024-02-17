@@ -539,6 +539,7 @@ const AssignmentEvaluation2 = () => {
     
 
   };
+  
 
   return (
     <div>
@@ -591,8 +592,8 @@ const AssignmentEvaluation2 = () => {
               </div>
               <div>
                 <div className="flex gap-5 mt-5">
-                  <button onClick={()=>handleAcceptOrReject("Accepted")} className="bg-[green] p-2 rounded-2xl px-5 text-[#fff]">Accept</button>
-                  <button onClick={()=>handleAcceptOrReject("Rejected")}  className="bg-[red] p-2 rounded-2xl px-5 text-[#fff]">Reject</button>
+                  <button onClick={()=>handleAcceptOrReject("Accepted")} className="bg-[green] hover:bg-opacity-70 p-2 rounded-2xl px-5 text-[#fff]">Accept</button>
+                  <button onClick={()=>handleAcceptOrReject("Rejected")}  className="bg-[red] hover:bg-opacity-70 p-2 rounded-2xl px-5 text-[#fff]">Reject</button>
                 </div>
                 {feedback && (
                   <div className=" ">
@@ -724,13 +725,27 @@ const AssignmentEvaluation2 = () => {
               {assignment?.fileUrl && (
                 <>
                   <p>PDF/MOV</p>
-                  <iframe
-                    className="h-[68vh] mx-auto border-x-[30px] mt-[40px] border-t-[30px] border-b-[50px] rounded-lg border-[#292929]"
-                    src={`https://docs.google.com/viewer?url=${assignment?.fileUrl}&embedded=true`}
-                    width="90%"
-                    height="80vh"
-                    title="W3Schools Free Online Web Tutorials"
-                  ></iframe>
+                  {
+                          (assignment?.fileUrl.endsWith('.png') ||
+                          assignment?.fileUrl.endsWith('.jpg') ||
+                          assignment?.fileUrl.endsWith('.jpeg') ||
+                          assignment?.fileUrl.endsWith('.gif') ||
+                          assignment?.fileUrl.endsWith('.bmp')) ? (
+          
+                          <div className="">
+                            <img src={assignment?.fileUrl} alt="Img" className="w-[90%] mx-auto h-[68vh] border-[10px] border-b-50 rounded-lg border-[#292929]" />
+                          </div>
+                        ) : (
+                          <iframe
+                          className="h-[68vh] mx-auto border-x-[30px] mt-[40px] border-t-[30px] border-b-[50px] rounded-lg border-[#292929]"
+                          src={`https://docs.google.com/viewer?url=${assignment?.fileUrl}&embedded=true`}
+                          width="90%"
+                          height="80vh"
+                          title="W3Schools Free Online Web Tutorials"
+                        ></iframe>
+                        )
+                  }
+             
                 </>
               )}
               {!assignment?.fileUrl && (
@@ -1107,9 +1122,9 @@ const AssignmentEvaluation2 = () => {
                           style={{
                             borderRadius: "8.856px",
                             border: "1px solid #CECECE",
-                            background: "#3E4DAC",
+                           
                           }}
-                          className=" text-[#fff] text-base font-bold px-5 py-2"
+                          className="px-[30px] py-3 bg-[#3E4DAC] hover:bg-opacity-70 text-[#fff] cursor-pointer text-xl font-bold rounded-lg"
                           type="submit"
                           value="Save"
                         />
@@ -1119,7 +1134,7 @@ const AssignmentEvaluation2 = () => {
                             border: "1px solid #CECECE",
                             background: "#FF557A",
                           }}
-                          className=" text-[#fff] text-base font-bold px-5 py-2"
+                          className=" px-[30px] py-3 bg-[#3E4DAC] hover:bg-opacity-70 text-[#fff] cursor-pointer text-xl font-bold rounded-lg"
                           type="submit"
                           value="Save all"
                         />

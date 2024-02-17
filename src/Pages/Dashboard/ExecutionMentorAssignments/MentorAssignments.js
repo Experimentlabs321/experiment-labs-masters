@@ -306,7 +306,7 @@ const MentorAssignments = () => {
               </select>
 
               <button
-                className="bg-sky-500 text-white px-4 py-2 rounded"
+                className="bg-sky-500 hover:bg-opacity-70 text-white px-4 py-2 rounded"
                 onClick={applyFilters}
               >
                 Apply Filters
@@ -417,7 +417,7 @@ const MentorAssignments = () => {
                           <td className="py-4 px-6 border-b text-left">
                             <Link
                               to={`/assignmentEvaluation2/${assignment?._id}`}
-                              className="flex gap-2 bg-[#081765] text-[#fff] p-2 rounded-md mb-2 mt-3"
+                              className="flex gap-2 bg-[#081765] hover:bg-opacity-70 text-[#fff] p-2 rounded-md mb-2 mt-3"
                             >
                               <img src={eye} alt="eye" />
                               <p className="text-base font-normal">View</p>
