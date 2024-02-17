@@ -141,6 +141,7 @@ const Submission = ({ taskData }) => {
             type: "Submission",
             readBy: [],
             triggeredBy: user?.email,
+            redirectLink: `/mentorAssignments`,
           }
         );
         console.log(newNotification);
