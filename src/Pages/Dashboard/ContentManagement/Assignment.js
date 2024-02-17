@@ -59,8 +59,8 @@ const Assignment = () => {
   const [selectedBatches, setSelectedBatches] = useState([]);
   const [schedule, setSchedule] = useState([]);
   const [orgData, setOrgData] = useState({});
-  const [taskDrip , setTaskDrip] = useState(false);
-  const [enableDrip , setEnableDrip] = useState();
+  const [taskDrip, setTaskDrip] = useState(false);
+  const [enableDrip, setEnableDrip] = useState();
 
   useEffect(() => {
     Loading();
@@ -201,7 +201,7 @@ const Assignment = () => {
       batches: selectedBatches,
       schedule: schedule,
       contentStage,
-      taskDrip
+      taskDrip,
     };
 
     setAssignmentData(manageAssignment);
@@ -218,7 +218,7 @@ const Assignment = () => {
         const newNotification = await axios.post(
           `https://test-server-tg7l.onrender.com/api/v1/notifications/addNotification`,
           {
-            message: `New reading material added in course ${course?.courseFullName}.`,
+            message: `New assignment added in course ${course?.courseFullName}.`,
             dateTime: new Date(),
             redirectLink: `/questLevels/${course?._id}?week=${chapter?.weekId}`,
             recipient: {
