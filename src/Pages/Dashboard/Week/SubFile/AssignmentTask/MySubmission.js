@@ -16,6 +16,7 @@ const MySubmission = ({ taskData }) => {
       .catch((error) => console.error(error));
   }, [userInfo?._id, taskData]);
   console.log(submissionData);
+
   return (
     <div>
       {/* <div
@@ -89,6 +90,39 @@ const MySubmission = ({ taskData }) => {
         {userInfo?.role === "admin" ? (
           <>
             {taskData?.file ? (
+              taskData?.file.endsWith('.png') ||
+                taskData?.file.endsWith('.jpg') ||
+                taskData?.file.endsWith('.jpeg') ||
+                taskData?.file.endsWith('.gif') ||
+                taskData?.file.endsWith('.bmp') ? (
+                <div className="">
+                  <img
+                    src={taskData?.file}
+                    alt="Img"
+                    className="w-[90%] mx-auto h-[68vh] border-[10px] border-b-50 rounded-lg border-[#292929]"
+                  />
+                </div>
+              ) : (
+                <iframe
+                  className="h-[68vh] mx-auto border-x-[30px] mt-[40px] border-t-[30px] border-b-[50px] rounded-lg border-[#292929]"
+                  src={`https://docs.google.com/viewer?url=${taskData?.file}&embedded=true`}
+                  width="90%"
+                  height="80vh"
+                  title="Document Viewer"
+                ></iframe>
+              )
+            ) : (
+              <div>
+                <h1 className="text-3xl font-bold text-center mt-10">
+                  {userInfo?.role === "admin"
+                    ? "No Assignment Template!"
+                    : "Submission Not Found!"}
+                </h1>
+              </div>
+            )}
+
+            {/*       {taskData?.file ? (
+
               <iframe
                 className="h-[68vh] mx-auto border-x-[30px] mt-[40px] border-t-[30px] border-b-[50px] rounded-lg border-[#292929]"
                 src={`https://docs.google.com/viewer?url=${taskData?.file}&embedded=true`}
@@ -104,18 +138,32 @@ const MySubmission = ({ taskData }) => {
                     : "Submission Not Found!"}
                 </h1>
               </div>
-            )}
+            )} */}
           </>
         ) : (
           <>
             {submissionData?.fileUrl ? (
-              <iframe
-                className="h-[68vh] mx-auto border-x-[30px] mt-[40px] border-t-[30px] border-b-[50px] rounded-lg border-[#292929]"
-                src={`https://docs.google.com/viewer?url=${submissionData?.fileUrl}&embedded=true`}
-                width="90%"
-                height="80vh"
-                title="W3Schools Free Online Web Tutorials"
-              ></iframe>
+              submissionData?.fileUrl.endsWith('.png') ||
+                submissionData?.fileUrl.endsWith('.jpg') ||
+                submissionData?.fileUrl.endsWith('.jpeg') ||
+                submissionData?.fileUrl.endsWith('.gif') ||
+                submissionData?.fileUrl.endsWith('.bmp') ? (
+                <div className="">
+                  <img
+                    src={submissionData?.fileUrl}
+                    alt="Img"
+                    className="w-[90%] mx-auto h-[68vh] border-[10px] border-b-50 rounded-lg border-[#292929]"
+                  />
+                </div>
+              ) : (
+                <iframe
+                  className="h-[68vh] mx-auto border-x-[30px] mt-[40px] border-t-[30px] border-b-[50px] rounded-lg border-[#292929]"
+                  src={`https://docs.google.com/viewer?url=${submissionData?.fileUrl}&embedded=true`}
+                  width="90%"
+                  height="80vh"
+                  title="Document Viewer"
+                ></iframe>
+              )
             ) : (
               <div>
                 <h1 className="text-3xl font-bold text-center mt-10">
@@ -125,6 +173,7 @@ const MySubmission = ({ taskData }) => {
                 </h1>
               </div>
             )}
+
           </>
         )}
       </div>
