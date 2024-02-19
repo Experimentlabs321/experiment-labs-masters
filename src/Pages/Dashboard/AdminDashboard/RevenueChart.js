@@ -163,8 +163,6 @@ const RevenueChart = ({
     useEffect(() => {
         if (selectedFilter === "Last 11 Months" && paidStudents) {
             Loading();
-
-
             const currentDate = new Date();
 
 
