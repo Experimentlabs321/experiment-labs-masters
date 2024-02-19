@@ -161,7 +161,7 @@ export const NotificationProvider = ({ children }) => {
               await response?.data?.notifications?.filter(
                 (notification) =>
                   !notification?.readBy?.find(
-                    (viewedBy) => viewedBy?.email === user?.email
+                    (viewedBy) => viewedBy === user?.email
                   )
               );
             setUnreadNotifications(unreadNotifications);
@@ -194,7 +194,7 @@ export const NotificationProvider = ({ children }) => {
                   await response?.data?.announcements?.filter(
                     (announcement) =>
                       !announcement?.readBy?.find(
-                        (viewedBy) => viewedBy?.email === user?.email
+                        (viewedBy) => viewedBy === user?.email
                       )
                   );
                 setUnreadAnnouncements(unreadAnnouncements);
@@ -216,6 +216,8 @@ export const NotificationProvider = ({ children }) => {
         numberOfUnreadNotification,
         announcements,
         unreadAnnouncements,
+        fetchAnnouncements,
+        fetchNotifications,
       }}
     >
       {children}
