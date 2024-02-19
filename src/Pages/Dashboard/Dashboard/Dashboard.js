@@ -267,12 +267,12 @@ const Dashboard = () => {
   };
   function formatUtcDateTimeStringToListItems(dateTimeString) {
     const utcDateTime = new Date(dateTimeString);
-  
+
     if (isNaN(utcDateTime.getTime())) {
       console.error("Invalid dateTimeString:", dateTimeString);
       return ["Invalid Date"];
     }
-  
+
     const formatInTimeZone = (dateTime, timeZone, label) => (
       `${dateTime.toLocaleString('en-US', {
         timeZone,
@@ -284,7 +284,7 @@ const Dashboard = () => {
         hour12: true,
       })} (${label})`
     );
-  
+
     return [
       // formatInTimeZone(utcDateTime, "UTC", "UTC"),
       formatInTimeZone(utcDateTime, "Asia/Kolkata", "India-time"),
@@ -311,80 +311,85 @@ const Dashboard = () => {
               />
               {/* <SendEvent /> */}
             </div>
-            {dashboardTheme?.showLabJourney && (
-              <div
-                className={`lg:border-b-2 lg:border-l-2 lg:border-[#E8E8E8] pt-10 pb-10 px-4 text-center lg:max-h-[732px] overflow-x-scroll lg:overflow-y-scroll ${viewAllLevel ? "labJourney" : "labJourneyRemoveScroll"
-                  } `}
-              >
-                <h1 className="text-[18px] lg:text-[26px] font-[700]">
-                  Lab Journey
-                </h1>
-                <div className="pt-[40px] px-[30px] w-full hidden lg:inline-block relative">
-                  {weeks?.map((singleData, i) => (
-                    <Level
-                      selectedCourse={selectedCourse}
-                      viewAllLevel={viewAllLevel}
-                      length={length}
-                      onClick={handleCloseViewAllLevel}
-                      singleData={singleData}
-                      i={i}
-                      key={singleData?._id}
-                    />
-                  ))}
-                </div>
-                <div className="mt-[20px] bg-[#D7ECFF] labJourney rounded-lg px-[10px] flex lg:hidden overflow-x-scroll h-[155px]">
-                  {data?.map((singleData, i) => (
-                    <div
-                      className={`${i % 2 === 0
-                        ? "flex-col border-b-white border-b-0 rounded-t-full"
-                        : " flex-col-reverse border-t-white border-t-0 rounded-b-full self-end"
-                        } h-[92px] relative flex ml-[-5.26px] p-[5px] border-[#0F3934] border-[5px] overflow-visible my-4`}
-                    >
+            <div
+              className={`lg:max-h-[732px]  lg:overflow-y-scroll`}
+            >
+              {dashboardTheme?.showLabJourney && (
+                <div
+                  className={`mb-3 lg:border-b-2 lg:border-l-2 lg:border-[#E8E8E8] pt-10 pb-10 px-4 text-center lg:max-h-[732px] overflow-x-scroll lg:overflow-y-scroll ${viewAllLevel ? "labJourney" : "labJourneyRemoveScroll"
+                    } `}
+                >
+                  <h1 className="text-[18px] lg:text-[26px] font-[700]">
+                    Lab Journey
+                  </h1>
+                  <div className="pt-[40px] px-[30px] w-full hidden lg:inline-block relative">
+                    {weeks?.map((singleData, i) => (
+                      <Level
+                        selectedCourse={selectedCourse}
+                        viewAllLevel={viewAllLevel}
+                        length={length}
+                        onClick={handleCloseViewAllLevel}
+                        singleData={singleData}
+                        i={i}
+                        key={singleData?._id}
+                      />
+                    ))}
+                  </div>
+                  <div className="mt-[20px] bg-[#D7ECFF] labJourney rounded-lg px-[10px] flex lg:hidden overflow-x-scroll h-[155px]">
+                    {data?.map((singleData, i) => (
                       <div
-                        // style={[{ boxShadow: "1.70448px 1.70448px 0px #000000" }]}
-                        className={`rounded-[50%] w-[44px] h-[44px] lg:w-[71px] lg:h-[69px] flex flex-col items-center justify-center text-[8px] lg:text-[17px] font-[700] underline underline-offset-4 z-[1] ${singleData?.status === "Completed" &&
-                          " decoration-white text-white bg-[#3E4DAC]"
-                          } ${singleData?.status === "Ongoing" && "  bg-[#FFDB70]"
-                          } ${singleData?.status === "Locked"
-                            ? "lockShadow border-x-4 border-y-4 bg-[#D9D9D9] text-[#706F6F]"
-                            : "normalShadow"
-                          }`}
+                        className={`${i % 2 === 0
+                          ? "flex-col border-b-white border-b-0 rounded-t-full"
+                          : " flex-col-reverse border-t-white border-t-0 rounded-b-full self-end"
+                          } h-[92px] relative flex ml-[-5.26px] p-[5px] border-[#0F3934] border-[5px] overflow-visible my-4`}
                       >
-                        {singleData?.status === "Ongoing" && (
-                          <h1 className="text-[8px] lg:text-[13px] ">
-                            Ongoing
-                          </h1>
-                        )}
-                        {singleData?.status === "Locked" && (
-                          <img
-                            className="w-[12px] h-[10px]"
-                            src={Lock}
-                            alt="lock"
-                          />
-                        )}
-                        <h1
-                          className={`${singleData?.status !== "Completed" &&
-                            "text-[8px] lg:text-[13px]"
+                        <div
+                          // style={[{ boxShadow: "1.70448px 1.70448px 0px #000000" }]}
+                          className={`rounded-[50%] w-[44px] h-[44px] lg:w-[71px] lg:h-[69px] flex flex-col items-center justify-center text-[8px] lg:text-[17px] font-[700] underline underline-offset-4 z-[1] ${singleData?.status === "Completed" &&
+                            " decoration-white text-white bg-[#3E4DAC]"
+                            } ${singleData?.status === "Ongoing" && "  bg-[#FFDB70]"
+                            } ${singleData?.status === "Locked"
+                              ? "lockShadow border-x-4 border-y-4 bg-[#D9D9D9] text-[#706F6F]"
+                              : "normalShadow"
                             }`}
                         >
-                          {singleData?.score}
+                          {singleData?.status === "Ongoing" && (
+                            <h1 className="text-[8px] lg:text-[13px] ">
+                              Ongoing
+                            </h1>
+                          )}
+                          {singleData?.status === "Locked" && (
+                            <img
+                              className="w-[12px] h-[10px]"
+                              src={Lock}
+                              alt="lock"
+                            />
+                          )}
+                          <h1
+                            className={`${singleData?.status !== "Completed" &&
+                              "text-[8px] lg:text-[13px]"
+                              }`}
+                          >
+                            {singleData?.score}
+                          </h1>
+                          {singleData?.status === "Completed" && (
+                            <h1>{singleData?.expression}</h1>
+                          )}
+                        </div>
+                        <h1
+                          className={`underline underline-offset-2 rounded-[9px] z-0 text-[8px] lg:text-[12px] font-[700] py-1 ${singleData?.status === "Completed" && "bg-[#9CAAFF]"
+                            } ${singleData?.status === "Ongoing" && "bg-[#FFC13D]"
+                            } ${singleData?.status === "Locked" && "bg-[#D9D9D9]"
+                            } ${i % 2 === 0 ? "mt-[10px]" : "mb-[10px]"}`}
+                        >
+                          {singleData?.name}
                         </h1>
-                        {singleData?.status === "Completed" && (
-                          <h1>{singleData?.expression}</h1>
-                        )}
                       </div>
-                      <h1
-                        className={`underline underline-offset-2 rounded-[9px] z-0 text-[8px] lg:text-[12px] font-[700] py-1 ${singleData?.status === "Completed" && "bg-[#9CAAFF]"
-                          } ${singleData?.status === "Ongoing" && "bg-[#FFC13D]"
-                          } ${singleData?.status === "Locked" && "bg-[#D9D9D9]"
-                          } ${i % 2 === 0 ? "mt-[10px]" : "mb-[10px]"}`}
-                      >
-                        {singleData?.name}
-                      </h1>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-
+              )}
+              {dashboardTheme?.showSchedule && (
                 <div>
                   {userRequesterEvents?.length > 0 ? (
                     // Render content specific to events where the user is the requester
@@ -392,14 +397,14 @@ const Dashboard = () => {
                       {/* <p>You are the requester in the following events:</p> */}
                       {userRequesterEvents?.map((event, index) => (
 
-                        <div key={index} className=" shadow-lg outline-double outline-offset-2 outline-2 outline-emerald-500  w-[380px] rounded p-2 ">
+                        <div key={index} className=" shadow-lg outline-double outline-offset-2 outline-2 outline-emerald-500  w-[80%] rounded p-2 ">
                           <p className="flex gap-1 items-center text-sm"><FiberManualRecordIcon sx={{ color: red[400] }} ></FiberManualRecordIcon>Meeting with {event?.organization?.organizationName}</p>
                           <div className="flex items-center gap-2">
 
                             <div className="mt-3 mb-1 ">
                               <p className="font-medium text-sm flex justify-between  gap-2 my-1">
                                 <div className="flex justify-between gap-2"><AccessAlarmOutlinedIcon fontSize="small" />
-                                <span className="font-semibold text-[14px]">Starts </span></div>
+                                  <span className="font-semibold text-[14px]">Starts </span></div>
                                 <ul className="text-[13px]">
                                   {formatUtcDateTimeStringToListItems(event.start.dateTime).map((item, index) => (
                                     <li key={index}>{item}</li>
@@ -408,7 +413,7 @@ const Dashboard = () => {
                               </p>
                               <p className="font-medium text-sm flex  justify-between gap-2 mt-2">
                                 <div className="flex  justify-between gap-2"><AccessAlarmOutlinedIcon fontSize="small" />
-                                <span className="font-semibold text-[14px]">Ends </span></div>
+                                  <span className="font-semibold text-[14px]">Ends </span></div>
                                 <ul className="text-[13px]">
                                   {formatUtcDateTimeStringToListItems(event.end.dateTime).map((item, index) => (
                                     <li key={index}>{item}</li>
@@ -429,9 +434,8 @@ const Dashboard = () => {
                     </div>
                   )
                     : <></>}
-                </div>
-              </div>
-            )}
+                </div>)}
+            </div>
           </div>
           {(dashboardTheme?.addRequestSlots ||
             dashboardTheme?.addChallenges) && (
