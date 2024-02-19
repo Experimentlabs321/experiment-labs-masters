@@ -12,9 +12,7 @@ import {
   useSessionContext,
 } from "@supabase/auth-helpers-react";
 import DynamicFavicon from "./DynamicFavicon";
-
 ReactGA.initialize("G-RL7TBN4FCW");
-
 function App() {
   const { userInfo } = useContext(AuthContext);
   const [data, setData] = useState(null);
@@ -32,10 +30,8 @@ function App() {
     if (!userInfo) {
       return;
     }
-
     setIsLoading(true);
     Loading();
-
     fetch(`${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`)
       .then((response) => response.json())
       .then((data) => {
