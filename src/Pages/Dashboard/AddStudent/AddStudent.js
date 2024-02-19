@@ -21,28 +21,28 @@ const AddStudent = () => {
   const [batchesData, setBatchesData] = useState([]);
   const [selectedBatch, setSelectedBatch] = useState({});
 
-  // useEffect(() => {
-  //   axios
-  //     .get(
-  //       `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
-  //     )
-  //     .then((response) => {
-  //       setCourses(response?.data);\
-  //     })
-  //     .catch((error) => console.error(error));
-  // }, [userInfo]);
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
+      )
+      .then((response) => {
+        setCourses(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [userInfo]);
 
-  // useEffect(() => {
-  //   if (selectedCourse?._id)
-  //     axios
-  //       .get(
-  //         `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${selectedCourse?._id}`
-  //       )
-  //       .then((response) => {
-  //         setBatchesData(response?.data);
-  //       })
-  //       .catch((error) => console.error(error));
-  // }, [selectedCourse]);
+  useEffect(() => {
+    if (selectedCourse?._id)
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${selectedCourse?._id}`
+        )
+        .then((response) => {
+          setBatchesData(response?.data);
+        })
+        .catch((error) => console.error(error));
+  }, [selectedCourse]);
 
   const handleBack = () => {
     if (addBulkUpload) setAddBulkUpload(false);
@@ -105,13 +105,18 @@ const AddStudent = () => {
       organizationId: userInfo?.organizationId,
       organizationName: userInfo?.organizationName,
       role: "user",
+      profileImg: studentProfileImg,
     };
     console.log(userData);
     const newUser = await axios.post(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/users/addStudent`,
-      userData
+      `${process.env.REACT_APP_SERVER_API}/api/v1/users/addOrUpdateUserWithCourse`,
+      {
+        user: userData,
+        courseId: selectedCourse?._id,
+        batchId: selectedBatch?._id,
+      }
     );
-    console.log(newUser);
+
     if (newUser) {
       Swal.fire({
         title: "New User created successfully!",
@@ -121,212 +126,207 @@ const AddStudent = () => {
     }
     form.reset();
   };
+
   return (
     <div>
       {/* <Layout> */}
-        <div className="p-4 mx-auto w-full">
-          <div className="grid grid-flow-col mt-10 border-b border-[#D9D9D9] pb-2">
-            <button>
-              <img
-                // onClick={handleBack}
-                src={backIcon}
-                alt=""
-              />
-            </button>
-            <p className=" text-left text-[20px] text-[#3F3F3F] font-medium tracking-wider">
-              Add Student
-            </p>
+      <div className="p-4 mx-auto w-full">
+        <div className="grid grid-flow-col mt-10 border-b border-[#D9D9D9] pb-2">
+          <button>
+            <img
+              // onClick={handleBack}
+              src={backIcon}
+              alt=""
+            />
+          </button>
+          <p className=" text-left text-[20px] text-[#3F3F3F] font-medium tracking-wider">
+            Add Student
+          </p>
+        </div>
+        {addBulkUpload && (
+          <div className="w-full overflow-hidden">
+            <BulkUpload
+            //  schoolInfo={schoolInfo}
+            />
           </div>
-          {addBulkUpload && (
-            <div className="w-full overflow-hidden">
-              <BulkUpload
-              //  schoolInfo={schoolInfo}
-              />
+        )}
+        {!addBulkUpload && (
+          <>
+            <div className="mt-5">
+              <button
+                onClick={() => setAddBulkUpload(true)}
+                className="flex gap-2 py-1 px-7 text-white bg-[#3E4DAC] items-center rounded-3xl"
+              >
+                Bulk Upload
+              </button>
             </div>
-          )}
-          {!addBulkUpload && (
-            <>
-              <div className="mt-5">
-                <button
-                  onClick={() => setAddBulkUpload(true)}
-                  className="flex gap-2 py-1 px-7 text-white bg-[#3E4DAC] items-center rounded-3xl"
-                >
-                  Bulk Upload
-                </button>
+            <div className="mt-3">
+              <h1 className=" text-[#737373] text-[24px] font-[500] mb-2 ">
+                Select Course
+              </h1>
+              <div className="flex flex-wrap">
+                {!courses[0] && (
+                  <div
+                    className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
+                  >
+                    No course added yet!
+                  </div>
+                )}
+                {courses?.map((item, index) => (
+                  <button
+                    key={index}
+                    className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 m-1 ${
+                      selectedCourse?._id === item?._id
+                        ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
+                        : "text-[#949494]"
+                    }`}
+                    // onClick={() => handleSelectCourse(item)}
+                    onClick={() => setSelectedCourse(item)}
+                  >
+                    {item?.courseFullName}
+                  </button>
+                ))}
               </div>
-              {/* <div className="mt-3">
+            </div>
+            {selectedCourse?._id && (
+              <div className="mt-3">
                 <h1 className=" text-[#737373] text-[24px] font-[500] mb-2 ">
-                  Select Course
+                  Select Batch
                 </h1>
                 <div className="flex flex-wrap">
-                  {!courses[0] && (
+                  {!batchesData[0] && (
                     <div
                       className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
                     >
-                      No course added yet!
+                      No batch added yet!
                     </div>
                   )}
-                  {courses?.map((item, index) => (
+                  {batchesData?.map((item, index) => (
                     <button
                       key={index}
                       className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 m-1 ${
-                        selectedCourse?._id === item?._id
+                        selectedBatch?._id === item?._id
                           ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
                           : "text-[#949494]"
                       }`}
                       // onClick={() => handleSelectCourse(item)}
-                      onClick={() => setSelectedCourse(item)}
+                      onClick={() => setSelectedBatch(item)}
                     >
-                      {item?.courseFullName}
+                      {item?.batchName}
                     </button>
                   ))}
                 </div>
               </div>
-              {selectedCourse?._id && (
-                <div className="mt-3">
-                  <h1 className=" text-[#737373] text-[24px] font-[500] mb-2 ">
-                    Select Batch
-                  </h1>
-                  <div className="flex flex-wrap">
-                    {!batchesData[0] && (
-                      <div
-                        className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
-                      >
-                        No batch added yet!
+            )}
+            <div className="my-4">
+              <form onSubmit={handleAddStudent} autoComplete="on">
+                <label>
+                  <div
+                    className="grid justify-center w-fit mx-auto "
+                    onDragOver={handleDragOver}
+                    onDragEnter={handleDragEnter}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                  >
+                    {fileLoading && (
+                      <div className=" min-w-[242px] min-h-[114px]">
+                        <img
+                          src={addStudentProfile}
+                          className="mx-auto mt-2 animate-ping"
+                          alt="addImg"
+                        />
                       </div>
                     )}
-                    {batchesData?.map((item, index) => (
-                      <button
-                        key={index}
-                        className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 m-1 ${
-                          selectedBatch?._id === item?._id
-                            ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
-                            : "text-[#949494]"
-                        }`}
-                        // onClick={() => handleSelectCourse(item)}
-                        onClick={() => setSelectedBatch(item)}
-                      >
-                        {item?.batchName}
-                      </button>
-                    ))}
+                    {!fileLoading && (
+                      <div className=" min-w-[242px] min-h-[114px]">
+                        <img
+                          src={addStudentProfile}
+                          className="mx-auto mt-2"
+                          alt="inputImg"
+                        />
+                        {selectedFile && (
+                          <p className="text-[18px] font-[700] m-[5px] ">
+                            File:{" "}
+                            <span className="font-[500]">
+                              {selectedFile?.name}
+                            </span>
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  <input
+                    className="hidden"
+                    type="file"
+                    name="file"
+                    placeholder="upload"
+                    onChange={handleFileChange}
+                  />
+                </label>
+                {studentProfileImg && (
+                  <img
+                    src={studentProfileImg}
+                    className="mx-auto my-4"
+                    alt="studentProfileImg"
+                  />
+                )}
+
+                <div className="flex justify-between my-4">
+                  <div className="flex flex-col gap-2  w-[40%]">
+                    <label htmlFor="name" className="text-[17px] font-medium">
+                      Student Name
+                    </label>
+                    <input
+                      required
+                      placeholder="write student name"
+                      type="text"
+                      name="name"
+                      id="name"
+                      className="bg-[#EEF0FF] px-[10px] py-1 rounded-md shadow"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2  w-[40%]">
+                    <label htmlFor="email" className="text-[17px] font-medium">
+                      Student Email
+                    </label>
+                    <input
+                      required
+                      placeholder="write student email"
+                      type="email"
+                      name="email"
+                      id="email"
+                      className="bg-[#EEF0FF] px-[10px] py-1 rounded-md shadow"
+                    />
                   </div>
                 </div>
-              )} */}
-              <div className="my-4">
-                <form onSubmit={handleAddStudent} autoComplete="on">
-                  <label>
-                    <div
-                      className="grid justify-center w-fit mx-auto "
-                      onDragOver={handleDragOver}
-                      onDragEnter={handleDragEnter}
-                      onDragLeave={handleDragLeave}
-                      onDrop={handleDrop}
-                    >
-                      {fileLoading && (
-                        <div className=" min-w-[242px] min-h-[114px]">
-                          <img
-                            src={addStudentProfile}
-                            className="mx-auto mt-2 animate-ping"
-                            alt="addImg"
-                          />
-                        </div>
-                      )}
-                      {!fileLoading && (
-                        <div className=" min-w-[242px] min-h-[114px]">
-                          <img
-                            src={addStudentProfile}
-                            className="mx-auto mt-2"
-                            alt="inputImg"
-                          />
-                          {selectedFile && (
-                            <p className="text-[18px] font-[700] m-[5px] ">
-                              File:{" "}
-                              <span className="font-[500]">
-                                {selectedFile?.name}
-                              </span>
-                            </p>
-                          )}
-                        </div>
-                      )}
-                    </div>
+                <div className="flex justify-between my-4">
+                  <div className="flex flex-col gap-2  w-[40%]">
+                    <label htmlFor="phone" className="text-[17px] font-medium">
+                      Student Phone Number
+                    </label>
                     <input
-                      className="hidden"
-                      type="file"
-                      name="file"
-                      placeholder="upload"
-                      onChange={handleFileChange}
+                      required
+                      placeholder="write student phone no."
+                      type="number"
+                      name="phone"
+                      id="phone"
+                      className="bg-[#EEF0FF] px-[10px] py-1 rounded-md shadow"
                     />
-                  </label>
-                  {studentProfileImg && (
-                    <img
-                      src={studentProfileImg}
-                      className="mx-auto my-4"
-                      alt="studentProfileImg"
-                    />
-                  )}
-
-                  <div className="flex justify-between my-4">
-                    <div className="flex flex-col gap-2  w-[40%]">
-                      <label htmlFor="name" className="text-[17px] font-medium">
-                        Student Name
-                      </label>
-                      <input
-                        required
-                        placeholder="write student name"
-                        type="text"
-                        name="name"
-                        id="name"
-                        className="bg-[#EEF0FF] px-[10px] py-1 rounded-md shadow"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-2  w-[40%]">
-                      <label
-                        htmlFor="email"
-                        className="text-[17px] font-medium"
-                      >
-                        Student Email
-                      </label>
-                      <input
-                        required
-                        placeholder="write student email"
-                        type="email"
-                        name="email"
-                        id="email"
-                        className="bg-[#EEF0FF] px-[10px] py-1 rounded-md shadow"
-                      />
-                    </div>
                   </div>
-                  <div className="flex justify-between my-4">
-                    <div className="flex flex-col gap-2  w-[40%]">
-                      <label
-                        htmlFor="phone"
-                        className="text-[17px] font-medium"
-                      >
-                        Student Phone Number
-                      </label>
-                      <input
-                        required
-                        placeholder="write student phone no."
-                        type="number"
-                        name="phone"
-                        id="phone"
-                        className="bg-[#EEF0FF] px-[10px] py-1 rounded-md shadow"
-                      />
-                    </div>
-                  </div>
-                  <div className="grid justify-center mt-10">
-                    <button
-                      type="submit"
-                      className="flex gap-2 py-3 px-7 text-white bg-[#3E4DAC] items-center rounded-3xl"
-                    >
-                      Add Student
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </>
-          )}
-        </div>
+                </div>
+                <div className="grid justify-center mt-10">
+                  <button
+                    type="submit"
+                    className="flex gap-2 py-3 px-7 text-white bg-[#3E4DAC] items-center rounded-3xl"
+                  >
+                    Add Student
+                  </button>
+                </div>
+              </form>
+            </div>
+          </>
+        )}
+      </div>
       {/* </Layout> */}
     </div>
   );
