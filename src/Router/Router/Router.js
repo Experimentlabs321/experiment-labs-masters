@@ -129,6 +129,7 @@ import Announcements from "../../Pages/Dashboard/Announcements/Announcements";
 import CreateBundle from "../../Pages/Dashboard/CreateBundle/CreateBundle";
 import EditBundle from "../../Pages/Dashboard/ContentManagement/EditBundle";
 import BundlePayment from "../../Pages/Dashboard/Payment/BundlePayment";
+import SalesAndRevenue from "../../Pages/Dashboard/SalesAndRevenue/SalesAndRevenue";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -657,6 +658,10 @@ const router = createBrowserRouter([
   {
     path: "/bundle/payment/:id",
     element: <BundlePayment />,
+  },
+  {
+    path: "/salesAndRevenue",
+    element: <SalesAndRevenue />,
   },
 ]);
 

@@ -16,6 +16,8 @@ import gift from "../../assets/PointsRedemptions/gift.svg";
 import feather from "../../assets/PointsRedemptions/feather.svg";
 import DashboardIconLight from "../../assets/Dashboard/DashboardIconLight.svg";
 import DashboardIconDark from "../../assets/Dashboard/DashboardIconDark.svg";
+import SalesLight from "../../assets/Dashboard/SalesIconLight.png";
+import SalesDark from "../../assets/Dashboard/SalesIconDark.png";
 import LeaderBoardIconLight from "../../assets/Dashboard/LeaderBoardIconLight.svg";
 import LeaderBoardIconDark from "../../assets/Dashboard/LeaderBoardIconDark.svg";
 import EarningIconLight from "../../assets/Dashboard/EarningIconLight.svg";
@@ -806,6 +808,36 @@ const Layout = ({ children }) => {
                                 } ml-3 text-[18px] font-[500]`}
                               >
                                 Dashboard
+                              </span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              style={
+                                location.pathname === "/salesAndRevenue"
+                                  ? {
+                                      background:
+                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                    }
+                                  : {}
+                              }
+                              to="/salesAndRevenue"
+                              className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
+                            >
+                              {location.pathname === "/salesAndRevenue" ? (
+                                <img className="" src={SalesLight} alt="icon" />
+                              ) : (
+                                <img className="" src={SalesDark} alt="icon" />
+                              )}
+
+                              <span
+                                className={`${
+                                  location.pathname === "/salesAndRevenue"
+                                    ? "text-white"
+                                    : "text-[#8F8F8F]"
+                                } ml-3 text-[18px] font-[500]`}
+                              >
+                                Sales & Revenue
                               </span>
                             </Link>
                           </li>
