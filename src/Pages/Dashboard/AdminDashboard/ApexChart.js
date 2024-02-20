@@ -2,23 +2,16 @@
 import React, { useContext, useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import Loading from "../../Shared/Loading/Loading";
+import { CircularProgress } from "@mui/material";
+const ApexChart = ({ selectedFilter, students, setTotalStudents, setTotalEnrolledStudents, fromDate, toDate }) => {
 
-const ApexChart = ({
-  selectedFilter,
-  students,
-  setTotalStudents,
-  setTotalEnrolledStudents,
-  fromDate,
-  toDate,
-}) => {
+
   const [chartState, setChartData] = useState();
   ///7 days total vs enrolled students
-
+  const [isLoading, setIsLoading] = useState(true);
   const [dayArr, setSevenDayArr] = useState([]);
   const [totalStudentsSevenDays, setTotalStudentsSevenDays] = useState([]);
-  const [totalSevenDaysDayEnrolled, setTotalSevenDaysDayEnrolled] = useState(
-    []
-  );
+  const [totalSevenDaysDayEnrolled, setTotalSevenDaysDayEnrolled] = useState([]);
   ////////30 days total vs enrolled students
   const [lastMonthDayArr, setLastMonthDayArr] = useState([]);
   const [totalStudentsLastMonth, setTotalStudentsLastMonth] = useState([]);
@@ -41,70 +34,53 @@ const ApexChart = ({
   //////// 7 days for total vs enrolled students
   useEffect(() => {
     if (selectedFilter === "Last 7 Days" && students) {
-      Loading();
-
       const fromDateObj = new Date();
       fromDateObj.setDate(fromDateObj.getDate() - 6);
-
       const toDateObj = new Date();
-
       const days = [];
       const currentDate = new Date(fromDateObj);
       while (currentDate <= toDateObj) {
         days.push(new Date(currentDate));
         currentDate.setDate(currentDate.getDate() + 1);
       }
-
       const studentCountByDay = days?.reduce((acc, day) => {
-        acc[day.toDateString()] = students?.filter((student) => {
+        acc[day.toDateString()] = students?.filter(student => {
           const studentDate = new Date(student.dateCreated);
           return studentDate.toDateString() === day.toDateString();
         }).length;
         return acc;
       }, {});
-
-      const dayAndStudentCountArray = days?.map((day) => ({
-        day: day.toLocaleDateString("en-US"),
-        totalStudents: studentCountByDay[day.toDateString()] || 0,
+      const dayAndStudentCountArray = days?.map(day => ({
+        day: day.toLocaleDateString('en-US'),
+        totalStudents: studentCountByDay[day.toDateString()] || 0
       }));
 
-      const dayArr = dayAndStudentCountArray?.map((item) => item.day);
-      const totalStudentsPerDay = dayAndStudentCountArray?.map(
-        (item) => item.totalStudents
-      );
 
-      const totalStudentsSum = totalStudentsPerDay?.reduce(
-        (total, count) => total + count,
-        0
-      );
+      const dayArr = dayAndStudentCountArray?.map(item => item.day);
+      const totalStudentsPerDay = dayAndStudentCountArray?.map(item => item.totalStudents);
+
+
+      const totalStudentsSum = totalStudentsPerDay?.reduce((total, count) => total + count, 0);
 
       setSevenDayArr(dayArr);
       setTotalStudentsSevenDays(totalStudentsPerDay);
 
       setTotalStudents(totalStudentsSum);
-
-      const totalEnrolledArray = days?.map((day) => {
-        return students?.filter((student) => {
+      const totalEnrolledArray = days?.map(day => {
+        return students?.filter(student => {
           const studentDate = new Date(student.dateCreated);
-          return (
-            studentDate.toDateString() === day.toDateString() &&
-            student?.courses &&
-            student.courses.length > 0 &&
-            student.role === "user"
-          );
+          return studentDate.toDateString() === day.toDateString() && student?.courses && student.courses.length > 0 && student.role === "user";
         }).length;
       });
 
-      const totalEnrolledSum = totalEnrolledArray?.reduce(
-        (total, count) => total + count,
-        0
-      );
+
+      const totalEnrolledSum = totalEnrolledArray?.reduce((total, count) => total + count, 0);
 
       setTotalSevenDaysDayEnrolled(totalEnrolledArray);
 
       setTotalEnrolledStudents(totalEnrolledSum);
 
-      Loading().close();
+      setIsLoading(false);
     }
   }, [students, selectedFilter, setTotalEnrolledStudents, setTotalStudents]);
 
@@ -112,13 +88,12 @@ const ApexChart = ({
 
   useEffect(() => {
     if (selectedFilter === "Last 30 Days" && students) {
-      Loading();
-
       const fromDateObj = new Date();
       fromDateObj.setDate(fromDateObj.getDate() - 29);
 
       // End date is today
       const toDateObj = new Date();
+
 
       const days = [];
       const currentDate = new Date(fromDateObj);
@@ -127,76 +102,66 @@ const ApexChart = ({
         currentDate.setDate(currentDate.getDate() + 1);
       }
 
+
       const studentCountByDay = days?.reduce((acc, day) => {
-        acc[day.toDateString()] = students?.filter((student) => {
+        acc[day.toDateString()] = students?.filter(student => {
           const studentDate = new Date(student.dateCreated);
           return studentDate.toDateString() === day.toDateString();
         }).length;
         return acc;
       }, {});
 
-      const dayAndStudentCountArray = days?.map((day) => ({
-        day: day.toLocaleDateString("en-US"),
-        totalStudents: studentCountByDay[day.toDateString()] || 0,
+
+      const dayAndStudentCountArray = days?.map(day => ({
+        day: day.toLocaleDateString('en-US'),
+        totalStudents: studentCountByDay[day.toDateString()] || 0
       }));
 
-      const dayArr = dayAndStudentCountArray?.map((item) => item.day);
-      const totalStudentsPerDay = dayAndStudentCountArray?.map(
-        (item) => item.totalStudents
-      );
 
-      const totalStudentsSum = totalStudentsPerDay?.reduce(
-        (total, count) => total + count,
-        0
-      );
+      const dayArr = dayAndStudentCountArray?.map(item => item.day);
+      const totalStudentsPerDay = dayAndStudentCountArray?.map(item => item.totalStudents);
+
+
+      const totalStudentsSum = totalStudentsPerDay?.reduce((total, count) => total + count, 0);
 
       setLastMonthDayArr(dayArr);
       setTotalStudentsLastMonth(totalStudentsPerDay);
 
       setTotalStudents(totalStudentsSum);
 
-      const totalEnrolledArray = days?.map((day) => {
-        return students.filter((student) => {
+
+      const totalEnrolledArray = days?.map(day => {
+        return students.filter(student => {
           const studentDate = new Date(student.dateCreated);
-          return (
-            studentDate.toDateString() === day.toDateString() &&
-            student?.courses &&
-            student.courses.length > 0 &&
-            student.role === "user"
-          );
+          return studentDate.toDateString() === day.toDateString() && student?.courses && student.courses.length > 0 && student.role === "user";
         }).length;
       });
 
-      const totalEnrolledSum = totalEnrolledArray?.reduce(
-        (total, count) => total + count,
-        0
-      );
+
+      const totalEnrolledSum = totalEnrolledArray?.reduce((total, count) => total + count, 0);
 
       setTotalLastMonthEnrolled(totalEnrolledArray);
 
       setTotalEnrolledStudents(totalEnrolledSum);
 
-      Loading().close();
+      setIsLoading(false);
     }
   }, [students, selectedFilter, setTotalStudents, setTotalEnrolledStudents]);
+
 
   ///// last year for total vs enrolled students
 
   useEffect(() => {
     if (selectedFilter === "Last 11 Months" && students) {
-      Loading();
-
       const fromDateObj = new Date();
       fromDateObj.setMonth(fromDateObj.getMonth() - 11);
       const toDateObj = new Date();
-      const monthNames = [];
+      const monthNames = []
       const monthsStartDate = [];
 
       let currentDate = new Date(fromDateObj);
       while (currentDate <= toDateObj) {
-        const monthName = currentDate.toLocaleString("default", {
-          month: "long",
-        });
+        const monthName = currentDate.toLocaleString('default', { month: 'long' });
         monthNames.push(monthName);
         monthsStartDate.push(new Date(currentDate));
         currentDate.setMonth(currentDate.getMonth() + 1);
@@ -207,7 +172,7 @@ const ApexChart = ({
         endDate.setMonth(endDate.getMonth() + 1);
         endDate.setDate(endDate.getDate() - 1);
 
-        return students?.filter((student) => {
+        return students?.filter(student => {
           const studentDate = new Date(student.dateCreated);
           return studentDate >= startDate && studentDate <= endDate;
         }).length;
@@ -216,39 +181,30 @@ const ApexChart = ({
       setMonthsArr(monthNames);
       setTotalStudentsLastYear(studentCountByMonth);
 
-      const totalStudentsSum = studentCountByMonth?.reduce(
-        (total, count) => total + count,
-        0
-      );
+
+      const totalStudentsSum = studentCountByMonth?.reduce((total, count) => total + count, 0);
 
       setTotalStudents(totalStudentsSum);
+
 
       const totalEnrolledArray = monthsStartDate?.map((startDate, index) => {
         const endDate = new Date(startDate);
         endDate.setMonth(endDate.getMonth() + 1);
         endDate.setDate(endDate.getDate() - 1);
 
-        return students?.filter((student) => {
+        return students?.filter(student => {
           const studentDate = new Date(student.dateCreated);
-          return (
-            studentDate >= startDate &&
-            studentDate <= endDate &&
-            student?.courses &&
-            student.courses.length > 0 &&
-            student.role === "user"
-          );
+          return studentDate >= startDate && studentDate <= endDate && student?.courses && student.courses.length > 0 && student.role === "user";
         }).length;
       });
 
-      const totalEnrolledSum = totalEnrolledArray?.reduce(
-        (total, count) => total + count,
-        0
-      );
+
+      const totalEnrolledSum = totalEnrolledArray?.reduce((total, count) => total + count, 0);
       setTotalLastYearEnrolled(totalEnrolledArray);
 
       setTotalEnrolledStudents(totalEnrolledSum);
 
-      Loading().close();
+      setIsLoading(false);
     }
   }, [students, selectedFilter, setTotalStudents, setTotalEnrolledStudents]);
 
@@ -256,10 +212,9 @@ const ApexChart = ({
 
   useEffect(() => {
     if (selectedFilter === "Overall" && students) {
-      Loading();
 
       // Find the earliest and latest dates in the dataset
-      const dates = students.map((student) => new Date(student.dateCreated));
+      const dates = students.map(student => new Date(student.dateCreated));
       const earliestDate = new Date(Math.min(...dates));
       const latestDate = new Date(Math.max(...dates));
 
@@ -268,9 +223,7 @@ const ApexChart = ({
 
       let currentDate = new Date(earliestDate);
       while (currentDate <= latestDate) {
-        const monthName = currentDate.toLocaleString("default", {
-          month: "long",
-        });
+        const monthName = currentDate.toLocaleString('default', { month: 'long' });
         const year = currentDate.getFullYear();
         const monthYear = `${monthName} (${year})`;
         monthNames.push(monthYear);
@@ -283,7 +236,7 @@ const ApexChart = ({
         endDate.setMonth(endDate.getMonth() + 1);
         endDate.setDate(endDate.getDate() - 1);
 
-        return students.filter((student) => {
+        return students.filter(student => {
           const studentDate = new Date(student.dateCreated);
           return studentDate >= startDate && studentDate <= endDate;
         }).length;
@@ -292,10 +245,7 @@ const ApexChart = ({
       setOverallMonthsArr(monthNames);
       setTotalStudentsOverall(studentCountByMonth);
 
-      const totalStudentsSum = studentCountByMonth.reduce(
-        (total, count) => total + count,
-        0
-      );
+      const totalStudentsSum = studentCountByMonth.reduce((total, count) => total + count, 0);
       setTotalStudents(totalStudentsSum);
 
       const totalEnrolledArray = monthsStartDate.map((startDate, index) => {
@@ -303,33 +253,22 @@ const ApexChart = ({
         endDate.setMonth(endDate.getMonth() + 1);
         endDate.setDate(endDate.getDate() - 1);
 
-        return students.filter((student) => {
+        return students.filter(student => {
           const studentDate = new Date(student.dateCreated);
-          return (
-            studentDate >= startDate &&
-            studentDate <= endDate &&
-            student?.courses &&
-            student.courses.length > 0 &&
-            student.role === "user"
-          );
+          return studentDate >= startDate && studentDate <= endDate && student?.courses && student.courses.length > 0 && student.role === "user";
         }).length;
       });
 
-      const totalEnrolledSum = totalEnrolledArray.reduce(
-        (total, count) => total + count,
-        0
-      );
+      const totalEnrolledSum = totalEnrolledArray.reduce((total, count) => total + count, 0);
       setTotalOverallEnrolled(totalEnrolledArray);
       setTotalEnrolledStudents(totalEnrolledSum);
-
-      Loading().close();
+      setIsLoading(false);
     }
   }, [students, selectedFilter, setTotalStudents, setTotalEnrolledStudents]);
 
   //// custom total vs enrolled students
   useEffect(() => {
     if (selectedFilter === "Custom date" && fromDate && toDate && students) {
-      Loading();
 
       const fromDateTime = new Date(fromDate);
       const toDateTime = new Date(toDate);
@@ -338,12 +277,12 @@ const ApexChart = ({
       if (fromDateTime.getTime() > toDateTime.getTime()) {
         // Handle invalid date range
         console.error("Invalid date range!");
-        Loading().close();
+        setIsLoading(false);
         return;
       }
 
       // Filter students based on the custom date range
-      const filteredStudents = students.filter((student) => {
+      const filteredStudents = students.filter(student => {
         const studentDate = new Date(student.dateCreated);
         return studentDate >= fromDateTime && studentDate <= toDateTime;
       });
@@ -356,62 +295,43 @@ const ApexChart = ({
       }
 
       const studentCountByDay = days.reduce((acc, day) => {
-        acc[day.toDateString()] = filteredStudents.filter((student) => {
+        acc[day.toDateString()] = filteredStudents.filter(student => {
           const studentDate = new Date(student.dateCreated);
           return studentDate.toDateString() === day.toDateString();
         }).length;
         return acc;
       }, {});
 
-      const dayAndStudentCountArray = days.map((day) => ({
-        day: day.toLocaleDateString("en-US"),
-        totalStudents: studentCountByDay[day.toDateString()] || 0,
+      const dayAndStudentCountArray = days.map(day => ({
+        day: day.toLocaleDateString('en-US'),
+        totalStudents: studentCountByDay[day.toDateString()] || 0
       }));
 
-      const dayArr = dayAndStudentCountArray.map((item) => item.day);
-      const totalStudentsPerDay = dayAndStudentCountArray.map(
-        (item) => item.totalStudents
-      );
+      const dayArr = dayAndStudentCountArray.map(item => item.day);
+      const totalStudentsPerDay = dayAndStudentCountArray.map(item => item.totalStudents);
 
-      const totalStudentsSum = totalStudentsPerDay.reduce(
-        (total, count) => total + count,
-        0
-      );
+      const totalStudentsSum = totalStudentsPerDay.reduce((total, count) => total + count, 0);
 
       setCustomDayArr(dayArr);
       setTotalStudentsCustom(totalStudentsPerDay);
       setTotalStudents(totalStudentsSum);
 
-      const totalEnrolledArray = days.map((day) => {
-        return filteredStudents.filter((student) => {
+      const totalEnrolledArray = days.map(day => {
+        return filteredStudents.filter(student => {
           const studentDate = new Date(student.dateCreated);
-          return (
-            studentDate.toDateString() === day.toDateString() &&
-            student?.courses &&
-            student.courses.length > 0 &&
-            student.role === "user"
-          );
+          return studentDate.toDateString() === day.toDateString() && student?.courses && student.courses.length > 0 && student.role === "user";
         }).length;
       });
 
-      const totalEnrolledSum = totalEnrolledArray.reduce(
-        (total, count) => total + count,
-        0
-      );
+      const totalEnrolledSum = totalEnrolledArray.reduce((total, count) => total + count, 0);
 
       setTotalCustomEnrolled(totalEnrolledArray);
       setTotalEnrolledStudents(totalEnrolledSum);
 
-      Loading().close();
+      setIsLoading(false);
     }
-  }, [
-    students,
-    selectedFilter,
-    fromDate,
-    toDate,
-    setTotalStudents,
-    setTotalEnrolledStudents,
-  ]);
+  }, [students, selectedFilter, fromDate, toDate, setTotalStudents, setTotalEnrolledStudents]);
+
 
   useEffect(() => {
     //total students
@@ -555,12 +475,17 @@ const ApexChart = ({
     totalCustomEnrolled,
   ]);
 
+
   return (
     <div>
       <h1 className="my-3 text-2xl font-bold">
         Total Students Vs Enrolled Students
       </h1>
-
+      {isLoading && (
+        <div className=" flex align-items-center my-5 py-5">
+          <CircularProgress className="w-full mx-auto" />
+        </div>
+      )}
       <div id="chart">
         {chartState && chartState.options && chartState.series && (
           <ReactApexChart

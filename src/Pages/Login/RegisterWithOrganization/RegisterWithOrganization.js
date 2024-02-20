@@ -12,7 +12,7 @@ import app from "../../../firebase/firebase.config";
 import { Dialog, useMediaQuery, useTheme } from "@mui/material";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-
+import { CircularProgress, Rating } from "@mui/material";
 const LoginWithOrganization = () => {
     const { id } = useParams();
     const { signIn, providerLogin, logOut, createUser } = useContext(AuthContext);
@@ -22,7 +22,7 @@ const LoginWithOrganization = () => {
     const [phone, setPhone] = useState("");
     const [error, setError] = useState(false);
     const dateCreated = new Date();
-
+    const [isLoading, setIsLoading] = useState(true);
 
     const [showPassword, setShowPassword] = useState(false);
     const [open, setOpen] = useState(false);

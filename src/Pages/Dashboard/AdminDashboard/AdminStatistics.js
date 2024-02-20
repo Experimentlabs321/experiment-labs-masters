@@ -6,7 +6,8 @@ import { Link, useHistory } from "react-router-dom";
 import ApexChart from "./ApexChart";
 import RevenueChart from "./RevenueChart";
 import inrIcon from "../../../assets/Dashboard/inrIcon.png";
-import Loading from "../../Shared/Loading/Loading";
+
+import { CircularProgress } from "@mui/material";
 
 const AdminStatistics = () => {
   const { userInfo } = useContext(AuthContext);
@@ -19,7 +20,7 @@ const AdminStatistics = () => {
   const [paidStudents, setPaidStudents] = useState();
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-
+  const [isLoading, setIsLoading] = useState(true)
   useEffect(() => {
     axios
       .get(
@@ -27,40 +28,55 @@ const AdminStatistics = () => {
       )
       .then((response) => {
         setOverViewCount(response?.data);
+        setIsLoading(false);
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error(error)
+        setIsLoading(false)
+      });
   }, [userInfo]);
 
   // console.log(overViewCount);
 
   useEffect(() => {
-    Loading();
+  
     axios
       .get(
         `${process.env.REACT_APP_SERVER_API}/api/v1/users/students/${userInfo?.organizationId}`
       )
       .then((response) => {
         setStudents(response?.data);
+        setIsLoading(false)
       })
-      .catch((error) => console.error(error));
-    Loading().close();
+      .catch((error) => {
+        console.error(error)
+        setIsLoading(false)
+      });
+    setIsLoading(false)
   }, [userInfo]);
   useEffect(() => {
-    Loading();
+    
     axios
       .get(
         `${process.env.REACT_APP_SERVER_API}/api/v1/users/getAllPaidInfo/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
         setPaidStudents(response?.data);
+        setIsLoading(false)
       })
-      .catch((error) => console.error(error));
-    Loading().close();
+      .catch((error) => {console.error(error)
+        setIsLoading(false)});
+    setIsLoading(false)
   }, [userInfo]);
 
   return (
     <div>
       <h1 className="text-3xl font-bold my-10"> Overview </h1>
+      {isLoading && (
+        <div className=" flex align-items-center my-5 py-5">
+          <CircularProgress className="w-full mx-auto" />
+        </div>
+      )}
       <div className="mb-5 flex gap-5 items-center">
         <label className="font-bold">Select Filter:</label>
         <select

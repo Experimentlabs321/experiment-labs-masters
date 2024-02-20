@@ -9,11 +9,13 @@ import PaymentIntegration from "./PaymentIntegration";
 import DeviceLimit from "./DeviceLimit";
 import Loading from "../../Shared/Loading/Loading";
 import { useNavigate } from "react-router-dom";
+import { CircularProgress } from "@mui/material";
 import LanguageSetting from "./LanguageSetting/LanguageSetting";
 
 const UpdateOrganization = () => {
   const navigate = useNavigate();
   const { userInfo } = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(true)
   const [orgData, setOrgData] = useState({});
   const [orgLogoUrl, setOrgLogoUrl] = useState("");
   const [faviconUrl, setFaviconUrl] = useState("");
@@ -51,7 +53,7 @@ const UpdateOrganization = () => {
 
 
   useEffect(() => {
-    Loading();
+   
     axios
       .get(
         `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
@@ -77,7 +79,7 @@ const UpdateOrganization = () => {
         setCourseAccessUrl(response?.data?.courseAccessUrl || "/courseAccess?state=allCourses")
       })
       .catch((error) => console.error(error));
-    Loading().close();
+    setIsLoading(false);
   }, [userInfo]);
 
   const handleSubmit = async (event) => {
