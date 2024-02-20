@@ -688,6 +688,7 @@ const CourseInformation = () => {
               )}
             </div>
             <div>
+              
               {/* Edit chapter name start */}
               <DialogLayout
                 open={editChapterOpen}

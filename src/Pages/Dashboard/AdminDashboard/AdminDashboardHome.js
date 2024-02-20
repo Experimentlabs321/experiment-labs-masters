@@ -1,11 +1,11 @@
 //AdminDashboardHome
 import React, { useContext, useEffect, useState } from "react";
 import Layout from "../Layout";
-import adminDas from "../../../assets/Dashboard/adminDash.png"
+import adminDas from "../../../assets/Dashboard/adminDash.png";
 import AdminStatistics from "./AdminStatistics";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
-import Loading from "../../Shared/Loading/Loading";
+
 import { CircularProgress } from "@mui/material";
 
 const AdminDashboardHome = () => {
@@ -58,7 +58,7 @@ const AdminDashboardHome = () => {
                 <AdminStatistics />
             </Layout>
         </div>
-    );
+  );
 };
 
 export default AdminDashboardHome;

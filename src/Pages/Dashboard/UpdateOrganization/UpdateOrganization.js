@@ -10,6 +10,8 @@ import DeviceLimit from "./DeviceLimit";
 import Loading from "../../Shared/Loading/Loading";
 import { useNavigate } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
+import LanguageSetting from "./LanguageSetting/LanguageSetting";
+
 const UpdateOrganization = () => {
   const navigate = useNavigate();
   const { userInfo } = useContext(AuthContext);
@@ -159,6 +161,15 @@ const UpdateOrganization = () => {
               }`}
           >
             Limit Device
+          </button>
+          <button
+            onClick={() => setCurrentPage("language Setting")}
+            className={`px-4 py-2 text-lg font-semibold rounded-lg ${currentPage === "language Setting"
+              ? "bg-[#3E4DAC] text-white"
+              : "bg-white border-2 border-gray-400 text-black"
+              }`}
+          >
+            Language Setting
           </button>
         </div>
 
@@ -497,7 +508,7 @@ const UpdateOrganization = () => {
                 <input
                   type="text"
                   defaultValue={courseAccessUrl}
-                  onChange={(e)=>setCourseAccessUrl(courseAccessUrl)}
+                  onChange={(e) => setCourseAccessUrl(courseAccessUrl)}
                   name="orgRootUrl"
                   className="border rounded-md max-w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]"
                 />
@@ -656,6 +667,12 @@ const UpdateOrganization = () => {
           )}
 
 
+        {
+          currentPage === "language Setting" && (
+            <LanguageSetting
+          
+            />
+          )}
         {
           currentPage === "deviceLimit" && (
             <DeviceLimit

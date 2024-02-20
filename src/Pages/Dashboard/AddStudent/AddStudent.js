@@ -7,9 +7,10 @@ import axios from "axios";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import Swal from "sweetalert2";
 import uploadFileToS3 from "../../UploadComponent/s3Uploader";
+import PhoneInput from "react-phone-number-input";
 
 const AddStudent = () => {
-  const { userInfo } = useContext(AuthContext);
+  const { user, userInfo } = useContext(AuthContext);
   const [fileLoading, setFileLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState();
   const [schoolInfo, setSchoolInfo] = useState({});
@@ -20,6 +21,8 @@ const AddStudent = () => {
   const [selectedCourse, setSelectedCourse] = useState({});
   const [batchesData, setBatchesData] = useState([]);
   const [selectedBatch, setSelectedBatch] = useState({});
+  const [phone, setPhone] = useState("");
+  const rootUrl = window.location.origin;
 
   useEffect(() => {
     axios
@@ -101,31 +104,63 @@ const AddStudent = () => {
     const userData = {
       name: form.name.value,
       email: form.email.value,
-      phone: form.phone.value,
+      phone: phone,
       organizationId: userInfo?.organizationId,
       organizationName: userInfo?.organizationName,
       role: "user",
       profileImg: studentProfileImg,
     };
     console.log(userData);
-    const newUser = await axios.post(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/users/addOrUpdateUserWithCourse`,
-      {
-        user: userData,
-        courseId: selectedCourse?._id,
-        batchId: selectedBatch?._id,
-      }
-    );
+    console.log(form.studentStatus.value);
+    if (form.studentStatus.value === "Paid") {
+      const sendMail = await axios.post(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+        {
+          from: `${user?.email}`,
+          // to: `${form.email.value},naman.j@experimentlabs.in`,
+          to: `${form.email.value}`,
+          subject: `Course purchase link`,
+          message: `To purchase the ${selectedCourse?.courseFullName} course please goto the following link ${rootUrl}/payment/${selectedCourse?._id}?batch=${selectedBatch?._id}`,
+        }
+      );
 
-    if (newUser) {
-      Swal.fire({
-        title: "New User created successfully!",
-        icon: "success",
-      });
-      // navigate("/schoolDashboard/myStudents");
+      const newUser = await axios.post(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/users/addStudent`,
+        {
+          userData,
+        }
+      );
+
+      if (newUser) {
+        Swal.fire({
+          title: "New User created successfully!",
+          icon: "success",
+        });
+        // navigate("/schoolDashboard/myStudents");
+      }
+      form.reset();
+    } else {
+      const newUser = await axios.post(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/users/addOrUpdateUserWithCourse`,
+        {
+          user: userData,
+          courseId: selectedCourse?._id,
+          batchId: selectedBatch?._id,
+        }
+      );
+
+      if (newUser) {
+        Swal.fire({
+          title: "New User created successfully!",
+          icon: "success",
+        });
+        // navigate("/schoolDashboard/myStudents");
+      }
+      form.reset();
     }
-    form.reset();
   };
+
+  console.log(selectedBatch);
 
   return (
     <div>
@@ -304,14 +339,37 @@ const AddStudent = () => {
                     <label htmlFor="phone" className="text-[17px] font-medium">
                       Student Phone Number
                     </label>
-                    <input
+                    <PhoneInput
+                      style={{ backgroundColor: "#EEF0FF" }}
+                      international="true"
+                      className="bg-[#EEF0FF] px-[10px] py-1 rounded-md shadow"
+                      defaultCountry="IN"
+                      placeholder="Enter phone number"
+                      value={phone}
+                      onChange={setPhone}
+                    />
+                    {/* <input
                       required
                       placeholder="write student phone no."
                       type="number"
                       name="phone"
                       id="phone"
                       className="bg-[#EEF0FF] px-[10px] py-1 rounded-md shadow"
-                    />
+                    /> */}
+                  </div>
+                  <div className="flex flex-col gap-2  w-[40%]">
+                    <label htmlFor="email" className="text-[17px] font-medium">
+                      Student Status
+                    </label>
+                    <select
+                      required
+                      name="studentStatus"
+                      id="studentStatus"
+                      className="bg-[#EEF0FF] px-[10px] py-1 rounded-md shadow"
+                    >
+                      <option value={"Free"}>Free</option>
+                      <option value={"Paid"}>Paid</option>
+                    </select>
                   </div>
                 </div>
                 <div className="grid justify-center mt-10">
