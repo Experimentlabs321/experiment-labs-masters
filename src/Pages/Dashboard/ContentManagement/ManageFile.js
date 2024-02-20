@@ -161,7 +161,7 @@ const ManageFile = () => {
       additionalFiles: fileUrl,
       skillParameterData: skillParameterData,
       earningParameterData: earningParameterData,
-      chapterId: id,
+      chapterId: chapter?._id,
       completionParameter: completionParameter,
       courseId: chapter?.courseId,
       batches: selectedBatches,

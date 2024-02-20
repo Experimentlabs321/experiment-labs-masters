@@ -165,7 +165,7 @@ const ManageReading = () => {
       skillParameterData: skillParameterData,
       earningParameterData: earningParameterData,
       readingMaterial: readingMaterial,
-      chapterId: id,
+      chapterId: chapter?._id,
       completionParameter: completionParameter,
       courseId: chapter?.courseId,
       batches: selectedBatches,
