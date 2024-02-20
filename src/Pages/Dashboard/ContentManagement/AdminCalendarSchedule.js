@@ -300,7 +300,7 @@ const AdminCalendarSchedule = () => {
   async function fetchPrimaryCalendarInfo() {
     try {
       const response = await fetch(
-        "https://www.googleapis.com/calendar/v3/calendars/primary",
+        "https://www.googleapis.com/calendar/v3/users/me/calendarList/primary",
         {
           method: "GET",
           headers: {
@@ -308,16 +308,19 @@ const AdminCalendarSchedule = () => {
           },
         }
       );
-
+  
       if (!response.ok) {
         throw new Error("Failed to fetch primary calendar information");
       }
       const calendarInfo = await response.json();
-      const primaryCalendarId = calendarInfo.id;
-      setCalendarId(primaryCalendarId);
+      const primaryCalendarTimeZone = calendarInfo.timeZone;
+  
+      // Now that we have the calendar's timezone, set it for FullCalendar
+      setTimeZone(primaryCalendarTimeZone);
     } catch (error) {
       console.error(error.message);
-      setCalendarFetch(true);
+      // Optionally, handle errors such as setting a default timezone or user notification
+      setCalendarFetch(true); // Consider a more descriptive state variable name or error handling strategy
     }
   }
   async function fetchGoogleCalendarEvents() {
@@ -355,7 +358,7 @@ const AdminCalendarSchedule = () => {
       const events = await fetchGoogleCalendarEvents();
       setCalendarError(false);
       setCalendarEvents(events.events || []);  // Use events.events to ensure it's an array
-      setTimeZone(events.timeZone);
+      
     } catch (error) {
       console.error(error);
       setCalendarError(true);
@@ -634,7 +637,7 @@ const AdminCalendarSchedule = () => {
                       minute: "2-digit",
                       meridiem: "short",
                     }}
-                    timeZone={timeZone} // Use timeZone state
+                    timeZone={timeZone}// Use timeZone state
                     dayRender={handleDayRender}
                   />
                 </div>

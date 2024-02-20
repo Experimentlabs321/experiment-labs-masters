@@ -35,6 +35,7 @@ import WeekConfiguration from "./WeekConfiguration";
 import DialogLayoutForFromControl from "../Shared/DialogLayoutForFromControl";
 import Loading from "../../Shared/Loading/Loading";
 import lock from "../../../assets/Dashboard/lockIcon.png";
+import { CircularProgress } from "@mui/material";
 
 const CourseInformation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -54,6 +55,7 @@ const CourseInformation = () => {
   const options = ["Category name"];
   const { user, userInfo } = useContext(AuthContext);
   const [batchesData, setBatchesData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedBatches, setSelectedBatches] = useState([]);
   const [deleteTaskPopup, setDeleteTaskPopup] = useState(false);
   const [
@@ -380,7 +382,6 @@ const CourseInformation = () => {
   }, [id]);
 
   useEffect(() => {
-    Loading();
     axios
       .get(
         `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/weekId/${currentWeek?._id}`
@@ -411,10 +412,10 @@ const CourseInformation = () => {
           setChapters(chapterWithFilteredTask);
           console.log("tasks =======>", chapterWithFilteredTask[0]?.tasks);
         }
-        Loading().close();
+        setIsLoading(false)
       })
       .catch((error) => console.error(error));
-    Loading().close();
+    setIsLoading(false);
   }, [currentWeek, userInfo, Role, courseData]);
 
   useEffect(() => {
@@ -422,19 +423,30 @@ const CourseInformation = () => {
       .get(`${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${id}`)
       .then((response) => {
         setBatchesData(response?.data);
+        setIsLoading(false)
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error(error)
+        setIsLoading(false)
+      });
   }, [id]);
 
   console.log(chapters);
+  console.log(isLoading);
   return (
     <div>
       <Layout>
         <div>
+          {isLoading && (
+            <div className=" flex align-items-center my-5 py-5">
+              <CircularProgress className="w-full mx-auto" />
+            </div>
+          )}
           {Role === "admin" && (
             <div>
               <div className="pt-[110px] border-b-2 ">
                 <div className="container mx-auto px-4 flex items-center justify-between ">
+
                   <div className="flex items-center pt-[30px] pb-[40px] ">
                     <Link
                       to="/courseAccess"
@@ -463,7 +475,7 @@ const CourseInformation = () => {
                     </button>
                   </div>
                   <div className="flex items-center mt-[-10px] ">
-                   {/*  <div className="flex items-center text-black text-[16px] font-[600] mr-[32px] ">
+                    {/*  <div className="flex items-center text-black text-[16px] font-[600] mr-[32px] ">
                       <h1 className="mr-[16px]">Preview Mode</h1>
                       {preview ? (
                         <svg
@@ -676,6 +688,7 @@ const CourseInformation = () => {
               )}
             </div>
             <div>
+              
               {/* Edit chapter name start */}
               <DialogLayout
                 open={editChapterOpen}

@@ -145,8 +145,6 @@ const ManageFile = () => {
     }
   };
 
-
-  
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
@@ -163,11 +161,11 @@ const ManageFile = () => {
       additionalFiles: fileUrl,
       skillParameterData: skillParameterData,
       earningParameterData: earningParameterData,
-      chapterId: id,
+      chapterId: chapter?._id,
       completionParameter: completionParameter,
       courseId: chapter?.courseId,
       batches: selectedBatches,
-      taskDrip
+      taskDrip,
     };
 
     setFileData(ManageFile);
@@ -180,6 +178,24 @@ const ManageFile = () => {
 
       if (newTask) {
         toast.success("File added Successfully");
+        const newNotification = await axios.post(
+          `https://test-server-tg7l.onrender.com/api/v1/notifications/addNotification`,
+          {
+            message: `New file material added in course ${course?.courseFullName}.`,
+            dateTime: new Date(),
+            redirectLink: `/questLevels/${course?._id}?week=${chapter?.weekId}`,
+            recipient: {
+              type: "Students",
+              organizationId: orgData?._id,
+              courseId: course?._id,
+              batches: selectedBatches,
+            },
+            type: "Create Task",
+            readBy: [],
+            notificationTriggeredBy: user?.email,
+          }
+        );
+        console.log(newNotification);
         event.target.reset();
       }
 
@@ -383,7 +399,6 @@ const ManageFile = () => {
               </div>
             </div>
 
-
             <div className="me-20 py-[35px] ps-[40px]">
               <div>
                 <div className="flex items-center gap-4">
@@ -420,7 +435,6 @@ const ManageFile = () => {
               </div>
             </div>
 
-
             <div className="ml-[40px] space-y-4 mb-8">
               <fieldset>
                 <div className="flex items-center gap-4 mb-5">
@@ -441,7 +455,9 @@ const ManageFile = () => {
                     />
                     <label
                       htmlFor="radioYes"
-                      className={`ml-2 text-sm font-medium ${course?.enableDrip ? 'text-gray-400' : 'text-gray-900'}`}
+                      className={`ml-2 text-sm font-medium ${
+                        course?.enableDrip ? "text-gray-400" : "text-gray-900"
+                      }`}
                     >
                       Yes
                     </label>
@@ -459,7 +475,9 @@ const ManageFile = () => {
                     />
                     <label
                       htmlFor="radioNo"
-                      className={`ml-2 text-sm font-medium ${course?.enableDrip ? 'text-gray-400' : 'text-gray-900'}`}
+                      className={`ml-2 text-sm font-medium ${
+                        course?.enableDrip ? "text-gray-400" : "text-gray-900"
+                      }`}
                     >
                       No
                     </label>
@@ -477,10 +495,10 @@ const ManageFile = () => {
             <div className="px-4 my-10">
               {(orgData?.showPointsAndRedemptions ||
                 orgData?.showSkillsManagement) && (
-                  <p className="text-[25px] font-bold mb-10">
-                    Evaluation Parameter
-                  </p>
-                )}
+                <p className="text-[25px] font-bold mb-10">
+                  Evaluation Parameter
+                </p>
+              )}
               {orgData?.showSkillsManagement && (
                 <SkillBasedParameter
                   selectedData={skillParameterData}

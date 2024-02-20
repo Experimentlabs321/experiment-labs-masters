@@ -4,7 +4,7 @@ import axios from "axios";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import { useParams } from "react-router-dom";
 import Navbar from "./Navbar";
-import './style.css'
+import "./style.css";
 import Swal from "sweetalert2";
 import DialogLayoutForFromControl from "../Shared/DialogLayoutForFromControl";
 import LoginForm from "./LoginForm";
@@ -12,13 +12,21 @@ import RegisterForm from "./RegisterForm";
 import { GoogleAuthProvider, onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../Shared/Loading/Loading";
-import HighlightOffRoundedIcon from '@mui/icons-material/HighlightOffRounded';
+import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
 import { Helmet } from "react-helmet";
 import NavbarSkeletonLoader from "./NavbarSkeletonLoader";
 import ForgotPassword from "./ForgotPassword";
 
 const Payment = () => {
-  const { userInfo, user, signIn, providerLogin, logOut, createUser, setUserInfo } = useContext(AuthContext);
+  const {
+    userInfo,
+    user,
+    signIn,
+    providerLogin,
+    logOut,
+    createUser,
+    setUserInfo,
+  } = useContext(AuthContext);
   const { id } = useParams();
   const [course, setCourse] = useState([]);
   const [batchesData, setBatchesData] = useState([]);
@@ -37,10 +45,12 @@ const Payment = () => {
   const [error, setError] = useState(false);
   const navigate = useNavigate();
   const [forgotPassOpen, setForgotPassOpen] = useState(false);
+  const queryParameters = new URLSearchParams(window.location.search);
+  const queryBatch = queryParameters.get("batch");
 
+  console.log(queryBatch);
 
   const dateCreated = new Date();
-
 
   useEffect(() => {
     axios
@@ -54,37 +64,46 @@ const Payment = () => {
       .get(`${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${id}`)
       .then((response) => {
         setBatchesData(response?.data);
+        if (queryBatch) {
+          const findBatch = response?.data?.find(
+            (item) => item?._id === queryBatch
+          );
+          if (findBatch) {
+            setSelectedBatch(findBatch);
+          }
+        }
       })
       .catch((error) => console.error(error));
-  }, [id]);
+  }, [id, queryBatch]);
 
+  console.log(selectedBatch);
 
   useEffect(() => {
     if (course?.organization?.organizationId)
       axios
-        .get(`${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${course?.organization?.organizationId}`)
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${course?.organization?.organizationId}`
+        )
         .then((response) => {
           setOrganizationData(response?.data);
         })
         .catch((error) => console.error(error));
-
   }, [course, course?.organization?.organizationId]);
 
-
   const fetchOffers = async (batchId) => {
-    const offers = await axios.get(`${process.env.REACT_APP_SERVER_API}/api/v1/offers/batchId/${batchId}`);
+    const offers = await axios.get(
+      `${process.env.REACT_APP_SERVER_API}/api/v1/offers/batchId/${batchId}`
+    );
     setOffers(offers?.data?.result);
     setCoupon("");
     setSelectedOffer("");
     setCouponDiscount(0);
-  }
-
+  };
 
   useEffect(() => {
     fetchOffers(selectedBatch?._id);
     // console.log("Offers  ==============>", offers);
   }, [selectedBatch]);
-
 
   const date = new Date(course?.courseStartingDate);
   const options = {
@@ -93,16 +112,18 @@ const Payment = () => {
     day: "numeric",
   };
 
-
   const handleApplyCoupon = () => {
-    const filteredCoupon = offers.filter((offer) => (offer.code === coupon) && (offer.disabled !== true));
+    const filteredCoupon = offers.filter(
+      (offer) => offer.code === coupon && offer.disabled !== true
+    );
     if (filteredCoupon.length > 0) {
       // console.log(filteredCoupon[0]);
       setSelectedOffer(filteredCoupon[0]);
-      let { discountPercent, maxDiscountValue, minCourseValue } = filteredCoupon[0];
+      let { discountPercent, maxDiscountValue, minCourseValue } =
+        filteredCoupon[0];
       let discountAmount = (+selectedBatch?.price * +discountPercent) / 100;
       // console.log("Discount Amount", discountAmount);
-      if ((discountAmount > +maxDiscountValue))
+      if (discountAmount > +maxDiscountValue)
         discountAmount = +maxDiscountValue;
 
       // console.log("Discount Amount", discountAmount);
@@ -116,32 +137,33 @@ const Payment = () => {
         });
         setCouponDiscount(0);
       }
-    }
-    else {
+    } else {
       Swal.fire({
         title: "Coupon Doesn't Exist",
         icon: "error",
       });
     }
-
-  }
-
+  };
 
   const handleEnroll = async (data) => {
     console.log("Went to Line 124");
     console.log("Data =============>", data);
     Loading();
     // const { data: { order } } = await axios.post(`http://localhost:5000/api/v1/users/unpaidUsers/checkout`, {
-    const { data: { order } } = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/checkout`, {
-      price: +((+selectedBatch.price) - (+couponDiscount)),
-      paymentInstance: {
-        key_id: organizationData?.paymentInstance?.key_id,
-        key_secret: organizationData?.paymentInstance?.key_secret
+    const {
+      data: { order },
+    } = await axios.post(
+      `${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/checkout`,
+      {
+        price: +(+selectedBatch.price - +couponDiscount),
+        paymentInstance: {
+          key_id: organizationData?.paymentInstance?.key_id,
+          key_secret: organizationData?.paymentInstance?.key_secret,
+        },
       }
-    });
+    );
 
     console.log("Went to Line 135", order);
-
 
     const options = {
       key: organizationData?.paymentInstance?.key_id,
@@ -155,21 +177,22 @@ const Payment = () => {
       prefill: {
         name: data?.name,
         email: data?.email,
-        contact: data?.phone
+        contact: data?.phone,
       },
       notes: {
-        address: "Delhi, India"
+        address: "Delhi, India",
       },
       theme: {
-        color: organizationData?.titlesColor
+        color: organizationData?.titlesColor,
       },
       handler: async function (response) {
-        response.razorpay_key_secret = organizationData?.paymentInstance?.key_secret;
+        response.razorpay_key_secret =
+          organizationData?.paymentInstance?.key_secret;
         response.courseId = course?._id;
         response.batchId = selectedBatch?._id;
         response.email = data?.email;
         response.userId = data?._id;
-        response.paidAmount = (+order?.amount / 100);
+        response.paidAmount = +order?.amount / 100;
         response.originalPrice = +selectedBatch?.price;
         response.discountAmount = +couponDiscount || "";
         response.couponId = selectOffer._id || "";
@@ -179,18 +202,20 @@ const Payment = () => {
         console.log("Response ========>", response);
         console.log(selectOffer._id);
         Loading();
-        const res = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/verifyPayment`, response);
-        if (res)
-          Loading().close();
+        const res = await axios.post(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/verifyPayment`,
+          response
+        );
+        if (res) Loading().close();
         if (res.data.success) {
           setUserInfo(res.data.userData);
           Swal.fire({
             title: "Course Added Successfully",
             icon: "success",
           });
-          navigate('/courseAccess')
+          navigate("/courseAccess");
         }
-      }
+      },
     };
 
     console.log("Went to Line 188", options);
@@ -200,8 +225,7 @@ const Payment = () => {
     rzp1.open();
     console.log("Went to Line 192 ");
     Loading().close();
-  }
-
+  };
 
   const saveUser = async (email) => {
     fetch(`${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${email}`)
@@ -211,9 +235,8 @@ const Payment = () => {
         console.log("Role =====>", data?.role);
         setUserInfo(data);
         handleEnroll(data);
-      })
+      });
   };
-
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -234,17 +257,16 @@ const Payment = () => {
       }
     } catch (error) {
       // Handle any other errors that may occur during the Axios request
-      console.error('Error during Axios request:', error);
+      console.error("Error during Axios request:", error);
 
       // Optionally show a generic error message to the user
       Swal.fire({
-        icon: 'error',
-        title: 'User Not Found',
-        text: 'Invalid Email or Password',
+        icon: "error",
+        title: "User Not Found",
+        text: "Invalid Email or Password",
       });
     }
-  }
-
+  };
 
   const handleLogout = () => {
     logOut()
@@ -253,7 +275,6 @@ const Payment = () => {
       })
       .catch((error) => console.error(error));
   };
-
 
   const handleGoogleSignIn = async () => {
     const googleProvider = new GoogleAuthProvider();
@@ -266,16 +287,19 @@ const Payment = () => {
         if (userDetails?.data?.isUser === false) {
           const googleMail = result?.user?.email;
           const newName = result?.user?.displayName;
-          const res = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/v1/users`, {
-            email: googleMail,
-            name: newName,
-            organizationId: organizationData?._id,
-            organizationName: organizationData?.organizationName,
-            role: "user",
-            dateCreated
-          });
+          const res = await axios.post(
+            `${process.env.REACT_APP_SERVER_API}/api/v1/users`,
+            {
+              email: googleMail,
+              name: newName,
+              organizationId: organizationData?._id,
+              organizationName: organizationData?.organizationName,
+              role: "user",
+              dateCreated,
+            }
+          );
           if (res.data.acknowledged) {
-            saveUser(googleMail)
+            saveUser(googleMail);
           }
         } else {
           saveUser(email);
@@ -285,7 +309,6 @@ const Payment = () => {
         console.error(error);
       });
   };
-
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -297,21 +320,22 @@ const Payment = () => {
       organizationId: organizationData?._id,
       organizationName: organizationData?.organizationName,
       role: "user",
-      dateCreated
-    }
+      dateCreated,
+    };
 
     // console.log(data);
 
     try {
       createUser(email, password)
-        .then(
-          async (result) => {
-            const res = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/v1/users`, data);
-            if (res.data.acknowledged) {
-              saveUser(result?.user?.email);
-            }
+        .then(async (result) => {
+          const res = await axios.post(
+            `${process.env.REACT_APP_SERVER_API}/api/v1/users`,
+            data
+          );
+          if (res.data.acknowledged) {
+            saveUser(result?.user?.email);
           }
-        )
+        })
         .catch((error) => {
           console.error(error);
         });
@@ -319,7 +343,6 @@ const Payment = () => {
       console.log(error);
     }
   };
-
 
   const handleGoogleRegister = async () => {
     const googleProvider = new GoogleAuthProvider();
@@ -329,37 +352,39 @@ const Payment = () => {
         .then(async (result) => {
           const googleMail = result?.user?.email;
           const newName = result?.user?.displayName;
-          const userDetails = await axios.get(`${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${email}`);
+          const userDetails = await axios.get(
+            `${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${email}`
+          );
           if (userDetails?.data?.isUser === false) {
-            const res = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/v1/users`, {
-              email: googleMail,
-              name: newName,
-              phone,
-              organizationId: organizationData?._id,
-              organizationName: organizationData?.organizationName,
-              role: "user"
-            });
+            const res = await axios.post(
+              `${process.env.REACT_APP_SERVER_API}/api/v1/users`,
+              {
+                email: googleMail,
+                name: newName,
+                phone,
+                organizationId: organizationData?._id,
+                organizationName: organizationData?.organizationName,
+                role: "user",
+              }
+            );
             if (res.data.acknowledged) {
-              saveUser(googleMail)
+              saveUser(googleMail);
             }
-          }
-          else {
+          } else {
             saveUser(email);
           }
         })
         .catch((error) => {
           console.error(error);
         });
-    }
-    else {
+    } else {
       setError(true);
     }
-  }
-
+  };
 
   return (
     <>
-      {(course._id && organizationData._id) ?
+      {course._id && organizationData._id ? (
         <div className="bg-[#f6f7ff91] min-h-[100vh]">
           <Helmet>
             <meta charSet="utf-8" />
@@ -424,14 +449,19 @@ const Payment = () => {
                           setSelectedBatch(batchesData[e.target.value])
                         }
                       >
-                        <option className="hidden">Select Batch</option>
+                        <option className="hidden">
+                          {selectedBatch?.batchName
+                            ? selectedBatch?.batchName
+                            : "Select Batch"}
+                        </option>
                         {batchesData?.map((item, index) => (
                           <option
                             key={index}
-                            className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 m-1 ${selectedBatch?._id === item?._id
-                              ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
-                              : "text-[#949494]"
-                              }`}
+                            className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 m-1 ${
+                              selectedBatch?._id === item?._id
+                                ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
+                                : "text-[#949494]"
+                            }`}
                             value={index}
                             // onClick={() => handleSelectCourse(item)}
                             onMouseDown={() => setSelectedBatch(item)}
@@ -459,56 +489,79 @@ const Payment = () => {
                             value={coupon}
                             onChange={(e) => setCoupon(e.target.value)}
                           />
-                          <div onClick={() => {
-                            setCoupon("")
-                            setCouponDiscount(0)
-                          }} className="cursor-pointer">
+                          <div
+                            onClick={() => {
+                              setCoupon("");
+                              setCouponDiscount(0);
+                            }}
+                            className="cursor-pointer"
+                          >
                             {coupon.length >= 1 && <HighlightOffRoundedIcon />}
                           </div>
                         </div>
-                        <button onClick={handleApplyCoupon} className=" text-[#5e52ff] bg-[#5e52ff0c] p-2 rounded-sm">
+                        <button
+                          onClick={handleApplyCoupon}
+                          className=" text-[#5e52ff] bg-[#5e52ff0c] p-2 rounded-sm"
+                        >
                           Apply
                         </button>
                       </div>
                     </div>
-                    {offers.length > 0 && <div className="mt-3">
-                      <h1 className=" text-gray-400 mb-1 text-base font-[500] ">
-                        Applicable Coupons
-                      </h1>
+                    {offers.length > 0 && (
+                      <div className="mt-3">
+                        <h1 className=" text-gray-400 mb-1 text-base font-[500] ">
+                          Applicable Coupons
+                        </h1>
 
-                      <div className="flex gap-5 overflow-x-auto pb-3 scrollbar-container">
-                        {
-                          offers?.map((offer, index) =>
-                          ((offer?.suggestDuringCheckout && !offer?.disabled) &&
-                            <div key={index}
-                              onClick={() => {
-                                (+offer?.maxUseCount < +offer?.usedCount) ? Swal.fire({
-                                  icon: "error",
-                                  title: "Error",
-                                  text: "Coupon is already been used Maximum Time"
-                                }) : setCoupon(offer?.code)
-                              }}
-                              className="bg-gradient-to-b from-white to-[#ebf1ff] rounded-[7px] border border-blue px-[10px] py-[12px] min-w-[300px]">
-                              <div className="flex items-center justify-between uppercase text-[1.25rem] font-bold">
-                                <h3>{offer?.discountPercent}%</h3>
-                                <h4 className=" text-blue">{offer?.code}</h4>
-                              </div>
-                              <p className=" flex items-center justify-between text-[14px]">
-                                <span>UPTO ₹{offer?.maxDiscountValue}</span>
-                                {/* <span>EXPIRES ON 31 Mar 2024</span> */}
-                                <span>EXPIRES ON {new Date(offer?.validTill)?.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}</span>
-                              </p>
-                              <p className="mt-[10px] font-[600] text-[1.07rem]">
-                                Valid for first {(+offer?.maxUseCount) - (+offer?.usedCount || 0)} learners.{" "}
-                              </p>
-                            </div>))
-                        }
+                        <div className="flex gap-5 overflow-x-auto pb-3 scrollbar-container">
+                          {offers?.map(
+                            (offer, index) =>
+                              offer?.suggestDuringCheckout &&
+                              !offer?.disabled && (
+                                <div
+                                  key={index}
+                                  onClick={() => {
+                                    +offer?.maxUseCount < +offer?.usedCount
+                                      ? Swal.fire({
+                                          icon: "error",
+                                          title: "Error",
+                                          text: "Coupon is already been used Maximum Time",
+                                        })
+                                      : setCoupon(offer?.code);
+                                  }}
+                                  className="bg-gradient-to-b from-white to-[#ebf1ff] rounded-[7px] border border-blue px-[10px] py-[12px] min-w-[300px]"
+                                >
+                                  <div className="flex items-center justify-between uppercase text-[1.25rem] font-bold">
+                                    <h3>{offer?.discountPercent}%</h3>
+                                    <h4 className=" text-blue">
+                                      {offer?.code}
+                                    </h4>
+                                  </div>
+                                  <p className=" flex items-center justify-between text-[14px]">
+                                    <span>UPTO ₹{offer?.maxDiscountValue}</span>
+                                    {/* <span>EXPIRES ON 31 Mar 2024</span> */}
+                                    <span>
+                                      EXPIRES ON{" "}
+                                      {new Date(
+                                        offer?.validTill
+                                      )?.toLocaleDateString(undefined, {
+                                        day: "numeric",
+                                        month: "short",
+                                        year: "numeric",
+                                      })}
+                                    </span>
+                                  </p>
+                                  <p className="mt-[10px] font-[600] text-[1.07rem]">
+                                    Valid for first{" "}
+                                    {+offer?.maxUseCount - +offer?.usedCount}{" "}
+                                    learners.{" "}
+                                  </p>
+                                </div>
+                              )
+                          )}
+                        </div>
                       </div>
-
-
-
-
-                    </div>}
+                    )}
                     <hr className="my-6" />
                     <div className="mt-3">
                       <div className="p-3 border rounded-md shadow">
@@ -534,7 +587,8 @@ const Payment = () => {
                               >
                                 <td>Coupon Discount</td>
                                 <td className="py-2" id="coupon-discount">
-                                  ₹{couponDiscount >= 0 ? couponDiscount : "N/A"}
+                                  ₹
+                                  {couponDiscount >= 0 ? couponDiscount : "N/A"}
                                 </td>
                               </tr>
                             </tbody>
@@ -542,7 +596,10 @@ const Payment = () => {
                               <tr>
                                 <td className="py-2">Total</td>
                                 <td className="py-2" id="total-to-be-paid">
-                                  ₹{selectedBatch?.price ? ((+selectedBatch?.price) - (+couponDiscount)) : "N/A"}
+                                  ₹
+                                  {selectedBatch?.price
+                                    ? +selectedBatch?.price - +couponDiscount
+                                    : "N/A"}
                                 </td>
                               </tr>
                             </tfoot>
@@ -555,11 +612,20 @@ const Payment = () => {
                       <div className="flex justify-between mb-5">
                         <div className="sum-block-details">
                           <p className="m-0">Net Payable amount</p>
-                          <h4 className="m-0 text-2xl">₹{selectedBatch?.price ? ((+selectedBatch?.price) - (+couponDiscount)) : "N/A"}</h4>
+                          <h4 className="m-0 text-2xl">
+                            ₹
+                            {selectedBatch?.price
+                              ? +selectedBatch?.price - +couponDiscount
+                              : "N/A"}
+                          </h4>
                         </div>
                         <div>
                           <button
-                            onClick={user ? () => handleEnroll(userInfo) : () => setLoginOpen(true)}
+                            onClick={
+                              user
+                                ? () => handleEnroll(userInfo)
+                                : () => setLoginOpen(true)
+                            }
                             id="enroll-now-btn"
                             className=" px-[18px] py-[9px] text-white font-bold bg-blue rounded-md"
                           >
@@ -598,11 +664,12 @@ const Payment = () => {
               setForgotPassOpen={setForgotPassOpen}
             />
           </DialogLayoutForFromControl>
-          {
-            (forgotPassOpen) && (
-              <ForgotPassword setForgotPassOpen={setForgotPassOpen} forgotPassOpen={forgotPassOpen} />
-            )
-          }
+          {forgotPassOpen && (
+            <ForgotPassword
+              setForgotPassOpen={setForgotPassOpen}
+              forgotPassOpen={forgotPassOpen}
+            />
+          )}
           <DialogLayoutForFromControl
             open={registerOpen}
             setOpen={setRegisterOpen}
@@ -634,7 +701,7 @@ const Payment = () => {
             />
           </DialogLayoutForFromControl>
         </div>
-        :
+      ) : (
         <div className="bg-[#f6f7ff91] min-h-[100vh]">
           <Helmet>
             <meta charSet="utf-8" />
@@ -671,7 +738,7 @@ const Payment = () => {
             </div>
           </div>
         </div>
-      }
+      )}
     </>
   );
 };

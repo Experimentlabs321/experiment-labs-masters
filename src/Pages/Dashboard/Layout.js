@@ -16,6 +16,8 @@ import gift from "../../assets/PointsRedemptions/gift.svg";
 import feather from "../../assets/PointsRedemptions/feather.svg";
 import DashboardIconLight from "../../assets/Dashboard/DashboardIconLight.svg";
 import DashboardIconDark from "../../assets/Dashboard/DashboardIconDark.svg";
+import SalesLight from "../../assets/Dashboard/SalesIconLight.png";
+import SalesDark from "../../assets/Dashboard/SalesIconDark.png";
 import LeaderBoardIconLight from "../../assets/Dashboard/LeaderBoardIconLight.svg";
 import LeaderBoardIconDark from "../../assets/Dashboard/LeaderBoardIconDark.svg";
 import EarningIconLight from "../../assets/Dashboard/EarningIconLight.svg";
@@ -70,6 +72,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import { AuthContext } from "../../contexts/AuthProvider";
 import axios from "axios";
 import { useNotification } from "../../contexts/NotificationContext";
+import Loading from "../Shared/Loading/Loading";
 
 const Layout = ({ children }) => {
   const [toggleButton, setToggleButton] = useState(true);
@@ -78,7 +81,7 @@ const Layout = ({ children }) => {
   const [orgData, setOrgData] = useState({});
   const Role = localStorage.getItem("role");
   const createCoursePage = localStorage.getItem("createCoursePage");
-  const { userInfo, logOut } = useContext(AuthContext);
+  const { user, userInfo, logOut } = useContext(AuthContext);
   const [profImg, setprofImg] = useState(null);
   const [profName, setprofName] = useState(null);
   const [showNotification, setShowNotification] = useState(false);
@@ -89,6 +92,7 @@ const Layout = ({ children }) => {
     unreadNotifications,
     announcements,
     unreadAnnouncements,
+    fetchNotifications,
   } = useNotification();
   //console.log(Role);
   const location = useLocation();
@@ -182,6 +186,21 @@ const Layout = ({ children }) => {
     } else {
       return `${diffInYears} years ago`;
     }
+  };
+
+  const handleMarkAsRead = async (notification) => {
+    Loading();
+    const markAsRead = await axios.put(
+      `https://test-server-tg7l.onrender.com/api/v1/notifications/makeAsRead/notificationId/${notification?._id}`,
+      {
+        userEmail: user?.email,
+      }
+    );
+
+    if (markAsRead) {
+      await fetchNotifications();
+    }
+    Loading().close();
   };
 
   return (
@@ -281,12 +300,20 @@ const Layout = ({ children }) => {
                             Notifications
                           </h1>
                           {notifications?.map((notification, index) => (
-                            <Link
-                              to={notification?.redirectLink}
+                            <div
+                              onClick={async () => {
+                                await handleMarkAsRead(notification);
+                                navigate(notification?.redirectLink);
+                              }}
+                              // to={notification?.redirectLink}
                               key={index}
-                              className="p-1 my-2 border border-gray-500 shadow rounded flex "
+                              className={` ${
+                                !notification?.readBy?.find(
+                                  (item) => item === user?.email
+                                ) && "bg-sky-50"
+                              } cursor-pointer p-1 my-2 border border-gray-500 shadow rounded flex `}
                             >
-                              <p className="flex items-center gap-1">
+                              <p className="flex items-center gap-1 font-sans">
                                 <span className="border rounded-full border-black">
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -329,7 +356,7 @@ const Layout = ({ children }) => {
                                   </span>
                                 </span>
                               </p>
-                            </Link>
+                            </div>
                           ))}
                         </div>
                       )}
@@ -781,6 +808,36 @@ const Layout = ({ children }) => {
                                 } ml-3 text-[18px] font-[500]`}
                               >
                                 Dashboard
+                              </span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              style={
+                                location.pathname === "/salesAndRevenue"
+                                  ? {
+                                      background:
+                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                    }
+                                  : {}
+                              }
+                              to="/salesAndRevenue"
+                              className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
+                            >
+                              {location.pathname === "/salesAndRevenue" ? (
+                                <img className="" src={SalesLight} alt="icon" />
+                              ) : (
+                                <img className="" src={SalesDark} alt="icon" />
+                              )}
+
+                              <span
+                                className={`${
+                                  location.pathname === "/salesAndRevenue"
+                                    ? "text-white"
+                                    : "text-[#8F8F8F]"
+                                } ml-3 text-[18px] font-[500]`}
+                              >
+                                Sales & Revenue
                               </span>
                             </Link>
                           </li>

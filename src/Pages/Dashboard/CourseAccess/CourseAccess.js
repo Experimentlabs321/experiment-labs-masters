@@ -9,7 +9,7 @@ import Locked from "../../../assets/Dashboard/Locked.png";
 import Expired from "../../../assets/Dashboard/Expired.png";
 import Swal from "sweetalert2";
 import Loading from "../../Shared/Loading/Loading";
-
+import { CircularProgress } from "@mui/material";
 const CourseAccess = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [courses, setCourses] = useState([]);
@@ -21,6 +21,7 @@ const CourseAccess = () => {
   const [bundles, setBundles] = useState([]);
   const options = ["Category name"];
   const Role = localStorage.getItem("role");
+  const [isLoading, setIsLoading] = useState(true);
   const [stateParams, setStateParams] = useState(
     Role === "user" ? "myCourses" : "allCourses"
   );
@@ -40,7 +41,6 @@ const CourseAccess = () => {
   };
 
   useEffect(() => {
-    Loading();
     const queryParams = new URLSearchParams(location.search);
     const stateParam = queryParams.get("state");
     if (stateParam) setStateParams(stateParam);
@@ -52,8 +52,12 @@ const CourseAccess = () => {
         )
         .then((response) => {
           setMyCourses(response?.data);
+          setIsLoading(false)
         })
-        .catch((error) => console.error(error));
+        .catch((error) => {
+          console.error(error)
+          setIsLoading(false)
+        });
       await axios
         .get(
           `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
@@ -61,18 +65,20 @@ const CourseAccess = () => {
         .then((response) => {
           setCourses(response?.data);
           setFilterData(response?.data);
+          setIsLoading(false)
         })
-        .catch((error) => console.error(error));
+        .catch((error) => {console.error(error)
+          setIsLoading(false)});
       await axios
         .get(
           `${process.env.REACT_APP_SERVER_API}/api/v1/bundles/organizationId/${userInfo.organizationId}`
         )
         .then((response) => {
           setBundles(response?.data);
+          setIsLoading(false)
         })
-        .catch((error) => console.error(error));
-
-      Loading().close();
+        .catch((error) =>{ console.error(error)
+          setIsLoading(false)});
     };
     fetchAllData();
   }, [location, userInfo]);
@@ -90,8 +96,10 @@ const CourseAccess = () => {
       )
       .then((response) => {
         setCourseCategories(response?.data);
+        setIsLoading(false)
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {console.error(error)
+        setIsLoading(false)});
   }, [userInfo]);
 
   useEffect(() => {
@@ -101,11 +109,13 @@ const CourseAccess = () => {
           (item) => item?.courseCategory === selectedOption
         );
         setShowCourses(filteredCourses);
+        setIsLoading(false)
       } else if (stateParams === "allCourses") {
         const filteredCourses = courses?.filter(
           (item) => item?.courseCategory === selectedOption
         );
         setShowCourses(filteredCourses);
+        setIsLoading(false)
       }
     }
   }, [selectedOption]);
@@ -262,6 +272,11 @@ const CourseAccess = () => {
               )}
             </div>
           </div>
+          {isLoading && (
+          <div className=" flex align-items-center my-5 py-5">
+            <CircularProgress className="w-full mx-auto" />
+          </div>
+        )}
           <div className="mt-[80px] flex items-center justify-between">
             <div className="flex gap-8">
               {Role === "user" && (

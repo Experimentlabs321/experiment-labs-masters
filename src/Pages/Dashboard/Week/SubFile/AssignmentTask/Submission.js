@@ -17,6 +17,18 @@ const Submission = ({ taskData }) => {
   );
   const [course, setCourse] = useState({});
   const [batch, setBatch] = useState({});
+  const [submissionData, setSubmissionData] = useState({});
+
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${taskData?._id}/${userInfo?._id}`
+      )
+      .then((response) => {
+        setSubmissionData(response?.data[response?.data?.length - 1]);
+      })
+      .catch((error) => console.error(error));
+  }, [userInfo?._id, taskData]);
 
   useEffect(() => {
     const findCourseAndBatch = userInfo?.courses?.find(
@@ -96,7 +108,7 @@ const Submission = ({ taskData }) => {
       }
     );
 
-    console.log(sendMail);
+    console.log(fileUrl);
 
     if (manageAssignment && fileUrl) {
       console.log(manageAssignment);
@@ -141,6 +153,7 @@ const Submission = ({ taskData }) => {
             type: "Submission",
             readBy: [],
             triggeredBy: user?.email,
+            redirectLink: `/mentorAssignments`,
           }
         );
         console.log(newNotification);
@@ -271,12 +284,21 @@ const Submission = ({ taskData }) => {
         </div>
       </div>
       <div className="my-[80px] flex items-center justify-center ">
-        <button
-          onClick={handleSubmit}
-          className={`bg-[#3E4DAC] text-white px-4 h-[50px] text-[16px] font-[600] text-center rounded-[8px] z-[1] shadow-[0px_4px_0px_0px_#CA5F98] lg:shadow-[0px_8px_0px_0px_#CA5F98]`}
-        >
-          Submit assignment
-        </button>
+        {submissionData?._id ? (
+          <button
+            onClick={handleSubmit}
+            className={`bg-[#3eac50] text-white px-4 h-[50px] text-[16px] font-[600] text-center rounded-[8px] z-[1] shadow-[0px_4px_0px_0px_#CA5F98] lg:shadow-[0px_8px_0px_0px_#CA5F98]`}
+          >
+            Resubmit assignment
+          </button>
+        ) : (
+          <button
+            onClick={handleSubmit}
+            className={`bg-[#3E4DAC] text-white px-4 h-[50px] text-[16px] font-[600] text-center rounded-[8px] z-[1] shadow-[0px_4px_0px_0px_#CA5F98] lg:shadow-[0px_8px_0px_0px_#CA5F98]`}
+          >
+            Submit assignment
+          </button>
+        )}
       </div>
     </div>
   );

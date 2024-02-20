@@ -6,8 +6,7 @@ import AssignmentRightNev from "./AssignmentRightNev";
 import eye from "../../../assets/ExecutionMentor/eye.svg";
 import axios from "axios";
 import { AuthContext } from "../../../contexts/AuthProvider";
-import Loading from "../../Shared/Loading/Loading";
-
+import { CircularProgress } from "@mui/material";
 const MentorAssignments = () => {
   const [selectedTab, setSelectedTab] = useState("mentorAssignments");
   const [pendingEvaluations, setPendingEvaluations] = useState();
@@ -20,7 +19,7 @@ const MentorAssignments = () => {
   const [selectedStatus, setSelectedStatus] = useState({});
   const [allMyStudents, setAllMyStudents] = useState([]);
   const [filteredAssignments, setFilteredAssignment] = useState([]);
-
+  const [isLoading, setIsLoading] = useState(true);
 
   console.log(selectedCourse)
   console.log(selectedBatch)
@@ -38,7 +37,7 @@ const MentorAssignments = () => {
   //console.log(userInfo);
 
   useEffect(() => {
-    Loading();
+    
     axios
       .get(
         `${process.env.REACT_APP_BACKEND_API}/getSubmitAssignment/${userInfo.organizationId}`
@@ -48,11 +47,12 @@ const MentorAssignments = () => {
         setFilteredAssignment(response?.data?.slice().reverse());
         //console.log(response?.data[0]);
         const ass = response?.data;
-
+        setIsLoading(false)
         // setPendingEvaluations(ass.length)
       })
-      .catch((error) => console.error(error));
-    Loading().close();
+      .catch((error) => {console.error(error)
+        setIsLoading(false)});
+    setIsLoading(false);
   }, [userInfo]);
   console.log(userInfo.organizationId);
 
@@ -91,8 +91,10 @@ const MentorAssignments = () => {
       )
       .then((response) => {
         setCourses(response?.data);
+        setIsLoading(false)
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {console.error(error)
+        setIsLoading(false)});
   }, [userInfo]);
 
   useEffect(() => {
@@ -103,8 +105,10 @@ const MentorAssignments = () => {
         )
         .then((response) => {
           setBatchesData(response?.data);
+          setIsLoading(false)
         })
-        .catch((error) => console.error(error));
+        .catch((error) => {console.error(error)
+          setIsLoading(false)});
   }, [selectedCourse]);
 
   useEffect(() => {
@@ -114,9 +118,11 @@ const MentorAssignments = () => {
       )
       .then((response) => {
         setAllMyStudents(response?.data);
+        setIsLoading(false)
 
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {console.error(error)
+        setIsLoading(false)});
   }, [userInfo]);
 
   const applyFilters = () => {
@@ -162,7 +168,7 @@ const MentorAssignments = () => {
   };
   function formatDateTime(dateTimeString) {
     const dateObject = new Date(dateTimeString);
-  
+
     const options = {
       year: 'numeric',
       month: '2-digit',
@@ -172,7 +178,7 @@ const MentorAssignments = () => {
       second: '2-digit',
       hour12: true // Use 12-hour format with AM/PM
     };
-  
+
     return dateObject.toLocaleString('en-US', options);
   }
 
@@ -181,6 +187,11 @@ const MentorAssignments = () => {
   return (
     <div>
       <Layout>
+        {isLoading && (
+          <div className=" flex align-items-center my-5 py-5">
+            <CircularProgress className="w-full mx-auto" />
+          </div>
+        )}
         <div className="">
           <AssignmentUpNev page={"assignment"} />
         </div>
@@ -194,7 +205,7 @@ const MentorAssignments = () => {
                 <p>Pending evaluations - {filteredData.length}</p>
               </div>
             </div>
-           {/*  <div>
+            {/*  <div>
               <input
                 onChange={(e) => {
                   setFilteredAssignment(
@@ -306,7 +317,7 @@ const MentorAssignments = () => {
               </select>
 
               <button
-                className="bg-sky-500 text-white px-4 py-2 rounded"
+                className="bg-sky-500 hover:bg-opacity-70 text-white px-4 py-2 rounded"
                 onClick={applyFilters}
               >
                 Apply Filters
@@ -400,7 +411,7 @@ const MentorAssignments = () => {
                             {assignment?.taskName}
                           </td>
                           <td className="py-4 px-6 border-b text-left">
-                          {formatDateTime(assignment?.submissionDateTime)}
+                            {formatDateTime(assignment?.submissionDateTime)}
                           </td>
 
                           <td className="py-4 px-6 border-b text-left">
@@ -417,7 +428,7 @@ const MentorAssignments = () => {
                           <td className="py-4 px-6 border-b text-left">
                             <Link
                               to={`/assignmentEvaluation2/${assignment?._id}`}
-                              className="flex gap-2 bg-[#081765] text-[#fff] p-2 rounded-md mb-2 mt-3"
+                              className="flex gap-2 bg-[#081765] hover:bg-opacity-70 text-[#fff] p-2 rounded-md mb-2 mt-3"
                             >
                               <img src={eye} alt="eye" />
                               <p className="text-base font-normal">View</p>

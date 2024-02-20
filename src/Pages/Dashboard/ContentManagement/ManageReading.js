@@ -165,11 +165,11 @@ const ManageReading = () => {
       skillParameterData: skillParameterData,
       earningParameterData: earningParameterData,
       readingMaterial: readingMaterial,
-      chapterId: id,
+      chapterId: chapter?._id,
       completionParameter: completionParameter,
       courseId: chapter?.courseId,
       batches: selectedBatches,
-      taskDrip
+      taskDrip,
     };
 
     setReadingData(manageReading);
@@ -183,22 +183,24 @@ const ManageReading = () => {
       console.log(newTask);
 
       if (newTask?.data?.result?.acknowledged) {
-        // const newNotification = await axios.post(
-        //   `http://localhost:5000/api/v1/notifications/addNotification`,
-        //   {
-        //     message: `New reading material added in ${course?.courseFullName}.`,
-        //     dateTime: new Date(),
-        //     recipient: {
-        //       type: "Students",
-        //       organizationId: course?.organization?.organizationId,
-        //       courseId: course?._id,
-        //       batches: selectedBatches,
-        //     },
-        //     type: "Create Task",
-        //     readBy: [],
-        //   }
-        // );
-        // console.log(newNotification);
+        const newNotification = await axios.post(
+          `https://test-server-tg7l.onrender.com/api/v1/notifications/addNotification`,
+          {
+            message: `New reading material added in course ${course?.courseFullName}.`,
+            dateTime: new Date(),
+            redirectLink: `/questLevels/${course?._id}?week=${chapter?.weekId}`,
+            recipient: {
+              type: "Students",
+              organizationId: orgData?._id,
+              courseId: course?._id,
+              batches: selectedBatches,
+            },
+            type: "Create Task",
+            readBy: [],
+            notificationTriggeredBy: user?.email,
+          }
+        );
+        console.log(newNotification);
         toast.success("Reading material added Successfully!");
       }
       Loading().close();
@@ -474,7 +476,9 @@ const ManageReading = () => {
                     />
                     <label
                       htmlFor="radioYes"
-                      className={`ml-2 text-sm font-medium ${course?.enableDrip ? 'text-gray-400' : 'text-gray-900'}`}
+                      className={`ml-2 text-sm font-medium ${
+                        course?.enableDrip ? "text-gray-400" : "text-gray-900"
+                      }`}
                     >
                       Yes
                     </label>
@@ -492,7 +496,9 @@ const ManageReading = () => {
                     />
                     <label
                       htmlFor="radioNo"
-                      className={`ml-2 text-sm font-medium ${course?.enableDrip ? 'text-gray-400' : 'text-gray-900'}`}
+                      className={`ml-2 text-sm font-medium ${
+                        course?.enableDrip ? "text-gray-400" : "text-gray-900"
+                      }`}
                     >
                       No
                     </label>
@@ -510,10 +516,10 @@ const ManageReading = () => {
             <div className="px-4 my-10">
               {(orgData?.showPointsAndRedemptions ||
                 orgData?.showSkillsManagement) && (
-                  <p className="text-[25px] font-bold mb-10">
-                    Evaluation Parameter
-                  </p>
-                )}
+                <p className="text-[25px] font-bold mb-10">
+                  Evaluation Parameter
+                </p>
+              )}
               {orgData?.showSkillsManagement && (
                 <SkillBasedParameter
                   selectedData={skillParameterData}

@@ -25,6 +25,7 @@ import uploadFileToS3 from "../../UploadComponent/s3Uploader";
 import AssignmentTask from "../Week/AssignmentTask";
 import Loading from "../../Shared/Loading/Loading";
 
+import { CircularProgress } from "@mui/material";
 const Assignment = () => {
   const [isOpenGeneral, setisOpenGeneral] = useState(true);
 
@@ -59,11 +60,11 @@ const Assignment = () => {
   const [selectedBatches, setSelectedBatches] = useState([]);
   const [schedule, setSchedule] = useState([]);
   const [orgData, setOrgData] = useState({});
-  const [taskDrip , setTaskDrip] = useState(false);
-  const [enableDrip , setEnableDrip] = useState();
-
+  const [taskDrip, setTaskDrip] = useState(false);
+  const [enableDrip, setEnableDrip] = useState();
+  const [isLoading, setIsLoading] = useState(true)
   useEffect(() => {
-    Loading();
+    
     axios
       .get(
         `${
@@ -72,9 +73,10 @@ const Assignment = () => {
       )
       .then((response) => {
         setBatchesData(response?.data);
-        Loading().close();
+        setIsLoading(false)
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {console.error(error)
+        setIsLoading(false)});
   }, [chapter?.courseId]);
 
   useEffect(() => {
@@ -82,6 +84,7 @@ const Assignment = () => {
       .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
       .then((response) => {
         setChapter(response?.data);
+        setIsLoading(false)
       })
       .then(() => {
         const fetchData = {
@@ -94,18 +97,23 @@ const Assignment = () => {
               `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
               fetchData
             )
-            .then((res) => setSkillCategories(res?.data))
-            .catch((error) => console.error(error));
+            .then((res) => {setSkillCategories(res?.data)
+              setIsLoading(false)})
+            .catch((error) => {console.error(error)
+              setIsLoading(false)});
           axios
             .post(
               `${process.env.REACT_APP_BACKEND_API}/itemCategoryByCourseId`,
               fetchData
             )
-            .then((res) => setEarningCategories(res?.data))
-            .catch((error) => console.error(error));
+            .then((res) => {setEarningCategories(res?.data)
+              setIsLoading(false)})
+            .catch((error) => {console.error(error)
+              setIsLoading(false)});
         }
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {console.error(error)
+        setIsLoading(false)});
   }, [id, userInfo, userInfo?.email]);
 
   useEffect(() => {
@@ -116,6 +124,7 @@ const Assignment = () => {
         )
         .then((response) => {
           setCourse(response?.data);
+          setIsLoading(false);
         });
   }, [chapter]);
 
@@ -126,8 +135,10 @@ const Assignment = () => {
       )
       .then((response) => {
         setOrgData(response?.data);
+        setIsLoading(false);
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {console.error(error)
+        setIsLoading(false);});
   }, [userInfo]);
 
   const handleOptionChangeBatch = (event, optionValue) => {
@@ -201,7 +212,7 @@ const Assignment = () => {
       batches: selectedBatches,
       schedule: schedule,
       contentStage,
-      taskDrip
+      taskDrip,
     };
 
     setAssignmentData(manageAssignment);
@@ -218,7 +229,7 @@ const Assignment = () => {
         const newNotification = await axios.post(
           `https://test-server-tg7l.onrender.com/api/v1/notifications/addNotification`,
           {
-            message: `New reading material added in course ${course?.courseFullName}.`,
+            message: `New assignment added in course ${course?.courseFullName}.`,
             dateTime: new Date(),
             redirectLink: `/questLevels/${course?._id}?week=${chapter?.weekId}`,
             recipient: {

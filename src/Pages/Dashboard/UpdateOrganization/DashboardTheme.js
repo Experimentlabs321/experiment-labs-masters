@@ -134,6 +134,11 @@ const DashboardTheme = ({
       ? dashboardTheme?.showLabJourney
       : true
   );
+  const [showSchedule, setShowSchedule] = useState(
+    dashboardTheme?.showSchedule === false
+      ? dashboardTheme?.showSchedule
+      : true
+  );
 
   console.log(dashboardTheme);
 
@@ -184,6 +189,7 @@ const DashboardTheme = ({
         myCoursesChecked,
         allCoursesChecked,
         showLabJourney,
+        showSchedule
       },
     };
     // console.log("Data ==========>",orgInfo);
@@ -1089,6 +1095,33 @@ const DashboardTheme = ({
             </div>
             <div className="ml-3 text-gray-700 font-semibold text-xl">
               {!showLabJourney ? "Add" : "Remove"} Lab Journey Section
+            </div>
+          </label>
+        </div>
+        <div className="my-8">
+          <label
+            htmlFor="showScheduleToggle"
+            className="flex items-center cursor-pointer"
+          >
+            <div className="relative">
+              <input
+                type="checkbox"
+                id="showScheduleToggle"
+                className="sr-only"
+                checked={showSchedule}
+                onChange={() => setShowSchedule(!showSchedule)}
+              />
+              <div className="block bg-gray-600 w-14 h-8 rounded-full"></div>
+              <div
+                className={`${
+                  showSchedule
+                    ? "bg-green translate-x-full"
+                    : "bg-gray-300 translate-x-0"
+                } absolute left-1 top-1 w-6 h-6 rounded-full transition-transform transform ease-in-out duration-300`}
+              ></div>
+            </div>
+            <div className="ml-3 text-gray-700 font-semibold text-xl">
+              {!showSchedule ? "Add" : "Remove"} Schedule
             </div>
           </label>
         </div>

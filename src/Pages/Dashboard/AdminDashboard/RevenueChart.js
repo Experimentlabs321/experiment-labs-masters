@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import Loading from "../../Shared/Loading/Loading";
 
-
+import { CircularProgress } from "@mui/material";
 
 const RevenueChart = ({
 
@@ -16,7 +16,7 @@ const RevenueChart = ({
 
 }) => {
     const [chartState, setChartData] = useState();
-
+    const [isLoading, setIsLoading] = useState(true)
     //////// 7 days revenue vs discount ----------------------
     const [revenueSevenDaysArr, setRevenueSevenDaysArr] = useState([]);
     const [totalRevenueSevenDays, setTotalRevenueSevenDays] = useState([]);
@@ -47,7 +47,7 @@ const RevenueChart = ({
     // 7 days for revenue vs discount
     useEffect(() => {
         if (selectedFilter === "Last 7 Days" && paidStudents) {
-            Loading();
+
 
             const startDate = new Date();
             startDate.setDate(startDate.getDate() - 6);
@@ -95,14 +95,13 @@ const RevenueChart = ({
             setTotalDiscountSevenDays(discountSums);
             setTotalRevenue(totalRevenueSum);
 
-            Loading().close();
+            setIsLoading(false);
         }
     }, [selectedFilter, paidStudents, setTotalRevenue]);
 
     // last 30 days revenue vs discount
     useEffect(() => {
         if (selectedFilter === "Last 30 Days" && paidStudents) {
-            Loading();
 
             const startDate = new Date();
             startDate.setDate(startDate.getDate() - 29);
@@ -154,7 +153,7 @@ const RevenueChart = ({
             setTotalDiscountLastMonthDay(discountSums);
             setTotalRevenue(totalRevenueSum);
 
-            Loading().close();
+            setIsLoading(false);
         }
     }, [selectedFilter, paidStudents, setTotalRevenue]);
 
@@ -162,9 +161,6 @@ const RevenueChart = ({
 
     useEffect(() => {
         if (selectedFilter === "Last 11 Months" && paidStudents) {
-            Loading();
-
-
             const currentDate = new Date();
 
 
@@ -216,26 +212,25 @@ const RevenueChart = ({
             setTotalDiscountLastYear(discountSums);
             setTotalRevenue(totalRevenueSum);
 
-            Loading().close();
+            setIsLoading(false);
         }
     }, [selectedFilter, paidStudents, setTotalRevenue]);
 
     /// overall revenue vs discount
     useEffect(() => {
         if (selectedFilter === "Overall" && paidStudents) {
-            Loading();
-    
+
             const currentDate = new Date();
             const startDate = new Date(paidStudents?.reduce((earliest, student) => {
                 const studentDate = new Date(student.paidAt);
                 return earliest ? (studentDate < earliest ? studentDate : earliest) : studentDate;
             }, null));
-    
+
             const monthsStartDate = [];
             const monthNames = [];
-    
+
             let currentMonth = new Date(startDate);
-    
+
             while (currentMonth <= currentDate) {
                 monthsStartDate.push(new Date(currentMonth));
                 const monthName = currentMonth.toLocaleString('default', { month: 'long' });
@@ -243,20 +238,20 @@ const RevenueChart = ({
                 monthNames.push(`${monthName} (${year})`);
                 currentMonth.setMonth(currentMonth.getMonth() + 1);
             }
-    
+
             const revenueSums = Array(monthsStartDate.length).fill(0);
             const discountSums = Array(monthsStartDate.length).fill(0);
             let totalRevenueSum = 0;
-    
+
             paidStudents?.forEach(student => {
                 const studentDate = new Date(student.paidAt);
                 const studentRevenue = student.paidAmount || 0;
                 const studentDiscount = student.discountAmount || 0;
-    
+
                 for (let i = 0; i < monthsStartDate.length; i++) {
                     const startDate = monthsStartDate[i];
                     const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0);
-    
+
                     if (studentDate >= startDate && studentDate <= endDate) {
                         revenueSums[i] += studentRevenue;
                         discountSums[i] += studentDiscount;
@@ -265,50 +260,50 @@ const RevenueChart = ({
                     }
                 }
             });
-    
+
             setOverallArr(monthNames);
             setTotalRevenueOverall(revenueSums);
             setTotalDiscountOverall(discountSums);
             setTotalRevenue(totalRevenueSum);
-    
-            Loading().close();
+
+            setIsLoading(false);
         }
     }, [selectedFilter, paidStudents, setTotalRevenue]);
 
     // custom date 
     useEffect(() => {
         if (selectedFilter === "Custom date" && fromDate && toDate && paidStudents) {
-            Loading();
-    
+        
+
             const startDate = new Date(fromDate);
             const endDate = new Date(toDate);
-    
+
             // Ensure the fromDate is before or equal to the toDate
             if (startDate > endDate) {
                 console.error("Invalid date range!");
-                Loading().close();
+                setIsLoading(false);
                 return;
             }
-    
+
             const days = [];
             let currentDate = new Date(startDate);
-    
+
             while (currentDate <= endDate) {
                 const isoString = currentDate.toISOString();
                 const dateString = isoString.substring(0, 10);
                 days.push(dateString);
                 currentDate.setDate(currentDate.getDate() + 1);
             }
-    
+
             const revenueSums = Array(days.length).fill(0);
             const discountSums = Array(days.length).fill(0);
             let totalRevenueSum = 0;
-    
+
             paidStudents?.forEach(student => {
                 const studentDate = new Date(student.paidAt);
                 const studentRevenue = student.paidAmount || 0;
                 const studentDiscount = student.discountAmount || 0;
-    
+
                 if (studentDate >= startDate && studentDate <= endDate) {
                     const index = days.findIndex(day => day === studentDate.toISOString().substring(0, 10));
                     revenueSums[index] += studentRevenue;
@@ -316,17 +311,17 @@ const RevenueChart = ({
                     totalRevenueSum += studentRevenue;
                 }
             });
-    
+
             setCustomDate(days);
             setTotalRevenueCustomDate(revenueSums);
             setTotalDiscountCustomDate(discountSums);
             setTotalRevenue(totalRevenueSum);
-    
-            Loading().close();
+
+            setIsLoading(false);
         }
     }, [selectedFilter, fromDate, toDate, paidStudents, setTotalRevenue]);
-    
-    
+
+
 
 
     //----------chart-------//
@@ -474,7 +469,7 @@ const RevenueChart = ({
         totalDiscountLastMonthDay,
         monthNamesArr,
         totalRevenueLastYear,
-        totalDiscountLastYear,totalRevenueOverall,overallArr,totalDiscountOverall,customDate,totalRevenueCustomDate,
+        totalDiscountLastYear, totalRevenueOverall, overallArr, totalDiscountOverall, customDate, totalRevenueCustomDate,
         totalDiscountCustomDate])
 
 
@@ -482,7 +477,11 @@ const RevenueChart = ({
     return (
         <div>
             <h1 className="my-3 mt-5 text-2xl font-bold">Total Revenue Vs Total Discount</h1>
-
+            {isLoading && (
+                <div className=" flex align-items-center my-5 py-5">
+                    <CircularProgress className="w-full mx-auto" />
+                </div>
+            )}
             <div id="chart">
                 {chartState && chartState.options && chartState.series && (
                     <ReactApexChart
