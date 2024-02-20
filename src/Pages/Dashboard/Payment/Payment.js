@@ -499,7 +499,7 @@ const Payment = () => {
                                 <span>EXPIRES ON {new Date(offer?.validTill)?.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                               </p>
                               <p className="mt-[10px] font-[600] text-[1.07rem]">
-                                Valid for first {+offer?.maxUseCount - +offer?.usedCount} learners.{" "}
+                                Valid for first {(+offer?.maxUseCount) - (+offer?.usedCount || 0)} learners.{" "}
                               </p>
                             </div>))
                         }
@@ -600,7 +600,7 @@ const Payment = () => {
           </DialogLayoutForFromControl>
           {
             (forgotPassOpen) && (
-              <ForgotPassword setForgotPassOpen={setForgotPassOpen} forgotPassOpen={forgotPassOpen}/>
+              <ForgotPassword setForgotPassOpen={setForgotPassOpen} forgotPassOpen={forgotPassOpen} />
             )
           }
           <DialogLayoutForFromControl

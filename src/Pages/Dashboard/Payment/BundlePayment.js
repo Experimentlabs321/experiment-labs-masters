@@ -48,11 +48,23 @@ const BundlePayment = () => {
 
   const dateCreated = new Date();
 
+  const fetchOffers = async (bundleId) => {
+    const offers = await axios.get(
+      `${process.env.REACT_APP_SERVER_API}/api/v1/offers/bundleId/${bundleId}`
+    );
+    setOffers(offers?.data?.result);
+    setCoupon("");
+    setSelectedOffer("");
+    setCouponDiscount(0);
+    console.log("Offers  ================>", offers?.data?.result);
+  };
+
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_SERVER_API}/api/v1/bundles/bundleId/${id}`)
       .then((response) => {
         setCourse(response?.data);
+        fetchOffers(response?.data?._id);
       })
       .catch((error) => console.error(error));
   }, [id]);
@@ -69,20 +81,10 @@ const BundlePayment = () => {
         .catch((error) => console.error(error));
   }, [course, course?.organization?.organizationId]);
 
-  const fetchOffers = async (batchId) => {
-    const offers = await axios.get(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/offers/batchId/${batchId}`
-    );
-    setOffers(offers?.data?.result);
-    setCoupon("");
-    setSelectedOffer("");
-    setCouponDiscount(0);
-  };
-
-  useEffect(() => {
-    fetchOffers(selectedBatch?._id);
-    // console.log("Offers  ==============>", offers);
-  }, [selectedBatch]);
+  // useEffect(() => {
+  //   fetchOffers(selectedBatch?._id);
+  //   // console.log("Offers  ==============>", offers);
+  // }, [selectedBatch]);
 
   const date = new Date(course?.courseStartingDate);
   const options = {
@@ -106,7 +108,7 @@ const BundlePayment = () => {
         discountAmount = +maxDiscountValue;
 
       // console.log("Discount Amount", discountAmount);
-      if (+minCourseValue <= +selectedBatch?.price)
+      if (+minCourseValue <= +course?.price)
         setCouponDiscount(discountAmount);
       else {
         Swal.fire({
@@ -460,10 +462,10 @@ const BundlePayment = () => {
                                 onClick={() => {
                                   +offer?.maxUseCount < +offer?.usedCount
                                     ? Swal.fire({
-                                        icon: "error",
-                                        title: "Error",
-                                        text: "Coupon is already been used Maximum Time",
-                                      })
+                                      icon: "error",
+                                      title: "Error",
+                                      text: "Coupon is already been used Maximum Time",
+                                    })
                                     : setCoupon(offer?.code);
                                 }}
                                 className="bg-gradient-to-b from-white to-[#ebf1ff] rounded-[7px] border border-blue px-[10px] py-[12px] min-w-[300px]"
@@ -488,7 +490,7 @@ const BundlePayment = () => {
                                 </p>
                                 <p className="mt-[10px] font-[600] text-[1.07rem]">
                                   Valid for first{" "}
-                                  {+offer?.maxUseCount - +offer?.usedCount}{" "}
+                                  {(+offer?.maxUseCount) - (+offer?.usedCount || 0)}{" "}
                                   learners.{" "}
                                 </p>
                               </div>
@@ -652,18 +654,11 @@ const BundlePayment = () => {
               </div>
               <div className="max-w-[350px] min-w-[350px]">
                 <div className="mt-3">
-                  <h1 className=" text-black text-base font-[500] ">
-                    Select Batch
+                  <h1 className=" text-black text-base font-[500] mb-3">
+                    <div className="w-1/3 h-8 bg-gray-200 rounded-lg"></div>
                   </h1>
                   <div className="flex flex-wrap">
-                    <select
-                      className="mt-1 p-2 border w-full rounded-md bg-white"
-                      onChange={(e) =>
-                        setSelectedBatch(batchesData[e.target.value])
-                      }
-                    >
-                      <option className="hidden">Select Batch</option>
-                    </select>
+                    <div className="w-full h-10 bg-gray-400 rounded-lg"></div>
                   </div>
                 </div>
               </div>
