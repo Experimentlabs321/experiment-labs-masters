@@ -22,6 +22,7 @@ import OpenBox from "../../../assets/Dashboard/OpenBox.png";
 import WeekUpdate from "../../../assets/Dashboard/WeekUpdate.png";
 import Challenges from "../../../assets/Dashboard/Challenges.png";
 import DashboardCourses from "./DashboardCourses";
+import { CircularProgress } from "@mui/material";
 import { Link } from "react-router-dom";
 const Dashboard = () => {
   const data = [
@@ -99,6 +100,7 @@ const Dashboard = () => {
   const [selectedCourse, setSelectedCourse] = useState({});
   const [isOpen, setIsOpen] = useState(false);
   const [weeks, setWeeks] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [currentWeek, setCurrentWeek] = useState(null);
   const [chapters, setChapters] = useState([]);
   const [currentWeekCompletion, setCurrentWeekCompletion] = useState(0);
@@ -123,16 +125,23 @@ const Dashboard = () => {
       )
       .then((response) => {
         setCourses(response?.data);
+        
         if (localStorage.getItem("course")) {
           const findCourse = response?.data?.find(
             (item) => item?.courseFullName === localStorage.getItem("course")
           );
           if (findCourse) {
             setSelectedCourse(findCourse);
-          } else setSelectedCourse(response?.data[0]);
-        } else setSelectedCourse(response?.data[0]);
+            setIsLoading(false)
+          } else {setSelectedCourse(response?.data[0]);
+            setIsLoading(false)}
+        } else {setSelectedCourse(response?.data[0]);
+          setIsLoading(false)}
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error(error)
+        setIsLoading(false)
+      });
   }, [userInfo]);
 
   useEffect(() => {
@@ -142,8 +151,12 @@ const Dashboard = () => {
       )
       .then((response) => {
         setWeeks(response?.data);
+        setIsLoading(false)
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error(error)
+        setIsLoading(false)
+      });
   }, [selectedCourse]);
 
   useEffect(() => {
@@ -154,6 +167,7 @@ const Dashboard = () => {
       const currentDateTime = new Date();
       if (weekStartDate <= currentDateTime && weekEndDate >= currentDateTime) {
         setCurrentWeek(singleData);
+        setIsLoading(false)
         return;
       }
     });
@@ -166,8 +180,12 @@ const Dashboard = () => {
       )
       .then((response) => {
         setChapters(response?.data);
+        setIsLoading(false)
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error(error)
+        setIsLoading(false)
+      });
   }, [currentWeek]);
   useEffect(() => {
     let totalCompleted = 0;
@@ -190,6 +208,7 @@ const Dashboard = () => {
       });
     }
     setCurrentWeekCompletion(parseInt((totalCompleted / totalTask) * 100));
+    setIsLoading(false)
     console.log(totalCompleted, totalTask);
   }, [chapters, user, userInfo]);
 
@@ -220,9 +239,13 @@ const Dashboard = () => {
           setCurrentCourseCompletion(
             parseInt((totalCompleted / totalTask) * 100)
           );
+          setIsLoading(false)
         }
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error(error)
+        setIsLoading(false)
+      });
   }, [user, userInfo, selectedCourse]);
 
   const dashboardImages = {
@@ -241,8 +264,12 @@ const Dashboard = () => {
       .then((response) => {
         setDashboardTheme(response?.data?.dashboardTheme || {});
         setCourseAccessUrl(response?.data?.courseAccessUrl || "");
+        setIsLoading(false)
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error(error)
+        setIsLoading(false)
+      });
   }, [userInfo]);
   useEffect(() => {
     axios
@@ -254,8 +281,12 @@ const Dashboard = () => {
           return eventStartDate >= currentDate;
         });
         setUserRequesterEvents(filteredEvents);
+        setIsLoading(false)
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error(error)
+        setIsLoading(false)
+      });
   }, [userInfo]);
   console.log(userRequesterEvents);
   const getCurrentDate = () => {
@@ -295,9 +326,11 @@ const Dashboard = () => {
   return (
     <div>
       <Layout>
+
         <div className="">
           <div className="grid grid-col-1 lg:grid-cols-3 gap-2">
             <div className="lg:col-span-2 pt-20 lg:pt-10 px-4">
+
               <DashboardUserUpdate
                 dashboardImages={dashboardImages}
                 currentCourseCompletion={currentCourseCompletion}
@@ -308,6 +341,7 @@ const Dashboard = () => {
                 selectedCourse={selectedCourse}
                 weeks={weeks}
                 dashboardTheme={dashboardTheme}
+                isLoading={isLoading}
               />
               {/* <SendEvent /> */}
             </div>
@@ -322,6 +356,7 @@ const Dashboard = () => {
                   <h1 className="text-[18px] lg:text-[26px] font-[700]">
                     Lab Journey
                   </h1>
+
                   <div className="pt-[40px] px-[30px] w-full hidden lg:inline-block relative">
                     {weeks?.map((singleData, i) => (
                       <Level
@@ -433,7 +468,7 @@ const Dashboard = () => {
                       {/* Add any additional content or components specific to user requester events */}
                     </div>
                   )
-                    : <></>}
+                    : <p className="text-center font-medium text-sky-400 mt-5 ">No Upcoming Schudeled Events</p>}
                 </div>)}
             </div>
           </div>

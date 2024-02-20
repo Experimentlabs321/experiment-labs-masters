@@ -5,7 +5,7 @@ import ReactGA from "react-ga4";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "./contexts/AuthProvider";
 import axios from "axios";
-import Loading from "./Pages/Shared/Loading/Loading";
+import { CircularProgress } from "@mui/material";
 import {
   useSession,
   useSupabaseClient,
@@ -30,13 +30,12 @@ function App() {
     if (!userInfo) {
       return;
     }
-    setIsLoading(true);
-    Loading();
+    
     fetch(`${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`)
       .then((response) => response.json())
       .then((data) => {
         setData(data);
-
+        setIsLoading(false)
         // Remove previous manifest if it exists
         const existingManifest = document.getElementById('manifest');
         if (existingManifest) {
@@ -82,12 +81,12 @@ function App() {
         document.head.appendChild(dynamicJsonDataLink);
 
         setIsLoading(false);
-        Loading().close();
+        
       })
       .catch((error) => {
         console.error("Error fetching organization data:", error);
         setIsLoading(false);
-        Loading().close();
+        
       });
   }, [userInfo, orgLogo]);
 
