@@ -13,7 +13,7 @@ import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import ScheduleTask from "./ScheduleTask";
 import Loading from "../../Shared/Loading/Loading";
-
+import { CircularProgress } from "@mui/material";
 const skillsCategories = [
   {
     objectId: 1,
@@ -117,6 +117,7 @@ const WeekDetail = ({
   );
   const { id } = useParams();
   console.log(id);
+  const [isLoading, setIsLoading] = useState(true)
   const [taskData, setTaskData] = useState({});
   const handleNext = () => {
     if (week?.lecture[lectureNo]?.tasks?.length === tasksNo + 1) {
@@ -140,7 +141,7 @@ const WeekDetail = ({
       } else {
         setOpenTask(
           week?.lecture[lectureNo - 1]?.tasks[
-            week?.lecture[lectureNo - 1]?.tasks?.length - 1
+          week?.lecture[lectureNo - 1]?.tasks?.length - 1
           ]
         );
         setOpenTopic(week?.lecture[lectureNo - 1]?.name);
@@ -156,7 +157,7 @@ const WeekDetail = ({
   };
 
   useEffect(() => {
-    Loading();
+
     let taskTypeForAPI;
     console.log(openTask?.taskType);
     switch (openTask?.taskType) {
@@ -197,14 +198,22 @@ const WeekDetail = ({
       )
       .then((response) => {
         setTaskData(response?.data);
-        Loading().close();
+        setIsLoading(false)
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error(error)
+        setIsLoading(false)
+      });
   }, [openTask, openTask?.taskType]);
   // console.log(taskData);
 
   return (
     <div>
+      {isLoading && (
+        <div className=" flex align-items-center my-5 py-5">
+          <CircularProgress className="w-full mx-auto" />
+        </div>
+      )}
       <div className="relative z-0 ">
         <div className="pt-[110px] border-b-2 ">
           <div className="container mx-auto px-4 flex items-center justify-between ">

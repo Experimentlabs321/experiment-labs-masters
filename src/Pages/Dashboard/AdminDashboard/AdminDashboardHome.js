@@ -1,34 +1,40 @@
 //AdminDashboardHome
 import React, { useContext, useEffect, useState } from "react";
 import Layout from "../Layout";
-import adminDas from "../../../assets/Dashboard/adminDash.png"
+import adminDas from "../../../assets/Dashboard/adminDash.png";
 import AdminStatistics from "./AdminStatistics";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
-import Loading from "../../Shared/Loading/Loading";
 
+import { CircularProgress } from "@mui/material";
 
 const AdminDashboardHome = () => {
     const { userInfo } = useContext(AuthContext);
     const [organization, setOrganization] = useState();
-  
-
+    const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
-        Loading();
         axios
             .get(
                 `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
             )
             .then((response) => {
                 setOrganization(response?.data);
+                setIsLoading(false);
             })
-            .catch((error) => console.error(error));
-            Loading().close();
+            .catch((error) => {
+                console.error(error)
+                setIsLoading(false);
+            });
     }, [userInfo]);
     console.log(organization)
     return (
         <div className="w-[97%] mx-auto">
             <Layout>
+            {isLoading && (
+                <div className=" flex align-items-center my-5 py-5">
+                    <CircularProgress className="w-full mx-auto" />
+                </div>
+            )}
                 <div
                     style={{
                         borderRadius: "12px",
@@ -36,13 +42,13 @@ const AdminDashboardHome = () => {
                         background: "linear-gradient(91deg, #4A56A9 11.84%, #4250AC 78.46%)"
                     }}
                     className=' lg:flex items-center justify-between mt-[10px] lg:ps-[40px] py-5 '>
-                   
-                        <div className='lg:ms-10 flex items-center justify-center'>
-                            <img className="w-[150px]" src={organization?.org_logo} alt='icon' />
-               
-                        </div>
 
-                 
+                    <div className='lg:ms-10 flex items-center justify-center'>
+                        <img className="w-[150px]" src={organization?.org_logo} alt='icon' />
+
+                    </div>
+
+
 
                     <div className='lg:me-[100px]'>
                         <p className='text-[#E9E9E9] text-[20px] lg:text-[40px] font-normal text-center '>Welcome,</p>
@@ -52,7 +58,7 @@ const AdminDashboardHome = () => {
                 <AdminStatistics />
             </Layout>
         </div>
-    );
+  );
 };
 
 export default AdminDashboardHome;

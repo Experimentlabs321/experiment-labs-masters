@@ -78,6 +78,7 @@ const Quiz = ({
   };
 
   const handleSubmit = async () => {
+    console.log(openTask?.taskType, taskData?._id, taskData?.chapterId);
     Loading();
     if (point >= taskData?.completionParameter?.passMarks) {
       setOpenQuiz(false);

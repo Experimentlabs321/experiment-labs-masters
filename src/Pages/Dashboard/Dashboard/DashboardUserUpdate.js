@@ -20,7 +20,7 @@ import DialogLayout from "../Shared/DialogLayout";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import { Link } from "react-router-dom";
 import RoundAvatar from "../../Dashboard/Shared/RoundAvatar";
-
+import { CircularProgress } from "@mui/material";
 // Define a custom theme
 const theme = createTheme({
   components: {
@@ -89,6 +89,7 @@ const DashboardUserUpdate = ({
   weeks,
   currentCourseCompletion,
   dashboardTheme,
+  isLoading,
 }) => {
   const { userInfo } = useContext(AuthContext);
   const [currentWeek, setCurrentWeek] = useState({});
@@ -125,8 +126,15 @@ const DashboardUserUpdate = ({
   // console.log(dashboardTheme);
 
   return (
+
     <div>
+
       <div className=" relative w-fit">
+      {isLoading && (
+        <div className=" flex align-items-center my-5 py-5">
+          <CircularProgress className="w-full mx-auto" />
+        </div>
+      )}
         <h1 className="text-[22px] lg:text-[40px] font-[700]">
           Welcome, {userInfo?.name}
         </h1>
