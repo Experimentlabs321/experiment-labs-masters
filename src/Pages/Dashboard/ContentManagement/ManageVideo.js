@@ -156,9 +156,18 @@ const ManageVideo = () => {
     event.preventDefault();
     Loading();
     let fileUrl = "";
+    let isYoutubeLink;
+
     console.log(selectedFile);
-    if (selectedFile) fileUrl = await uploadFileToS3(selectedFile);
-    else if (youtubeVideoLink) fileUrl = youtubeVideoLink;
+    if (selectedFile){
+      fileUrl = await uploadFileToS3(selectedFile);
+      isYoutubeLink= false;
+    } 
+    else if (youtubeVideoLink){
+      fileUrl = youtubeVideoLink;
+      isYoutubeLink= true;
+
+    } 
     const form = event.target;
     const videoTopicName = form.videoTopicName?.value;
 
@@ -168,11 +177,12 @@ const ManageVideo = () => {
       additionalFiles: fileUrl,
       skillParameterData: skillParameterData,
       earningParameterData: earningParameterData,
-      chapterId: id,
+      chapterId: chapter?._id,
       completionParameter: completionParameter,
       courseId: chapter?.courseId,
       batches: selectedBatches,
       taskDrip,
+      isYoutubeLink,
     };
 
     console.log(ManageVideo);
@@ -417,11 +427,16 @@ const ManageVideo = () => {
                         Selected file: {selectedFile.name}
                       </p>
                     )}
+                    {youtubeVideoLink && (
+                      <p className=" text-center break-words max-w-full overflow-hidden">
+                        Selected file: {youtubeVideoLink}
+                      </p>
+                    )}
                     {!selectedFile && (
                       <>
                         <div className="flex gap-2 justify-center w-full">
                           <label
-                            className="flex items-center px-5 py-2 rounded-lg bg-[#FFDB70] text-xs font-bold"
+                            className="flex items-center px-5 py-2 rounded-lg bg-[#FFDB70] text-xs font-bold cursor-pointer"
                             htmlFor="input-file-upload"
                           >
                             Browser
@@ -439,7 +454,7 @@ const ManageVideo = () => {
                           <div className="">
                             <div
                               onClick={() => setOpenAddYoutubeLink(true)}
-                              className="flex items-center px-3 py-2 rounded-lg bg-[#D21B1B] text-xs font-bold text-[#fff]"
+                              className="flex items-center px-3 py-2 rounded-lg bg-[#D21B1B] text-xs font-bold text-[#fff] cursor-pointer"
                             >
                               <img src={youtube} alt="youtube" />
                               <p className="">Youtube</p>

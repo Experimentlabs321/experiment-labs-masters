@@ -160,8 +160,21 @@ const VideoTask = ({ taskData, something }) => {
               Mark as complete <CheckCircleOutlineIcon />
             </button>
           )}
+
           <div className="relative">
-            {taskData?.additionalFiles && (
+          {taskData?.additionalFiles && (
+              taskData?.isYoutubeLink ?
+                <iframe
+                  width="90%"
+                  height="500"
+                  src={taskData?.additionalFiles}
+                  className=" mx-auto rounded-lg border-[#292929] "
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  title="Embedded YouTube Video"
+                  ref={videoRef}
+                ></iframe>
+                :
               <video
                 key={taskData?.additionalFiles}
                 ref={videoRef}
