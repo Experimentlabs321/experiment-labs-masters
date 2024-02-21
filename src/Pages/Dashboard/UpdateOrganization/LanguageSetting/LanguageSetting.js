@@ -7,6 +7,10 @@ import AdminDashboardDetails from './AdminDashboardDetails';
 import DialogLayoutForFromControl from '../../Shared/DialogLayoutForFromControl';
 import AdminAnnouncementsDetails from './AdminAnnouncementsDetails';
 import AdminContentManagementDetails from './AdminContentManagementDetails';
+import AdminPointsRedemptionsDetails from './AdminPointsRedemptionsDetails';
+import AdminSkillsManagementDetails from './AdminSkillsManagementDetails';
+import AdminFeedbackDetails from './AdminFeedbackDetails';
+import AdminUpdateOrganizationDetails from './AdminUpdateOrganizationDetails';
 
 
 const LanguageSetting = () => {
@@ -23,8 +27,25 @@ const LanguageSetting = () => {
     const [contentManagementNameInput, setContentManagementNameInput] = useState('');
     const [editContentManagementNameOpen, setEditContentManagementNameOpen] = useState(false);
     const [adminContentManagementDetailsOpen, setAdminContentManagementDetailsOpen] = useState(false);
+    //Points & Redemptions
+    const [pointsRedemptionsNameInput, setPointsRedemptionsNameInput] = useState('');
+    const [editPointsRedemptionsNameOpen, setEditPointsRedemptionsNameOpen] = useState(false);
+    const [adminPointsRedemptionsDetailsOpen, setAdminPointsRedemptionsDetailsOpen] = useState(false);
+    //Skills Management
+    const [skillsManagementNameInput, setSkillsManagementNameInput] = useState('');
+    const [editSkillsManagementNameOpen, setEditSkillsManagementNameOpen] = useState(false);
+    const [adminSkillsManagementDetailsOpen, setAdminSkillsManagementDetailsOpen] = useState(false);
+    //Feedback
+    const [feedbackNameInput, setFeedbackNameInput] = useState('');
+    const [editFeedbackNameOpen, setEditFeedbackNameOpen] = useState(false);
+    const [adminFeedbackDetailsOpen, setAdminFeedbackDetailsOpen] = useState(false);
 
- 
+    //Update Organization
+    const [updateOrganizationNameInput, setUpdateOrganizationNameInput] = useState('');
+    const [editUpdateOrganizationNameOpen, setEditUpdateOrganizationNameOpen] = useState(false);
+    const [adminUpdateOrganizationDetailsOpen, setAdminUpdateOrganizationDetailsOpen] = useState(false);
+
+
     // student dashboard
     const [editStudentDashboardNameOpen, setEditStudentDashboardNameOpen] = useState(false);
     const [studentDashboardOpen, setStudentDashboardOpen] = useState(false);
@@ -36,7 +57,7 @@ const LanguageSetting = () => {
 
             {/*  Admin dashboard */}
             <div>
-                <div className='w-[100%] flex items-center justify-between border p-2 rounded-xl'>
+                <div className={`w-[100%] flex items-center justify-between border p-2 rounded-xl ${adminDashboardOpen ? "bg-slate-100" : ""} `}>
                     <div className='flex items-center gap-7'>
                         <p className='text-xl font-medium'> Admin Dashboard</p>
                     </div>
@@ -59,7 +80,7 @@ const LanguageSetting = () => {
 
                         {/* dashboard */}
                         <div className='mt-2'>
-                            <div className='w-[100%] flex items-center justify-between border p-2 rounded-xl'>
+                            <div className={`w-[100%] flex items-center justify-between border p-2 rounded-xl ${adminDashboardDetailsOpen ? "bg-slate-100" : ""} `}>
                                 <div className='flex items-center gap-7'>
                                     <p className='text-xl font-medium'>
                                         {
@@ -110,7 +131,7 @@ const LanguageSetting = () => {
                                 width={400}
                                 borderRadius="15px"
                                 title={
-                                    <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
+                                    <p className=" h-[90px] text-[19px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
                                         Edit Dashboard Name
                                     </p>
                                 }
@@ -151,7 +172,7 @@ const LanguageSetting = () => {
                         {/* Announcements */}
 
                         <div className='mt-2'>
-                            <div className='w-[100%] flex items-center justify-between border p-2 rounded-xl'>
+                            <div className={`w-[100%] flex items-center justify-between border p-2 rounded-xl ${adminAnnouncementsDetailsOpen ? "bg-slate-100" : ""} `}>
                                 <div className='flex items-center gap-7'>
                                     <p className='text-xl font-medium'>
                                         {
@@ -202,7 +223,7 @@ const LanguageSetting = () => {
                                 width={400}
                                 borderRadius="15px"
                                 title={
-                                    <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
+                                    <p className=" h-[90px] text-[19px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
                                         Edit Announcements Name
                                     </p>
                                 }
@@ -240,9 +261,9 @@ const LanguageSetting = () => {
 
                         </div>
 
-                       {/*  Content Management */}
-                       <div className='mt-2'>
-                            <div className='w-[100%] flex items-center justify-between border p-2 rounded-xl'>
+                        {/*  Content Management */}
+                        <div className='mt-2'>
+                            <div className={`w-[100%] flex items-center justify-between border p-2 rounded-xl ${adminContentManagementDetailsOpen ? "bg-slate-100" : ""} `}>
                                 <div className='flex items-center gap-7'>
                                     <p className='text-xl font-medium'>
                                         {
@@ -293,7 +314,7 @@ const LanguageSetting = () => {
                                 width={400}
                                 borderRadius="15px"
                                 title={
-                                    <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
+                                    <p className=" h-[90px] text-[19px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
                                         Edit Content Management Name
                                     </p>
                                 }
@@ -331,6 +352,371 @@ const LanguageSetting = () => {
 
                         </div>
 
+                        {/*   Points & Redemptions */}
+                        <div className='mt-2'>
+                            <div className={`w-[100%] flex items-center justify-between border p-2 rounded-xl ${adminPointsRedemptionsDetailsOpen ? "bg-slate-100" : ""} `}>
+                                <div className='flex items-center gap-7'>
+                                    <p className='text-xl font-medium'>
+                                        {
+                                            pointsRedemptionsNameInput ? pointsRedemptionsNameInput : "Points & Redemptions"
+                                        }
+
+                                    </p>
+                                    <button
+                                        onClick={() => {
+                                            setEditPointsRedemptionsNameOpen(true);
+                                            /*    setChapterData({
+                                                 ...chapter,
+                                                 index: index,
+                                               }); */
+                                        }}
+                                        className="ml-[24px]"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="18"
+                                            height="20"
+                                            viewBox="0 0 18 20"
+                                            fill="none"
+                                        >
+                                            <path
+                                                d="M13.648 0.961914L17.3711 4.88525L14.5329 7.87744L10.8098 3.95411L13.648 0.961914ZM0.0117188 19.2551H3.73478L12.7781 9.72533L9.05502 5.802L0.0117188 15.3318V19.2551Z"
+                                                fill="#282828"
+                                            />
+                                        </svg>
+                                    </button>
+                                </div>
+                                {
+                                    (adminPointsRedemptionsDetailsOpen) ? <KeyboardArrowUpIcon className='cursor-pointer' onClick={() => {
+                                        setAdminPointsRedemptionsDetailsOpen(false);
+
+                                    }} /> : <KeyboardArrowDownIcon className='cursor-pointer' onClick={() => {
+                                        setAdminPointsRedemptionsDetailsOpen(true);
+
+                                    }} />
+                                }
+
+
+
+                            </div>
+                            <DialogLayoutForFromControl
+                                open={editPointsRedemptionsNameOpen}
+                                setOpen={setEditPointsRedemptionsNameOpen}
+                                width={400}
+                                borderRadius="15px"
+                                title={
+                                    <p className=" h-[90px] text-[19px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
+                                        Edit Points & Redemptions Name
+                                    </p>
+                                }
+                            >
+
+                                <div>
+                                    <input
+                                        className="mt-6 border rounded-md w-[358px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                                        name="pointsRedemptionsName"
+                                        type="text"
+                                        placeholder="Points & Redemptions"
+                                        value={pointsRedemptionsNameInput}
+                                        onChange={(e) => setPointsRedemptionsNameInput(e.target.value)}
+                                    />
+                                    <div className="flex justify-center mt-5">
+
+                                        <button
+                                            className="px-[20px] py-3 bg-[#3E4DAC] hover:bg-opacity-70 text-[#fff] cursor-pointer text-xl font-bold rounded-lg"
+                                            onClick={() => setEditPointsRedemptionsNameOpen(false)}
+
+                                        >Add</button>
+
+
+                                    </div>
+
+                                </div>
+                            </DialogLayoutForFromControl>
+
+                            {
+                                (adminPointsRedemptionsDetailsOpen) && (
+                                    <AdminPointsRedemptionsDetails />
+                                )
+                            }
+
+
+                        </div>
+
+                        {/* Skills Management */}
+                        <div className='mt-2'>
+                            <div className={`w-[100%] flex items-center justify-between border p-2 rounded-xl ${adminSkillsManagementDetailsOpen ? "bg-slate-100" : ""} `}>
+                                <div className='flex items-center gap-7'>
+                                    <p className='text-xl font-medium'>
+                                        {
+                                            skillsManagementNameInput ? skillsManagementNameInput : "Skills Management"
+                                        }
+
+                                    </p>
+                                    <button
+                                        onClick={() => {
+                                            setEditSkillsManagementNameOpen(true);
+                                            /*    setChapterData({
+                                                 ...chapter,
+                                                 index: index,
+                                               }); */
+                                        }}
+                                        className="ml-[24px]"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="18"
+                                            height="20"
+                                            viewBox="0 0 18 20"
+                                            fill="none"
+                                        >
+                                            <path
+                                                d="M13.648 0.961914L17.3711 4.88525L14.5329 7.87744L10.8098 3.95411L13.648 0.961914ZM0.0117188 19.2551H3.73478L12.7781 9.72533L9.05502 5.802L0.0117188 15.3318V19.2551Z"
+                                                fill="#282828"
+                                            />
+                                        </svg>
+                                    </button>
+                                </div>
+                                {
+                                    (adminSkillsManagementDetailsOpen) ? <KeyboardArrowUpIcon className='cursor-pointer' onClick={() => {
+                                        setAdminSkillsManagementDetailsOpen(false);
+
+                                    }} /> : <KeyboardArrowDownIcon className='cursor-pointer' onClick={() => {
+                                        setAdminSkillsManagementDetailsOpen(true);
+
+                                    }} />
+                                }
+
+
+
+                            </div>
+                            <DialogLayoutForFromControl
+                                open={editSkillsManagementNameOpen}
+                                setOpen={setEditSkillsManagementNameOpen}
+                                width={400}
+                                borderRadius="15px"
+                                title={
+                                    <p className=" h-[90px] text-[19px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
+                                        Edit Skills Management Name
+                                    </p>
+                                }
+                            >
+
+                                <div>
+                                    <input
+                                        className="mt-6 border rounded-md w-[358px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                                        name="skillsManagement"
+                                        type="text"
+                                        placeholder="Skills Management"
+                                        value={skillsManagementNameInput}
+                                        onChange={(e) => setSkillsManagementNameInput(e.target.value)}
+                                    />
+                                    <div className="flex justify-center mt-5">
+
+                                        <button
+                                            className="px-[20px] py-3 bg-[#3E4DAC] hover:bg-opacity-70 text-[#fff] cursor-pointer text-xl font-bold rounded-lg"
+                                            onClick={() => setEditSkillsManagementNameOpen(false)}
+
+                                        >Add</button>
+
+
+                                    </div>
+
+                                </div>
+                            </DialogLayoutForFromControl>
+
+                            {
+                                (adminSkillsManagementDetailsOpen) && (
+                                    <AdminSkillsManagementDetails />
+                                )
+                            }
+
+
+                        </div>
+
+                        {/* Feedback */}
+                        <div className='mt-2'>
+                            <div className={`w-[100%] flex items-center justify-between border p-2 rounded-xl ${adminFeedbackDetailsOpen ? "bg-slate-100" : ""} `}>
+                                <div className='flex items-center gap-7'>
+                                    <p className='text-xl font-medium'>
+                                        {
+                                            feedbackNameInput ? feedbackNameInput : "Feedback"
+                                        }
+
+                                    </p>
+                                    <button
+                                        onClick={() => {
+                                            setEditFeedbackNameOpen(true);
+                                            /*    setChapterData({
+                                                 ...chapter,
+                                                 index: index,
+                                               }); */
+                                        }}
+                                        className="ml-[24px]"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="18"
+                                            height="20"
+                                            viewBox="0 0 18 20"
+                                            fill="none"
+                                        >
+                                            <path
+                                                d="M13.648 0.961914L17.3711 4.88525L14.5329 7.87744L10.8098 3.95411L13.648 0.961914ZM0.0117188 19.2551H3.73478L12.7781 9.72533L9.05502 5.802L0.0117188 15.3318V19.2551Z"
+                                                fill="#282828"
+                                            />
+                                        </svg>
+                                    </button>
+                                </div>
+                                {
+                                    (adminFeedbackDetailsOpen) ? <KeyboardArrowUpIcon className='cursor-pointer' onClick={() => {
+                                        setAdminFeedbackDetailsOpen(false);
+
+                                    }} /> : <KeyboardArrowDownIcon className='cursor-pointer' onClick={() => {
+                                        setAdminFeedbackDetailsOpen(true);
+
+                                    }} />
+                                }
+
+
+
+                            </div>
+                            <DialogLayoutForFromControl
+                                open={editFeedbackNameOpen}
+                                setOpen={setEditFeedbackNameOpen}
+                                width={400}
+                                borderRadius="15px"
+                                title={
+                                    <p className=" h-[90px] text-[19px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
+                                        Edit Feedback Name
+                                    </p>
+                                }
+                            >
+
+                                <div>
+                                    <input
+                                        className="mt-6 border rounded-md w-[358px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                                        name="feedback"
+                                        type="text"
+                                        placeholder="Feedback"
+                                        value={feedbackNameInput}
+                                        onChange={(e) => setFeedbackNameInput(e.target.value)}
+                                    />
+                                    <div className="flex justify-center mt-5">
+
+                                        <button
+                                            className="px-[20px] py-3 bg-[#3E4DAC] hover:bg-opacity-70 text-[#fff] cursor-pointer text-xl font-bold rounded-lg"
+                                            onClick={() => setEditFeedbackNameOpen(false)}
+
+                                        >Add</button>
+
+
+                                    </div>
+
+                                </div>
+                            </DialogLayoutForFromControl>
+
+                            {
+                                (adminFeedbackDetailsOpen) && (
+                                    <AdminFeedbackDetails />
+                                )
+                            }
+
+
+                        </div>
+
+                        {/* Update Organization */}
+                        <div className='mt-2'>
+                            <div className={`w-[100%] flex items-center justify-between border p-2 rounded-xl ${adminUpdateOrganizationDetailsOpen ? "bg-slate-100" : ""} `}>
+                                <div className='flex items-center gap-7'>
+                                    <p className='text-xl font-medium'>
+                                        {
+                                            updateOrganizationNameInput ? updateOrganizationNameInput : "Update Organization"
+                                        }
+
+                                    </p>
+                                    <button
+                                        onClick={() => {
+                                            setEditUpdateOrganizationNameOpen(true);
+                                            /*    setChapterData({
+                                                 ...chapter,
+                                                 index: index,
+                                               }); */
+                                        }}
+                                        className="ml-[24px]"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="18"
+                                            height="20"
+                                            viewBox="0 0 18 20"
+                                            fill="none"
+                                        >
+                                            <path
+                                                d="M13.648 0.961914L17.3711 4.88525L14.5329 7.87744L10.8098 3.95411L13.648 0.961914ZM0.0117188 19.2551H3.73478L12.7781 9.72533L9.05502 5.802L0.0117188 15.3318V19.2551Z"
+                                                fill="#282828"
+                                            />
+                                        </svg>
+                                    </button>
+                                </div>
+                                {
+                                    (adminUpdateOrganizationDetailsOpen) ? <KeyboardArrowUpIcon className='cursor-pointer' onClick={() => {
+                                        setAdminUpdateOrganizationDetailsOpen(false);
+
+                                    }} /> : <KeyboardArrowDownIcon className='cursor-pointer' onClick={() => {
+                                        setAdminUpdateOrganizationDetailsOpen(true);
+
+                                    }} />
+                                }
+
+
+
+                            </div>
+                            <DialogLayoutForFromControl
+                                open={editUpdateOrganizationNameOpen}
+                                setOpen={setEditUpdateOrganizationNameOpen}
+                                width={400}
+                                borderRadius="15px"
+                                title={
+                                    <p className=" h-[90px] text-[19px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
+                                        Edit Update Organization Name
+                                    </p>
+                                }
+                            >
+
+                                <div>
+                                    <input
+                                        className="mt-6 border rounded-md w-[358px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                                        name="updateOrganizationName"
+                                        type="text"
+                                        placeholder="Update Organization"
+                                        value={updateOrganizationNameInput}
+                                        onChange={(e) => setUpdateOrganizationNameInput(e.target.value)}
+                                    />
+                                    <div className="flex justify-center mt-5">
+
+                                        <button
+                                            className="px-[20px] py-3 bg-[#3E4DAC] hover:bg-opacity-70 text-[#fff] cursor-pointer text-xl font-bold rounded-lg"
+                                            onClick={() => setEditUpdateOrganizationNameOpen(false)}
+
+                                        >Add</button>
+
+
+                                    </div>
+
+                                </div>
+                            </DialogLayoutForFromControl>
+
+                            {
+                                (adminUpdateOrganizationDetailsOpen) && (
+                                    <AdminUpdateOrganizationDetails />
+                                )
+                            }
+
+
+                        </div>
+
+
                     </>
                 }
 
@@ -341,7 +727,7 @@ const LanguageSetting = () => {
 
             {/*   Student dashboard */}
 
-            <div className='mt-5'>
+            <div className='mt-10'>
                 <div className='w-[100%] flex items-center justify-between border p-2 rounded-xl'>
                     <div className='flex items-center gap-7'>
                         <p className='text-xl font-medium'> Student Dashboard</p>
@@ -408,7 +794,7 @@ const LanguageSetting = () => {
                                 width={400}
                                 borderRadius="15px"
                                 title={
-                                    <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
+                                    <p className=" h-[90px] text-[19px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
                                         Edit Dashboard Name
                                     </p>
                                 }
