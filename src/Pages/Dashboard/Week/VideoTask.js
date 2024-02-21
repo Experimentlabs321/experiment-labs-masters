@@ -11,6 +11,8 @@ import Quiz from "./SubFile/Shared/Quiz";
 const VideoTask = ({ taskData, something }) => {
   console.log(taskData);
   const navigate = useNavigate();
+  const [currentTime, setCurrentTime] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
   const { userInfo, user } = useContext(AuthContext);
   if (userInfo.role !== "admin") {
     window.addEventListener("contextmenu", (e) => {
@@ -22,9 +24,16 @@ const VideoTask = ({ taskData, something }) => {
   );
   const [openQuiz, setOpenQuiz] = useState(false);
   const [isOverlayVisible, setOverlayVisible] = useState(false);
-  console.log(taskData);
   const [completionStatus, setCompletionStatus] = useState(false);
   const pdfContainerRef = useRef(null);
+  function formatTime(seconds) {
+    const pad = (num) => (num < 10 ? `0${num}` : num);
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secondsLeft = Math.floor(seconds % 60);
+  
+    return `${pad(hours)}:${pad(minutes)}:${pad(secondsLeft)}`;
+  }
   useEffect(() => {
     if (
       taskData?.participants?.find(
@@ -33,7 +42,55 @@ const VideoTask = ({ taskData, something }) => {
     )
       setCompletionStatus(true);
   }, [taskData, user]);
+  const videoRef = useRef(null);
 
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+  
+    const handleTimeUpdate = () => {
+      setCurrentTime(video.currentTime);
+      console.log(`Current time: ${formatTime(video.currentTime)}`); // For testing
+    };
+  
+    const handlePlay = () => {
+      console.log(`Video played at:  ${formatTime(video.currentTime)}`); // Debug: Check if the video is playing
+      setIsPlaying(true);
+    };
+  
+    const handlePause = () => {
+      console.log(`Video paused:  ${formatTime(video.currentTime)}`); // Debug: Check if the video is paused
+      setIsPlaying(false);
+    };
+  
+    video.addEventListener('timeupdate', handleTimeUpdate);
+    video.addEventListener('play', handlePlay);
+    video.addEventListener('pause', handlePause);
+  
+    // Cleanup
+    return () => {
+      video.removeEventListener('timeupdate', handleTimeUpdate);
+      video.removeEventListener('play', handlePlay);
+      video.removeEventListener('pause', handlePause);
+    };
+  }, [videoRef]);
+  useEffect(() => {
+    const video = videoRef.current;
+    console.log('Video element:', video); // Debug: Check if the video element is correctly referenced
+
+    if (!video) return;
+  
+    const handleEnded = () => {
+      console.log(`Video watched until end, current time: ${formatTime(video.currentTime)}`);
+      // Additional logic here
+    };
+  
+    video.addEventListener('ended', handleEnded);
+  
+    return () => {
+      video.removeEventListener('ended', handleEnded);
+    };
+}, [videoRef]);
   const handleCompletion = async () => {
     Loading();
     if (
@@ -105,7 +162,7 @@ const VideoTask = ({ taskData, something }) => {
           )}
 
           <div className="relative">
-            {taskData?.additionalFiles && (
+          {taskData?.additionalFiles && (
               taskData?.isYoutubeLink ?
                 <iframe
                   width="90%"
@@ -115,23 +172,26 @@ const VideoTask = ({ taskData, something }) => {
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                   title="Embedded YouTube Video"
+                  ref={videoRef}
                 ></iframe>
                 :
-                <video
-                  key={taskData?.additionalFiles}
-                  className=" mx-auto rounded-lg border-[#292929]"
-                  width="90%"
-                  height="80vh"
-                  controls
-                  controlsList="nodownload"
-                  disablePictureInPicture
-                >
-                  <source
-                    src={taskData?.additionalFiles}
-                    // src="https://www.youtube.com/embed/0OK91ijimIU"
-                    type="video/mp4"
-                  />
-                </video>
+              <video
+                key={taskData?.additionalFiles}
+                ref={videoRef}
+                className=" mx-auto rounded-lg border-[#292929]"
+                width="90%"
+                height="80vh"
+                controls
+                controlsList="nodownload"
+                disablePictureInPicture
+              >
+                <source
+                  src={taskData?.additionalFiles}
+                  // src="https://www.youtube.com/embed/0OK91ijimIU"
+                  type="video/mp4"
+                />
+              </video>
+              
             )}
             {/* <div className="flex items-center text-sm font-bold gap-1 absolute top-3 right-20 z-10">
               <img className="w-4" src={icon} alt="icon" />
