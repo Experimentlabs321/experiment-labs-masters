@@ -103,23 +103,35 @@ const VideoTask = ({ taskData, something }) => {
               Mark as complete <CheckCircleOutlineIcon />
             </button>
           )}
+
           <div className="relative">
             {taskData?.additionalFiles && (
-              <video
-                key={taskData?.additionalFiles}
-                className=" mx-auto rounded-lg border-[#292929]"
-                width="90%"
-                height="80vh"
-                controls
-                controlsList="nodownload"
-                disablePictureInPicture
-              >
-                <source
+              taskData?.isYoutubeLink ?
+                <iframe
+                  width="90%"
+                  height="500"
                   src={taskData?.additionalFiles}
-                  // src="https://www.youtube.com/embed/0OK91ijimIU"
-                  type="video/mp4"
-                />
-              </video>
+                  className=" mx-auto rounded-lg border-[#292929] "
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  title="Embedded YouTube Video"
+                ></iframe>
+                :
+                <video
+                  key={taskData?.additionalFiles}
+                  className=" mx-auto rounded-lg border-[#292929]"
+                  width="90%"
+                  height="80vh"
+                  controls
+                  controlsList="nodownload"
+                  disablePictureInPicture
+                >
+                  <source
+                    src={taskData?.additionalFiles}
+                    // src="https://www.youtube.com/embed/0OK91ijimIU"
+                    type="video/mp4"
+                  />
+                </video>
             )}
             {/* <div className="flex items-center text-sm font-bold gap-1 absolute top-3 right-20 z-10">
               <img className="w-4" src={icon} alt="icon" />
