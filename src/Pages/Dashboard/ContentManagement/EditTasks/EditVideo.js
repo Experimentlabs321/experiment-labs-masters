@@ -163,13 +163,21 @@ const EditVideo = () => {
 
   const navigate = useNavigate();
 
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     Loading();
     let fileUrl = "";
+    let isYoutubeLink;
     console.log(selectedFile);
-    if (selectedFile) fileUrl = await uploadFileToS3(selectedFile);
-    else if (youtubeVideoLink) fileUrl = youtubeVideoLink;
+    if (selectedFile) {
+      fileUrl = await uploadFileToS3(selectedFile);
+      isYoutubeLink = false;
+    }
+    else if (youtubeVideoLink) {
+      fileUrl = youtubeVideoLink;
+      isYoutubeLink = true;
+    }
     const form = event.target;
     const videoTopicName = form.videoTopicName?.value;
 
@@ -181,10 +189,11 @@ const EditVideo = () => {
       earningParameterData: earningParameterData,
       chapterId: id,
       batches: selectedBatches,
-      taskDrip
+      taskDrip,
+      isYoutubeLink,
     };
 
-    console.log("Video Data =================>",ManageVideo);
+    console.log("Video Data =================>", ManageVideo);
 
     setVideoData(ManageVideo);
 
@@ -381,7 +390,7 @@ const EditVideo = () => {
                     <p className="font-bold text-lg me-[36px]">Upload Video</p>
                   </div>
                   <div
-                    className="w-3/4 h-[253px] bg-[#F6F7FF] flex flex-col items-center justify-center rounded-b-lg mt-6 ms-6"
+                    className="w-3/4 h-[300px] p-2 bg-[#F6F7FF] flex flex-col items-center justify-center rounded-b-lg mt-6 ms-6"
                     onDragEnter={handleDragEnter}
                     onDragLeave={handleDragLeave}
                     onDragOver={handleDragOver}
@@ -407,11 +416,21 @@ const EditVideo = () => {
                         Selected file: {selectedFile.name}
                       </p>
                     )}
+                    {youtubeVideoLink && (
+                      <p className=" text-center break-words max-w-full overflow-hidden">
+                        Selected file: {youtubeVideoLink}
+                      </p>
+                    )}
+                    {videoData && (
+                      <p className=" text-center break-words max-w-full overflow-hidden">
+                        Selected file: {videoData?.additionalFiles}
+                      </p>
+                    )}
                     {!selectedFile && (
                       <>
                         <div className="flex gap-2 justify-center w-full">
                           <label
-                            className="flex items-center px-5 py-2 rounded-lg bg-[#FFDB70] text-xs font-bold"
+                            className="flex items-center px-5 py-2 rounded-lg bg-[#FFDB70] text-xs font-bold cursor-pointer"
                             htmlFor="input-file-upload"
                           >
                             Browser
@@ -432,7 +451,7 @@ const EditVideo = () => {
                           <div className="">
                             <div
                               onClick={() => setOpenAddYoutubeLink(true)}
-                              className="flex items-center px-3 py-2 rounded-lg bg-[#D21B1B] text-xs font-bold text-[#fff]"
+                              className="flex items-center px-3 py-2 rounded-lg bg-[#D21B1B] text-xs font-bold text-[#fff] cursor-pointer"
                             >
                               <img src={youtube} alt="youtube" />
                               <p className="">Youtube</p>
