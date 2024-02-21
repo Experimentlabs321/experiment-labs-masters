@@ -31,7 +31,7 @@ const VideoTask = ({ taskData, something }) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const secondsLeft = Math.floor(seconds % 60);
-  
+
     return `${pad(hours)}:${pad(minutes)}:${pad(secondsLeft)}`;
   }
   useEffect(() => {
@@ -44,53 +44,64 @@ const VideoTask = ({ taskData, something }) => {
   }, [taskData, user]);
   const videoRef = useRef(null);
 
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-  
+const setupEventListeners = (video) => {
+    // Add the console log here to check the video object
+    console.log(video, video instanceof HTMLVideoElement);
+
+    if (!(video instanceof HTMLVideoElement)) {
+        console.error('Attempted to attach video event listeners to a non-video element');
+        return;
+    }
+
     const handleTimeUpdate = () => {
-      setCurrentTime(video.currentTime);
-      console.log(`Current time: ${formatTime(video.currentTime)}`); // For testing
+        setCurrentTime(video.currentTime);
+        console.log(`Current time: ${formatTime(video.currentTime)}`);
     };
-  
+
     const handlePlay = () => {
-      console.log(`Video played at:  ${formatTime(video.currentTime)}`); // Debug: Check if the video is playing
-      setIsPlaying(true);
+        console.log(`Video played at: ${formatTime(video.currentTime)}`);
+        setIsPlaying(true);
     };
-  
+
     const handlePause = () => {
-      console.log(`Video paused:  ${formatTime(video.currentTime)}`); // Debug: Check if the video is paused
-      setIsPlaying(false);
+        console.log(`Video paused: ${formatTime(video.currentTime)}`);
+        setIsPlaying(false);
     };
-  
+
+    // Attach event listeners
     video.addEventListener('timeupdate', handleTimeUpdate);
     video.addEventListener('play', handlePlay);
     video.addEventListener('pause', handlePause);
-  
-    // Cleanup
+
+    // Cleanup function to remove event listeners
     return () => {
-      video.removeEventListener('timeupdate', handleTimeUpdate);
-      video.removeEventListener('play', handlePlay);
-      video.removeEventListener('pause', handlePause);
+        video.removeEventListener('timeupdate', handleTimeUpdate);
+        video.removeEventListener('play', handlePlay);
+        video.removeEventListener('pause', handlePause);
     };
-  }, [videoRef]);
+};
+
   useEffect(() => {
     const video = videoRef.current;
-    console.log('Video element:', video); // Debug: Check if the video element is correctly referenced
-
+    console.log(video)
     if (!video) return;
-  
-    const handleEnded = () => {
-      console.log(`Video watched until end, current time: ${formatTime(video.currentTime)}`);
-      // Additional logic here
+
+    // Wait for the video metadata to load before setting up event listeners
+    const onMetadataLoaded = () => {
+      console.log("Video metadata loaded");
+      // Setup event listeners
+      const cleanup = setupEventListeners(video);
+
+      // Cleanup on component unmount or when video changes
+      return cleanup;
     };
-  
-    video.addEventListener('ended', handleEnded);
-  
+
+    video.addEventListener('loadedmetadata', onMetadataLoaded);
+
     return () => {
-      video.removeEventListener('ended', handleEnded);
+      video.removeEventListener('loadedmetadata', onMetadataLoaded);
     };
-}, [videoRef]);
+  }, [videoRef]);
   const handleCompletion = async () => {
     Loading();
     if (
@@ -162,7 +173,7 @@ const VideoTask = ({ taskData, something }) => {
           )}
 
           <div className="relative">
-          {taskData?.additionalFiles && (
+            {taskData?.additionalFiles && (
               taskData?.isYoutubeLink ?
                 <iframe
                   width="90%"
@@ -175,23 +186,26 @@ const VideoTask = ({ taskData, something }) => {
                   ref={videoRef}
                 ></iframe>
                 :
-              <video
-                key={taskData?.additionalFiles}
-                ref={videoRef}
-                className=" mx-auto rounded-lg border-[#292929]"
-                width="90%"
-                height="80vh"
-                controls
-                controlsList="nodownload"
-                disablePictureInPicture
-              >
-                <source
-                  src={taskData?.additionalFiles}
-                  // src="https://www.youtube.com/embed/0OK91ijimIU"
-                  type="video/mp4"
-                />
-              </video>
-              
+                <video
+                  key={taskData?.additionalFiles}
+                  ref={videoRef}
+                  className="mx-auto rounded-lg border-[#292929]"
+                  width="90%"
+                  height="80vh"
+                  controls
+                  controlsList="nodownload"
+                  disablePictureInPicture
+                  onLoadedMetadata={() => {
+                    console.log("Video metadata loaded");
+                    const video = videoRef.current;
+                    if (video) {
+                      setupEventListeners(video);
+                    }
+                  }}
+                >
+                  <source src={taskData?.additionalFiles} type="video/mp4" />
+                </video>
+
             )}
             {/* <div className="flex items-center text-sm font-bold gap-1 absolute top-3 right-20 z-10">
               <img className="w-4" src={icon} alt="icon" />
