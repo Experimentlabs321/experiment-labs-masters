@@ -1,10 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Layout from "../Layout";
 import ApexChart from "../AdminDashboard/ApexChart";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
 import SalesAndRevenueChart from "./SalesAndRevenueChart";
 import { Link } from "react-router-dom";
+import { DownloadTableExcel } from "react-export-table-to-excel";
 
 const SalesAndRevenue = () => {
   const { userInfo } = useContext(AuthContext);
@@ -28,11 +29,13 @@ const SalesAndRevenue = () => {
   const [courseDropdown, setCourseDropdown] = useState(false);
   const [selectedCourses, setSelectedCourses] = useState([]);
   const [selectedBatches, setSelectedBatches] = useState([]);
+  const [tableWidth, setTableWidth] = useState("100%");
+  const tableRef = useRef(null);
 
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/courseAndBatch/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
         setCourses(response?.data);
@@ -104,7 +107,7 @@ const SalesAndRevenue = () => {
   useEffect(() => {
     axios
       .get(
-        `http://localhost:5000/api/v1/users/getAllPaidInfoWithPayerData/organizationId/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVER_API}/api/v1/users/getAllPaidInfoWithPayerData/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
         setPaidStudents(response?.data);
@@ -118,69 +121,42 @@ const SalesAndRevenue = () => {
     setIsLoading(false);
   }, [userInfo]);
 
-  const applyFilters = async () => {
+  useEffect(() => {
+    // Calculate the desired width (e.g., 200px less than the screen width)
+    const screenWidth = window.innerWidth;
+    const desiredWidth = screenWidth - 360;
+
+    // Set the table width as a string
+    setTableWidth(`${desiredWidth}px`);
+
+    // Update the width if the window is resized
+    const handleResize = () => {
+      const updatedWidth = window.innerWidth - 360;
+      setTableWidth(`${updatedWidth}px`);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup the event listener when the component unmounts
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const applyFilters = async (filterCourses, filterBatches) => {
     let filtered = paidStudents;
-    // console.log(topic, batch, status);
 
-    // Apply course filter
-    // if (topic?._id) {
-    //   filtered = await filtered.filter(
-    //     (student) => student?.courseId === topic?._id
-    //   );
-    // }
-    if (selectedCourses[0]) {
+    if (filterCourses[0]) {
       filtered = await filtered?.filter((student) =>
-        selectedCourses?.find((course) => course?._id === student?.courseId)
-      );
-    }
-    console.log(filtered);
-
-    // Apply batch filter
-    // if (batch?._id) {
-    //   filtered = await filtered.filter(
-    //     (student) => student?.batchId === batch._id
-    //   );
-    // }
-    if (selectedBatches[0]) {
-      filtered = await filtered?.filter((student) =>
-        selectedBatches?.find((batch) => batch === student?.batchId)
+        filterCourses?.find((course) => course?._id === student?.courseId)
       );
     }
 
-    // Apply validation filter
-    // if (status) {
-    //   if (status === "Paid") {
-    //     filtered = await filtered.filter(
-    //       (item) => item?.courses && item?.courses[0]
-    //     );
-    //   } else if (status === "Unpaid") {
-    //     filtered = await filtered.filter(
-    //       (item) => !item?.courses || !item?.courses[0]
-    //     );
-    //   } else if (status === "Expired") {
-    //     filtered = await filtered.filter(
-    //       (item) => item?.courses && item?.courses[0]
-    //     );
-    //     filtered = await filtered.filter((item) => {
-    //       let flag = false;
-    //       item?.courses?.map((course) => {
-    //         if (course?.enrollDate) {
-    //           const actualCourse = courses?.find(
-    //             (i) => i?._id === course?.courseId
-    //           );
-    //           if (
-    //             parseInt(actualCourse?.expirationDay) -
-    //               daysDifferenceFromEnrolled(course?.enrollDate) <
-    //             0
-    //           ) {
-    //             flag = true;
-    //           }
-    //         }
-    //       });
-    //       return flag;
-    //     });
-    //   }
-    // }
+    if (filterBatches[0]) {
+      filtered = await filtered?.filter((student) =>
+        filterBatches?.find((batch) => batch === student?.batchId)
+      );
+    }
 
     setFilteredStudents(filtered);
   };
@@ -198,42 +174,43 @@ const SalesAndRevenue = () => {
       `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${selectedCourse._id}`
     );
     selectedCourse.batches = data;
-    console.log("Selected Course", selectedCourse);
 
     if (!selectedCourses?.includes(selectedCourse)) {
       setSelectedCourses([...selectedCourses, selectedCourse]);
+      applyFilters([...selectedCourses, selectedCourse], selectedBatches);
     }
-    applyFilters();
   };
 
-  const removeSelectedCourse = (removedCourse) => {
-    setSelectedBatches(
-      selectedBatches?.filter(
-        (batch) =>
-          !removedCourse?.selectedBatches?.find((item) => item?._id === batch)
-      )
+  const removeSelectedCourse = async (removedCourse) => {
+    const filterBatches = selectedBatches?.filter(
+      (batch) =>
+        !removedCourse?.selectedBatches?.find((item) => item?._id === batch)
     );
+    setSelectedBatches(filterBatches);
+    await applyFilters(selectedCourses, filterBatches);
     const newSelectedCourses = selectedCourses.filter(
       (course) => course !== removedCourse
     );
     setSelectedCourses(newSelectedCourses);
-    applyFilters();
+    applyFilters(newSelectedCourses, filterBatches);
   };
 
-  const handleBatches = (batch, index) => {
+  const handleBatches = async (batch, index) => {
     if (!selectedBatches?.includes(batch._id)) {
       setSelectedBatches([...selectedBatches, batch._id]);
-      if (selectedCourses[index].selectedBatches)
+      await applyFilters(selectedCourses, [...selectedBatches, batch._id]);
+      if (selectedCourses[index].selectedBatches) {
         selectedCourses[index].selectedBatches = [
           batch,
           ...selectedCourses[index].selectedBatches,
         ];
-      else {
+        await applyFilters(selectedCourses, [...selectedBatches, batch._id]);
+      } else {
         const course = { ...selectedCourses[index], selectedBatches: [batch] };
         selectedCourses[index] = course;
+        await applyFilters(selectedCourses, [...selectedBatches, batch._id]);
       }
     } else {
-      console.log(selectedBatches, batch._id);
       const newSelectedBatches = selectedBatches.filter(
         (removeBatch) => removeBatch !== batch._id
       );
@@ -241,8 +218,8 @@ const SalesAndRevenue = () => {
         index
       ].selectedBatches.filter((removeBatch) => removeBatch?._id !== batch._id);
       setSelectedBatches(newSelectedBatches);
+      applyFilters(selectedCourses, newSelectedBatches);
     }
-    applyFilters();
   };
 
   const daysDifferenceFromEnrolled = (enrolledDate) => {
@@ -433,19 +410,73 @@ const SalesAndRevenue = () => {
             toDate={toDate}
           />
         </div>
+
+        <DownloadTableExcel
+          filename="users table"
+          sheet="users"
+          currentTableRef={tableRef.current}
+        >
+          <button> Export excel </button>
+        </DownloadTableExcel>
         <div className="p-4">
           <div
-            // style={{ width: tableWidth, height: "70vh" }}
+            style={{ width: tableWidth, maxHeight: "70vh" }}
             className="overflow-x-auto"
           >
-            <table className="min-w-full font-sans bg-white border border-gray-300">
+            <table
+              ref={tableRef}
+              className="min-w-full font-sans bg-white border border-gray-300"
+            >
               <thead className="bg-gray-800 text-white sticky top-0">
                 <tr>
-                  <th className="py-3 px-6 border-b text-left">Name</th>
-                  <th className="py-3 px-6 border-b text-left">Email</th>
-                  <th className="py-3 px-6 border-b text-left">phone</th>
-                  <th className="py-3 px-6 border-b text-left">Joining Date</th>
-                  <th className="py-3 px-6 border-b text-left">Paid/Unpaid</th>
+                  <th
+                    className="py-3 px-6 border-b text-left whitespace-nowrap
+                  "
+                  >
+                    Name
+                  </th>
+                  <th
+                    className="py-3 px-6 border-b text-left whitespace-nowrap
+                  "
+                  >
+                    Email
+                  </th>
+                  <th
+                    className="py-3 px-6 border-b text-left whitespace-nowrap
+                  "
+                  >
+                    Phone
+                  </th>
+                  <th
+                    className="py-3 px-6 border-b text-left whitespace-nowrap
+                  "
+                  >
+                    Joining Date
+                  </th>
+                  <th
+                    className="py-3 px-6 border-b text-left whitespace-nowrap
+                  "
+                  >
+                    Course
+                  </th>
+                  <th
+                    className="py-3 px-6 border-b text-left whitespace-nowrap
+                  "
+                  >
+                    Batch
+                  </th>
+                  <th
+                    className="py-3 px-6 border-b text-left whitespace-nowrap
+                  "
+                  >
+                    Original Price
+                  </th>
+                  <th
+                    className="py-3 px-6 border-b text-left whitespace-nowrap
+                  "
+                  >
+                    Paid Amount
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -456,6 +487,13 @@ const SalesAndRevenue = () => {
                       student?.payer?.dateCreated
                     )?.toLocaleDateString();
 
+                    const courseData = courses?.find(
+                      (item) => item?._id === student?.courseId
+                    );
+                    const batchData = courseData?.batches?.find(
+                      (item) => item?._id === student?.batchId
+                    );
+
                     return (
                       <tr
                         key={student?._id}
@@ -463,54 +501,49 @@ const SalesAndRevenue = () => {
                           index % 2 === 0 ? "bg-gray-100" : "bg-gray-50"
                         }
                       >
-                        <td className="py-4 px-6 border-b text-left">
-                          <Link to={`/profile/${student?.payer?.email}`}>
+                        <td className="py-4 px-6 border-b text-left whitespace-nowrap">
+                          <p to={`/profile/${student?.payer?.email}`}>
                             {student?.payer?.name}
-                          </Link>
+                          </p>
                         </td>
-                        <td className="py-4 px-6 border-b text-left">
-                          <Link to={`/profile/${student?.payer?.email}`}>
+                        <td className="py-4 px-6 border-b text-left whitespace-nowrap">
+                          <p to={`/profile/${student?.payer?.email}`}>
                             {student?.payer?.email}
-                          </Link>
+                          </p>
                         </td>
-                        <td className="py-4 px-6 border-b text-left">
-                          <Link to={`/profile/${student?.payer?.email}`}>
+                        <td className="py-4 px-6 border-b text-left whitespace-nowrap">
+                          <p to={`/profile/${student?.payer?.email}`}>
                             {student?.payer?.phone}
-                          </Link>
+                          </p>
                         </td>
-                        <td className="py-4 px-6 border-b text-left">
-                          <Link to={`/profile/${student?.payer?.email}`}>
+                        <td className="py-4 px-6 border-b text-left whitespace-nowrap">
+                          <p to={`/profile/${student?.payer?.email}`}>
                             {formattedDate}
-                          </Link>
+                          </p>
                         </td>
-                        <td className="py-4 px-6 border-b text-left">
-                          {parseInt(selectedCourse?.expirationDay) -
-                            daysDifferenceFromEnrolled(
-                              student?.courses?.find(
-                                (item) => item?.courseId === selectedCourse?._id
-                              )?.enrollDate
-                            ) <
-                            0 ||
-                          (!selectedCourse?._id &&
-                            selectedValidationStatus === "Expired") ? (
-                            <Link to={`/profile/${student?.email}`}>
-                              <span className="text-orange-600 font-semibold">
-                                &#9888; Expired
-                              </span>
-                            </Link>
-                          ) : (
-                            <Link to={`/profile/${student?.email}`}>
-                              {student?.courses && student?.courses[0] ? (
-                                <span className="text-green font-semibold">
-                                  &#x2713; Paid
-                                </span>
-                              ) : (
-                                <span className="text-red-600 font-semibold">
-                                  &#x2717; Unpaid
-                                </span>
-                              )}
-                            </Link>
-                          )}
+                        <td className="py-4 px-6 border-b text-left whitespace-nowrap">
+                          <p to={`/profile/${student?.email}`}>
+                            {courseData?.courseFullName}
+                          </p>
+                        </td>
+                        <td className="py-4 px-6 border-b text-left whitespace-nowrap">
+                          <p to={`/profile/${student?.email}`}>
+                            {batchData?.batchName}
+                          </p>
+                        </td>
+                        <td className="py-4 px-6 border-b text-left whitespace-nowrap">
+                          <p to={`/profile/${student?.email}`}>
+                            &#8377;
+                            {student?.originalPrice
+                              ? student?.originalPrice
+                              : 0}
+                          </p>
+                        </td>
+                        <td className="py-4 px-6 border-b text-left whitespace-nowrap">
+                          <p to={`/profile/${student?.email}`}>
+                            &#8377;
+                            {student?.paidAmount ? student?.paidAmount : 0}
+                          </p>
                         </td>
                       </tr>
                     );
