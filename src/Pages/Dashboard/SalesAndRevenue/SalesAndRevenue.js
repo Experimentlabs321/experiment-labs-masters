@@ -411,13 +411,18 @@ const SalesAndRevenue = () => {
           />
         </div>
 
-        <DownloadTableExcel
-          filename="users table"
-          sheet="users"
-          currentTableRef={tableRef.current}
-        >
-          <button> Export excel </button>
-        </DownloadTableExcel>
+        <div className="p-4">
+          <DownloadTableExcel
+            filename="users table"
+            sheet="users"
+            currentTableRef={tableRef.current}
+          >
+            <button className="bg-sky-400 text-white font-bold px-4 py-2 rounded-md ">
+              {" "}
+              Export excel{" "}
+            </button>
+          </DownloadTableExcel>
+        </div>
         <div className="p-4">
           <div
             style={{ width: tableWidth, maxHeight: "70vh" }}
