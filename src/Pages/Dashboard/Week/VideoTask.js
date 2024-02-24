@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import icon from "../../../icon192.png";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
+import ReactPlayer from 'react-player';
 import Swal from "sweetalert2";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { useNavigate } from "react-router-dom";
@@ -26,14 +27,13 @@ const VideoTask = ({ taskData, something }) => {
   const [isOverlayVisible, setOverlayVisible] = useState(false);
   const [completionStatus, setCompletionStatus] = useState(false);
   const pdfContainerRef = useRef(null);
-  function formatTime(seconds) {
-    const pad = (num) => (num < 10 ? `0${num}` : num);
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secondsLeft = Math.floor(seconds % 60);
-
-    return `${pad(hours)}:${pad(minutes)}:${pad(secondsLeft)}`;
-  }
+  const formatTime = (seconds) => {
+    const pad = (num) => num.toString().padStart(2, '0');
+    const hours = pad(Math.floor(seconds / 3600));
+    const minutes = pad(Math.floor((seconds % 3600) / 60));
+    const secondsLeft = pad(Math.floor(seconds % 60));
+    return `${hours}:${minutes}:${secondsLeft}`;
+  };
   useEffect(() => {
     if (
       taskData?.participants?.find(
@@ -43,29 +43,42 @@ const VideoTask = ({ taskData, something }) => {
       setCompletionStatus(true);
   }, [taskData, user]);
   const videoRef = useRef(null);
+  const [playedSeconds, setPlayedSeconds] = useState(0);
 
-const setupEventListeners = (video) => {
+  // Function to handle playback progress
+  const handleProgress = (state) => {
+    setPlayedSeconds(state.playedSeconds);
+    // You can use state.playedSeconds to keep track of how much of the video has been played
+  };
+
+  // Example of handling playback state
+  useEffect(() => {
+    // You can perform actions based on playedSeconds here
+    // This is just a logging example
+    console.log(`Current played duration: ${formatTime(playedSeconds)} seconds`);
+  }, [playedSeconds]);
+  const setupEventListeners = (video) => {
     // Add the console log here to check the video object
     console.log(video, video instanceof HTMLVideoElement);
 
     if (!(video instanceof HTMLVideoElement)) {
-        console.error('Attempted to attach video event listeners to a non-video element');
-        return;
+      console.error('Attempted to attach video event listeners to a non-video element');
+      return;
     }
 
     const handleTimeUpdate = () => {
-        setCurrentTime(video.currentTime);
-        console.log(`Current time: ${formatTime(video.currentTime)}`);
+      setCurrentTime(video.currentTime);
+      console.log(`Current time: ${formatTime(video.currentTime)}`);
     };
 
     const handlePlay = () => {
-        console.log(`Video played at: ${formatTime(video.currentTime)}`);
-        setIsPlaying(true);
+      console.log(`Video played at: ${formatTime(video.currentTime)}`);
+      setIsPlaying(true);
     };
 
     const handlePause = () => {
-        console.log(`Video paused: ${formatTime(video.currentTime)}`);
-        setIsPlaying(false);
+      console.log(`Video paused: ${formatTime(video.currentTime)}`);
+      setIsPlaying(false);
     };
 
     // Attach event listeners
@@ -75,11 +88,11 @@ const setupEventListeners = (video) => {
 
     // Cleanup function to remove event listeners
     return () => {
-        video.removeEventListener('timeupdate', handleTimeUpdate);
-        video.removeEventListener('play', handlePlay);
-        video.removeEventListener('pause', handlePause);
+      video.removeEventListener('timeupdate', handleTimeUpdate);
+      video.removeEventListener('play', handlePlay);
+      video.removeEventListener('pause', handlePause);
     };
-};
+  };
 
   useEffect(() => {
     const video = videoRef.current;
@@ -175,16 +188,54 @@ const setupEventListeners = (video) => {
           <div className="relative">
             {taskData?.additionalFiles && (
               taskData?.isYoutubeLink ?
-                <iframe
+                // <iframe
+                //   width="90%"
+                //   height="500"
+                //   src={taskData?.additionalFiles}
+                //   className=" mx-auto rounded-lg border-[#292929] "
+                //   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                //   allowFullScreen
+                //   title="Embedded YouTube Video"
+                //   ref={videoRef}
+                // ></iframe>
+                // <ReactPlayer
+                //   url={taskData?.additionalFiles} // Your video URL here
+                //   controls
+                //   onProgress={handleProgress}
+                //   width="90%"
+                //   height="450px"
+                //   className=" mx-auto rounded-lg border-[#292929] "
+                // />
+                <div>
+                 <ReactPlayer
+                  url={taskData?.additionalFiles}
+                  
+                  onProgress={handleProgress}
                   width="90%"
-                  height="500"
-                  src={taskData?.additionalFiles}
-                  className=" mx-auto rounded-lg border-[#292929] "
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  title="Embedded YouTube Video"
-                  ref={videoRef}
-                ></iframe>
+                  height="430px"
+                  style={{ borderRadius: "10px", marginBottom: "30px"}}
+                  className=" mx-auto rounded-lg border-[#292929] mb-4"
+                  config={{
+                    youtube: {
+                      playerVars: {
+                        autoplay: 1,
+                        controls: 1,
+                        enablejsapi: 1,
+                        modestbranding: 1,
+                        fs: 1, // Enabling fullscreen
+                        iv_load_policy: 3, // Hiding video annotations
+                        // Add any other playerVars you need
+                      },
+                      embedOptions: {
+                        enablejsapi: 1,
+                        // Use this to pass attributes to the iframe
+                        // This doesn't directly enable fullscreen but fs: 1 in playerVars does
+                      },
+                    },
+                  }}
+                />
+                <div className='mt-20'></div>
+                </div>
                 :
                 <video
                   key={taskData?.additionalFiles}
