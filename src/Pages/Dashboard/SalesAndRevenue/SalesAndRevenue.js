@@ -6,6 +6,9 @@ import axios from "axios";
 import SalesAndRevenueChart from "./SalesAndRevenueChart";
 import { Link } from "react-router-dom";
 import { DownloadTableExcel } from "react-export-table-to-excel";
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
+import inrIcon from "../../../assets/Dashboard/inrIcon.png";
 
 const SalesAndRevenue = () => {
   const { userInfo } = useContext(AuthContext);
@@ -29,6 +32,8 @@ const SalesAndRevenue = () => {
   const [courseDropdown, setCourseDropdown] = useState(false);
   const [selectedCourses, setSelectedCourses] = useState([]);
   const [selectedBatches, setSelectedBatches] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const tasksPerPage = 15;
   const [tableWidth, setTableWidth] = useState("100%");
   const tableRef = useRef(null);
 
@@ -110,7 +115,7 @@ const SalesAndRevenue = () => {
         `${process.env.REACT_APP_SERVER_API}/api/v1/users/getAllPaidInfoWithPayerData/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
-        setPaidStudents(response?.data);
+        setPaidStudents(response?.data?.reverse());
         setFilteredStudents(response?.data);
         setIsLoading(false);
       })
@@ -238,7 +243,19 @@ const SalesAndRevenue = () => {
     return daysDifference;
   };
 
-  console.log(filteredStudents);
+  const indexOfLastTask = currentPage * tasksPerPage;
+  const indexOfFirstTask = indexOfLastTask - tasksPerPage;
+  const currentTasks = filteredStudents.slice(
+    indexOfFirstTask,
+    indexOfLastTask
+  );
+
+  const paginate = (event, page) => {
+    event.preventDefault();
+    setCurrentPage(page);
+  };
+
+  console.log(courses);
 
   return (
     <div>
@@ -249,7 +266,7 @@ const SalesAndRevenue = () => {
           <div className="my-5 flex gap-5 flex-wrap">
             <Link
               to=""
-              className="w-fit min-w-[200px] justify-center items-stretch shadow-md border flex flex-col px-2 rounded-md py-4"
+              className="w-fit min-w-[200px] justify-center items-stretch  bg-[#8064F0] text-white shadow-md border flex flex-col px-2 rounded-md py-4"
             >
               <h1 className=" text-sm font-medium tracking-widest">
                 Total Revenue
@@ -260,13 +277,35 @@ const SalesAndRevenue = () => {
             </Link>
             <Link
               to=""
-              className="w-fit min-w-[200px] justify-center items-stretch shadow-md border flex flex-col px-2 rounded-md py-4"
+              className="w-fit min-w-[200px] justify-center items-stretch bg-[#0A98EA] text-white shadow-md border flex flex-col px-2 rounded-md py-4"
             >
               <h1 className=" text-sm font-medium tracking-widest">
                 Total Refunds
               </h1>
               <h1 className=" font-sans text-3xl font-bold tracking-[1px] whitespace-nowrap mt-3 flex items-center">
                 &#8377;0
+              </h1>
+            </Link>
+            <Link
+              to=""
+              className="w-fit min-w-[200px] justify-center items-stretch bg-[#5c0aea] text-white shadow-md border flex flex-col px-2 rounded-md py-4"
+            >
+              <h1 className=" text-sm font-medium tracking-widest">
+                Total Courses
+              </h1>
+              <h1 className=" font-sans text-3xl font-bold tracking-[1px] whitespace-nowrap mt-3 flex items-center">
+                {courses?.length}
+              </h1>
+            </Link>
+            <Link
+              to=""
+              className="w-fit min-w-[200px] justify-center items-stretch bg-[#6278FF] text-white shadow-md border flex flex-col px-2 rounded-md py-4"
+            >
+              <h1 className=" text-sm font-medium tracking-widest">
+                Enrolled Students
+              </h1>
+              <h1 className=" font-sans text-3xl font-bold tracking-[1px] whitespace-nowrap mt-3 flex items-center">
+                {paidStudents?.length}
               </h1>
             </Link>
           </div>
@@ -424,12 +463,9 @@ const SalesAndRevenue = () => {
           </DownloadTableExcel>
         </div>
         <div className="p-4">
-          <div
-            style={{ width: tableWidth, maxHeight: "70vh" }}
-            className="overflow-x-auto"
-          >
+          <div style={{ width: tableWidth }} className="overflow-x-auto">
             <table
-              ref={tableRef}
+              // ref={tableRef}
               className="min-w-full font-sans bg-white border border-gray-300"
             >
               <thead className="bg-gray-800 text-white sticky top-0">
@@ -456,7 +492,7 @@ const SalesAndRevenue = () => {
                     className="py-3 px-6 border-b text-left whitespace-nowrap
                   "
                   >
-                    Joining Date
+                    Purchase Date
                   </th>
                   <th
                     className="py-3 px-6 border-b text-left whitespace-nowrap
@@ -485,11 +521,11 @@ const SalesAndRevenue = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredStudents &&
-                  filteredStudents[0] &&
-                  filteredStudents?.reverse()?.map((student, index) => {
+                {currentTasks &&
+                  currentTasks[0] &&
+                  currentTasks?.map((student, index) => {
                     const formattedDate = new Date(
-                      student?.payer?.dateCreated
+                      student?.paidAt
                     )?.toLocaleDateString();
 
                     const courseData = courses?.find(
@@ -555,6 +591,142 @@ const SalesAndRevenue = () => {
                   })}
               </tbody>
             </table>
+            <table
+              ref={tableRef}
+              className="min-w-full hidden font-sans bg-white border border-gray-300"
+            >
+              <thead className="bg-gray-800 text-white sticky top-0">
+                <tr>
+                  <th
+                    className="py-3 px-6 border-b text-left whitespace-nowrap
+                  "
+                  >
+                    Name
+                  </th>
+                  <th
+                    className="py-3 px-6 border-b text-left whitespace-nowrap
+                  "
+                  >
+                    Email
+                  </th>
+                  <th
+                    className="py-3 px-6 border-b text-left whitespace-nowrap
+                  "
+                  >
+                    Phone
+                  </th>
+                  <th
+                    className="py-3 px-6 border-b text-left whitespace-nowrap
+                  "
+                  >
+                    Purchase Date
+                  </th>
+                  <th
+                    className="py-3 px-6 border-b text-left whitespace-nowrap
+                  "
+                  >
+                    Course
+                  </th>
+                  <th
+                    className="py-3 px-6 border-b text-left whitespace-nowrap
+                  "
+                  >
+                    Batch
+                  </th>
+                  <th
+                    className="py-3 px-6 border-b text-left whitespace-nowrap
+                  "
+                  >
+                    Original Price
+                  </th>
+                  <th
+                    className="py-3 px-6 border-b text-left whitespace-nowrap
+                  "
+                  >
+                    Paid Amount
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredStudents &&
+                  filteredStudents[0] &&
+                  filteredStudents?.map((student, index) => {
+                    const formattedDate = new Date(
+                      student?.paidAt
+                    )?.toLocaleDateString();
+
+                    const courseData = courses?.find(
+                      (item) => item?._id === student?.courseId
+                    );
+                    const batchData = courseData?.batches?.find(
+                      (item) => item?._id === student?.batchId
+                    );
+
+                    return (
+                      <tr
+                        key={student?._id}
+                        className={
+                          index % 2 === 0 ? "bg-gray-100" : "bg-gray-50"
+                        }
+                      >
+                        <td className="py-4 px-6 border-b text-left whitespace-nowrap">
+                          <p to={`/profile/${student?.payer?.email}`}>
+                            {student?.payer?.name}
+                          </p>
+                        </td>
+                        <td className="py-4 px-6 border-b text-left whitespace-nowrap">
+                          <p to={`/profile/${student?.payer?.email}`}>
+                            {student?.payer?.email}
+                          </p>
+                        </td>
+                        <td className="py-4 px-6 border-b text-left whitespace-nowrap">
+                          <p to={`/profile/${student?.payer?.email}`}>
+                            {student?.payer?.phone}
+                          </p>
+                        </td>
+                        <td className="py-4 px-6 border-b text-left whitespace-nowrap">
+                          <p to={`/profile/${student?.payer?.email}`}>
+                            {formattedDate}
+                          </p>
+                        </td>
+                        <td className="py-4 px-6 border-b text-left whitespace-nowrap">
+                          <p to={`/profile/${student?.email}`}>
+                            {courseData?.courseFullName}
+                          </p>
+                        </td>
+                        <td className="py-4 px-6 border-b text-left whitespace-nowrap">
+                          <p to={`/profile/${student?.email}`}>
+                            {batchData?.batchName}
+                          </p>
+                        </td>
+                        <td className="py-4 px-6 border-b text-left whitespace-nowrap">
+                          <p to={`/profile/${student?.email}`}>
+                            &#8377;
+                            {student?.originalPrice
+                              ? student?.originalPrice
+                              : 0}
+                          </p>
+                        </td>
+                        <td className="py-4 px-6 border-b text-left whitespace-nowrap">
+                          <p to={`/profile/${student?.email}`}>
+                            &#8377;
+                            {student?.paidAmount ? student?.paidAmount : 0}
+                          </p>
+                        </td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+          </div>
+          <div className="flex items-center justify-center my-4">
+            <Stack spacing={2}>
+              <Pagination
+                count={Math.ceil(filteredStudents.length / tasksPerPage)}
+                page={currentPage}
+                onChange={paginate}
+              />
+            </Stack>
           </div>
         </div>
       </Layout>

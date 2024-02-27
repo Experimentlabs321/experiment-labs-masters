@@ -179,7 +179,7 @@ const ManageFile = () => {
       if (newTask) {
         toast.success("File added Successfully");
         const newNotification = await axios.post(
-          `https://test-server-tg7l.onrender.com/api/v1/notifications/addNotification`,
+          `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/notifications/addNotification`,
           {
             message: `New file material added in course ${course?.courseFullName}.`,
             dateTime: new Date(),
