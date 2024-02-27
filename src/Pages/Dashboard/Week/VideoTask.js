@@ -15,6 +15,8 @@ const VideoTask = ({ taskData, something }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const { userInfo, user } = useContext(AuthContext);
+  const [durations, setDuration] = useState(0);
+  console.log('durations ', durations)
   if (userInfo.role !== "admin") {
     window.addEventListener("contextmenu", (e) => {
       e.preventDefault();
@@ -42,9 +44,27 @@ const VideoTask = ({ taskData, something }) => {
     )
       setCompletionStatus(true);
   }, [taskData, user]);
+
   const videoRef = useRef(null);
   const [playedSeconds, setPlayedSeconds] = useState(0);
-
+  // useEffect(() => {
+  //   console.log('Document State:', document.readyState);
+  
+  //   const handleVisibilityChange = () => {
+  //     console.log('Visibility State:', document.visibilityState);
+  //     console.log('inside');
+  
+  //     if (durations !== null && document.visibilityState === 'hidden') {
+  //       console.log('Watched duration:', durations);
+  //     }
+  //   };
+  
+  //   document.addEventListener('visibilitychange', handleVisibilityChange);
+  
+  //   return () => {
+  //     document.removeEventListener('visibilitychange', handleVisibilityChange);
+  //   };
+  // }, [durations]);
   // Function to handle playback progress
   const handleProgress = (state) => {
     setPlayedSeconds(state.playedSeconds);
@@ -55,7 +75,8 @@ const VideoTask = ({ taskData, something }) => {
   useEffect(() => {
     // You can perform actions based on playedSeconds here
     // This is just a logging example
-    console.log(`Current played duration: ${formatTime(playedSeconds)} seconds`);
+    // console.log(`Current played duration: ${formatTime(playedSeconds)} seconds`);
+    setDuration(formatTime(playedSeconds));
   }, [playedSeconds]);
   const setupEventListeners = (video) => {
     // Add the console log here to check the video object
@@ -68,17 +89,23 @@ const VideoTask = ({ taskData, something }) => {
 
     const handleTimeUpdate = () => {
       setCurrentTime(video.currentTime);
-      console.log(`Current time: ${formatTime(video.currentTime)}`);
+      // console.log(`Current time: ${formatTime(video.currentTime)}`);
+      setDuration(formatTime(video.currentTime))
+      localStorage.setItem('timeSpent', durations);
     };
 
     const handlePlay = () => {
-      console.log(`Video played at: ${formatTime(video.currentTime)}`);
+      //console.log(`Video played at: ${formatTime(video.currentTime)}`);
       setIsPlaying(true);
+      setDuration(formatTime(video.currentTime))
+      localStorage.setItem('timeSpent', durations);
     };
 
     const handlePause = () => {
-      console.log(`Video paused: ${formatTime(video.currentTime)}`);
+      // console.log(`Video paused: ${formatTime(video.currentTime)}`);
       setIsPlaying(false);
+      setDuration(formatTime(video.currentTime))
+      localStorage.setItem('timeSpent', durations);
     };
 
     // Attach event listeners
@@ -96,25 +123,49 @@ const VideoTask = ({ taskData, something }) => {
 
   useEffect(() => {
     const video = videoRef.current;
-    console.log(video)
     if (!video) return;
-
-    // Wait for the video metadata to load before setting up event listeners
+  
     const onMetadataLoaded = () => {
       console.log("Video metadata loaded");
-      // Setup event listeners
       const cleanup = setupEventListeners(video);
-
-      // Cleanup on component unmount or when video changes
+  
       return cleanup;
     };
-
+  
+    const handleVisibilityChange = () => {
+      console.log('Visibility state:', document.visibilityState);
+      // Send duration data to the backend regardless of video player state
+      console.log('Page visibility changed, sending data to backend');
+      sendDurationToBackend();
+    };
+  
     video.addEventListener('loadedmetadata', onMetadataLoaded);
-
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+  
     return () => {
       video.removeEventListener('loadedmetadata', onMetadataLoaded);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [videoRef]);
+  }, [videoRef, durations]);
+  
+  
+  const sendDurationToBackend = async () => {
+    // Use axios or your preferred method to send the duration data to the backend
+    // try {
+    //   const response = await axios.post(
+    //     `${process.env.REACT_APP_SERVER_API}/api/v1/your-backend-endpoint`,
+    //     {
+    //       duration: durations, // Assuming durations is the data you want to send
+    //       // Add any other necessary data
+    //     }
+    //   );
+    //   console.log('Duration data sent to backend:', response.data);
+    // } catch (error) {
+    //   console.error('Error sending duration data to backend:', error);
+    // }
+    console.log('here inside');
+  };
+  
   const handleCompletion = async () => {
     Loading();
     if (
@@ -207,34 +258,36 @@ const VideoTask = ({ taskData, something }) => {
                 //   className=" mx-auto rounded-lg border-[#292929] "
                 // />
                 <div>
-                 <ReactPlayer
-                  url={taskData?.additionalFiles}
-                  
-                  onProgress={handleProgress}
-                  width="90%"
-                  height="430px"
-                  style={{ borderRadius: "10px", marginBottom: "30px"}}
-                  className=" mx-auto rounded-lg border-[#292929] mb-4"
-                  config={{
-                    youtube: {
-                      playerVars: {
-                        autoplay: 1,
-                        controls: 1,
-                        enablejsapi: 1,
-                        modestbranding: 1,
-                        fs: 1, // Enabling fullscreen
-                        iv_load_policy: 3, // Hiding video annotations
-                        // Add any other playerVars you need
+                  <ReactPlayer
+                    url={taskData?.additionalFiles}
+                    onProgress={handleProgress}
+                    onPause={() => {
+                      if (durations) {
+                        console.log('Watched duration: ', durations);
+                        setDuration(durations);
+                      }
+                    }}
+                    width="90%"
+                    height="430px"
+                    style={{ borderRadius: "10px", marginBottom: "30px" }}
+                    className="mx-auto rounded-lg border-[#292929] mb-4"
+                    config={{
+                      youtube: {
+                        playerVars: {
+                          autoplay: 1,
+                          controls: 1,
+                          enablejsapi: 1,
+                          modestbranding: 1,
+                          fs: 1, // Enabling fullscreen
+                          iv_load_policy: 3, // Hiding video annotations
+                        },
+                        embedOptions: {
+                          enablejsapi: 1,
+                        },
                       },
-                      embedOptions: {
-                        enablejsapi: 1,
-                        // Use this to pass attributes to the iframe
-                        // This doesn't directly enable fullscreen but fs: 1 in playerVars does
-                      },
-                    },
-                  }}
-                />
-                <div className='mt-20'></div>
+                    }}
+                  />
+                  <div className='mt-20'></div>
                 </div>
                 :
                 <video
