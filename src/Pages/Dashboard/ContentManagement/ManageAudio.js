@@ -183,7 +183,7 @@ const ManageAudio = () => {
       if (newTask) {
         toast.success("Audio added Successfully");
         const newNotification = await axios.post(
-          `https://test-server-tg7l.onrender.com/api/v1/notifications/addNotification`,
+          `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/notifications/addNotification`,
           {
             message: `New audio material added in course ${course?.courseFullName}.`,
             dateTime: new Date(),
