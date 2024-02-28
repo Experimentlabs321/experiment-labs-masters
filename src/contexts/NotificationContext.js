@@ -120,7 +120,7 @@ export const NotificationProvider = ({ children }) => {
 
   useEffect(() => {
     // socket = io("https://test-server-henna-nine.vercel.app");
-    const socket = io("https://test-server-tg7l.onrender.com", {
+    const socket = io("${process.env.REACT_APP_SOCKET_SERVER_API}", {
       withCredentials: true,
       extraHeaders: {
         "my-custom-header": "abcd",
@@ -151,7 +151,7 @@ export const NotificationProvider = ({ children }) => {
     try {
       await axios
         .get(
-          `https://test-server-tg7l.onrender.com/api/v1/notifications/getNotification/userEmail/${user?.email}`
+          `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/notifications/getNotification/userEmail/${user?.email}`
         )
         .then(async (response) => {
           if (response?.data?.notifications) {
@@ -184,7 +184,7 @@ export const NotificationProvider = ({ children }) => {
         try {
           await axios
             .get(
-              `https://test-server-tg7l.onrender.com/api/v1/announcements/getAnnouncement/organizationId/${userInfo?.data?.organizationId}`
+              `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/announcements/getAnnouncement/organizationId/${userInfo?.data?.organizationId}`
             )
             .then(async (response) => {
               if (response?.data?.announcements) {

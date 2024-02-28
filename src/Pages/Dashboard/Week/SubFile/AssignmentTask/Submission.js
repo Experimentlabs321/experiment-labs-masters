@@ -142,7 +142,7 @@ const Submission = ({ taskData }) => {
 
       if (newAssignment?.data?.acknowledged) {
         const newNotification = await axios.post(
-          `https://test-server-tg7l.onrender.com/api/v1/notifications/addNotification`,
+          `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/notifications/addNotification`,
           {
             message: `${userInfo?.name} has submitted an assignment of the task ${taskData?.taskName} of the course ${course?.courseFullName} batch ${batch[0]?.batchName}.`,
             dateTime: new Date(),
