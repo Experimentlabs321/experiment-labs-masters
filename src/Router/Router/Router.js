@@ -655,10 +655,10 @@ const router = createBrowserRouter([
     path: "/editBundle/:id",
     element: <EditBundle />,
   },
-  // {
-  //   path: "/bundle/payment/:id",
-  //   element: <BundlePayment />,
-  // },
+  {
+    path: "/bundle/payment/:id",
+    element: <BundlePayment />,
+  },
   {
     path: "/salesAndRevenue",
     element: <SalesAndRevenue />,
