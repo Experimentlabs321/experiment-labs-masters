@@ -412,7 +412,7 @@ const CourseInformation = () => {
           setChapters(chapterWithFilteredTask);
           console.log("tasks =======>", chapterWithFilteredTask[0]?.tasks);
         }
-        setIsLoading(false)
+        setIsLoading(false);
       })
       .catch((error) => console.error(error));
     setIsLoading(false);
@@ -423,11 +423,11 @@ const CourseInformation = () => {
       .get(`${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${id}`)
       .then((response) => {
         setBatchesData(response?.data);
-        setIsLoading(false)
+        setIsLoading(false);
       })
       .catch((error) => {
-        console.error(error)
-        setIsLoading(false)
+        console.error(error);
+        setIsLoading(false);
       });
   }, [id]);
 
@@ -446,7 +446,6 @@ const CourseInformation = () => {
             <div>
               <div className="pt-[110px] border-b-2 ">
                 <div className="container mx-auto px-4 flex items-center justify-between ">
-
                   <div className="flex items-center pt-[30px] pb-[40px] ">
                     <Link
                       to="/courseAccess"
@@ -552,21 +551,22 @@ const CourseInformation = () => {
                           >
                             <div
                               style={{ background: taskType?.theme }}
-                              className={`  ${(taskType?.name === "Quiz" ||
-                                taskType?.name === "Live Test") &&
+                              className={`  ${
+                                (taskType?.name === "Quiz" ||
+                                  taskType?.name === "Live Test") &&
                                 "opacity-40"
-                                } flex items-center rounded-[12px] justify-center p-[18px]`}
+                              } flex items-center rounded-[12px] justify-center p-[18px]`}
                             >
                               <img src={taskType?.icon} alt="icon" />
                             </div>
                             {(taskType?.name === "Quiz" ||
                               taskType?.name === "Live Test") && (
-                                <img
-                                  className="absolute w-7 top-[45%] left-[37%]"
-                                  src={lock}
-                                  alt="lock"
-                                />
-                              )}
+                              <img
+                                className="absolute w-7 top-[45%] left-[37%]"
+                                src={lock}
+                                alt="lock"
+                              />
+                            )}
                             <h1 className="text-[13px] font-[700] mt-[20px] text-center">
                               {taskType?.name}
                             </h1>
@@ -630,7 +630,7 @@ const CourseInformation = () => {
                         <h1 className="mr-[12px]">Add Chapter</h1>
                       </button>
                       <Link
-                        to="/createCourse"
+                        to={`/editCourse/${id}`}
                         className="flex items-center bg-[#3E4DAC] text-[16px] font-[700] text-white p-[16px] rounded-[20px] "
                       >
                         <svg
@@ -688,7 +688,6 @@ const CourseInformation = () => {
               )}
             </div>
             <div>
-              
               {/* Edit chapter name start */}
               <DialogLayout
                 open={editChapterOpen}
@@ -1180,7 +1179,7 @@ const CourseInformation = () => {
                                 chapterIndex === 0 ||
                                 chapters?.[chapterIndex - 1]?.tasks?.[
                                   chapters?.[chapterIndex - 1]?.tasks?.length -
-                                  1
+                                    1
                                 ]?.participants?.some(
                                   (item) =>
                                     item?.participantId === userInfo?._id &&
@@ -1227,7 +1226,8 @@ const CourseInformation = () => {
                                                   isPreviousTaskCompleted &&
                                                   isPrevChapterCompleted
                                                 ) &&
-                                                  (courseData?.enableDrip || task?.taskDrip) && (
+                                                  (courseData?.enableDrip ||
+                                                    task?.taskDrip) && (
                                                     <img
                                                       className="w-[35px]"
                                                       src={lock}
@@ -1304,10 +1304,10 @@ const CourseInformation = () => {
                                           alt="Task"
                                         />
                                       )}
-                                      {(courseData?.enableDrip) && (
+                                      {courseData?.enableDrip && (
                                         <div className="">
                                           {isPreviousTaskCompleted &&
-                                            isPrevChapterCompleted ? (
+                                          isPrevChapterCompleted ? (
                                             <Link
                                               onClick={() => {
                                                 localStorage.setItem(
@@ -1352,10 +1352,11 @@ const CourseInformation = () => {
                                         </div>
                                       )}
 
-                                      {(!courseData?.enableDrip) && (
+                                      {!courseData?.enableDrip && (
                                         <div className="">
-                                          {((isPreviousTaskCompleted &&
-                                            isPrevChapterCompleted) || !task?.taskDrip) ? (
+                                          {(isPreviousTaskCompleted &&
+                                            isPrevChapterCompleted) ||
+                                          !task?.taskDrip ? (
                                             <Link
                                               onClick={() => {
                                                 localStorage.setItem(
@@ -1399,7 +1400,6 @@ const CourseInformation = () => {
                                           </p>
                                         </div>
                                       )}
-
                                     </div>
                                     {!toggleButton && (
                                       <div className="mx-2 flex items-center justify-center ">

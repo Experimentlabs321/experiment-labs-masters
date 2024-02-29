@@ -165,7 +165,7 @@ const Quiz = ({
               {question?.defaultMarks} points
             </h1>
             <div
-              className="text-[18px] font-[700]"
+              className="text-[18px] font-[700] textEditor"
               dangerouslySetInnerHTML={{ __html: question?.questionTitle }}
             />
             {/* <p className=" text-[18px] font-[700] pt-4 ">

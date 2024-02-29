@@ -156,7 +156,7 @@ const QuizGeneralInformation = () => {
                     </div>
 
                     <div className="py-4 pr-5">
-                      <div className="bg-white text-black">
+                      <div className="bg-white text-black textEditor">
                         <TextEditor setValue={setQuizDescription} />
                       </div>
                     </div>

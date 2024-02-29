@@ -17,6 +17,14 @@ code {
     monospace;
 }
 
+/* ol,
+ul,
+menu {
+  list-style: auto;
+  margin: 0;
+  padding: 0 20px;
+} */
+
 @font-face {
   font-family: Zabal;
   src: url(../public/ZabalDEMO-Black.otf);
