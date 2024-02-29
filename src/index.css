@@ -16,3 +16,13 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+@font-face {
+  font-family: Zabal;
+  src: url(../public/ZabalDEMO-Black.otf);
+}
+
+@font-face {
+  font-family: Holland;
+  src: url(../public/Holland.ttf);
+}

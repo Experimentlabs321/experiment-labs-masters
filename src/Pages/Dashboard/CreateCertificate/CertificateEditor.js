@@ -210,6 +210,7 @@ const CertificateEditor = ({
     "Fjalla One",
     "Grape Nuts",
     "Great Vibes",
+    "Holland",
     "Indie Flower",
     "Inter",
     "Kanit",
@@ -235,6 +236,7 @@ const CertificateEditor = ({
     "Satisfy",
     "Sevillana",
     "Ubuntu",
+    "Zabal",
   ];
   const dynamicContents = [
     "Recipient name",
