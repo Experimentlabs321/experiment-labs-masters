@@ -4,3 +4,56 @@
 .jodit-wysiwyg{
     min-height: 170px !important;
 }
+
+.jodit-dialog__panel ul {
+     list-style: auto;
+     margin: 0;
+     padding: 0 30px;
+ }
+
+.jodit-dialog__panel ol {
+     list-style: auto;
+     margin: 0;
+     padding: 0 30px;
+ }
+
+.jodit-dialog__panel menu {
+     list-style: auto;
+     margin: 0;
+     padding: 0 30px;
+ }
+
+.jodit-dialog__panel a {
+    text-decoration: underline;
+    color: blue;
+
+     /* list-style: auto;
+     margin: 0;
+     padding: 0 30px; */
+ }
+
+.textEditor a{
+    text-decoration: underline;
+    color: blue;
+    /* list-style: auto;
+    margin: 0;
+    padding: 0 30px; */
+}
+
+.textEditor ul{
+    list-style: auto;
+    margin: 0;
+    padding: 0 30px;
+}
+
+.textEditor ol {
+    list-style: auto;
+    margin: 0;
+    padding: 0 30px;
+}
+
+.textEditor menu {
+    list-style: auto;
+    margin: 0;
+    padding: 0 30px;
+}

@@ -85,7 +85,7 @@ const AdminAnnouncementForm = ({ setShowAnnouncementForm }) => {
           </label>
           {/* Text editor */}
           <div>
-            <div className="bg-white text-black">
+            <div className="bg-white text-black textEditor">
               <TextEditor setValue={setDescription} />
             </div>
           </div>

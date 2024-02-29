@@ -185,7 +185,7 @@ const ReadingTask = ({ taskData, chapterId }) => {
           questions={taskData?.completionParameter?.questions}
         />
       )}
-      <div className="px-4 py-20">
+      <div className="px-4 py-20 textEditor">
         <div dangerouslySetInnerHTML={{ __html: taskData?.readingMaterial }} />
       </div>
     </div>
