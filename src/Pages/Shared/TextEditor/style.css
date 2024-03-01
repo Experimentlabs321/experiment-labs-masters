@@ -26,18 +26,11 @@
 .jodit-dialog__panel a {
     text-decoration: underline;
     color: blue;
-
-     /* list-style: auto;
-     margin: 0;
-     padding: 0 30px; */
  }
 
 .textEditor a{
     text-decoration: underline;
     color: blue;
-    /* list-style: auto;
-    margin: 0;
-    padding: 0 30px; */
 }
 
 .textEditor ul{
