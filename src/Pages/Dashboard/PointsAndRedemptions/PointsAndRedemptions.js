@@ -16,6 +16,27 @@ const PointsAndRedemptions = () => {
   const { userInfo } = useContext(AuthContext);
   const [orgData, setOrgData] = useState({});
   const [count, setCount] = useState(0);
+  const [KeyboardArrowUpIconoading, setLoading] = useState(false);
+  const [itemDetails, setItemDetails] = useState();
+
+  useEffect(() => {
+    if (userInfo) {
+      setLoading(true);
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/language/getItemDetailsByOrganizationAndName/pointsAndRedemptions/organizationsId/${userInfo?.organizationId}`
+        )
+        .then((response) => {
+          setItemDetails(response?.data);
+
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+    setLoading(false);
+  }, [userInfo]);
+  //console.log(itemDetails)
 
   useEffect(() => {
     axios
@@ -28,7 +49,7 @@ const PointsAndRedemptions = () => {
       .catch((error) => console.error(error));
   }, [userInfo]);
 
-  console.log(orgData);
+  // console.log(orgData);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -60,20 +81,25 @@ const PointsAndRedemptions = () => {
       <Layout>
         <div className="flex items-center justify-center gap-7 mt-20 lg:mt-10">
           <div className="UserManagement origin-top-left rotate-[-0.51deg] text-zinc-500 text-[30px] font-medium">
-            Points And Redemptions
+            {
+              itemDetails?.pointsAndRedemptions ? itemDetails?.pointsAndRedemptions : "Points And Redemptions"
+            }
+
           </div>
           <div className="Input w-[425px] h-16 relative bg-slate-100 rounded-[40px] shadow-inner">
             <input
               className="Search w-[329px] left-[32px] top-[12px] absolute text-zinc-500 text-[20px] font-light leading-10 bg-transparent"
-              placeholder="Search"
+              placeholder={ 
+                itemDetails?.search ? itemDetails?.search : "Search"
+              }
             />
             <div className="Button w-10 h-10 left-[373px] top-[12px] absolute bg-zinc-500 rounded-[32px] shadow">
               <SearchIcon className="Search1 w-6 h-6 left-[8px] top-[8px] absolute text-white" />
             </div>
           </div>
-          <Badge badgeContent={1} color="error">
+      {/*     <Badge badgeContent={1} color="error">
             <NotificationsIcon color="action" />
-          </Badge>
+          </Badge> */}
         </div>
 
         <div className="my-8 px-7">
@@ -94,16 +120,21 @@ const PointsAndRedemptions = () => {
               />
               <div className="block bg-gray-600 w-14 h-8 rounded-full"></div>
               <div
-                className={`${
-                  orgData?.showPointsAndRedemptions
+                className={`${orgData?.showPointsAndRedemptions
                     ? "bg-green translate-x-full"
                     : "bg-gray-300 translate-x-0"
-                } absolute left-1 top-1 w-6 h-6 rounded-full transition-transform transform ease-in-out duration-300`}
+                  } absolute left-1 top-1 w-6 h-6 rounded-full transition-transform transform ease-in-out duration-300`}
               ></div>
             </div>
             <div className="ml-3 text-gray-700 font-semibold text-xl">
-              {!orgData?.showPointsAndRedemptions ? "Show" : "Remove"} Points
-              And Redemptions
+              {!orgData?.showPointsAndRedemptions ? itemDetails?.show ? itemDetails?.show : "Show" : itemDetails?.remove ? itemDetails?.remove : "Remove"}
+              <span className="ms-1">
+                {
+                  itemDetails?.pointsAndRedemptions ? itemDetails?.pointsAndRedemptions : "Points And Redemptions"
+                }
+
+              </span>
+
             </div>
           </label>
         </div>
@@ -121,7 +152,10 @@ const PointsAndRedemptions = () => {
               />
               <div className="Content grow shrink basis-0 flex-col justify-start items-start gap-2 inline-flex">
                 <div className="CardTitle self-stretch text-black text-[24px] font-normal leading-normal">
-                  Gamified Setting
+                {
+                  itemDetails?.gamifiedSetting ? itemDetails?.gamifiedSetting : "Gamified Setting"
+                }
+                 
                 </div>
                 <div className="CardDesription self-stretch">
                   <span className="text-zinc-900 text-[16px] font-normal leading-normal">
@@ -147,7 +181,10 @@ const PointsAndRedemptions = () => {
               />
               <div className="Content grow shrink basis-0 flex-col justify-start items-start gap-2 inline-flex">
                 <div className="CardTitle self-stretch text-black text-[24px] font-normal leading-normal">
-                  Earning Logic
+                {
+                  itemDetails?.earningLogic ? itemDetails?.earningLogic : "Earning Logic"
+                }
+                  
                 </div>
                 <div className="CardDesription self-stretch">
                   <span className="text-zinc-900 text-[16px] font-normal leading-normal">
@@ -173,7 +210,10 @@ const PointsAndRedemptions = () => {
               />
               <div className="Content grow shrink basis-0 flex-col justify-start items-start gap-2 inline-flex">
                 <div className="CardTitle self-stretch text-black text-[24px] font-normal leading-normal">
-                  Redemption Logic
+                {
+                  itemDetails?.redemptionLogic ? itemDetails?.redemptionLogic : "Redemption Logic"
+                }
+                  
                 </div>
                 <div className="CardDesription self-stretch">
                   <span className="text-zinc-900 text-[16px] font-normal leading-normal">

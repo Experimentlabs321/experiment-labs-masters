@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import Loading from "../../Shared/Loading/Loading";
 import { CircularProgress } from "@mui/material";
-const ApexChart = ({ selectedFilter, students, setTotalStudents, setTotalEnrolledStudents, fromDate, toDate }) => {
+const ApexChart = ({ selectedFilter, students, setTotalStudents, setTotalEnrolledStudents, fromDate, toDate ,itemDetails}) => {
 
 
   const [chartState, setChartData] = useState();
@@ -379,11 +379,11 @@ const ApexChart = ({ selectedFilter, students, setTotalStudents, setTotalEnrolle
     setChartData({
       series: [
         {
-          name: "Total Students",
+          name: itemDetails?.totalStudents ? itemDetails?.totalStudents : "Total Students"  ,
           data: dataTotalValues,
         },
         {
-          name: "Enrolled Students",
+          name: itemDetails?.enrolledStudents ? itemDetails?.enrolledStudents : "Enrolled Students",
           data: dataTotalForEnrollValues,
         },
       ],
@@ -479,7 +479,8 @@ const ApexChart = ({ selectedFilter, students, setTotalStudents, setTotalEnrolle
   return (
     <div>
       <h1 className="my-3 text-2xl font-bold">
-        Total Students Vs Enrolled Students
+      {itemDetails?.totalStudentsVsEnrolledStudents ?itemDetails?.totalStudentsVsEnrolledStudents : "Total Students Vs Enrolled Students" }
+        
       </h1>
       {isLoading && (
         <div className=" flex align-items-center my-5 py-5">

@@ -421,9 +421,9 @@ const EditVideo = () => {
                         Selected file: {youtubeVideoLink}
                       </p>
                     )}
-                    {videoData && (
+                    {(videoData && !youtubeVideoLink) && (
                       <p className=" text-center break-words max-w-full overflow-hidden">
-                        Selected file: {videoData?.additionalFiles}
+                        {videoData?.additionalFiles}
                       </p>
                     )}
                     {!selectedFile && (

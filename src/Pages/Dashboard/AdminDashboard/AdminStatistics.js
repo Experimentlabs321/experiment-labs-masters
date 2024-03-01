@@ -9,7 +9,7 @@ import inrIcon from "../../../assets/Dashboard/inrIcon.png";
 
 import { CircularProgress } from "@mui/material";
 
-const AdminStatistics = () => {
+const AdminStatistics = ({itemDetails}) => {
   const { userInfo } = useContext(AuthContext);
   const [overViewCount, setOverViewCount] = useState();
   const [students, setStudents] = useState();
@@ -71,30 +71,30 @@ const AdminStatistics = () => {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold my-10"> Overview </h1>
+      <h1 className="text-3xl font-bold my-10">{itemDetails?.overview ?itemDetails?.overview : "Overview" }  </h1>
       {isLoading && (
         <div className=" flex align-items-center my-5 py-5">
           <CircularProgress className="w-full mx-auto" />
         </div>
       )}
       <div className="mb-5 flex gap-5 items-center">
-        <label className="font-bold">Select Filter:</label>
+        <label className="font-bold"> {itemDetails?.selectFilter ? itemDetails?.selectFilter : "Select Filter" }:</label>
         <select
           className="p-2 border rounded"
           onChange={(e) => setSelectedFilter(e.target.value)}
           value={selectedFilter}
         >
-          <option value="Last 7 Days">Last 7 Days</option>
-          <option value="Last 30 Days">Last 30 Days</option>
-          <option value="Last 11 Months">Last year</option>
-          <option value="Overall">Overall</option>
-          <option value="Custom date">Custom date</option>
+          <option value="Last 7 Days">{itemDetails?.lastSevenDays ? itemDetails?.lastSevenDays : "Last 7 Days" } </option>
+          <option value="Last 30 Days"> {itemDetails?.lastThirtyDays ? itemDetails?.lastThirtyDays : "Last 30 Days" }</option>
+          <option value="Last 11 Months">{itemDetails?.lastYear ? itemDetails?.lastYear : "Last year" }</option>
+          <option value="Overall">{itemDetails?.overall ? itemDetails?.overall : "Overall" }</option>
+          <option value="Custom date">{itemDetails?.customDate ? itemDetails?.customDate : "Custom date" }</option>
         </select>
       </div>
       {selectedFilter === "Custom date" && (
         <div className="flex gap-5 my-5">
           <p>
-            <span>From Date :</span>
+            <span>{itemDetails?.fromDate ?itemDetails?.fromDate : "From Date" } :</span>
             <input
               className="p-2 border rounded ms-2"
               type="datetime-local"
@@ -103,7 +103,7 @@ const AdminStatistics = () => {
             />
           </p>
           <p>
-            <span>To Date:</span>
+            <span>{itemDetails?.toDate ?itemDetails?.toDate : "To Date" }:</span>
             <input
               className="p-2 border rounded ms-2"
               type="datetime-local"
@@ -121,7 +121,8 @@ const AdminStatistics = () => {
         >
           <div className="justify-between items-stretch flex gap-5">
             <div className="text-white text-sm font-medium tracking-widest">
-              Total Students
+            {itemDetails?.totalStudents ?itemDetails?.totalStudents : "Total Students" }
+              
             </div>
             <img
               alt="icon"
@@ -140,7 +141,8 @@ const AdminStatistics = () => {
         >
           <div className="justify-between items-stretch flex gap-5">
             <div className="text-white text-sm font-medium tracking-widest">
-              Enrolled Students
+            {itemDetails?.enrolledStudents ?itemDetails?.enrolledStudents : "Enrolled Students" }
+              
             </div>
             <img
               loading="lazy"
@@ -159,7 +161,8 @@ const AdminStatistics = () => {
         >
           <div className="justify-between items-stretch flex gap-5">
             <div className="text-white text-sm font-medium tracking-widest">
-              Total Revenue
+            {itemDetails?.totalRevenue ?itemDetails?.totalRevenue : "Total Revenue" }
+              
             </div>
             <img
               loading="lazy"
@@ -180,7 +183,8 @@ const AdminStatistics = () => {
         >
           <div className="justify-between items-stretch flex gap-5">
             <div className="text-white text-sm font-medium tracking-widest">
-              Unevaluated Assignments
+            {itemDetails?.unevaluatedAssignments ?itemDetails?.unevaluatedAssignments : "Unevaluated Assignments" }
+             
             </div>
             <img
               alt="icon"
@@ -202,7 +206,8 @@ const AdminStatistics = () => {
         >
           <div className="justify-between items-stretch flex gap-5">
             <div className="text-white text-sm font-medium tracking-widest">
-              Meetings Today
+            {itemDetails?.meetingsToday ?itemDetails?.meetingsToday : "Meetings Today" }
+             
             </div>
             <img
               loading="lazy"
@@ -233,6 +238,7 @@ const AdminStatistics = () => {
       </div>
       <div className="my-10">
         <ApexChart
+        itemDetails={itemDetails}
           selectedFilter={selectedFilter}
           students={students}
           setTotalStudents={setTotalStudents}
@@ -241,6 +247,7 @@ const AdminStatistics = () => {
           fromDate={fromDate}
         />
         <RevenueChart
+        itemDetails={itemDetails}
           selectedFilter={selectedFilter}
           paidStudents={paidStudents}
           setTotalRevenue={setTotalRevenue}
