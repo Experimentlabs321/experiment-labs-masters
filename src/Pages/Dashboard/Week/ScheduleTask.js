@@ -265,12 +265,12 @@ const ScheduleTask = ({ taskData, week }) => {
   console.log("input time ", time)
 
   useEffect(() => {
-    if (localStorage.getItem("role") === "admin") {
-      if (!session?.provider_token) {
-        // If there's no session, sign in again
-        googleSignIn();
-      }
-    }
+    // if (localStorage.getItem("role") === "admin") {
+    //   if (!session?.provider_token) {
+    //     // If there's no session, sign in again
+    //     googleSignIn();
+    //   }
+    // }
     const busyTimeSlots = taskData?.events?.map((event) => {
       // Use the correct property for date and time based on the event structure
       const startDateTime = event.start?.dateTime || event.start;
