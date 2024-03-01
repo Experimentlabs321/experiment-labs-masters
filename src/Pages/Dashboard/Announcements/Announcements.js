@@ -50,7 +50,7 @@ const Announcements = () => {
 
   const handleMarkAsRead = async (announcement) => {
     const markAsRead = await axios.put(
-      `https://test-server-tg7l.onrender.com/api/v1/announcements/makeAsRead/announcementId/${announcement?._id}`,
+      `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/announcements/makeAsRead/announcementId/${announcement?._id}`,
       {
         userEmail: user?.email,
       }
@@ -64,7 +64,7 @@ const Announcements = () => {
   const handleMarkAsRemove = async (announcement) => {
     Loading();
     const markAsRemove = await axios.put(
-      `https://test-server-tg7l.onrender.com/api/v1/announcements/makeAsRemove/announcementId/${announcement?._id}`,
+      `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/announcements/makeAsRemove/announcementId/${announcement?._id}`,
       {
         userEmail: user?.email,
       }

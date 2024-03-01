@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import icon from "../../../icon192.png";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
+import ReactPlayer from 'react-player';
 import Swal from "sweetalert2";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +15,8 @@ const VideoTask = ({ taskData, something }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const { userInfo, user } = useContext(AuthContext);
+  const [durations, setDuration] = useState(0);
+  console.log('durations ', durations)
   if (userInfo.role !== "admin") {
     window.addEventListener("contextmenu", (e) => {
       e.preventDefault();
@@ -26,14 +29,13 @@ const VideoTask = ({ taskData, something }) => {
   const [isOverlayVisible, setOverlayVisible] = useState(false);
   const [completionStatus, setCompletionStatus] = useState(false);
   const pdfContainerRef = useRef(null);
-  function formatTime(seconds) {
-    const pad = (num) => (num < 10 ? `0${num}` : num);
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secondsLeft = Math.floor(seconds % 60);
-  
-    return `${pad(hours)}:${pad(minutes)}:${pad(secondsLeft)}`;
-  }
+  const formatTime = (seconds) => {
+    const pad = (num) => num.toString().padStart(2, '0');
+    const hours = pad(Math.floor(seconds / 3600));
+    const minutes = pad(Math.floor((seconds % 3600) / 60));
+    const secondsLeft = pad(Math.floor(seconds % 60));
+    return `${hours}:${minutes}:${secondsLeft}`;
+  };
   useEffect(() => {
     if (
       taskData?.participants?.find(
@@ -42,55 +44,128 @@ const VideoTask = ({ taskData, something }) => {
     )
       setCompletionStatus(true);
   }, [taskData, user]);
-  const videoRef = useRef(null);
 
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
+  const videoRef = useRef(null);
+  const [playedSeconds, setPlayedSeconds] = useState(0);
+  // useEffect(() => {
+  //   console.log('Document State:', document.readyState);
   
+  //   const handleVisibilityChange = () => {
+  //     console.log('Visibility State:', document.visibilityState);
+  //     console.log('inside');
+  
+  //     if (durations !== null && document.visibilityState === 'hidden') {
+  //       console.log('Watched duration:', durations);
+  //     }
+  //   };
+  
+  //   document.addEventListener('visibilitychange', handleVisibilityChange);
+  
+  //   return () => {
+  //     document.removeEventListener('visibilitychange', handleVisibilityChange);
+  //   };
+  // }, [durations]);
+  // Function to handle playback progress
+  const handleProgress = (state) => {
+    setPlayedSeconds(state.playedSeconds);
+    // You can use state.playedSeconds to keep track of how much of the video has been played
+  };
+
+  // Example of handling playback state
+  useEffect(() => {
+    // You can perform actions based on playedSeconds here
+    // This is just a logging example
+    // console.log(`Current played duration: ${formatTime(playedSeconds)} seconds`);
+    setDuration(formatTime(playedSeconds));
+  }, [playedSeconds]);
+  const setupEventListeners = (video) => {
+    // Add the console log here to check the video object
+    console.log(video, video instanceof HTMLVideoElement);
+
+    if (!(video instanceof HTMLVideoElement)) {
+      console.error('Attempted to attach video event listeners to a non-video element');
+      return;
+    }
+
     const handleTimeUpdate = () => {
       setCurrentTime(video.currentTime);
-      console.log(`Current time: ${formatTime(video.currentTime)}`); // For testing
+      // console.log(`Current time: ${formatTime(video.currentTime)}`);
+      setDuration(formatTime(video.currentTime))
+      localStorage.setItem('timeSpent', durations);
     };
-  
+
     const handlePlay = () => {
-      console.log(`Video played at:  ${formatTime(video.currentTime)}`); // Debug: Check if the video is playing
+      //console.log(`Video played at: ${formatTime(video.currentTime)}`);
       setIsPlaying(true);
+      setDuration(formatTime(video.currentTime))
+      localStorage.setItem('timeSpent', durations);
     };
-  
+
     const handlePause = () => {
-      console.log(`Video paused:  ${formatTime(video.currentTime)}`); // Debug: Check if the video is paused
+      // console.log(`Video paused: ${formatTime(video.currentTime)}`);
       setIsPlaying(false);
+      setDuration(formatTime(video.currentTime))
+      localStorage.setItem('timeSpent', durations);
     };
-  
+
+    // Attach event listeners
     video.addEventListener('timeupdate', handleTimeUpdate);
     video.addEventListener('play', handlePlay);
     video.addEventListener('pause', handlePause);
-  
-    // Cleanup
+
+    // Cleanup function to remove event listeners
     return () => {
       video.removeEventListener('timeupdate', handleTimeUpdate);
       video.removeEventListener('play', handlePlay);
       video.removeEventListener('pause', handlePause);
     };
-  }, [videoRef]);
+  };
+
   useEffect(() => {
     const video = videoRef.current;
-    console.log('Video element:', video); // Debug: Check if the video element is correctly referenced
-
     if (!video) return;
   
-    const handleEnded = () => {
-      console.log(`Video watched until end, current time: ${formatTime(video.currentTime)}`);
-      // Additional logic here
+    const onMetadataLoaded = () => {
+      console.log("Video metadata loaded");
+      const cleanup = setupEventListeners(video);
+  
+      return cleanup;
     };
   
-    video.addEventListener('ended', handleEnded);
+    const handleVisibilityChange = () => {
+      console.log('Visibility state:', document.visibilityState);
+      // Send duration data to the backend regardless of video player state
+      console.log('Page visibility changed, sending data to backend');
+      sendDurationToBackend();
+    };
+  
+    video.addEventListener('loadedmetadata', onMetadataLoaded);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
   
     return () => {
-      video.removeEventListener('ended', handleEnded);
+      video.removeEventListener('loadedmetadata', onMetadataLoaded);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-}, [videoRef]);
+  }, [videoRef, durations]);
+  
+  
+  const sendDurationToBackend = async () => {
+    // Use axios or your preferred method to send the duration data to the backend
+    // try {
+    //   const response = await axios.post(
+    //     `${process.env.REACT_APP_SERVER_API}/api/v1/your-backend-endpoint`,
+    //     {
+    //       duration: durations, // Assuming durations is the data you want to send
+    //       // Add any other necessary data
+    //     }
+    //   );
+    //   console.log('Duration data sent to backend:', response.data);
+    // } catch (error) {
+    //   console.error('Error sending duration data to backend:', error);
+    // }
+    console.log('here inside');
+  };
+  
   const handleCompletion = async () => {
     Loading();
     if (
@@ -162,36 +237,79 @@ const VideoTask = ({ taskData, something }) => {
           )}
 
           <div className="relative">
-          {taskData?.additionalFiles && (
+            {taskData?.additionalFiles && (
               taskData?.isYoutubeLink ?
-                <iframe
-                  width="90%"
-                  height="500"
-                  src={taskData?.additionalFiles}
-                  className=" mx-auto rounded-lg border-[#292929] "
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  title="Embedded YouTube Video"
-                  ref={videoRef}
-                ></iframe>
+                // <iframe
+                //   width="90%"
+                //   height="500"
+                //   src={taskData?.additionalFiles}
+                //   className=" mx-auto rounded-lg border-[#292929] "
+                //   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                //   allowFullScreen
+                //   title="Embedded YouTube Video"
+                //   ref={videoRef}
+                // ></iframe>
+                // <ReactPlayer
+                //   url={taskData?.additionalFiles} // Your video URL here
+                //   controls
+                //   onProgress={handleProgress}
+                //   width="90%"
+                //   height="450px"
+                //   className=" mx-auto rounded-lg border-[#292929] "
+                // />
+                <div>
+                  <ReactPlayer
+                    url={taskData?.additionalFiles}
+                    onProgress={handleProgress}
+                    onPause={() => {
+                      if (durations) {
+                        console.log('Watched duration: ', durations);
+                        setDuration(durations);
+                      }
+                    }}
+                    width="90%"
+                    height="430px"
+                    style={{ borderRadius: "10px", marginBottom: "30px" }}
+                    className="mx-auto rounded-lg border-[#292929] mb-4"
+                    config={{
+                      youtube: {
+                        playerVars: {
+                          autoplay: 1,
+                          controls: 1,
+                          enablejsapi: 1,
+                          modestbranding: 1,
+                          fs: 1, // Enabling fullscreen
+                          iv_load_policy: 3, // Hiding video annotations
+                        },
+                        embedOptions: {
+                          enablejsapi: 1,
+                        },
+                      },
+                    }}
+                  />
+                  <div className='mt-20'></div>
+                </div>
                 :
-              <video
-                key={taskData?.additionalFiles}
-                ref={videoRef}
-                className=" mx-auto rounded-lg border-[#292929]"
-                width="90%"
-                height="80vh"
-                controls
-                controlsList="nodownload"
-                disablePictureInPicture
-              >
-                <source
-                  src={taskData?.additionalFiles}
-                  // src="https://www.youtube.com/embed/0OK91ijimIU"
-                  type="video/mp4"
-                />
-              </video>
-              
+                <video
+                  key={taskData?.additionalFiles}
+                  ref={videoRef}
+                  className="mx-auto rounded-lg border-[#292929]"
+                  width="90%"
+                  height="80vh"
+                  controls
+                  controlsList="nodownload"
+                  disablePictureInPicture
+                  onLoadedMetadata={() => {
+                    console.log("Video metadata loaded");
+                    const video = videoRef.current;
+                    if (video) {
+                      setupEventListeners(video);
+                    }
+                  }}
+                >
+                  <source src={taskData?.additionalFiles} type="video/mp4" />
+                </video>
+
             )}
             {/* <div className="flex items-center text-sm font-bold gap-1 absolute top-3 right-20 z-10">
               <img className="w-4" src={icon} alt="icon" />

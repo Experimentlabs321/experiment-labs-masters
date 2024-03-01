@@ -210,7 +210,7 @@ const Layout = ({ children }) => {
   const handleMarkAsRead = async (notification) => {
     Loading();
     const markAsRead = await axios.put(
-      `https://test-server-tg7l.onrender.com/api/v1/notifications/makeAsRead/notificationId/${notification?._id}`,
+      `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/notifications/makeAsRead/notificationId/${notification?._id}`,
       {
         userEmail: user?.email,
       }

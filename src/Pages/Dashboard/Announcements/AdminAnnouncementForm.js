@@ -35,7 +35,7 @@ const AdminAnnouncementForm = ({ setShowAnnouncementForm,itemDetails }) => {
     if (selectedFile) imageUrl = await uploadFileToS3(selectedFile);
 
     const newAnnouncement = await axios.post(
-      `https://test-server-tg7l.onrender.com/api/v1/announcements/addAnnouncement`,
+      `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/announcements/addAnnouncement`,
       {
         title: announcement?.title,
         description: description,
@@ -87,7 +87,7 @@ const AdminAnnouncementForm = ({ setShowAnnouncementForm,itemDetails }) => {
           </label>
           {/* Text editor */}
           <div>
-            <div className="bg-white text-black">
+            <div className="bg-white text-black textEditor">
               <TextEditor setValue={setDescription} />
             </div>
           </div>
