@@ -12,6 +12,7 @@ const AdminDashboardHome = () => {
     const { userInfo } = useContext(AuthContext);
     const [organization, setOrganization] = useState();
     const [isLoading, setIsLoading] = useState(true);
+    const [itemDetails, setItemDetails] = useState();
     useEffect(() => {
         axios
             .get(
@@ -26,7 +27,25 @@ const AdminDashboardHome = () => {
                 setIsLoading(false);
             });
     }, [userInfo]);
-    console.log(organization)
+    useEffect(() => {
+        if (userInfo) {
+        //  setAdminLoading(true);
+          axios
+            .get(
+              `${process.env.REACT_APP_SERVER_API}/api/v1/language/getItemDetailsByOrganizationAndName/dashboard/organizationsId/${userInfo?.organizationId}`
+            )
+            .then((response) => {
+              setItemDetails(response?.data);
+    
+            })
+            .finally(() => {
+          //    setAdminLoading(false);
+            });
+        }
+      //  setAdminLoading(false);
+      }, [userInfo]);
+     // console.log(itemDetails)
+    //console.log(organization)
     return (
         <div className="w-[97%] mx-auto">
             <Layout>
@@ -51,11 +70,15 @@ const AdminDashboardHome = () => {
 
 
                     <div className='lg:me-[100px]'>
-                        <p className='text-[#E9E9E9] text-[20px] lg:text-[40px] font-normal text-center '>Welcome,</p>
+                        <p className='text-[#E9E9E9] text-[20px] lg:text-[40px] font-normal text-center '>
+                            {
+                                itemDetails?.welcome ? itemDetails?.welcome : "Welcome"
+                            }
+                            ,</p>
                         <p className='text-[#E9E9E9] text-[20px] lg:text-[40px] text-center font-bold mt-[6px]'>{organization?.organizationName}</p>
                     </div>
                 </div>
-                <AdminStatistics />
+                <AdminStatistics itemDetails={itemDetails} />
             </Layout>
         </div>
   );

@@ -1,5 +1,4 @@
-//AdminFeedbackSettingsDetails
-
+//SkillsCreationsDetails.js
 
 
 import React, { useContext, useEffect, useState } from 'react';
@@ -10,7 +9,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 
 
-const AdminFeedbackSettingsDetails = () => {
+const SkillsCreationsDetails = () => {
     const { userInfo } = useContext(AuthContext)
     const [adminLoading, setAdminLoading] = useState(false);
     const [itemDetails, setItemDetails] = useState();
@@ -19,7 +18,7 @@ const AdminFeedbackSettingsDetails = () => {
             setAdminLoading(true);
             axios
                 .get(
-                    `${process.env.REACT_APP_SERVER_API}/api/v1/language/getFeedbackSubDetailsByOrganizationAndName/feedbackSettings/organizationsId/${userInfo?.organizationId}`
+                    `${process.env.REACT_APP_SERVER_API}/api/v1/language/getSkillsManagementSubDetailsByOrganizationAndName/skillsCreations/organizationsId/${userInfo?.organizationId}`
                 )
                 .then((response) => {
 
@@ -39,7 +38,7 @@ const AdminFeedbackSettingsDetails = () => {
             setAdminLoading(true);
             axios
                 .get(
-                    `${process.env.REACT_APP_SERVER_API}/api/v1/language/getFeedbackSubDetailsByOrganizationAndName/feedbackSettings/organizationsId/${userInfo?.organizationId}`
+                    `${process.env.REACT_APP_SERVER_API}/api/v1/language/getSkillsManagementSubDetailsByOrganizationAndName/skillsCreations/organizationsId/${userInfo?.organizationId}`
                 )
                 .then((response) => {
                     setItemDetails(response?.data);
@@ -55,72 +54,65 @@ const AdminFeedbackSettingsDetails = () => {
         event.preventDefault();
         const form = event.target;
 
+        const newSkillsManagementName = form.skillsManagement?.value;
+        const newSearchName = form.search?.value;
         const newSelectCourseName = form.selectCourse?.value;
-        const newSetFeedbacksName = form.setFeedbacks?.value;
-        const newFeedbackCategoryName = form.feedbackCategory?.value;
         const newEditCategoryNameName = form.editCategoryName?.value;
         const newCategoryNameName = form.categoryName?.value;
         const newUpdateName = form.update?.value;
-        const newRatingName = form.rating?.value;
         const newAreYouSureName = form.areYouSure?.value;
         const newOnceDeletedTheCategoryWillNotRecoverName = form.onceDeletedTheCategoryWillNotRecover?.value;
         const newDeleteName = form.delete?.value;
         const newCancelName = form.cancel?.value;
-        const newEditItemName = form.editItem?.value;
+        const newEditSkillName = form.editSkill?.value;
         const newDeleteCategoryName = form.deleteCategory?.value;
-        const newDeleteItemName = form.deleteItem?.value;
-        const newOnceDeletedTheItemWillNotRecoverName = form.onceDeletedTheItemWillNotRecover?.value;
+        const newDeleteSkillName = form.deleteSkill?.value;
+        const newOnceDeletedTheSkillWillNotRecoverName = form.onceDeletedTheSkillWillNotRecover?.value;
         const newAddDetailsName = form.addDetails?.value;
-    //    const newFeedbackCategoryName = form.feedbackCategory?.value;
-        const newFeedbackItemNameName = form.feedbackItemName?.value;
+        const newSkillCategoryName = form.skillCategory?.value;
+        const newSkillNameName = form.skillName?.value;
         const newUploadIconName = form.uploadIcon?.value;
-        const newBrowserName = form.browser?.value;
-        const newItemRatingName = form.itemRating?.value;
-        const newGiveAccessName = form.giveAccess?.value;
-        const newExecutionMentorName = form.executionMentor?.value;
-        const newExpertMentorName = form.expertMentor?.value;
+        const newDescriptionName = form.description?.value;
+        const newEvaluationOnName = form.evaluationOn?.value;
         const newProceedName = form.proceed?.value;
-      
+        const newSelectSkillCategoryName = form.selectSkillCategory?.value;
+
+     
 
         const itemDetail = {
-         
+            skillsManagement: newSkillsManagementName,
+            search: newSearchName,
             selectCourse: newSelectCourseName,
-            setFeedbacks: newSetFeedbacksName,
             editCategoryName: newEditCategoryNameName,
-            feedbackCategory: newFeedbackCategoryName,
             categoryName: newCategoryNameName,
             deleteCategory: newDeleteCategoryName,
             update: newUpdateName,
-            rating: newRatingName,
             areYouSure: newAreYouSureName,
             onceDeletedTheCategoryWillNotRecover: newOnceDeletedTheCategoryWillNotRecoverName,
             delete: newDeleteName,
             cancel: newCancelName,
-            editItem: newEditItemName,
-            deleteItem: newDeleteItemName,
-            onceDeletedTheItemWillNotRecover: newOnceDeletedTheItemWillNotRecoverName,
+            editSkill: newEditSkillName,
+            deleteSkill: newDeleteSkillName,
+            onceDeletedTheSkillWillNotRecover: newOnceDeletedTheSkillWillNotRecoverName,
             addDetails: newAddDetailsName,
-          //  feedbackCategory: newFeedbackCategoryName,
-          feedbackItemName: newFeedbackItemNameName,
+            skillCategory: newSkillCategoryName,
+            skillName: newSkillNameName,
             uploadIcon: newUploadIconName,
-            browser: newBrowserName,
-            itemRating: newItemRatingName,
-            giveAccess: newGiveAccessName,
-            executionMentor: newExecutionMentorName,
-            expertMentor: newExpertMentorName,
+            description: newDescriptionName,
+            evaluationOn: newEvaluationOnName,
             proceed: newProceedName,
-           
+            selectSkillCategory: newSelectSkillCategoryName,
 
 
 
         };
         console.log(itemDetail)
         const item = await axios.post(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/language/addFeedbackSubDetails/feedbackSettings/organizationId/${userInfo?.organizationId}`,
+            `${process.env.REACT_APP_SERVER_API}/api/v1/language/addSkillsManagementSubDetails/skillsCreations/organizationId/${userInfo?.organizationId}`,
             itemDetail
         );
         console.log(item)
-        if (item?.data === "Feedback SubDetails updated successfully") {
+        if (item?.data === "Skills Management SubDetails updated successfully") {
             setItemDetails({ ...itemDetails });
             fetchContentDetails();
             toast.success("Items Names added Successfully");
@@ -142,18 +134,22 @@ const AdminFeedbackSettingsDetails = () => {
                     :
                     <form onSubmit={handleSubmit} className='mt-2 border p-4 rounded-xl'>
                         <div className=' grid grid-cols-2 gap-4'>
-                       
+
+                            <div className='flex justify-between items-center w-[100%]'>
+                                <p className='text-lg font-medium'>Skills Management</p>
+                                <input name='skillsManagement' defaultValue={itemDetails?.skillsManagement} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                            </div>
+                            <div className='flex justify-between items-center w-[100%]'>
+                                <p className='text-lg font-medium'>Search</p>
+                                <input name='search' defaultValue={itemDetails?.search} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                            </div>
                             <div className='flex justify-between items-center w-[100%]'>
                                 <p className='text-lg font-medium'>Select Course</p>
                                 <input name='selectCourse' defaultValue={itemDetails?.selectCourse} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
                             </div>
                             <div className='flex justify-between items-center w-[100%]'>
-                                <p className='text-lg font-medium'>Set Feedbacks</p>
-                                <input name='setFeedbacks' defaultValue={itemDetails?.setFeedbacks} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
-                            </div>
-                            <div className='flex justify-between items-center w-[100%]'>
-                                <p className='text-lg font-medium'>Feedback Category</p>
-                                <input name='feedbackCategory' defaultValue={itemDetails?.feedbackCategory} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                                <p className='text-lg font-medium'>Select Skill Category</p>
+                                <input name='selectSkillCategory' defaultValue={itemDetails?.selectSkillCategory} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
                             </div>
                             <div className='flex justify-between items-center w-[100%]'>
                                 <p className='text-lg font-medium'>Edit Category Name</p>
@@ -172,10 +168,6 @@ const AdminFeedbackSettingsDetails = () => {
                                 <input name='update' defaultValue={itemDetails?.update} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
                             </div>
                             <div className='flex justify-between items-center w-[100%]'>
-                                <p className='text-lg font-medium'>Rating</p>
-                                <input name='rating' defaultValue={itemDetails?.rating} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
-                            </div>
-                            <div className='flex justify-between items-center w-[100%]'>
                                 <p className='text-lg font-medium'>Are you sure</p>
                                 <input name='areYouSure' defaultValue={itemDetails?.areYouSure} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
                             </div>
@@ -192,49 +184,40 @@ const AdminFeedbackSettingsDetails = () => {
                                 <input name='cancel' defaultValue={itemDetails?.cancel} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
                             </div>
                             <div className='flex justify-between items-center w-[100%]'>
-                                <p className='text-lg font-medium'>Edit Item</p>
-                                <input name='editItem' defaultValue={itemDetails?.editItem} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                                <p className='text-lg font-medium'>Edit Skill</p>
+                                <input name='editSkill' defaultValue={itemDetails?.editSkill} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
                             </div>
                             <div className='flex justify-between items-center w-[100%]'>
-                                <p className='text-lg font-medium'>Delete Item</p>
-                                <input name='deleteItem' defaultValue={itemDetails?.deleteItem} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                                <p className='text-lg font-medium'>Delete Skill</p>
+                                <input name='deleteSkill' defaultValue={itemDetails?.deleteSkill} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
                             </div>
                             <div className='flex justify-between items-center w-[100%]'>
-                                <p className='text-lg font-medium'>Once deleted, the Item will not recover</p>
-                                <input name='onceDeletedTheItemWillNotRecover' defaultValue={itemDetails?.onceDeletedTheItemWillNotRecover} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                                <p className='text-lg font-medium'>Once deleted, the skill will not recover</p>
+                                <input name='onceDeletedTheSkillWillNotRecover' defaultValue={itemDetails?.onceDeletedTheSkillWillNotRecover} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
                             </div>
                             <div className='flex justify-between items-center w-[100%]'>
                                 <p className='text-lg font-medium'>Add Details</p>
                                 <input name='addDetails' defaultValue={itemDetails?.addDetails} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
                             </div>
-                         
                             <div className='flex justify-between items-center w-[100%]'>
-                                <p className='text-lg font-medium'>Feedback Item Name</p>
-                                <input name='feedbackItemName' defaultValue={itemDetails?.feedbackItemName} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                                <p className='text-lg font-medium'>Skill Category</p>
+                                <input name='skillCategory' defaultValue={itemDetails?.skillCategory} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                            </div>
+                            <div className='flex justify-between items-center w-[100%]'>
+                                <p className='text-lg font-medium'>Skill Name</p>
+                                <input name='skillName' defaultValue={itemDetails?.skillName} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
                             </div>
                             <div className='flex justify-between items-center w-[100%]'>
                                 <p className='text-lg font-medium'>Upload Icon</p>
                                 <input name='uploadIcon' defaultValue={itemDetails?.uploadIcon} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
                             </div>
                             <div className='flex justify-between items-center w-[100%]'>
-                                <p className='text-lg font-medium'>Browser</p>
-                                <input name='browser' defaultValue={itemDetails?.browser} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                                <p className='text-lg font-medium'>Description</p>
+                                <input name='description' defaultValue={itemDetails?.description} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
                             </div>
                             <div className='flex justify-between items-center w-[100%]'>
-                                <p className='text-lg font-medium'>Item Rating</p>
-                                <input name='itemRating' defaultValue={itemDetails?.itemRating} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
-                            </div>
-                            <div className='flex justify-between items-center w-[100%]'>
-                                <p className='text-lg font-medium'>Give Access</p>
-                                <input name='giveAccess' defaultValue={itemDetails?.giveAccess} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
-                            </div>
-                            <div className='flex justify-between items-center w-[100%]'>
-                                <p className='text-lg font-medium'>Execution mentor</p>
-                                <input name='executionMentor' defaultValue={itemDetails?.executionMentor} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
-                            </div>
-                            <div className='flex justify-between items-center w-[100%]'>
-                                <p className='text-lg font-medium'>Expert mentor</p>
-                                <input name='expertMentor' defaultValue={itemDetails?.expertMentor} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                                <p className='text-lg font-medium'>Evaluation on</p>
+                                <input name='evaluationOn' defaultValue={itemDetails?.evaluationOn} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
                             </div>
                             <div className='flex justify-between items-center w-[100%]'>
                                 <p className='text-lg font-medium'>Proceed</p>
@@ -260,4 +243,4 @@ const AdminFeedbackSettingsDetails = () => {
     );
 };
 
-export default AdminFeedbackSettingsDetails;
+export default SkillsCreationsDetails;

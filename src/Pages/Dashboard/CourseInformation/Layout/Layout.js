@@ -7,7 +7,7 @@ import axios from "axios";
 import { AuthContext } from "../../../../contexts/AuthProvider";
 import io from "socket.io-client";
 
-const socket = io("http://localhost:5000");
+const socket = io("${process.env.REACT_APP_SERVER_API}");
 
 const Layout = ({ children }) => {
   const [toggleButton, setToggleButton] = useState(true);
@@ -38,7 +38,7 @@ const Layout = ({ children }) => {
   const fetchNotifications = async () => {
     try {
       axios
-        .get(`http://localhost:5000/api/v1/notifications`)
+        .get(`${process.env.REACT_APP_SERVER_API}/api/v1/notifications`)
         .then((response) => {
           setNotifications(response?.data);
         })
