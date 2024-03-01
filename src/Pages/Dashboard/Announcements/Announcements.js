@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Layout from "../Layout";
 import AdminAnnouncementForm from "./AdminAnnouncementForm";
 import { useNotification } from "../../../contexts/NotificationContext";
@@ -8,6 +8,7 @@ import axios from "axios";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Loading from "../../Shared/Loading/Loading";
 
+
 const Announcements = () => {
   const { user, userInfo } = useContext(AuthContext);
   const { announcements, unreadAnnouncements, fetchAnnouncements } =
@@ -16,6 +17,26 @@ const Announcements = () => {
   const [showAnnouncementDetailsDialog, setShowAnnouncementDetailsDialog] =
     useState(false);
   const [displayingAnnouncement, setDisplayingAnnouncement] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [itemDetails, setItemDetails] = useState();
+  useEffect(() => {
+    if (userInfo) {
+      setLoading(true);
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/language/getItemDetailsByOrganizationAndName/announcements/organizationsId/${userInfo?.organizationId}`
+        )
+        .then((response) => {
+          setItemDetails(response?.data);
+
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+    setLoading(false);
+  }, [userInfo]);
+//  console.log(itemDetails)
 
   const handleDate = (dateTime) => {
     const date = new Date(dateTime).toDateString();
@@ -29,7 +50,7 @@ const Announcements = () => {
 
   const handleMarkAsRead = async (announcement) => {
     const markAsRead = await axios.put(
-      `https://test-server-tg7l.onrender.com/api/v1/announcements/makeAsRead/announcementId/${announcement?._id}`,
+      `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/announcements/makeAsRead/announcementId/${announcement?._id}`,
       {
         userEmail: user?.email,
       }
@@ -43,7 +64,7 @@ const Announcements = () => {
   const handleMarkAsRemove = async (announcement) => {
     Loading();
     const markAsRemove = await axios.put(
-      `https://test-server-tg7l.onrender.com/api/v1/announcements/makeAsRemove/announcementId/${announcement?._id}`,
+      `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/announcements/makeAsRemove/announcementId/${announcement?._id}`,
       {
         userEmail: user?.email,
       }
@@ -61,20 +82,22 @@ const Announcements = () => {
       <Layout>
         <div className="p-4">
           <div className="flex items-center justify-between h-24 ">
-            <h1 className="text-3xl font-bold">Announcements</h1>
+            <h1 className="text-3xl font-bold"> {itemDetails?.announcements ? itemDetails?.announcements : "Announcements"}</h1>
 
             {userInfo?.role === "admin" && (
               <button
                 onClick={() => setShowAnnouncementForm(true)}
                 className="bg-sky-500 text-white px-4 py-2 font-medium rounded hover:bg-sky-600 transition duration-300"
               >
-                Publish Announcement
+                {itemDetails?.publishAnnouncement ? itemDetails?.publishAnnouncement : "Publish Announcement"}
+                
               </button>
             )}
           </div>
 
           {showAnnouncementForm && (
             <AdminAnnouncementForm
+            itemDetails={itemDetails}
               setShowAnnouncementForm={setShowAnnouncementForm}
             />
           )}
@@ -83,7 +106,7 @@ const Announcements = () => {
           <DialogLayoutForFromControl
             title={
               <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
-                Announcement
+               {itemDetails?.announcements ? itemDetails?.announcements : "Announcements"}
               </p>
             }
             width={800}
@@ -114,7 +137,7 @@ const Announcements = () => {
                       </span>
                     </small>
                     <div className=" bg-[#F7E7E9] text-[#E63946] w-fit h-fit py-[6px] px-[8px] rounded text-[12px] whitespace-nowrap font-bold uppercase">
-                      {displayingAnnouncement?.urgency} URGENCY
+                      {displayingAnnouncement?.urgency} {itemDetails?.urgency ? itemDetails?.urgency : "URGENCY"} 
                     </div>
                   </div>
                   <div className=" my-2">
@@ -171,7 +194,7 @@ const Announcements = () => {
                           <div
                             className={` bg-[#F7E7E9] text-[#E63946] w-fit h-fit py-[6px] px-[8px] mt-1 rounded text-[12px] whitespace-nowrap font-bold uppercase`}
                           >
-                            {announcement?.urgency} URGENCY
+                            {announcement?.urgency} {itemDetails?.urgency ? itemDetails?.urgency : "URGENCY"}
                           </div>
                         </div>
                         <div className=" my-2">

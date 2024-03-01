@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import uploadFileToS3 from "../../UploadComponent/s3Uploader";
 import Loading from "../../Shared/Loading/Loading";
 
-const AdminAnnouncementForm = ({ setShowAnnouncementForm }) => {
+const AdminAnnouncementForm = ({ setShowAnnouncementForm,itemDetails }) => {
   const { user, userInfo } = useContext(AuthContext);
   const [announcement, setAnnouncement] = useState({
     title: "",
@@ -35,7 +35,7 @@ const AdminAnnouncementForm = ({ setShowAnnouncementForm }) => {
     if (selectedFile) imageUrl = await uploadFileToS3(selectedFile);
 
     const newAnnouncement = await axios.post(
-      `https://test-server-tg7l.onrender.com/api/v1/announcements/addAnnouncement`,
+      `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/announcements/addAnnouncement`,
       {
         title: announcement?.title,
         description: description,
@@ -57,14 +57,15 @@ const AdminAnnouncementForm = ({ setShowAnnouncementForm }) => {
 
   return (
     <div className="admin-announcement-form bg-gray-100 py-8 px-4 rounded-lg shadow-md my-4">
-      <h2 className="text-xl font-bold mb-4">Publish Announcement</h2>
+      <h2 className="text-xl font-bold mb-4">{itemDetails?.publishAnnouncement ? itemDetails?.publishAnnouncement : "Publish Announcement"} </h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label
             htmlFor="title"
             className="block text-gray-700 font-semibold mb-1"
           >
-            Title:
+            {itemDetails?.title ? itemDetails?.title : "Title"}
+            :
           </label>
           <input
             type="text"
@@ -81,11 +82,12 @@ const AdminAnnouncementForm = ({ setShowAnnouncementForm }) => {
             htmlFor="description"
             className="block text-gray-700 font-semibold mb-1"
           >
-            Description:
+            {itemDetails?.description ? itemDetails?.description : "Description"}
+            :
           </label>
           {/* Text editor */}
           <div>
-            <div className="bg-white text-black">
+            <div className="bg-white text-black textEditor">
               <TextEditor setValue={setDescription} />
             </div>
           </div>
@@ -105,7 +107,8 @@ const AdminAnnouncementForm = ({ setShowAnnouncementForm }) => {
             htmlFor="urgency"
             className="block text-gray-700 font-semibold mb-1"
           >
-            Urgency:
+           {itemDetails?.urgency ? itemDetails?.urgency : "Urgency"}
+            :
           </label>
           <select
             id="urgency"
@@ -114,10 +117,10 @@ const AdminAnnouncementForm = ({ setShowAnnouncementForm }) => {
             onChange={handleChange}
             className="w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus:border-blue-500"
           >
-            <option value="">Select urgency</option>
-            <option value="high">High</option>
-            <option value="medium">Medium</option>
-            <option value="low">Low</option>
+            <option value="">{itemDetails?.selectUrgency ? itemDetails?.selectUrgency : "Select urgency"} </option>
+            <option value="high">{itemDetails?.high ? itemDetails?.high : "High"} </option>
+            <option value="medium">{itemDetails?.medium ? itemDetails?.medium : "Medium"} </option>
+            <option value="low">{itemDetails?.low ? itemDetails?.low : "Low"} </option>
           </select>
         </div>
 
@@ -126,7 +129,8 @@ const AdminAnnouncementForm = ({ setShowAnnouncementForm }) => {
             htmlFor="imageUrl"
             className="block text-gray-700 font-semibold mb-1"
           >
-            Announcement Image:
+            {itemDetails?.announcementImage ? itemDetails?.announcementImage : "Announcement Image"}
+            :
           </label>
           <input
             type="file"
@@ -145,7 +149,8 @@ const AdminAnnouncementForm = ({ setShowAnnouncementForm }) => {
           type="submit"
           className="bg-sky-500 text-white px-4 py-2 rounded hover:bg-sky-600 transition duration-300"
         >
-          Publish
+          {itemDetails?.publish ? itemDetails?.publish : "Publish"}
+          
         </button>
       </form>
     </div>

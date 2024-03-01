@@ -184,7 +184,7 @@ const ManageReading = () => {
 
       if (newTask?.data?.result?.acknowledged) {
         const newNotification = await axios.post(
-          `https://test-server-tg7l.onrender.com/api/v1/notifications/addNotification`,
+          `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/notifications/addNotification`,
           {
             message: `New reading material added in course ${course?.courseFullName}.`,
             dateTime: new Date(),
@@ -411,13 +411,13 @@ const ManageReading = () => {
                 </div>
 
                 {/* Text editor */}
-                <div className="py-4">
-                  <div className="bg-white text-black">
+                <div className="py-4 ">
+                  <div className="bg-white text-black textEditor">
                     <TextEditor setValue={setReadingMaterial} />
                   </div>
                 </div>
-                {/* <p>{instructions}</p>
-              <div dangerouslySetInnerHTML={{ __html: instructions }} /> */}
+                {/* <p>{readingMaterial}</p>
+                <div dangerouslySetInnerHTML={{ __html: readingMaterial }} /> */}
               </div>
             </div>
             <div className="me-20 py-[35px] ps-[40px]">

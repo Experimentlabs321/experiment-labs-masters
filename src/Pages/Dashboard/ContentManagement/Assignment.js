@@ -62,9 +62,8 @@ const Assignment = () => {
   const [orgData, setOrgData] = useState({});
   const [taskDrip, setTaskDrip] = useState(false);
   const [enableDrip, setEnableDrip] = useState();
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
-    
     axios
       .get(
         `${
@@ -73,10 +72,12 @@ const Assignment = () => {
       )
       .then((response) => {
         setBatchesData(response?.data);
-        setIsLoading(false)
+        setIsLoading(false);
       })
-      .catch((error) => {console.error(error)
-        setIsLoading(false)});
+      .catch((error) => {
+        console.error(error);
+        setIsLoading(false);
+      });
   }, [chapter?.courseId]);
 
   useEffect(() => {
@@ -84,7 +85,7 @@ const Assignment = () => {
       .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
       .then((response) => {
         setChapter(response?.data);
-        setIsLoading(false)
+        setIsLoading(false);
       })
       .then(() => {
         const fetchData = {
@@ -97,23 +98,33 @@ const Assignment = () => {
               `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
               fetchData
             )
-            .then((res) => {setSkillCategories(res?.data)
-              setIsLoading(false)})
-            .catch((error) => {console.error(error)
-              setIsLoading(false)});
+            .then((res) => {
+              setSkillCategories(res?.data);
+              setIsLoading(false);
+            })
+            .catch((error) => {
+              console.error(error);
+              setIsLoading(false);
+            });
           axios
             .post(
               `${process.env.REACT_APP_BACKEND_API}/itemCategoryByCourseId`,
               fetchData
             )
-            .then((res) => {setEarningCategories(res?.data)
-              setIsLoading(false)})
-            .catch((error) => {console.error(error)
-              setIsLoading(false)});
+            .then((res) => {
+              setEarningCategories(res?.data);
+              setIsLoading(false);
+            })
+            .catch((error) => {
+              console.error(error);
+              setIsLoading(false);
+            });
         }
       })
-      .catch((error) => {console.error(error)
-        setIsLoading(false)});
+      .catch((error) => {
+        console.error(error);
+        setIsLoading(false);
+      });
   }, [id, userInfo, userInfo?.email]);
 
   useEffect(() => {
@@ -137,8 +148,10 @@ const Assignment = () => {
         setOrgData(response?.data);
         setIsLoading(false);
       })
-      .catch((error) => {console.error(error)
-        setIsLoading(false);});
+      .catch((error) => {
+        console.error(error);
+        setIsLoading(false);
+      });
   }, [userInfo]);
 
   const handleOptionChangeBatch = (event, optionValue) => {
@@ -227,7 +240,7 @@ const Assignment = () => {
       if (newAssignment?.data?.result?.acknowledged) {
         toast.success("Assignment added Successfully");
         const newNotification = await axios.post(
-          `https://test-server-tg7l.onrender.com/api/v1/notifications/addNotification`,
+          `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/notifications/addNotification`,
           {
             message: `New assignment added in course ${course?.courseFullName}.`,
             dateTime: new Date(),

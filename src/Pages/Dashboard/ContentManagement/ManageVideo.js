@@ -159,15 +159,13 @@ const ManageVideo = () => {
     let isYoutubeLink;
 
     console.log(selectedFile);
-    if (selectedFile){
+    if (selectedFile) {
       fileUrl = await uploadFileToS3(selectedFile);
-      isYoutubeLink= false;
-    } 
-    else if (youtubeVideoLink){
+      isYoutubeLink = false;
+    } else if (youtubeVideoLink) {
       fileUrl = youtubeVideoLink;
-      isYoutubeLink= true;
-
-    } 
+      isYoutubeLink = true;
+    }
     const form = event.target;
     const videoTopicName = form.videoTopicName?.value;
 
@@ -199,7 +197,7 @@ const ManageVideo = () => {
       if (newTask) {
         toast.success("Video added Successfully");
         const newNotification = await axios.post(
-          `https://test-server-tg7l.onrender.com/api/v1/notifications/addNotification`,
+          `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/notifications/addNotification`,
           {
             message: `New video material added in course ${course?.courseFullName}.`,
             dateTime: new Date(),

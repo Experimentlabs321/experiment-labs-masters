@@ -190,7 +190,7 @@ const EditBundle = () => {
     };
     if (submitPermission) {
       const updateBundle = await axios.put(
-        `http://localhost:5000/api/v1/bundles/updateBundle/bundleId/${id}`,
+        `${process.env.REACT_APP_SERVER_API}/api/v1/bundles/updateBundle/bundleId/${id}`,
         addBundle
       );
 

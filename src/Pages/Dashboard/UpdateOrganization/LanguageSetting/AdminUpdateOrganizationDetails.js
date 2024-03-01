@@ -8,6 +8,10 @@ import DialogLayoutForFromControl from '../../Shared/DialogLayoutForFromControl'
 import AdminLiveClassFeedbackDetails from './AdminLiveClassFeedbackDetails';
 import AdminFeedbackSettingsDetails from './AdminFeedbackSettingsDetails';
 import AdminOrganizationThemeDetails from './AdminOrganizationThemeDetails';
+import AdminDashboardThemeDetails from './AdminDashboardThemeDetails';
+import AdminPaymentIntegrationDetails from './AdminPaymentIntegrationDetails';
+import AdminLimitDeviceDetails from './AdminLimitDeviceDetails';
+import AdminLanguageSettingDetails from './AdminLanguageSettingDetails';
 
 
 const AdminUpdateOrganizationDetails = () => {
@@ -15,7 +19,25 @@ const AdminUpdateOrganizationDetails = () => {
     const [organizationThemeNameInput, setOrganizationThemeNameInput] = useState('');
     const [editOrganizationThemeNameOpen, setEditOrganizationThemeNameOpen] = useState(false);
     const [adminOrganizationThemeDetailsOpen, setAdminOrganizationThemeDetailsOpen] = useState(false);
-  
+    //Dashboard Theme
+    const [dashboardThemeNameInput, setDashboardThemeNameInput] = useState('');
+    const [editDashboardThemeNameOpen, setEditDashboardThemeNameOpen] = useState(false);
+    const [adminDashboardThemeDetailsOpen, setAdminDashboardThemeDetailsOpen] = useState(false);
+    //Payment Integration
+    const [paymentIntegrationNameInput, setPaymentIntegrationNameInput] = useState('');
+    const [editPaymentIntegrationNameOpen, setEditPaymentIntegrationNameOpen] = useState(false);
+    const [adminPaymentIntegrationDetailsOpen, setAdminPaymentIntegrationDetailsOpen] = useState(false);
+    //Limit Device
+    const [limitDeviceNameInput, setLimitDeviceNameInput] = useState('');
+    const [editLimitDeviceNameOpen, setEditLimitDeviceNameOpen] = useState(false);
+    const [adminLimitDeviceDetailsOpen, setAdminLimitDeviceDetailsOpen] = useState(false);
+    //Language Setting
+    const [languageSettingNameInput, setLanguageSettingNameInput] = useState('');
+    const [editLanguageSettingNameOpen, setEditLanguageSettingNameOpen] = useState(false);
+    const [adminLanguageSettingDetailsOpen, setAdminLanguageSettingDetailsOpen] = useState(false);
+
+
+
 
     return (
         <div className=''>
@@ -25,31 +47,11 @@ const AdminUpdateOrganizationDetails = () => {
                 <div className={`w-[100%] flex items-center justify-between border p-2 rounded-xl ${adminOrganizationThemeDetailsOpen ? "bg-slate-100" : ""} `}>
                     <div className='flex items-center gap-7'>
                         <p className='text-xl font-medium'>
-                            {
-                                organizationThemeNameInput ? organizationThemeNameInput : "Organization Theme"
-                            }
-
+                            
+                               Organization Theme
+                            
                         </p>
-                        <button
-                            onClick={() => {
-                                setEditOrganizationThemeNameOpen(true);
-                             
-                            }}
-                            className="ml-[24px]"
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="18"
-                                height="20"
-                                viewBox="0 0 18 20"
-                                fill="none"
-                            >
-                                <path
-                                    d="M13.648 0.961914L17.3711 4.88525L14.5329 7.87744L10.8098 3.95411L13.648 0.961914ZM0.0117188 19.2551H3.73478L12.7781 9.72533L9.05502 5.802L0.0117188 15.3318V19.2551Z"
-                                    fill="#282828"
-                                />
-                            </svg>
-                        </button>
+                     
                     </div>
                     {
                         (adminOrganizationThemeDetailsOpen) ? <KeyboardArrowUpIcon className='cursor-pointer' onClick={() => {
@@ -64,40 +66,6 @@ const AdminUpdateOrganizationDetails = () => {
 
 
                 </div>
-                <DialogLayoutForFromControl
-                    open={editOrganizationThemeNameOpen}
-                    setOpen={setEditOrganizationThemeNameOpen}
-                    width={400}
-                    borderRadius="15px"
-                    title={
-                        <p className=" h-[90px] text-[19px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
-                            Edit Organization Theme Name
-                        </p>
-                    }
-                >
-
-                    <div>
-                        <input
-                            className="mt-6 border rounded-md w-[358px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                            name="OrganizationTheme"
-                            type="text"
-                            placeholder="Organization Theme"
-                            value={organizationThemeNameInput}
-                            onChange={(e) => setOrganizationThemeNameInput(e.target.value)}
-                        />
-                        <div className="flex justify-center mt-5">
-
-                            <button
-                                className="px-[20px] py-3 bg-[#3E4DAC] hover:bg-opacity-70 text-[#fff] cursor-pointer text-xl font-bold rounded-lg"
-                                onClick={() => setEditOrganizationThemeNameOpen(false)}
-
-                            >Add</button>
-
-
-                        </div>
-
-                    </div>
-                </DialogLayoutForFromControl>
 
                 {
                     (adminOrganizationThemeDetailsOpen) && (
@@ -107,11 +75,135 @@ const AdminUpdateOrganizationDetails = () => {
 
 
             </div>
+            {/*  Dashboard Theme */}
+            <div className='mt-2'>
+                <div className={`w-[100%] flex items-center justify-between border p-2 rounded-xl ${adminDashboardThemeDetailsOpen ? "bg-slate-100" : ""} `}>
+                    <div className='flex items-center gap-7'>
+                        <p className='text-xl font-medium'>                         
+                                Dashboard Theme
+                            
+                        </p>
+                      
+                    </div>
+                    {
+                        (adminDashboardThemeDetailsOpen) ? <KeyboardArrowUpIcon className='cursor-pointer' onClick={() => {
+                            setAdminDashboardThemeDetailsOpen(false);
 
-      
+                        }} /> : <KeyboardArrowDownIcon className='cursor-pointer' onClick={() => {
+                            setAdminDashboardThemeDetailsOpen(true);
+
+                        }} />
+                    }
 
 
 
+                </div>
+
+
+                {
+                    (adminDashboardThemeDetailsOpen) && (
+                        <AdminDashboardThemeDetails />
+                    )
+                }
+
+
+            </div>
+            {/*Payment Integration*/}
+            <div className='mt-2'>
+                <div className={`w-[100%] flex items-center justify-between border p-2 rounded-xl ${adminPaymentIntegrationDetailsOpen ? "bg-slate-100" : ""} `}>
+                    <div className='flex items-center gap-7'>
+                        <p className='text-xl font-medium'>
+                            
+                                 Payment Integration
+                           
+                        </p>
+                      
+                    </div>
+                    {
+                        (adminPaymentIntegrationDetailsOpen) ? <KeyboardArrowUpIcon className='cursor-pointer' onClick={() => {
+                            setAdminPaymentIntegrationDetailsOpen(false);
+
+                        }} /> : <KeyboardArrowDownIcon className='cursor-pointer' onClick={() => {
+                            setAdminPaymentIntegrationDetailsOpen(true);
+
+                        }} />
+                    }
+
+
+
+                </div>
+
+                {
+                    (adminPaymentIntegrationDetailsOpen) && (
+                        <AdminPaymentIntegrationDetails />
+                    )
+                }
+
+
+            </div>
+            {/*Limit Device*/}
+            <div className='mt-2'>
+                <div className={`w-[100%] flex items-center justify-between border p-2 rounded-xl ${adminLimitDeviceDetailsOpen ? "bg-slate-100" : ""} `}>
+                    <div className='flex items-center gap-7'>
+                        <p className='text-xl font-medium'>
+                            
+                                Limit Device
+                        </p>
+                
+                    </div>
+                    {
+                        (adminLimitDeviceDetailsOpen) ? <KeyboardArrowUpIcon className='cursor-pointer' onClick={() => {
+                            setAdminLimitDeviceDetailsOpen(false);
+
+                        }} /> : <KeyboardArrowDownIcon className='cursor-pointer' onClick={() => {
+                            setAdminLimitDeviceDetailsOpen(true);
+
+                        }} />
+                    }
+
+
+
+                </div>
+
+                {
+                    (adminLimitDeviceDetailsOpen) && (
+                        <AdminLimitDeviceDetails />
+                    )
+                }
+
+
+            </div>
+            {/*Language Setting*/}
+          {/*   <div className='mt-2'>
+                <div className={`w-[100%] flex items-center justify-between border p-2 rounded-xl ${adminLanguageSettingDetailsOpen ? "bg-slate-100" : ""} `}>
+                    <div className='flex items-center gap-7'>
+                        <p className='text-xl font-medium'>
+                            
+                               Language Setting
+                            
+                        </p>
+                 
+                    </div>
+                    {
+                        (adminLanguageSettingDetailsOpen) ? <KeyboardArrowUpIcon className='cursor-pointer' onClick={() => {
+                            setAdminLanguageSettingDetailsOpen(false);
+
+                        }} /> : <KeyboardArrowDownIcon className='cursor-pointer' onClick={() => {
+                            setAdminLanguageSettingDetailsOpen(true);
+
+                        }} />
+                    }
+
+                </div>
+
+                {
+                    (adminLanguageSettingDetailsOpen) && (
+                        <AdminLanguageSettingDetails />
+                    )
+                }
+
+
+            </div> */}
 
         </div>
     );

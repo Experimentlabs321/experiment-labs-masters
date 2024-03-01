@@ -13,6 +13,7 @@ const SelectEarningCategory = ({
   setCategoryThreeDot,
   categoryThreeDot,
   selectedCourse,
+  itemDetails
 }) => {
   const { userInfo } = useContext(AuthContext);
   const [editCategoryOpen, setEditCategoryOpen] = useState(false);
@@ -22,8 +23,8 @@ const SelectEarningCategory = ({
     if (!selectedCourse?._id || !userInfo?.organizationId) {
       Swal.fire({
         icon: "warning",
-        title: "There is no course",
-        text: "Please create a course first!",
+        title: itemDetails?.thereIsNoCourse ? itemDetails?.thereIsNoCourse : "There is no course",
+        text: itemDetails?.pleaseCreateACourseFirst ? itemDetails?.pleaseCreateACourseFirst : "Please create a course first!",
       });
       return;
     }
@@ -163,7 +164,10 @@ const SelectEarningCategory = ({
         borderRadius="15px"
         title={
           <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
-            Edit Category Name
+            {
+              itemDetails?.editCategoryName ? itemDetails?.editCategoryName : "Edit Category Name"
+            }
+
           </p>
         }
       >
@@ -171,7 +175,11 @@ const SelectEarningCategory = ({
           onSubmit={handleEditCategoryName}
           className="px-[32px] py-[24px] "
         >
-          <h1 className=" text-[18px] font-[700] mb-[10px] ">Category Name</h1>
+          <h1 className=" text-[18px] font-[700] mb-[10px] ">
+            {
+              itemDetails?.categoryName ? itemDetails?.categoryName : "Category Name"
+            }
+          </h1>
           <input
             type="text"
             id="categoryName"
@@ -180,7 +188,11 @@ const SelectEarningCategory = ({
             placeholder="Category"
             className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] mb-4 "
           />
-          <h1 className=" text-[18px] font-[700] mb-[10px] ">Total Weight</h1>
+          <h1 className=" text-[18px] font-[700] mb-[10px] ">
+            {
+              itemDetails?.totalWeight ? itemDetails?.totalWeight : "Total Weight"
+            }
+          </h1>
           <input
             type="number"
             id="totalWeight"
@@ -200,7 +212,10 @@ const SelectEarningCategory = ({
       </DialogLayout>
       {/* Edit category name end */}
       <h1 className=" text-[#737373] text-[24px] font-[500] mb-2 ">
-        Earning Category
+        {
+          itemDetails?.earningCategory ? itemDetails?.earningCategory : "Earning Category"
+        }
+
       </h1>
       <div className="flex flex-wrap gap-y-2 items-center">
         {earningCategories?.map((item, index) => {
@@ -213,19 +228,18 @@ const SelectEarningCategory = ({
           return (
             <button
               key={index}
-              className={`px-2 py-3 relative text-base text-start border rounded-md font-semibold flex items-center min-w-[150px] justify-between gap-6 mr-1 ${
-                selectedEarningCategory?.categoryName === item?.categoryName
-                  ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
-                  : "text-[#949494]"
-              }`}
+              className={`px-2 py-3 relative text-base text-start border rounded-md font-semibold flex items-center min-w-[150px] justify-between gap-6 mr-1 ${selectedEarningCategory?.categoryName === item?.categoryName
+                ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
+                : "text-[#949494]"
+                }`}
               onClick={() => {
                 setSelectedEarningCategory(item);
               }}
             >
               <div>
-                <h1>Name: {item?.categoryName}</h1>
-                <p>Total Weight: {item?.totalWeight}</p>
-                <p>Added Weight: {totalAddedWeight}</p>
+                <h1> {itemDetails?.name ? itemDetails?.name : "Name"}: {item?.categoryName}</h1>
+                <p>{itemDetails?.totalWeight ? itemDetails?.totalWeight : "Total Weight"} : {item?.totalWeight}</p>
+                <p>{itemDetails?.addedWeight ? itemDetails?.addedWeight : "Added Weight"} : {totalAddedWeight}</p>
               </div>
               <button
                 onBlur={() => setCategoryThreeDot(false)}
@@ -263,7 +277,8 @@ const SelectEarningCategory = ({
                       }}
                       className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
                     >
-                      Edit Category Name
+                      {itemDetails?.editCategoryName ? itemDetails?.editCategoryName : "Edit Category Name"}
+                      
                     </li>
                     <li
                       className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
@@ -273,7 +288,8 @@ const SelectEarningCategory = ({
                         );
                       }}
                     >
-                      Delete Category
+                      {itemDetails?.deleteCategory ? itemDetails?.deleteCategory : "Delete Category"}
+                      
                     </li>
                   </ul>
                 )}
@@ -284,7 +300,8 @@ const SelectEarningCategory = ({
           <div
             className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
           >
-            Please Add Category...
+            {itemDetails?.pleaseAddCategory ? itemDetails?.pleaseAddCategory : "Please Add Category"}
+            ...
           </div>
         )}
         <button
