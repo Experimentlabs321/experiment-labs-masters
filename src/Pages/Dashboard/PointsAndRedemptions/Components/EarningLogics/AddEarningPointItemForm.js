@@ -54,7 +54,7 @@ const AddEarningPointItemForm = ({
     );
 
     if (newItem?.data?.acknowledged) {
-      toast.success("Item added Successfully");
+      toast.success(itemDetails?.itemUpdatedSuccessfully ? itemDetails?.itemUpdatedSuccessfully :"Item added Successfully");
       const selectedCategoryItems = selectedEarningCategory?.earningItems
         ? [
             ...selectedEarningCategory?.earningItems,
@@ -274,7 +274,7 @@ const AddEarningPointItemForm = ({
                 <div className=" mt-5  ">
                   <input
                     type="submit"
-                    value="Proceed"
+                    value={itemDetails?.proceed ? itemDetails?.proceed :"Proceed"}
                     className="bg-[#2EB0FB] cursor-pointer rounded-lg p-2 font-semibold text-[#fff]"
                   />
                 </div>
