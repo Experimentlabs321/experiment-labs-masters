@@ -3,6 +3,11 @@ import Completed from "../../../assets/Dashboard/Completed.png";
 import Task from "../../../assets/Dashboard/Task.png";
 import { Link } from "react-router-dom";
 import Sortable from "sortablejs";
+import DialogLayout from "../Shared/DialogLayout";
+import Swal from "sweetalert2";
+import axios from "axios";
+import toast from "react-hot-toast";
+import Loading from "../../Shared/Loading/Loading";
 
 const WeekDetails = ({
   chapters,
@@ -18,6 +23,9 @@ const WeekDetails = ({
   navigate,
   handleTaskDelete,
 }) => {
+  const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
+  const [count, setCount] = useState(0);
+
   const containerRef = useRef(null);
   let sortable;
 
@@ -32,13 +40,26 @@ const WeekDetails = ({
     sortable = new Sortable(containerElement, {
       animation: 150,
       group: "nested",
+      // onEnd: (event) => {
+      //   console.log(event);
+      //   console.log(`Moved from index ${event.oldIndex} to ${event.newIndex}`);
+      // },
       onEnd: (event) => {
-        console.log(event);
+        const { oldIndex, newIndex } = event;
         console.log(`Moved from index ${event.oldIndex} to ${event.newIndex}`);
+        // Update the chapters state based on the rearrangement
+        setChapters((prevChapters) => {
+          // Clone the previous chapters array to avoid mutation
+          const updatedChapters = [...prevChapters];
+          // Rearrange the chapters
+          const [movedChapter] = updatedChapters.splice(oldIndex, 1);
+          updatedChapters.splice(newIndex, 0, movedChapter);
+          return updatedChapters;
+        });
+        setCount(count + 1);
       },
     });
 
-    // Initialize Sortable for all tasks
     chapters.forEach((chapter, chapterIndex) => {
       const chapterContainer = containerElement.children[chapterIndex];
       const tasksContainer = chapterContainer.querySelector(".sub-items");
@@ -49,12 +70,29 @@ const WeekDetails = ({
       if (tasksContainer) {
         new Sortable(tasksContainer, {
           animation: 150,
-          group: taskGroupName, // Use the unique group name for this chapter's tasks
+          group: taskGroupName,
           onEnd: (event) => {
-            console.log(event);
             console.log(
-              `Moved from index ${event.oldIndex} to ${event.newIndex}`
+              `Moved from index ${event.oldIndex} to ${event.newIndex}`,
+              chapters
             );
+            const { oldIndex, newIndex } = event;
+            // Update the tasks array of the corresponding chapter
+            setChapters((prevChapters) => {
+              const updatedChapters = [...prevChapters];
+              const updatedTasks = [...updatedChapters[chapterIndex].tasks];
+              // Rearrange the tasks
+              const [movedTask] = updatedTasks.splice(oldIndex, 1);
+              updatedTasks.splice(newIndex, 0, movedTask);
+              // Update the tasks array of the specific chapter
+              updatedChapters[chapterIndex] = {
+                ...updatedChapters[chapterIndex],
+                tasks: updatedTasks,
+              };
+              console.log(updatedChapters[chapterIndex]);
+              return updatedChapters;
+            });
+            setCount(count + 1);
           },
         });
       }
@@ -178,6 +216,61 @@ const WeekDetails = ({
   // }, [chapters]);
   // console.log(chapters, localChapters);
 
+  const handleChapterDelete = async (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        Loading();
+        if (chapters?.length === 1) {
+          setOpenConfirmationDialog(false);
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "There only one chapter. Delete is not possible!",
+          });
+          return;
+        }
+
+        console.log(id);
+
+        await axios
+          .delete(`http://localhost:5000/api/v1/chapters/chapterId/${id}`)
+          .then((result) => {
+            console.log(result);
+            if (result?.status === 200) {
+              Swal.fire({
+                title: "Deleted!",
+                text: "Your file has been deleted.",
+                icon: "success",
+              });
+              const remainingWeeks = chapters.filter(
+                (chapter) => chapter._id !== id
+              );
+              setChapters(remainingWeeks);
+              setOpenConfirmationDialog(false);
+            } else {
+              toast.error("Oops...! Something went wrong.");
+              setOpenConfirmationDialog(false);
+            }
+          })
+          .catch((error) => {
+            toast.error("Oops...! Something went wrong.");
+            console.error(error);
+            Loading().close();
+          });
+      }
+    });
+  };
+
+  console.log(chapters);
+
   return (
     <div ref={containerRef}>
       {chapters?.map((chapter, index) => (
@@ -216,6 +309,23 @@ const WeekDetails = ({
                           <path
                             d="M13.648 0.961914L17.3711 4.88525L14.5329 7.87744L10.8098 3.95411L13.648 0.961914ZM0.0117188 19.2551H3.73478L12.7781 9.72533L9.05502 5.802L0.0117188 15.3318V19.2551Z"
                             fill="#282828"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        onClick={() => handleChapterDelete(chapter?._id)}
+                        className=" bg-sky-950 p-[6px] rounded-full ml-[24px]"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="18"
+                          height="19"
+                          viewBox="0 0 24 25"
+                          fill="none"
+                        >
+                          <path
+                            d="M6 7.83105H5V20.8311C5 21.3615 5.21071 21.8702 5.58579 22.2453C5.96086 22.6203 6.46957 22.8311 7 22.8311H17C17.5304 22.8311 18.0391 22.6203 18.4142 22.2453C18.7893 21.8702 19 21.3615 19 20.8311V7.83105H6ZM16.618 4.83105L15 2.83105H9L7.382 4.83105H3V6.83105H21V4.83105H16.618Z"
+                            fill="#ED1010"
                           />
                         </svg>
                       </button>
