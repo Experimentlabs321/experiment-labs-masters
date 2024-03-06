@@ -15,12 +15,15 @@ import VideoTask from "../Week/VideoTask";
 import DialogLayout from "../Shared/DialogLayout";
 import CompletionParameter from "./Components/Shared/CompletionParameter";
 import Loading from "../../Shared/Loading/Loading";
+import Progressbar from "../Shared/Progressbar";
+import CustomCircularProgressWithLabel from "../Shared/CustomCircularProgressWithLabel";
 
 const ManageVideo = () => {
   // upload file
   const [dragActive, setDragActive] = useState(true);
   const [selectedFile, setSelectedFile] = useState(null);
-
+  const [uploaded, setUploaded] = useState(0);
+ 
   const handleDragEnter = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -154,73 +157,99 @@ const ManageVideo = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    Loading();
-    let fileUrl = "";
-    let isYoutubeLink;
-
-    console.log(selectedFile);
-    if (selectedFile) {
-      fileUrl = await uploadFileToS3(selectedFile);
-      isYoutubeLink = false;
-    } else if (youtubeVideoLink) {
-      fileUrl = youtubeVideoLink;
-      isYoutubeLink = true;
-    }
-    const form = event.target;
-    const videoTopicName = form.videoTopicName?.value;
-
-    const ManageVideo = {
-      videoTopicName,
-      taskName: videoTopicName,
-      additionalFiles: fileUrl,
-      skillParameterData: skillParameterData,
-      earningParameterData: earningParameterData,
-      chapterId: chapter?._id,
-      completionParameter: completionParameter,
-      courseId: chapter?.courseId,
-      batches: selectedBatches,
-      taskDrip,
-      isYoutubeLink,
+    console.log(`Uploading: ${uploaded}%`);
+    const onUploadProgress = (progressPercentage) => {
+      // Update your UI with the progress percentage
+      setUploaded(progressPercentage);
+      console.log("Upload Progress:", progressPercentage);
     };
+    try {
+      let fileUrl = "";
+      let isYoutubeLink;
 
-    console.log(ManageVideo);
+      // Assuming you have a file object named 'selectedFile'
 
-    setVideoData(ManageVideo);
 
-    if (submitPermission) {
-      const newTask = await axios.post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/videos`,
-        ManageVideo
-      );
-      console.log(newTask);
+      console.log("Selected File:", selectedFile);
 
-      if (newTask) {
-        toast.success("Video added Successfully");
-        const newNotification = await axios.post(
-          `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/notifications/addNotification`,
-          {
-            message: `New video material added in course ${course?.courseFullName}.`,
-            dateTime: new Date(),
-            redirectLink: `/questLevels/${course?._id}?week=${chapter?.weekId}`,
-            recipient: {
-              type: "Students",
-              organizationId: orgData?._id,
-              courseId: course?._id,
-              batches: selectedBatches,
-            },
-            type: "Create Task",
-            readBy: [],
-            notificationTriggeredBy: user?.email,
-          }
-        );
-
-        console.log(newNotification);
+      if (selectedFile) {
+        console.log("Uploading file to S3...");
+        fileUrl = await uploadFileToS3(selectedFile, onUploadProgress);
+        console.log("File uploaded to S3. URL:", fileUrl);
+        isYoutubeLink = false;
+      } else if (youtubeVideoLink) {
+        fileUrl = youtubeVideoLink;
+        console.log("Using YouTube video link:", fileUrl);
+        isYoutubeLink = true;
       }
 
-      console.log(ManageVideo);
+      const form = event.target;
+      const videoTopicName = form.videoTopicName?.value;
+
+      const ManageVideo = {
+        videoTopicName,
+        taskName: videoTopicName,
+        additionalFiles: fileUrl,
+        skillParameterData: skillParameterData,
+        earningParameterData: earningParameterData,
+        chapterId: chapter?._id,
+        completionParameter: completionParameter,
+        courseId: chapter?.courseId,
+        batches: selectedBatches,
+        taskDrip,
+        isYoutubeLink,
+      };
+
+      console.log("ManageVideo:", ManageVideo);
+
+      setVideoData(ManageVideo);
+
+      if (submitPermission) {
+        console.log("Sending request to create new task...");
+
+        const newTask = await axios.post(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/videos`,
+          ManageVideo,
+        );
+
+        console.log("New Task Response:", newTask);
+
+        if (newTask) {
+          toast.success("Video added Successfully");
+
+          console.log("Sending notification...");
+
+          const newNotification = await axios.post(
+            `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/notifications/addNotification`,
+            {
+              message: `New video material added in course ${course?.courseFullName}.`,
+              dateTime: new Date(),
+              redirectLink: `/questLevels/${course?._id}?week=${chapter?.weekId}`,
+              recipient: {
+                type: "Students",
+                organizationId: orgData?._id,
+                courseId: course?._id,
+                batches: selectedBatches,
+              },
+              type: "Create Task",
+              readBy: [],
+              notificationTriggeredBy: user?.email,
+            }
+          );
+
+          console.log("Notification Response:", newNotification);
+        }
+
+        console.log("ManageVideo after API request:", ManageVideo);
+      }
+
+      // Loading().close();
+      navigate(-1);
+    } catch (error) {
+      console.error('Error during form submission:', error);
+      console.error('Error details:', error.response?.data); // Log the detailed error response
+      // Handle error and update UI accordingly
     }
-    Loading().close();
-    navigate(-1);
   };
 
   const handleAddYoutubeLink = (e) => {
@@ -228,7 +257,12 @@ const ManageVideo = () => {
     setYoutubeVideoLink(e.target.youtubeLink.value);
     setOpenAddYoutubeLink(false);
   };
-
+  // const onUploadProgress = (progressEvent) => {
+  //   const { loaded, total } = progressEvent;
+  //   const percentCompleted = Math.round((loaded / total) * 100);
+  //   console.log(`Uploading: ${percentCompleted}%`);
+  //   setUploaded(percentCompleted);
+  // };
   return (
     <div>
       <Layout>
@@ -476,7 +510,7 @@ const ManageVideo = () => {
                 <ul className="flex gap-4 flex-wrap ">
                   {batchesData?.map((option, index) => {
                     return (
-                      <>
+                      <div key={index}>
                         <li className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] ">
                           <input
                             type="checkbox"
@@ -495,7 +529,7 @@ const ManageVideo = () => {
                             </label>
                           </div>
                         </li>
-                      </>
+                      </div>
                     );
                   })}
                 </ul>
@@ -522,9 +556,8 @@ const ManageVideo = () => {
                     />
                     <label
                       htmlFor="radioYes"
-                      className={`ml-2 text-sm font-medium ${
-                        course?.enableDrip ? "text-gray-400" : "text-gray-900"
-                      }`}
+                      className={`ml-2 text-sm font-medium ${course?.enableDrip ? "text-gray-400" : "text-gray-900"
+                        }`}
                     >
                       Yes
                     </label>
@@ -542,9 +575,8 @@ const ManageVideo = () => {
                     />
                     <label
                       htmlFor="radioNo"
-                      className={`ml-2 text-sm font-medium ${
-                        course?.enableDrip ? "text-gray-400" : "text-gray-900"
-                      }`}
+                      className={`ml-2 text-sm font-medium ${course?.enableDrip ? "text-gray-400" : "text-gray-900"
+                        }`}
                     >
                       No
                     </label>
@@ -561,10 +593,10 @@ const ManageVideo = () => {
             <div className="px-4 my-10">
               {(orgData?.showPointsAndRedemptions ||
                 orgData?.showSkillsManagement) && (
-                <p className="text-[25px] font-bold mb-10">
-                  Evaluation Parameter
-                </p>
-              )}
+                  <p className="text-[25px] font-bold mb-10">
+                    Evaluation Parameter
+                  </p>
+                )}
               {orgData?.showSkillsManagement && (
                 <SkillBasedParameter
                   selectedData={skillParameterData}
@@ -585,6 +617,12 @@ const ManageVideo = () => {
                 setCompletionParameter={setCompletionParameter}
               />
             </div>
+            {uploaded !== 0 && (
+               <div className='grid gap-1 justify-center items-center justify-items-center'>
+                <CustomCircularProgressWithLabel value={uploaded} label="Loading..." />
+                <p className='font-semibold '>Uploading File</p>
+               </div>
+)}
             <div className="flex items-center justify-center mt-20 mb-10">
               <input
                 type="submit"

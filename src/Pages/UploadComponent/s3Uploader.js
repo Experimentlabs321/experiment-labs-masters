@@ -23,7 +23,6 @@
 // };
 
 // export default uploadFileToS3;
-
 import AWS from "aws-sdk";
 
 AWS.config.update({
@@ -34,21 +33,32 @@ AWS.config.update({
 
 const s3 = new AWS.S3();
 
-const uploadFileToS3 = async (file) => {
+const uploadFileToS3 = (file, onProgress) => {
+  console.log("Uploading file to S3...");
   const params = {
     Bucket: "experiment-labs-my-bucket",
     Key: file.name,
     Body: file,
   };
 
-  try {
-    const response = await s3.upload(params).promise();
-    const fileUrl = response.Location; // This is the URL of the uploaded file
-    return fileUrl;
-  } catch (error) {
-    console.error("Error uploading file:", error);
-    throw error;
-  }
+  return new Promise((resolve, reject) => {
+    const managedUpload = s3.upload(params);
+
+    managedUpload.on("httpUploadProgress", (progress) => {
+      const percentage = Math.round((progress.loaded / progress.total) * 100);
+      console.log("Progress Percentage:", percentage);
+      onProgress && onProgress(percentage); // Ensure onProgress is a function
+    });
+
+    managedUpload.promise()
+      .then((response) => {
+        const fileUrl = response.Location;
+        resolve(fileUrl);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
 };
 
 export default uploadFileToS3;
