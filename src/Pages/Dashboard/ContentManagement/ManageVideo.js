@@ -23,7 +23,14 @@ const ManageVideo = () => {
   const [dragActive, setDragActive] = useState(true);
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploaded, setUploaded] = useState(0);
- 
+  const [estimatedTimeRemaining, setEstimatedTimeRemaining] = useState(null);
+  const [startTime, setStartTime] = useState(null);
+
+  useEffect(() => {
+    if (estimatedTimeRemaining !== null) {
+      console.log("Estimated Time Remaining:", estimatedTimeRemaining);
+    }
+  }, [estimatedTimeRemaining]);
   const handleDragEnter = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -74,7 +81,12 @@ const ManageVideo = () => {
   const [selectedBatches, setSelectedBatches] = useState([]);
   const [orgData, setOrgData] = useState({});
   const [taskDrip, setTaskDrip] = useState(false);
-
+  useEffect(() => {
+    // Cleanup function to reset uploaded state
+    return () => {
+      setUploaded(0);
+    };
+  }, []);
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
@@ -162,6 +174,16 @@ const ManageVideo = () => {
       // Update your UI with the progress percentage
       setUploaded(progressPercentage);
       console.log("Upload Progress:", progressPercentage);
+      if (!startTime) {
+        setStartTime(new Date());
+      } else {
+        const currentTime = new Date();
+        const elapsedTime = (currentTime - startTime) / 1000; // in seconds
+        const estimatedRemainingTime =
+          (elapsedTime / (progressPercentage / 100)) * (100 - progressPercentage);
+        setEstimatedTimeRemaining(estimatedRemainingTime);
+        console.log(estimatedRemainingTime);
+      }
     };
     try {
       let fileUrl = "";
@@ -618,11 +640,14 @@ const ManageVideo = () => {
               />
             </div>
             {uploaded !== 0 && (
-               <div className='grid gap-1 justify-center items-center justify-items-center'>
+              <div className='grid gap-1 justify-center items-center justify-items-center'>
                 <CustomCircularProgressWithLabel value={uploaded} label="Loading..." />
                 <p className='font-semibold '>Uploading File</p>
-               </div>
-)}
+                {estimatedTimeRemaining !== null && (
+                  <p className="font-semibold">Estimated Time Remaining: {Math.round(estimatedTimeRemaining)} seconds</p>
+                )}
+              </div>
+            )}
             <div className="flex items-center justify-center mt-20 mb-10">
               <input
                 type="submit"
