@@ -18,95 +18,99 @@ export const NotificationProvider = ({ children }) => {
     useState(0);
 
   const notificationFilter = (newNotification) => {
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${user?.email}`
-      )
-      .then((userInfo) => {
-        if (
-          userInfo?.data?.role === "user" &&
-          newNotification?.type === "Create Task"
-        ) {
+    if (user?.email) {
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${user?.email}`
+        )
+        .then((userInfo) => {
           if (
-            newNotification?.recipient?.organizationId ===
-            userInfo?.data?.organizationId
+            userInfo?.data?.role === "user" &&
+            newNotification?.type === "Create Task"
           ) {
-            if (newNotification?.recipient?.type === "Students") {
-              const findStudentCourse = userInfo?.data?.courses?.find(
-                (course) =>
-                  course?.courseId === newNotification?.recipient?.courseId
-              );
-              if (findStudentCourse) {
-                const findStudentBatch =
-                  newNotification?.recipient?.batches?.find(
-                    (batch) => batch?.batchId === findStudentCourse?.batchId
-                  );
-                console.log(findStudentBatch);
-                if (findStudentBatch) {
-                  setNotifications((prevNotifications) => [
-                    newNotification,
-                    ...prevNotifications,
-                  ]);
-                  setUnreadNotifications((prevNotifications) => [
-                    newNotification,
-                    ...prevNotifications,
-                  ]);
-                  setNumberOfUnreadNotification(unreadNotifications?.length);
+            if (
+              newNotification?.recipient?.organizationId ===
+              userInfo?.data?.organizationId
+            ) {
+              if (newNotification?.recipient?.type === "Students") {
+                const findStudentCourse = userInfo?.data?.courses?.find(
+                  (course) =>
+                    course?.courseId === newNotification?.recipient?.courseId
+                );
+                if (findStudentCourse) {
+                  const findStudentBatch =
+                    newNotification?.recipient?.batches?.find(
+                      (batch) => batch?.batchId === findStudentCourse?.batchId
+                    );
+                  console.log(findStudentBatch);
+                  if (findStudentBatch) {
+                    setNotifications((prevNotifications) => [
+                      newNotification,
+                      ...prevNotifications,
+                    ]);
+                    setUnreadNotifications((prevNotifications) => [
+                      newNotification,
+                      ...prevNotifications,
+                    ]);
+                    setNumberOfUnreadNotification(unreadNotifications?.length);
+                  }
                 }
+              } else if (
+                newNotification?.recipient?.type === "Specific Student"
+              ) {
               }
-            } else if (
-              newNotification?.recipient?.type === "Specific Student"
-            ) {
             }
-          }
-        } else if (
-          userInfo?.data?.role === "admin" &&
-          newNotification?.type === "Submission"
-        ) {
-          if (
-            newNotification?.recipient?.organizationId ===
-            userInfo?.data?.organizationId
+          } else if (
+            userInfo?.data?.role === "admin" &&
+            newNotification?.type === "Submission"
           ) {
-            if (newNotification?.recipient?.type === "Admins") {
-              setNotifications((prevNotifications) => [
-                newNotification,
-                ...prevNotifications,
-              ]);
-              setUnreadNotifications((prevNotifications) => [
-                newNotification,
-                ...prevNotifications,
-              ]);
-              setNumberOfUnreadNotification(unreadNotifications?.length);
-            } else if (
-              newNotification?.recipient?.type === "Specific Student"
+            if (
+              newNotification?.recipient?.organizationId ===
+              userInfo?.data?.organizationId
             ) {
+              if (newNotification?.recipient?.type === "Admins") {
+                setNotifications((prevNotifications) => [
+                  newNotification,
+                  ...prevNotifications,
+                ]);
+                setUnreadNotifications((prevNotifications) => [
+                  newNotification,
+                  ...prevNotifications,
+                ]);
+                setNumberOfUnreadNotification(unreadNotifications?.length);
+              } else if (
+                newNotification?.recipient?.type === "Specific Student"
+              ) {
+              }
             }
           }
-        }
-      })
-      .catch((error) => console.error(error));
+        })
+        .catch((error) => console.error(error));
+    }
   };
 
   const announcementFilter = (newAnnouncement) => {
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${user?.email}`
-      )
-      .then((userInfo) => {
-        if (
-          userInfo?.data?.organizationId === newAnnouncement?.organizationId
-        ) {
-          setAnnouncements((prevAnnouncements) => [
-            newAnnouncement,
-            ...prevAnnouncements,
-          ]);
-          setUnreadAnnouncements((prevAnnouncements) => [
-            newAnnouncement,
-            ...prevAnnouncements,
-          ]);
-        }
-      })
-      .catch((error) => console.error(error));
+    if (user?.email) {
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${user?.email}`
+        )
+        .then((userInfo) => {
+          if (
+            userInfo?.data?.organizationId === newAnnouncement?.organizationId
+          ) {
+            setAnnouncements((prevAnnouncements) => [
+              newAnnouncement,
+              ...prevAnnouncements,
+            ]);
+            setUnreadAnnouncements((prevAnnouncements) => [
+              newAnnouncement,
+              ...prevAnnouncements,
+            ]);
+          }
+        })
+        .catch((error) => console.error(error));
+    }
   };
 
   const countUnreadNotification = async () => {
@@ -120,7 +124,7 @@ export const NotificationProvider = ({ children }) => {
 
   useEffect(() => {
     // socket = io("https://test-server-henna-nine.vercel.app");
-    const socket = io("${process.env.REACT_APP_SOCKET_SERVER_API}", {
+    const socket = io(`${process.env.REACT_APP_SOCKET_SERVER_API}`, {
       withCredentials: true,
       extraHeaders: {
         "my-custom-header": "abcd",
@@ -149,63 +153,68 @@ export const NotificationProvider = ({ children }) => {
 
   const fetchNotifications = async () => {
     try {
-      await axios
-        .get(
-          `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/notifications/getNotification/userEmail/${user?.email}`
-        )
-        .then(async (response) => {
-          if (response?.data?.notifications) {
-            response?.data?.notifications?.reverse();
-            setNotifications(response?.data?.notifications);
-            const unreadNotifications =
-              await response?.data?.notifications?.filter(
-                (notification) =>
-                  !notification?.readBy?.find(
-                    (viewedBy) => viewedBy === user?.email
-                  )
-              );
-            setUnreadNotifications(unreadNotifications);
-            setNumberOfUnreadNotification(unreadNotifications?.length);
-          }
-        })
-        .catch((error) => console.error(error));
+      if (user?.email) {
+        await axios
+          .get(
+            `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/notifications/getNotification/userEmail/${user?.email}`
+          )
+          .then(async (response) => {
+            if (response?.data?.notifications) {
+              response?.data?.notifications?.reverse();
+              setNotifications(response?.data?.notifications);
+              const unreadNotifications =
+                await response?.data?.notifications?.filter(
+                  (notification) =>
+                    !notification?.readBy?.find(
+                      (viewedBy) => viewedBy === user?.email
+                    )
+                );
+              setUnreadNotifications(unreadNotifications);
+              setNumberOfUnreadNotification(unreadNotifications?.length);
+            }
+          })
+          .catch((error) => console.error(error));
+      }
     } catch (error) {
       console.error("Error fetching notifications:", error);
     }
   };
 
   const fetchAnnouncements = async () => {
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${user?.email}`
-      )
-      .then(async (userInfo) => {
-        console.log(userInfo?.data);
-        try {
-          await axios
-            .get(
-              `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/announcements/getAnnouncement/organizationId/${userInfo?.data?.organizationId}`
-            )
-            .then(async (response) => {
-              if (response?.data?.announcements) {
-                response?.data?.announcements?.reverse();
-                setAnnouncements(response?.data?.announcements);
-                const unreadAnnouncements =
-                  await response?.data?.announcements?.filter(
-                    (announcement) =>
-                      !announcement?.readBy?.find(
-                        (viewedBy) => viewedBy === user?.email
-                      )
-                  );
-                setUnreadAnnouncements(unreadAnnouncements);
-              }
-            })
-            .catch((error) => console.error(error));
-        } catch (error) {
-          console.error("Error fetching notifications:", error);
-        }
-      })
-      .catch((error) => console.error(error));
+    if (user?.email) {
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${user?.email}`
+        )
+        .then(async (userInfo) => {
+          try {
+            if (userInfo?.data?.organizationId) {
+              await axios
+                .get(
+                  `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/announcements/getAnnouncement/organizationId/${userInfo?.data?.organizationId}`
+                )
+                .then(async (response) => {
+                  if (response?.data?.announcements) {
+                    response?.data?.announcements?.reverse();
+                    setAnnouncements(response?.data?.announcements);
+                    const unreadAnnouncements =
+                      await response?.data?.announcements?.filter(
+                        (announcement) =>
+                          !announcement?.readBy?.find(
+                            (viewedBy) => viewedBy === user?.email
+                          )
+                      );
+                    setUnreadAnnouncements(unreadAnnouncements);
+                  }
+                })
+                .catch((error) => console.error(error));
+            }
+          } catch (error) {
+            console.error("Error fetching notifications:", error);
+          }
+        })
+        .catch((error) => console.error(error));
+    }
   };
 
   return (
