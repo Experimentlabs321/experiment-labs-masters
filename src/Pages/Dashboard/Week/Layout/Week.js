@@ -64,6 +64,7 @@ const Week = () => {
   const [courseData, setCourseData] = useState({});
   const [openTopic, setOpenTopic] = useState(localStorage.getItem("chapter"));
   const Role = localStorage.getItem("role");
+  const [count, setCount] = useState(0);
 
   console.log(week);
 
@@ -77,20 +78,22 @@ const Week = () => {
         // setOpenTopic(response?.data[0]?.chapterName);
       })
       .catch((error) => console.error(error));
-  }, [id]);
-  console.log("Chapters ==============>",chapters);
+  }, [id, count]);
+  console.log("Chapters ==============>", chapters);
   //const [toggleButton, setToggleButton] = useState(false);
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/courses/${chapters[0]?.courseId}`)
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${chapters[0]?.courseId}`
+      )
       .then((response) => {
         setCourseData(response?.data);
       })
       .catch((error) => console.error(error));
   }, [chapters]);
 
-  console.log("CourseData ============>",courseData);
+  console.log("CourseData ============>", courseData);
 
   useEffect(() => {
     // Function to update toggleButton based on device size
@@ -129,9 +132,12 @@ const Week = () => {
               setOpenTask={setOpenTask}
               toggleButton={toggleButton}
               setToggleButton={setToggleButton}
+              setChapters={setChapters}
               chapters={chapters}
               data={week?.lecture}
               courseData={courseData}
+              count={count}
+              setCount={setCount}
             />
             <button
               onClick={() => setToggleButton(true)}
@@ -142,8 +148,9 @@ const Week = () => {
             </button>
             <div
               id="main-content"
-              className={`h-full w-full relative ${toggleButton ? "ml-[324px]" : ""
-                }`}
+              className={`h-full w-full relative ${
+                toggleButton ? "ml-[324px]" : ""
+              }`}
             >
               <main className="min-h-[100vh]">
                 <div className="">

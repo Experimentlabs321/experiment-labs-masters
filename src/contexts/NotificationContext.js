@@ -124,12 +124,7 @@ export const NotificationProvider = ({ children }) => {
 
   useEffect(() => {
     // socket = io("https://test-server-henna-nine.vercel.app");
-    const socket = io(`${process.env.REACT_APP_SOCKET_SERVER_API}`, {
-      withCredentials: true,
-      extraHeaders: {
-        "my-custom-header": "abcd",
-      },
-    });
+    const socket = io(`${process.env.REACT_APP_SOCKET_SERVER_API}`);
     socket.on("connection", () => console.log("socket connected"));
     socket.on("notification", (newNotification) => {
       notificationFilter(newNotification);

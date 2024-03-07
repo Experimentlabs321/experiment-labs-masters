@@ -23,7 +23,7 @@ const ManageVideo = () => {
   const [dragActive, setDragActive] = useState(true);
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploaded, setUploaded] = useState(0);
- 
+
   const handleDragEnter = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -157,6 +157,7 @@ const ManageVideo = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    Loading();
     console.log(`Uploading: ${uploaded}%`);
     const onUploadProgress = (progressPercentage) => {
       // Update your UI with the progress percentage
@@ -168,7 +169,6 @@ const ManageVideo = () => {
       let isYoutubeLink;
 
       // Assuming you have a file object named 'selectedFile'
-
 
       console.log("Selected File:", selectedFile);
 
@@ -209,7 +209,7 @@ const ManageVideo = () => {
 
         const newTask = await axios.post(
           `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/videos`,
-          ManageVideo,
+          ManageVideo
         );
 
         console.log("New Task Response:", newTask);
@@ -243,11 +243,11 @@ const ManageVideo = () => {
         console.log("ManageVideo after API request:", ManageVideo);
       }
 
-      // Loading().close();
+      Loading().close();
       navigate(-1);
     } catch (error) {
-      console.error('Error during form submission:', error);
-      console.error('Error details:', error.response?.data); // Log the detailed error response
+      console.error("Error during form submission:", error);
+      console.error("Error details:", error.response?.data); // Log the detailed error response
       // Handle error and update UI accordingly
     }
   };
@@ -556,8 +556,9 @@ const ManageVideo = () => {
                     />
                     <label
                       htmlFor="radioYes"
-                      className={`ml-2 text-sm font-medium ${course?.enableDrip ? "text-gray-400" : "text-gray-900"
-                        }`}
+                      className={`ml-2 text-sm font-medium ${
+                        course?.enableDrip ? "text-gray-400" : "text-gray-900"
+                      }`}
                     >
                       Yes
                     </label>
@@ -575,8 +576,9 @@ const ManageVideo = () => {
                     />
                     <label
                       htmlFor="radioNo"
-                      className={`ml-2 text-sm font-medium ${course?.enableDrip ? "text-gray-400" : "text-gray-900"
-                        }`}
+                      className={`ml-2 text-sm font-medium ${
+                        course?.enableDrip ? "text-gray-400" : "text-gray-900"
+                      }`}
                     >
                       No
                     </label>
@@ -593,10 +595,10 @@ const ManageVideo = () => {
             <div className="px-4 my-10">
               {(orgData?.showPointsAndRedemptions ||
                 orgData?.showSkillsManagement) && (
-                  <p className="text-[25px] font-bold mb-10">
-                    Evaluation Parameter
-                  </p>
-                )}
+                <p className="text-[25px] font-bold mb-10">
+                  Evaluation Parameter
+                </p>
+              )}
               {orgData?.showSkillsManagement && (
                 <SkillBasedParameter
                   selectedData={skillParameterData}
@@ -618,11 +620,14 @@ const ManageVideo = () => {
               />
             </div>
             {uploaded !== 0 && (
-               <div className='grid gap-1 justify-center items-center justify-items-center'>
-                <CustomCircularProgressWithLabel value={uploaded} label="Loading..." />
-                <p className='font-semibold '>Uploading File</p>
-               </div>
-)}
+              <div className="grid gap-1 justify-center items-center justify-items-center">
+                <CustomCircularProgressWithLabel
+                  value={uploaded}
+                  label="Loading..."
+                />
+                <p className="font-semibold ">Uploading File</p>
+              </div>
+            )}
             <div className="flex items-center justify-center mt-20 mb-10">
               <input
                 type="submit"
