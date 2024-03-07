@@ -48,6 +48,7 @@ const WeekDetails = ({
   const [toggleButton, setToggleButton] = useState(false);
   const { user, userInfo } = useContext(AuthContext);
   const [clickedChapter, setClickedChapter] = useState({});
+  const [openTopic, setOpenTopic] = useState(chapters[0]?.chapterName);
 
   const containerRef = useRef(null);
   let sortable;
@@ -70,6 +71,10 @@ const WeekDetails = ({
       }
     }
   };
+
+  useEffect(() => {
+    setOpenTopic(chapters[0]?.chapterName);
+  }, [chapters]);
 
   useEffect(() => {
     const containerElement = containerRef.current;
@@ -262,14 +267,18 @@ const WeekDetails = ({
       {chapters?.map((chapter, index) => {
         const chapterIndex = index;
         return (
-          <div key={chapter?._id} className="sortable-chapter">
+          <div
+            onClick={() => setOpenTopic(chapter?.chapterName)}
+            key={chapter?._id}
+            className="sortable-chapter"
+          >
             <div className="relative">
               <div className="flex items-center justify-between mt-[60px]">
                 <div className="flex items-center ">
                   <div className="w-[85px] rounded-full flex items-center justify-center h-[85px] bg-[#E1E6FF] ">
                     <h1 className="text-[35px] font-[600] ">{index + 1}</h1>
                   </div>
-                  <h1 className="text-[23px] font-[700] lg:ml-[40px] mx-5">
+                  <h1 className="text-[23px] font-[700] lg:ml-[40px] mx-5 cursor-pointer">
                     {chapter?.chapterName}{" "}
                     {Role === "admin" && (
                       <>
@@ -320,11 +329,11 @@ const WeekDetails = ({
                 {Role === "admin" && (
                   <div className="relative flex items-center">
                     <button
-                      onClick={() => {
-                        if (clickedChapter === chapter) setClickedChapter(null);
-                        else setClickedChapter(chapter);
-                      }}
-                      onBlur={() => setClickedChapter(null)}
+                      // onClick={() => {
+                      //   if (clickedChapter === chapter) setClickedChapter(null);
+                      //   else setClickedChapter(chapter);
+                      // }}
+                      // onBlur={() => setClickedChapter(null)}
                       className=" mr-[25px] "
                     >
                       <KeyboardArrowDownIcon />
@@ -355,6 +364,27 @@ const WeekDetails = ({
                         </li>
                       </ul>
                     )}
+                    <button
+                      onClick={() => {
+                        if (clickedChapter === chapter) setClickedChapter(null);
+                        else setClickedChapter(chapter);
+                      }}
+                      onBlur={() => setClickedChapter(null)}
+                      className="  "
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="30"
+                        height="31"
+                        viewBox="0 0 30 31"
+                        fill="none"
+                      >
+                        <path
+                          d="M15.0166 12.6104C13.6432 12.6104 12.5195 13.734 12.5195 15.1074C12.5195 16.4808 13.6432 17.6045 15.0166 17.6045C16.39 17.6045 17.5137 16.4808 17.5137 15.1074C17.5137 13.734 16.39 12.6104 15.0166 12.6104ZM15.0166 5.11914C13.6432 5.11914 12.5195 6.24282 12.5195 7.61621C12.5195 8.9896 13.6432 10.1133 15.0166 10.1133C16.39 10.1133 17.5137 8.9896 17.5137 7.61621C17.5137 6.24282 16.39 5.11914 15.0166 5.11914ZM15.0166 20.1016C13.6432 20.1016 12.5195 21.2252 12.5195 22.5986C12.5195 23.972 13.6432 25.0957 15.0166 25.0957C16.39 25.0957 17.5137 23.972 17.5137 22.5986C17.5137 21.2252 16.39 20.1016 15.0166 20.1016Z"
+                          fill="black"
+                        />
+                      </svg>
+                    </button>
                   </div>
                 )}
                 {/* {Role === "user" && (
@@ -363,7 +393,11 @@ const WeekDetails = ({
                             </button>
                           )} */}
               </div>
-              <div className="sub-items">
+              <div
+                className={`${
+                  openTopic === chapter?.chapterName ? "" : "hidden"
+                } sub-items`}
+              >
                 {Role === "admin" &&
                   chapter?.tasks?.map((task, taskIndex) => (
                     <div key={task?.taskId} className="relative ">
