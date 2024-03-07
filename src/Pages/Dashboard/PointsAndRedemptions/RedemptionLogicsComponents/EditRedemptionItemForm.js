@@ -18,6 +18,7 @@ const EditRedemptionItemForm = ({
   selectedCourse,
   userInfo,
   courseId,
+  itemDetails
 }) => {
   console.log(selectedRedemptionLogic);
   const [itemValue, setItemValue] = useState(
@@ -98,7 +99,7 @@ const EditRedemptionItemForm = ({
       );
 
       if (updatedItem?.data?.acknowledged) {
-        toast.success("Item Updated Successfully");
+        toast.success(itemDetails?.itemUpdatedSuccessfully ? itemDetails?.itemUpdatedSuccessfully : "Item Updated Successfully");
         const updateItemsArray = [
           ...selectedRedemptionCategory?.redemptionItems,
         ];
@@ -134,8 +135,8 @@ const EditRedemptionItemForm = ({
         setIsOpenRedemptionItemEditForm(false);
         Swal.fire({
           icon: "error",
-          title: "Item already exist!",
-          text: "Please enter an unique item name!",
+          title:itemDetails?.itemAlreadyExist ? itemDetails?.itemAlreadyExist : "Item already exist!",
+          text: itemDetails?.pleaseEnterAnUniqueItemName ? itemDetails?.pleaseEnterAnUniqueItemName :"Please enter an unique item name!",
         });
         return;
       }
@@ -226,7 +227,7 @@ const EditRedemptionItemForm = ({
               ]);
               setIsOpenRedemptionItemEditForm(false);
               event.target.reset();
-              toast.success("Item Updated Successfully!");
+              toast.success(itemDetails?.itemUpdatedSuccessfully ? itemDetails?.itemUpdatedSuccessfully :"Item Updated Successfully!");
             }
           })
           .catch((error) => {
@@ -264,14 +265,17 @@ const EditRedemptionItemForm = ({
                     alt="UploadingImg"
                   />
                   <p className="mt-[-60px] text-base font-semibold text-[#fff] mb-4">
-                    Upload Icon
+                    {itemDetails?.uploadIcon ? itemDetails?.uploadIcon :"Upload Icon"}
+                    
                   </p>
 
                   <label
                     className="mt-[-16px] flex items-center px-5 py-2 rounded-lg bg-[#FFDB70] text-xs font-bold"
                     htmlFor="input-file-upload"
                   >
-                    Browser
+                    
+                    {itemDetails?.browser ? itemDetails?.browser :"Browser"}
+                    
                   </label>
                   <input
                     className="w-[1%]"
@@ -298,7 +302,8 @@ const EditRedemptionItemForm = ({
                 <div className="grid grid-cols-1 gap-x-6 gap-y-4 mt-2 sm:grid-cols-2 w-full">
                   <div>
                     <label className="text-[16px] font-[600]" htmlFor="case">
-                      Redemption Category
+                    {itemDetails?.redemptionCategory ? itemDetails?.redemptionCategory :"Redemption Category"}
+                      
                     </label>
                     <select
                       defaultValue={selectedRedemptionCategory?.categoryName}
@@ -324,7 +329,8 @@ const EditRedemptionItemForm = ({
 
                   <div>
                     <label className="text-[16px] font-[600]" htmlFor="case">
-                      Redemption Item Name
+                    {itemDetails?.redemptionItemName ? itemDetails?.redemptionItemName :"Redemption Item Name"}
+                      
                     </label>
                     <input
                       id="redemptionItemName"
@@ -337,7 +343,8 @@ const EditRedemptionItemForm = ({
 
                   <div className=" flex flex-col justify-center ">
                     <p className="font-semibold text-[#000000]  py-2">
-                      Redemption Value
+                    {itemDetails?.redemptionValue ? itemDetails?.redemptionValue :"Redemption Value"}
+                      
                     </p>
                     <div className=" flex gap-7 items-center  h-[40px]   text-[#535353] ">
                       <div>
@@ -354,7 +361,8 @@ const EditRedemptionItemForm = ({
                           for="draft"
                           className="peer-checked/draft: font-normal"
                         >
-                          External
+                          {itemDetails?.external ? itemDetails?.external :"External"}
+                          
                         </label>
                       </div>
 
@@ -372,7 +380,8 @@ const EditRedemptionItemForm = ({
                           for="published"
                           class="peer-checked/published: font-normal"
                         >
-                          Internal
+                          {itemDetails?.internal ? itemDetails?.internal :"Internal"}
+                          
                         </label>
                       </div>
                     </div>
@@ -380,7 +389,8 @@ const EditRedemptionItemForm = ({
 
                   <div className=" ">
                     <p className="font-semibold text-[#000000]  py-2">
-                      Redemption Level
+                    {itemDetails?.redemptionLevel ? itemDetails?.redemptionLevel :"Redemption Level"}
+                      
                     </p>
                     <div className="   w-[100%]  text-[#535353] ">
                       <select
@@ -406,7 +416,8 @@ const EditRedemptionItemForm = ({
 
                   <div>
                     <label className="text-[16px] font-[600]" htmlFor="case">
-                      Redemption Link
+                    {itemDetails?.redemptionLink ? itemDetails?.redemptionLink :"Redemption Link"}
+                      
                     </label>
                     <input
                       id="redemptionLink"
@@ -418,7 +429,9 @@ const EditRedemptionItemForm = ({
 
                   <div className="flex flex-col gap-10 mt-5">
                     <div className="flex justify-between  items-center ">
-                      <p className="font-bold text-base me-5">Item Value</p>
+                      <p className="font-bold text-base me-5">
+                      {itemDetails?.itemValue ? itemDetails?.itemValue :"Item Value"}
+                        </p>
                       <div className="text-[18px] w-[40%]  h-[40px] flex  ">
                         <button
                           type="button"
@@ -454,7 +467,9 @@ const EditRedemptionItemForm = ({
                     </div>
 
                     <div className="flex justify-between items-center ">
-                      <p className="font-bold text-base me-5">Minimum Value</p>
+                      <p className="font-bold text-base me-5">
+                      {itemDetails?.minimumValue ? itemDetails?.minimumValue :"Minimum Value"}
+                        </p>
                       <div className="text-[18px] w-[40%]  h-[40px] flex  ">
                         <button
                           type="button"

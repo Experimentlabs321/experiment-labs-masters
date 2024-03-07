@@ -18,6 +18,7 @@ const SelectRedemptionCategory = ({
   setCategoryThreeDot,
   categoryThreeDot,
   selectedCourse,
+  itemDetails
 }) => {
   const { userInfo } = useContext(AuthContext);
   const [editCategoryOpen, setEditCategoryOpen] = useState(false);
@@ -26,8 +27,8 @@ const SelectRedemptionCategory = ({
     if (!selectedCourse?._id || !userInfo?.organizationId) {
       Swal.fire({
         icon: "warning",
-        title: "There is no course",
-        text: "Please create a course first!",
+        title:itemDetails?.noCourseAddedYet ? itemDetails?.noCourseAddedYet : "There is no course",
+        text: itemDetails?.pleaseCreateACourseFirst ? itemDetails?.pleaseCreateACourseFirst : "Please create a course first!",
       });
       return;
     }
@@ -41,7 +42,7 @@ const SelectRedemptionCategory = ({
     );
 
     if (newCategory?.data?.acknowledged) {
-      toast.success("Category added Successfully");
+      toast.success(itemDetails?.categoryAddedSuccessfully ? itemDetails?.categoryAddedSuccessfully :"Category added Successfully");
       setRedemptionCategories([
         ...redemptionCategories,
         { categoryName: `category ${redemptionCategories?.length + 1}` },
@@ -65,8 +66,8 @@ const SelectRedemptionCategory = ({
       setEditCategoryOpen(false);
       Swal.fire({
         icon: "error",
-        title: "Category already exist!",
-        text: "Please enter an unique category name!",
+        title: itemDetails?.categoryAlreadyExist ? itemDetails?.categoryAlreadyExist : "Category already exist!",
+        text: itemDetails?.pleaseEnterAnUniqueCategoryName ? itemDetails?.pleaseEnterAnUniqueCategoryName : "Please enter an unique category name!",
       });
       return;
     }
@@ -88,7 +89,7 @@ const SelectRedemptionCategory = ({
     );
 
     if (updatedCategory?.data?.acknowledged) {
-      toast.success("Category Updated Successfully");
+      toast.success(itemDetails?.categoryAddedSuccessfully ? itemDetails?.categoryAddedSuccessfully :"Category Updated Successfully");
       const updatedCategoriesArray = [...redemptionCategories];
       const selectedIndex = updatedCategoriesArray.findIndex(
         (category) =>
@@ -105,8 +106,8 @@ const SelectRedemptionCategory = ({
   
   const handleCategoryDelete = async (name) => {
     await Swal.fire({
-      title: "Are you sure?",
-      text: "Once deleted, the category will not recover!",
+      title:itemDetails?.areYouSure ? itemDetails?.areYouSure : "Are you sure?",
+      text:itemDetails?.onceDeletedTheCategoryWillNotRecover ? itemDetails?.onceDeletedTheCategoryWillNotRecover : "Once deleted, the category will not recover!",
       icon: "warning",
       buttons: true,
       showCancelButton: true,
@@ -139,7 +140,7 @@ const SelectRedemptionCategory = ({
           .then((result) => {
             console.log(result);
             if (result?.acknowledged) {
-              toast.success("Category Deleted Successfully!");
+              toast.success(itemDetails?.categoryDeletedSuccessfully ? itemDetails?.categoryDeletedSuccessfully :"Category Deleted Successfully!");
               const remainingCategories = redemptionCategories.filter(
                 (category) => category?.categoryName !== name
               );
@@ -165,7 +166,8 @@ const SelectRedemptionCategory = ({
         borderRadius="15px"
         title={
           <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
-            Edit Category Name
+            {itemDetails?.editCategoryName ? itemDetails?.editCategoryName :"Edit Category Name"}
+            
           </p>
         }
       >
@@ -173,7 +175,9 @@ const SelectRedemptionCategory = ({
           onSubmit={handleEditCategoryName}
           className="px-[32px] py-[24px] "
         >
-          <h1 className=" text-[18px] font-[700] mb-[20px] ">Category Name</h1>
+          <h1 className=" text-[18px] font-[700] mb-[20px] ">
+          {itemDetails?.categoryName ? itemDetails?.categoryName :"Category Name"}
+            </h1>
           <input
             type="text"
             id="categoryName"
@@ -193,7 +197,8 @@ const SelectRedemptionCategory = ({
       </DialogLayout>
       {/* Edit category name end */}
       <h1 className=" text-[#737373] text-[24px] font-[500] mt-5 mb-2 ">
-        Redemption Category
+      {itemDetails?.redemptionCategory ? itemDetails?.redemptionCategory :"Redemption Category"}
+        
       </h1>
       <div className="flex flex-wrap gap-y-2 items-center">
         {redemptionCategories?.map((item, index) => (
@@ -243,7 +248,8 @@ const SelectRedemptionCategory = ({
                     }}
                     className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
                   >
-                    Edit Category Name
+                    {itemDetails?.editCategoryName ? itemDetails?.editCategoryName :"Edit Category Name"}
+                    
                   </li>
                   <li
                     className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
@@ -253,7 +259,8 @@ const SelectRedemptionCategory = ({
                       );
                     }}
                   >
-                    Delete Category
+                    {itemDetails?.deleteCategory ? itemDetails?.deleteCategory :"Delete Category"}
+                    
                   </li>
                 </ul>
               )}
@@ -263,7 +270,8 @@ const SelectRedemptionCategory = ({
           <div
             className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
           >
-            Please Add Category...
+            {itemDetails?.pleaseAddCategory ? itemDetails?.pleaseAddCategory :"Please Add Category"}
+            ...
           </div>
         )}
         <button

@@ -14,6 +14,7 @@ const EditEarningPointItemForm = ({
   setEarningCategories,
   selectedCourse,
   userInfo,
+  itemDetails
 }) => {
   const [itemValue, setItemValue] = useState(0);
   const [selectedItemEarningOption, setSelectedItemEarningOption] = useState(
@@ -73,8 +74,8 @@ const EditEarningPointItemForm = ({
         setIsOpenEarningItemEditForm(false);
         Swal.fire({
           icon: "error",
-          title: "Item already exist!",
-          text: "Please enter an unique item name!",
+          title: itemDetails?.itemAlreadyExist ? itemDetails?.itemAlreadyExist : "Item already exist!" ,
+          text: itemDetails?.pleaseEnterAnUniqueItemName ? itemDetails?.pleaseEnterAnUniqueItemName :"Please enter an unique item name!",
         });
         return;
       }
@@ -151,7 +152,7 @@ const EditEarningPointItemForm = ({
               ]);
               setIsOpenEarningItemEditForm(false);
               event.target.reset();
-              toast.success("Item Updated Successfully!");
+              toast.success(itemDetails?.itemUpdatedSuccessfully ? itemDetails?.itemUpdatedSuccessfully :"Item Updated Successfully!");
             }
           })
           .catch((error) => {
@@ -188,14 +189,16 @@ const EditEarningPointItemForm = ({
                   alt="UploadingImg"
                 />
                 <p className="mt-[-38px] text-base font-semibold text-[#fff] mb-4">
-                  Upload Icon
+                  {itemDetails?.uploadIcon ? itemDetails?.uploadIcon :"Upload Icon"}
+                  
                 </p>
               </div>
               <div className="w-full pl-8">
                 <div className="grid grid-cols-1 gap-x-6 gap-y-4 mt-2 sm:grid-cols-2 w-full">
                   <div>
                     <label className="text-[16px] font-[600]" htmlFor="case">
-                      Earning Point Category
+                    {itemDetails?.earningPointCategory ? itemDetails?.earningPointCategory :"Earning Point Category"}
+                      
                     </label>
                     <select
                       defaultValue={selectedEarningCategory?.categoryName}
@@ -220,7 +223,8 @@ const EditEarningPointItemForm = ({
                   </div>
                   <div>
                     <label className="text-[16px] font-[600]" htmlFor="case">
-                      Earning Point Item
+                    {itemDetails?.earningPointItem ? itemDetails?.earningPointItem :"Earning Point Item"}
+                      
                     </label>
                     <input
                       id="earningItemName"
@@ -232,7 +236,8 @@ const EditEarningPointItemForm = ({
                   </div>
                   <div className=" flex flex-col justify-center ">
                     <p className="font-semibold text-[#000000]  py-2">
-                      Item Earning Value
+                    {itemDetails?.itemEarningValue ? itemDetails?.itemEarningValue :"Item Earning Value"}
+                      
                     </p>
                     <div className=" flex gap-7 items-center  h-[40px]   text-[#535353] ">
                       <div>
@@ -249,7 +254,8 @@ const EditEarningPointItemForm = ({
                           for="draft"
                           className="peer-checked/draft: font-normal"
                         >
-                          Automated
+                          {itemDetails?.automated ? itemDetails?.automated :"Automated"}
+                          
                         </label>
                       </div>
 
@@ -267,7 +273,8 @@ const EditEarningPointItemForm = ({
                           for="published"
                           class="peer-checked/published: font-normal"
                         >
-                          Manual
+                          {itemDetails?.manual ? itemDetails?.manual :"Manual"}
+                          
                         </label>
                       </div>
                     </div>
@@ -310,7 +317,7 @@ const EditEarningPointItemForm = ({
                   {selectedEarningLogic?.itemValues?.map((week, index) => (
                     <div key={week?.weekId} className="flex flex-col ">
                       <p className="font-bold text-base me-5 mb-3">
-                        {week?.weekName} Item Value
+                        {week?.weekName} {itemDetails?.ItemValue ? itemDetails?.ItemValue :"Item Value"} 
                       </p>
                       <div className="text-[18px] w-[40%]  h-[40px] flex  ">
                         <button
@@ -378,7 +385,7 @@ const EditEarningPointItemForm = ({
                 <div className=" mt-5  ">
                   <input
                     type="submit"
-                    value="Update"
+                    value={itemDetails?.update ? itemDetails?.update :"Update"}
                     className="bg-[#2EB0FB] cursor-pointer rounded-lg p-2 font-semibold text-[#fff]"
                   />
                 </div>

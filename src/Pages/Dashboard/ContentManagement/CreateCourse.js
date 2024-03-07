@@ -132,6 +132,7 @@ const CreateCourse = () => {
     const courseIDNumber = form.courseIDNumber?.value;
     const courseFormat = form.courseFormat?.value;
     const gradesFormat = form.gradesFormat?.value;
+    const courseInitialUrl = form.courseInitialUrl?.value;
     const groups = form.groups?.value;
     const showactivitydates = +form.showactivitydates?.value;
     const numberOfWeeks = +form.numberofWeeks?.value;
@@ -163,6 +164,7 @@ const CreateCourse = () => {
       groups,
       showactivitydates,
       numberOfWeeks,
+      courseInitialUrl,
       // coursePurchaseUrl,
       // weekChapterName: formData,
       showactivityreports,
@@ -393,8 +395,21 @@ const CreateCourse = () => {
                     placeholder="https://www.google.com/"
                   />
                 </div>
+                <div className="mt-20">
+                  <div className="flex items-center gap-4">
+                    <p className="h-2 w-2 bg-black rounded-full"></p>
+                    <p className="font-bold text-lg me-[36px]">
+                      Course initial url
+                    </p>
+                  </div>
 
-
+                  <input
+                    className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                    name="courseInitialUrl"
+                    type="url"
+                    placeholder="https://www.google.com/"
+                  />
+                </div>
 
 
               </div>
