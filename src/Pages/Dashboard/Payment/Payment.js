@@ -47,6 +47,7 @@ const Payment = () => {
   const [forgotPassOpen, setForgotPassOpen] = useState(false);
   const queryParameters = new URLSearchParams(window.location.search);
   const queryBatch = queryParameters.get("batch");
+  const [isBatchPayment , setIsBatchPayment] = useState(false);
 
   console.log(queryBatch);
 
@@ -69,6 +70,7 @@ const Payment = () => {
             (item) => item?._id === queryBatch
           );
           if (findBatch) {
+            setIsBatchPayment(true);
             setSelectedBatch(findBatch);
           }
         }
@@ -77,7 +79,7 @@ const Payment = () => {
   }, [id, queryBatch]);
 
   console.log(course);
-  console.log(selectedBatch);
+  console.log("Selected Batch ==============>",selectedBatch);
 
   useEffect(() => {
     if (course?.organization?.organizationId)
@@ -479,6 +481,7 @@ const Payment = () => {
                     {batchesData[0] && (
                       <select
                         className="mt-1 p-2 border w-full rounded-md bg-white"
+                        disabled={isBatchPayment===true}
                         onChange={(e) =>
                           setSelectedBatch(batchesData[e.target.value])
                         }

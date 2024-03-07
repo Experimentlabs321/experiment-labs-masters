@@ -6,7 +6,8 @@ const uploadFileToS3 = async (file) => {
 
   try {
     const response = await axios.post(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/uploadFile/upload`,
+      // `${process.env.REACT_APP_SERVER_API}/api/v1/uploadFile/upload`,
+      `http://localhost:5000/api/v1/uploadFile/upload`,
       formData,
       {
         headers: {
