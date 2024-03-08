@@ -340,57 +340,135 @@ const CourseInformation = () => {
     });
   };
 
-  const handleChapterDelete = async (id) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
+  /*  const handleChapterDelete = async (id) => {
+     Swal.fire({
+       title: "Are you sure?",
+       text: "You won't be able to revert this!",
+       icon: "warning",
+       showCancelButton: true,
+       confirmButtonColor: "#3085d6",
+       cancelButtonColor: "#d33",
+       confirmButtonText: "Yes, delete it!",
+     }).then(async (result) => {
+       if (result.isConfirmed) {
+         Loading();
+         if (chapters?.length === 1) {
+           Swal.fire({
+             icon: "error",
+             title: "Oops...",
+             text: "There only one chapter. Delete is not possible!",
+           });
+           return;
+         }
+ 
+         console.log(id);
+ 
+         await axios
+           .delete(
+             `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/chapterId/${id}`
+           )
+           .then((result) => {
+             console.log(result);
+             if (result?.status === 200) {
+               Swal.fire({
+                 title: "Deleted!",
+                 text: "Your file has been deleted.",
+                 icon: "success",
+               });
+               const remainingWeeks = chapters.filter(
+                 (chapter) => chapter._id !== id
+               );
+               setChapters(remainingWeeks);
+             } else {
+               toast.error("Oops...! Something went wrong.");
+             }
+           })
+           .catch((error) => {
+             toast.error("Oops...! Something went wrong.");
+             console.error(error);
+             Loading().close();
+           });
+       }
+     });
+   }; */
+
+   const handleChapterDelete = async (id) => {
+    const { value: accept } = await Swal.fire({
+      title: "Delete Chapter",
+      html: `
+        <div style="text-align: center;">
+          <i class="fas fa-exclamation-triangle fa-3x" style="color: red;"></i>
+        </div>
+        <br>
+       
+        <div>
+          <p>You won't be able to revert this!</p>
+        </div>
+        <br>
+        <div>
+          <input type="checkbox" id="terms" name="terms" value="accepted">
+          <label for="terms" style="color: red;">Please be cautious, all the tasks under this chapter will be deleted</label>
+        </div>
+      
+      `,
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        Loading();
-        if (chapters?.length === 1) {
-          Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: "There only one chapter. Delete is not possible!",
-          });
-          return;
+      icon: "warning", // Add warning icon
+      preConfirm: () => {
+        if (!document.getElementById('terms').checked) {
+          Swal.showValidationMessage("You need to agree with the terms and conditions");
         }
-
-        console.log(id);
-
-        await axios
-          .delete(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/chapterId/${id}`
-          )
-          .then((result) => {
-            console.log(result);
-            if (result?.status === 200) {
-              Swal.fire({
-                title: "Deleted!",
-                text: "Your file has been deleted.",
-                icon: "success",
-              });
-              const remainingWeeks = chapters.filter(
-                (chapter) => chapter._id !== id
-              );
-              setChapters(remainingWeeks);
-            } else {
-              toast.error("Oops...! Something went wrong.");
-            }
-          })
-          .catch((error) => {
-            toast.error("Oops...! Something went wrong.");
-            console.error(error);
-            Loading().close();
-          });
       }
     });
+  
+    if (accept) {
+      // Proceed with deletion
+      Loading();
+      if (chapters?.length === 1) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "There is only one chapter. Delete is not possible!",
+        });
+        return;
+      }
+  
+      console.log(id);
+  
+      await axios
+        .delete(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/chapterId/${id}`
+        )
+        .then((result) => {
+          console.log(result);
+          if (result?.status === 200) {
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your file has been deleted.",
+              icon: "success",
+            });
+            const remainingWeeks = chapters.filter(
+              (chapter) => chapter._id !== id
+            );
+            setChapters(remainingWeeks);
+          } else {
+            toast.error("Oops...! Something went wrong.");
+          }
+        })
+        .catch((error) => {
+          toast.error("Oops...! Something went wrong.");
+          console.error(error);
+          Loading().close();
+        }); 
+    }
   };
+  
+
+
+
+
 
   useEffect(() => {
     axios
@@ -601,22 +679,21 @@ const CourseInformation = () => {
                           >
                             <div
                               style={{ background: taskType?.theme }}
-                              className={`  ${
-                                (taskType?.name === "Quiz" ||
+                              className={`  ${(taskType?.name === "Quiz" ||
                                   taskType?.name === "Live Test") &&
                                 "opacity-40"
-                              } flex items-center rounded-[12px] justify-center p-[18px]`}
+                                } flex items-center rounded-[12px] justify-center p-[18px]`}
                             >
                               <img src={taskType?.icon} alt="icon" />
                             </div>
                             {(taskType?.name === "Quiz" ||
                               taskType?.name === "Live Test") && (
-                              <img
-                                className="absolute w-7 top-[45%] left-[37%]"
-                                src={lock}
-                                alt="lock"
-                              />
-                            )}
+                                <img
+                                  className="absolute w-7 top-[45%] left-[37%]"
+                                  src={lock}
+                                  alt="lock"
+                                />
+                              )}
                             <h1 className="text-[13px] font-[700] mt-[20px] text-center">
                               {taskType?.name}
                             </h1>
@@ -1249,7 +1326,7 @@ const CourseInformation = () => {
                                 chapterIndex === 0 ||
                                 chapters?.[chapterIndex - 1]?.tasks?.[
                                   chapters?.[chapterIndex - 1]?.tasks?.length -
-                                    1
+                                  1
                                 ]?.participants?.some(
                                   (item) =>
                                     item?.participantId === userInfo?._id &&
@@ -1377,7 +1454,7 @@ const CourseInformation = () => {
                                       {courseData?.enableDrip && (
                                         <div className="">
                                           {isPreviousTaskCompleted &&
-                                          isPrevChapterCompleted ? (
+                                            isPrevChapterCompleted ? (
                                             <Link
                                               onClick={() => {
                                                 localStorage.setItem(
@@ -1426,7 +1503,7 @@ const CourseInformation = () => {
                                         <div className="">
                                           {(isPreviousTaskCompleted &&
                                             isPrevChapterCompleted) ||
-                                          !task?.taskDrip ? (
+                                            !task?.taskDrip ? (
                                             <Link
                                               onClick={() => {
                                                 localStorage.setItem(

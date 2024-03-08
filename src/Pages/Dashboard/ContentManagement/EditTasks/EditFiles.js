@@ -70,6 +70,7 @@ const EditFiles = () => {
   const [selectedBatches, setSelectedBatches] = useState([]);
   const [orgData, setOrgData] = useState({});
   const [taskDrip, setTaskDrip] = useState();
+  const [enableDownload, setEnableDownload] = useState(false);
 
   useEffect(() => {
     const fetchData = {
@@ -115,6 +116,7 @@ const EditFiles = () => {
         setSkillParameterData(response?.data?.skillParameterData);
         setEarningParameterData(response?.data?.earningParameterData);
         setTaskDrip(response?.data?.taskDrip);
+        setEnableDownload(response?.data?.enableDownload);
       });
   }, [openTask]);
 
@@ -174,7 +176,8 @@ const EditFiles = () => {
       earningParameterData: earningParameterData,
       chapterId: id,
       batches: selectedBatches,
-      taskDrip
+      taskDrip,
+      enableDownload,
     };
 
     setFileData(ManageFile);
@@ -481,6 +484,54 @@ const EditFiles = () => {
                   Course Drip Must Be Turned Off to add Task Drip.
                 </p>
               )}
+            </div>
+
+            <div className="ml-[40px] space-y-4 mb-8">
+              <fieldset>
+                <div className="flex items-center gap-4 mb-5">
+                  <p className="h-2 w-2 bg-black rounded-full"></p>
+                  <p className="font-bold text-lg me-[36px]">Enable Download</p>
+                  <img src={required} alt="" />
+                </div>
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center">
+                    <input
+                      type="radio"
+                      id="radioDownloadYes"
+                      name="radioDownloadOption"
+                      checked={enableDownload === true}
+                      onChange={() => setEnableDownload(true)}
+
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
+                    />
+                    <label
+                      htmlFor="radioDownloadYes"
+                      className={`ml-2 text-sm font-medium `}
+                    >
+                      Yes
+                    </label>
+                  </div>
+
+                  <div className="flex items-center">
+                    <input
+                      type="radio"
+                      id="radioDownloadNo"
+                      name="radioDownloadOption"
+                      checked={enableDownload === false}
+                      onChange={() => setEnableDownload(false)}
+
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
+                    />
+                    <label
+                      htmlFor="radioDownloadNo"
+                      className={`ml-2 text-sm font-medium `}
+                    >
+                      No
+                    </label>
+                  </div>
+                </div>
+              </fieldset>
+
             </div>
 
             <div className="px-4 my-10">

@@ -38,6 +38,7 @@
     "date-fns": "^2.30.0",
     "dayjs": "^1.11.9",
     "dotenv": "^16.1.1",
+    "file-saver": "^2.0.5",
     "firebase": "^9.21.0",
     "gapi-script": "^1.2.0",
     "google-api-client": "^2.1.0",

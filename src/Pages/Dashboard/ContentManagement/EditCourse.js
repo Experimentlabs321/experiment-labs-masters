@@ -102,6 +102,7 @@ const EditCourse = () => {
     const enableDrip = form.enableDrip?.value === "false" ? false : true;
     const courseVisibility = form.courseVisibility?.value === "false" ? false : true;
     const expirationDay = form.expirationDay?.value;
+    const courseInitialUrl = form.courseInitialUrl?.value;
 
     let fileUrl = "";
     if (selectedFile) {
@@ -124,6 +125,7 @@ const EditCourse = () => {
       groups,
       showactivitydates,
       numberOfWeeks,
+      courseInitialUrl,
       // coursePurchaseUrl,
       expirationDay,
       // weekChapterName: formData,
@@ -376,6 +378,53 @@ const EditCourse = () => {
                     </button>
                   </div>
                 </div>
+                <div className="mt-20">
+                  <div className="flex items-center gap-4">
+                    <p className="h-2 w-2 bg-black rounded-full"></p>
+                    <p className="font-bold text-lg me-[36px]">
+                      Course initial url
+                    </p>
+                  </div>
+                  <div className="flex">
+                  <input
+                    className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                    name="courseInitialUrl"
+                    defaultValue={courseData?.courseInitialUrl}
+                    type="url"
+                    placeholder="https://www.google.com/"
+                  />
+                  {/*   <button
+                      onMouseDown={async () => {
+                        try {
+                          await navigator.clipboard.writeText(
+                            `${courseData?.courseInitialUrl}`
+                          );
+                          toast.success("Url Copied!");
+                        } catch (err) {
+                          console.error("Unable to copy to clipboard", err);
+                        }
+                      }}
+                      className="mt-6 ms-6 border rounded-l-md w-fit h-[50px] p-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                    >{`${courseData?.courseInitialUrl}`}
+                    </button> */}
+                    <button
+                      className="mt-6 border rounded-r-md w-fit h-[50px] p-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                      onClick={async () => {
+                        try {
+                          await navigator.clipboard.writeText(
+                            `${courseData?.courseInitialUrl}`
+                          );
+                          toast.success("Url Copied!");
+                        } catch (err) {
+                          console.error("Unable to copy to clipboard", err);
+                        }
+                      }}
+                    >
+                      <FileCopyIcon />
+                    </button>
+                  </div>
+                </div>
+
               </div>
 
               <div>

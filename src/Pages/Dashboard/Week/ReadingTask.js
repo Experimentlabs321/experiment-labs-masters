@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import icon from "../../../icon192.png";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../Shared/Loading/Loading";
+import { saveAs } from 'file-saver';
 
 const ReadingTask = ({ taskData, chapterId }) => {
   const navigate = useNavigate();
@@ -107,7 +108,18 @@ const ReadingTask = ({ taskData, chapterId }) => {
       setOverlayVisible(true);
     }
   };
-  console.log(taskData?.chapterId);
+  console.log(taskData);
+  const handleDownload = async () => {
+    try {
+      const response = await axios.get(taskData?.additionalFiles, {
+        responseType: 'blob', // Important
+      });
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      saveAs(blob, 'Your_Document_Name.pdf');
+    } catch (error) {
+      console.error('Error downloading the file:', error);
+    }
+  };
   return (
     <div>
       {completionStatus ? (
@@ -137,10 +149,10 @@ const ReadingTask = ({ taskData, chapterId }) => {
 
             {additionalFile &&
               (taskData?.additionalFiles.endsWith(".png") ||
-              taskData?.additionalFiles.endsWith(".jpg") ||
-              taskData?.additionalFiles.endsWith(".jpeg") ||
-              taskData?.additionalFiles.endsWith(".gif") ||
-              taskData?.additionalFiles.endsWith(".bmp") ? (
+                taskData?.additionalFiles.endsWith(".jpg") ||
+                taskData?.additionalFiles.endsWith(".jpeg") ||
+                taskData?.additionalFiles.endsWith(".gif") ||
+                taskData?.additionalFiles.endsWith(".bmp") ? (
                 <div className="">
                   <img
                     src={taskData?.additionalFiles}
@@ -174,6 +186,20 @@ const ReadingTask = ({ taskData, chapterId }) => {
             height="80vh"
           ></iframe> */}
           </div>
+          {
+            (taskData?.enableDownload) && (
+              <div className="flex justify-end me-20 my-10">
+                <button
+                  className="bg-blue text-white p-3 rounded-lg text-xl"
+                  onClick={handleDownload}
+                >
+                  Download
+                </button>
+
+              </div>
+            )
+          }
+
         </div>
       )}
       {openQuiz && (
