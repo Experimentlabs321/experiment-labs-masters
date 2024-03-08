@@ -15,6 +15,7 @@ import EditEarningPointItemForm from "./Components/EarningLogics/EditEarningPoin
 import ToggleOnIcon from "@mui/icons-material/ToggleOn";
 import ToggleOffIcon from "@mui/icons-material/ToggleOff";
 
+
 const EarningLogics = () => {
   const { userInfo } = useContext(AuthContext);
   const [courses, setCourses] = useState([]);
@@ -45,7 +46,28 @@ const EarningLogics = () => {
     fontSize: "16px",
     color: isToggled ? "blue" : "#8F8F8F",
   };
+  const [loading, setLoading] = useState(false);
+  const [itemDetails, setItemDetails] = useState();
+  useEffect(() => {
+      if (userInfo) {
+          setLoading(true);
+          axios
+              .get(
+                  `${process.env.REACT_APP_SERVER_API}/api/v1/language/getPointsAndRedemptionsSubDetailsByOrganizationAndName/earningLogic/organizationsId/${userInfo?.organizationId}`
+              )
+              .then((response) => {
 
+                  console.log(response)
+                  setItemDetails(response?.data);
+
+              })
+              .finally(() => {
+                  setLoading(false);
+              });
+      }
+      setLoading(false);
+  }, [userInfo]);
+  console.log(itemDetails)
   useEffect(() => {
     axios
       .get(
@@ -182,7 +204,8 @@ const EarningLogics = () => {
       <Layout>
         <div className="flex items-center justify-between container mx-auto px-4 gap-7 pt-20 lg:pt-10 ">
           <div className="UserManagement origin-top-left rotate-[-0.51deg] text-zinc-500 text-[30px] font-medium">
-            Earning Logics
+            {itemDetails?.earningLogics ? itemDetails?.earningLogics : "Earning Logics"}
+            
           </div>
           <div className="Input w-[425px] h-16 relative bg-slate-100 rounded-[40px] shadow-inner">
             <input
@@ -200,14 +223,16 @@ const EarningLogics = () => {
         <div className="px-4 mt-[40px]">
           <div>
             <h1 className=" text-[#737373] text-[24px] font-[500] mb-2 ">
-              Select Course
+            {itemDetails?.selectCourse ? itemDetails?.selectCourse : "Select Course"}
+              
             </h1>
             <div className="flex flex-wrap">
               {!courses[0] && (
                 <div
                   className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
                 >
-                  No course added yet!
+                  {itemDetails?.noCourseAddedYet ? itemDetails?.noCourseAddedYet : "No course added yet"}
+                  !
                 </div>
               )}
               {courses?.map((item, index) => (
@@ -227,7 +252,8 @@ const EarningLogics = () => {
           </div>
           <div className="flex items-center gap-5">
             <p className="text-xl font-medium text-zinc-500">
-              Set Earning Logics :{" "}
+
+               {itemDetails?.setEarningLogics ? itemDetails?.setEarningLogics : "Set Earning Logics"} :{" "}
             </p>
             <button
               style={buttonStyle}
@@ -247,6 +273,7 @@ const EarningLogics = () => {
         {isToggled && (
           <>
             <SelectEarningCategory
+            itemDetails={itemDetails}
               setEarningCategories={setEarningCategories}
               earningCategories={earningCategories}
               selectedEarningCategory={selectedEarningCategory}
@@ -276,7 +303,8 @@ const EarningLogics = () => {
                   <AddSharpIcon sx={{ fontSize: 150 }} />
                 </div>
                 <div className="text-[#8F8F8F] pb-5  mt-[-10px] font-medium text-base">
-                  Add Details
+                {itemDetails?.addDetails ? itemDetails?.addDetails : "Add Details"}
+                  
                 </div>
               </div>
               {selectedEarningCategory?.earningItems?.map((item) => (
@@ -325,7 +353,8 @@ const EarningLogics = () => {
                             setIsOpenEarningItemAddForm(false);
                           }}
                         >
-                          Edit Item
+                           {itemDetails?.editItem ? itemDetails?.editItem : "Edit Item"}
+                          
                         </li>
                         <li
                           className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
@@ -333,7 +362,8 @@ const EarningLogics = () => {
                             handleItemDelete(item?.earningItemName)
                           }
                         >
-                          Delete Item
+                           {itemDetails?.deleteItem ? itemDetails?.deleteItem : "Delete Item"}
+                          
                         </li>
                       </ul>
                     )}
@@ -362,6 +392,7 @@ const EarningLogics = () => {
             </div>
             {isOpenEarningItemAddForm && (
               <AddEarningPointItemForm
+              itemDetails={itemDetails}
                 setIsOpenEarningItemAddForm={setIsOpenEarningItemAddForm}
                 UploadingImg={UploadingImg}
                 selectedEarningCategory={selectedEarningCategory}

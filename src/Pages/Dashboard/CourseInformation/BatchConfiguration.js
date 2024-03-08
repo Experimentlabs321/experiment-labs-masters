@@ -5,6 +5,7 @@ import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
 import DialogLayoutForFromControl from "../Shared/DialogLayoutForFromControl";
 import { toast } from "react-hot-toast";
+import Loading from "../../Shared/Loading/Loading";
 
 const BatchConfiguration = ({
   selectedBatches,
@@ -37,6 +38,7 @@ const BatchConfiguration = ({
 
   const handleAddBatch = async (event) => {
     event.preventDefault();
+    Loading();
     const sendData = {
       user: {
         participants: participantsData,
@@ -73,13 +75,13 @@ const BatchConfiguration = ({
     //   createUser(element?.email, element?.password);
     // });
 
-    if (newBatch?.data?.batch?.acknowledged) {
+    if (newBatch?.status === 200) {
       toast.success("Batch Added Successfully");
       batchesData?.push(sendData?.batch);
       setAddBatchOpen(false);
       event.target.reset();
     }
-
+    Loading().close();
     // console.log("Add chapter----->", week);
   };
 
@@ -102,19 +104,18 @@ const BatchConfiguration = ({
       price: event?.target?.price?.value,
       // participants: participants,
     };
-  
-    
+
     console.log(sendData);
-  
+
     try {
       const editBatch = await axios.put(
         `${process.env.REACT_APP_SERVER_API}/api/v1/batches/updateBatch/batchId/${selectedBatches[0]?._id}`,
         sendData
       );
-  
+
       console.log(editBatch); // Log the response data
-  
-      if (editBatch?.status===200) {
+
+      if (editBatch?.status === 200) {
         toast.success("Batch Updated Successfully");
         // batchesData?.push(sendData?.batch);
         setShowEditBatchDialog(false);
@@ -127,7 +128,6 @@ const BatchConfiguration = ({
       toast.error("An error occurred while updating the batch");
     }
   };
-  
 
   const handleBatchDelete = async (id) => {};
 
@@ -176,8 +176,8 @@ const BatchConfiguration = ({
   const getCurrentDate = () => {
     const today = new Date();
     const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
 

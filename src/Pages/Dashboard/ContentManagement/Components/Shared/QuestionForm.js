@@ -61,7 +61,7 @@ const QuestionForm = ({
                 <div className="py-4">
                   <div
                     id={`textEditor-${selectedQuestionData.questionTitle}`}
-                    className="bg-white text-black"
+                    className="bg-white text-black textEditor"
                   >
                     <TextEditor
                       onBlur={() => handleQuestionBlur()}

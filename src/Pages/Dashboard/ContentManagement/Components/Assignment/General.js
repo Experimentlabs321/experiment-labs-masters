@@ -20,7 +20,7 @@ const General = ({
   setContentStage,
   enableDrip,
   setTaskDrip,
-  taskDrip
+  taskDrip,
 }) => {
   // upload file
   const [dragActive, setDragActive] = useState(true);
@@ -115,7 +115,7 @@ const General = ({
 
               {/* Text editor */}
               <div className="py-4">
-                <div className="bg-white text-black">
+                <div className="bg-white text-black textEditor">
                   <TextEditor value={instructions} setValue={setInstructions} />
                 </div>
               </div>
@@ -246,7 +246,10 @@ const General = ({
             {batchesData?.map((option, index) => {
               return (
                 <>
-                  <li key={index} className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] ">
+                  <li
+                    key={index}
+                    className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] "
+                  >
                     <input
                       type="checkbox"
                       id="student"
@@ -356,13 +359,15 @@ const General = ({
                   id="radioYes"
                   name="radioOption"
                   checked={taskDrip === true}
-                  onChange={()=>setTaskDrip(true)}
+                  onChange={() => setTaskDrip(true)}
                   disabled={enableDrip}
                   className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
                 />
                 <label
                   htmlFor="radioYes"
-                  className={`ml-2 text-sm font-medium ${enableDrip ? 'text-gray-400' : 'text-gray-900'}`}
+                  className={`ml-2 text-sm font-medium ${
+                    enableDrip ? "text-gray-400" : "text-gray-900"
+                  }`}
                 >
                   Yes
                 </label>
@@ -374,13 +379,15 @@ const General = ({
                   id="radioNo"
                   name="radioOption"
                   checked={taskDrip === false}
-                  onChange={()=>setTaskDrip(false)}
+                  onChange={() => setTaskDrip(false)}
                   disabled={enableDrip}
                   className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
                 />
                 <label
                   htmlFor="radioNo"
-                  className={`ml-2 text-sm font-medium ${enableDrip ? 'text-gray-400' : 'text-gray-900'}`}
+                  className={`ml-2 text-sm font-medium ${
+                    enableDrip ? "text-gray-400" : "text-gray-900"
+                  }`}
                 >
                   No
                 </label>

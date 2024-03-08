@@ -411,13 +411,13 @@ const ManageReading = () => {
                 </div>
 
                 {/* Text editor */}
-                <div className="py-4">
-                  <div className="bg-white text-black">
+                <div className="py-4 ">
+                  <div className="bg-white text-black textEditor">
                     <TextEditor setValue={setReadingMaterial} />
                   </div>
                 </div>
-                {/* <p>{instructions}</p>
-              <div dangerouslySetInnerHTML={{ __html: instructions }} /> */}
+                {/* <p>{readingMaterial}</p>
+                <div dangerouslySetInnerHTML={{ __html: readingMaterial }} /> */}
               </div>
             </div>
             <div className="me-20 py-[35px] ps-[40px]">

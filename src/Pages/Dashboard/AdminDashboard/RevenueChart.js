@@ -12,7 +12,8 @@ const RevenueChart = ({
     paidStudents,
     setTotalRevenue,
     fromDate,
-    toDate
+    toDate,
+    itemDetails
 
 }) => {
     const [chartState, setChartData] = useState();
@@ -381,11 +382,11 @@ const RevenueChart = ({
 
             series: [
                 {
-                    name: "Total Revenue",
+                    name: itemDetails?.totalRevenue ? itemDetails?.totalRevenue : "Total Revenue",
                     data: dataTotalValues,
                 },
                 {
-                    name: "Total Discount",
+                    name: itemDetails?.totalDiscount ? itemDetails?.totalDiscount : "Total Discount",
                     data: dataDiscountValue,
                 },
 
@@ -470,13 +471,13 @@ const RevenueChart = ({
         monthNamesArr,
         totalRevenueLastYear,
         totalDiscountLastYear, totalRevenueOverall, overallArr, totalDiscountOverall, customDate, totalRevenueCustomDate,
-        totalDiscountCustomDate])
+        totalDiscountCustomDate,itemDetails?.totalRevenue,itemDetails?.totalDiscount  ])
 
 
 
     return (
         <div>
-            <h1 className="my-3 mt-5 text-2xl font-bold">Total Revenue Vs Total Discount</h1>
+            <h1 className="my-3 mt-5 text-2xl font-bold">{itemDetails?.totalRevenueVsTotalDiscount ? itemDetails?.totalRevenueVsTotalDiscount :"Total Revenue Vs Total Discount"}</h1>
             {isLoading && (
                 <div className=" flex align-items-center my-5 py-5">
                     <CircularProgress className="w-full mx-auto" />

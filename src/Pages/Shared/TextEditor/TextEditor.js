@@ -6,7 +6,7 @@ const TextEditor = ({ setValue, value, onBlur }) => {
   const editor = useRef(null);
   const [editStart, setEditStart] = useState(!value ? true : false);
   return (
-    <div>
+    <div className="textEditor">
       <JoditEditor
         value={editStart ? value : null}
         ref={editor}
