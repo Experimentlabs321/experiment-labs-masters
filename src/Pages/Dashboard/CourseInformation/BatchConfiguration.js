@@ -6,11 +6,15 @@ import axios from "axios";
 import DialogLayoutForFromControl from "../Shared/DialogLayoutForFromControl";
 import { toast } from "react-hot-toast";
 import Loading from "../../Shared/Loading/Loading";
+import Swal from "sweetalert2";
 
 const BatchConfiguration = ({
   selectedBatches,
   setSelectedBatches,
   batchesData,
+  setBatchesData,
+  count,
+  setCount,
 }) => {
   const Role = localStorage.getItem("role");
   const [isOpenBatches, setIsOpenBatches] = useState(false);
@@ -129,7 +133,65 @@ const BatchConfiguration = ({
     }
   };
 
-  const handleBatchDelete = async (id) => {};
+  const handleBatchDelete = async () => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        Loading();
+        try {
+          const deleteBatch = await axios.delete(
+            `http://localhost:5000/api/v1/batches/deleteBatch/batchId/${selectedBatches[0]?._id}`
+          );
+
+          console.log(deleteBatch);
+
+          // sendData?.user?.participants?.forEach((element) => {
+          //   createUser(element?.email, element?.password);
+          // });
+
+          if (deleteBatch?.status === 200) {
+            setSelectedBatches(
+              selectedBatches?.filter(
+                (item) => item?._id !== selectedBatches[0]?._id
+              )
+            );
+            setBatchesData(
+              batchesData?.filter(
+                (item) => item?._id !== selectedBatches[0]?._id
+              )
+            );
+            setCount(count + 1);
+            Loading().close();
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your batch has been deleted.",
+              icon: "success",
+            });
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Something wrong happened!",
+            });
+          }
+        } catch (error) {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: `${error?.message}`,
+          });
+          console.log(error?.message);
+        }
+      }
+    });
+  };
 
   const handleAddParticipant = (e) => {
     e.preventDefault();
@@ -816,7 +878,7 @@ const BatchConfiguration = ({
             </svg>
           </button>
           <button
-            // onClick={() => setOpenConfirmationDialog(true)}
+            onClick={() => handleBatchDelete()}
             className=" bg-sky-950 p-[6px] rounded-full"
           >
             <svg
