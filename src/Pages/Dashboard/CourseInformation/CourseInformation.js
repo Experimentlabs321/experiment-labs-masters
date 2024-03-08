@@ -393,7 +393,7 @@ const CourseInformation = () => {
      });
    }; */
 
-   const handleChapterDelete = async (id) => {
+  const handleChapterDelete = async (id) => {
     const { value: accept } = await Swal.fire({
       title: "Delete Chapter",
       html: `
@@ -418,12 +418,14 @@ const CourseInformation = () => {
       confirmButtonText: "Yes, delete it!",
       icon: "warning", // Add warning icon
       preConfirm: () => {
-        if (!document.getElementById('terms').checked) {
-          Swal.showValidationMessage("You need to agree with the terms and conditions");
+        if (!document.getElementById("terms").checked) {
+          Swal.showValidationMessage(
+            "You need to agree with the terms and conditions"
+          );
         }
-      }
+      },
     });
-  
+
     if (accept) {
       // Proceed with deletion
       Loading();
@@ -435,9 +437,9 @@ const CourseInformation = () => {
         });
         return;
       }
-  
+
       console.log(id);
-  
+
       await axios
         .delete(
           `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/chapterId/${id}`
@@ -462,14 +464,9 @@ const CourseInformation = () => {
           toast.error("Oops...! Something went wrong.");
           console.error(error);
           Loading().close();
-        }); 
+        });
     }
   };
-  
-
-
-
-
 
   useEffect(() => {
     axios
@@ -680,21 +677,22 @@ const CourseInformation = () => {
                           >
                             <div
                               style={{ background: taskType?.theme }}
-                              className={`  ${(taskType?.name === "Quiz" ||
+                              className={`  ${
+                                (taskType?.name === "Quiz" ||
                                   taskType?.name === "Live Test") &&
                                 "opacity-40"
-                                } flex items-center rounded-[12px] justify-center p-[18px]`}
+                              } flex items-center rounded-[12px] justify-center p-[18px]`}
                             >
                               <img src={taskType?.icon} alt="icon" />
                             </div>
                             {(taskType?.name === "Quiz" ||
                               taskType?.name === "Live Test") && (
-                                <img
-                                  className="absolute w-7 top-[45%] left-[37%]"
-                                  src={lock}
-                                  alt="lock"
-                                />
-                              )}
+                              <img
+                                className="absolute w-7 top-[45%] left-[37%]"
+                                src={lock}
+                                alt="lock"
+                              />
+                            )}
                             <h1 className="text-[13px] font-[700] mt-[20px] text-center">
                               {taskType?.name}
                             </h1>
@@ -812,6 +810,9 @@ const CourseInformation = () => {
                   selectedBatches={selectedBatches}
                   setSelectedBatches={setSelectedBatches}
                   batchesData={batchesData}
+                  setBatchesData={setBatchesData}
+                  count={count}
+                  setCount={setCount}
                 />
               )}
             </div>
@@ -981,8 +982,7 @@ const CourseInformation = () => {
                   setSelectedChapterAndTaskToDeleteTask
                 }
               />
-              
-             
+
               {/* <div className="relative">
                 <div className="flex items-center justify-between mt-[60px]">
                   <div className="flex items-center ">
