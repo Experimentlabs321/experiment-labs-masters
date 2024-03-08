@@ -117,7 +117,7 @@ const WeekDetail = ({
   );
   const { id } = useParams();
   console.log(id);
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true);
   const [taskData, setTaskData] = useState({});
   const handleNext = () => {
     if (week?.lecture[lectureNo]?.tasks?.length === tasksNo + 1) {
@@ -141,7 +141,7 @@ const WeekDetail = ({
       } else {
         setOpenTask(
           week?.lecture[lectureNo - 1]?.tasks[
-          week?.lecture[lectureNo - 1]?.tasks?.length - 1
+            week?.lecture[lectureNo - 1]?.tasks?.length - 1
           ]
         );
         setOpenTopic(week?.lecture[lectureNo - 1]?.name);
@@ -157,7 +157,6 @@ const WeekDetail = ({
   };
 
   useEffect(() => {
-
     let taskTypeForAPI;
     console.log(openTask?.taskType);
     switch (openTask?.taskType) {
@@ -198,11 +197,11 @@ const WeekDetail = ({
       )
       .then((response) => {
         setTaskData(response?.data);
-        setIsLoading(false)
+        setIsLoading(false);
       })
       .catch((error) => {
-        console.error(error)
-        setIsLoading(false)
+        console.error(error);
+        setIsLoading(false);
       });
   }, [openTask, openTask?.taskType]);
   // console.log(taskData);
@@ -288,7 +287,7 @@ const WeekDetail = ({
                 {openTask?.taskName}
               </button>
             </div>
-            <div className="flex items-center mt-[-10px] ">
+            {/* <div className="flex items-center mt-[-10px] ">
               <button
                 onClick={handlePrevious}
                 className="flex items-center text-[#3E4DAC] text-[18px] font-[700] mr-[80px] "
@@ -331,7 +330,7 @@ const WeekDetail = ({
                   />
                 </svg>
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
         {openTask?.taskType === "Classes" && (
