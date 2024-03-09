@@ -11,6 +11,7 @@ import FilesTask from "../../Week/FilesTask";
 import SkillBasedParameter from "../Components/Shared/SkillBasedParameter";
 import ItemEarningParameter from "../Components/Shared/ItemEarningParameter";
 import Loading from "../../../Shared/Loading/Loading";
+import TextEditor from "../../../Shared/TextEditor/TextEditor";
 
 const EditFiles = () => {
   // upload file
@@ -60,6 +61,7 @@ const EditFiles = () => {
   const [preview, setPreview] = useState(false);
   const [submitPermission, setSubmitPermission] = useState(false);
   const [fileData, setFileData] = useState({});
+  const [fileDescription, setFileDescription] = useState("");
   const [openTask, setOpenTask] = useState(
     JSON.parse(localStorage.getItem("task"))
   );
@@ -117,6 +119,8 @@ const EditFiles = () => {
         setEarningParameterData(response?.data?.earningParameterData);
         setTaskDrip(response?.data?.taskDrip);
         setEnableDownload(response?.data?.enableDownload);
+        setFileDescription(response?.data?.fileDescription);
+
       });
   }, [openTask]);
 
@@ -178,6 +182,7 @@ const EditFiles = () => {
       batches: selectedBatches,
       taskDrip,
       enableDownload,
+      fileDescription
     };
 
     setFileData(ManageFile);
@@ -315,22 +320,44 @@ const EditFiles = () => {
           <form onSubmit={handleSubmit}>
             <div className="flex  me-20 py-[35px] ps-[40px]">
               <div className="w-full">
-                <div className="">
+                <div className="w-full">
+                  <div className="">
+                    <div className="flex items-center gap-4">
+                      <p className="h-2 w-2 bg-black rounded-full"></p>
+                      <p className="font-bold text-lg me-[36px]">File Name</p>
+                      <img src={required} alt="required" />
+                    </div>
+                    <input
+                      required
+                      defaultValue={fileData ? fileData?.fileName : ""}
+                      className="mt-6 ms-6 border rounded-md w-3/4 h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                      name="fileName"
+                      type="text"
+                      placeholder="Eg. Entrepreneurship Lab"
+                    />
+                  </div>
+                </div>
+                <div className="w-full mt-10">
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
-                    <p className="font-bold text-lg me-[36px]">File Name</p>
+                    <p className="font-bold text-lg me-[36px]">
+                      File Description{" "}
+                    </p>
                     <img src={required} alt="required" />
                   </div>
-                  <input
-                    required
-                    defaultValue={fileData ? fileData?.fileName : ""}
-                    className="mt-6 ms-6 border rounded-md w-3/4 h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                    name="fileName"
-                    type="text"
-                    placeholder="Eg. Entrepreneurship Lab"
-                  />
+
+                  {/* Text editor */}
+                  <div className="py-4 ms-5">
+                    <div className="bg-white text-black textEditor">
+                      <TextEditor 
+                       value={fileDescription}
+                      setValue={setFileDescription} />
+                    </div>
+                  </div>
+
                 </div>
               </div>
+
               <div className="w-full">
                 <div className=" flex flex-col">
                   <div className="flex items-center gap-4">
