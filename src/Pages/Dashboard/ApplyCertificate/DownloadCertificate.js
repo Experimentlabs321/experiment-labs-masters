@@ -1,3 +1,4 @@
+// updated
 import React, { useContext, useEffect, useRef, useState } from "react";
 import Layout from "../Layout";
 import { useParams } from "react-router-dom";
@@ -22,6 +23,7 @@ const DownloadCertificate = () => {
   const [batchData, setBatchData] = useState({});
   const [orgData, setOrgData] = useState({});
   const [completionPercentage, setCompletionPercentage] = useState(0);
+  const currentDate = new Date();
 
   useEffect(() => {
     const courseInfo = userInfo?.courses?.find(
@@ -291,8 +293,26 @@ const DownloadCertificate = () => {
                           ? batchData?.batchName
                           : content?.content === "Organization name" &&
                             orgData?.organizationName}{" "}
+                        {content?.allowBreakLine === "1" && <br />}
                       </span>
                     )
+                  )}
+                  {certificateTemplate?.showIssuingDate
+                    ?.allowShowIssuingDate === "1" && (
+                    <span
+                      style={{
+                        fontSize: `${
+                          certificateTemplate?.showIssuingDate
+                            ?.contentFontSize * zoom
+                        }px`,
+                        fontFamily: `${certificateTemplate?.showIssuingDate?.contentFontFamily}`,
+                        color: `${certificateTemplate?.showIssuingDate?.contentColor}`,
+                      }}
+                    >
+                      <br />
+                      {certificateTemplate?.showIssuingDate?.content}{" "}
+                      {currentDate?.toLocaleDateString()}
+                    </span>
                   )}
                 </p>
               </div>
