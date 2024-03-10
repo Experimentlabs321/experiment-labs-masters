@@ -101,6 +101,7 @@ const CreateCertificate = () => {
       contentFontFamily: "Lora",
       contentColor: "#000000",
       contentFontSize: 35,
+      contentFontWeight: "normal",
       allowBreakLine: "0",
     },
   ]);
@@ -355,6 +356,7 @@ const CreateCertificate = () => {
                         fontSize: `${content.contentFontSize * zoom}px`,
                         fontFamily: `${content.contentFontFamily}`,
                         color: `${content.contentColor}`,
+                        fontWeight: `${content.contentFontWeight}`,
                       }}
                     >
                       {content?.type === "Static"
@@ -425,6 +427,7 @@ const CreateCertificate = () => {
                             fontSize: `${authorNameFontSize * zoom}px`,
                             fontFamily: `${authorNameFontFamily}`,
                             color: `${authorNameColor}`,
+                            fontWeight: "bold",
                           }}
                           className=""
                         >

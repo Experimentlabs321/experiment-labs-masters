@@ -281,6 +281,7 @@ const DownloadCertificate = () => {
                           fontSize: `${content.contentFontSize * zoom}px`,
                           fontFamily: `${content.contentFontFamily}`,
                           color: `${content.contentColor}`,
+                          fontWeight: `${content.contentFontWeight}`,
                         }}
                       >
                         {content?.type === "Static"
@@ -358,6 +359,7 @@ const DownloadCertificate = () => {
                             }px`,
                             fontFamily: `${certificateTemplate?.authorNameFontFamily}`,
                             color: `${certificateTemplate?.authorNameColor}`,
+                            fontWeight: "bold",
                           }}
                           className=""
                         >
