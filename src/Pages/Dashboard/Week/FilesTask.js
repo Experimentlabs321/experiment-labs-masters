@@ -68,6 +68,7 @@ const FilesTask = ({ taskData }) => {
       setOverlayVisible(openQuiz);
     }
   };
+  console.log(taskData?.fileDescription)
   const [downloadProgress, setDownloadProgress] = useState(0);
   const [cancelTokenSource, setCancelTokenSource] = useState(null);
 
@@ -138,9 +139,10 @@ const FilesTask = ({ taskData }) => {
         cancelTokenSource.cancel('Download cancelled due to component unmount');
       }
     };
-  }, [taskData?.additionalFiles,cancelTokenSource]);
+  }, [taskData?.additionalFiles, cancelTokenSource]);
   return (
     <div>
+
       {/* <div className="h-full flex items-center justify-center ">
         <object
           className="  border-x-[30px] mt-[40px] border-t-[30px] border-b-[50px] rounded-lg border-[#292929]"
@@ -202,13 +204,15 @@ const FilesTask = ({ taskData }) => {
               Cancel
             </button>
           )}
-         {/*  {downloadProgress > 0 && (
+          {/*  {downloadProgress > 0 && (
             <div className="ml-4 flex items-center">
               <p>{downloadProgress}%</p>
             </div>
           )} */}
         </div>
       )}
+     <div className="my-5 mb-5 px-2" dangerouslySetInnerHTML={{ __html: taskData?.fileDescription }} />
+
     </div>
   );
 };

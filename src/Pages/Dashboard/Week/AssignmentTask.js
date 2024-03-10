@@ -17,7 +17,7 @@ const AssignmentTask = ({ taskData }) => {
     });
   }
   const [isFixed, setIsFixed] = useState(false);
-
+console.log(taskData)
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 200) {

@@ -65,6 +65,7 @@ const AdminCalendarSchedule = () => {
   const [start, setStart] = useState(new Date());
   const [end, setEnd] = useState(new Date());
   const [eventName, setEventName] = useState("");
+  const [taskDrip, setTaskDrip] = useState(false);
   const [eventDescription, setEventDescription] = useState("");
   const [calendarEvents, setCalendarEvents] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -215,6 +216,7 @@ const AdminCalendarSchedule = () => {
       meetingDuration: meetingDuration,
       usersession: global,
       events: calendarEvents,
+      taskDrip,
     };
     setAssignmentData(manageSchedule);
     console.log(manageSchedule);
@@ -308,13 +310,13 @@ const AdminCalendarSchedule = () => {
           },
         }
       );
-  
+
       if (!response.ok) {
         throw new Error("Failed to fetch primary calendar information");
       }
       const calendarInfo = await response.json();
       const primaryCalendarTimeZone = calendarInfo.timeZone;
-  
+
       // Now that we have the calendar's timezone, set it for FullCalendar
       setTimeZone(primaryCalendarTimeZone);
     } catch (error) {
@@ -358,7 +360,7 @@ const AdminCalendarSchedule = () => {
       const events = await fetchGoogleCalendarEvents();
       setCalendarError(false);
       setCalendarEvents(events.events || []);  // Use events.events to ensure it's an array
-      
+
     } catch (error) {
       console.error(error);
       setCalendarError(true);
@@ -805,6 +807,60 @@ const AdminCalendarSchedule = () => {
                         );
                       })}
                     </ul>
+                  </div>
+                  <div className=" space-y-4 mb-8">
+                    <fieldset>
+                      <div className="flex items-center gap-4 mb-5">
+                        <p className="h-2 w-2 bg-black rounded-full"></p>
+                        <p className="font-bold text-lg me-[36px]">Enable Drip</p>
+                        <img src={required} alt="" />
+                      </div>
+                      <div className="flex items-center space-x-4">
+                        <div className="flex items-center">
+                          <input
+                            type="radio"
+                            id="radioYes"
+                            name="radioOption"
+                            checked={taskDrip === true}
+                            onChange={() => setTaskDrip(true)}
+                            disabled={course?.enableDrip}
+                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
+                          />
+                          <label
+                            htmlFor="radioYes"
+                            className={`ml-2 text-sm font-medium ${course?.enableDrip ? "text-gray-400" : "text-gray-900"
+                              }`}
+                          >
+                            Yes
+                          </label>
+                        </div>
+
+                        <div className="flex items-center">
+                          <input
+                            type="radio"
+                            id="radioNo"
+                            name="radioOption"
+                            checked={taskDrip === false}
+                            onChange={() => setTaskDrip(false)}
+                            disabled={course?.enableDrip}
+                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
+                          />
+                          <label
+                            htmlFor="radioNo"
+                            className={`ml-2 text-sm font-medium ${course?.enableDrip ? "text-gray-400" : "text-gray-900"
+                              }`}
+                          >
+                            No
+                          </label>
+                        </div>
+                      </div>
+                    </fieldset>
+
+                    {course?.enableDrip && (
+                      <p className="text-sm text-red-500">
+                        Course Drip Must Be Turned Off to add Task Drip.
+                      </p>
+                    )}
                   </div>
 
                   <div className="flex items-center gap-10 justify-center mt-20 mb-10">
