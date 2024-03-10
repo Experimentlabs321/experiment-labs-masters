@@ -1,10 +1,11 @@
 import required from "../../../assets/ContentManagement/required.png";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Layout from "../Layout";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import TextEditor from "../../Shared/TextEditor/TextEditor";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { AuthContext } from "../../../contexts/AuthProvider";
 
 const QuizGeneralInformation = () => {
   const [selectedTab, setSelectedTab] = useState("Quiz General Information");
@@ -13,10 +14,99 @@ const QuizGeneralInformation = () => {
     setSelectedTab(tab);
   };
 
+  const { user, userInfo } = useContext(AuthContext);
   const { id } = useParams();
+  const navigate = useNavigate();
+  const [chapter, setChapter] = useState({});
+  const [skillCategories, setSkillCategories] = useState([]);
+  const [earningCategories, setEarningCategories] = useState([]);
+  const [skillParameterData, setSkillParameterData] = useState([]);
+  const [earningParameterData, setEarningParameterData] = useState([]);
+  const [course, setCourse] = useState({});
+  const [batchesData, setBatchesData] = useState([]);
+  const [selectedBatches, setSelectedBatches] = useState([]);
+  const [orgData, setOrgData] = useState({});
+  const [taskDrip, setTaskDrip] = useState(false);
   const [quizDescription, setQuizDescription] = useState("");
   const [submitPermission, setSubmitPermission] = useState(false);
   const [quizData, setQuizData] = useState({});
+  const [courseData, setCourseData] = useState();
+  const [currentWeek, setCurrentWeek] = useState(
+    JSON.parse(localStorage.getItem("currentWeek"))
+  );
+
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
+      .then((response) => {
+        setChapter(response?.data);
+        const fetchData = {
+          organizationId: userInfo?.organizationId,
+          courseId: response?.data?.courseId,
+        };
+        if (fetchData && userInfo?.organizationId && chapter?.courseId) {
+          axios
+            .get(
+              `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
+              fetchData
+            )
+            .then((res) => setSkillCategories(res?.data))
+            .catch((error) => console.error(error));
+          axios
+            .post(
+              `${process.env.REACT_APP_BACKEND_API}/itemCategoryByCourseId`,
+              fetchData
+            )
+            .then((res) => setEarningCategories(res?.data))
+            .catch((error) => console.error(error));
+        }
+      })
+      .catch((error) => console.error(error));
+  }, [id, userInfo, userInfo?.email]);
+
+  useEffect(() => {
+    if (chapter?.courseId)
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${chapter?.courseId}`
+        )
+        .then((response) => {
+          setCourse(response?.data);
+        });
+  }, [chapter]);
+
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${chapter?.courseId}`
+      )
+      .then((response) => {
+        setBatchesData(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [chapter]);
+
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
+      )
+      .then((response) => {
+        setOrgData(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [userInfo]);
+
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${chapter?.courseId}`
+      )
+      .then((response) => {
+        setCourseData(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [chapter]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,15 +129,28 @@ const QuizGeneralInformation = () => {
     setQuizData(formData);
 
     if (submitPermission) {
-      const newAssignment = await axios.post(
+      const newQuiz = await axios.post(
         `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/quizes`,
         formData
       );
 
-      if (newAssignment?.data?.acknowledged) {
-        console.log(newAssignment);
+      console.log(newQuiz);
+
+      if (newQuiz?.data?.result?.acknowledged) {
+        console.log(newQuiz);
+        localStorage.setItem("chapter", chapter?.chapterName);
+        localStorage.setItem(
+          "task",
+          JSON.stringify({
+            taskId: newQuiz?.data?.result?.insertedId,
+            taskName: formData?.taskName,
+            taskType: "Quiz",
+          })
+        );
+        localStorage.setItem("courseId", JSON.stringify(courseData?._id));
         toast.success("Quiz added Successfully");
         e.target.reset();
+        navigate(`/editTask/${currentWeek?._id}`);
       }
 
       console.log(formData);

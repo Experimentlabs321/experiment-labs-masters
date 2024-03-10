@@ -97,6 +97,7 @@ const WeekConfiguration = ({
       })
       .catch((error) => console.error(error));
   }, [courseId, userInfo]);
+
   useEffect(() => {
     if (currentWeek?.gamificationData) {
       let earningItems = [];
@@ -129,6 +130,7 @@ const WeekConfiguration = ({
         },
       ]);
   }, [currentWeek]);
+
   useEffect(() => {
     chapters?.forEach((element) => {
       element?.tasks?.forEach((task) => {
@@ -150,7 +152,6 @@ const WeekConfiguration = ({
       });
     });
   }, [chapters, tasksNumber]);
-  // useEffect(() => {}, [tasksNumber]);
 
   let totalGamificationValue = () => {
     let total = 0;
@@ -197,6 +198,10 @@ const WeekConfiguration = ({
       toast.success("Week added Successfully");
       setWeeks([...weeks, { ...week, _id: newWeek?.data?.week?.insertedId }]);
       setCurrentWeek({ ...week, _id: newWeek?.data?.week?.insertedId });
+      localStorage.setItem(
+        "currentWeek",
+        JSON.stringify({ ...week, _id: newWeek?.data?.week?.insertedId })
+      );
       setAddWeekOpen(false);
       event.target.reset();
     }
@@ -267,6 +272,10 @@ const WeekConfiguration = ({
           const remainingWeeks = weeks.filter((week) => week._id !== id);
           setWeeks(remainingWeeks);
           setCurrentWeek(remainingWeeks[0]);
+          localStorage.setItem(
+            "currentWeek",
+            JSON.stringify(remainingWeeks[0])
+          );
           setOpenConfirmationDialog(false);
         }
       })
@@ -338,7 +347,13 @@ const WeekConfiguration = ({
                   <li
                     key={index}
                     className="cursor-pointer py-2 text-[#6A6A6A] text-[14px] font-[400] "
-                    onClick={() => setCurrentWeek(option)}
+                    onClick={() => {
+                      setCurrentWeek(option);
+                      localStorage.setItem(
+                        "currentWeek",
+                        JSON.stringify(option)
+                      );
+                    }}
                   >
                     {option?.weekName}
                   </li>
@@ -1053,6 +1068,10 @@ const WeekConfiguration = ({
                             updatedWeek.schedules[index].weekStartDate =
                               e.target.value;
                             setCurrentWeek(updatedWeek);
+                            localStorage.setItem(
+                              "currentWeek",
+                              JSON.stringify(updatedWeek)
+                            );
                           }}
                           name={`weekStartDate${index}`}
                           type="date"
@@ -1071,6 +1090,10 @@ const WeekConfiguration = ({
                             updatedWeek.schedules[index].weekEndDate =
                               e.target.value;
                             setCurrentWeek(updatedWeek);
+                            localStorage.setItem(
+                              "currentWeek",
+                              JSON.stringify(updatedWeek)
+                            );
                           }}
                           name={`weekEndDate${index}`}
                           type="date"

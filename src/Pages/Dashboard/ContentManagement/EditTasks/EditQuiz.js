@@ -1,5 +1,5 @@
 import required from "../../../../assets/ContentManagement/required.png";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "../../Layout";
 import { Link, useParams } from "react-router-dom";
 import TextEditor from "../../../Shared/TextEditor/TextEditor";
@@ -17,6 +17,27 @@ const EditQuiz = () => {
   const [quizDescription, setQuizDescription] = useState("");
   const [submitPermission, setSubmitPermission] = useState(false);
   const [quizData, setQuizData] = useState({});
+  const [openTask, setOpenTask] = useState(
+    JSON.parse(localStorage.getItem("task"))
+  );
+
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/quizes/taskId/${openTask?.taskId}`
+      )
+      .then((response) => {
+        setQuizData(response?.data);
+        setQuizDescription(response?.data?.quizDescription);
+        // setSelectedBatches(response?.data?.batches);
+        // setSkillParameterData(response?.data?.skillParameterData);
+        // setEarningParameterData(response?.data?.earningParameterData);
+        // setTaskDrip(response?.data?.taskDrip);
+        // setEnableDownload(response?.data?.enableDownload);
+      });
+  }, [openTask]);
+
+  console.log(quizData);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -140,6 +161,7 @@ const EditQuiz = () => {
 
                     <input
                       required
+                      defaultValue={quizData ? quizData?.quizName : ""}
                       className="mt-6 ms-6 border rounded-md w-3/4 h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                       name="quizName"
                       type="text"
@@ -157,7 +179,10 @@ const EditQuiz = () => {
 
                     <div className="py-4 pr-5">
                       <div className="bg-white text-black textEditor">
-                        <TextEditor setValue={setQuizDescription} />
+                        <TextEditor
+                          value={quizDescription}
+                          setValue={setQuizDescription}
+                        />
                       </div>
                     </div>
                   </div>
@@ -255,6 +280,7 @@ const EditQuiz = () => {
 
                     <input
                       required
+                      defaultValue={quizData ? quizData?.points : ""}
                       className="mt-6 ms-6 border rounded-md w-3/4 h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                       name="points"
                       type="number"
