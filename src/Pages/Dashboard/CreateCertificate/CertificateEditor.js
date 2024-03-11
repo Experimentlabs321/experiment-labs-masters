@@ -1,3 +1,4 @@
+// updated
 import React, { useEffect, useState } from "react";
 import uploadFileToS3 from "../../UploadComponent/s3Uploader";
 // import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -102,6 +103,8 @@ const CertificateEditor = ({
   setUnderlineColor,
   backgroundTemplates,
   setBackgroundTemplates,
+  showIssuingDate,
+  setShowIssuingDate,
 }) => {
   const [mode, setMode] = useState("add");
   const [certificateTemplate, setCertificateTemplate] = useState({});
@@ -170,6 +173,7 @@ const CertificateEditor = ({
           setHeaderSubtitleFontFamily(
             response?.data?.template?.headerSubtitleFontFamily
           );
+          setShowIssuingDate(response?.data?.template?.showIssuingDate);
           setHeaderTitle(response?.data?.template?.headerTitle);
           setHeaderSubtitle(response?.data?.template?.headerSubtitle);
           setAuthors(response?.data?.template?.authors);
@@ -196,8 +200,6 @@ const CertificateEditor = ({
         })
         .catch((error) => console.error(error));
   }, [selectedCourse, selectedBatch, mode]);
-
-  console.log([...backgroundTemplates, selectedBackgroundTemplate]);
 
   const fontFamilies = [
     "Anton",
@@ -291,11 +293,12 @@ const CertificateEditor = ({
         showOrgLogo,
         showRecipientNameUnderline,
         underlineColor,
+        showIssuingDate,
         requiredCompletionPercentage,
         courseId: selectedCourse?._id,
         batchId: selectedBatch?._id,
       };
-      // console.log(templateData);
+      console.log(templateData);
       const addTemplate = await axios.post(
         `${process.env.REACT_APP_SERVER_API}/api/v1/certificateTemplates`,
         templateData
@@ -1017,14 +1020,18 @@ const CertificateEditor = ({
                         name={"certificateText" + index}
                         rows="4"
                         className="mt-1 p-2 border w-full rounded-md"
-                        defaultValue={content.content}
+                        value={content.content}
                         onChange={async (e) => {
                           // e.preventDefault();
-                          certificateTextContents[index].content = await e
-                            .target.value;
-                          setCount(count + 1);
-                          content.content = e.target.value;
-                          setCount(count + 1);
+                          const value = e.target.value;
+                          const updatedCertificateTextContents = [
+                            ...certificateTextContents,
+                          ];
+                          updatedCertificateTextContents[index].content =
+                            await value;
+                          setCertificateTextContents(
+                            updatedCertificateTextContents
+                          );
                         }}
                       ></textarea>
                     </div>
@@ -1063,6 +1070,63 @@ const CertificateEditor = ({
 
                   <div className="mb-4">
                     <label
+                      htmlFor={"certificateTextFontWeight" + index}
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Certificate content {index + 1} font weight
+                    </label>
+                    <input
+                      type="radio"
+                      checked={content?.contentFontWeight === "normal"}
+                      value={"normal"}
+                      onChange={async (e) => {
+                        // e.preventDefault();
+                        certificateTextContents[index].contentFontWeight =
+                          await e.target.value;
+                        setCount(count + 1);
+                        content.contentFontWeight = e.target.value;
+                        setCount(count + 1);
+                      }}
+                    />
+                    <span className="ml-1 mr-3">Normal</span>
+                    <input
+                      type="radio"
+                      checked={content?.contentFontWeight === "bold"}
+                      value={"bold"}
+                      onChange={async (e) => {
+                        // e.preventDefault();
+                        certificateTextContents[index].contentFontWeight =
+                          await e.target.value;
+                        setCount(count + 1);
+                        content.contentFontWeight = e.target.value;
+                        setCount(count + 1);
+                      }}
+                    />
+                    <span className="ml-1">Bold</span>
+                    {/* <input
+                      type="number"
+                      id={"certificateTextFontWeight" + index}
+                      name={"certificateTextFontWeight" + index}
+                      className="mt-1 p-2 border w-full rounded-md"
+                      value={content.contentFontWeight}
+                      onChange={async (e) => {
+                        // e.preventDefault();
+                        const value = e.target.value;
+                        const updatedCertificateTextContents = [
+                          ...certificateTextContents,
+                        ];
+                        updatedCertificateTextContents[
+                          index
+                        ].contentFontWeight = await value;
+                        setCertificateTextContents(
+                          updatedCertificateTextContents
+                        );
+                      }}
+                    /> */}
+                  </div>
+
+                  <div className="mb-4">
+                    <label
                       htmlFor={"certificateTextFontFamily" + index}
                       className="block text-sm font-medium text-gray-700"
                     >
@@ -1074,14 +1138,20 @@ const CertificateEditor = ({
                       style={{
                         fontFamily: `${content.contentFontFamily}`,
                       }}
+                      value={content.contentFontFamily}
                       className="mt-1 p-2 border w-full rounded-md bg-white"
                       onChange={async (e) => {
                         // e.preventDefault();
-                        certificateTextContents[index].contentFontFamily =
-                          await e.target.value;
-                        setCount(count + 1);
-                        content.contentFontFamily = e.target.value;
-                        setCount(count + 1);
+                        const value = e.target.value;
+                        const updatedCertificateTextContents = [
+                          ...certificateTextContents,
+                        ];
+                        updatedCertificateTextContents[
+                          index
+                        ].contentFontFamily = await value;
+                        setCertificateTextContents(
+                          updatedCertificateTextContents
+                        );
                       }}
                     >
                       {fontFamilies.map((font) => (
@@ -1110,14 +1180,18 @@ const CertificateEditor = ({
                       id={"certificateTextFontSize" + index}
                       name={"certificateTextFontSize" + index}
                       className="mt-1 p-2 border w-full rounded-md"
-                      defaultValue={content.contentFontSize}
+                      value={content.contentFontSize}
                       onChange={async (e) => {
                         // e.preventDefault();
-                        certificateTextContents[index].contentFontSize = await e
-                          .target.value;
-                        setCount(count + 1);
-                        content.contentFontSize = e.target.value;
-                        setCount(count + 1);
+                        const value = e.target.value;
+                        const updatedCertificateTextContents = [
+                          ...certificateTextContents,
+                        ];
+                        updatedCertificateTextContents[index].contentFontSize =
+                          await value;
+                        setCertificateTextContents(
+                          updatedCertificateTextContents
+                        );
                       }}
                     />
                   </div>
@@ -1135,20 +1209,61 @@ const CertificateEditor = ({
                         id={"certificateTextColor" + index}
                         name={"certificateTextColor" + index}
                         className=" p-1 w-10 h-10 border rounded-l-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
-                        defaultValue={content.contentColor}
+                        value={content.contentColor}
                         onChange={async (e) => {
                           // e.preventDefault();
-                          certificateTextContents[index].contentColor = await e
-                            .target.value;
-                          setCount(count + 1);
-                          content.contentColor = e.target.value;
-                          setCount(count + 1);
+                          const value = e.target.value;
+                          const updatedCertificateTextContents = [
+                            ...certificateTextContents,
+                          ];
+                          updatedCertificateTextContents[index].contentColor =
+                            await value;
+                          setCertificateTextContents(
+                            updatedCertificateTextContents
+                          );
                         }}
                       />
                       <span className=" p-2 h-10 border font-sans rounded-r-md">
                         {content.contentColor}{" "}
                       </span>
                     </div>
+                  </div>
+
+                  <div className="mb-4">
+                    <label
+                      htmlFor={content?.allowBreakLine + index}
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Content {index + 1} allow break line
+                    </label>
+                    <input
+                      type="radio"
+                      checked={content?.allowBreakLine === "1"}
+                      value={1}
+                      onChange={async (e) => {
+                        // e.preventDefault();
+                        certificateTextContents[index].allowBreakLine = await e
+                          .target.value;
+                        setCount(count + 1);
+                        content.allowBreakLine = e.target.value;
+                        setCount(count + 1);
+                      }}
+                    />
+                    <span className="ml-1 mr-3">Yes</span>
+                    <input
+                      type="radio"
+                      checked={content?.allowBreakLine === "0"}
+                      value={0}
+                      onChange={async (e) => {
+                        // e.preventDefault();
+                        certificateTextContents[index].allowBreakLine = await e
+                          .target.value;
+                        setCount(count + 1);
+                        content.allowBreakLine = e.target.value;
+                        setCount(count + 1);
+                      }}
+                    />
+                    <span className="ml-1">No</span>
                   </div>
                 </div>
               ))}
@@ -1163,6 +1278,7 @@ const CertificateEditor = ({
                       contentFontFamily: "",
                       contentColor: "#000000",
                       contentFontSize: 20,
+                      allowBreakLine: "0",
                     },
                   ]);
                 }}
@@ -1184,6 +1300,149 @@ const CertificateEditor = ({
                   </svg>
                 </span>
               </button>
+
+              <div className="mb-4">
+                <label
+                  htmlFor="showIssuingDate"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Show Issuing Date
+                </label>
+                <input
+                  type="radio"
+                  checked={
+                    showIssuingDate?.allowShowIssuingDate === "1" ||
+                    showIssuingDate?.allowShowIssuingDate !== "0"
+                  }
+                  value={1}
+                  onChange={async (e) => {
+                    // e.preventDefault();
+                    // setShowIssuingDate(e.target.value);
+                    showIssuingDate.allowShowIssuingDate = e.target.value;
+                    setCount(count + 1);
+                  }}
+                />
+                <span className="ml-1 mr-3">Show</span>
+                <input
+                  type="radio"
+                  checked={
+                    showIssuingDate?.allowShowIssuingDate === "0" ||
+                    showIssuingDate?.allowShowIssuingDate !== "1"
+                  }
+                  value={0}
+                  onChange={async (e) => {
+                    // e.preventDefault();
+                    // setShowIssuingDate(e.target.value);
+                    showIssuingDate.allowShowIssuingDate = e.target.value;
+                    setCount(count + 1);
+                  }}
+                />
+                <span className="ml-1">Hide</span>
+              </div>
+
+              <div className="mb-4">
+                <label
+                  htmlFor="issueDateTitle"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Issue date title
+                </label>
+                <input
+                  placeholder="Participating in Workshop about Take Care of Health to Prevent..."
+                  id="issueDateTitle"
+                  name="issueDateTitle"
+                  rows="4"
+                  className="mt-1 p-2 border w-full rounded-md"
+                  value={showIssuingDate?.content}
+                  onChange={async (e) => {
+                    // e.preventDefault();
+                    showIssuingDate.content = await e.target.value;
+                    setCount(count + 1);
+                  }}
+                />
+              </div>
+
+              <div className="mb-4">
+                <label
+                  htmlFor={"showIssuingDateFontFamily"}
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Issuing date content font family
+                </label>
+                <select
+                  id={"showIssuingDateFontFamily"}
+                  name={"showIssuingDateFontFamily"}
+                  style={{
+                    fontFamily: `${showIssuingDate.contentFontFamily}`,
+                  }}
+                  value={showIssuingDate.contentFontFamily}
+                  className="mt-1 p-2 border w-full rounded-md bg-white"
+                  onChange={async (e) => {
+                    // e.preventDefault();
+                    showIssuingDate.contentFontFamily = await e.target.value;
+                    setCount(count + 1);
+                  }}
+                >
+                  {fontFamilies.map((font) => (
+                    <option
+                      style={{
+                        fontFamily: `${font}`,
+                      }}
+                      key={font}
+                      value={font}
+                    >
+                      {font}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="mb-4">
+                <label
+                  htmlFor={"showIssuingDateFontSize"}
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Issuing date content font size
+                </label>
+                <input
+                  type="number"
+                  id={"showIssuingDateFontSize"}
+                  name={"showIssuingDateFontSize"}
+                  className="mt-1 p-2 border w-full rounded-md"
+                  value={showIssuingDate?.contentFontSize}
+                  onChange={async (e) => {
+                    // e.preventDefault();
+                    showIssuingDate.contentFontSize = await e.target.value;
+                    setCount(count + 1);
+                  }}
+                />
+              </div>
+
+              <div className="mb-4">
+                <label
+                  htmlFor={"showIssuingDateColor"}
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Issuing date content color
+                </label>
+                <div className="flex items-center ">
+                  <input
+                    type="color"
+                    id={"showIssuingDateColor"}
+                    name={"showIssuingDateColor"}
+                    className=" p-1 w-10 h-10 border rounded-l-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
+                    defaultValue={showIssuingDate?.contentColor}
+                    onChange={async (e) => {
+                      // e.preventDefault();
+                      showIssuingDate.contentColor = await e.target.value;
+                      setCount(count + 1);
+                    }}
+                  />
+                  <span className=" p-2 h-10 border font-sans rounded-r-md">
+                    {showIssuingDate.contentColor}{" "}
+                  </span>
+                </div>
+              </div>
 
               {authors?.map((author, index) => (
                 <div>

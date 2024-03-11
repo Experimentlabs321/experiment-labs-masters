@@ -22,6 +22,7 @@ import Typography from "@mui/material/Typography";
 import EditResult from "./EditResult";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import Loading from "../../Shared/Loading/Loading";
+import uploadFileToS3 from "../../UploadComponent/s3Uploader";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -62,6 +63,13 @@ const AssignmentEvaluation2 = () => {
   const [feedback, setFeedback] = useState(false);
 
   //console.log(mainAssignments.skillParameterData)
+  //file upload
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setSelectedFile(file);
+  };
   const handleTabClick = (tab) => {
     setSelectedTab(tab);
   };
@@ -360,7 +368,13 @@ const AssignmentEvaluation2 = () => {
     event.preventDefault();
     const feedback = event.target.feedback.value;
 
+    let fileUrl = "";
+    if (selectedFile) {
+      fileUrl = await uploadFileToS3(selectedFile);
+    }
+
     const manageFeedback = {
+      attachFile : fileUrl,
       feedback,
       resultSubmitterName: user.displayName,
       resultSubmitterPhotoURL: user.photoURL,
@@ -418,8 +432,12 @@ const AssignmentEvaluation2 = () => {
   const handleSubmitFeedback = async (event) => {
     event.preventDefault();
     const feedback = event.target.feedback.value;
-
+    let fileUrl = "";
+    if (selectedFile) {
+      fileUrl = await uploadFileToS3(selectedFile);
+    }
     const manageFeedback = {
+      attachFile : fileUrl,
       feedback,
       resultSubmitterName: user.displayName,
       resultSubmitterPhotoURL: user.photoURL,
@@ -476,70 +494,70 @@ const AssignmentEvaluation2 = () => {
   };
 
   const handleAcceptOrReject = async (status) => {
-       console.log(status)
-       const manageStatus = {
-        status,
-        resultSubmitterName: user.displayName,
-        resultSubmitterPhotoURL: user.photoURL,
-        dateAndTime: new Date(),
-      };
-  
-      console.log(manageStatus);
-      Loading();
-      const sendMail = await axios.post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
-        {
-          from: `${user?.email}`,
-          to: `${user?.email},shihab77023@gmail.com`,
-          subject: `Feedback of ${assignment?.taskName}`,
-          message: `Dear student, \nYour assignment on ${assignment?.taskName} is ${status}. Please check it on the portal.`,
-        }
-      );
-  
-      console.log(sendMail);
-  
-      const addFeedback = await axios.post(
-        `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${id}/addResult`,
-        manageStatus
-      );
-  
-      if (addFeedback?.data?.acknowledged) {
-        Loading().close()
-        toast.success( `${status} Successfully`);
-        navigate(`/mentorAssignments`)
-       
-       
-        //  event.target.reset();
-      } else {
-        toast.error("status not added");
-        Loading().close()
-        //  event.target.reset();
+    console.log(status)
+    const manageStatus = {
+      status,
+      resultSubmitterName: user.displayName,
+      resultSubmitterPhotoURL: user.photoURL,
+      dateAndTime: new Date(),
+    };
+
+    console.log(manageStatus);
+    Loading();
+    const sendMail = await axios.post(
+      `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+      {
+        from: `${user?.email}`,
+        to: `${user?.email},shihab77023@gmail.com`,
+        subject: `Feedback of ${assignment?.taskName}`,
+        message: `Dear student, \nYour assignment on ${assignment?.taskName} is ${status}. Please check it on the portal.`,
       }
-  
-      const sendData = {
-        participantChapter: {
+    );
+
+    console.log(sendMail);
+
+    const addFeedback = await axios.post(
+      `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${id}/addResult`,
+      manageStatus
+    );
+
+    if (addFeedback?.data?.acknowledged) {
+      Loading().close()
+      toast.success(`${status} Successfully`);
+      navigate(`/mentorAssignments`)
+
+
+      //  event.target.reset();
+    } else {
+      toast.error("status not added");
+      Loading().close()
+      //  event.target.reset();
+    }
+
+    const sendData = {
+      participantChapter: {
+        email: assignment?.submitter?.email,
+        participantId: assignment?.submitter?._id,
+        status: "Completed",
+      },
+      participantTask: {
+        participant: {
           email: assignment?.submitter?.email,
           participantId: assignment?.submitter?._id,
           status: "Completed",
         },
-        participantTask: {
-          participant: {
-            email: assignment?.submitter?.email,
-            participantId: assignment?.submitter?._id,
-            status: "Completed",
-          },
-        },
-      };
-      const submitCompletion = await axios.post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/Assignment/taskId/${assignment?.taskId}/chapterId/${mainAssignments?.chapterId}`,
-        sendData
-      );
-  
-      console.log(submitCompletion, sendData);
-    
+      },
+    };
+    const submitCompletion = await axios.post(
+      `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/Assignment/taskId/${assignment?.taskId}/chapterId/${mainAssignments?.chapterId}`,
+      sendData
+    );
+
+    console.log(submitCompletion, sendData);
+
 
   };
-  
+
 
   return (
     <div>
@@ -553,7 +571,7 @@ const AssignmentEvaluation2 = () => {
             <div className="flex justify-between gap-10">
               <div className="px-10 flex gap-10 pb-3 text-lg mt-10">
                 <p className="text-lg font-bold">Assignment</p>
-              {/*   <Link
+                {/*   <Link
                   to="/mentorAssignments"
                   onClick={() => handleTabClick("Assignments")}
                   style={{
@@ -592,8 +610,8 @@ const AssignmentEvaluation2 = () => {
               </div>
               <div>
                 <div className="flex gap-5 mt-5">
-                  <button onClick={()=>handleAcceptOrReject("Accepted")} className="bg-[green] hover:bg-opacity-70 p-2 rounded-2xl px-5 text-[#fff]">Accept</button>
-                  <button onClick={()=>handleAcceptOrReject("Rejected")}  className="bg-[red] hover:bg-opacity-70 p-2 rounded-2xl px-5 text-[#fff]">Reject</button>
+                  <button onClick={() => handleAcceptOrReject("Accepted")} className="bg-[green] hover:bg-opacity-70 p-2 rounded-2xl px-5 text-[#fff]">Accept</button>
+                  <button onClick={() => handleAcceptOrReject("Rejected")} className="bg-[red] hover:bg-opacity-70 p-2 rounded-2xl px-5 text-[#fff]">Reject</button>
                 </div>
                 {feedback && (
                   <div className=" ">
@@ -660,6 +678,31 @@ const AssignmentEvaluation2 = () => {
                       name="feedback"
                     />
                   </div>
+                  <div className="mb-10">
+                    <div className="flex items-center gap-4">
+                      <p className="h-2 w-2 bg-black rounded-full"></p>
+
+                      <p className="font-bold text-lg me-[36px]">
+                        Attach File
+                      </p>
+                    </div>
+
+                    <div
+                      onChange={handleFileChange}
+                      className=" flex gap-2  mt-2 ms-6 border rounded-md w-[319px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]  "
+                    >
+                      <div className=" flex items-center">
+                        <input
+                          className="w-full h-full flex items-center text-[#3E4DAC] text-base font-semibold mt-4"
+                          type="file"
+                        />
+                        <p className="w-[105px] h-full bg-[#FFDB70] text-[] text-base font-semibold flex gap-2 justify-center items-center">
+                          Browse
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
 
                   <div className="flex justify-center">
                     <button
@@ -705,6 +748,30 @@ const AssignmentEvaluation2 = () => {
                       name="feedback"
                     />
                   </div>
+                  <div className="mb-10">
+                    <div className="flex items-center gap-4">
+                      <p className="h-2 w-2 bg-black rounded-full"></p>
+
+                      <p className="font-bold text-lg me-[36px]">
+                        Attach File
+                      </p>
+                    </div>
+
+                    <div
+                      onChange={handleFileChange}
+                      className=" flex gap-2  mt-2 ms-6 border rounded-md w-[319px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]  "
+                    >
+                      <div className=" flex items-center">
+                        <input
+                          className="w-full h-full flex items-center text-[#3E4DAC] text-base font-semibold mt-4"
+                          type="file"
+                        />
+                        <p className="w-[105px] h-full bg-[#FFDB70] text-[] text-base font-semibold flex gap-2 justify-center items-center">
+                          Browse
+                        </p>
+                      </div>
+                    </div>
+                  </div>
 
                   <div className="flex justify-center">
                     <button
@@ -726,26 +793,26 @@ const AssignmentEvaluation2 = () => {
                 <>
                   <p>PDF/MOV</p>
                   {
-                          (assignment?.fileUrl.endsWith('.png') ||
-                          assignment?.fileUrl.endsWith('.jpg') ||
-                          assignment?.fileUrl.endsWith('.jpeg') ||
-                          assignment?.fileUrl.endsWith('.gif') ||
-                          assignment?.fileUrl.endsWith('.bmp')) ? (
-          
-                          <div className="">
-                            <img src={assignment?.fileUrl} alt="Img" className="w-[90%] mx-auto h-[68vh] border-[10px] border-b-50 rounded-lg border-[#292929]" />
-                          </div>
-                        ) : (
-                          <iframe
-                          className="h-[68vh] mx-auto border-x-[30px] mt-[40px] border-t-[30px] border-b-[50px] rounded-lg border-[#292929]"
-                          src={`https://docs.google.com/viewer?url=${assignment?.fileUrl}&embedded=true`}
-                          width="90%"
-                          height="80vh"
-                          title="W3Schools Free Online Web Tutorials"
-                        ></iframe>
-                        )
+                    (assignment?.fileUrl.endsWith('.png') ||
+                      assignment?.fileUrl.endsWith('.jpg') ||
+                      assignment?.fileUrl.endsWith('.jpeg') ||
+                      assignment?.fileUrl.endsWith('.gif') ||
+                      assignment?.fileUrl.endsWith('.bmp')) ? (
+
+                      <div className="">
+                        <img src={assignment?.fileUrl} alt="Img" className="w-[90%] mx-auto h-[68vh] border-[10px] border-b-50 rounded-lg border-[#292929]" />
+                      </div>
+                    ) : (
+                      <iframe
+                        className="h-[68vh] mx-auto border-x-[30px] mt-[40px] border-t-[30px] border-b-[50px] rounded-lg border-[#292929]"
+                        src={`https://docs.google.com/viewer?url=${assignment?.fileUrl}&embedded=true`}
+                        width="90%"
+                        height="80vh"
+                        title="W3Schools Free Online Web Tutorials"
+                      ></iframe>
+                    )
                   }
-             
+
                 </>
               )}
               {!assignment?.fileUrl && (
@@ -772,9 +839,9 @@ const AssignmentEvaluation2 = () => {
                                 (mainAssignment) => (
                                   <div
                                     className={` p-3 flex gap-2 items-center justify-between rounded-md h-[60px] mb-5 ${selectedCategoryName ===
-                                        mainAssignment.categoryName
-                                        ? "bg-[#F0F7FF]"
-                                        : " border"
+                                      mainAssignment.categoryName
+                                      ? "bg-[#F0F7FF]"
+                                      : " border"
                                       }`}
                                   >
                                     <div className="">
@@ -840,8 +907,8 @@ const AssignmentEvaluation2 = () => {
                                       <>
                                         <div
                                           className={`flex items-center justify-between p-2 mb-5  w-[100%] h-[60px] ${selectedSkillName === skill.skillName
-                                              ? "bg-[#F0F7FF]"
-                                              : ""
+                                            ? "bg-[#F0F7FF]"
+                                            : ""
                                             }`}
                                           style={{
                                             borderRadius: "5px",
@@ -908,9 +975,9 @@ const AssignmentEvaluation2 = () => {
                                                   <>
                                                     <div
                                                       className={`flex items-center justify-between p-2 mb-5  w-[100%] h-[60px] ${selectedSkillName ===
-                                                          skill.skillName
-                                                          ? "bg-[#F0F7FF]"
-                                                          : ""
+                                                        skill.skillName
+                                                        ? "bg-[#F0F7FF]"
+                                                        : ""
                                                         }`}
                                                       style={{
                                                         borderRadius: "5px",
@@ -1005,9 +1072,9 @@ const AssignmentEvaluation2 = () => {
                                 (mainAssignment) => (
                                   <div
                                     className={` p-3 flex gap-2 items-center justify-between rounded-md h-[60px] mb-5 ${selectedEarningCategoryCategoryName ===
-                                        mainAssignment.categoryName
-                                        ? "bg-[#F0F7FF]"
-                                        : " border"
+                                      mainAssignment.categoryName
+                                      ? "bg-[#F0F7FF]"
+                                      : " border"
                                       }`}
                                   >
                                     <div className="">
@@ -1057,9 +1124,9 @@ const AssignmentEvaluation2 = () => {
                                           <>
                                             <div
                                               className={`flex items-center justify-between p-2 mb-5  w-[100%] h-[60px] ${selectedEarningCategoryCategoryName ===
-                                                  data?.categoryName
-                                                  ? "bg-[#F0F7FF]"
-                                                  : " border"
+                                                data?.categoryName
+                                                ? "bg-[#F0F7FF]"
+                                                : " border"
                                                 }`}
                                               style={{
                                                 borderRadius: "5px",
@@ -1122,7 +1189,7 @@ const AssignmentEvaluation2 = () => {
                           style={{
                             borderRadius: "8.856px",
                             border: "1px solid #CECECE",
-                           
+
                           }}
                           className="px-[30px] py-3 bg-[#3E4DAC] hover:bg-opacity-70 text-[#fff] cursor-pointer text-xl font-bold rounded-lg"
                           type="submit"

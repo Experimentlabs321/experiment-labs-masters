@@ -14,7 +14,7 @@ const ReviewSubmission = (taskData) => {
   const [mainSkillItem, setMainSkillItem] = useState({});
   const [orgData, setOrgData] = useState({});
 
-  console.log(userInfo._id);
+
 
   // console.log(taskData.taskData.skillParameterData)
 
@@ -39,12 +39,14 @@ const ReviewSubmission = (taskData) => {
 
   //
   ///
-
+  console.log(taskData?.taskData);
+  console.log(taskData?.taskData._id);
+  console.log(userInfo?._id);
   const [value, setvalue] = useState();
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_API}/getSubmitAssignment/submitter/${userInfo._id}/${taskData.taskData._id}`
+        `${process.env.REACT_APP_BACKEND_API}/getSubmitAssignment/submitter/${userInfo?._id}/${taskData?.taskData?._id}`
       )
       .then((response) => {
         setSubmittedResult(response?.data);
@@ -396,6 +398,9 @@ const ReviewSubmission = (taskData) => {
             )}
 
             {/* z */}
+            <div>
+              download
+            </div>
           </div>
           {(orgData?.showPointsAndRedemptions ||
             orgData?.showSkillsManagement) && (

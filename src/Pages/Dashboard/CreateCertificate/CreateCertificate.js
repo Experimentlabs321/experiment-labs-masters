@@ -1,3 +1,4 @@
+// updated
 import React, { useContext, useEffect, useRef, useState } from "react";
 import Layout from "../Layout";
 import CertificateTemplate1 from "../../../assets/Dashboard/CertificateTemplate1.png";
@@ -100,6 +101,8 @@ const CreateCertificate = () => {
       contentFontFamily: "Lora",
       contentColor: "#000000",
       contentFontSize: 35,
+      contentFontWeight: "normal",
+      allowBreakLine: "0",
     },
   ]);
   const [backgroundTemplates, setBackgroundTemplates] = useState([
@@ -116,6 +119,14 @@ const CreateCertificate = () => {
   const [selectedBackgroundTemplate, setSelectedBackgroundTemplate] = useState(
     backgroundTemplates[0]
   );
+  const [showIssuingDate, setShowIssuingDate] = useState({
+    content: "Issued on:",
+    contentFontFamily: "Lora",
+    contentColor: "#000000",
+    contentFontSize: 35,
+    allowShowIssuingDate: "0",
+  });
+  const currentDate = new Date();
 
   useEffect(() => {
     const loadImage = async () => {
@@ -345,6 +356,7 @@ const CreateCertificate = () => {
                         fontSize: `${content.contentFontSize * zoom}px`,
                         fontFamily: `${content.contentFontFamily}`,
                         color: `${content.contentColor}`,
+                        fontWeight: `${content.contentFontWeight}`,
                       }}
                     >
                       {content?.type === "Static"
@@ -357,8 +369,24 @@ const CreateCertificate = () => {
                         ? selectedBatch?.batchName
                         : content?.content === "Organization name" &&
                           orgData?.organizationName}{" "}
+                      {content?.allowBreakLine === "1" && <br />}
                     </span>
                   ))}
+                  {showIssuingDate?.allowShowIssuingDate === "1" && (
+                    <span
+                      style={{
+                        fontSize: `${
+                          showIssuingDate?.contentFontSize * zoom
+                        }px`,
+                        fontFamily: `${showIssuingDate?.contentFontFamily}`,
+                        color: `${showIssuingDate?.contentColor}`,
+                      }}
+                    >
+                      <br />
+                      {showIssuingDate?.content}{" "}
+                      {currentDate?.toLocaleDateString()}
+                    </span>
+                  )}
                 </p>
               </div>
               <div>
@@ -399,6 +427,7 @@ const CreateCertificate = () => {
                             fontSize: `${authorNameFontSize * zoom}px`,
                             fontFamily: `${authorNameFontFamily}`,
                             color: `${authorNameColor}`,
+                            fontWeight: "bold",
                           }}
                           className=""
                         >
@@ -659,6 +688,8 @@ const CreateCertificate = () => {
             setZoom={setZoom}
             backgroundTemplates={backgroundTemplates}
             setBackgroundTemplates={setBackgroundTemplates}
+            showIssuingDate={showIssuingDate}
+            setShowIssuingDate={setShowIssuingDate}
           />
           {/* </div> */}
         </div>

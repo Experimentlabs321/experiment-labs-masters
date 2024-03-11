@@ -49,6 +49,7 @@ const CourseInformation = () => {
   const [weeks, setWeeks] = useState([]);
   const [courseData, setCourseData] = useState();
   const [currentWeek, setCurrentWeek] = useState(weeks[0]);
+  localStorage.setItem("currentWeek", JSON.stringify(weeks[0]));
   const [clickedTask, setClickedTask] = useState({});
   const Role = localStorage.getItem("role");
   const [selectedOption, setSelectedOption] = useState("Category");
@@ -489,6 +490,12 @@ const CourseInformation = () => {
           setCurrentWeek(
             response?.data?.find((item) => item?._id === queryWeek)
           );
+          localStorage.setItem(
+            "currentWeek",
+            JSON.stringify(
+              response?.data?.find((item) => item?._id === queryWeek)
+            )
+          );
         } else {
           response?.data?.forEach((element) => {
             const weekStartDate = new Date(element?.weekStartDate);
@@ -498,10 +505,15 @@ const CourseInformation = () => {
               weekEndDate >= currentDateTime
             ) {
               setCurrentWeek(element);
+              localStorage.setItem("currentWeek", JSON.stringify(element));
               return;
             }
             if (!currentWeek) {
               setCurrentWeek(response?.data[0]);
+              localStorage.setItem(
+                "currentWeek",
+                JSON.stringify(response?.data[0])
+              );
             }
           });
         }

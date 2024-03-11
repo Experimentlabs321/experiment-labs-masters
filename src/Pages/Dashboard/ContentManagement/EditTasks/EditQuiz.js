@@ -1,10 +1,14 @@
 import required from "../../../../assets/ContentManagement/required.png";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "../../Layout";
 import { Link, useParams } from "react-router-dom";
 import TextEditor from "../../../Shared/TextEditor/TextEditor";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import QuizResult from "../QuizResult";
+import QuizEvaluationParameter from "../QuizEvaluationParameter";
+import ManageQuestionBank from "../ManageQuestionBank";
+import ManageQuestion from "../ManageQuestion";
 
 const EditQuiz = () => {
   const [selectedTab, setSelectedTab] = useState("Quiz General Information");
@@ -17,6 +21,27 @@ const EditQuiz = () => {
   const [quizDescription, setQuizDescription] = useState("");
   const [submitPermission, setSubmitPermission] = useState(false);
   const [quizData, setQuizData] = useState({});
+  const [openTask, setOpenTask] = useState(
+    JSON.parse(localStorage.getItem("task"))
+  );
+
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/quizes/taskId/${openTask?.taskId}`
+      )
+      .then((response) => {
+        setQuizData(response?.data);
+        setQuizDescription(response?.data?.quizDescription);
+        // setSelectedBatches(response?.data?.batches);
+        // setSkillParameterData(response?.data?.skillParameterData);
+        // setEarningParameterData(response?.data?.earningParameterData);
+        // setTaskDrip(response?.data?.taskDrip);
+        // setEnableDownload(response?.data?.enableDownload);
+      });
+  }, [openTask]);
+
+  console.log(quizData);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -61,9 +86,7 @@ const EditQuiz = () => {
           <p>Manage Quiz in Topic 1</p>
         </div>
         <div className="px-10 flex  justify-between pb-3 text-lg">
-          <Link
-            disabled
-            to={`/quizGeneralInfo/${id}`}
+          <button
             onClick={() => handleTabClick("Quiz General Information")}
             style={{
               fontWeight:
@@ -75,10 +98,8 @@ const EditQuiz = () => {
             }}
           >
             Quiz General Information
-          </Link>
-          <Link
-            disabled
-            to={`/manageQuestion/${id}`}
+          </button>
+          <button
             onClick={() => handleTabClick("Questions")}
             style={{
               fontWeight: selectedTab === "Questions" ? "bold" : "normal",
@@ -87,9 +108,8 @@ const EditQuiz = () => {
             }}
           >
             Questions
-          </Link>
-          <Link
-            to={`/manageQuestionBank/${id}`}
+          </button>
+          <button
             onClick={() => handleTabClick("Question Bank")}
             style={{
               fontWeight: selectedTab === "Question Bank" ? "bold" : "normal",
@@ -98,9 +118,8 @@ const EditQuiz = () => {
             }}
           >
             Question Bank
-          </Link>
-          <Link
-            to={`/quizResult/${id}`}
+          </button>
+          <button
             onClick={() => handleTabClick("Results")}
             style={{
               fontWeight: selectedTab === "Results" ? "bold" : "normal",
@@ -109,9 +128,8 @@ const EditQuiz = () => {
             }}
           >
             Results
-          </Link>
-          <Link
-            to={`/quizEvaluationParameter/${id}`}
+          </button>
+          <button
             onClick={() => handleTabClick("Evaluation Parameter")}
             style={{
               fontWeight:
@@ -123,7 +141,7 @@ const EditQuiz = () => {
             }}
           >
             Evaluation Parameter
-          </Link>
+          </button>
         </div>
 
         {selectedTab === "Quiz General Information" && (
@@ -140,6 +158,7 @@ const EditQuiz = () => {
 
                     <input
                       required
+                      defaultValue={quizData ? quizData?.quizName : ""}
                       className="mt-6 ms-6 border rounded-md w-3/4 h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                       name="quizName"
                       type="text"
@@ -157,7 +176,10 @@ const EditQuiz = () => {
 
                     <div className="py-4 pr-5">
                       <div className="bg-white text-black textEditor">
-                        <TextEditor setValue={setQuizDescription} />
+                        <TextEditor
+                          value={quizDescription}
+                          setValue={setQuizDescription}
+                        />
                       </div>
                     </div>
                   </div>
@@ -255,6 +277,7 @@ const EditQuiz = () => {
 
                     <input
                       required
+                      defaultValue={quizData ? quizData?.points : ""}
                       className="mt-6 ms-6 border rounded-md w-3/4 h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                       name="points"
                       type="number"
@@ -426,6 +449,10 @@ const EditQuiz = () => {
             </form>
           </div>
         )}
+        {selectedTab === "Results" && <QuizResult />}
+        {selectedTab === "Evaluation Parameter" && <QuizEvaluationParameter />}
+        {selectedTab === "Question Bank" && <ManageQuestionBank />}
+        {selectedTab === "Questions" && <ManageQuestion />}
       </Layout>
     </div>
   );
