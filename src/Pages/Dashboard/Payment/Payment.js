@@ -47,6 +47,7 @@ const Payment = () => {
   const [forgotPassOpen, setForgotPassOpen] = useState(false);
   const queryParameters = new URLSearchParams(window.location.search);
   const queryBatch = queryParameters.get("batch");
+  const [isBatchPayment , setIsBatchPayment] = useState(false);
 
   console.log(queryBatch);
 
@@ -69,6 +70,7 @@ const Payment = () => {
             (item) => item?._id === queryBatch
           );
           if (findBatch) {
+            setIsBatchPayment(true);
             setSelectedBatch(findBatch);
           }
         }
@@ -76,7 +78,8 @@ const Payment = () => {
       .catch((error) => console.error(error));
   }, [id, queryBatch]);
 
-  console.log(selectedBatch);
+  console.log(course);
+  console.log("Selected Batch ==============>",selectedBatch);
 
   useEffect(() => {
     if (course?.organization?.organizationId)
@@ -149,7 +152,40 @@ const Payment = () => {
     console.log("Went to Line 124");
     console.log("Data =============>", data);
     Loading();
-    // const { data: { order } } = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/checkout`, {
+    if ((+selectedBatch?.price - +couponDiscount) === 0) {
+      const enrollData = {
+        courses: [{
+          courseId: course?._id,
+          batchId: selectedBatch?._id
+        }], // Array of objects, each containing courseId and batchId
+        coupon: coupon || "",
+        couponId: selectOffer._id || "",
+        discountAmount: +couponDiscount || "",
+        email: data?.email,
+        organizationId: organizationData?._id,
+        organizationName: organizationData?.organizationName,
+        originalPrice: +selectedBatch?.price,
+        paidAmount: 0,
+        userId: data?._id,
+      };
+      console.log("EnrollData ============>", enrollData);
+      const res = await axios.post(
+        // `http://localhost:5000/api/v1/users/unpaidUsers/enroll`,
+        `${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/enroll`,
+        enrollData
+      );
+      console.log("Free Response =========>", res);
+      if (res.data.success) {
+        setUserInfo(res.data.userData);
+        Swal.fire({
+          title: "Course Added Successfully",
+          icon: "success",
+        });
+        navigate("/courseAccess");
+      }
+      Loading().close();
+      return;
+    }
     const {
       data: { order },
     } = await axios.post(
@@ -445,6 +481,7 @@ const Payment = () => {
                     {batchesData[0] && (
                       <select
                         className="mt-1 p-2 border w-full rounded-md bg-white"
+                        disabled={isBatchPayment===true}
                         onChange={(e) =>
                           setSelectedBatch(batchesData[e.target.value])
                         }
@@ -457,11 +494,10 @@ const Payment = () => {
                         {batchesData?.map((item, index) => (
                           <option
                             key={index}
-                            className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 m-1 ${
-                              selectedBatch?._id === item?._id
-                                ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
-                                : "text-[#949494]"
-                            }`}
+                            className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 m-1 ${selectedBatch?._id === item?._id
+                              ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
+                              : "text-[#949494]"
+                              }`}
                             value={index}
                             // onClick={() => handleSelectCourse(item)}
                             onMouseDown={() => setSelectedBatch(item)}
@@ -523,10 +559,10 @@ const Payment = () => {
                                   onClick={() => {
                                     +offer?.maxUseCount < +offer?.usedCount
                                       ? Swal.fire({
-                                          icon: "error",
-                                          title: "Error",
-                                          text: "Coupon is already been used Maximum Time",
-                                        })
+                                        icon: "error",
+                                        title: "Error",
+                                        text: "Coupon is already been used Maximum Time",
+                                      })
                                       : setCoupon(offer?.code);
                                   }}
                                   className="bg-gradient-to-b from-white to-[#ebf1ff] rounded-[7px] border border-blue px-[10px] py-[12px] min-w-[300px]"
@@ -620,17 +656,32 @@ const Payment = () => {
                           </h4>
                         </div>
                         <div>
-                          <button
-                            onClick={
-                              user
-                                ? () => handleEnroll(userInfo)
-                                : () => setLoginOpen(true)
-                            }
-                            id="enroll-now-btn"
-                            className=" px-[18px] py-[9px] text-white font-bold bg-blue rounded-md"
-                          >
-                            Pay Now
-                          </button>
+                          {
+                            +selectedBatch?.price - +couponDiscount === 0 ?
+                              <button
+                                onClick={
+                                  user
+                                    ? () => handleEnroll(userInfo)
+                                    : () => setLoginOpen(true)
+                                }
+                                id="enroll-now-btn"
+                                className=" px-[18px] py-[9px] text-white font-bold bg-blue rounded-md"
+                              >
+                                Enroll Now
+                              </button>
+                              :
+                              <button
+                                onClick={
+                                  user
+                                    ? () => handleEnroll(userInfo)
+                                    : () => setLoginOpen(true)
+                                }
+                                id="enroll-now-btn"
+                                className=" px-[18px] py-[9px] text-white font-bold bg-blue rounded-md"
+                              >
+                                Pay Now
+                              </button>
+                          }
                         </div>
                       </div>
                     </div>

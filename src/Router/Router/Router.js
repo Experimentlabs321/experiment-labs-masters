@@ -347,14 +347,14 @@ const router = createBrowserRouter([
     path: "/manageAudio/:id",
     element: <ManageAudio />,
   },
-  // {
-  //   path: "/manageQuiz/:id",
-  //   element: <ManageQuiz />,
-  // },
   {
-    path: "/quizGeneralInfo/:id",
-    element: <QuizGeneralInformation />,
+    path: "/manageQuiz/:id",
+    element: <ManageQuiz />,
   },
+  // {
+  //   path: "/quizGeneralInfo/:id",
+  //   element: <QuizGeneralInformation />,
+  // },
   {
     path: "/quizResult/:id",
     element: <QuizResult />,

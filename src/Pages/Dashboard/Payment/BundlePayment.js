@@ -48,11 +48,23 @@ const BundlePayment = () => {
 
   const dateCreated = new Date();
 
+  const fetchOffers = async (bundleId) => {
+    const offers = await axios.get(
+      `${process.env.REACT_APP_SERVER_API}/api/v1/offers/bundleId/${bundleId}`
+    );
+    setOffers(offers?.data?.result);
+    setCoupon("");
+    setSelectedOffer("");
+    setCouponDiscount(0);
+    console.log("Offers  ================>", offers?.data?.result);
+  };
+
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_SERVER_API}/api/v1/bundles/bundleId/${id}`)
       .then((response) => {
         setCourse(response?.data);
+        fetchOffers(response?.data?._id);
       })
       .catch((error) => console.error(error));
   }, [id]);
@@ -69,20 +81,10 @@ const BundlePayment = () => {
         .catch((error) => console.error(error));
   }, [course, course?.organization?.organizationId]);
 
-  const fetchOffers = async (batchId) => {
-    const offers = await axios.get(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/offers/batchId/${batchId}`
-    );
-    setOffers(offers?.data?.result);
-    setCoupon("");
-    setSelectedOffer("");
-    setCouponDiscount(0);
-  };
-
-  useEffect(() => {
-    fetchOffers(selectedBatch?._id);
-    // console.log("Offers  ==============>", offers);
-  }, [selectedBatch]);
+  // useEffect(() => {
+  //   fetchOffers(selectedBatch?._id);
+  //   // console.log("Offers  ==============>", offers);
+  // }, [selectedBatch]);
 
   const date = new Date(course?.courseStartingDate);
   const options = {
@@ -100,13 +102,13 @@ const BundlePayment = () => {
       setSelectedOffer(filteredCoupon[0]);
       let { discountPercent, maxDiscountValue, minCourseValue } =
         filteredCoupon[0];
-      let discountAmount = (+selectedBatch?.price * +discountPercent) / 100;
+      let discountAmount = (+course?.price * +discountPercent) / 100;
       // console.log("Discount Amount", discountAmount);
       if (discountAmount > +maxDiscountValue)
         discountAmount = +maxDiscountValue;
 
       // console.log("Discount Amount", discountAmount);
-      if (+minCourseValue <= +selectedBatch?.price)
+      if (+minCourseValue <= +course?.price)
         setCouponDiscount(discountAmount);
       else {
         Swal.fire({
@@ -128,13 +130,45 @@ const BundlePayment = () => {
     console.log("Went to Line 124");
     console.log("Data =============>", data);
     Loading();
-    // const { data: { order } } = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/checkout`, {
+
+    if ((+course?.price - +couponDiscount) === 0) {
+      const enrollData = {
+        courses: course?.courses, // Array of objects, each containing courseId and batchId
+        coupon: coupon || "",
+        couponId: selectOffer._id || "",
+        discountAmount: +couponDiscount || "",
+        email: data?.email,
+        organizationId: organizationData?._id,
+        organizationName: organizationData?.organizationName,
+        originalPrice: +course?.price,
+        paidAmount: 0,
+        userId: data?._id,
+      };
+      console.log("EnrollData ============>", enrollData);
+      const res = await axios.post(
+        // `http://localhost:5000/api/v1/users/unpaidUsers/enroll`,
+        `${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/enroll`,
+        enrollData
+      );
+      console.log("Free Response =========>", res);
+      if (res.data.success) {
+        setUserInfo(res.data.userData);
+        Swal.fire({
+          title: "Course Added Successfully",
+          icon: "success",
+        });
+        navigate("/courseAccess");
+      }
+      Loading().close();
+      return;
+    }
+
     const {
       data: { order },
     } = await axios.post(
       `${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/checkout`,
       {
-        price: +(+selectedBatch.price - +couponDiscount),
+        price: +(+course.price - +couponDiscount),
         paymentInstance: {
           key_id: organizationData?.paymentInstance?.key_id,
           key_secret: organizationData?.paymentInstance?.key_secret,
@@ -150,7 +184,7 @@ const BundlePayment = () => {
       key_secret: organizationData?.paymentInstance?.key_secret,
       currency: "INR",
       name: organizationData?.organizationName,
-      description: `Purchase ${course?.courseName}`,
+      description: `Purchase ${course?.bundleFullName}`,
       image: organizationData?.org_logo,
       order_id: order?.id,
       prefill: {
@@ -167,12 +201,13 @@ const BundlePayment = () => {
       handler: async function (response) {
         response.razorpay_key_secret =
           organizationData?.paymentInstance?.key_secret;
-        response.courseId = course?._id;
-        response.batchId = selectedBatch?._id;
+        // response.courseId = course?._id;
+        // response.batchId = selectedBatch?._id;
+        response.courses = course?.courses;
         response.email = data?.email;
         response.userId = data?._id;
         response.paidAmount = +order?.amount / 100;
-        response.originalPrice = +selectedBatch?.price;
+        response.originalPrice = +course?.price;
         response.discountAmount = +couponDiscount || "";
         response.couponId = selectOffer._id || "";
         response.coupon = coupon || "";
@@ -182,7 +217,7 @@ const BundlePayment = () => {
         console.log(selectOffer._id);
         Loading();
         const res = await axios.post(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/verifyPayment`,
+          `${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/verifyBundlePayment`,
           response
         );
         if (res) Loading().close();
@@ -460,10 +495,10 @@ const BundlePayment = () => {
                                 onClick={() => {
                                   +offer?.maxUseCount < +offer?.usedCount
                                     ? Swal.fire({
-                                        icon: "error",
-                                        title: "Error",
-                                        text: "Coupon is already been used Maximum Time",
-                                      })
+                                      icon: "error",
+                                      title: "Error",
+                                      text: "Coupon is already been used Maximum Time",
+                                    })
                                     : setCoupon(offer?.code);
                                 }}
                                 className="bg-gradient-to-b from-white to-[#ebf1ff] rounded-[7px] border border-blue px-[10px] py-[12px] min-w-[300px]"
@@ -488,7 +523,7 @@ const BundlePayment = () => {
                                 </p>
                                 <p className="mt-[10px] font-[600] text-[1.07rem]">
                                   Valid for first{" "}
-                                  {+offer?.maxUseCount - +offer?.usedCount}{" "}
+                                  {(+offer?.maxUseCount) - (+offer?.usedCount || 0)}{" "}
                                   learners.{" "}
                                 </p>
                               </div>
@@ -554,17 +589,33 @@ const BundlePayment = () => {
                         </h4>
                       </div>
                       <div>
-                        <button
-                          onClick={
-                            user
-                              ? () => handleEnroll(userInfo)
-                              : () => setLoginOpen(true)
-                          }
-                          id="enroll-now-btn"
-                          className=" px-[18px] py-[9px] text-white font-bold bg-blue rounded-md"
-                        >
-                          Pay Now
-                        </button>
+
+                        {
+                          +course?.price - +couponDiscount === 0 ?
+                            <button
+                              onClick={
+                                user
+                                  ? () => handleEnroll(userInfo)
+                                  : () => setLoginOpen(true)
+                              }
+                              id="enroll-now-btn"
+                              className=" px-[18px] py-[9px] text-white font-bold bg-blue rounded-md"
+                            >
+                              Enroll Now
+                            </button>
+                            :
+                            <button
+                              onClick={
+                                user
+                                  ? () => handleEnroll(userInfo)
+                                  : () => setLoginOpen(true)
+                              }
+                              id="enroll-now-btn"
+                              className=" px-[18px] py-[9px] text-white font-bold bg-blue hover:bg-opacity-70 rounded-md"
+                            >
+                              Pay Now
+                            </button>
+                        }
                       </div>
                     </div>
                   </div>
@@ -652,18 +703,11 @@ const BundlePayment = () => {
               </div>
               <div className="max-w-[350px] min-w-[350px]">
                 <div className="mt-3">
-                  <h1 className=" text-black text-base font-[500] ">
-                    Select Batch
+                  <h1 className=" text-black text-base font-[500] mb-3">
+                    <div className="w-1/3 h-8 bg-gray-200 rounded-lg"></div>
                   </h1>
                   <div className="flex flex-wrap">
-                    <select
-                      className="mt-1 p-2 border w-full rounded-md bg-white"
-                      onChange={(e) =>
-                        setSelectedBatch(batchesData[e.target.value])
-                      }
-                    >
-                      <option className="hidden">Select Batch</option>
-                    </select>
+                    <div className="w-full h-10 bg-gray-400 rounded-lg"></div>
                   </div>
                 </div>
               </div>
