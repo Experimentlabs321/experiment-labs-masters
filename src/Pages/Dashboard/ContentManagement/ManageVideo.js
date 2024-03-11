@@ -171,6 +171,7 @@ const ManageVideo = () => {
     event.preventDefault();
     console.log(`Uploading: ${uploaded}%`);
     const onUploadProgress = (progressPercentage) => {
+      console.log("Upload Progress:", progressPercentage);
       // Update your UI with the progress percentage
       setUploaded(progressPercentage);
       console.log("Upload Progress:", progressPercentage);

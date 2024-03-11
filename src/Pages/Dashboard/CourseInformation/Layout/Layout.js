@@ -5,9 +5,9 @@ import MyHelmet from "../../../../Components/MyHelmet/MyHelpmet";
 import Aside from "./Aside";
 import axios from "axios";
 import { AuthContext } from "../../../../contexts/AuthProvider";
-import io from "socket.io-client";
+// import io from "socket.io-client";
 
-const socket = io("${process.env.REACT_APP_SERVER_API}");
+// const socket = io("${process.env.REACT_APP_SERVER_API}");
 
 const Layout = ({ children }) => {
   const [toggleButton, setToggleButton] = useState(true);
