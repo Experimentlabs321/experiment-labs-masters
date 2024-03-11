@@ -29,6 +29,7 @@ const VideoTask = ({ taskData, something }) => {
   const [openQuiz, setOpenQuiz] = useState(false);
   const [isOverlayVisible, setOverlayVisible] = useState(false);
   const [completionStatus, setCompletionStatus] = useState(false);
+  const [totalWatchedTime , setTotalWatchedTime] = useState(0);
   const pdfContainerRef = useRef(null);
   const formatTime = (seconds) => {
     const pad = (num) => num.toString().padStart(2, '0');
@@ -37,6 +38,8 @@ const VideoTask = ({ taskData, something }) => {
     const secondsLeft = pad(Math.floor(seconds % 60));
     return `${hours}:${minutes}:${secondsLeft}`;
   };
+
+
   useEffect(() => {
     if (
       taskData?.participants?.find(
@@ -48,37 +51,59 @@ const VideoTask = ({ taskData, something }) => {
 
   const videoRef = useRef(null);
   const [playedSeconds, setPlayedSeconds] = useState(0);
-  // useEffect(() => {
-  //   console.log('Document State:', document.readyState);
+  const [startTime, setStartTime] = useState(null);
+  const [isPaused, setIsPaused] = useState(false);
 
-  //   const handleVisibilityChange = () => {
-  //     console.log('Visibility State:', document.visibilityState);
-  //     console.log('inside');
 
-  //     if (durations !== null && document.visibilityState === 'hidden') {
-  //       console.log('Watched duration:', durations);
-  //     }
-  //   };
-
-  //   document.addEventListener('visibilitychange', handleVisibilityChange);
-
-  //   return () => {
-  //     document.removeEventListener('visibilitychange', handleVisibilityChange);
-  //   };
-  // }, [durations]);
-  // Function to handle playback progress
   const handleProgress = (state) => {
     setPlayedSeconds(state.playedSeconds);
     // You can use state.playedSeconds to keep track of how much of the video has been played
   };
 
-  // Example of handling playback state
+  // // Example of handling playback state
+  // useEffect(() => {
+  //   // You can perform actions based on playedSeconds here
+  //   // This is just a logging example
+  //   // console.log(`Current played duration: ${formatTime(playedSeconds)} seconds`);
+
+  //   setDuration(formatTime(playedSeconds));
+  // }, [playedSeconds]);
+
+
   useEffect(() => {
-    // You can perform actions based on playedSeconds here
-    // This is just a logging example
-    // console.log(`Current played duration: ${formatTime(playedSeconds)} seconds`);
-    setDuration(formatTime(playedSeconds));
-  }, [playedSeconds]);
+    const intervalId = setInterval(() => {
+      if (isPlaying) {
+        sendDurationToBackend();
+      }
+    }, 10000); // Check every 10 seconds
+
+    return () => clearInterval(intervalId);
+  }, [isPlaying]);
+
+
+  useEffect(() => {
+    if (isPaused) {
+      sendDurationToBackend();
+      setIsPaused(false);
+    }
+  }, [isPaused]);
+
+
+  const sendDurationToBackend = async () => {
+    try {
+      const myCurrentTime = new Date();
+      if (startTime !== null) { // Check if startTime is not null before using it
+        const durationWatched = (myCurrentTime.getTime() - startTime.getTime()) / 1000;
+        setTotalWatchedTime(totalWatchedTime+durationWatched);
+        console.log("Api Called Duration Added: ", durationWatched);
+      }
+      setStartTime(myCurrentTime);
+    } catch (error) {
+      console.error("Error sending duration data to backend:", error);
+    }
+  };
+
+
   const setupEventListeners = (video) => {
     // Add the console log here to check the video object
     console.log(video, video instanceof HTMLVideoElement);
@@ -97,6 +122,7 @@ const VideoTask = ({ taskData, something }) => {
 
     const handlePlay = () => {
       //console.log(`Video played at: ${formatTime(video.currentTime)}`);
+      setStartTime(new Date());
       setIsPlaying(true);
       setDuration(formatTime(video.currentTime))
       localStorage.setItem('timeSpent', durations);
@@ -104,6 +130,7 @@ const VideoTask = ({ taskData, something }) => {
 
     const handlePause = () => {
       // console.log(`Video paused: ${formatTime(video.currentTime)}`);
+      setIsPaused(true);
       setIsPlaying(false);
       setDuration(formatTime(video.currentTime))
       localStorage.setItem('timeSpent', durations);
@@ -122,50 +149,14 @@ const VideoTask = ({ taskData, something }) => {
     };
   };
 
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    const onMetadataLoaded = () => {
-      console.log("Video metadata loaded");
-      const cleanup = setupEventListeners(video);
-
-      return cleanup;
-    };
-
-    const handleVisibilityChange = () => {
-      console.log('Visibility state:', document.visibilityState);
-      // Send duration data to the backend regardless of video player state
-      console.log('Page visibility changed, sending data to backend');
-      sendDurationToBackend();
-    };
-
-    video.addEventListener('loadedmetadata', onMetadataLoaded);
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-
-    return () => {
-      video.removeEventListener('loadedmetadata', onMetadataLoaded);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-  }, [videoRef, durations]);
 
 
-  const sendDurationToBackend = async () => {
-    // Use axios or your preferred method to send the duration data to the backend
-    // try {
-    //   const response = await axios.post(
-    //     `${process.env.REACT_APP_SERVER_API}/api/v1/your-backend-endpoint`,
-    //     {
-    //       duration: durations, // Assuming durations is the data you want to send
-    //       // Add any other necessary data
-    //     }
-    //   );
-    //   console.log('Duration data sent to backend:', response.data);
-    // } catch (error) {
-    //   console.error('Error sending duration data to backend:', error);
-    // }
-    console.log('here inside');
-  };
+  
+
+
+
+
+
 
   const handleCompletion = async () => {
     Loading();
