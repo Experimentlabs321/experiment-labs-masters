@@ -174,8 +174,9 @@ const FilesTask = ({ taskData }) => {
           Mark as complete <CheckCircleOutlineIcon />
         </button>
       )}
-      <div className="h-[70vh] mb-[60px] ">
-        {taskData?.additionalFiles && (
+
+      {taskData?.additionalFiles && <>
+        <div className="h-[70vh] mb-[60px] ">
           <iframe
             className="h-[68vh] mx-auto border-x-[30px] mt-[40px] border-t-[30px] border-b-[50px] rounded-lg border-[#292929]"
             src={`https://docs.google.com/viewer?url=${taskData?.additionalFiles}&embedded=true`}
@@ -183,35 +184,40 @@ const FilesTask = ({ taskData }) => {
             height="80vh"
             title="W3Schools Free Online Web Tutorials"
           ></iframe>
-        )}
-      </div>
-      {taskData?.enableDownload && (
-        <div className="flex justify-end me-20 my-10">
-          <button
-            className="bg-blue text-white p-3 rounded-lg text-xl"
-            onClick={cancelTokenSource ? null : handleDownload}
-            disabled={cancelTokenSource !== null}
-          >
-            {cancelTokenSource ? `Downloading... ${downloadProgress}%` : 'Download'}
-          </button>
-          {cancelTokenSource && (
+        </div>
+
+
+        {taskData?.enableDownload && (
+          <div className="flex justify-end me-20 my-10">
             <button
-              className="bg-red text-white p-3 rounded-lg text-xl ml-4"
-              onClick={() => {
-                cancelTokenSource.cancel('Download cancelled by user');
-              }}
+              className="bg-blue text-white p-3 rounded-lg text-xl"
+              onClick={cancelTokenSource ? null : handleDownload}
+              disabled={cancelTokenSource !== null}
             >
-              Cancel
+              {cancelTokenSource ? `Downloading... ${downloadProgress}%` : 'Download'}
             </button>
-          )}
-          {/*  {downloadProgress > 0 && (
+            {cancelTokenSource && (
+              <button
+                className="bg-red text-white p-3 rounded-lg text-xl ml-4"
+                onClick={() => {
+                  cancelTokenSource.cancel('Download cancelled by user');
+                }}
+              >
+                Cancel
+              </button>
+            )}
+            {/*  {downloadProgress > 0 && (
             <div className="ml-4 flex items-center">
               <p>{downloadProgress}%</p>
             </div>
           )} */}
-        </div>
-      )}
-     <div className="my-5 mb-5 px-2" dangerouslySetInnerHTML={{ __html: taskData?.fileDescription }} />
+          </div>
+        )}
+
+      </>
+      }
+
+      <div className={`my-5 mb-5 px-2 ${!taskData?.additionalFiles ?" ":""}`} dangerouslySetInnerHTML={{ __html: taskData?.fileDescription }} />
 
     </div>
   );
