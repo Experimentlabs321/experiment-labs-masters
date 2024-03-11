@@ -168,6 +168,8 @@ const Week = () => {
                     setToggleButton={setToggleButton}
                     setOpenTask={setOpenTask}
                     setOpenTopic={setOpenTopic}
+                    count={count}
+                    setCount={setCount}
                   />
                 </div>
               </main>

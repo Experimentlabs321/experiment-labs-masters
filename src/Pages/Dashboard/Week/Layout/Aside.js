@@ -361,7 +361,13 @@ const Aside = ({
                           item?.tasks?.map((task, index) => (
                             <div
                               key={task?.taskId}
-                              onClick={() => setOpenTask(task)}
+                              onClick={() => {
+                                setOpenTask(task);
+                                localStorage.setItem(
+                                  "task",
+                                  JSON.stringify(task)
+                                );
+                              }}
                               className={`${
                                 openTask?.taskId === task?.taskId
                                   ? "bg-[#FFFDCF] border-[#3E4DAC] border-l-[12px] pl-[8px]"
@@ -597,11 +603,18 @@ const Aside = ({
                               <div
                                 key={task?.taskId}
                                 onClick={() => {
-                                  (isPreviousTaskCompleted &&
-                                    isPrevChapterCompleted) ||
-                                  !(courseData?.enableDrip || task?.taskDrip)
-                                    ? setOpenTask(task)
-                                    : toast.error("Complete the Previous Task");
+                                  if (
+                                    (isPreviousTaskCompleted &&
+                                      isPrevChapterCompleted) ||
+                                    !(courseData?.enableDrip || task?.taskDrip)
+                                  ) {
+                                    setOpenTask(task);
+                                    localStorage.setItem(
+                                      "task",
+                                      JSON.stringify(task)
+                                    );
+                                  } else
+                                    toast.error("Complete the Previous Task");
                                 }}
                                 className={`${
                                   openTask?.taskId === task?.taskId
