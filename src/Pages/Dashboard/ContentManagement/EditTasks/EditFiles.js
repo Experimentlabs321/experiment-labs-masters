@@ -120,7 +120,6 @@ const EditFiles = () => {
         setTaskDrip(response?.data?.taskDrip);
         setEnableDownload(response?.data?.enableDownload);
         setFileDescription(response?.data?.fileDescription);
-
       });
   }, [openTask]);
 
@@ -178,11 +177,11 @@ const EditFiles = () => {
       additionalFiles: selectedFile ? fileUrl : fileData?.additionalFiles,
       skillParameterData: skillParameterData,
       earningParameterData: earningParameterData,
-      chapterId: id,
+      chapterId: fileData?.chapterId,
       batches: selectedBatches,
       taskDrip,
       enableDownload,
-      fileDescription
+      fileDescription,
     };
 
     setFileData(ManageFile);
@@ -349,12 +348,12 @@ const EditFiles = () => {
                   {/* Text editor */}
                   <div className="py-4 ms-5">
                     <div className="bg-white text-black textEditor">
-                      <TextEditor 
-                       value={fileDescription}
-                      setValue={setFileDescription} />
+                      <TextEditor
+                        value={fileDescription}
+                        setValue={setFileDescription}
+                      />
                     </div>
                   </div>
-
                 </div>
               </div>
 
@@ -423,7 +422,6 @@ const EditFiles = () => {
               </div>
             </div>
 
-
             <div className="me-20 py-[35px] ps-[40px]">
               <div>
                 <div className="flex items-center gap-4">
@@ -480,7 +478,9 @@ const EditFiles = () => {
                     />
                     <label
                       htmlFor="radioYes"
-                      className={`ml-2 text-sm font-medium ${course?.enableDrip ? 'text-gray-400' : 'text-gray-900'}`}
+                      className={`ml-2 text-sm font-medium ${
+                        course?.enableDrip ? "text-gray-400" : "text-gray-900"
+                      }`}
                     >
                       Yes
                     </label>
@@ -498,7 +498,9 @@ const EditFiles = () => {
                     />
                     <label
                       htmlFor="radioNo"
-                      className={`ml-2 text-sm font-medium ${course?.enableDrip ? 'text-gray-400' : 'text-gray-900'}`}
+                      className={`ml-2 text-sm font-medium ${
+                        course?.enableDrip ? "text-gray-400" : "text-gray-900"
+                      }`}
                     >
                       No
                     </label>
@@ -528,7 +530,6 @@ const EditFiles = () => {
                       name="radioDownloadOption"
                       checked={enableDownload === true}
                       onChange={() => setEnableDownload(true)}
-
                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
                     />
                     <label
@@ -546,7 +547,6 @@ const EditFiles = () => {
                       name="radioDownloadOption"
                       checked={enableDownload === false}
                       onChange={() => setEnableDownload(false)}
-
                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
                     />
                     <label
@@ -558,16 +558,15 @@ const EditFiles = () => {
                   </div>
                 </div>
               </fieldset>
-
             </div>
 
             <div className="px-4 my-10">
               {(orgData?.showPointsAndRedemptions ||
                 orgData?.showSkillsManagement) && (
-                  <p className="text-[25px] font-bold mb-10">
-                    Evaluation Parameter
-                  </p>
-                )}
+                <p className="text-[25px] font-bold mb-10">
+                  Evaluation Parameter
+                </p>
+              )}
               {orgData?.showSkillsManagement && (
                 <SkillBasedParameter
                   forEdit={true}
