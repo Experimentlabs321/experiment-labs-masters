@@ -147,7 +147,7 @@ const BatchConfiguration = ({
         Loading();
         try {
           const deleteBatch = await axios.delete(
-            `http://localhost:5000/api/v1/batches/deleteBatch/batchId/${selectedBatches[0]?._id}`
+            `${process.env.REACT_APP_SERVER_API}/api/v1/batches/deleteBatch/batchId/${selectedBatches[0]?._id}`
           );
 
           console.log(deleteBatch);
