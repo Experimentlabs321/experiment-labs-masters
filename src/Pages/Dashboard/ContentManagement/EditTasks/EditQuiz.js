@@ -5,6 +5,10 @@ import { Link, useParams } from "react-router-dom";
 import TextEditor from "../../../Shared/TextEditor/TextEditor";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import QuizResult from "../QuizResult";
+import QuizEvaluationParameter from "../QuizEvaluationParameter";
+import ManageQuestionBank from "../ManageQuestionBank";
+import ManageQuestion from "../ManageQuestion";
 
 const EditQuiz = () => {
   const [selectedTab, setSelectedTab] = useState("Quiz General Information");
@@ -82,9 +86,7 @@ const EditQuiz = () => {
           <p>Manage Quiz in Topic 1</p>
         </div>
         <div className="px-10 flex  justify-between pb-3 text-lg">
-          <Link
-            disabled
-            to={`/quizGeneralInfo/${id}`}
+          <button
             onClick={() => handleTabClick("Quiz General Information")}
             style={{
               fontWeight:
@@ -96,10 +98,8 @@ const EditQuiz = () => {
             }}
           >
             Quiz General Information
-          </Link>
-          <Link
-            disabled
-            to={`/manageQuestion/${id}`}
+          </button>
+          <button
             onClick={() => handleTabClick("Questions")}
             style={{
               fontWeight: selectedTab === "Questions" ? "bold" : "normal",
@@ -108,9 +108,8 @@ const EditQuiz = () => {
             }}
           >
             Questions
-          </Link>
-          <Link
-            to={`/manageQuestionBank/${id}`}
+          </button>
+          <button
             onClick={() => handleTabClick("Question Bank")}
             style={{
               fontWeight: selectedTab === "Question Bank" ? "bold" : "normal",
@@ -119,9 +118,8 @@ const EditQuiz = () => {
             }}
           >
             Question Bank
-          </Link>
-          <Link
-            to={`/quizResult/${id}`}
+          </button>
+          <button
             onClick={() => handleTabClick("Results")}
             style={{
               fontWeight: selectedTab === "Results" ? "bold" : "normal",
@@ -130,9 +128,8 @@ const EditQuiz = () => {
             }}
           >
             Results
-          </Link>
-          <Link
-            to={`/quizEvaluationParameter/${id}`}
+          </button>
+          <button
             onClick={() => handleTabClick("Evaluation Parameter")}
             style={{
               fontWeight:
@@ -144,7 +141,7 @@ const EditQuiz = () => {
             }}
           >
             Evaluation Parameter
-          </Link>
+          </button>
         </div>
 
         {selectedTab === "Quiz General Information" && (
@@ -452,6 +449,10 @@ const EditQuiz = () => {
             </form>
           </div>
         )}
+        {selectedTab === "Results" && <QuizResult />}
+        {selectedTab === "Evaluation Parameter" && <QuizEvaluationParameter />}
+        {selectedTab === "Question Bank" && <ManageQuestionBank />}
+        {selectedTab === "Questions" && <ManageQuestion />}
       </Layout>
     </div>
   );
