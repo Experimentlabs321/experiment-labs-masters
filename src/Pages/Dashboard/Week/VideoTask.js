@@ -3,21 +3,21 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import icon from "../../../icon192.png";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
-import ReactPlayer from 'react-player';
+import ReactPlayer from "react-player";
 import Swal from "sweetalert2";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../Shared/Loading/Loading";
 import Quiz from "./SubFile/Shared/Quiz";
-import { saveAs } from 'file-saver';
-const VideoTask = ({ taskData, something }) => {
+import { saveAs } from "file-saver";
+const VideoTask = ({ taskData, count, setCount }) => {
   console.log(taskData);
   const navigate = useNavigate();
   const [currentTime, setCurrentTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const { userInfo, user } = useContext(AuthContext);
   const [durations, setDuration] = useState(0);
-  console.log('durations ', durations)
+  console.log("durations ", durations);
   if (userInfo.role !== "admin") {
     window.addEventListener("contextmenu", (e) => {
       e.preventDefault();
@@ -29,31 +29,32 @@ const VideoTask = ({ taskData, something }) => {
   const [openQuiz, setOpenQuiz] = useState(false);
   const [isOverlayVisible, setOverlayVisible] = useState(false);
   const [completionStatus, setCompletionStatus] = useState(false);
-  const [totalWatchedTime , setTotalWatchedTime] = useState(0);
+  const [totalWatchedTime, setTotalWatchedTime] = useState(0);
   const pdfContainerRef = useRef(null);
   const formatTime = (seconds) => {
-    const pad = (num) => num.toString().padStart(2, '0');
+    const pad = (num) => num.toString().padStart(2, "0");
     const hours = pad(Math.floor(seconds / 3600));
     const minutes = pad(Math.floor((seconds % 3600) / 60));
     const secondsLeft = pad(Math.floor(seconds % 60));
     return `${hours}:${minutes}:${secondsLeft}`;
   };
 
-
   useEffect(() => {
+    setCompletionStatus(false);
     if (
       taskData?.participants?.find(
         (item) => item?.participant?.email === user?.email
       )
     )
       setCompletionStatus(true);
+
+    console.log(taskData);
   }, [taskData, user]);
 
   const videoRef = useRef(null);
   const [playedSeconds, setPlayedSeconds] = useState(0);
   const [startTime, setStartTime] = useState(null);
   const [isPaused, setIsPaused] = useState(false);
-
 
   const handleProgress = (state) => {
     setPlayedSeconds(state.playedSeconds);
@@ -69,7 +70,6 @@ const VideoTask = ({ taskData, something }) => {
   //   setDuration(formatTime(playedSeconds));
   // }, [playedSeconds]);
 
-
   useEffect(() => {
     const intervalId = setInterval(() => {
       if (isPlaying) {
@@ -80,7 +80,6 @@ const VideoTask = ({ taskData, something }) => {
     return () => clearInterval(intervalId);
   }, [isPlaying]);
 
-
   useEffect(() => {
     if (isPaused) {
       sendDurationToBackend();
@@ -88,13 +87,14 @@ const VideoTask = ({ taskData, something }) => {
     }
   }, [isPaused]);
 
-
   const sendDurationToBackend = async () => {
     try {
       const myCurrentTime = new Date();
-      if (startTime !== null) { // Check if startTime is not null before using it
-        const durationWatched = (myCurrentTime.getTime() - startTime.getTime()) / 1000;
-        setTotalWatchedTime(totalWatchedTime+durationWatched);
+      if (startTime !== null) {
+        // Check if startTime is not null before using it
+        const durationWatched =
+          (myCurrentTime.getTime() - startTime.getTime()) / 1000;
+        setTotalWatchedTime(totalWatchedTime + durationWatched);
         console.log("Api Called Duration Added: ", durationWatched);
       }
       setStartTime(myCurrentTime);
@@ -103,60 +103,52 @@ const VideoTask = ({ taskData, something }) => {
     }
   };
 
-
   const setupEventListeners = (video) => {
     // Add the console log here to check the video object
     console.log(video, video instanceof HTMLVideoElement);
 
     if (!(video instanceof HTMLVideoElement)) {
-      console.error('Attempted to attach video event listeners to a non-video element');
+      console.error(
+        "Attempted to attach video event listeners to a non-video element"
+      );
       return;
     }
 
     const handleTimeUpdate = () => {
       setCurrentTime(video.currentTime);
       // console.log(`Current time: ${formatTime(video.currentTime)}`);
-      setDuration(formatTime(video.currentTime))
-      localStorage.setItem('timeSpent', durations);
+      setDuration(formatTime(video.currentTime));
+      localStorage.setItem("timeSpent", durations);
     };
 
     const handlePlay = () => {
       //console.log(`Video played at: ${formatTime(video.currentTime)}`);
       setStartTime(new Date());
       setIsPlaying(true);
-      setDuration(formatTime(video.currentTime))
-      localStorage.setItem('timeSpent', durations);
+      setDuration(formatTime(video.currentTime));
+      localStorage.setItem("timeSpent", durations);
     };
 
     const handlePause = () => {
       // console.log(`Video paused: ${formatTime(video.currentTime)}`);
       setIsPaused(true);
       setIsPlaying(false);
-      setDuration(formatTime(video.currentTime))
-      localStorage.setItem('timeSpent', durations);
+      setDuration(formatTime(video.currentTime));
+      localStorage.setItem("timeSpent", durations);
     };
 
     // Attach event listeners
-    video.addEventListener('timeupdate', handleTimeUpdate);
-    video.addEventListener('play', handlePlay);
-    video.addEventListener('pause', handlePause);
+    video.addEventListener("timeupdate", handleTimeUpdate);
+    video.addEventListener("play", handlePlay);
+    video.addEventListener("pause", handlePause);
 
     // Cleanup function to remove event listeners
     return () => {
-      video.removeEventListener('timeupdate', handleTimeUpdate);
-      video.removeEventListener('play', handlePlay);
-      video.removeEventListener('pause', handlePause);
+      video.removeEventListener("timeupdate", handleTimeUpdate);
+      video.removeEventListener("play", handlePlay);
+      video.removeEventListener("pause", handlePause);
     };
   };
-
-
-
-  
-
-
-
-
-
 
   const handleCompletion = async () => {
     Loading();
@@ -189,6 +181,7 @@ const VideoTask = ({ taskData, something }) => {
       Loading().close();
       // setCompletionStatus(true);
       if (submitCompletion?.data?.acknowledged) {
+        setCount(count + 1);
         setCompletionStatus(true);
         Swal.fire({
           icon: "success",
@@ -209,7 +202,7 @@ const VideoTask = ({ taskData, something }) => {
       setOverlayVisible(openQuiz);
     }
   };
-  console.log(taskData?.additionalFiles)
+  console.log(taskData?.additionalFiles);
   const [downloadProgress, setDownloadProgress] = useState(0);
   const [cancelTokenSource, setCancelTokenSource] = useState(null);
 
@@ -219,30 +212,34 @@ const VideoTask = ({ taskData, something }) => {
 
       // If there's an ongoing download, cancel it
       if (cancelTokenSource) {
-        cancelTokenSource.cancel('Download cancelled');
+        cancelTokenSource.cancel("Download cancelled");
       }
 
       const cancelToken = axios.CancelToken.source();
       setCancelTokenSource(cancelToken);
 
       const response = await axios.get(url, {
-        responseType: 'blob',
-        onDownloadProgress: progressEvent => {
-          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+        responseType: "blob",
+        onDownloadProgress: (progressEvent) => {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
           setDownloadProgress(percentCompleted);
         },
         cancelToken: cancelToken.token,
       });
 
-      const fileName = url.substring(url.lastIndexOf('/') + 1);
-      const blob = new Blob([response.data], { type: response.headers['content-type'] });
+      const fileName = url.substring(url.lastIndexOf("/") + 1);
+      const blob = new Blob([response.data], {
+        type: response.headers["content-type"],
+      });
 
       saveAs(blob, fileName);
     } catch (error) {
       if (axios.isCancel(error)) {
-        console.log('Download cancelled:', error.message);
+        console.log("Download cancelled:", error.message);
       } else {
-        console.error('Error downloading the file:', error);
+        console.error("Error downloading the file:", error);
       }
     } finally {
       setCancelTokenSource(null);
@@ -253,7 +250,9 @@ const VideoTask = ({ taskData, something }) => {
     // Cleanup the download if taskData?.additionalFiles changes
     return () => {
       if (cancelTokenSource) {
-        cancelTokenSource.cancel('Download cancelled due to change in taskData');
+        cancelTokenSource.cancel(
+          "Download cancelled due to change in taskData"
+        );
         setCancelTokenSource(null);
       }
     };
@@ -278,8 +277,8 @@ const VideoTask = ({ taskData, something }) => {
           )}
 
           <div className="relative">
-            {taskData?.additionalFiles && (
-              taskData?.isYoutubeLink ?
+            {taskData?.additionalFiles &&
+              (taskData?.isYoutubeLink ? (
                 // <iframe
                 //   width="90%"
                 //   height="500"
@@ -304,7 +303,7 @@ const VideoTask = ({ taskData, something }) => {
                     onProgress={handleProgress}
                     onPause={() => {
                       if (durations) {
-                        console.log('Watched duration: ', durations);
+                        console.log("Watched duration: ", durations);
                         setDuration(durations);
                       }
                     }}
@@ -328,9 +327,9 @@ const VideoTask = ({ taskData, something }) => {
                       },
                     }}
                   />
-                  <div className='mt-20'></div>
+                  <div className="mt-20"></div>
                 </div>
-                :
+              ) : (
                 <video
                   key={taskData?.additionalFiles}
                   ref={videoRef}
@@ -350,8 +349,7 @@ const VideoTask = ({ taskData, something }) => {
                 >
                   <source src={taskData?.additionalFiles} type="video/mp4" />
                 </video>
-
-            )}
+              ))}
             {taskData?.enableDownload && (
               <>
                 <div className="flex justify-end me-20 my-10">
@@ -360,20 +358,22 @@ const VideoTask = ({ taskData, something }) => {
                     onClick={handleDownload}
                     disabled={cancelTokenSource !== null}
                   >
-                    {cancelTokenSource ? `Downloading... ${downloadProgress}%` : 'Download'}
+                    {cancelTokenSource
+                      ? `Downloading... ${downloadProgress}%`
+                      : "Download"}
                   </button>
                   {cancelTokenSource && (
                     <button
                       className="border  text-black p-3 rounded-lg text-xl ml-4"
                       onClick={() => {
-                        cancelTokenSource.cancel('Download cancelled by user');
+                        cancelTokenSource.cancel("Download cancelled by user");
                       }}
                     >
                       Cancel
                     </button>
                   )}
                 </div>
-               {/*  {downloadProgress > 0 && (
+                {/*  {downloadProgress > 0 && (
                   <div className="mt-2 flex justify-end me-20 my-10">
                     <div className="flex gap-2 flex-col items-center">
                       <div className="w-[50px] h-[50px] border flex justify-center items-center border-red-500 rounded-full">

@@ -8,9 +8,9 @@ import Swal from "sweetalert2";
 import icon from "../../../icon192.png";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../Shared/Loading/Loading";
-import { saveAs } from 'file-saver';
+import { saveAs } from "file-saver";
 
-const ReadingTask = ({ taskData, chapterId }) => {
+const ReadingTask = ({ taskData, count, setCount }) => {
   const navigate = useNavigate();
   const [additionalFile, setAdditionalFile] = useState("");
   const { userInfo, user } = useContext(AuthContext);
@@ -87,6 +87,7 @@ const ReadingTask = ({ taskData, chapterId }) => {
       Loading().close();
       // setCompletionStatus(true);
       if (submitCompletion?.data?.acknowledged) {
+        setCount(count + 1);
         setCompletionStatus(true);
         Swal.fire({
           icon: "success",
@@ -116,24 +117,26 @@ const ReadingTask = ({ taskData, chapterId }) => {
     try {
       // If there's an ongoing download, cancel it
       if (cancelTokenSource) {
-        cancelTokenSource.cancel('Download cancelled');
+        cancelTokenSource.cancel("Download cancelled");
       }
 
       const cancelToken = axios.CancelToken.source();
       setCancelTokenSource(cancelToken);
 
       const response = await axios.get(taskData?.additionalFiles, {
-        responseType: 'blob',
-        onDownloadProgress: progressEvent => {
-          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+        responseType: "blob",
+        onDownloadProgress: (progressEvent) => {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
           setDownloadProgress(percentCompleted);
         },
         cancelToken: cancelToken.token,
       });
 
       // Determine file name and extension
-      const fileName = taskData?.additionalFiles.split('/').pop();
-      const fileExtension = fileName.split('.').pop();
+      const fileName = taskData?.additionalFiles.split("/").pop();
+      const fileExtension = fileName.split(".").pop();
       const mimeType = getMimeType(fileExtension);
 
       // Create Blob with response data
@@ -143,9 +146,9 @@ const ReadingTask = ({ taskData, chapterId }) => {
       saveAs(blob, fileName);
     } catch (error) {
       if (axios.isCancel(error)) {
-        console.log('Download cancelled:', error.message);
+        console.log("Download cancelled:", error.message);
       } else {
-        console.error('Error downloading the file:', error);
+        console.error("Error downloading the file:", error);
       }
     } finally {
       setCancelTokenSource(null);
@@ -154,21 +157,21 @@ const ReadingTask = ({ taskData, chapterId }) => {
   };
 
   // Helper function to get MIME type based on file extension
-  const getMimeType = extension => {
+  const getMimeType = (extension) => {
     switch (extension.toLowerCase()) {
-      case 'pdf':
-        return 'application/pdf';
-      case 'doc':
-      case 'docx':
-        return 'application/msword';
-      case 'xls':
-      case 'xlsx':
-        return 'application/vnd.ms-excel';
-      case 'ppt':
-      case 'pptx':
-        return 'application/vnd.ms-powerpoint';
+      case "pdf":
+        return "application/pdf";
+      case "doc":
+      case "docx":
+        return "application/msword";
+      case "xls":
+      case "xlsx":
+        return "application/vnd.ms-excel";
+      case "ppt":
+      case "pptx":
+        return "application/vnd.ms-powerpoint";
       default:
-        return 'application/octet-stream';
+        return "application/octet-stream";
     }
   };
 
@@ -176,7 +179,7 @@ const ReadingTask = ({ taskData, chapterId }) => {
     // Cleanup the download if component unmounts or taskData?.additionalFiles changes
     return () => {
       if (cancelTokenSource) {
-        cancelTokenSource.cancel('Download cancelled due to component unmount');
+        cancelTokenSource.cancel("Download cancelled due to component unmount");
       }
     };
   }, [taskData?.additionalFiles, cancelTokenSource]);
@@ -185,7 +188,9 @@ const ReadingTask = ({ taskData, chapterId }) => {
     // Cleanup the download if taskData?.additionalFiles changes
     return () => {
       if (cancelTokenSource) {
-        cancelTokenSource.cancel('Download cancelled due to change in taskData');
+        cancelTokenSource.cancel(
+          "Download cancelled due to change in taskData"
+        );
         setCancelTokenSource(null);
         setDownloadProgress(0);
       }
@@ -220,10 +225,10 @@ const ReadingTask = ({ taskData, chapterId }) => {
 
             {additionalFile &&
               (taskData?.additionalFiles.endsWith(".png") ||
-                taskData?.additionalFiles.endsWith(".jpg") ||
-                taskData?.additionalFiles.endsWith(".jpeg") ||
-                taskData?.additionalFiles.endsWith(".gif") ||
-                taskData?.additionalFiles.endsWith(".bmp") ? (
+              taskData?.additionalFiles.endsWith(".jpg") ||
+              taskData?.additionalFiles.endsWith(".jpeg") ||
+              taskData?.additionalFiles.endsWith(".gif") ||
+              taskData?.additionalFiles.endsWith(".bmp") ? (
                 <div className="">
                   <img
                     src={taskData?.additionalFiles}
@@ -264,26 +269,27 @@ const ReadingTask = ({ taskData, chapterId }) => {
                 onClick={cancelTokenSource ? null : handleDownload}
                 disabled={cancelTokenSource !== null}
               >
-                {cancelTokenSource ? `Downloading... ${downloadProgress}%` : 'Download'}
+                {cancelTokenSource
+                  ? `Downloading... ${downloadProgress}%`
+                  : "Download"}
               </button>
               {cancelTokenSource && (
                 <button
                   className="bg-red text-white p-3 rounded-lg text-xl ml-4"
                   onClick={() => {
-                    cancelTokenSource.cancel('Download cancelled by user');
+                    cancelTokenSource.cancel("Download cancelled by user");
                   }}
                 >
                   Cancel
                 </button>
               )}
-             {/*  {downloadProgress > 0 && (
+              {/*  {downloadProgress > 0 && (
                 <div className="ml-4 flex items-center">
                   <p>{downloadProgress}%</p>
                 </div>
               )} */}
             </div>
           )}
-
         </div>
       )}
       {openQuiz && (
