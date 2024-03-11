@@ -147,8 +147,8 @@ const EarningLogics = () => {
     };
     console.log(deleteData);
     await Swal.fire({
-      title: "Are you sure?",
-      text: "Once deleted, the item will not recover!",
+      title:itemDetails?.areYouSure ? itemDetails?.areYouSure :"Are you sure?",
+      text:itemDetails?.onceDeletedTheItemWillNotRecover ? itemDetails?.onceDeletedTheItemWillNotRecover : "Once deleted, the item will not recover!",
       icon: "warning",
       buttons: true,
       showCancelButton: true,
@@ -418,6 +418,7 @@ const EarningLogics = () => {
                   setEarningCategories={setEarningCategories}
                   selectedCourse={selectedCourse}
                   userInfo={userInfo}
+                  itemDetails={itemDetails}
                 />
               )}
           </>

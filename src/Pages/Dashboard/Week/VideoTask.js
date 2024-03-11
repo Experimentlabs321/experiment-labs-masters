@@ -9,6 +9,7 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../Shared/Loading/Loading";
 import Quiz from "./SubFile/Shared/Quiz";
+import { saveAs } from 'file-saver';
 const VideoTask = ({ taskData, something }) => {
   console.log(taskData);
   const navigate = useNavigate();
@@ -208,6 +209,55 @@ const VideoTask = ({ taskData, something }) => {
       setOverlayVisible(openQuiz);
     }
   };
+  console.log(taskData?.additionalFiles)
+  const [downloadProgress, setDownloadProgress] = useState(0);
+  const [cancelTokenSource, setCancelTokenSource] = useState(null);
+
+  const handleDownload = async () => {
+    try {
+      const url = taskData?.additionalFiles;
+
+      // If there's an ongoing download, cancel it
+      if (cancelTokenSource) {
+        cancelTokenSource.cancel('Download cancelled');
+      }
+
+      const cancelToken = axios.CancelToken.source();
+      setCancelTokenSource(cancelToken);
+
+      const response = await axios.get(url, {
+        responseType: 'blob',
+        onDownloadProgress: progressEvent => {
+          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          setDownloadProgress(percentCompleted);
+        },
+        cancelToken: cancelToken.token,
+      });
+
+      const fileName = url.substring(url.lastIndexOf('/') + 1);
+      const blob = new Blob([response.data], { type: response.headers['content-type'] });
+
+      saveAs(blob, fileName);
+    } catch (error) {
+      if (axios.isCancel(error)) {
+        console.log('Download cancelled:', error.message);
+      } else {
+        console.error('Error downloading the file:', error);
+      }
+    } finally {
+      setCancelTokenSource(null);
+    }
+  };
+
+  useEffect(() => {
+    // Cleanup the download if taskData?.additionalFiles changes
+    return () => {
+      if (cancelTokenSource) {
+        cancelTokenSource.cancel('Download cancelled due to change in taskData');
+        setCancelTokenSource(null);
+      }
+    };
+  }, [taskData?.additionalFiles, cancelTokenSource]);
   return (
     <div>
       {taskData?.additionalFiles && (
@@ -301,6 +351,39 @@ const VideoTask = ({ taskData, something }) => {
                   <source src={taskData?.additionalFiles} type="video/mp4" />
                 </video>
 
+            )}
+            {taskData?.enableDownload && (
+              <>
+                <div className="flex justify-end me-20 my-10">
+                  <button
+                    className="bg-blue text-white p-3 rounded-lg text-xl"
+                    onClick={handleDownload}
+                    disabled={cancelTokenSource !== null}
+                  >
+                    {cancelTokenSource ? `Downloading... ${downloadProgress}%` : 'Download'}
+                  </button>
+                  {cancelTokenSource && (
+                    <button
+                      className="border  text-black p-3 rounded-lg text-xl ml-4"
+                      onClick={() => {
+                        cancelTokenSource.cancel('Download cancelled by user');
+                      }}
+                    >
+                      Cancel
+                    </button>
+                  )}
+                </div>
+               {/*  {downloadProgress > 0 && (
+                  <div className="mt-2 flex justify-end me-20 my-10">
+                    <div className="flex gap-2 flex-col items-center">
+                      <div className="w-[50px] h-[50px] border flex justify-center items-center border-red-500 rounded-full">
+                        <p> {downloadProgress}%</p>
+                      </div>
+                      Downloading
+                    </div>
+                  </div>
+                )} */}
+              </>
             )}
             {/* <div className="flex items-center text-sm font-bold gap-1 absolute top-3 right-20 z-10">
               <img className="w-4" src={icon} alt="icon" />

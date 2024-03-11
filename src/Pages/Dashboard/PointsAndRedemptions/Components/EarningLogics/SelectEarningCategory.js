@@ -40,7 +40,7 @@ const SelectEarningCategory = ({
     );
 
     if (newCategory?.data?.acknowledged) {
-      toast.success("Category added Successfully");
+      toast.success(itemDetails?.categoryAddedSuccessfully ? itemDetails?.categoryAddedSuccessfully : "Category added Successfully");
       setEarningCategories([
         ...earningCategories,
         {
@@ -77,7 +77,7 @@ const SelectEarningCategory = ({
     );
 
     if (updatedCategory?.data?.acknowledged) {
-      toast.success("Category Updated Successfully");
+      toast.success(itemDetails?.categoryUpdatedSuccessfully ? itemDetails?.categoryUpdatedSuccessfully :"Category Updated Successfully");
       const updatedCategoriesArray = [...earningCategories];
       const selectedIndex = updatedCategoriesArray.findIndex(
         (category) =>
@@ -94,8 +94,8 @@ const SelectEarningCategory = ({
 
   const handleCategoryDelete = async (name) => {
     await Swal.fire({
-      title: "Are you sure?",
-      text: "Once deleted, the category will not recover!",
+      title: itemDetails?.areYouSure ? itemDetails?.areYouSure : "Are you sure?",
+      text: itemDetails?.onceDeletedTheCategoryWillNotRecover ? itemDetails?.onceDeletedTheCategoryWillNotRecover : "Once deleted, the category will not recover!",
       icon: "warning",
       buttons: true,
       showCancelButton: true,
@@ -204,7 +204,7 @@ const SelectEarningCategory = ({
           <div className="w-full flex items-center justify-center mt-[20px]">
             <input
               type="submit"
-              value="Update"
+              value={itemDetails?.update ? itemDetails?.update :"Update"}
               className="py-[15px] px-[48px] cursor-pointer text-[20px] font-[700] rounded-[8px] bg-[#3E4DAC] text-white "
             />
           </div>

@@ -11,6 +11,7 @@ import Loading from "../../Shared/Loading/Loading";
 import { useNavigate } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import LanguageSetting from "./LanguageSetting/LanguageSetting";
+import EmailIntegration from "./EmailIntegration";
 
 const UpdateOrganization = () => {
   const navigate = useNavigate();
@@ -53,7 +54,7 @@ const UpdateOrganization = () => {
 
 
   useEffect(() => {
-   
+
     axios
       .get(
         `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
@@ -125,7 +126,7 @@ const UpdateOrganization = () => {
   return (
     <div>
       <Layout>
-        <div className="px-4 mt-4 flex items-center gap-4">
+        <div className="px-4 mt-4 flex items-center gap-4 flex-wrap">
           <button
             onClick={() => setCurrentPage("organizationTheme")}
             className={`px-4 py-2 text-lg font-semibold rounded-lg ${currentPage === "organizationTheme"
@@ -170,6 +171,15 @@ const UpdateOrganization = () => {
               }`}
           >
             Language Setting
+          </button>
+          <button
+            onClick={() => setCurrentPage("emailIntegration")}
+            className={`px-4 py-2 text-lg font-semibold rounded-lg ${currentPage === "emailIntegration"
+              ? "bg-[#3E4DAC] text-white"
+              : "bg-white border-2 border-gray-400 text-black"
+              }`}
+          >
+            Email Integration
           </button>
         </div>
 
@@ -670,7 +680,7 @@ const UpdateOrganization = () => {
         {
           currentPage === "language Setting" && (
             <LanguageSetting
-          
+
             />
           )}
         {
@@ -678,6 +688,12 @@ const UpdateOrganization = () => {
             <DeviceLimit
               maxDeviceCount={maxDeviceCount}
               setMaxDeviceCount={setMaxDeviceCount}
+              orgData={orgData}
+            />
+          )}
+        {
+          currentPage === "emailIntegration" && (
+            <EmailIntegration
               orgData={orgData}
             />
           )}
