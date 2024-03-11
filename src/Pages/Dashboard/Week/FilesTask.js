@@ -3,6 +3,7 @@ import { AuthContext } from "../../../contexts/AuthProvider";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { saveAs } from 'file-saver';
 
 const FilesTask = ({ taskData }) => {
   const { userInfo, user } = useContext(AuthContext);
@@ -67,8 +68,81 @@ const FilesTask = ({ taskData }) => {
       setOverlayVisible(openQuiz);
     }
   };
+  console.log(taskData?.fileDescription)
+  const [downloadProgress, setDownloadProgress] = useState(0);
+  const [cancelTokenSource, setCancelTokenSource] = useState(null);
+
+  const handleDownload = async () => {
+    try {
+      // If there's an ongoing download, cancel it
+      if (cancelTokenSource) {
+        cancelTokenSource.cancel('Download cancelled');
+      }
+
+      const cancelToken = axios.CancelToken.source();
+      setCancelTokenSource(cancelToken);
+
+      const response = await axios.get(taskData?.additionalFiles, {
+        responseType: 'blob',
+        onDownloadProgress: progressEvent => {
+          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          setDownloadProgress(percentCompleted);
+        },
+        cancelToken: cancelToken.token,
+      });
+
+      // Determine file name and extension
+      const fileName = taskData?.additionalFiles.split('/').pop();
+      const fileExtension = fileName.split('.').pop();
+      const mimeType = getMimeType(fileExtension);
+
+      // Create Blob with response data
+      const blob = new Blob([response.data], { type: mimeType });
+
+      // Save file
+      saveAs(blob, fileName);
+    } catch (error) {
+      if (axios.isCancel(error)) {
+        console.log('Download cancelled:', error.message);
+      } else {
+        console.error('Error downloading the file:', error);
+      }
+    } finally {
+      setCancelTokenSource(null);
+      setDownloadProgress(0);
+    }
+  };
+
+  // Helper function to get MIME type based on file extension
+  const getMimeType = extension => {
+    switch (extension.toLowerCase()) {
+      case 'pdf':
+        return 'application/pdf';
+      case 'doc':
+      case 'docx':
+        return 'application/msword';
+      case 'xls':
+      case 'xlsx':
+        return 'application/vnd.ms-excel';
+      case 'ppt':
+      case 'pptx':
+        return 'application/vnd.ms-powerpoint';
+      default:
+        return 'application/octet-stream';
+    }
+  };
+
+  useEffect(() => {
+    // Cleanup the download if component unmounts or taskData?.additionalFiles changes
+    return () => {
+      if (cancelTokenSource) {
+        cancelTokenSource.cancel('Download cancelled due to component unmount');
+      }
+    };
+  }, [taskData?.additionalFiles, cancelTokenSource]);
   return (
     <div>
+
       {/* <div className="h-full flex items-center justify-center ">
         <object
           className="  border-x-[30px] mt-[40px] border-t-[30px] border-b-[50px] rounded-lg border-[#292929]"
@@ -100,8 +174,9 @@ const FilesTask = ({ taskData }) => {
           Mark as complete <CheckCircleOutlineIcon />
         </button>
       )}
-      <div className="h-[70vh] mb-[60px] ">
-        {taskData?.additionalFiles && (
+
+      {taskData?.additionalFiles && <>
+        <div className="h-[70vh] mb-[60px] ">
           <iframe
             className="h-[68vh] mx-auto border-x-[30px] mt-[40px] border-t-[30px] border-b-[50px] rounded-lg border-[#292929]"
             src={`https://docs.google.com/viewer?url=${taskData?.additionalFiles}&embedded=true`}
@@ -109,8 +184,41 @@ const FilesTask = ({ taskData }) => {
             height="80vh"
             title="W3Schools Free Online Web Tutorials"
           ></iframe>
+        </div>
+
+
+        {taskData?.enableDownload && (
+          <div className="flex justify-end me-20 my-10">
+            <button
+              className="bg-blue text-white p-3 rounded-lg text-xl"
+              onClick={cancelTokenSource ? null : handleDownload}
+              disabled={cancelTokenSource !== null}
+            >
+              {cancelTokenSource ? `Downloading... ${downloadProgress}%` : 'Download'}
+            </button>
+            {cancelTokenSource && (
+              <button
+                className="bg-red text-white p-3 rounded-lg text-xl ml-4"
+                onClick={() => {
+                  cancelTokenSource.cancel('Download cancelled by user');
+                }}
+              >
+                Cancel
+              </button>
+            )}
+            {/*  {downloadProgress > 0 && (
+            <div className="ml-4 flex items-center">
+              <p>{downloadProgress}%</p>
+            </div>
+          )} */}
+          </div>
         )}
-      </div>
+
+      </>
+      }
+
+      <div className={`my-5 mb-5 px-2 ${!taskData?.additionalFiles ?" ":""}`} dangerouslySetInnerHTML={{ __html: taskData?.fileDescription }} />
+
     </div>
   );
 };

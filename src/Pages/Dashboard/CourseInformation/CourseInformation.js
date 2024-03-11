@@ -49,6 +49,7 @@ const CourseInformation = () => {
   const [weeks, setWeeks] = useState([]);
   const [courseData, setCourseData] = useState();
   const [currentWeek, setCurrentWeek] = useState(weeks[0]);
+  localStorage.setItem("currentWeek", JSON.stringify(weeks[0]));
   const [clickedTask, setClickedTask] = useState({});
   const Role = localStorage.getItem("role");
   const [selectedOption, setSelectedOption] = useState("Category");
@@ -341,56 +342,131 @@ const CourseInformation = () => {
     });
   };
 
+  /*  const handleChapterDelete = async (id) => {
+     Swal.fire({
+       title: "Are you sure?",
+       text: "You won't be able to revert this!",
+       icon: "warning",
+       showCancelButton: true,
+       confirmButtonColor: "#3085d6",
+       cancelButtonColor: "#d33",
+       confirmButtonText: "Yes, delete it!",
+     }).then(async (result) => {
+       if (result.isConfirmed) {
+         Loading();
+         if (chapters?.length === 1) {
+           Swal.fire({
+             icon: "error",
+             title: "Oops...",
+             text: "There only one chapter. Delete is not possible!",
+           });
+           return;
+         }
+ 
+         console.log(id);
+ 
+         await axios
+           .delete(
+             `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/chapterId/${id}`
+           )
+           .then((result) => {
+             console.log(result);
+             if (result?.status === 200) {
+               Swal.fire({
+                 title: "Deleted!",
+                 text: "Your file has been deleted.",
+                 icon: "success",
+               });
+               const remainingWeeks = chapters.filter(
+                 (chapter) => chapter._id !== id
+               );
+               setChapters(remainingWeeks);
+             } else {
+               toast.error("Oops...! Something went wrong.");
+             }
+           })
+           .catch((error) => {
+             toast.error("Oops...! Something went wrong.");
+             console.error(error);
+             Loading().close();
+           });
+       }
+     });
+   }; */
+
   const handleChapterDelete = async (id) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
+    const { value: accept } = await Swal.fire({
+      title: "Delete Chapter",
+      html: `
+        <div style="text-align: center;">
+          <i class="fas fa-exclamation-triangle fa-3x" style="color: red;"></i>
+        </div>
+        <br>
+       
+        <div>
+          <p>You won't be able to revert this!</p>
+        </div>
+        <br>
+        <div>
+          <input type="checkbox" id="terms" name="terms" value="accepted">
+          <label for="terms" style="color: red;">Please be cautious, all the tasks under this chapter will be deleted</label>
+        </div>
+      
+      `,
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        Loading();
-        if (chapters?.length === 1) {
-          Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: "There only one chapter. Delete is not possible!",
-          });
-          return;
+      icon: "warning", // Add warning icon
+      preConfirm: () => {
+        if (!document.getElementById("terms").checked) {
+          Swal.showValidationMessage(
+            "You need to agree with the terms and conditions"
+          );
         }
-
-        console.log(id);
-
-        await axios
-          .delete(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/chapterId/${id}`
-          )
-          .then((result) => {
-            console.log(result);
-            if (result?.status === 200) {
-              Swal.fire({
-                title: "Deleted!",
-                text: "Your file has been deleted.",
-                icon: "success",
-              });
-              const remainingWeeks = chapters.filter(
-                (chapter) => chapter._id !== id
-              );
-              setChapters(remainingWeeks);
-            } else {
-              toast.error("Oops...! Something went wrong.");
-            }
-          })
-          .catch((error) => {
-            toast.error("Oops...! Something went wrong.");
-            console.error(error);
-            Loading().close();
-          });
-      }
+      },
     });
+
+    if (accept) {
+      // Proceed with deletion
+      Loading();
+      if (chapters?.length === 1) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "There is only one chapter. Delete is not possible!",
+        });
+        return;
+      }
+
+      console.log(id);
+
+      await axios
+        .delete(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/chapterId/${id}`
+        )
+        .then((result) => {
+          console.log(result);
+          if (result?.status === 200) {
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your file has been deleted.",
+              icon: "success",
+            });
+            const remainingWeeks = chapters.filter(
+              (chapter) => chapter._id !== id
+            );
+            setChapters(remainingWeeks);
+          } else {
+            toast.error("Oops...! Something went wrong.");
+          }
+        })
+        .catch((error) => {
+          toast.error("Oops...! Something went wrong.");
+          console.error(error);
+          Loading().close();
+        });
+    }
   };
 
   useEffect(() => {
@@ -414,6 +490,12 @@ const CourseInformation = () => {
           setCurrentWeek(
             response?.data?.find((item) => item?._id === queryWeek)
           );
+          localStorage.setItem(
+            "currentWeek",
+            JSON.stringify(
+              response?.data?.find((item) => item?._id === queryWeek)
+            )
+          );
         } else {
           response?.data?.forEach((element) => {
             const weekStartDate = new Date(element?.weekStartDate);
@@ -423,10 +505,15 @@ const CourseInformation = () => {
               weekEndDate >= currentDateTime
             ) {
               setCurrentWeek(element);
+              localStorage.setItem("currentWeek", JSON.stringify(element));
               return;
             }
             if (!currentWeek) {
               setCurrentWeek(response?.data[0]);
+              localStorage.setItem(
+                "currentWeek",
+                JSON.stringify(response?.data[0])
+              );
             }
           });
         }
@@ -483,6 +570,8 @@ const CourseInformation = () => {
         setIsLoading(false);
       });
   }, [id]);
+
+  console.log(chapters);
 
   return (
     <div>
@@ -735,6 +824,9 @@ const CourseInformation = () => {
                   selectedBatches={selectedBatches}
                   setSelectedBatches={setSelectedBatches}
                   batchesData={batchesData}
+                  setBatchesData={setBatchesData}
+                  count={count}
+                  setCount={setCount}
                 />
               )}
             </div>
@@ -904,717 +996,7 @@ const CourseInformation = () => {
                   setSelectedChapterAndTaskToDeleteTask
                 }
               />
-              {1 === 0 && (
-                <div>
-                  {chapters?.map((chapter, index) => {
-                    const chapterIndex = index;
-                    return (
-                      <div key={chapter?._id} className="sortable-chapter">
-                        <div className="relative">
-                          <div className="flex items-center justify-between mt-[60px]">
-                            <div className="flex items-center ">
-                              <div className="w-[85px] rounded-full flex items-center justify-center h-[85px] bg-[#E1E6FF] ">
-                                <h1 className="text-[35px] font-[600] ">
-                                  {index + 1}
-                                </h1>
-                              </div>
-                              <h1 className="text-[23px] font-[700] lg:ml-[40px] mx-5">
-                                {chapter?.chapterName}{" "}
-                                {Role === "admin" && (
-                                  <>
-                                    <button
-                                      onClick={() => {
-                                        setEditChapterOpen(true);
-                                        setChapterData({
-                                          ...chapter,
-                                          index: index,
-                                        });
-                                      }}
-                                      className="ml-[24px]"
-                                    >
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="18"
-                                        height="20"
-                                        viewBox="0 0 18 20"
-                                        fill="none"
-                                      >
-                                        <path
-                                          d="M13.648 0.961914L17.3711 4.88525L14.5329 7.87744L10.8098 3.95411L13.648 0.961914ZM0.0117188 19.2551H3.73478L12.7781 9.72533L9.05502 5.802L0.0117188 15.3318V19.2551Z"
-                                          fill="#282828"
-                                        />
-                                      </svg>
-                                    </button>
-                                    <button
-                                      onClick={() =>
-                                        handleChapterDelete(chapter?._id)
-                                      }
-                                      className=" bg-sky-950 p-[6px] rounded-full ml-[24px]"
-                                    >
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="18"
-                                        height="19"
-                                        viewBox="0 0 24 25"
-                                        fill="none"
-                                      >
-                                        <path
-                                          d="M6 7.83105H5V20.8311C5 21.3615 5.21071 21.8702 5.58579 22.2453C5.96086 22.6203 6.46957 22.8311 7 22.8311H17C17.5304 22.8311 18.0391 22.6203 18.4142 22.2453C18.7893 21.8702 19 21.3615 19 20.8311V7.83105H6ZM16.618 4.83105L15 2.83105H9L7.382 4.83105H3V6.83105H21V4.83105H16.618Z"
-                                          fill="#ED1010"
-                                        />
-                                      </svg>
-                                    </button>
-                                  </>
-                                )}
-                              </h1>
-                            </div>
-                            {/* {Role === "user" && (
-                            <button className="bg-[#E1E6FF] w-[150px] h-[50px] text-[16px] font-[600] text-center rounded-[8px] ">
-                              In Progress
-                            </button>
-                          )} */}
-                          </div>
-                          <div className="sub-items">
-                            {Role === "admin" &&
-                              chapter?.tasks?.map((task, taskIndex) => (
-                                <div key={task?.taskId} className="relative ">
-                                  <div className="flex items-center justify-between my-[60px] relative z-10 ">
-                                    <div className="flex gap-5 lg:gap-0 items-center w-full">
-                                      {toggleButton && (
-                                        <div className="w-[85px] flex items-center justify-center ">
-                                          {Role !== "admin" && (
-                                            <>
-                                              {task?.participants?.find(
-                                                (item) =>
-                                                  item?.participantId ===
-                                                  userInfo?._id
-                                              ) ? (
-                                                <>
-                                                  {task?.participants?.find(
-                                                    (item) =>
-                                                      item?.participantId ===
-                                                      userInfo?._id
-                                                  )?.status === "Completed" ? (
-                                                    <img
-                                                      src={Completed}
-                                                      alt="Completed"
-                                                    />
-                                                  ) : (
-                                                    <img
-                                                      src={InProgress}
-                                                      alt="InProgress"
-                                                    />
-                                                  )}
-                                                </>
-                                              ) : (
-                                                <>
-                                                  <img
-                                                    src={Pending}
-                                                    alt="Pending"
-                                                  />
-                                                </>
-                                              )}
-                                            </>
-                                          )}
-                                        </div>
-                                      )}
-                                      <div className="flex w-full items-center">
-                                        {task?.taskType === "Reading" && (
-                                          <img
-                                            className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
-                                            src={ReadingTask}
-                                            alt="Task"
-                                          />
-                                        )}
-                                        {task?.taskType === "Classes" && (
-                                          <img
-                                            className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
-                                            src={ClassesTask}
-                                            alt="Task"
-                                          />
-                                        )}
-                                        {task?.taskType === "Assignment" && (
-                                          <img
-                                            className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
-                                            src={AssignmentTask}
-                                            alt="Task"
-                                          />
-                                        )}
-                                        {task?.taskType === "Quiz" && (
-                                          <img
-                                            className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
-                                            src={QuizTask}
-                                            alt="Task"
-                                          />
-                                        )}
-                                        {task?.taskType === "Live Test" && (
-                                          <img
-                                            className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
-                                            src={LiveTestTask}
-                                            alt="Task"
-                                          />
-                                        )}
-                                        {task?.taskType === "Video" && (
-                                          <img
-                                            className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
-                                            src={VideoTask}
-                                            alt="Task"
-                                          />
-                                        )}
-                                        {task?.taskType === "Audio" && (
-                                          <img
-                                            className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
-                                            src={AudioTask}
-                                            alt="Task"
-                                          />
-                                        )}
-                                        {task?.taskType === "Files" && (
-                                          <img
-                                            className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
-                                            src={FilesTask}
-                                            alt="Task"
-                                          />
-                                        )}
-                                        {task?.taskType === "Schedule" && (
-                                          <img
-                                            className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
-                                            src={ScheduleTask}
-                                            alt="Schedule"
-                                          />
-                                        )}
-                                        <div className="">
-                                          <Link
-                                            onClick={() => {
-                                              localStorage.setItem(
-                                                "chapter",
-                                                chapter?.chapterName
-                                              );
-                                              localStorage.setItem(
-                                                "task",
-                                                JSON.stringify(task)
-                                              );
-                                              localStorage.setItem(
-                                                "currentWeek",
-                                                JSON.stringify(currentWeek)
-                                              );
-                                              localStorage.setItem(
-                                                "courseId",
-                                                JSON.stringify(courseData?._id)
-                                              );
-                                            }}
-                                            to={`/week/${currentWeek?._id}`}
-                                            className="text-[#3E4DAC] text-[22px] font-[700] "
-                                          >
-                                            {task?.taskName}
-                                          </Link>
-                                          <p className="text-[#626262] text-[18px] font-[500] ">
-                                            {task?.taskType}
-                                          </p>
-                                        </div>
-                                      </div>
-                                      {!toggleButton && (
-                                        <div className="mx-2 flex items-center justify-center ">
-                                          {Role !== "admin" && (
-                                            <>
-                                              {task?.participants?.find(
-                                                (item) =>
-                                                  item?.participantId ===
-                                                  userInfo?._id
-                                              ) ? (
-                                                <>
-                                                  {task?.participants?.find(
-                                                    (item) =>
-                                                      item?.participantId ===
-                                                      userInfo?._id
-                                                  )?.status === "Completed" ? (
-                                                    <img
-                                                      src={Completed}
-                                                      alt="Completed"
-                                                    />
-                                                  ) : (
-                                                    <img
-                                                      src={InProgress}
-                                                      alt="InProgress"
-                                                    />
-                                                  )}
-                                                </>
-                                              ) : (
-                                                <>
-                                                  <img
-                                                    src={Pending}
-                                                    alt="Pending"
-                                                  />
-                                                </>
-                                              )}
-                                            </>
-                                          )}
-                                        </div>
-                                      )}
-                                    </div>
-                                    {Role === "admin" && (
-                                      <div className="max-w-[200px] flex gap-2 flex-wrap ">
-                                        {task?.batches?.map((batch) => (
-                                          <h1 className="p-1 bg-slate-200 font-sans rounded-md">
-                                            {batch?.batchName}
-                                          </h1>
-                                        ))}
-                                      </div>
-                                    )}
-                                    {Role === "admin" && (
-                                      <div className="relative">
-                                        <button
-                                          onClick={() => {
-                                            if (clickedTask === task)
-                                              setClickedTask(null);
-                                            else setClickedTask(task);
-                                          }}
-                                          onBlur={() => setClickedTask(null)}
-                                          className=" mr-[25px] "
-                                        >
-                                          <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="30"
-                                            height="31"
-                                            viewBox="0 0 30 31"
-                                            fill="none"
-                                          >
-                                            <path
-                                              d="M15.0166 12.6104C13.6432 12.6104 12.5195 13.734 12.5195 15.1074C12.5195 16.4808 13.6432 17.6045 15.0166 17.6045C16.39 17.6045 17.5137 16.4808 17.5137 15.1074C17.5137 13.734 16.39 12.6104 15.0166 12.6104ZM15.0166 5.11914C13.6432 5.11914 12.5195 6.24282 12.5195 7.61621C12.5195 8.9896 13.6432 10.1133 15.0166 10.1133C16.39 10.1133 17.5137 8.9896 17.5137 7.61621C17.5137 6.24282 16.39 5.11914 15.0166 5.11914ZM15.0166 20.1016C13.6432 20.1016 12.5195 21.2252 12.5195 22.5986C12.5195 23.972 13.6432 25.0957 15.0166 25.0957C16.39 25.0957 17.5137 23.972 17.5137 22.5986C17.5137 21.2252 16.39 20.1016 15.0166 20.1016Z"
-                                              fill="black"
-                                            />
-                                          </svg>
-                                        </button>
-                                        {clickedTask === task && (
-                                          <ul className="absolute right-5 top-[35px] w-max border  bg-[#141414] border-t-0 p-2 rounded-[8px] mt-1 transform translate-y-[-10px] shadow-[0px_2px_4px_0px_#00000026]">
-                                            <li
-                                              onMouseDown={() => {
-                                                localStorage.setItem(
-                                                  "chapter",
-                                                  chapter?.chapterName
-                                                );
-                                                localStorage.setItem(
-                                                  "task",
-                                                  JSON.stringify(task)
-                                                );
-                                                localStorage.setItem(
-                                                  "course",
-                                                  courseData?.courseFullName
-                                                );
-                                                localStorage.setItem(
-                                                  "currentWeek",
-                                                  JSON.stringify(currentWeek)
-                                                );
-                                                navigate(
-                                                  `/editTask/${currentWeek?._id}`
-                                                );
-                                              }}
-                                              className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600] "
-                                            >
-                                              Edit Task
-                                            </li>
-                                            <li
-                                              className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600] "
-                                              onMouseDown={() => {
-                                                // handleTaskDelete(task, chapter);
-                                                setDeleteTaskPopup(true);
-                                                setSelectedChapterAndTaskToDeleteTask(
-                                                  { task, chapter }
-                                                );
-                                              }}
-                                            >
-                                              Delete Task
-                                            </li>
-                                          </ul>
-                                        )}
-                                      </div>
-                                    )}
-                                  </div>
-                                  {chapter?.tasks?.length - 1 !== taskIndex && (
-                                    <hr className="w-[2px] pt-[150px] bg-[#C7C7C7] absolute bottom-[-100px] lg:left-[175px] left-[20px]" />
-                                  )}
-                                </div>
-                              ))}
-                            {Role !== "admin" &&
-                              chapter?.tasks?.map((task, taskIndex) => {
-                                const userIsParticipant =
-                                  task?.participants?.some(
-                                    (item) =>
-                                      item?.participantId === userInfo?._id
-                                  );
 
-                                const isPreviousTaskCompleted =
-                                  taskIndex === 0 || // Always allow navigation for the first task
-                                  chapter?.tasks?.[
-                                    taskIndex - 1
-                                  ]?.participants?.some(
-                                    (item) =>
-                                      item?.participantId === userInfo?._id &&
-                                      item?.status === "Completed"
-                                  );
-
-                                const isPrevChapterCompleted =
-                                  chapterIndex === 0 ||
-                                  chapters?.[chapterIndex - 1]?.tasks?.[
-                                    chapters?.[chapterIndex - 1]?.tasks
-                                      ?.length - 1
-                                  ]?.participants?.some(
-                                    (item) =>
-                                      item?.participantId === userInfo?._id &&
-                                      item?.status === "Completed"
-                                  );
-
-                                return (
-                                  <div key={task?.taskId} className="relative">
-                                    <div className="flex items-center justify-between my-[60px] relative z-10">
-                                      {toggleButton && (
-                                        <div className="w-[85px] flex items-center justify-center ">
-                                          {Role !== "admin" && (
-                                            <>
-                                              {userIsParticipant ? (
-                                                <>
-                                                  {task?.participants?.find(
-                                                    (item) =>
-                                                      item?.participantId ===
-                                                      userInfo?._id
-                                                  )?.status === "Completed" ? (
-                                                    <div className="w-full flex items-center justify-start gap-6">
-                                                      {" "}
-                                                      <img
-                                                        src={Completed}
-                                                        alt="Completed"
-                                                      />
-                                                    </div>
-                                                  ) : (
-                                                    <div className="w-full flex items-center justify-start gap-6">
-                                                      <img
-                                                        src={InProgress}
-                                                        alt="InProgress"
-                                                      />
-                                                    </div>
-                                                  )}
-                                                </>
-                                              ) : (
-                                                <div className="w-full flex items-center justify-start gap-6">
-                                                  <img
-                                                    src={Pending}
-                                                    alt="Pending"
-                                                  />
-                                                  {!(
-                                                    isPreviousTaskCompleted &&
-                                                    isPrevChapterCompleted
-                                                  ) &&
-                                                    (courseData?.enableDrip ||
-                                                      task?.taskDrip) && (
-                                                      <img
-                                                        className="w-[35px]"
-                                                        src={lock}
-                                                        alt="Lock"
-                                                      />
-                                                    )}
-                                                </div>
-                                              )}
-                                            </>
-                                          )}
-                                        </div>
-                                      )}
-                                      <div className="flex w-full items-center">
-                                        {task?.taskType === "Reading" && (
-                                          <img
-                                            className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
-                                            src={ReadingTask}
-                                            alt="Task"
-                                          />
-                                        )}
-                                        {task?.taskType === "Classes" && (
-                                          <img
-                                            className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
-                                            src={ClassesTask}
-                                            alt="Task"
-                                          />
-                                        )}
-                                        {task?.taskType === "Assignment" && (
-                                          <img
-                                            className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
-                                            src={AssignmentTask}
-                                            alt="Task"
-                                          />
-                                        )}
-                                        {task?.taskType === "Quiz" && (
-                                          <img
-                                            className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
-                                            src={QuizTask}
-                                            alt="Task"
-                                          />
-                                        )}
-                                        {task?.taskType === "Live Test" && (
-                                          <img
-                                            className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
-                                            src={LiveTestTask}
-                                            alt="Task"
-                                          />
-                                        )}
-                                        {task?.taskType === "Video" && (
-                                          <img
-                                            className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
-                                            src={VideoTask}
-                                            alt="Task"
-                                          />
-                                        )}
-                                        {task?.taskType === "Audio" && (
-                                          <img
-                                            className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
-                                            src={AudioTask}
-                                            alt="Task"
-                                          />
-                                        )}
-                                        {task?.taskType === "Files" && (
-                                          <img
-                                            className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
-                                            src={FilesTask}
-                                            alt="Task"
-                                          />
-                                        )}
-                                        {task?.taskType === "Schedule" && (
-                                          <img
-                                            className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
-                                            src={ScheduleTask}
-                                            alt="Task"
-                                          />
-                                        )}
-                                        {courseData?.enableDrip && (
-                                          <div className="">
-                                            {isPreviousTaskCompleted &&
-                                            isPrevChapterCompleted ? (
-                                              <Link
-                                                onClick={() => {
-                                                  localStorage.setItem(
-                                                    "chapter",
-                                                    chapter?.chapterName
-                                                  );
-                                                  localStorage.setItem(
-                                                    "task",
-                                                    JSON.stringify(task)
-                                                  );
-                                                  localStorage.setItem(
-                                                    "currentWeek",
-                                                    JSON.stringify(currentWeek)
-                                                  );
-                                                  localStorage.setItem(
-                                                    "courseId",
-                                                    JSON.stringify(
-                                                      courseData?._id
-                                                    )
-                                                  );
-                                                }}
-                                                to={`/week/${currentWeek?._id}`}
-                                                className="text-[#3E4DAC] text-[22px] font-[700]"
-                                              >
-                                                {task?.taskName}
-                                              </Link>
-                                            ) : (
-                                              <span
-                                                onClick={() =>
-                                                  toast.error(
-                                                    "Complete The Previous Task"
-                                                  )
-                                                }
-                                                className="text-[#3E4DAC] text-[22px] font-[700]"
-                                              >
-                                                {task?.taskName}
-                                              </span>
-                                            )}
-                                            <p className="text-[#626262] text-[18px] font-[500]">
-                                              {task?.taskType}
-                                            </p>
-                                          </div>
-                                        )}
-
-                                        {!courseData?.enableDrip && (
-                                          <div className="">
-                                            {(isPreviousTaskCompleted &&
-                                              isPrevChapterCompleted) ||
-                                            !task?.taskDrip ? (
-                                              <Link
-                                                onClick={() => {
-                                                  localStorage.setItem(
-                                                    "chapter",
-                                                    chapter?.chapterName
-                                                  );
-                                                  localStorage.setItem(
-                                                    "task",
-                                                    JSON.stringify(task)
-                                                  );
-                                                  localStorage.setItem(
-                                                    "currentWeek",
-                                                    JSON.stringify(currentWeek)
-                                                  );
-                                                  localStorage.setItem(
-                                                    "courseId",
-                                                    JSON.stringify(
-                                                      courseData?._id
-                                                    )
-                                                  );
-                                                }}
-                                                to={`/week/${currentWeek?._id}`}
-                                                className="text-[#3E4DAC] text-[22px] font-[700]"
-                                              >
-                                                {task?.taskName}
-                                              </Link>
-                                            ) : (
-                                              <span
-                                                onClick={() =>
-                                                  toast.error(
-                                                    "Complete The Previous Task"
-                                                  )
-                                                }
-                                                className="text-[#3E4DAC] text-[22px] font-[700]"
-                                              >
-                                                {task?.taskName}
-                                              </span>
-                                            )}
-                                            <p className="text-[#626262] text-[18px] font-[500]">
-                                              {task?.taskType}
-                                            </p>
-                                          </div>
-                                        )}
-                                      </div>
-                                      {!toggleButton && (
-                                        <div className="mx-2 flex items-center justify-center ">
-                                          {Role !== "admin" && (
-                                            <>
-                                              {userIsParticipant ? (
-                                                <>
-                                                  {task?.participants?.find(
-                                                    (item) =>
-                                                      item?.participantId ===
-                                                      userInfo?._id
-                                                  )?.status === "Completed" ? (
-                                                    <img
-                                                      src={Completed}
-                                                      alt="Completed"
-                                                    />
-                                                  ) : (
-                                                    <img
-                                                      src={InProgress}
-                                                      alt="InProgress"
-                                                    />
-                                                  )}
-                                                </>
-                                              ) : (
-                                                <img
-                                                  src={Pending}
-                                                  alt="Pending"
-                                                />
-                                              )}
-                                            </>
-                                          )}
-                                        </div>
-                                      )}
-                                    </div>
-                                    {chapter?.tasks?.length - 1 !==
-                                      taskIndex && (
-                                      <hr className="w-[2px] pt-[150px] bg-[#C7C7C7] absolute bottom-[-100px] lg:left-[175px] left-[20px]" />
-                                    )}
-                                  </div>
-                                );
-                              })}
-                          </div>
-
-                          {/* <div className="relative">
-                        <div className="flex items-center justify-between my-[60px] ">
-                          <div className="flex items-center">
-                            <div className="w-[85px] flex items-center justify-center ">
-                              {Role === "user" && (
-                                <img src={InProgress} alt="InProgress" />
-                              )}
-                            </div>
-                            <div className="flex items-center">
-                              <div className="relative ">
-                                <img
-                                  className="ml-[60px] mr-[30px] relative z-10 "
-                                  src={Task}
-                                  alt="Task"
-                                />
-                                {Role === "user" && (
-                                  <div className="w-[80.16px] h-[79.10px] rounded-[14.77px] border-4 border-emerald-500 absolute top-1 right-[20.5px] z-0 " />
-                                )}
-                              </div>
-                              <div className="">
-                                <h1 className="text-[#3E4DAC] text-[22px] font-[700] ">
-                                  Task 2
-                                </h1>
-                                <p className="text-[#626262] text-[18px] font-[500] ">
-                                  Reading
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                          {Role === "admin" && (
-                            <button className=" mr-[25px] ">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="30"
-                                height="31"
-                                viewBox="0 0 30 31"
-                                fill="none"
-                              >
-                                <path
-                                  d="M15.0166 12.6104C13.6432 12.6104 12.5195 13.734 12.5195 15.1074C12.5195 16.4808 13.6432 17.6045 15.0166 17.6045C16.39 17.6045 17.5137 16.4808 17.5137 15.1074C17.5137 13.734 16.39 12.6104 15.0166 12.6104ZM15.0166 5.11914C13.6432 5.11914 12.5195 6.24282 12.5195 7.61621C12.5195 8.9896 13.6432 10.1133 15.0166 10.1133C16.39 10.1133 17.5137 8.9896 17.5137 7.61621C17.5137 6.24282 16.39 5.11914 15.0166 5.11914ZM15.0166 20.1016C13.6432 20.1016 12.5195 21.2252 12.5195 22.5986C12.5195 23.972 13.6432 25.0957 15.0166 25.0957C16.39 25.0957 17.5137 23.972 17.5137 22.5986C17.5137 21.2252 16.39 20.1016 15.0166 20.1016Z"
-                                  fill="black"
-                                />
-                              </svg>
-                            </button>
-                          )}
-                          {Role === "user" && (
-                            <div>
-                              <Link to="/week">
-                                <button
-                                  className={`bg-[#3E4DAC] text-white w-[150px] h-[50px] text-[16px] font-[600] text-center rounded-[8px] z-[1] shadow-[0px_4px_0px_0px_#CA5F98] lg:shadow-[0px_8px_0px_0px_#CA5F98]`}
-                                >
-                                  Resume
-                                </button>
-                              </Link>
-                            </div>
-                          )}
-                        </div>
-                        <hr className="w-[2px] pt-[150px] bg-[#C7C7C7] absolute bottom-[-100px] left-[174px] " />
-                      </div> */}
-                        </div>
-                        {Role === "admin" && (
-                          <div
-                            onClick={() => {
-                              setAddTaskOpen(true);
-                              setChapterData(chapter);
-                            }}
-                            className="py-[32px] cursor-pointer px-[40px] bg-[#FFFEE8] my-[45px] rounded-[15px] "
-                          >
-                            <div className="flex items-center">
-                              <svg
-                                className=" bg-[#FF557A] rounded-full w-[38px] h-[38px] mr-[24px] "
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="24"
-                                height="25"
-                                viewBox="0 0 24 25"
-                                fill="none"
-                              >
-                                <path
-                                  d="M19 11.5H13V5.5H11V11.5H5V13.5H11V19.5H13V13.5H19V11.5Z"
-                                  fill="white"
-                                />
-                              </svg>
-                              <h1 className="text-[20px] font-[600]">
-                                {" "}
-                                Add Task
-                              </h1>
-                            </div>
-                          </div>
-                        )}
-                        {index !== chapters?.length - 1 && <hr />}
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
               {/* <div className="relative">
                 <div className="flex items-center justify-between mt-[60px]">
                   <div className="flex items-center ">

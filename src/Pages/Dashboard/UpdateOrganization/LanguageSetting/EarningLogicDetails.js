@@ -87,6 +87,13 @@ const EarningLogicDetails = () => {
         const name = form.name?.value;
         const addedWeight = form.addedWeight?.value;
         const pleaseAddCategory = form.pleaseAddCategory?.value;
+        const ItemValue = form.ItemValue?.value;
+        const itemAlreadyExist = form.itemAlreadyExist?.value;
+        const pleaseEnterAnUniqueItemName = form.pleaseEnterAnUniqueItemName?.value;
+        const itemUpdatedSuccessfully = form.itemUpdatedSuccessfully?.value;
+        const onceDeletedTheItemWillNotRecover = form.onceDeletedTheItemWillNotRecover?.value;
+        const categoryAddedSuccessfully = form.categoryAddedSuccessfully?.value;
+        const categoryUpdatedSuccessfully = form.categoryUpdatedSuccessfully?.value;
        
 
         const itemDetail = {
@@ -124,6 +131,13 @@ const EarningLogicDetails = () => {
             name: name,
             addedWeight: addedWeight,
             pleaseAddCategory: pleaseAddCategory,
+            ItemValue: ItemValue,
+            itemAlreadyExist: itemAlreadyExist,
+            pleaseEnterAnUniqueItemName: pleaseEnterAnUniqueItemName,
+            itemUpdatedSuccessfully: itemUpdatedSuccessfully,
+            onceDeletedTheItemWillNotRecover: onceDeletedTheItemWillNotRecover,
+            categoryAddedSuccessfully: categoryAddedSuccessfully,
+            categoryUpdatedSuccessfully: categoryUpdatedSuccessfully,
            
 
         };
@@ -201,7 +215,7 @@ const EarningLogicDetails = () => {
                                 <input name='pleaseCreateACourseFirst' defaultValue={itemDetails?.pleaseCreateACourseFirst} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
                             </div>
                             <div className='flex justify-between items-center w-[100%]'>
-                                <p className='text-lg font-medium'>Are you sure</p>
+                                <p className='text-lg font-medium'>Are you sure ?</p>
                                 <input name='areYouSure' defaultValue={itemDetails?.areYouSure} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
                             </div>
                             <div className='flex justify-between items-center w-[100%]'>
@@ -294,7 +308,31 @@ const EarningLogicDetails = () => {
                             </div>
                             <div className='flex justify-between items-center w-[100%]'>
                                 <p className='text-lg font-medium'>Item Value</p>
-                                <input name='Item Value' defaultValue={itemDetails?.pleaseAddCategory} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                                <input name='ItemValue' defaultValue={itemDetails?.ItemValue} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                            </div>
+                            <div className='flex justify-between items-center w-[100%]'>
+                                <p className='text-lg font-medium'>Item already exist</p>
+                                <input name='itemAlreadyExist' defaultValue={itemDetails?.itemAlreadyExist} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                            </div>
+                            <div className='flex justify-between items-center w-[100%]'>
+                                <p className='text-lg font-medium'>Please enter an unique item name</p>
+                                <input name='pleaseEnterAnUniqueItemName' defaultValue={itemDetails?.pleaseEnterAnUniqueItemName} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                            </div>
+                            <div className='flex justify-between items-center w-[100%]'>
+                                <p className='text-lg font-medium'>Item Updated Successfully</p>
+                                <input name='itemUpdatedSuccessfully' defaultValue={itemDetails?.itemUpdatedSuccessfully} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                            </div>
+                            <div className='flex justify-between items-center w-[100%]'>
+                                <p className='text-lg font-medium'>Once deleted, the item will not recover!</p>
+                                <input name='onceDeletedTheItemWillNotRecover' defaultValue={itemDetails?.onceDeletedTheItemWillNotRecover} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                            </div>
+                            <div className='flex justify-between items-center w-[100%]'>
+                                <p className='text-lg font-medium'>Category added Successfully</p>
+                                <input name='categoryAddedSuccessfully' defaultValue={itemDetails?.categoryAddedSuccessfully} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                            </div>
+                            <div className='flex justify-between items-center w-[100%]'>
+                                <p className='text-lg font-medium'>Category Updated Successfully</p>
+                                <input name='categoryUpdatedSuccessfully' defaultValue={itemDetails?.categoryUpdatedSuccessfully} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
                             </div>
                           
 

@@ -6,13 +6,19 @@ import axios from "axios";
 import DialogLayoutForFromControl from "../Shared/DialogLayoutForFromControl";
 import { toast } from "react-hot-toast";
 import Loading from "../../Shared/Loading/Loading";
+import Swal from "sweetalert2";
+import FileCopyIcon from "@mui/icons-material/FileCopy";
 
 const BatchConfiguration = ({
   selectedBatches,
   setSelectedBatches,
   batchesData,
+  setBatchesData,
+  count,
+  setCount,
 }) => {
   const Role = localStorage.getItem("role");
+  const rootUrl = window.location.origin;
   const [isOpenBatches, setIsOpenBatches] = useState(false);
   const [addBatchOpen, setAddBatchOpen] = useState(false);
   const [participant, setParticipant] = useState("");
@@ -129,7 +135,65 @@ const BatchConfiguration = ({
     }
   };
 
-  const handleBatchDelete = async (id) => {};
+  const handleBatchDelete = async () => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        Loading();
+        try {
+          const deleteBatch = await axios.delete(
+            `${process.env.REACT_APP_SERVER_API}/api/v1/batches/deleteBatch/batchId/${selectedBatches[0]?._id}`
+          );
+
+          console.log(deleteBatch);
+
+          // sendData?.user?.participants?.forEach((element) => {
+          //   createUser(element?.email, element?.password);
+          // });
+
+          if (deleteBatch?.status === 200) {
+            setSelectedBatches(
+              selectedBatches?.filter(
+                (item) => item?._id !== selectedBatches[0]?._id
+              )
+            );
+            setBatchesData(
+              batchesData?.filter(
+                (item) => item?._id !== selectedBatches[0]?._id
+              )
+            );
+            setCount(count + 1);
+            Loading().close();
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your batch has been deleted.",
+              icon: "success",
+            });
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Something wrong happened!",
+            });
+          }
+        } catch (error) {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: `${error?.message}`,
+          });
+          console.log(error?.message);
+        }
+      }
+    });
+  };
 
   const handleAddParticipant = (e) => {
     e.preventDefault();
@@ -610,8 +674,48 @@ const BatchConfiguration = ({
                     name="price"
                     defaultValue={selectedBatches[0]?.price}
                     placeholder="Eg. 5000"
-                    className="bg-[#F6F7FF] font-sans border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+                    className="bg-[#F6F7FF] font-sans border-[1px] border-[#CECECE] py-[15px] px-[18px] w-full rounded-[6px] "
                   />
+                </div>
+                <div className=" px-2">
+                  <h1 className=" text-[18px] font-[700] mt-[16px] mb-[8px] ">
+                    Batch Price
+                  </h1>
+                  <div className="flex">
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                      }}
+                      onMouseDown={async (e) => {
+                        e.preventDefault();
+                        try {
+                          await navigator.clipboard.writeText(
+                            `${rootUrl}/payment/${id}?batch=${selectedBatches[0]?._id}`
+                          );
+                          toast.success("Url Copied!");
+                        } catch (err) {
+                          console.error("Unable to copy to clipboard", err);
+                        }
+                      }}
+                      className="bg-[#F6F7FF] font-sans border-[1px] border-[#CECECE] py-[15px] px-[18px] rounded-l-md w-fit "
+                    >{`${rootUrl}/payment/${id}?batch=${selectedBatches[0]?._id}`}</button>
+                    <button
+                      className="bg-[#F6F7FF] font-sans border-[1px] border-[#CECECE] py-[15px] px-[18px] rounded-r-md w-fit "
+                      onClick={async (e) => {
+                        e.preventDefault();
+                        try {
+                          await navigator.clipboard.writeText(
+                            `${rootUrl}/payment/${id}?batch=${selectedBatches[0]?._id}`
+                          );
+                          toast.success("Url Copied!");
+                        } catch (err) {
+                          console.error("Unable to copy to clipboard", err);
+                        }
+                      }}
+                    >
+                      <FileCopyIcon />
+                    </button>
+                  </div>
                 </div>
                 <>
                   {/* {!participants[0] && (
@@ -816,7 +920,7 @@ const BatchConfiguration = ({
             </svg>
           </button>
           <button
-            // onClick={() => setOpenConfirmationDialog(true)}
+            onClick={() => handleBatchDelete()}
             className=" bg-sky-950 p-[6px] rounded-full"
           >
             <svg

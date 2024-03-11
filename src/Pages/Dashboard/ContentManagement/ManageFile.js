@@ -12,6 +12,7 @@ import { toast } from "react-hot-toast";
 import FilesTask from "../Week/FilesTask";
 import CompletionParameter from "./Components/Shared/CompletionParameter";
 import Loading from "../../Shared/Loading/Loading";
+import TextEditor from "../../Shared/TextEditor/TextEditor";
 
 const ManageFile = () => {
   // upload file
@@ -66,6 +67,8 @@ const ManageFile = () => {
   const [selectedBatches, setSelectedBatches] = useState([]);
   const [orgData, setOrgData] = useState({});
   const [taskDrip, setTaskDrip] = useState(false);
+  const [enableDownload, setEnableDownload] = useState(false);
+  const [fileDescription, setFileDescription] = useState("");
 
   useEffect(() => {
     axios
@@ -166,6 +169,9 @@ const ManageFile = () => {
       courseId: chapter?.courseId,
       batches: selectedBatches,
       taskDrip,
+      enableDownload,
+      fileDescription
+      
     };
 
     setFileData(ManageFile);
@@ -319,24 +325,44 @@ const ManageFile = () => {
             <p>Manage File in {chapter?.chapterName}</p>
           </div>
           <form onSubmit={handleSubmit}>
-            <div className="flex  me-20 py-[35px] ps-[40px]">
+            <div className="flex gap-5 me-20 py-[35px] ps-[40px]">
               <div className="w-full">
-                <div className="">
+                <div className="w-full">
+                  <div className="">
+                    <div className="flex items-center gap-4">
+                      <p className="h-2 w-2 bg-black rounded-full"></p>
+                      <p className="font-bold text-lg me-[36px]">File Name</p>
+                      <img src={required} alt="required" />
+                    </div>
+
+                    <input
+                      required
+                      className="mt-6 ms-6 border rounded-md w-3/4 h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                      name="fileName"
+                      type="text"
+                      placeholder="Eg. Entrepreneurship Lab"
+                    />
+                  </div>
+                </div>
+                <div className="w-full mt-10">
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
-                    <p className="font-bold text-lg me-[36px]">File Name</p>
+                    <p className="font-bold text-lg me-[36px]">
+                      File Description{" "}
+                    </p>
                     <img src={required} alt="required" />
                   </div>
 
-                  <input
-                    required
-                    className="mt-6 ms-6 border rounded-md w-3/4 h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                    name="fileName"
-                    type="text"
-                    placeholder="Eg. Entrepreneurship Lab"
-                  />
+                  {/* Text editor */}
+                  <div className="py-4 ms-5">
+                    <div className="bg-white text-black textEditor">
+                      <TextEditor setValue={setFileDescription} />
+                    </div>
+                  </div>
+                  
                 </div>
               </div>
+
               <div className="w-full">
                 <div className=" flex flex-col">
                   <div className="flex items-center gap-4">
@@ -455,9 +481,8 @@ const ManageFile = () => {
                     />
                     <label
                       htmlFor="radioYes"
-                      className={`ml-2 text-sm font-medium ${
-                        course?.enableDrip ? "text-gray-400" : "text-gray-900"
-                      }`}
+                      className={`ml-2 text-sm font-medium ${course?.enableDrip ? "text-gray-400" : "text-gray-900"
+                        }`}
                     >
                       Yes
                     </label>
@@ -475,9 +500,8 @@ const ManageFile = () => {
                     />
                     <label
                       htmlFor="radioNo"
-                      className={`ml-2 text-sm font-medium ${
-                        course?.enableDrip ? "text-gray-400" : "text-gray-900"
-                      }`}
+                      className={`ml-2 text-sm font-medium ${course?.enableDrip ? "text-gray-400" : "text-gray-900"
+                        }`}
                     >
                       No
                     </label>
@@ -492,13 +516,61 @@ const ManageFile = () => {
               )}
             </div>
 
+            <div className="ml-[40px] space-y-4 mb-8">
+              <fieldset>
+                <div className="flex items-center gap-4 mb-5">
+                  <p className="h-2 w-2 bg-black rounded-full"></p>
+                  <p className="font-bold text-lg me-[36px]">Enable Download</p>
+                  <img src={required} alt="" />
+                </div>
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center">
+                    <input
+                      type="radio"
+                      id="radioDownloadYes"
+                      name="radioDownloadOption"
+                      checked={enableDownload === true}
+                      onChange={() => setEnableDownload(true)}
+
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
+                    />
+                    <label
+                      htmlFor="radioDownloadYes"
+                      className={`ml-2 text-sm font-medium `}
+                    >
+                      Yes
+                    </label>
+                  </div>
+
+                  <div className="flex items-center">
+                    <input
+                      type="radio"
+                      id="radioDownloadNo"
+                      name="radioDownloadOption"
+                      checked={enableDownload === false}
+                      onChange={() => setEnableDownload(false)}
+
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
+                    />
+                    <label
+                      htmlFor="radioDownloadNo"
+                      className={`ml-2 text-sm font-medium `}
+                    >
+                      No
+                    </label>
+                  </div>
+                </div>
+              </fieldset>
+
+            </div>
+
             <div className="px-4 my-10">
               {(orgData?.showPointsAndRedemptions ||
                 orgData?.showSkillsManagement) && (
-                <p className="text-[25px] font-bold mb-10">
-                  Evaluation Parameter
-                </p>
-              )}
+                  <p className="text-[25px] font-bold mb-10">
+                    Evaluation Parameter
+                  </p>
+                )}
               {orgData?.showSkillsManagement && (
                 <SkillBasedParameter
                   selectedData={skillParameterData}

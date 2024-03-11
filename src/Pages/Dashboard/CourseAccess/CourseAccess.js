@@ -39,7 +39,7 @@ const CourseAccess = () => {
     setSelectedOption(option);
     setIsOpen(false);
   };
-
+console.log(courses)
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const stateParam = queryParams.get("state");
@@ -552,7 +552,7 @@ const CourseAccess = () => {
                                     !userInfo?.courses?.find(
                                       (item) => item?.courseId === course?._id
                                     )
-                                  ? `/payment/${course?._id}`
+                                  ? (course?.courseInitialUrl)? `${course?.courseInitialUrl}` : `/payment/${course?._id}`
                                   : `/questLevels/${course?._id}`
                               }
                               target={
