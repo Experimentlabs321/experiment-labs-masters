@@ -382,7 +382,7 @@ const AssignmentEvaluation2 = () => {
     };
 
     console.log(manageFeedback);
-
+Loading();
     const sendMail = await axios.post(
       `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
       {
@@ -402,7 +402,9 @@ const AssignmentEvaluation2 = () => {
 
     if (addFeedback?.data?.acknowledged) {
       toast.success("Feedback added Successfully");
-      //  event.target.reset();
+       event.target.reset();
+       Loading().close();
+       setOpen1(false);
     } else {
       toast.error("Feedback not added");
       //  event.target.reset();
@@ -445,6 +447,7 @@ const AssignmentEvaluation2 = () => {
     };
 
     console.log(manageFeedback);
+    Loading()
     const sendMail = await axios.post(
       `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
       {
@@ -464,7 +467,10 @@ const AssignmentEvaluation2 = () => {
 
     if (addFeedback?.data?.acknowledged) {
       toast.success("Feedback added Successfully");
-      //  event.target.reset();
+
+       event.target.reset();
+       Loading().close();
+       setOpen(false);
     } else {
       toast.error("Feedback not added");
       //   //  event.target.reset();
