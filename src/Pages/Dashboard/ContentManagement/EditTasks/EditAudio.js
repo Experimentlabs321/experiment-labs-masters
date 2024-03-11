@@ -87,7 +87,8 @@ const EditAudio = () => {
 
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${fetchData?.courseId}`)
+        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${fetchData?.courseId}`
+      )
       .then((res) => setCourse(res?.data))
       .catch((error) => console.error(error));
 
@@ -170,10 +171,10 @@ const EditAudio = () => {
       additionalFiles: selectedFile ? fileUrl : audioData?.additionalFiles,
       skillParameterData: skillParameterData,
       earningParameterData: earningParameterData,
-      chapterId: id,
+      chapterId: audioData?.chapterId,
       batches: selectedBatches,
       taskDrip,
-      enableDownload
+      enableDownload,
     };
 
     setAudioData(ManageAudio);
@@ -431,7 +432,6 @@ const EditAudio = () => {
               </div>
             </div>
 
-
             <div className="space-y-4 mb-8 ps-[40px]">
               <fieldset>
                 <div className="flex items-center gap-4 mb-5">
@@ -452,7 +452,9 @@ const EditAudio = () => {
                     />
                     <label
                       htmlFor="radioYes"
-                      className={`ml-2 text-sm font-medium ${course?.enableDrip ? 'text-gray-400' : 'text-gray-900'}`}
+                      className={`ml-2 text-sm font-medium ${
+                        course?.enableDrip ? "text-gray-400" : "text-gray-900"
+                      }`}
                     >
                       Yes
                     </label>
@@ -470,7 +472,9 @@ const EditAudio = () => {
                     />
                     <label
                       htmlFor="radioNo"
-                      className={`ml-2 text-sm font-medium ${course?.enableDrip ? 'text-gray-400' : 'text-gray-900'}`}
+                      className={`ml-2 text-sm font-medium ${
+                        course?.enableDrip ? "text-gray-400" : "text-gray-900"
+                      }`}
                     >
                       No
                     </label>
@@ -500,7 +504,6 @@ const EditAudio = () => {
                       name="radioDownloadOption"
                       checked={enableDownload === true}
                       onChange={() => setEnableDownload(true)}
-
                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
                     />
                     <label
@@ -518,7 +521,6 @@ const EditAudio = () => {
                       name="radioDownloadOption"
                       checked={enableDownload === false}
                       onChange={() => setEnableDownload(false)}
-
                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
                     />
                     <label
@@ -530,16 +532,15 @@ const EditAudio = () => {
                   </div>
                 </div>
               </fieldset>
-
             </div>
 
             <div className="px-4 my-10">
               {(orgData?.showPointsAndRedemptions ||
                 orgData?.showSkillsManagement) && (
-                  <p className="text-[25px] font-bold mb-10">
-                    Evaluation Parameter
-                  </p>
-                )}
+                <p className="text-[25px] font-bold mb-10">
+                  Evaluation Parameter
+                </p>
+              )}
               {orgData?.showSkillsManagement && (
                 <SkillBasedParameter
                   forEdit={true}

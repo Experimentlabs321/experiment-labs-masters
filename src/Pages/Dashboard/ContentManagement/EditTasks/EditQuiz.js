@@ -57,7 +57,7 @@ const EditQuiz = () => {
       totalPoints: e.target.totalPoints.value,
       skillParameterData: [],
       earningParameterData: [],
-      chapterId: id,
+      chapterId: quizData?.chapterId,
       questions: [],
     };
 

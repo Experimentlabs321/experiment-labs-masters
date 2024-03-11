@@ -115,7 +115,6 @@ const EditReading = () => {
         setEarningParameterData(response?.data?.earningParameterData);
         setTaskDrip(response?.data?.taskDrip);
         setEnableDownload(response?.data?.enableDownload);
-
       });
   }, [openTask]);
 
@@ -174,10 +173,10 @@ const EditReading = () => {
       skillParameterData: skillParameterData,
       earningParameterData: earningParameterData,
       readingMaterial: readingMaterial,
-      chapterId: id,
+      chapterId: readingData?.chapterId,
       batches: selectedBatches,
       taskDrip,
-      enableDownload
+      enableDownload,
     };
 
     setReadingData(manageReading);
@@ -481,8 +480,9 @@ const EditReading = () => {
                     />
                     <label
                       htmlFor="radioYes"
-                      className={`ml-2 text-sm font-medium ${course?.enableDrip ? "text-gray-400" : "text-gray-900"
-                        }`}
+                      className={`ml-2 text-sm font-medium ${
+                        course?.enableDrip ? "text-gray-400" : "text-gray-900"
+                      }`}
                     >
                       Yes
                     </label>
@@ -500,8 +500,9 @@ const EditReading = () => {
                     />
                     <label
                       htmlFor="radioNo"
-                      className={`ml-2 text-sm font-medium ${course?.enableDrip ? "text-gray-400" : "text-gray-900"
-                        }`}
+                      className={`ml-2 text-sm font-medium ${
+                        course?.enableDrip ? "text-gray-400" : "text-gray-900"
+                      }`}
                     >
                       No
                     </label>
@@ -530,7 +531,6 @@ const EditReading = () => {
                       name="radioDownloadOption"
                       checked={enableDownload === true}
                       onChange={() => setEnableDownload(true)}
-                    
                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
                     />
                     <label
@@ -548,7 +548,6 @@ const EditReading = () => {
                       name="radioDownloadOption"
                       checked={enableDownload === false}
                       onChange={() => setEnableDownload(false)}
-                     
                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
                     />
                     <label
@@ -560,16 +559,15 @@ const EditReading = () => {
                   </div>
                 </div>
               </fieldset>
-
             </div>
 
             <div className="px-4 my-10">
               {(orgData?.showPointsAndRedemptions ||
                 orgData?.showSkillsManagement) && (
-                  <p className="text-[25px] font-bold mb-10">
-                    Evaluation Parameter
-                  </p>
-                )}
+                <p className="text-[25px] font-bold mb-10">
+                  Evaluation Parameter
+                </p>
+              )}
               {orgData?.showSkillsManagement && (
                 <SkillBasedParameter
                   forEdit={true}

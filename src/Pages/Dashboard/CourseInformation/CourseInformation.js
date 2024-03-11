@@ -571,6 +571,8 @@ const CourseInformation = () => {
       });
   }, [id]);
 
+  console.log(chapters);
+
   return (
     <div>
       <Layout>
