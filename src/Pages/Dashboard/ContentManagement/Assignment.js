@@ -63,22 +63,6 @@ const Assignment = () => {
   const [taskDrip, setTaskDrip] = useState(false);
   const [enableDrip, setEnableDrip] = useState();
   const [isLoading, setIsLoading] = useState(true);
-  useEffect(() => {
-    axios
-      .get(
-        `${
-          process.env.REACT_APP_SERVER_API
-        }/api/v1/batches/courseId/${localStorage.getItem("courseId")}`
-      )
-      .then((response) => {
-        setBatchesData(response?.data);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        setIsLoading(false);
-      });
-  }, [chapter?.courseId]);
 
   useEffect(() => {
     axios
@@ -126,6 +110,23 @@ const Assignment = () => {
         setIsLoading(false);
       });
   }, [id, userInfo, userInfo?.email]);
+
+  useEffect(() => {
+    if (chapter?.courseId) {
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${chapter?.courseId}`
+        )
+        .then((response) => {
+          setBatchesData(response?.data);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.error(error);
+          setIsLoading(false);
+        });
+    }
+  }, [chapter?.courseId]);
 
   useEffect(() => {
     if (chapter?.courseId)
