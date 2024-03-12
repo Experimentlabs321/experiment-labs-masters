@@ -309,16 +309,16 @@ const ManageLiveClasses = () => {
   }, [chapter?.courseId, id, userInfo, userInfo.email]);
 
   useEffect(() => {
-    axios
-      .get(
-        `${
-          process.env.REACT_APP_SERVER_API
-        }/api/v1/batches/courseId/${localStorage.getItem("courseId")}`
-      )
-      .then((response) => {
-        setBatchesData(response?.data);
-      })
-      .catch((error) => console.error(error));
+    if (chapter?.courseId) {
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${chapter?.courseId}`
+        )
+        .then((response) => {
+          setBatchesData(response?.data);
+        })
+        .catch((error) => console.error(error));
+    }
   }, [chapter?.courseId]);
 
   useEffect(() => {
