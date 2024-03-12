@@ -66,21 +66,31 @@ const EditVideo = () => {
   const [openAddYoutubeLink, setOpenAddYoutubeLink] = useState(false);
   const [youtubeVideoLink, setYoutubeVideoLink] = useState(null);
   const [taskDrip, setTaskDrip] = useState();
-  const [openTask, setOpenTask] = useState(
-    JSON.parse(localStorage.getItem("task"))
-  );
-  const [currentWeek, setCurrentWeek] = useState(
-    JSON.parse(localStorage.getItem("currentWeek"))
-  );
 
   const [batchesData, setBatchesData] = useState([]);
   const [selectedBatches, setSelectedBatches] = useState([]);
   const [orgData, setOrgData] = useState({});
   const [enableDownload, setEnableDownload] = useState(false);
+
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/videos/taskId/${id}`
+      )
+      .then((response) => {
+        setVideoData(response?.data);
+        setSelectedBatches(response?.data?.batches);
+        setSkillParameterData(response?.data?.skillParameterData);
+        setEarningParameterData(response?.data?.earningParameterData);
+        setTaskDrip(response?.data?.taskDrip);
+        setEnableDownload(response?.data?.enableDownload);
+      });
+  }, [id]);
+
   useEffect(() => {
     const fetchData = {
-      organizationId: currentWeek?.organization?.organizationId,
-      courseId: currentWeek?.courseId,
+      organizationId: userInfo?.organizationId,
+      courseId: videoData?.courseId,
     };
     axios
       .get(
@@ -96,7 +106,14 @@ const EditVideo = () => {
       )
       .then((res) => setEarningCategories(res?.data))
       .catch((error) => console.error(error));
-  }, [id, userInfo, userInfo?.email]);
+
+    axios
+      .get(
+        `${process.env.REACT_APP_BACKEND_API}/chapter/${videoData?.chapterId}`
+      )
+      .then((res) => setChapter(res?.data))
+      .catch((error) => console.error(error));
+  }, [videoData, userInfo]);
 
   useEffect(() => {
     if (chapter?.courseId)
@@ -112,28 +129,13 @@ const EditVideo = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/videos/taskId/${openTask?.taskId}`
-      )
-      .then((response) => {
-        setVideoData(response?.data);
-        setSelectedBatches(response?.data?.batches);
-        setSkillParameterData(response?.data?.skillParameterData);
-        setEarningParameterData(response?.data?.earningParameterData);
-        setTaskDrip(response?.data?.taskDrip);
-        setEnableDownload(response?.data?.enableDownload);
-      });
-  }, [openTask]);
-
-  useEffect(() => {
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${currentWeek?.courseId}`
+        `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${chapter?.courseId}`
       )
       .then((response) => {
         setBatchesData(response?.data);
       })
       .catch((error) => console.error(error));
-  }, [currentWeek]);
+  }, [chapter]);
 
   useEffect(() => {
     axios
@@ -249,10 +251,10 @@ const EditVideo = () => {
                   />
                 </svg>
                 <Link
-                  to={`/questLevels/${currentWeek?.courseId}`}
+                  to={`/questLevels/${course?._id}`}
                   className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline "
                 >
-                  {localStorage.getItem("course")}
+                  {course?.courseFullName}
                 </Link>
                 <svg
                   className="mr-[30px]"
@@ -271,7 +273,7 @@ const EditVideo = () => {
                   />
                 </svg>
                 <button className=" font-sans mr-[30px] text-[20px] font-[400] ">
-                  {localStorage.getItem("chapter")}
+                  {chapter?.chapterName}
                 </button>
               </div>
               <div className="flex items-center mt-[-10px] ">
@@ -330,7 +332,7 @@ const EditVideo = () => {
         </div>
         <div className={`${preview ? "hidden" : "block"}`}>
           <div className="text-[#3E4DAC] text-[26px] font-bold  py-[35px] ps-[40px]">
-            <p>Manage Video in {localStorage.getItem("chapter")}</p>
+            <p>Manage Video in {chapter?.chapterName}</p>
           </div>
           <DialogLayout
             open={openAddYoutubeLink}
