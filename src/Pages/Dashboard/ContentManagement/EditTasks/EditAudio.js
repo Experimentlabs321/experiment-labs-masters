@@ -60,12 +60,6 @@ const EditAudio = () => {
   const [preview, setPreview] = useState(false);
   const [submitPermission, setSubmitPermission] = useState(false);
   const [audioData, setAudioData] = useState({});
-  const [openTask, setOpenTask] = useState(
-    JSON.parse(localStorage.getItem("task"))
-  );
-  const [currentWeek, setCurrentWeek] = useState(
-    JSON.parse(localStorage.getItem("currentWeek"))
-  );
   const [batchesData, setBatchesData] = useState([]);
   const [selectedBatches, setSelectedBatches] = useState([]);
   const [orgData, setOrgData] = useState({});
@@ -73,9 +67,35 @@ const EditAudio = () => {
   const [enableDownload, setEnableDownload] = useState(false);
 
   useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/audios/taskId/${id}`
+      )
+      .then((response) => {
+        setAudioData(response?.data);
+        setSelectedBatches(response?.data?.batches);
+        setSkillParameterData(response?.data?.skillParameterData);
+        setEarningParameterData(response?.data?.earningParameterData);
+        setTaskDrip(response?.data?.taskDrip);
+        setEnableDownload(response?.data?.enableDownload);
+      });
+  }, [id]);
+
+  useEffect(() => {
+    if (audioData?.courseId)
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${audioData?.courseId}`
+        )
+        .then((response) => {
+          setCourse(response?.data);
+        });
+  }, [audioData]);
+
+  useEffect(() => {
     const fetchData = {
-      organizationId: currentWeek?.organization?.organizationId,
-      courseId: currentWeek?.courseId,
+      organizationId: userInfo?.organizationId,
+      courseId: audioData?.courseId,
     };
     axios
       .get(
@@ -99,33 +119,25 @@ const EditAudio = () => {
       )
       .then((res) => setEarningCategories(res?.data))
       .catch((error) => console.error(error));
-  }, [currentWeek]);
 
-  useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/audios/taskId/${openTask?.taskId}`
+        `${process.env.REACT_APP_BACKEND_API}/chapter/${audioData?.chapterId}`
       )
-      .then((response) => {
-        setAudioData(response?.data);
-        setSelectedBatches(response?.data?.batches);
-        setSkillParameterData(response?.data?.skillParameterData);
-        setEarningParameterData(response?.data?.earningParameterData);
-        setTaskDrip(response?.data?.taskDrip);
-        setEnableDownload(response?.data?.enableDownload);
-      });
-  }, [openTask]);
+      .then((res) => setChapter(res?.data))
+      .catch((error) => console.error(error));
+  }, [audioData, userInfo]);
 
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${currentWeek?.courseId}`
+        `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${audioData?.courseId}`
       )
       .then((response) => {
         setBatchesData(response?.data);
       })
       .catch((error) => console.error(error));
-  }, [currentWeek]);
+  }, [audioData]);
 
   useEffect(() => {
     axios
@@ -226,10 +238,10 @@ const EditAudio = () => {
                   />
                 </svg>
                 <Link
-                  to={`/questLevels/${currentWeek?.courseId}`}
+                  to={`/questLevels/${course?._id}`}
                   className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline "
                 >
-                  {localStorage.getItem("course")}
+                  {course?.courseFullName}
                 </Link>
                 <svg
                   className="mr-[30px]"
@@ -248,7 +260,7 @@ const EditAudio = () => {
                   />
                 </svg>
                 <button className=" font-sans mr-[30px] text-[20px] font-[400] ">
-                  {localStorage.getItem("chapter")}
+                  {chapter?.chapterName}
                 </button>
               </div>
               <div className="flex items-center mt-[-10px] ">
@@ -307,7 +319,7 @@ const EditAudio = () => {
         </div>
         <div className={`${preview ? "hidden" : "block"}`}>
           <div className="text-[#3E4DAC] text-[26px] font-bold  py-[35px] ps-[40px]">
-            <p>Manage Audio in {localStorage.getItem("chapter")}</p>
+            <p>Manage Audio in {chapter?.chapterName}</p>
           </div>
           <form onSubmit={handleSubmit}>
             <div className="flex  me-20 py-[35px] ps-[40px]">

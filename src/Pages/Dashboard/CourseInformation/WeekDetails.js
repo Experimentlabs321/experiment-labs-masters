@@ -632,7 +632,9 @@ const WeekDetails = ({
                                       "currentWeek",
                                       JSON.stringify(currentWeek)
                                     );
-                                    navigate(`/editTask/${currentWeek?._id}`);
+                                    navigate(
+                                      `/editTask/${task?.taskId}?taskType=${task?.taskType}`
+                                    );
                                   }}
                                   className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600] "
                                 >
