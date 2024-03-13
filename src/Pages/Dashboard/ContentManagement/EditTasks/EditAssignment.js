@@ -48,59 +48,13 @@ const EditAssignment = () => {
   const [contentStage, setContentStage] = useState([]);
   const [orgData, setOrgData] = useState({});
   const [taskDrip, setTaskDrip] = useState();
-  const [enableDrip , setEnableDrip] = useState();
-
-  const [openTask, setOpenTask] = useState(
-    JSON.parse(localStorage.getItem("task"))
-  );
-  const [currentWeek, setCurrentWeek] = useState(
-    JSON.parse(localStorage.getItem("currentWeek"))
-  );
-  useEffect(() => {
-    // axios
-    //   .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
-    //   .then((response) => {
-    //     setChapter(response?.data);
-    //   })
-    //   .then(() => {
-    const fetchData = {
-      organizationId: currentWeek?.organization?.organizationId,
-      courseId: currentWeek?.courseId,
-    };
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
-        fetchData
-      )
-      .then((res) => setSkillCategories(res?.data))
-      .catch((error) => console.error(error));
-    axios
-      .post(
-        `${process.env.REACT_APP_BACKEND_API}/itemCategoryByCourseId`,
-        fetchData
-      )
-      .then((res) => setEarningCategories(res?.data))
-      .catch((error) => console.error(error));
-    // })
-    // .catch((error) => console.error(error));
-  }, [currentWeek]);
+  const [enableDrip, setEnableDrip] = useState();
 
   useEffect(() => {
-    if (chapter?.courseId)
+    if (id)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${chapter?.courseId}`
-        )
-        .then((response) => {
-          setCourse(response?.data);
-        });
-  }, [chapter]);
-
-  useEffect(() => {
-    if (openTask?.taskId)
-      axios
-        .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/assignments/taskId/${openTask?.taskId}`
+          `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/assignments/taskId/${id}`
         )
         .then((response) => {
           setAssignmentData(response?.data);
@@ -117,18 +71,65 @@ const EditAssignment = () => {
               : response?.data?.contentStage
           );
         });
-  }, [openTask]);
+  }, [id]);
+
+  useEffect(() => {
+    // axios
+    //   .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
+    //   .then((response) => {
+    //     setChapter(response?.data);
+    //   })
+    //   .then(() => {
+    const fetchData = {
+      organizationId: userInfo?.organizationId,
+      courseId: assignmentData?.courseId,
+    };
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
+        fetchData
+      )
+      .then((res) => setSkillCategories(res?.data))
+      .catch((error) => console.error(error));
+    axios
+      .post(
+        `${process.env.REACT_APP_BACKEND_API}/itemCategoryByCourseId`,
+        fetchData
+      )
+      .then((res) => setEarningCategories(res?.data))
+      .catch((error) => console.error(error));
+
+    axios
+      .get(
+        `${process.env.REACT_APP_BACKEND_API}/chapter/${assignmentData?.chapterId}`
+      )
+      .then((res) => setChapter(res?.data))
+      .catch((error) => console.error(error));
+    // })
+    // .catch((error) => console.error(error));
+  }, [assignmentData, userInfo]);
+
+  useEffect(() => {
+    if (chapter?.courseId)
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${chapter?.courseId}`
+        )
+        .then((response) => {
+          setCourse(response?.data);
+        });
+  }, [chapter]);
 
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${currentWeek?.courseId}`
+        `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${assignmentData?.courseId}`
       )
       .then((response) => {
         setBatchesData(response?.data);
       })
       .catch((error) => console.error(error));
-  }, [currentWeek]);
+  }, [assignmentData]);
 
   useEffect(() => {
     axios
@@ -212,7 +213,7 @@ const EditAssignment = () => {
       batches: selectedBatches,
       schedule: schedule,
       contentStage,
-      taskDrip
+      taskDrip,
     };
 
     setAssignmentData(manageAssignment);
@@ -266,10 +267,10 @@ const EditAssignment = () => {
                   />
                 </svg>
                 <Link
-                  to={`/questLevels/${currentWeek?.courseId}`}
+                  to={`/questLevels/${course?._id}`}
                   className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline "
                 >
-                  {localStorage.getItem("course")}
+                  {course?.courseFullName}
                 </Link>
                 <svg
                   className="mr-[30px]"
@@ -288,7 +289,7 @@ const EditAssignment = () => {
                   />
                 </svg>
                 <button className=" font-sans mr-[30px] text-[20px] font-[400] ">
-                  {localStorage.getItem("chapter")}
+                  {chapter?.chapterName}
                 </button>
               </div>
               <div className="flex items-center mt-[-10px] ">
@@ -347,7 +348,7 @@ const EditAssignment = () => {
         </div>
         <div className={`${preview ? "hidden" : "block"}`}>
           <div className="text-[#3E4DAC] text-[26px] font-bold  py-[35px] ps-[40px]">
-            <p>Manage Assignment in {localStorage.getItem("chapter")}</p>
+            <p>Manage Assignment in {chapter?.chapterName}</p>
           </div>
           <form onSubmit={handleSubmit} className="ms-[40px]  mt-12">
             <div

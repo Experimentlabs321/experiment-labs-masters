@@ -16,6 +16,8 @@ import { CircularProgress, Rating } from "@mui/material";
 const LoginWithOrganization = () => {
     const { id } = useParams();
     const { signIn, providerLogin, logOut, createUser } = useContext(AuthContext);
+    const loginPageOrgLogo = localStorage.getItem("loginPageOrgLogo");
+    const loginSidebarImage = localStorage.getItem("loginSidebarImage");
     const navigate = useNavigate();
     const [orgData, setOrgData] = useState({});
     const [name, setName] = useState("");
@@ -196,14 +198,22 @@ const LoginWithOrganization = () => {
                             </p>
                             <img
                                 className="mx-auto"
-                                src={orgData?.loginSidebarImage}
+                                src={
+                                    loginSidebarImage
+                                      ? loginSidebarImage
+                                      : orgData?.loginSidebarImage
+                                  }
                                 alt="showCase"
                             />
                         </div>
                         {/* <p className="font-medium mt-3">© 2023 Experiment Labs</p> */}
                         <img
                             className="w-[100px] mx-auto mt-4"
-                            src={orgData?.org_logo}
+                            src={
+                                loginPageOrgLogo
+                                  ? loginPageOrgLogo
+                                  : orgData?.loginPageOrgLogo
+                              }
                             alt="brand"
                         />
                     </div>

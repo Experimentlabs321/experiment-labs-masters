@@ -60,12 +60,6 @@ const EditAudio = () => {
   const [preview, setPreview] = useState(false);
   const [submitPermission, setSubmitPermission] = useState(false);
   const [audioData, setAudioData] = useState({});
-  const [openTask, setOpenTask] = useState(
-    JSON.parse(localStorage.getItem("task"))
-  );
-  const [currentWeek, setCurrentWeek] = useState(
-    JSON.parse(localStorage.getItem("currentWeek"))
-  );
   const [batchesData, setBatchesData] = useState([]);
   const [selectedBatches, setSelectedBatches] = useState([]);
   const [orgData, setOrgData] = useState({});
@@ -73,9 +67,35 @@ const EditAudio = () => {
   const [enableDownload, setEnableDownload] = useState(false);
 
   useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/audios/taskId/${id}`
+      )
+      .then((response) => {
+        setAudioData(response?.data);
+        setSelectedBatches(response?.data?.batches);
+        setSkillParameterData(response?.data?.skillParameterData);
+        setEarningParameterData(response?.data?.earningParameterData);
+        setTaskDrip(response?.data?.taskDrip);
+        setEnableDownload(response?.data?.enableDownload);
+      });
+  }, [id]);
+
+  useEffect(() => {
+    if (audioData?.courseId)
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${audioData?.courseId}`
+        )
+        .then((response) => {
+          setCourse(response?.data);
+        });
+  }, [audioData]);
+
+  useEffect(() => {
     const fetchData = {
-      organizationId: currentWeek?.organization?.organizationId,
-      courseId: currentWeek?.courseId,
+      organizationId: userInfo?.organizationId,
+      courseId: audioData?.courseId,
     };
     axios
       .get(
@@ -87,7 +107,8 @@ const EditAudio = () => {
 
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${fetchData?.courseId}`)
+        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${fetchData?.courseId}`
+      )
       .then((res) => setCourse(res?.data))
       .catch((error) => console.error(error));
 
@@ -98,33 +119,25 @@ const EditAudio = () => {
       )
       .then((res) => setEarningCategories(res?.data))
       .catch((error) => console.error(error));
-  }, [currentWeek]);
 
-  useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/audios/taskId/${openTask?.taskId}`
+        `${process.env.REACT_APP_BACKEND_API}/chapter/${audioData?.chapterId}`
       )
-      .then((response) => {
-        setAudioData(response?.data);
-        setSelectedBatches(response?.data?.batches);
-        setSkillParameterData(response?.data?.skillParameterData);
-        setEarningParameterData(response?.data?.earningParameterData);
-        setTaskDrip(response?.data?.taskDrip);
-        setEnableDownload(response?.data?.enableDownload);
-      });
-  }, [openTask]);
+      .then((res) => setChapter(res?.data))
+      .catch((error) => console.error(error));
+  }, [audioData, userInfo]);
 
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${currentWeek?.courseId}`
+        `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${audioData?.courseId}`
       )
       .then((response) => {
         setBatchesData(response?.data);
       })
       .catch((error) => console.error(error));
-  }, [currentWeek]);
+  }, [audioData]);
 
   useEffect(() => {
     axios
@@ -170,10 +183,10 @@ const EditAudio = () => {
       additionalFiles: selectedFile ? fileUrl : audioData?.additionalFiles,
       skillParameterData: skillParameterData,
       earningParameterData: earningParameterData,
-      chapterId: id,
+      chapterId: audioData?.chapterId,
       batches: selectedBatches,
       taskDrip,
-      enableDownload
+      enableDownload,
     };
 
     setAudioData(ManageAudio);
@@ -225,10 +238,10 @@ const EditAudio = () => {
                   />
                 </svg>
                 <Link
-                  to={`/questLevels/${currentWeek?.courseId}`}
+                  to={`/questLevels/${course?._id}`}
                   className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline "
                 >
-                  {localStorage.getItem("course")}
+                  {course?.courseFullName}
                 </Link>
                 <svg
                   className="mr-[30px]"
@@ -247,7 +260,7 @@ const EditAudio = () => {
                   />
                 </svg>
                 <button className=" font-sans mr-[30px] text-[20px] font-[400] ">
-                  {localStorage.getItem("chapter")}
+                  {chapter?.chapterName}
                 </button>
               </div>
               <div className="flex items-center mt-[-10px] ">
@@ -306,7 +319,7 @@ const EditAudio = () => {
         </div>
         <div className={`${preview ? "hidden" : "block"}`}>
           <div className="text-[#3E4DAC] text-[26px] font-bold  py-[35px] ps-[40px]">
-            <p>Manage Audio in {localStorage.getItem("chapter")}</p>
+            <p>Manage Audio in {chapter?.chapterName}</p>
           </div>
           <form onSubmit={handleSubmit}>
             <div className="flex  me-20 py-[35px] ps-[40px]">
@@ -431,7 +444,6 @@ const EditAudio = () => {
               </div>
             </div>
 
-
             <div className="space-y-4 mb-8 ps-[40px]">
               <fieldset>
                 <div className="flex items-center gap-4 mb-5">
@@ -452,7 +464,9 @@ const EditAudio = () => {
                     />
                     <label
                       htmlFor="radioYes"
-                      className={`ml-2 text-sm font-medium ${course?.enableDrip ? 'text-gray-400' : 'text-gray-900'}`}
+                      className={`ml-2 text-sm font-medium ${
+                        course?.enableDrip ? "text-gray-400" : "text-gray-900"
+                      }`}
                     >
                       Yes
                     </label>
@@ -470,7 +484,9 @@ const EditAudio = () => {
                     />
                     <label
                       htmlFor="radioNo"
-                      className={`ml-2 text-sm font-medium ${course?.enableDrip ? 'text-gray-400' : 'text-gray-900'}`}
+                      className={`ml-2 text-sm font-medium ${
+                        course?.enableDrip ? "text-gray-400" : "text-gray-900"
+                      }`}
                     >
                       No
                     </label>
@@ -500,7 +516,6 @@ const EditAudio = () => {
                       name="radioDownloadOption"
                       checked={enableDownload === true}
                       onChange={() => setEnableDownload(true)}
-
                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
                     />
                     <label
@@ -518,7 +533,6 @@ const EditAudio = () => {
                       name="radioDownloadOption"
                       checked={enableDownload === false}
                       onChange={() => setEnableDownload(false)}
-
                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
                     />
                     <label
@@ -530,16 +544,15 @@ const EditAudio = () => {
                   </div>
                 </div>
               </fieldset>
-
             </div>
 
             <div className="px-4 my-10">
               {(orgData?.showPointsAndRedemptions ||
                 orgData?.showSkillsManagement) && (
-                  <p className="text-[25px] font-bold mb-10">
-                    Evaluation Parameter
-                  </p>
-                )}
+                <p className="text-[25px] font-bold mb-10">
+                  Evaluation Parameter
+                </p>
+              )}
               {orgData?.showSkillsManagement && (
                 <SkillBasedParameter
                   forEdit={true}

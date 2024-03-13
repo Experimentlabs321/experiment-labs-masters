@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import StarLight from "../../../../assets/Dashboard/StarLight.png";
 import StarDark from "../../../../assets/Dashboard/StarDark.png";
 import WebinarsLight from "../../../../assets/Dashboard/WebinarsLight.png";
@@ -9,7 +9,8 @@ import DiscussionsLight from "../../../../assets/Dashboard/DiscussionsLight.png"
 import DiscussionsDark from "../../../../assets/Dashboard/DiscussionsDark.png";
 import CourseAccessIconLight from "../../../../assets/Dashboard/CourseAccessIconLight.svg";
 import CourseAccessIconDark from "../../../../assets/Dashboard/CourseAccessIconDark.svg";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useEffect } from "react";
 import axios from "axios";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -20,6 +21,27 @@ const Aside = () => {
   const [isCourseThumbnail, setCourseThumbnail] = useState("");
   const [toggleButton, setToggleButton] = useState(false);
   const { id } = useParams();
+  const navigate = useNavigate();
+
+  const asideRef = useRef(null); // Create a ref for the aside element
+
+  // Effect for handling clicks outside of the aside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (asideRef.current && !asideRef.current.contains(event.target)) {
+        setToggleButton(false); // Hide the aside menu
+      }
+    }
+
+    // Add click event listener
+    document.addEventListener("mousedown", handleClickOutside);
+    
+    return () => {
+      // Clean up the event listener on component unmount
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [setToggleButton]);
+
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_SERVER_API}/api/v1/courses/${id}`)
@@ -55,6 +77,7 @@ const Aside = () => {
         <MenuIcon /> <h1 className="ml-3 text-[12px] font-[500]">Open menu</h1>
       </button>
       <aside
+      ref={asideRef}
         id="sidebar"
         className={` fixed ${
           toggleButton ? " lg:flex" : "hidden"
@@ -315,6 +338,13 @@ const Aside = () => {
                       Course Access
                     </span>
                   </Link>
+                </li>
+                <li>
+                  <button className="flex gap-2 justify-items-center items-center ml-3 text-[18px] font-[500] mt-5" onClick={()=>navigate(-1)}>
+                    <ArrowBackIcon/>
+                  Go Back
+                  </button>
+                  
                 </li>
                 {/* <li>
                   <Link

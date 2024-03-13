@@ -12,6 +12,17 @@ import {
   useSessionContext,
 } from "@supabase/auth-helpers-react";
 import DynamicFavicon from "./DynamicFavicon";
+import AWS from "aws-sdk";
+
+AWS.config.update({
+  accessKeyId: process.env.REACT_APP_accessKeyId,
+  secretAccessKey: process.env.REACT_APP_secretAccessKey,
+  region: process.env.REACT_APP_region,
+  maxRetries: 3,
+  httpOptions: { timeout: 30000, connectTimeout: 5000 },
+});
+
+// const s3 = new AWS.S3();
 ReactGA.initialize("G-RL7TBN4FCW");
 function App() {
   const { userInfo } = useContext(AuthContext);

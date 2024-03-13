@@ -111,6 +111,8 @@ const WeekDetail = ({
   setOpenTask,
   setOpenTopic,
   chapters,
+  count,
+  setCount,
 }) => {
   const [currentWeek, setCurrentWeek] = useState(
     JSON.parse(localStorage.getItem("currentWeek"))
@@ -340,15 +342,21 @@ const WeekDetail = ({
           <AssignmentTask taskData={taskData} chapters={chapters} />
         )}
         {openTask?.taskType === "Reading" && (
-          <ReadingTask taskData={taskData} />
+          <ReadingTask taskData={taskData} count={count} setCount={setCount} />
         )}
         {openTask?.taskType === "Quiz" && <QuizTask taskData={taskData} />}
         {openTask?.taskType === "LiveTests" && (
           <LiveTestTask taskData={taskData} />
         )}
-        {openTask?.taskType === "Video" && <VideoTask taskData={taskData} />}
-        {openTask?.taskType === "Audio" && <AudioTask taskData={taskData} />}
-        {openTask?.taskType === "Files" && <FilesTask taskData={taskData} />}
+        {openTask?.taskType === "Video" && (
+          <VideoTask count={count} setCount={setCount} taskData={taskData} />
+        )}
+        {openTask?.taskType === "Audio" && (
+          <AudioTask taskData={taskData} count={count} setCount={setCount} />
+        )}
+        {openTask?.taskType === "Files" && (
+          <FilesTask taskData={taskData} count={count} setCount={setCount} />
+        )}
         {openTask?.taskType === "Schedule" && (
           <ScheduleTask taskData={taskData} week={week} />
         )}

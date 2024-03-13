@@ -9,6 +9,7 @@ import ZoomOutIcon from "@mui/icons-material/ZoomOut";
 import { useReactToPrint } from "react-to-print";
 import Swal from "sweetalert2";
 import Locked from "../../../assets/Dashboard/Locked.png";
+import Loading from "../../Shared/Loading/Loading";
 
 const DownloadCertificate = () => {
   const { courseId } = useParams();
@@ -103,6 +104,7 @@ const DownloadCertificate = () => {
   };
 
   useEffect(() => {
+    Loading();
     axios
       .get(`${process.env.REACT_APP_SERVER_API}/api/v1/chapters`)
       .then((response) => {
@@ -131,6 +133,7 @@ const DownloadCertificate = () => {
               parseInt((totalCompleted / totalTask) * 100)
             );
         }
+        Loading().close();
       })
       .catch((error) => console.error(error));
   }, [userInfo, courseId]);

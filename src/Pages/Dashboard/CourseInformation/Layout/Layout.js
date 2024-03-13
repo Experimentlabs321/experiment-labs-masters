@@ -5,9 +5,9 @@ import MyHelmet from "../../../../Components/MyHelmet/MyHelpmet";
 import Aside from "./Aside";
 import axios from "axios";
 import { AuthContext } from "../../../../contexts/AuthProvider";
-import io from "socket.io-client";
+// import io from "socket.io-client";
 
-const socket = io("${process.env.REACT_APP_SERVER_API}");
+// const socket = io("${process.env.REACT_APP_SERVER_API}");
 
 const Layout = ({ children }) => {
   const [toggleButton, setToggleButton] = useState(true);
@@ -111,7 +111,7 @@ const Layout = ({ children }) => {
                   />
                 </div>
                 <div className="flex items-center justify-center">
-                  <div className="flex flex-col items-center justify-center lg:mr-[60px] mr-[20px] ">
+                 {/*  <div className="flex flex-col items-center justify-center lg:mr-[60px] mr-[20px] ">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="40"
@@ -128,7 +128,7 @@ const Layout = ({ children }) => {
                     <h1 className="text-white mt-[6px] text-[14px] font-[500] ">
                       Notification
                     </h1>
-                  </div>
+                  </div> */}
                   <div>
                     <img src={PersonProfilePic} alt="PersonProfilePic" />
                   </div>

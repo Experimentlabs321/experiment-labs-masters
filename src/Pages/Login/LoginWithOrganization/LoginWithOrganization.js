@@ -132,7 +132,7 @@ const LoginWithOrganization = () => {
     logOut()
       .then((res) => {
         console.log(res);
-        navigate("/");
+        //navigate("/");
       })
       .catch((error) => console.error(error));
   };

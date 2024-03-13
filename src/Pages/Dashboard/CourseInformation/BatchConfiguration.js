@@ -7,6 +7,7 @@ import DialogLayoutForFromControl from "../Shared/DialogLayoutForFromControl";
 import { toast } from "react-hot-toast";
 import Loading from "../../Shared/Loading/Loading";
 import Swal from "sweetalert2";
+import FileCopyIcon from "@mui/icons-material/FileCopy";
 
 const BatchConfiguration = ({
   selectedBatches,
@@ -17,6 +18,7 @@ const BatchConfiguration = ({
   setCount,
 }) => {
   const Role = localStorage.getItem("role");
+  const rootUrl = window.location.origin;
   const [isOpenBatches, setIsOpenBatches] = useState(false);
   const [addBatchOpen, setAddBatchOpen] = useState(false);
   const [participant, setParticipant] = useState("");
@@ -672,8 +674,48 @@ const BatchConfiguration = ({
                     name="price"
                     defaultValue={selectedBatches[0]?.price}
                     placeholder="Eg. 5000"
-                    className="bg-[#F6F7FF] font-sans border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
+                    className="bg-[#F6F7FF] font-sans border-[1px] border-[#CECECE] py-[15px] px-[18px] w-full rounded-[6px] "
                   />
+                </div>
+                <div className=" px-2">
+                  <h1 className=" text-[18px] font-[700] mt-[16px] mb-[8px] ">
+                    Batch Price
+                  </h1>
+                  <div className="flex">
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                      }}
+                      onMouseDown={async (e) => {
+                        e.preventDefault();
+                        try {
+                          await navigator.clipboard.writeText(
+                            `${rootUrl}/payment/${id}?batch=${selectedBatches[0]?._id}`
+                          );
+                          toast.success("Url Copied!");
+                        } catch (err) {
+                          console.error("Unable to copy to clipboard", err);
+                        }
+                      }}
+                      className="bg-[#F6F7FF] font-sans border-[1px] border-[#CECECE] py-[15px] px-[18px] rounded-l-md w-fit "
+                    >{`${rootUrl}/payment/${id}?batch=${selectedBatches[0]?._id}`}</button>
+                    <button
+                      className="bg-[#F6F7FF] font-sans border-[1px] border-[#CECECE] py-[15px] px-[18px] rounded-r-md w-fit "
+                      onClick={async (e) => {
+                        e.preventDefault();
+                        try {
+                          await navigator.clipboard.writeText(
+                            `${rootUrl}/payment/${id}?batch=${selectedBatches[0]?._id}`
+                          );
+                          toast.success("Url Copied!");
+                        } catch (err) {
+                          console.error("Unable to copy to clipboard", err);
+                        }
+                      }}
+                    >
+                      <FileCopyIcon />
+                    </button>
+                  </div>
                 </div>
                 <>
                   {/* {!participants[0] && (
