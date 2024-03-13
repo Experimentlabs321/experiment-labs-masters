@@ -111,7 +111,7 @@ const Layout = ({ children }) => {
                   />
                 </div>
                 <div className="flex items-center justify-center">
-                  <div className="flex flex-col items-center justify-center lg:mr-[60px] mr-[20px] ">
+                 {/*  <div className="flex flex-col items-center justify-center lg:mr-[60px] mr-[20px] ">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="40"
@@ -128,7 +128,7 @@ const Layout = ({ children }) => {
                     <h1 className="text-white mt-[6px] text-[14px] font-[500] ">
                       Notification
                     </h1>
-                  </div>
+                  </div> */}
                   <div>
                     <img src={PersonProfilePic} alt="PersonProfilePic" />
                   </div>

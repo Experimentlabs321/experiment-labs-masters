@@ -16,7 +16,7 @@ const CourseAccess = () => {
   const [myCourses, setMyCourses] = useState([]);
   const [showCourses, setShowCourses] = useState([]);
   const [clickedCourse, setClickedCourse] = useState();
-  const [selectedOption, setSelectedOption] = useState("Category");
+  const [selectedOption, setSelectedOption] = useState("All");
   const [filterData, setFilterData] = useState([]);
   const [bundles, setBundles] = useState([]);
   const options = ["Category name"];
@@ -39,7 +39,7 @@ const CourseAccess = () => {
     setSelectedOption(option);
     setIsOpen(false);
   };
-console.log(courses)
+  console.log(courses)
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const stateParam = queryParams.get("state");
@@ -67,8 +67,10 @@ console.log(courses)
           setFilterData(response?.data);
           setIsLoading(false)
         })
-        .catch((error) => {console.error(error)
-          setIsLoading(false)});
+        .catch((error) => {
+          console.error(error)
+          setIsLoading(false)
+        });
       await axios
         .get(
           `${process.env.REACT_APP_SERVER_API}/api/v1/bundles/organizationId/${userInfo.organizationId}`
@@ -77,8 +79,10 @@ console.log(courses)
           setBundles(response?.data);
           setIsLoading(false)
         })
-        .catch((error) =>{ console.error(error)
-          setIsLoading(false)});
+        .catch((error) => {
+          console.error(error)
+          setIsLoading(false)
+        });
     };
     fetchAllData();
   }, [location, userInfo]);
@@ -98,27 +102,32 @@ console.log(courses)
         setCourseCategories(response?.data);
         setIsLoading(false)
       })
-      .catch((error) => {console.error(error)
-        setIsLoading(false)});
+      .catch((error) => {
+        console.error(error)
+        setIsLoading(false)
+      });
   }, [userInfo]);
 
   useEffect(() => {
-    if (selectedOption !== "Category") {
+    if (selectedOption !== "All") {
       if (stateParams === "myCourses") {
         const filteredCourses = myCourses?.filter(
           (item) => item?.courseCategory === selectedOption
         );
         setShowCourses(filteredCourses);
-        setIsLoading(false)
       } else if (stateParams === "allCourses") {
         const filteredCourses = courses?.filter(
           (item) => item?.courseCategory === selectedOption
         );
         setShowCourses(filteredCourses);
-        setIsLoading(false)
       }
+    } else {
+      // If selectedOption is "All", show all courses without filtering
+      setShowCourses(stateParams === "myCourses" ? myCourses : courses);
     }
-  }, [selectedOption]);
+    // Set isLoading to false after filtering
+    setIsLoading(false);
+  }, [selectedOption, stateParams, myCourses, courses]);
   console.log(selectedOption);
 
   // useEffect(() => {
@@ -273,10 +282,10 @@ console.log(courses)
             </div>
           </div>
           {isLoading && (
-          <div className=" flex align-items-center my-5 py-5">
-            <CircularProgress className="w-full mx-auto" />
-          </div>
-        )}
+            <div className=" flex align-items-center my-5 py-5">
+              <CircularProgress className="w-full mx-auto" />
+            </div>
+          )}
           <div className="mt-[80px] flex items-center justify-between">
             <div className="flex gap-8">
               {Role === "user" && (
@@ -285,11 +294,10 @@ console.log(courses)
                     setStateParams("myCourses");
                     setShowCourses(myCourses);
                   }}
-                  className={`text-[18px] font-[700] ${
-                    stateParams === "myCourses"
+                  className={`text-[18px] font-[700] ${stateParams === "myCourses"
                       ? "text-[#3E4DAC] underline"
                       : "text-black no-underline"
-                  }`}
+                    }`}
                 >
                   My Courses
                 </button>
@@ -299,11 +307,10 @@ console.log(courses)
                   setStateParams("allCourses");
                   setShowCourses(filterData);
                 }}
-                className={`text-[18px] font-[700] ${
-                  stateParams === "allCourses"
+                className={`text-[18px] font-[700] ${stateParams === "allCourses"
                     ? "text-[#3E4DAC] underline"
                     : "text-black no-underline"
-                }`}
+                  }`}
               >
                 All Courses
               </button>
@@ -340,6 +347,12 @@ console.log(courses)
               </div>
               {isOpen && (
                 <ul className="absolute top-full z-10 left-0 w-full border border-[#FF557A] bg-white border-t-0 py-1 px-4 rounded-b-[8px] mt-1 transform translate-y-[-10px] shadow-[0px_2px_4px_0px_#00000026]">
+                  <li
+                    className="cursor-pointer py-2 text-[#6A6A6A] text-[14px] font-[400] "
+                    onClick={() => selectOption("All")}
+                  >
+                    All
+                  </li>
                   {courseCategories?.courseCategories?.map((option, index) => (
                     <li
                       key={index}
@@ -351,6 +364,7 @@ console.log(courses)
                   ))}
                 </ul>
               )}
+
             </div>
           </div>
 
@@ -361,22 +375,20 @@ console.log(courses)
                   setStateParams("bundles");
                   setShowCourses(bundles);
                 }}
-                className={`text-[18px] font-[700] bg-[#677bff0a] rounded-md px-2 py-1 mb-5 ${
-                  stateParams !== "bundles"
+                className={`text-[18px] font-[700] bg-[#677bff0a] rounded-md px-2 py-1 mb-5 ${stateParams !== "bundles"
                     ? "text-[#3E4DAC] "
                     : "text-black no-underline"
-                }`}
+                  }`}
               >
                 Show Bundles
               </button>
             )}
             {stateParams !== "bundles" && (
               <div
-                className={`flex flex-wrap ${
-                  showCourses?.length <= 2
+                className={`flex flex-wrap ${showCourses?.length <= 2
                     ? "justify-start gap-x-14"
                     : "justify-between gap-x-2"
-                }  gap-y-5`}
+                  }  gap-y-5`}
               >
                 {showCourses?.map((course, index) => {
                   const date = new Date(course?.courseStartingDate);
@@ -409,15 +421,15 @@ console.log(courses)
                                   !userInfo?.courses?.find(
                                     (item) => item?.courseId === course?._id
                                   )
-                                ? `/payment/${course?._id}`
-                                : `/questLevels/${course?._id}`
+                                  ? `/payment/${course?._id}`
+                                  : `/questLevels/${course?._id}`
                             }
                             target={
                               Role === "user" &&
-                              stateParams === "allCourses" &&
-                              !userInfo?.courses?.find(
-                                (item) => item?.courseId === course?._id
-                              )
+                                stateParams === "allCourses" &&
+                                !userInfo?.courses?.find(
+                                  (item) => item?.courseId === course?._id
+                                )
                                 ? "_blank"
                                 : "_self"
                             }
@@ -489,9 +501,8 @@ console.log(courses)
                               )}
                             </div>
                             <div
-                              className={`${
-                                Role === "admin" ? "block" : "hidden"
-                              } relative`}
+                              className={`${Role === "admin" ? "block" : "hidden"
+                                } relative`}
                             >
                               <button
                                 onClick={(e) => {
@@ -552,15 +563,15 @@ console.log(courses)
                                     !userInfo?.courses?.find(
                                       (item) => item?.courseId === course?._id
                                     )
-                                  ? (course?.courseInitialUrl)? `${course?.courseInitialUrl}` : `/payment/${course?._id}`
-                                  : `/questLevels/${course?._id}`
+                                    ? (course?.courseInitialUrl) ? `${course?.courseInitialUrl}` : `/payment/${course?._id}`
+                                    : `/questLevels/${course?._id}`
                               }
                               target={
                                 Role === "user" &&
-                                stateParams === "allCourses" &&
-                                !userInfo?.courses?.find(
-                                  (item) => item?.courseId === course?._id
-                                )
+                                  stateParams === "allCourses" &&
+                                  !userInfo?.courses?.find(
+                                    (item) => item?.courseId === course?._id
+                                  )
                                   ? "_blank"
                                   : "_self"
                               }
@@ -632,9 +643,8 @@ console.log(courses)
                                 )}
                               </div>
                               <div
-                                className={`${
-                                  Role === "admin" ? "block" : "hidden"
-                                } relative`}
+                                className={`${Role === "admin" ? "block" : "hidden"
+                                  } relative`}
                               >
                                 <button
                                   onClick={(e) => {
@@ -691,11 +701,10 @@ console.log(courses)
             )}
             {stateParams === "bundles" && (
               <div
-                className={`flex flex-wrap ${
-                  showCourses?.length <= 2
+                className={`flex flex-wrap ${showCourses?.length <= 2
                     ? "justify-start gap-x-14"
                     : "justify-between gap-x-2"
-                }  gap-y-5`}
+                  }  gap-y-5`}
               >
                 {showCourses?.map((course, index) => {
                   const date = new Date(course?.bundleStartingDate);
@@ -729,15 +738,15 @@ console.log(courses)
                                   !myCourses?.find(
                                     (item) => item?._id === course?._id
                                   )
-                                ? `/payment/${course?._id}`
-                                : `/questLevels/${course?._id}`
+                                  ? `/payment/${course?._id}`
+                                  : `/questLevels/${course?._id}`
                             }
                             target={
                               Role === "user" &&
-                              stateParams === "allCourses" &&
-                              !myCourses?.find(
-                                (item) => item?._id === course?._id
-                              )
+                                stateParams === "allCourses" &&
+                                !myCourses?.find(
+                                  (item) => item?._id === course?._id
+                                )
                                 ? "_blank"
                                 : "_self"
                             }
@@ -809,9 +818,8 @@ console.log(courses)
                               )}
                             </div>
                             <div
-                              className={`${
-                                Role === "admin" ? "block" : "hidden"
-                              } relative`}
+                              className={`${Role === "admin" ? "block" : "hidden"
+                                } relative`}
                             >
                               <button
                                 onClick={(e) => {
@@ -872,15 +880,15 @@ console.log(courses)
                                     !userInfo?.courses?.find(
                                       (item) => item?.bundleId === course?._id
                                     )
-                                  ? `/bundle/payment/${course?._id}`
-                                  : `/courseAccess`
+                                    ? `/bundle/payment/${course?._id}`
+                                    : `/courseAccess`
                               }
                               target={
                                 Role === "user" &&
-                                stateParams === "allCourses" &&
-                                !myCourses?.find(
-                                  (item) => item?._id === course?._id
-                                )
+                                  stateParams === "allCourses" &&
+                                  !myCourses?.find(
+                                    (item) => item?._id === course?._id
+                                  )
                                   ? "_blank"
                                   : "_self"
                               }
@@ -952,9 +960,8 @@ console.log(courses)
                                 )}
                               </div>
                               <div
-                                className={`${
-                                  Role === "admin" ? "block" : "hidden"
-                                } relative`}
+                                className={`${Role === "admin" ? "block" : "hidden"
+                                  } relative`}
                               >
                                 <button
                                   onClick={(e) => {

@@ -50,6 +50,25 @@ const Aside = ({
   const [clickedChapter, setClickedChapter] = useState({});
   const options = ["Category name"];
   const { userInfo } = useContext(AuthContext);
+  
+  const asideRef = useRef(null); // Create a ref for the aside element
+
+  // Effect for handling clicks outside of the aside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (asideRef.current && !asideRef.current.contains(event.target)) {
+        setToggleButton(false); // Hide the aside menu
+      }
+    }
+
+    // Add click event listener
+    document.addEventListener("mousedown", handleClickOutside);
+    
+    return () => {
+      // Clean up the event listener on component unmount
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [setToggleButton]);
 
   const toggleOptions = () => {
     setIsOpen(!isOpen);
@@ -193,6 +212,7 @@ const Aside = ({
 
   return (
     <aside
+    ref={asideRef}
       id="sidebar"
       className={`fixed ${
         toggleButton ? " lg:flex" : "hidden"
@@ -353,7 +373,7 @@ const Aside = ({
                         </h1>
                       </div>
                       <div
-                        className={`${
+                        className={ `overflow-auto max-h-[calc(100vh-200px)] lg:overflow-hidden ${
                           openTopic === item?.chapterName ? "" : "hidden"
                         } sub-items`}
                       >

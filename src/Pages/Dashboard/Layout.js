@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import MyHelmet from "../../Components/MyHelmet/MyHelpmet";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import logo from "../../assets/Logos/Group 2859890.png";
@@ -87,6 +87,7 @@ const Layout = ({ children }) => {
   const [showNotification, setShowNotification] = useState(false);
   const [organizationNavDetails, setOrganizationNavDetails] = useState();
   const navigate = useNavigate();
+  const sidebarRef = useRef();
   const {
     notifications,
     numberOfUnreadNotification,
@@ -97,6 +98,22 @@ const Layout = ({ children }) => {
   } = useNotification();
   //console.log(Role);
   const location = useLocation();
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+        // If the click is outside the sidebar, hide the sidebar
+        setToggleButton(true); // Assuming setToggleButton controls the visibility
+      }
+    }
+  
+    // Add event listener
+    document.addEventListener('mousedown', handleClickOutside);
+  
+    return () => {
+      // Clean up the event listener
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [sidebarRef]);
   useEffect(() => {
     window.addEventListener("resize", () => {
       setWindowWidth(window.innerWidth);
@@ -258,9 +275,9 @@ const Layout = ({ children }) => {
                     ></path>
                   </svg>
                 </button>
-                <Badge badgeContent={4} color="primary">
+              {/*   <Badge badgeContent={4} color="primary">
                   <NotificationsIcon sx={{ color: "white" }} />
-                </Badge>
+                </Badge> */}
                 {/* <div className="absolute top-0 w-56 h-56 bg-white">
                   something
                 </div> */}
@@ -279,6 +296,8 @@ const Layout = ({ children }) => {
 
           <div className="flex overflow-hidden">
             <aside
+          
+              ref={sidebarRef}
               id="sidebar"
               className={`fixed ${
                 toggleButton ? "hidden" : ""
