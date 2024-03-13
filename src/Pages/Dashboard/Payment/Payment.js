@@ -47,7 +47,7 @@ const Payment = () => {
   const [forgotPassOpen, setForgotPassOpen] = useState(false);
   const queryParameters = new URLSearchParams(window.location.search);
   const queryBatch = queryParameters.get("batch");
-  const [isBatchPayment , setIsBatchPayment] = useState(false);
+  const [isBatchPayment, setIsBatchPayment] = useState(false);
 
   console.log(queryBatch);
 
@@ -79,7 +79,7 @@ const Payment = () => {
   }, [id, queryBatch]);
 
   console.log(course);
-  console.log("Selected Batch ==============>",selectedBatch);
+  console.log("Selected Batch ==============>", selectedBatch);
 
   useEffect(() => {
     if (course?.organization?.organizationId)
@@ -181,6 +181,23 @@ const Payment = () => {
           title: "Course Added Successfully",
           icon: "success",
         });
+        const newData = {
+          from: organizationData?.emailIntegration?.email,
+          to: data?.email,
+          templateType: "emailAction",
+          templateName:"courseWelcome",
+          organizationId: organizationData?._id,
+          learner_name: data?.name,
+          course_name: course?.courseFullName,
+          site_name: organizationData?.organizationName,
+          site_email: organizationData?.email
+        }
+
+        const updateOrg = await axios.post(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+          // `http://localhost:5000/api/v1/sendMail`,
+          newData
+        );
         navigate("/courseAccess");
       }
       Loading().close();
@@ -249,6 +266,23 @@ const Payment = () => {
             title: "Course Added Successfully",
             icon: "success",
           });
+          const newData = {
+            from: organizationData?.emailIntegration?.email,
+            to: data?.email,
+            templateType: "emailAction",
+            templateName:"courseWelcome",
+            organizationId: organizationData?._id,
+            learner_name: data?.name,
+            course_name: course?.courseFullName,
+            site_name: organizationData?.organizationName,
+            site_email: organizationData?.email
+          }
+  
+          const updateOrg = await axios.post(
+            `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+            // `http://localhost:5000/api/v1/sendMail`,
+            newData
+          );
           navigate("/courseAccess");
         }
       },
@@ -481,7 +515,7 @@ const Payment = () => {
                     {batchesData[0] && (
                       <select
                         className="mt-1 p-2 border w-full rounded-md bg-white"
-                        disabled={isBatchPayment===true}
+                        disabled={isBatchPayment === true}
                         onChange={(e) =>
                           setSelectedBatch(batchesData[e.target.value])
                         }

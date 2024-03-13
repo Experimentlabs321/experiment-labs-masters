@@ -580,7 +580,7 @@ const Aside = ({
                               item?.tasks?.[index - 1]?.participants?.some(
                                 (item) =>
                                   item?.participantId === userInfo?._id &&
-                                  item?.status === "Completed"
+                                  (item?.status === "Completed" || item?.status === "InProgress")
                               );
 
                             const isPrevChapterCompleted =
@@ -590,7 +590,7 @@ const Aside = ({
                               ]?.participants?.some(
                                 (item) =>
                                   item?.participantId === userInfo?._id &&
-                                  item?.status === "Completed"
+                                  (item?.status === "Completed" || item?.status === "InProgress")
                               );
 
                             return (
