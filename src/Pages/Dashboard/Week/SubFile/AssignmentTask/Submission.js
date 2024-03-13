@@ -30,6 +30,19 @@ const Submission = ({ taskData }) => {
       .catch((error) => console.error(error));
   }, [userInfo?._id, taskData]);
 
+  const checkSubmit = () => {
+   
+      axios
+        .get(
+          `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${taskData?._id}/${userInfo?._id}`
+        )
+        .then((response) => {
+          setSubmissionData(response?.data[response?.data?.length - 1]);
+        })
+        .catch((error) => console.error(error));
+   
+  };
+
   useEffect(() => {
     const findCourseAndBatch = userInfo?.courses?.find(
       (item) => item?.courseId === taskData?.courseId
@@ -158,6 +171,8 @@ const Submission = ({ taskData }) => {
         );
         console.log(newNotification);
         toast.success("Assignment Submitted Successfully");
+        checkSubmit();
+
       }
 
       Loading().close();
@@ -256,7 +271,7 @@ const Submission = ({ taskData }) => {
                     </div>
                     <p className="text-[18px] font-[700] my-[30px] ">
                       Drag & Drop Files or{" "}
-                      <span className=" text-[#3E4DAC] underline ">Browse</span>
+                      <span className=" text-[#3E4DAC] underline cursor-pointer">Browse</span>
                     </p>
                     {selectedFile && (
                       <p className="text-[18px] font-[700] mb-[30px] ">
