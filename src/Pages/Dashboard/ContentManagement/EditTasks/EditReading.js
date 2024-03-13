@@ -62,21 +62,43 @@ const EditReading = () => {
   const [preview, setPreview] = useState(false);
   const [submitPermission, setSubmitPermission] = useState(false);
   const [readingData, setReadingData] = useState({});
-  const [openTask, setOpenTask] = useState(
-    JSON.parse(localStorage.getItem("task"))
-  );
-  const [currentWeek, setCurrentWeek] = useState(
-    JSON.parse(localStorage.getItem("currentWeek"))
-  );
   const [batchesData, setBatchesData] = useState([]);
   const [selectedBatches, setSelectedBatches] = useState([]);
   const [orgData, setOrgData] = useState({});
   const [taskDrip, setTaskDrip] = useState();
   const [enableDownload, setEnableDownload] = useState(false);
+
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/readings/taskId/${id}`
+      )
+      .then((response) => {
+        setReadingData(response?.data);
+        setReadingMaterial(response?.data?.readingMaterial);
+        setSelectedBatches(response?.data?.batches);
+        setSkillParameterData(response?.data?.skillParameterData);
+        setEarningParameterData(response?.data?.earningParameterData);
+        setTaskDrip(response?.data?.taskDrip);
+        setEnableDownload(response?.data?.enableDownload);
+      });
+  }, [id]);
+
+  useEffect(() => {
+    if (readingData?.courseId)
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${readingData?.courseId}`
+        )
+        .then((response) => {
+          setCourse(response?.data);
+        });
+  }, [readingData]);
+
   useEffect(() => {
     const fetchData = {
-      organizationId: currentWeek?.organization?.organizationId,
-      courseId: currentWeek?.courseId,
+      organizationId: userInfo?.organizationId,
+      courseId: readingData?.courseId,
     };
     axios
       .get(
@@ -100,34 +122,25 @@ const EditReading = () => {
       )
       .then((res) => setEarningCategories(res?.data))
       .catch((error) => console.error(error));
-  }, [currentWeek]);
 
-  useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/readings/taskId/${openTask?.taskId}`
+        `${process.env.REACT_APP_BACKEND_API}/chapter/${readingData?.chapterId}`
       )
-      .then((response) => {
-        setReadingData(response?.data);
-        setReadingMaterial(response?.data?.readingMaterial);
-        setSelectedBatches(response?.data?.batches);
-        setSkillParameterData(response?.data?.skillParameterData);
-        setEarningParameterData(response?.data?.earningParameterData);
-        setTaskDrip(response?.data?.taskDrip);
-        setEnableDownload(response?.data?.enableDownload);
-      });
-  }, [openTask]);
+      .then((res) => setChapter(res?.data))
+      .catch((error) => console.error(error));
+  }, [readingData, userInfo]);
 
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${currentWeek?.courseId}`
+        `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${readingData?.courseId}`
       )
       .then((response) => {
         setBatchesData(response?.data);
       })
       .catch((error) => console.error(error));
-  }, [currentWeek]);
+  }, [readingData]);
 
   useEffect(() => {
     axios
@@ -231,10 +244,10 @@ const EditReading = () => {
                   />
                 </svg>
                 <Link
-                  to={`/questLevels/${currentWeek?.courseId}`}
+                  to={`/questLevels/${course?._id}`}
                   className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline "
                 >
-                  {localStorage.getItem("course")}
+                  {course?.courseFullName}
                 </Link>
                 <svg
                   className="mr-[30px]"
@@ -253,7 +266,7 @@ const EditReading = () => {
                   />
                 </svg>
                 <button className=" font-sans mr-[30px] text-[20px] font-[400] ">
-                  {localStorage.getItem("chapter")}
+                  {chapter?.chapterName}
                 </button>
               </div>
               <div className="flex items-center mt-[-10px] ">
@@ -312,7 +325,7 @@ const EditReading = () => {
         </div>
         <div className={`${preview ? "hidden" : "block"}`}>
           <div className="text-[#3E4DAC] text-[26px] font-bold  py-[35px] ps-[40px]">
-            <p>Manage Reading in {localStorage.getItem("chapter")}</p>
+            <p>Manage Reading in {chapter?.chapterName}</p>
           </div>
           <form onSubmit={handleSubmit}>
             <div className="flex  me-20 py-[35px] ps-[40px]">

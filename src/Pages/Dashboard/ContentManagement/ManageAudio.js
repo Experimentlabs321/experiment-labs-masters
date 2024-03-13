@@ -174,8 +174,8 @@ const ManageAudio = () => {
     };
 
     setAudioData(ManageAudio);
-console.log(ManageAudio)
- /*    if (submitPermission) {
+    console.log(ManageAudio);
+    if (submitPermission) {
       const newTask = await axios.post(
         `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/audios`,
         ManageAudio
@@ -206,7 +206,7 @@ console.log(ManageAudio)
       }
 
       console.log(ManageAudio);
-    } */
+    }
     Loading().close();
   };
 
@@ -516,7 +516,6 @@ console.log(ManageAudio)
                       name="radioDownloadOption"
                       checked={enableDownload === true}
                       onChange={() => setEnableDownload(true)}
-
                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
                     />
                     <label
@@ -534,7 +533,6 @@ console.log(ManageAudio)
                       name="radioDownloadOption"
                       checked={enableDownload === false}
                       onChange={() => setEnableDownload(false)}
-
                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
                     />
                     <label
@@ -546,7 +544,6 @@ console.log(ManageAudio)
                   </div>
                 </div>
               </fieldset>
-
             </div>
 
             <div className="px-4 my-10">

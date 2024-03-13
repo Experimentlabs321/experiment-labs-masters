@@ -191,58 +191,6 @@ const WeekDetails = ({
     };
   }, []);
 
-  // const handleChapterDelete = async (id) => {
-  //   Swal.fire({
-  //     title: "Are you sure?",
-  //     text: "You won't be able to revert this!",
-  //     icon: "warning",
-  //     showCancelButton: true,
-  //     confirmButtonColor: "#3085d6",
-  //     cancelButtonColor: "#d33",
-  //     confirmButtonText: "Yes, delete it!",
-  //   }).then(async (result) => {
-  //     if (result.isConfirmed) {
-  //       Loading();
-  //       if (chapters?.length === 1) {
-  //         setOpenConfirmationDialog(false);
-  //         Swal.fire({
-  //           icon: "error",
-  //           title: "Oops...",
-  //           text: "There only one chapter. Delete is not possible!",
-  //         });
-  //         return;
-  //       }
-
-  //       console.log(id);
-
-  //       await axios
-  //         .delete(`http://localhost:5000/api/v1/chapters/chapterId/${id}`)
-  //         .then((result) => {
-  //           console.log(result);
-  //           if (result?.status === 200) {
-  //             Swal.fire({
-  //               title: "Deleted!",
-  //               text: "Your file has been deleted.",
-  //               icon: "success",
-  //             });
-  //             const remainingWeeks = chapters.filter(
-  //               (chapter) => chapter._id !== id
-  //             );
-  //             setChapters(remainingWeeks);
-  //             setOpenConfirmationDialog(false);
-  //           } else {
-  //             toast.error("Oops...! Something went wrong.");
-  //             setOpenConfirmationDialog(false);
-  //           }
-  //         })
-  //         .catch((error) => {
-  //           toast.error("Oops...! Something went wrong.");
-  //           console.error(error);
-  //           Loading().close();
-  //         });
-  //     }
-  //   });
-  // };
   const handleChapterDelete = async (id) => {
     const { value: accept } = await Swal.fire({
       title: "Delete Chapter",
@@ -684,7 +632,9 @@ const WeekDetails = ({
                                       "currentWeek",
                                       JSON.stringify(currentWeek)
                                     );
-                                    navigate(`/editTask/${currentWeek?._id}`);
+                                    navigate(
+                                      `/editTask/${task?.taskId}?taskType=${task?.taskType}`
+                                    );
                                   }}
                                   className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600] "
                                 >

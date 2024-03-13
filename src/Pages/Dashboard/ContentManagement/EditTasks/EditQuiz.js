@@ -21,14 +21,11 @@ const EditQuiz = () => {
   const [quizDescription, setQuizDescription] = useState("");
   const [submitPermission, setSubmitPermission] = useState(false);
   const [quizData, setQuizData] = useState({});
-  const [openTask, setOpenTask] = useState(
-    JSON.parse(localStorage.getItem("task"))
-  );
 
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/quizes/taskId/${openTask?.taskId}`
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/quizes/taskId/${id}`
       )
       .then((response) => {
         setQuizData(response?.data);
@@ -39,7 +36,7 @@ const EditQuiz = () => {
         // setTaskDrip(response?.data?.taskDrip);
         // setEnableDownload(response?.data?.enableDownload);
       });
-  }, [openTask]);
+  }, [id]);
 
   console.log(quizData);
 
