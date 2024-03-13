@@ -2,19 +2,22 @@ import React, { useEffect, useState } from 'react';
 import Swal from "sweetalert2";
 import axios from "axios";
 import SESCreateTemplate from './SESCreateTemplate';
+import Loading from '../../../Shared/Loading/Loading';
+import SESSendTestEmail from './SESSendTestEmail';
+import CustomizeTemplates from './CustomizeTemplates';
 
 const SES = ({ orgData }) => {
     const [accessKeyId, setAccessKeyId] = useState("");
     const [secretAccessKey, setSecretAccessKey] = useState("");
     const [region, setRegion] = useState("");
     const [templateName, setTemplateName] = useState("");
-    const [showForm , setShowForm] = useState(false);
-    const [sesEmail , setSesEmail] = useState();
-    const [emailTemplates , setEmailTemplates] = useState();
+    const [showForm, setShowForm] = useState(false);
+    const [showTestSendForm, setShowTestSendForm] = useState(false);
+    const [sesEmail, setSesEmail] = useState();
+    const [emailTemplates, setEmailTemplates] = useState();
 
-    // console.log(orgData);
-    useEffect(() => {
-        if (orgData?._id!==undefined) {
+    const fetchSESIntegrationData = async () => {
+        if (orgData?._id !== undefined) {
             axios.get(
                 `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/e/${orgData?._id}`
                 // `http://localhost:5000/api/v1/organizations/e/${orgData?._id}`
@@ -24,17 +27,21 @@ const SES = ({ orgData }) => {
                     setSecretAccessKey(response.data?.secretAccessKey);
                     setRegion(response.data?.region);
                     setTemplateName(response.data?.templateName);
-                    setSesEmail(response.data?.sesEmail);
+                    setSesEmail(response.data?.email);
                     setEmailTemplates(response.data?.emailTemplates);
                     console.log(emailTemplates);
                 })
                 .catch((error) => console.error(error));
         }
-
+    }
+    // console.log(orgData);
+    useEffect(() => {
+        fetchSESIntegrationData();
     }, [orgData]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        Loading();
         // const form = event.target;
 
         const orgInfo = {
@@ -44,7 +51,7 @@ const SES = ({ orgData }) => {
                 secretAccessKey,
                 region,
                 templateName,
-                sesEmail
+                email: sesEmail
             }
         };
         // console.log("Data ==========>",orgData?._id);
@@ -56,11 +63,13 @@ const SES = ({ orgData }) => {
         );
 
         if (updateOrg?.data?.acknowledged) {
+            fetchSESIntegrationData();
             Swal.fire({
                 title: "Updated successfully!",
                 icon: "success",
             });
         }
+        Loading().close();
     };
 
     return (
@@ -68,11 +77,17 @@ const SES = ({ orgData }) => {
             <div className="w-full">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-2xl font-semibold text-gray-800">AWS SES Integration</h2>
-                    <button onClick={()=>setShowForm(!showForm)} className="py-2 px-4 bg-blue hover:bg-blue-700 focus:outline-none focus:bg-blue-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition duration-300">
-                        Create Template
-                    </button>
+                    <div className='flex gap-6'>
+                        <button onClick={() => setShowTestSendForm(!showTestSendForm)} className="py-2 px-4 bg-blue hover:bg-blue-700 focus:outline-none focus:bg-blue-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                            Send Test Email
+                        </button>
+                        <button onClick={() => setShowForm(!showForm)} className="py-2 px-4 bg-blue hover:bg-blue-700 focus:outline-none focus:bg-blue-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                            Create Template
+                        </button>
+                    </div>
                 </div>
-                {showForm && <SESCreateTemplate orgData={orgData}/>}
+                {showForm && <SESCreateTemplate setShowForm={setShowForm} orgData={orgData} email={sesEmail} fetchSESIntegrationData={fetchSESIntegrationData} />}
+                {showTestSendForm && <SESSendTestEmail setShowTestSendForm={setShowTestSendForm} email={sesEmail} orgData={orgData} fetchSESIntegrationData={fetchSESIntegrationData} />}
                 <form>
                     <div className="grid grid-cols-4 gap-6 mb-4">
                         <div>
@@ -129,7 +144,7 @@ const SES = ({ orgData }) => {
                         </div>
                         <div>
                             <label className="block text-gray-700 w-full font-bold mb-2" htmlFor="select">
-                                Select Template
+                                Select Default Template
                             </label>
                             <select
                                 className="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
@@ -139,10 +154,10 @@ const SES = ({ orgData }) => {
                             >
                                 <option>Select an Email Template</option>
                                 {
-                                    emailTemplates?.map((template , index)=> 
-                                    <option key={index} value={template?.templateName}>{template?.templateName}</option>
+                                    emailTemplates?.map((template, index) =>
+                                        <option key={index} value={template?.templateName}>{template?.templateName}</option>
                                     )
-                               
+
                                 }
                             </select>
                         </div>
@@ -153,6 +168,9 @@ const SES = ({ orgData }) => {
                         </button>
                     </div>
                 </form>
+                <div>
+                    <CustomizeTemplates email={sesEmail} orgData={orgData}/>
+                </div>
             </div>
         </div>
     );

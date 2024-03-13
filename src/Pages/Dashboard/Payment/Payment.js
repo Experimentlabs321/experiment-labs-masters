@@ -183,6 +183,23 @@ const Payment = () => {
           title: "Course Added Successfully",
           icon: "success",
         });
+        const newData = {
+          from: organizationData?.emailIntegration?.email,
+          to: data?.email,
+          templateType: "emailAction",
+          templateName:"courseWelcome",
+          organizationId: organizationData?._id,
+          learner_name: data?.name,
+          course_name: course?.courseFullName,
+          site_name: organizationData?.organizationName,
+          site_email: organizationData?.email
+        }
+
+        const updateOrg = await axios.post(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+          // `http://localhost:5000/api/v1/sendMail`,
+          newData
+        );
         navigate("/courseAccess");
       }
       Loading().close();
@@ -251,6 +268,23 @@ const Payment = () => {
             title: "Course Added Successfully",
             icon: "success",
           });
+          const newData = {
+            from: organizationData?.emailIntegration?.email,
+            to: data?.email,
+            templateType: "emailAction",
+            templateName:"courseWelcome",
+            organizationId: organizationData?._id,
+            learner_name: data?.name,
+            course_name: course?.courseFullName,
+            site_name: organizationData?.organizationName,
+            site_email: organizationData?.email
+          }
+  
+          const updateOrg = await axios.post(
+            `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+            // `http://localhost:5000/api/v1/sendMail`,
+            newData
+          );
           navigate("/courseAccess");
         }
       },

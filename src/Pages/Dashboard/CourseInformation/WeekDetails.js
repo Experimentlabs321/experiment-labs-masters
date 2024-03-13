@@ -694,7 +694,7 @@ const WeekDetails = ({
                       chapter?.tasks?.[taskIndex - 1]?.participants?.some(
                         (item) =>
                           item?.participantId === userInfo?._id &&
-                          item?.status === "Completed"
+                          (item?.status === "Completed" || item?.status === "InProgress")
                       );
 
                     const isPrevChapterCompleted =
@@ -704,7 +704,7 @@ const WeekDetails = ({
                       ]?.participants?.some(
                         (item) =>
                           item?.participantId === userInfo?._id &&
-                          item?.status === "Completed"
+                          (item?.status === "Completed" || item?.status === "InProgress")
                       );
 
                     return (
