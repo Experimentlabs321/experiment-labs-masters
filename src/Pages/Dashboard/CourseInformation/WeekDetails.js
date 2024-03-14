@@ -289,24 +289,23 @@ const WeekDetails = ({
       {chapters?.map((chapter, index) => {
         const chapterIndex = index;
         return (
-          <div
-            onClick={() => {
-              const findChapter = openTopics?.find(
-                (item) => item === chapter?._id
-              );
-              if (findChapter) {
-                setOpenTopics(
-                  openTopics?.filter((item) => item !== chapter?._id)
-                );
-              } else {
-                setOpenTopics([...openTopics, chapter?._id]);
-              }
-            }}
-            key={chapter?._id}
-            className="sortable-chapter"
-          >
+          <div key={chapter?._id} className="sortable-chapter">
             <div className="relative">
-              <div className="flex items-center justify-between mt-[60px]">
+              <div
+                onClick={() => {
+                  const findChapter = openTopics?.find(
+                    (item) => item === chapter?._id
+                  );
+                  if (findChapter) {
+                    setOpenTopics(
+                      openTopics?.filter((item) => item !== chapter?._id)
+                    );
+                  } else {
+                    setOpenTopics([...openTopics, chapter?._id]);
+                  }
+                }}
+                className="flex items-center justify-between mt-[60px]"
+              >
                 <div className="flex items-center ">
                   <div className="w-[85px] rounded-full flex items-center justify-center h-[85px] bg-[#E1E6FF] ">
                     <h1 className="text-[35px] font-[600] ">{index + 1}</h1>
@@ -694,7 +693,8 @@ const WeekDetails = ({
                       chapter?.tasks?.[taskIndex - 1]?.participants?.some(
                         (item) =>
                           item?.participantId === userInfo?._id &&
-                          (item?.status === "Completed" || item?.status === "InProgress")
+                          (item?.status === "Completed" ||
+                            item?.status === "InProgress")
                       );
 
                     const isPrevChapterCompleted =
@@ -704,7 +704,8 @@ const WeekDetails = ({
                       ]?.participants?.some(
                         (item) =>
                           item?.participantId === userInfo?._id &&
-                          (item?.status === "Completed" || item?.status === "InProgress")
+                          (item?.status === "Completed" ||
+                            item?.status === "InProgress")
                       );
 
                     return (
