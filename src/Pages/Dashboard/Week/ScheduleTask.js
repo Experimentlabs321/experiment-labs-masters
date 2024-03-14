@@ -90,7 +90,7 @@ const ScheduleTask = ({ taskData, week }) => {
     });
   };
 
-
+console.log(userInfo)
   const navigate = useNavigate();
   const [date, setDate] = useState(""); // State for the date
   const [time, setTime] = useState(""); // State for the time
@@ -489,6 +489,7 @@ const ScheduleTask = ({ taskData, week }) => {
     }) + ' (KST)'; // Korea Standard Time
     return `India-time: ${kolkataTime}`;
   };
+  console.log(adminMail)
   const addEvent = async () => {
     if (checkTime) {
       Swal.fire({
@@ -576,11 +577,15 @@ const ScheduleTask = ({ taskData, week }) => {
                 const sendMail = await axios.post(
                   `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
                   {
-                    from: `${user?.email}`,
-                    to: `${user?.email},naman.j@experimentlabs.in,${adminMail}`,
-                    subject: `Event request`,
+                    from: `${userInfo?.email}`,
+                //    to: `${user?.email},${adminMail}`,
+                    to: `${adminMail}`,
+                    templateType: "emailAction",
+                    templateName:"sheduleTask",
+                    organizationId: userInfo?.organizationId,
+                   /*  subject: `Event request`,
                     message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
-                      }`,
+                      }`, */
                   }
                 );
                 console.log("send ", sendMail)

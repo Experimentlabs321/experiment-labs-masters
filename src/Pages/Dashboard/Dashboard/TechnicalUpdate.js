@@ -204,6 +204,7 @@ const TechnicalUpdate = ({
             },
           };
           // Handle the new access token and possibly a new refresh token
+          
           const newAccessToken = data.access_token;
           function initiate() {
             const sendData = async (event) => {
