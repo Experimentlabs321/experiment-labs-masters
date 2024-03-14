@@ -7,6 +7,28 @@ import axios from "axios";
 const Navbar = () => {
   const { userInfo } = useContext(AuthContext);
   const [orgData, setOrgData] = useState({});
+  const getInitials = () => {
+    const firstNameInitial =
+      userInfo?.name?.charAt(0)?.toUpperCase() || "";
+    const lastNameInitial = userInfo?.lastName?.charAt(0)?.toUpperCase() || "";
+    return `${firstNameInitial}${lastNameInitial}`;
+  };
+  const getRandomColor = () => {
+    const letters = "0123456789ABCDEF";
+    let color = "#";
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  };
+  const [backgroundColor, setBackgroundColor] = useState("");
+  useEffect(() => {
+    // Generate a random background color if it hasn't been generated yet
+    if (!backgroundColor) {
+      setBackgroundColor(getRandomColor());
+    }
+    // Your existing useEffect logic...
+  }, [userInfo, backgroundColor]);
   useEffect(() => {
     axios
       .get(
@@ -52,7 +74,7 @@ const Navbar = () => {
             />
           </div>
           <div className="flex items-center justify-center">
-           {/*  <div className="flex flex-col items-center justify-center mr-[20px] lg:mr-[60px] ">
+            {/*  <div className="flex flex-col items-center justify-center mr-[20px] lg:mr-[60px] ">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="40"
@@ -70,9 +92,20 @@ const Navbar = () => {
                 Notification
               </h1>
             </div> */}
-            <div>
-              <img src={PersonProfilePic} alt="PersonProfilePic" />
-            </div>
+                  {
+                    userInfo?.profileImg ? <img
+                    className="w-[59px] h-[59px] md:w-[64px] md:h-[64px]  lg:w-[80px] rounded-full lg:h-[82px]"
+                    src={userInfo?.profileImg}
+                    alt="user"
+                  /> : <div className="w-[59px] h-[59px] md:w-[64px] md:h-[64px]  lg:w-[80px] rounded-full lg:h-[82px] object-contain object-center  overflow-hidden">
+                      <div
+                        className="w-full h-full flex items-center text-red-50 justify-center text-xl md:text-3xl font-bold"
+                        style={{ backgroundColor }}
+                      >
+                        {getInitials()}
+                      </div>
+                    </div>
+                  }
           </div>
         </div>
       </div>
