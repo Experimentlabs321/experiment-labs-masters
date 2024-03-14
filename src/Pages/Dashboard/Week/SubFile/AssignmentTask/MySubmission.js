@@ -13,11 +13,16 @@ const MySubmission = ({ taskData }) => {
         `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${taskData?._id}/${userInfo?._id}`
       )
       .then((response) => {
-        setSubmissionData(response?.data[response?.data?.length - 1]);
-        setIsLoading(false)
+        if (response && response.data && response.data.length > 0) {
+          setSubmissionData(response.data[response.data.length - 1]);
+        }
       })
-      .catch((error) => console.error(error));
+      .catch((error) => console.error(error))
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, [userInfo?._id, taskData]);
+  
   console.log(submissionData);
 
   return (

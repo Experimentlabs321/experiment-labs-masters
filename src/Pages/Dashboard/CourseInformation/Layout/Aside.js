@@ -29,7 +29,10 @@ const Aside = () => {
   useEffect(() => {
     function handleClickOutside(event) {
       if (asideRef.current && !asideRef.current.contains(event.target)) {
-        setToggleButton(false); // Hide the aside menu
+        if (window.innerWidth <= 768) {
+          // If the click is outside the sidebar and we're on a mobile device, hide the sidebar
+          setToggleButton(false); // Assuming setToggleButton(true) hides the sidebar
+        }
       }
     }
 
