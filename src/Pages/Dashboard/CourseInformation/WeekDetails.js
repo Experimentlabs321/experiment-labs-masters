@@ -48,7 +48,7 @@ const WeekDetails = ({
   const [toggleButton, setToggleButton] = useState(false);
   const { user, userInfo } = useContext(AuthContext);
   const [clickedChapter, setClickedChapter] = useState({});
-  const [openTopic, setOpenTopic] = useState(chapters[0]?.chapterName);
+  const [openTopics, setOpenTopics] = useState([chapters[0]?._id]);
 
   const containerRef = useRef(null);
   let sortable;
@@ -73,7 +73,7 @@ const WeekDetails = ({
   };
 
   useEffect(() => {
-    setOpenTopic(chapters[0]?.chapterName);
+    setOpenTopics([chapters[0]?._id]);
   }, [chapters]);
 
   useEffect(() => {
@@ -290,7 +290,18 @@ const WeekDetails = ({
         const chapterIndex = index;
         return (
           <div
-            onClick={() => setOpenTopic(chapter?.chapterName)}
+            onClick={() => {
+              const findChapter = openTopics?.find(
+                (item) => item === chapter?._id
+              );
+              if (findChapter) {
+                setOpenTopics(
+                  openTopics?.filter((item) => item !== chapter?._id)
+                );
+              } else {
+                setOpenTopics([...openTopics, chapter?._id]);
+              }
+            }}
             key={chapter?._id}
             className="sortable-chapter"
           >
@@ -348,7 +359,7 @@ const WeekDetails = ({
                     )}
                   </h1>
                 </div>
-                {Role === "admin" && (
+                {Role === "admin" ? (
                   <div className="relative flex items-center">
                     <button
                       // onClick={() => {
@@ -408,6 +419,12 @@ const WeekDetails = ({
                       </svg>
                     </button>
                   </div>
+                ) : (
+                  <div className="relative flex items-center">
+                    <button className=" mr-[25px] ">
+                      <KeyboardArrowDownIcon />
+                    </button>
+                  </div>
                 )}
                 {/* {Role === "user" && (
                             <button className="bg-[#E1E6FF] w-[150px] h-[50px] text-[16px] font-[600] text-center rounded-[8px] ">
@@ -417,7 +434,9 @@ const WeekDetails = ({
               </div>
               <div
                 className={`${
-                  openTopic === chapter?.chapterName ? "" : "hidden"
+                  openTopics?.find((item) => item === chapter?._id)
+                    ? ""
+                    : "hidden"
                 } sub-items`}
               >
                 {Role === "admin" &&
@@ -675,7 +694,7 @@ const WeekDetails = ({
                       chapter?.tasks?.[taskIndex - 1]?.participants?.some(
                         (item) =>
                           item?.participantId === userInfo?._id &&
-                          item?.status === "Completed"
+                          (item?.status === "Completed" || item?.status === "InProgress")
                       );
 
                     const isPrevChapterCompleted =
@@ -685,7 +704,7 @@ const WeekDetails = ({
                       ]?.participants?.some(
                         (item) =>
                           item?.participantId === userInfo?._id &&
-                          item?.status === "Completed"
+                          (item?.status === "Completed" || item?.status === "InProgress")
                       );
 
                     return (

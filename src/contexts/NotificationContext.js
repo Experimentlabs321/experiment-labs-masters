@@ -175,6 +175,22 @@ export const NotificationProvider = ({ children }) => {
     }
   };
 
+  const clearAllNotifications = async () => {
+    if (user?.email) {
+      Loading();
+      const clearAll = await axios.put(
+        `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/notifications/clearAll/userEmail/${user?.email}`
+      );
+
+      console.log(clearAll);
+
+      if (clearAll?.status === 200) {
+        await fetchNotifications();
+      }
+      Loading().close();
+    }
+  };
+
   const fetchAnnouncements = async () => {
     if (user?.email) {
       axios
@@ -222,6 +238,7 @@ export const NotificationProvider = ({ children }) => {
         unreadAnnouncements,
         fetchAnnouncements,
         fetchNotifications,
+        clearAllNotifications,
       }}
     >
       {children}
