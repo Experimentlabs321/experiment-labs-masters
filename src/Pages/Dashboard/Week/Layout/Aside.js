@@ -50,7 +50,7 @@ const Aside = ({
   const [clickedChapter, setClickedChapter] = useState({});
   const options = ["Category name"];
   const { userInfo } = useContext(AuthContext);
-  
+
   const asideRef = useRef(null); // Create a ref for the aside element
 
   // Effect for handling clicks outside of the aside
@@ -66,7 +66,7 @@ const Aside = ({
 
     // Add click event listener
     document.addEventListener("mousedown", handleClickOutside);
-    
+
     return () => {
       // Clean up the event listener on component unmount
       document.removeEventListener("mousedown", handleClickOutside);
@@ -215,7 +215,7 @@ const Aside = ({
 
   return (
     <aside
-    ref={asideRef}
+      ref={asideRef}
       id="sidebar"
       className={`fixed ${
         toggleButton ? " lg:flex" : "hidden"
@@ -223,7 +223,7 @@ const Aside = ({
       aria-label="Sidebar"
     >
       <div className=" flex-1 flex flex-col min-h-0 pt-0">
-        <div className="flex-1 flex flex-col pb-4 overflow-y-auto">
+        <div className="flex-1 flex flex-col pb-4 ">
           <div className="flex-1 space-y-1">
             <button
               onClick={() => setToggleButton(false)}
@@ -245,7 +245,7 @@ const Aside = ({
             </button>
             <ul
               ref={Role === "admin" ? containerRef : null}
-              className="space-y-2   pb-2 text-white"
+              className="space-y-2 h-[80vh] overflow-y-auto labJourneyRemoveScroll pb-2 text-white"
             >
               {/* <li>
                 <button
@@ -376,7 +376,7 @@ const Aside = ({
                         </h1>
                       </div>
                       <div
-                        className={ `overflow-auto max-h-[calc(100vh-200px)] lg:overflow-hidden ${
+                        className={`overflow-auto lg:overflow-hidden ${
                           openTopic === item?.chapterName ? "" : "hidden"
                         } sub-items`}
                       >
@@ -609,7 +609,8 @@ const Aside = ({
                               item?.tasks?.[index - 1]?.participants?.some(
                                 (item) =>
                                   item?.participantId === userInfo?._id &&
-                                  (item?.status === "Completed" || item?.status === "InProgress")
+                                  (item?.status === "Completed" ||
+                                    item?.status === "InProgress")
                               );
 
                             const isPrevChapterCompleted =
@@ -619,7 +620,8 @@ const Aside = ({
                               ]?.participants?.some(
                                 (item) =>
                                   item?.participantId === userInfo?._id &&
-                                  (item?.status === "Completed" || item?.status === "InProgress")
+                                  (item?.status === "Completed" ||
+                                    item?.status === "InProgress")
                               );
 
                             return (
