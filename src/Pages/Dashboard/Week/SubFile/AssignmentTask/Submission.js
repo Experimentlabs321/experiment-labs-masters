@@ -114,7 +114,7 @@ const Submission = ({ taskData }) => {
     const sendMail = await axios.post(
       `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
       {
-        from: user?.email,
+        //from: user?.email,
         // to: `naman.j@experimentlabs.in,gaurav@experimentlabs.in`,
         to: course?.creator?.email,
         templateType: "emailAction",

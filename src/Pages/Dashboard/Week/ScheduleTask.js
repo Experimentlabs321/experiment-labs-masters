@@ -577,7 +577,7 @@ console.log(userInfo)
                 const sendMail = await axios.post(
                   `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
                   {
-                    from: `${userInfo?.email}`,
+                  //  from: `${userInfo?.email}`,
                 //    to: `${user?.email},${adminMail}`,
                     to: `${adminMail}`,
                     templateType: "emailAction",

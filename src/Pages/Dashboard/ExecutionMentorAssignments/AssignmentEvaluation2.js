@@ -387,7 +387,7 @@ Loading();
     const sendMail = await axios.post(
       `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
       {
-        from: `${user?.email}`,
+       // from: `${user?.email}`,
     //    to: `${user?.email},shihab77023@gmail.com`,
         to: `${assignment?.submitter?.email}`,
         templateType: "emailAction",
@@ -456,10 +456,14 @@ Loading();
     const sendMail = await axios.post(
       `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
       {
-        from: `${user?.email}`,
+        to: `${assignment?.submitter?.email}`,
+        templateType: "emailAction",
+        templateName:"assignmentEvaluation",
+        organizationId: userInfo?.organizationId,
+     /*    from: `${user?.email}`,
         to: `${user?.email},shihab77023@gmail.com`,
         subject: `Feedback of ${assignment?.taskName}`,
-        message: `Dear student, \nYour assignment on ${assignment?.taskName} result has been published. Please check it on the portal.`,
+        message: `Dear student, \nYour assignment on ${assignment?.taskName} result has been published. Please check it on the portal.`, */
       }
     );
 
@@ -518,10 +522,14 @@ Loading();
     const sendMail = await axios.post(
       `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
       {
-        from: `${user?.email}`,
+        to: `${assignment?.submitter?.email}`,
+        templateType: "emailAction",
+        templateName:"assignmentEvaluation",
+        organizationId: userInfo?.organizationId,
+       /*  from: `${user?.email}`,
         to: `${user?.email},shihab77023@gmail.com`,
         subject: `Feedback of ${assignment?.taskName}`,
-        message: `Dear student, \nYour assignment on ${assignment?.taskName} is ${status}. Please check it on the portal.`,
+        message: `Dear student, \nYour assignment on ${assignment?.taskName} is ${status}. Please check it on the portal.`, */
       }
     );
 
