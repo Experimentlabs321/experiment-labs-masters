@@ -156,6 +156,7 @@ function App() {
       console.error(error.message);
     }
   }
+  console.log(userInfo);
   return (
     <div className="max-w-[1920px] mx-auto">
       <DynamicFavicon />
