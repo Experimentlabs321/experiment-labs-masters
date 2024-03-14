@@ -9,6 +9,7 @@ import EditAudio from "./EditAudio";
 import EditFiles from "./EditFiles";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import EditSchedule from "./EditSchedule";
 
 const EditTasks = () => {
   const { id } = useParams();
@@ -28,6 +29,7 @@ const EditTasks = () => {
       {queryTaskType === "Video" && <EditVideo taskData={taskData} />}
       {queryTaskType === "Audio" && <EditAudio taskData={taskData} />}
       {queryTaskType === "Files" && <EditFiles taskData={taskData} />}
+      {queryTaskType === "Schedule" && <EditSchedule taskData={taskData} />}
     </div>
   );
 };
