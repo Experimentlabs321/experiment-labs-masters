@@ -9,24 +9,10 @@ import {
   sendPasswordResetEmail,
   updateProfile,
 } from "firebase/auth";
-// import app from "../firebase/firebase.config";
+import app from "../firebase/firebase.config";
 import axios from "axios";
 import Loading from "../Pages/Shared/Loading/Loading";
 import toast from "react-hot-toast";
-import { initializeApp } from "firebase/app";
-
-const firebaseConfig = {
-  apiKey: process.env.REACT_APP_apiKey,
-  authDomain: "experimentlabs.in",
-  projectId: process.env.REACT_APP_projectId,
-  storageBucket: process.env.REACT_APP_storageBucket,
-  messagingSenderId: process.env.REACT_APP_messagingSenderId,
-  appId: process.env.REACT_APP_appId,
-  measurementId: process.env.REACT_APP_measurementId,
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
 
 export const AuthContext = createContext();
 const auth = getAuth(app);
