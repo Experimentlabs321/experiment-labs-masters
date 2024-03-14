@@ -225,7 +225,7 @@ const Aside = ({
       aria-label="Sidebar"
     >
       <div className=" flex-1 flex flex-col min-h-0 pt-0">
-        <div className="flex-1 flex flex-col pb-4 overflow-y-auto">
+        <div className="flex-1 flex flex-col pb-4 ">
           <div className="flex-1 space-y-1">
             <button
               onClick={() => setToggleButton(false)}
@@ -247,7 +247,7 @@ const Aside = ({
             </button>
             <ul
               ref={Role === "admin" ? containerRef : null}
-              className="space-y-2   pb-2 text-white"
+              className="space-y-2 h-[80vh] overflow-y-auto labJourneyRemoveScroll pb-2 text-white"
             >
               {/* <li>
                 <button
@@ -598,7 +598,8 @@ const Aside = ({
                               item?.tasks?.[index - 1]?.participants?.some(
                                 (item) =>
                                   item?.participantId === userInfo?._id &&
-                                  (item?.status === "Completed" || item?.status === "InProgress")
+                                  (item?.status === "Completed" ||
+                                    item?.status === "In Progress")
                               );
 
                             const isPrevChapterCompleted =
@@ -608,7 +609,8 @@ const Aside = ({
                               ]?.participants?.some(
                                 (item) =>
                                   item?.participantId === userInfo?._id &&
-                                  (item?.status === "Completed" || item?.status === "InProgress")
+                                  (item?.status === "Completed" ||
+                                    item?.status === "In Progress")
                               );
 
                             return (

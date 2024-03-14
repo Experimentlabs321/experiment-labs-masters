@@ -99,6 +99,28 @@ const Layout = ({ children }) => {
   } = useNotification();
   //console.log(Role);
   const location = useLocation();
+  const getInitials = () => {
+    const firstNameInitial =
+      userInfo?.name?.charAt(0)?.toUpperCase() || "";
+    const lastNameInitial = userInfo?.lastName?.charAt(0)?.toUpperCase() || "";
+    return `${firstNameInitial}${lastNameInitial}`;
+  };
+  const getRandomColor = () => {
+    const letters = "0123456789ABCDEF";
+    let color = "#";
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  };
+  const [backgroundColor, setBackgroundColor] = useState("");
+  useEffect(() => {
+    // Generate a random background color if it hasn't been generated yet
+    if (!backgroundColor) {
+      setBackgroundColor(getRandomColor());
+    }
+    // Your existing useEffect logic...
+  }, [userInfo, backgroundColor]);
   useEffect(() => {
     function handleClickOutside(event) {
       if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
@@ -482,8 +504,8 @@ const Layout = ({ children }) => {
 
                             <span
                               className={`${location.pathname === "/dashboard"
-                                  ? "text-white"
-                                  : "text-[#8F8F8F]"
+                                ? "text-white"
+                                : "text-[#8F8F8F]"
                                 } ml-3 text-[18px] font-[500]`}
                             >
                               Dashboard
@@ -519,8 +541,8 @@ const Layout = ({ children }) => {
 
                             <span
                               className={`${location.pathname === "/announcements"
-                                  ? "text-white"
-                                  : "text-[#8F8F8F]"
+                                ? "text-white"
+                                : "text-[#8F8F8F]"
                                 } ml-3 text-[18px] font-[500]`}
                             >
                               Announcements
@@ -604,8 +626,8 @@ const Layout = ({ children }) => {
 
                                 <span
                                   className={`${location.pathname === "/earning"
-                                      ? "text-white"
-                                      : "text-[#8F8F8F]"
+                                    ? "text-white"
+                                    : "text-[#8F8F8F]"
                                     } ml-3 text-[18px] font-[500]`}
                                 >
                                   Earning
@@ -641,8 +663,8 @@ const Layout = ({ children }) => {
 
                                 <span
                                   className={`${location.pathname === "/redemption"
-                                      ? "text-white"
-                                      : "text-[#8F8F8F]"
+                                    ? "text-white"
+                                    : "text-[#8F8F8F]"
                                     } ml-3 text-[18px] font-[500]`}
                                 >
                                   Redemption
@@ -681,8 +703,8 @@ const Layout = ({ children }) => {
 
                               <span
                                 className={`${location.pathname === "/skillAnalysis"
-                                    ? "text-white"
-                                    : "text-[#8F8F8F]"
+                                  ? "text-white"
+                                  : "text-[#8F8F8F]"
                                   } ml-3 text-[18px] font-[500]`}
                               >
                                 Skill Analysis
@@ -757,8 +779,8 @@ const Layout = ({ children }) => {
 
                             <span
                               className={`${location.pathname === "/courseAccess"
-                                  ? "text-white"
-                                  : "text-[#8F8F8F]"
+                                ? "text-white"
+                                : "text-[#8F8F8F]"
                                 } ml-3 text-[18px] font-[500]`}
                             >
                               Course Access
@@ -832,8 +854,8 @@ const Layout = ({ children }) => {
 
                             <span
                               className={`${location.pathname === "/applyCertificate"
-                                  ? "text-white"
-                                  : "text-[#8F8F8F]"
+                                ? "text-white"
+                                : "text-[#8F8F8F]"
                                 } ml-3 text-[18px] font-[500]`}
                             >
                               Apply Certificate
@@ -875,8 +897,8 @@ const Layout = ({ children }) => {
 
                               <span
                                 className={`${location.pathname === "/adminDashboardHome"
-                                    ? "text-white"
-                                    : "text-[#8F8F8F]"
+                                  ? "text-white"
+                                  : "text-[#8F8F8F]"
                                   } ml-3 text-[18px] font-[500]`}
                               >
                                 {organizationNavDetails?.dashboard?.newName
@@ -906,8 +928,8 @@ const Layout = ({ children }) => {
 
                               <span
                                 className={`${location.pathname === "/salesAndRevenue"
-                                    ? "text-white"
-                                    : "text-[#8F8F8F]"
+                                  ? "text-white"
+                                  : "text-[#8F8F8F]"
                                   } ml-3 text-[18px] font-[500]`}
                               >
                                 Sales & Revenue
@@ -943,8 +965,8 @@ const Layout = ({ children }) => {
 
                               <span
                                 className={`${location.pathname === "/announcements"
-                                    ? "text-white"
-                                    : "text-[#8F8F8F]"
+                                  ? "text-white"
+                                  : "text-[#8F8F8F]"
                                   } ml-3 text-[18px] font-[500]`}
                               >
                                 {organizationNavDetails?.announcements?.newName
@@ -984,8 +1006,8 @@ const Layout = ({ children }) => {
 
                               <span
                                 className={`${location.pathname === "/courseAccess"
-                                    ? "text-white"
-                                    : "text-[#8F8F8F]"
+                                  ? "text-white"
+                                  : "text-[#8F8F8F]"
                                   } ml-3 text-[18px] font-[500]`}
                               >
                                 {organizationNavDetails?.contentManagement
@@ -1020,12 +1042,12 @@ const Layout = ({ children }) => {
 
                               <span
                                 className={`${location.pathname ===
-                                    "/pointsAndRedemptions" ||
-                                    location.pathname === "/gamifiedSettings" ||
-                                    location.pathname === "/earningLogics" ||
-                                    location.pathname === "/redemptionLogics"
-                                    ? "text-[#fff]"
-                                    : "text-[#8F8F8F]"
+                                  "/pointsAndRedemptions" ||
+                                  location.pathname === "/gamifiedSettings" ||
+                                  location.pathname === "/earningLogics" ||
+                                  location.pathname === "/redemptionLogics"
+                                  ? "text-[#fff]"
+                                  : "text-[#8F8F8F]"
                                   } ml-3 text-[18px] font-[500]`}
                               >
                                 {organizationNavDetails?.pointsAndRedemptions
@@ -1059,11 +1081,11 @@ const Layout = ({ children }) => {
 
                               <span
                                 className={`${location.pathname === "/skillsManagement" ||
-                                    location.pathname === "/skillsCreations" ||
-                                    location.pathname ===
-                                    "/skillsImprovementEngine"
-                                    ? "text-[#fff]"
-                                    : "text-[#8F8F8F]"
+                                  location.pathname === "/skillsCreations" ||
+                                  location.pathname ===
+                                  "/skillsImprovementEngine"
+                                  ? "text-[#fff]"
+                                  : "text-[#8F8F8F]"
                                   } ml-3 text-[18px] font-[500]`}
                               >
                                 {organizationNavDetails?.skillsManagement
@@ -1103,8 +1125,8 @@ const Layout = ({ children }) => {
 
                               <span
                                 className={`${location.pathname === "/feedback"
-                                    ? "text-[#fff]"
-                                    : "text-[#8F8F8F]"
+                                  ? "text-[#fff]"
+                                  : "text-[#8F8F8F]"
                                   } ml-3 text-[18px] font-[500]`}
                               >
                                 {organizationNavDetails?.feedback?.newName
@@ -1138,8 +1160,8 @@ const Layout = ({ children }) => {
 
                               <span
                                 className={`${location.pathname === "/updateOrganization"
-                                    ? "text-[#fff]"
-                                    : "text-[#8F8F8F]"
+                                  ? "text-[#fff]"
+                                  : "text-[#8F8F8F]"
                                   } ml-3 text-[18px] font-[500]`}
                               >
                                 {organizationNavDetails?.updateOrganization
@@ -1204,8 +1226,8 @@ const Layout = ({ children }) => {
 
                               <span
                                 className={`${location.pathname === "/schedule"
-                                    ? "text-white"
-                                    : "text-[#8F8F8F]"
+                                  ? "text-white"
+                                  : "text-[#8F8F8F]"
                                   } ml-3 text-[18px] font-[500]`}
                               >
                                 {organizationNavDetails?.schedule?.newName
@@ -1251,12 +1273,12 @@ const Layout = ({ children }) => {
 
                               <span
                                 className={`${location.pathname === "/mentorAssignments" ||
-                                    location.pathname ===
-                                    `/assignmentEvaluation1/${id}` ||
-                                    location.pathname ===
-                                    `/assignmentEvaluation2/${id}`
-                                    ? "text-white"
-                                    : "text-[#8F8F8F]"
+                                  location.pathname ===
+                                  `/assignmentEvaluation1/${id}` ||
+                                  location.pathname ===
+                                  `/assignmentEvaluation2/${id}`
+                                  ? "text-white"
+                                  : "text-[#8F8F8F]"
                                   } ml-3 text-[18px] font-[500]`}
                               >
                                 {organizationNavDetails?.assignments?.newName
@@ -1482,8 +1504,8 @@ const Layout = ({ children }) => {
 
                               <span
                                 className={`${location.pathname === "/createCertificate"
-                                    ? "text-white"
-                                    : "text-[#8F8F8F]"
+                                  ? "text-white"
+                                  : "text-[#8F8F8F]"
                                   } ml-3 text-[18px] font-[500]`}
                               >
                                 {organizationNavDetails?.createCertificate
@@ -1515,8 +1537,8 @@ const Layout = ({ children }) => {
 
                               <span
                                 className={`${location.pathname === "/myStudents"
-                                    ? "text-[#fff]"
-                                    : "text-[#8F8F8F]"
+                                  ? "text-[#fff]"
+                                  : "text-[#8F8F8F]"
                                   } ml-3 text-[18px] font-[500]`}
                               >
                                 {organizationNavDetails?.myLearners?.newName
@@ -1608,8 +1630,8 @@ const Layout = ({ children }) => {
 
                               <span
                                 className={`${location.pathname === "/offers"
-                                    ? "text-[#fff]"
-                                    : "text-[#8F8F8F]"
+                                  ? "text-[#fff]"
+                                  : "text-[#8F8F8F]"
                                   } ml-3 text-[18px] font-[500]`}
                               >
                                 {organizationNavDetails?.offers?.newName
@@ -1664,16 +1686,16 @@ const Layout = ({ children }) => {
 
                               <span
                                 className={`${location.pathname ===
-                                    "/executionMentorDashboard" ||
-                                    location.pathname ===
-                                    "/performanceFeedback" ||
-                                    location.pathname === "/students" ||
-                                    location.pathname ===
-                                    "/studentsWhoNeedMoreGuidance" ||
-                                    location.pathname === "/studentFeedback" ||
-                                    location.pathname === "/departmentEvaluation"
-                                    ? "text-white"
-                                    : "text-[#8F8F8F]"
+                                  "/executionMentorDashboard" ||
+                                  location.pathname ===
+                                  "/performanceFeedback" ||
+                                  location.pathname === "/students" ||
+                                  location.pathname ===
+                                  "/studentsWhoNeedMoreGuidance" ||
+                                  location.pathname === "/studentFeedback" ||
+                                  location.pathname === "/departmentEvaluation"
+                                  ? "text-white"
+                                  : "text-[#8F8F8F]"
                                   } ml-3 text-[18px] font-[500]`}
                               >
                                 Dashboard
@@ -1703,9 +1725,9 @@ const Layout = ({ children }) => {
 
                               <span
                                 className={`${location.pathname === "/liveClasses" ||
-                                    location.pathname === "/upcomingClasses"
-                                    ? "text-white"
-                                    : "text-[#8F8F8F]"
+                                  location.pathname === "/upcomingClasses"
+                                  ? "text-white"
+                                  : "text-[#8F8F8F]"
                                   } ml-3 text-[18px] font-[500]`}
                               >
                                 Live Classes
@@ -1733,8 +1755,8 @@ const Layout = ({ children }) => {
 
                               <span
                                 className={`${location.pathname === "/schedule"
-                                    ? "text-white"
-                                    : "text-[#8F8F8F]"
+                                  ? "text-white"
+                                  : "text-[#8F8F8F]"
                                   } ml-3 text-[18px] font-[500]`}
                               >
                                 Schedule
@@ -1838,12 +1860,12 @@ const Layout = ({ children }) => {
 
                               <span
                                 className={`${location.pathname === "/mentorAssignments" ||
-                                    location.pathname ===
-                                    `/assignmentEvaluation1/${id}` ||
-                                    location.pathname ===
-                                    `/assignmentEvaluation2/${id}`
-                                    ? "text-white"
-                                    : "text-[#8F8F8F]"
+                                  location.pathname ===
+                                  `/assignmentEvaluation1/${id}` ||
+                                  location.pathname ===
+                                  `/assignmentEvaluation2/${id}`
+                                  ? "text-white"
+                                  : "text-[#8F8F8F]"
                                   } ml-3 text-[18px] font-[500]`}
                               >
                                 Assignments
@@ -1943,9 +1965,9 @@ const Layout = ({ children }) => {
 
                               <span
                                 className={`${location.pathname ===
-                                    "/unpaidStudentDashboard"
-                                    ? "text-white"
-                                    : "text-[#8F8F8F]"
+                                  "/unpaidStudentDashboard"
+                                  ? "text-white"
+                                  : "text-[#8F8F8F]"
                                   } ml-3 text-[18px] font-[500]`}
                               >
                                 Dashboard
@@ -1977,8 +1999,8 @@ const Layout = ({ children }) => {
 
                               <span
                                 className={`${location.pathname === "/redemption"
-                                    ? "text-white"
-                                    : "text-[#8F8F8F]"
+                                  ? "text-white"
+                                  : "text-[#8F8F8F]"
                                   } ml-3 text-[18px] font-[500]`}
                               >
                                 redemption
@@ -2014,8 +2036,8 @@ const Layout = ({ children }) => {
 
                               <span
                                 className={`${location.pathname === "/coursesAccess"
-                                    ? "text-white"
-                                    : "text-[#8F8F8F]"
+                                  ? "text-white"
+                                  : "text-[#8F8F8F]"
                                   } ml-3 text-[18px] font-[500]`}
                               >
                                 Courses Access
@@ -2055,8 +2077,8 @@ const Layout = ({ children }) => {
 
                               <span
                                 className={`${location.pathname === "/expertMentorDashboard"
-                                    ? "text-white"
-                                    : "text-[#8F8F8F]"
+                                  ? "text-white"
+                                  : "text-[#8F8F8F]"
                                   } ml-3 text-[18px] font-[500]`}
                               >
                                 Dashboard
@@ -2094,9 +2116,9 @@ const Layout = ({ children }) => {
 
                               <span
                                 className={`${location.pathname ===
-                                    "/expertMentorResourceCentre"
-                                    ? "text-white"
-                                    : "text-[#8F8F8F]"
+                                  "/expertMentorResourceCentre"
+                                  ? "text-white"
+                                  : "text-[#8F8F8F]"
                                   } ml-3 text-[18px] font-[500]`}
                               >
                                 Resource Centre
@@ -2134,9 +2156,9 @@ const Layout = ({ children }) => {
 
                               <span
                                 className={`${location.pathname ===
-                                    "/expertMentorStudentProgress"
-                                    ? "text-white"
-                                    : "text-[#8F8F8F]"
+                                  "/expertMentorStudentProgress"
+                                  ? "text-white"
+                                  : "text-[#8F8F8F]"
                                   } ml-3 text-[18px] font-[500]`}
                               >
                                 Student Progress
@@ -2172,8 +2194,8 @@ const Layout = ({ children }) => {
 
                               <span
                                 className={`${location.pathname === "/showcasePage"
-                                    ? "text-white"
-                                    : "text-[#8F8F8F]"
+                                  ? "text-white"
+                                  : "text-[#8F8F8F]"
                                   } ml-3 text-[18px] font-[500]`}
                               >
                                 Showcase Page
@@ -2203,9 +2225,9 @@ const Layout = ({ children }) => {
 
                               <span
                                 className={`${location.pathname ===
-                                    "/expertMentorStudentFeedback"
-                                    ? "text-white"
-                                    : "text-[#8F8F8F]"
+                                  "/expertMentorStudentFeedback"
+                                  ? "text-white"
+                                  : "text-[#8F8F8F]"
                                   } ml-3 text-[18px] font-[500]`}
                               >
                                 Feedback
@@ -2289,11 +2311,20 @@ const Layout = ({ children }) => {
                     )}
                     <Link to={`/userprofile/${userInfo?.email}`}>
                       <div className="pt-[90px] flex items-center px-[42px]">
-                        <img
-                          className="w-[38px] rounded-full h-[42px] mr-[10px]"
-                          src={profImg ? profImg : userPhoto}
-                          alt="user"
-                        />
+                        {
+                          profImg ? <img
+                            className="w-[38px] rounded-full h-[42px] mr-[10px]"
+                            src={profImg}
+                            alt="user"
+                          /> : <div className="w-[40px] rounded-full h-[42px] mr-[10px] object-contain object-center  overflow-hidden">
+                            <div
+                              className="w-full h-full flex items-center text-red-50 justify-center text-xl font-bold"
+                              style={{ backgroundColor }}
+                            >
+                              {getInitials()}
+                            </div>
+                          </div>
+                        }
                         <div>
                           <h2 className="text-white font-bold text-[16px]">
                             {profName ? profName : userInfo?.name}
