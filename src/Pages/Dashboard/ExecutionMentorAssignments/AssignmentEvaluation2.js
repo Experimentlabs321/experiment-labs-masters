@@ -39,9 +39,9 @@ const AssignmentEvaluation2 = () => {
   const navigate = useNavigate();
   const { userInfo, user } = useContext(AuthContext);
   console.log(userInfo);
-  console.log(user);
-  console.log(user.displayName);
-  console.log(user.photoURL);
+  
+  //console.log(user.displayName);
+ // console.log(user.photoURL);
 
   const [selectedTab, setSelectedTab] = useState("mentorAssignments");
   const [pointGiven, setPointGiven] = useState(false);
@@ -65,6 +65,7 @@ const AssignmentEvaluation2 = () => {
   //console.log(mainAssignments.skillParameterData)
   //file upload
   const [selectedFile, setSelectedFile] = useState(null);
+  console.log(user?.email);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -387,9 +388,13 @@ Loading();
       `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
       {
         from: `${user?.email}`,
-        to: `${user?.email},shihab77023@gmail.com`,
-        subject: `Feedback of ${assignment?.taskName}`,
-        message: `Dear student, \nYour assignment on ${assignment?.taskName} result has been published. Please check it on the portal.`,
+    //    to: `${user?.email},shihab77023@gmail.com`,
+        to: `${assignment?.submitter?.email}`,
+        templateType: "emailAction",
+        templateName:"assignmentEvaluation",
+        organizationId: userInfo?.organizationId,
+       /*  subject: `Feedback of ${assignment?.taskName}`,
+        message: `Dear student, \nYour assignment on ${assignment?.taskName} result has been published. Please check it on the portal.`, */
       }
     );
 

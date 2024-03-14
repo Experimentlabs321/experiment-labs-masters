@@ -18,7 +18,7 @@ const Submission = ({ taskData }) => {
   const [course, setCourse] = useState({});
   const [batch, setBatch] = useState({});
   const [submissionData, setSubmissionData] = useState({});
-
+  console.log(userInfo)
   useEffect(() => {
     axios
       .get(
@@ -31,16 +31,16 @@ const Submission = ({ taskData }) => {
   }, [userInfo?._id, taskData]);
 
   const checkSubmit = () => {
-   
-      axios
-        .get(
-          `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${taskData?._id}/${userInfo?._id}`
-        )
-        .then((response) => {
-          setSubmissionData(response?.data[response?.data?.length - 1]);
-        })
-        .catch((error) => console.error(error));
-   
+
+    axios
+      .get(
+        `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${taskData?._id}/${userInfo?._id}`
+      )
+      .then((response) => {
+        setSubmissionData(response?.data[response?.data?.length - 1]);
+      })
+      .catch((error) => console.error(error));
+
   };
 
   useEffect(() => {
@@ -62,7 +62,7 @@ const Submission = ({ taskData }) => {
       })
       .catch((error) => console.error(error));
   }, [taskData, userInfo]);
-  console.log(course, batch);
+  console.log(course);
 
   const handleDragEnter = (e) => {
     e.preventDefault();
@@ -114,10 +114,14 @@ const Submission = ({ taskData }) => {
     const sendMail = await axios.post(
       `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
       {
-        from: `${user?.email}`,
-        to: `naman.j@experimentlabs.in,gaurav@experimentlabs.in`,
-        subject: `Submission of ${taskData?.taskName}`,
-        message: `${userInfo?.name} has submitted assignment of the task ${taskData?.taskName}. Please review the submission.`,
+        from: user?.email,
+        // to: `naman.j@experimentlabs.in,gaurav@experimentlabs.in`,
+        to: course?.creator?.email,
+        templateType: "emailAction",
+        templateName: "assignmentSubmission",
+        organizationId: userInfo?.organizationId,
+        /* subject: `Submission of ${taskData?.taskName}`,
+        message: `${userInfo?.name} has submitted assignment of the task ${taskData?.taskName}. Please review the submission.`, */
       }
     );
 
