@@ -610,7 +610,7 @@ const Aside = ({
                                 (item) =>
                                   item?.participantId === userInfo?._id &&
                                   (item?.status === "Completed" ||
-                                    item?.status === "InProgress")
+                                    item?.status === "In Progress")
                               );
 
                             const isPrevChapterCompleted =
@@ -621,7 +621,7 @@ const Aside = ({
                                 (item) =>
                                   item?.participantId === userInfo?._id &&
                                   (item?.status === "Completed" ||
-                                    item?.status === "InProgress")
+                                    item?.status === "In Progress")
                               );
 
                             return (
