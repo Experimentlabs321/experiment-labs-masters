@@ -116,6 +116,7 @@ const CertificateEditor = ({
           `${process.env.REACT_APP_SERVER_API}/api/v1/certificateTemplates/courseId/${selectedCourse?._id}/batchId/${selectedBatch?._id}`
         )
         .then((response) => {
+          console.log(response?.data?.template);
           setCertificateTemplate(response?.data?.template);
           setSelectedBackgroundTemplate(
             response?.data?.template?.selectedBackgroundTemplate
@@ -1458,11 +1459,13 @@ const CertificateEditor = ({
                       id={author?.name + index}
                       name={author?.name + index}
                       className="mt-1 p-2 border w-full rounded-md"
-                      defaultValue={authors[index].name}
-                      onChange={(e) => {
-                        e.preventDefault();
-                        authors[index].name = e.target.value;
-                        setCount(count + 1);
+                      value={author?.name}
+                      onChange={async (e) => {
+                        // e.preventDefault();
+                        const value = e.target.value;
+                        const updatedAuthors = [...authors];
+                        updatedAuthors[index].name = await value;
+                        setAuthors(updatedAuthors);
                       }}
                     />
                   </div>
@@ -1479,11 +1482,13 @@ const CertificateEditor = ({
                       id={author?.position + index}
                       name={author?.position + index}
                       className="mt-1 p-2 border w-full rounded-md"
-                      defaultValue={authors[index].position}
-                      onChange={(e) => {
-                        e.preventDefault();
-                        authors[index].position = e.target.value;
-                        setCount(count + 1);
+                      value={author?.position}
+                      onChange={async (e) => {
+                        // e.preventDefault();
+                        const value = e.target.value;
+                        const updatedAuthors = [...authors];
+                        updatedAuthors[index].position = await value;
+                        setAuthors(updatedAuthors);
                       }}
                     />
                   </div>
