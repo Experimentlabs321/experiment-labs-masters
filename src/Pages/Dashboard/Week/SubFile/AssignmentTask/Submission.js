@@ -110,16 +110,21 @@ const Submission = ({ taskData }) => {
       submitter: userInfo,
       submissionDateTime: new Date(),
     };
-
+    console.log(user?.email , "shihab77023@gmail.com", userInfo?.organizationId);
     const sendMail = await axios.post(
       `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+      // `http://localhost:5000/api/v1/sendMail`,
       {
-        from: user?.email,
+        // from: "neha.agrawal@wiseupcommunications.com",
         // to: `naman.j@experimentlabs.in,gaurav@experimentlabs.in`,
-        to: course?.creator?.email,
+        to: "rhrahi14@gmail.com",
         templateType: "emailAction",
         templateName: "assignmentSubmission",
         organizationId: userInfo?.organizationId,
+        // learner_name: "",
+        // course_name: "",
+        // site_name: "",
+        // site_email: ""
         /* subject: `Submission of ${taskData?.taskName}`,
         message: `${userInfo?.name} has submitted assignment of the task ${taskData?.taskName}. Please review the submission.`, */
       }

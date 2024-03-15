@@ -269,7 +269,6 @@ const Payment = () => {
             icon: "success",
           });
           const newData = {
-            from: organizationData?.emailIntegration?.email,
             to: data?.email,
             templateType: "emailAction",
             templateName:"courseWelcome",
