@@ -112,17 +112,17 @@ console.log(orgData?._id)
                 );
                 if (res.data.acknowledged) {
                     toast.success("Registered Successfully");
-                  /*   const sendMail = await axios.post(
+                     const sendMail = await axios.post(
                         `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
                         {
                          
                           to: email,
                           templateType: "emailAction",
-                          templateName: "assignmentSubmission",
+                          templateName: "learnerSignUp",
                           organizationId: id,
                          
                         }
-                      ); */
+                      ); 
                     navigate(`/login/${id}`)
 
                  
@@ -169,17 +169,17 @@ console.log(orgData?._id)
                         });
                         if (res.data.acknowledged) {
                             toast.success("Registered Successfully");
-                          /*   const sendMail = await axios.post(
+                             const sendMail = await axios.post(
                                 `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
                                 {
                                  
                                   to: email,
                                   templateType: "emailAction",
-                                  templateName: "assignmentSubmission",
+                                  templateName: "learnerSignUp",
                                   organizationId: id,
                                  
                                 }
-                              ); */
+                              ); 
                             navigate(`/login/${id}`)
                         }
                         else {

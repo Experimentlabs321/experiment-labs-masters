@@ -412,7 +412,7 @@ const Payment = () => {
                
                 to: email,
                 templateType: "emailAction",
-                templateName: "assignmentSubmission",
+                templateName: "learnerSignUp",
                 organizationId: organizationData?._id,
                
               }
@@ -458,7 +458,7 @@ const Payment = () => {
                  
                   to: googleMail,
                   templateType: "emailAction",
-                  templateName: "assignmentSubmission",
+                  templateName: "learnerSignUp",
                   organizationId: organizationData?._id,
                  
                 }
