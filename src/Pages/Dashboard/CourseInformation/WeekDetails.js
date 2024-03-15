@@ -694,7 +694,7 @@ const WeekDetails = ({
                         (item) =>
                           item?.participantId === userInfo?._id &&
                           (item?.status === "Completed" ||
-                            item?.status === "InProgress")
+                            item?.status === "In Progress")
                       );
 
                     const isPrevChapterCompleted =
@@ -705,7 +705,7 @@ const WeekDetails = ({
                         (item) =>
                           item?.participantId === userInfo?._id &&
                           (item?.status === "Completed" ||
-                            item?.status === "InProgress")
+                            item?.status === "In Progress")
                       );
 
                     return (

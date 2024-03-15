@@ -405,6 +405,17 @@ const Payment = () => {
           );
           if (res.data.acknowledged) {
             saveUser(result?.user?.email);
+            const sendMail = await axios.post(
+              `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+              {
+               
+                to: email,
+                templateType: "emailAction",
+                templateName: "learnerSignUp",
+                organizationId: organizationData?._id,
+               
+              }
+            );
           }
         })
         .catch((error) => {
@@ -440,6 +451,17 @@ const Payment = () => {
             );
             if (res.data.acknowledged) {
               saveUser(googleMail);
+              const sendMail = await axios.post(
+                `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                {
+                 
+                  to: googleMail,
+                  templateType: "emailAction",
+                  templateName: "learnerSignUp",
+                  organizationId: organizationData?._id,
+                 
+                }
+              );
             }
           } else {
             saveUser(email);

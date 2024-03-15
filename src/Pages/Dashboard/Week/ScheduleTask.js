@@ -577,18 +577,22 @@ console.log(userInfo)
                 const sendMail = await axios.post(
                   `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
                   {
-                    from: `${userInfo?.email}`,
+                  //  from: `${userInfo?.email}`,
                 //    to: `${user?.email},${adminMail}`,
                     to: `${adminMail}`,
                     templateType: "emailAction",
                     templateName:"sheduleTask",
                     organizationId: userInfo?.organizationId,
+                    start_time: eventStartTime,
+                    end_time:eventEndTime,
+                    meeting_link: event?.hangoutLink,
                    /*  subject: `Event request`,
                     message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
                       }`, */
                   }
                 );
                 console.log("send ", sendMail)
+                console.log("Admin Mail ", adminMail)
 
                 console.log('res ', response)
                 if (sendMail?.data?.success && response?.data?.acknowledged) {

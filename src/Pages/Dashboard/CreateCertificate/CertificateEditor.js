@@ -116,6 +116,7 @@ const CertificateEditor = ({
           `${process.env.REACT_APP_SERVER_API}/api/v1/certificateTemplates/courseId/${selectedCourse?._id}/batchId/${selectedBatch?._id}`
         )
         .then((response) => {
+          console.log(response?.data?.template);
           setCertificateTemplate(response?.data?.template);
           setSelectedBackgroundTemplate(
             response?.data?.template?.selectedBackgroundTemplate
@@ -198,7 +199,10 @@ const CertificateEditor = ({
           setUnderlineColor(response?.data?.template?.underlineColor);
           setZoom(response?.data?.template?.zoom);
         })
-        .catch((error) => console.error(error));
+        .catch((error) => {
+          setCertificateTemplate({});
+          console.error(error);
+        });
   }, [selectedCourse, selectedBatch, mode]);
 
   const fontFamilies = [
@@ -324,16 +328,24 @@ const CertificateEditor = ({
     }
   };
 
+  console.log(certificateTemplate);
+
   return (
     <div className="col-span-3 border-l border-black h-[100vh] overflow-y-scroll p-1 relative flex justify-center items-start">
-      <div className="mb-4 w-max mx-auto text-center mt-6 fixed bottom-0 ">
-        <button
-          className=" px-4 py-2 bg-green rounded-md text-white font-semibold"
-          onClick={() => handleSubmitCertificateTemplate()}
-        >
-          Submit Certificate Template
-        </button>
-      </div>
+      {(mode === "add" ||
+        (mode === "edit" &&
+          selectedCourse?._id &&
+          selectedBatch?._id &&
+          certificateTemplate?._id)) && (
+        <div className="mb-4 w-max mx-auto text-center mt-6 fixed bottom-0 ">
+          <button
+            className=" px-4 py-2 bg-green rounded-md text-white font-semibold"
+            onClick={() => handleSubmitCertificateTemplate()}
+          >
+            Submit Certificate Template
+          </button>
+        </div>
+      )}
 
       <div className="font-sans w-full">
         <h1 className="text-lg font-semibold mb-3">
@@ -422,8 +434,11 @@ const CertificateEditor = ({
             </div>
           )}
 
-          {(mode === "add" ||
-            (mode === "edit" && selectedCourse?._id && selectedBatch?._id)) && (
+          {mode === "add" ||
+          (mode === "edit" &&
+            selectedCourse?._id &&
+            selectedBatch?._id &&
+            certificateTemplate?._id) ? (
             <>
               <div className="mb-4">
                 <label
@@ -1458,11 +1473,13 @@ const CertificateEditor = ({
                       id={author?.name + index}
                       name={author?.name + index}
                       className="mt-1 p-2 border w-full rounded-md"
-                      defaultValue={authors[index].name}
-                      onChange={(e) => {
-                        e.preventDefault();
-                        authors[index].name = e.target.value;
-                        setCount(count + 1);
+                      value={author?.name}
+                      onChange={async (e) => {
+                        // e.preventDefault();
+                        const value = e.target.value;
+                        const updatedAuthors = [...authors];
+                        updatedAuthors[index].name = await value;
+                        setAuthors(updatedAuthors);
                       }}
                     />
                   </div>
@@ -1479,11 +1496,13 @@ const CertificateEditor = ({
                       id={author?.position + index}
                       name={author?.position + index}
                       className="mt-1 p-2 border w-full rounded-md"
-                      defaultValue={authors[index].position}
-                      onChange={(e) => {
-                        e.preventDefault();
-                        authors[index].position = e.target.value;
-                        setCount(count + 1);
+                      value={author?.position}
+                      onChange={async (e) => {
+                        // e.preventDefault();
+                        const value = e.target.value;
+                        const updatedAuthors = [...authors];
+                        updatedAuthors[index].position = await value;
+                        setAuthors(updatedAuthors);
                       }}
                     />
                   </div>
@@ -1721,6 +1740,12 @@ const CertificateEditor = ({
                   </span>
                 </div>
               </div>
+            </>
+          ) : (
+            <>
+              <h1 className="text-center my-10 text-gray-400">
+                Template not available
+              </h1>
             </>
           )}
         </>

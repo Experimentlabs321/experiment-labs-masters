@@ -102,6 +102,11 @@ const EmailTemplateRow = ({ title, description, active, templateId, template, fe
             <p className="text-base font-medium"> learner_name</p>
             <p className="text-base font-medium"> learner_email</p>
             <p className="text-base font-medium"> course_name</p>
+            <p className="text-base font-medium"> task_name</p>
+            <p className="text-base font-medium"> start_time</p>
+            <p className="text-base font-medium"> end_time</p>
+            <p className="text-base font-medium"> meeting_link</p>
+            <p className="text-base font-medium"> user_name</p>
           </div>
         </div>
       </div>}

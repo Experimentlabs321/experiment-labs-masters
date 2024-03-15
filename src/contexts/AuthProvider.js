@@ -14,7 +14,6 @@ import axios from "axios";
 import Loading from "../Pages/Shared/Loading/Loading";
 import toast from "react-hot-toast";
 
-
 export const AuthContext = createContext();
 const auth = getAuth(app);
 
@@ -32,9 +31,9 @@ const AuthProvider = ({ children }) => {
     //   auth,
     //   (currentUser) => {
     //     setUser(currentUser);
-     
+
     //     setLoading(false);
-        
+
     //   },
     //   []
     // );
@@ -51,9 +50,11 @@ const AuthProvider = ({ children }) => {
   const logOut = () => {
     setLoading(true);
 
-
     try {
-      const userDevice = axios.put(`${process.env.REACT_APP_SERVER_API}/api/v1/users/removeDevice/${userInfo?.email}`, { device: userAgent, });
+      const userDevice = axios.put(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/users/removeDevice/${userInfo?.email}`,
+        { device: userAgent }
+      );
     } catch (error) {
       console.error("Error removing device:", error);
     }
@@ -67,12 +68,12 @@ const AuthProvider = ({ children }) => {
   };
   const forgotPassword = () => {
     sendPasswordResetEmail(auth, auth.currentUser.email)
-    .then(() => {
-      toast.success('A Password Reset Link has been sent to your email.')
-    })
-    .catch((error) => {
-      toast.error(error.message);
-    });
+      .then(() => {
+        toast.success("A Password Reset Link has been sent to your email.");
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
   };
 
   // sign in with email and password
@@ -93,9 +94,8 @@ const AuthProvider = ({ children }) => {
       auth,
       (currentUser) => {
         setUser(currentUser);
-     
+
         setLoading(false);
-        
       },
       []
     );
@@ -108,7 +108,9 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     Loading();
     axios
-      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${user?.email}`)
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${user?.email}`
+      )
       .then((user) => {
         setUserInfo(user?.data);
 
@@ -116,7 +118,6 @@ const AuthProvider = ({ children }) => {
       })
       .catch((error) => console.error(error));
     Loading().close();
-
   }, [user?.email, userInfo?.email]);
   // useEffect(() => {
   //   if (userInfo?.role !== "admin" && userInfo?.devices && !userInfo.devices.includes(userAgent)) {
@@ -137,7 +138,7 @@ const AuthProvider = ({ children }) => {
     forgotPassword,
     setUser,
     auth,
-    setLoading
+    setLoading,
   };
 
   return (
