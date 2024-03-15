@@ -16,7 +16,7 @@ import EmailIntegration from "./EmailIntegration";
 const UpdateOrganization = () => {
   const navigate = useNavigate();
   const { userInfo } = useContext(AuthContext);
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true);
   const [orgData, setOrgData] = useState({});
   const [orgLogoUrl, setOrgLogoUrl] = useState("");
   const [faviconUrl, setFaviconUrl] = useState("");
@@ -33,28 +33,29 @@ const UpdateOrganization = () => {
   const [paymentNavbarColor, setPaymentNavbarColor] = useState(
     orgData?.paymentNavbarColor || "#3E4DAC"
   );
-  const [paymentNavbarAccessDashboardButtonColor, setPaymentNavbarAccessDashboardButtonColor] = useState(
-    orgData?.paymentNavbarAccessDashboardButtonColor || "#3E4DAC"
+  const [
+    paymentNavbarAccessDashboardButtonColor,
+    setPaymentNavbarAccessDashboardButtonColor,
+  ] = useState(orgData?.paymentNavbarAccessDashboardButtonColor || "#3E4DAC");
+  const [
+    paymentNavbarAccessDashboardButtonTextColor,
+    setPaymentNavbarAccessDashboardButtonTextColor,
+  ] = useState(orgData?.paymentNavbarAccessDashboardButtonTextColor || "#fff");
+  const [paymentNavbarLogoutButtonColor, setPaymentNavbarLogoutButtonColor] =
+    useState(orgData?.paymentNavbarLogoutButtonColor || "#3E4DAC");
+  const [
+    paymentNavbarLogoutButtonTextColor,
+    setPaymentNavbarLogoutButtonTextColor,
+  ] = useState(orgData?.paymentNavbarLogoutButtonTextColor || "#fff");
+  const [courseAccessUrl, setCourseAccessUrl] = useState(
+    `/courseAccess?state=allCourses`
   );
-  const [paymentNavbarAccessDashboardButtonTextColor, setPaymentNavbarAccessDashboardButtonTextColor] = useState(
-    orgData?.paymentNavbarAccessDashboardButtonTextColor || "#fff"
-  );
-  const [paymentNavbarLogoutButtonColor, setPaymentNavbarLogoutButtonColor] = useState(
-    orgData?.paymentNavbarLogoutButtonColor || "#3E4DAC"
-  );
-  const [paymentNavbarLogoutButtonTextColor, setPaymentNavbarLogoutButtonTextColor] = useState(
-    orgData?.paymentNavbarLogoutButtonTextColor || "#fff"
-  );
-  const [courseAccessUrl, setCourseAccessUrl] = useState(`/courseAccess?state=allCourses`);
-  console.log(paymentNavbarAccessDashboardButtonColor)
-  console.log(paymentNavbarAccessDashboardButtonTextColor)
-  console.log(paymentNavbarLogoutButtonColor)
-  console.log(paymentNavbarLogoutButtonTextColor)
-
-
+  console.log(paymentNavbarAccessDashboardButtonColor);
+  console.log(paymentNavbarAccessDashboardButtonTextColor);
+  console.log(paymentNavbarLogoutButtonColor);
+  console.log(paymentNavbarLogoutButtonTextColor);
 
   useEffect(() => {
-
     axios
       .get(
         `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
@@ -70,14 +71,24 @@ const UpdateOrganization = () => {
         setPWASplashscreenLogo(response?.data?.pWASplashscreenLogo);
         setTitlesColor(response?.data?.titlesColor);
         setPaymentNavbarColor(response?.data?.paymentNavbarColor);
-        setPaymentNavbarAccessDashboardButtonColor(response?.data?.paymentNavbarAccessDashboardButtonColor);
-        setPaymentNavbarAccessDashboardButtonTextColor(response?.data?.paymentNavbarAccessDashboardButtonTextColor);
-        setPaymentNavbarLogoutButtonColor(response?.data?.paymentNavbarLogoutButtonColor);
-        setPaymentNavbarLogoutButtonTextColor(response?.data?.paymentNavbarLogoutButtonTextColor);
+        setPaymentNavbarAccessDashboardButtonColor(
+          response?.data?.paymentNavbarAccessDashboardButtonColor
+        );
+        setPaymentNavbarAccessDashboardButtonTextColor(
+          response?.data?.paymentNavbarAccessDashboardButtonTextColor
+        );
+        setPaymentNavbarLogoutButtonColor(
+          response?.data?.paymentNavbarLogoutButtonColor
+        );
+        setPaymentNavbarLogoutButtonTextColor(
+          response?.data?.paymentNavbarLogoutButtonTextColor
+        );
         setDashboardTheme(response?.data?.dashboardTheme || {});
         setPaymentInstance(response?.data?.paymentInstance || {});
         setMaxDeviceCount(response?.data?.maxDeviceCount || 0);
-        setCourseAccessUrl(response?.data?.courseAccessUrl || "/courseAccess?state=allCourses")
+        setCourseAccessUrl(
+          response?.data?.courseAccessUrl || "/courseAccess?state=allCourses"
+        );
       })
       .catch((error) => console.error(error));
     setIsLoading(false);
@@ -102,12 +113,14 @@ const UpdateOrganization = () => {
       titlesColor: titlesColor,
       orgRootUrl: form.orgRootUrl?.value,
       paymentNavbarColor: paymentNavbarColor,
-      paymentNavbarAccessDashboardButtonColor: paymentNavbarAccessDashboardButtonColor,
-      paymentNavbarAccessDashboardButtonTextColor: paymentNavbarAccessDashboardButtonTextColor,
+      paymentNavbarAccessDashboardButtonColor:
+        paymentNavbarAccessDashboardButtonColor,
+      paymentNavbarAccessDashboardButtonTextColor:
+        paymentNavbarAccessDashboardButtonTextColor,
       paymentNavbarLogoutButtonColor: paymentNavbarLogoutButtonColor,
       paymentNavbarLogoutButtonTextColor: paymentNavbarLogoutButtonTextColor,
       dashboardTheme: dashboardTheme,
-      courseAccessUrl
+      courseAccessUrl,
     };
     console.log(orgInfo);
 
@@ -118,10 +131,12 @@ const UpdateOrganization = () => {
 
     if (updateOrg?.data?.acknowledged) {
       toast.success("Organization edited Successfully");
-      navigate(-1)
+      navigate(-1);
       // event.target.reset();
     }
   };
+
+  console.log(paymentNavbarColor);
 
   return (
     <div>
@@ -129,55 +144,61 @@ const UpdateOrganization = () => {
         <div className="px-4 mt-4 flex items-center gap-4 flex-wrap">
           <button
             onClick={() => setCurrentPage("organizationTheme")}
-            className={`px-4 py-2 text-lg font-semibold rounded-lg ${currentPage === "organizationTheme"
-              ? "bg-[#3E4DAC] text-white"
-              : "bg-white border-2 border-gray-400 text-black"
-              }`}
+            className={`px-4 py-2 text-lg font-semibold rounded-lg ${
+              currentPage === "organizationTheme"
+                ? "bg-[#3E4DAC] text-white"
+                : "bg-white border-2 border-gray-400 text-black"
+            }`}
           >
             Organization Theme
           </button>
           <button
             onClick={() => setCurrentPage("dashboardTheme")}
-            className={`px-4 py-2 text-lg font-semibold rounded-lg ${currentPage === "dashboardTheme"
-              ? "bg-[#3E4DAC] text-white"
-              : "bg-white border-2 border-gray-400 text-black"
-              }`}
+            className={`px-4 py-2 text-lg font-semibold rounded-lg ${
+              currentPage === "dashboardTheme"
+                ? "bg-[#3E4DAC] text-white"
+                : "bg-white border-2 border-gray-400 text-black"
+            }`}
           >
             Dashboard Theme
           </button>
           <button
             onClick={() => setCurrentPage("paymentIntegration")}
-            className={`px-4 py-2 text-lg font-semibold rounded-lg ${currentPage === "paymentIntegration"
-              ? "bg-[#3E4DAC] text-white"
-              : "bg-white border-2 border-gray-400 text-black"
-              }`}
+            className={`px-4 py-2 text-lg font-semibold rounded-lg ${
+              currentPage === "paymentIntegration"
+                ? "bg-[#3E4DAC] text-white"
+                : "bg-white border-2 border-gray-400 text-black"
+            }`}
           >
             Payment Integration
           </button>
           <button
             onClick={() => setCurrentPage("deviceLimit")}
-            className={`px-4 py-2 text-lg font-semibold rounded-lg ${currentPage === "deviceLimit"
-              ? "bg-[#3E4DAC] text-white"
-              : "bg-white border-2 border-gray-400 text-black"
-              }`}
+            className={`px-4 py-2 text-lg font-semibold rounded-lg ${
+              currentPage === "deviceLimit"
+                ? "bg-[#3E4DAC] text-white"
+                : "bg-white border-2 border-gray-400 text-black"
+            }`}
           >
             Limit Device
           </button>
           <button
             onClick={() => setCurrentPage("language Setting")}
-            className={`px-4 py-2 text-lg font-semibold rounded-lg ${currentPage === "language Setting"
-              ? "bg-[#3E4DAC] text-white"
-              : "bg-white border-2 border-gray-400 text-black"
-              }`}
+            className={`px-4 py-2 text-lg font-semibold rounded-lg ${
+              currentPage === "language Setting"
+                ? "bg-[#3E4DAC] text-white"
+                : "bg-white border-2 border-gray-400 text-black"
+            }`}
           >
             Language Setting
           </button>
           <button
             onClick={() => setCurrentPage("emailIntegration")}
-            className={`px-4 py-2 text-lg font-semibold rounded-lg ${currentPage === "emailIntegration"
-              ? "bg-[#3E4DAC] text-white"
-              : "bg-white border-2 border-gray-400 text-black"
-              }`}
+            className={`px-4 py-2 text-lg font-semibold rounded-lg ${
+              currentPage === "emailIntegration"
+                ? "bg-[#3E4DAC] text-white"
+                : "bg-white border-2 border-gray-400 text-black"
+            }`}
           >
             Email Integration
           </button>
@@ -227,7 +248,6 @@ const UpdateOrganization = () => {
                   )}
                 </div>
               </div>
-
 
               <div className="flex gap-4">
                 <div className="flex flex-col mt-5 basis-1/2">
@@ -495,7 +515,9 @@ const UpdateOrganization = () => {
               </div>
               <div className="flex gap-4">
                 <div className="flex flex-col mt-5 basis-1/2">
-                  <label className="font-bold text-lg">Organization Root Url</label>
+                  <label className="font-bold text-lg">
+                    Organization Root Url
+                  </label>
                   <input
                     type="text"
                     defaultValue={orgData?.orgRootUrl}
@@ -574,7 +596,7 @@ const UpdateOrganization = () => {
                   type="color"
                   id="paymentNavbarColor"
                   name="paymentNavbarColor"
-                  defaultValue={paymentNavbarColor}
+                  value={paymentNavbarColor}
                   onChange={(e) => setPaymentNavbarColor(e.target.value)}
                   className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
                 />
@@ -590,8 +612,10 @@ const UpdateOrganization = () => {
                   type="color"
                   id="paymentNavbarAccessDashboardButtonColor"
                   name="paymentNavbarAccessDashboardButtonColor"
-                  defaultValue={orgData?.paymentNavbarAccessDashboardButtonColor}
-                  onChange={(e) => setPaymentNavbarAccessDashboardButtonColor(e.target.value)}
+                  value={orgData?.paymentNavbarAccessDashboardButtonColor}
+                  onChange={(e) =>
+                    setPaymentNavbarAccessDashboardButtonColor(e.target.value)
+                  }
                   className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
                 />
               </div>
@@ -606,8 +630,12 @@ const UpdateOrganization = () => {
                   type="color"
                   id="paymentNavbarAccessDashboardButtonTextColor"
                   name="paymentNavbarAccessDashboardButtonTextColor"
-                  defaultValue={paymentNavbarAccessDashboardButtonTextColor}
-                  onChange={(e) => setPaymentNavbarAccessDashboardButtonTextColor(e.target.value)}
+                  value={paymentNavbarAccessDashboardButtonTextColor}
+                  onChange={(e) =>
+                    setPaymentNavbarAccessDashboardButtonTextColor(
+                      e.target.value
+                    )
+                  }
                   className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
                 />
               </div>
@@ -622,8 +650,10 @@ const UpdateOrganization = () => {
                   type="color"
                   id="paymentNavbarLogoutButtonColor"
                   name="paymentNavbarLogoutButtonColor"
-                  defaultValue={paymentNavbarLogoutButtonColor}
-                  onChange={(e) => setPaymentNavbarLogoutButtonColor(e.target.value)}
+                  value={paymentNavbarLogoutButtonColor}
+                  onChange={(e) =>
+                    setPaymentNavbarLogoutButtonColor(e.target.value)
+                  }
                   className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
                 />
               </div>
@@ -638,12 +668,13 @@ const UpdateOrganization = () => {
                   type="color"
                   id="paymentNavbarLogoutButtonTextColor"
                   name="paymentNavbarLogoutButtonTextColor"
-                  defaultValue={paymentNavbarLogoutButtonTextColor}
-                  onChange={(e) => setPaymentNavbarLogoutButtonTextColor(e.target.value)}
+                  value={paymentNavbarLogoutButtonTextColor}
+                  onChange={(e) =>
+                    setPaymentNavbarLogoutButtonTextColor(e.target.value)
+                  }
                   className="ml-2 p-2 w-10 h-10 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
                 />
               </div>
-
 
               <input
                 className="bg-green text-white py-3 px-4 font-bold rounded-lg mb-5"
@@ -666,37 +697,25 @@ const UpdateOrganization = () => {
           />
         )}
 
+        {currentPage === "paymentIntegration" && (
+          <PaymentIntegration
+            paymentInstance={paymentInstance}
+            setPaymentInstance={setPaymentInstance}
+            orgData={orgData}
+          />
+        )}
 
-        {
-          currentPage === "paymentIntegration" && (
-            <PaymentIntegration
-              paymentInstance={paymentInstance}
-              setPaymentInstance={setPaymentInstance}
-              orgData={orgData}
-            />
-          )}
-
-
-        {
-          currentPage === "language Setting" && (
-            <LanguageSetting
-
-            />
-          )}
-        {
-          currentPage === "deviceLimit" && (
-            <DeviceLimit
-              maxDeviceCount={maxDeviceCount}
-              setMaxDeviceCount={setMaxDeviceCount}
-              orgData={orgData}
-            />
-          )}
-        {
-          currentPage === "emailIntegration" && (
-            <EmailIntegration
-              orgData={orgData}
-            />
-          )}
+        {currentPage === "language Setting" && <LanguageSetting />}
+        {currentPage === "deviceLimit" && (
+          <DeviceLimit
+            maxDeviceCount={maxDeviceCount}
+            setMaxDeviceCount={setMaxDeviceCount}
+            orgData={orgData}
+          />
+        )}
+        {currentPage === "emailIntegration" && (
+          <EmailIntegration orgData={orgData} />
+        )}
       </Layout>
     </div>
   );
