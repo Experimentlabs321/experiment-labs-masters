@@ -395,6 +395,7 @@ const AssignmentEvaluation2 = () => {
         templateType: "emailAction",
         templateName: "assignmentEvaluation",
         organizationId: userInfo?.organizationId,
+        task_name: assignment?.taskName
         /*  subject: `Feedback of ${assignment?.taskName}`,
          message: `Dear student, \nYour assignment on ${assignment?.taskName} result has been published. Please check it on the portal.`, */
       }
@@ -462,6 +463,7 @@ const AssignmentEvaluation2 = () => {
         templateType: "emailAction",
         templateName: "assignmentEvaluation",
         organizationId: userInfo?.organizationId,
+        task_name: assignment?.taskName
         /*    from: `${user?.email}`,
            to: `${user?.email},shihab77023@gmail.com`,
            subject: `Feedback of ${assignment?.taskName}`,
@@ -528,6 +530,7 @@ const AssignmentEvaluation2 = () => {
         templateType: "emailAction",
         templateName: "assignmentEvaluation",
         organizationId: userInfo?.organizationId,
+        task_name: assignment?.taskName
         /*  from: `${user?.email}`,
          to: `${user?.email},shihab77023@gmail.com`,
          subject: `Feedback of ${assignment?.taskName}`,
