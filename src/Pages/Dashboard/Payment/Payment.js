@@ -187,8 +187,8 @@ const Payment = () => {
           from: organizationData?.emailIntegration?.email,
           to: data?.email,
           templateType: "emailAction",
-          templateName:"courseWelcome",
           organizationId: organizationData?._id,
+          templateName:"courseWelcome",
           learner_name: data?.name,
           course_name: course?.courseFullName,
           site_name: organizationData?.organizationName,
@@ -269,7 +269,6 @@ const Payment = () => {
             icon: "success",
           });
           const newData = {
-            from: organizationData?.emailIntegration?.email,
             to: data?.email,
             templateType: "emailAction",
             templateName:"courseWelcome",
