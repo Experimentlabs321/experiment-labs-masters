@@ -583,12 +583,16 @@ console.log(userInfo)
                     templateType: "emailAction",
                     templateName:"sheduleTask",
                     organizationId: userInfo?.organizationId,
+                    start_time: eventStartTime,
+                    end_time:eventEndTime,
+                    meeting_link: event?.hangoutLink,
                    /*  subject: `Event request`,
                     message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
                       }`, */
                   }
                 );
                 console.log("send ", sendMail)
+                console.log("Admin Mail ", adminMail)
 
                 console.log('res ', response)
                 if (sendMail?.data?.success && response?.data?.acknowledged) {

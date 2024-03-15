@@ -68,7 +68,7 @@ const LoginWithOrganization = () => {
             .catch((error) => console.error(error));
     }, [id]);
 
-console.log(orgData?._id)
+    console.log(orgData?._id)
     const handleLogout = () => {
         Loading();
         logOut()
@@ -104,6 +104,7 @@ console.log(orgData?._id)
             const result = await createUser(email, password);
             if (result.user.uid) {
                 const res = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/v1/users`, data);
+                console.log("Response ================>",res);
                 const userDevice = await axios.put(
                     `${process.env.REACT_APP_SERVER_API}/api/v1/users/addDevice/${email}`,
                     {
@@ -112,20 +113,19 @@ console.log(orgData?._id)
                 );
                 if (res.data.acknowledged) {
                     toast.success("Registered Successfully");
-                     const sendMail = await axios.post(
+                    const sendMail = await axios.post(
                         `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
                         {
-                         
-                          to: email,
-                          templateType: "emailAction",
-                          templateName: "learnerSignUp",
-                          organizationId: id,
-                         
+
+                            to: email,
+                            templateType: "emailAction",
+                            templateName: "learnerSignUp",
+                            organizationId: id,
                         }
-                      ); 
+                    );
                     navigate(`/login/${id}`)
 
-                 
+
                 }
                 else {
                     toast.success("Registered Failed");
@@ -169,17 +169,17 @@ console.log(orgData?._id)
                         });
                         if (res.data.acknowledged) {
                             toast.success("Registered Successfully");
-                             const sendMail = await axios.post(
+                            const sendMail = await axios.post(
                                 `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
                                 {
-                                 
-                                  to: email,
-                                  templateType: "emailAction",
-                                  templateName: "learnerSignUp",
-                                  organizationId: id,
-                                 
+
+                                    to: email,
+                                    templateType: "emailAction",
+                                    templateName: "learnerSignUp",
+                                    organizationId: id,
+
                                 }
-                              ); 
+                            );
                             navigate(`/login/${id}`)
                         }
                         else {
@@ -224,9 +224,9 @@ console.log(orgData?._id)
                                 className="mx-auto"
                                 src={
                                     loginSidebarImage
-                                      ? loginSidebarImage
-                                      : orgData?.loginSidebarImage
-                                  }
+                                        ? loginSidebarImage
+                                        : orgData?.loginSidebarImage
+                                }
                                 alt="showCase"
                             />
                         </div>
@@ -235,9 +235,9 @@ console.log(orgData?._id)
                             className="w-[100px] mx-auto mt-4"
                             src={
                                 loginPageOrgLogo
-                                  ? loginPageOrgLogo
-                                  : orgData?.loginPageOrgLogo
-                              }
+                                    ? loginPageOrgLogo
+                                    : orgData?.loginPageOrgLogo
+                            }
                             alt="brand"
                         />
                     </div>
