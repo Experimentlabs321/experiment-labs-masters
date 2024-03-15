@@ -23,7 +23,7 @@ import EditResult from "./EditResult";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import Loading from "../../Shared/Loading/Loading";
 import uploadFileToS3 from "../../UploadComponent/s3Uploader";
-
+import { saveAs } from "file-saver";
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
     padding: theme.spacing(2),
@@ -39,9 +39,9 @@ const AssignmentEvaluation2 = () => {
   const navigate = useNavigate();
   const { userInfo, user } = useContext(AuthContext);
   console.log(userInfo);
-  
+
   //console.log(user.displayName);
- // console.log(user.photoURL);
+  // console.log(user.photoURL);
 
   const [selectedTab, setSelectedTab] = useState("mentorAssignments");
   const [pointGiven, setPointGiven] = useState(false);
@@ -61,6 +61,8 @@ const AssignmentEvaluation2 = () => {
   const [error1, setError1] = useState(false);
   const [error3, setError3] = useState(false);
   const [feedback, setFeedback] = useState(false);
+  const [downloadProgress, setDownloadProgress] = useState(0);
+  const [cancelTokenSource, setCancelTokenSource] = useState(null);
 
   //console.log(mainAssignments.skillParameterData)
   //file upload
@@ -375,7 +377,7 @@ const AssignmentEvaluation2 = () => {
     }
 
     const manageFeedback = {
-      attachFile : fileUrl,
+      attachFile: fileUrl,
       feedback,
       resultSubmitterName: user.displayName,
       resultSubmitterPhotoURL: user.photoURL,
@@ -383,18 +385,18 @@ const AssignmentEvaluation2 = () => {
     };
 
     console.log(manageFeedback);
-Loading();
+    Loading();
     const sendMail = await axios.post(
       `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
       {
-       // from: `${user?.email}`,
-    //    to: `${user?.email},shihab77023@gmail.com`,
+        // from: `${user?.email}`,
+        //    to: `${user?.email},shihab77023@gmail.com`,
         to: `${assignment?.submitter?.email}`,
         templateType: "emailAction",
-        templateName:"assignmentEvaluation",
+        templateName: "assignmentEvaluation",
         organizationId: userInfo?.organizationId,
-       /*  subject: `Feedback of ${assignment?.taskName}`,
-        message: `Dear student, \nYour assignment on ${assignment?.taskName} result has been published. Please check it on the portal.`, */
+        /*  subject: `Feedback of ${assignment?.taskName}`,
+         message: `Dear student, \nYour assignment on ${assignment?.taskName} result has been published. Please check it on the portal.`, */
       }
     );
 
@@ -407,9 +409,9 @@ Loading();
 
     if (addFeedback?.data?.acknowledged) {
       toast.success("Feedback added Successfully");
-       event.target.reset();
-       Loading().close();
-       setOpen1(false);
+      event.target.reset();
+      Loading().close();
+      setOpen1(false);
     } else {
       toast.error("Feedback not added");
       //  event.target.reset();
@@ -444,7 +446,7 @@ Loading();
       fileUrl = await uploadFileToS3(selectedFile);
     }
     const manageFeedback = {
-      attachFile : fileUrl,
+      attachFile: fileUrl,
       feedback,
       resultSubmitterName: user.displayName,
       resultSubmitterPhotoURL: user.photoURL,
@@ -458,12 +460,12 @@ Loading();
       {
         to: `${assignment?.submitter?.email}`,
         templateType: "emailAction",
-        templateName:"assignmentEvaluation",
+        templateName: "assignmentEvaluation",
         organizationId: userInfo?.organizationId,
-     /*    from: `${user?.email}`,
-        to: `${user?.email},shihab77023@gmail.com`,
-        subject: `Feedback of ${assignment?.taskName}`,
-        message: `Dear student, \nYour assignment on ${assignment?.taskName} result has been published. Please check it on the portal.`, */
+        /*    from: `${user?.email}`,
+           to: `${user?.email},shihab77023@gmail.com`,
+           subject: `Feedback of ${assignment?.taskName}`,
+           message: `Dear student, \nYour assignment on ${assignment?.taskName} result has been published. Please check it on the portal.`, */
       }
     );
 
@@ -477,9 +479,9 @@ Loading();
     if (addFeedback?.data?.acknowledged) {
       toast.success("Feedback added Successfully");
 
-       event.target.reset();
-       Loading().close();
-       setOpen(false);
+      event.target.reset();
+      Loading().close();
+      setOpen(false);
     } else {
       toast.error("Feedback not added");
       //   //  event.target.reset();
@@ -524,12 +526,12 @@ Loading();
       {
         to: `${assignment?.submitter?.email}`,
         templateType: "emailAction",
-        templateName:"assignmentEvaluation",
+        templateName: "assignmentEvaluation",
         organizationId: userInfo?.organizationId,
-       /*  from: `${user?.email}`,
-        to: `${user?.email},shihab77023@gmail.com`,
-        subject: `Feedback of ${assignment?.taskName}`,
-        message: `Dear student, \nYour assignment on ${assignment?.taskName} is ${status}. Please check it on the portal.`, */
+        /*  from: `${user?.email}`,
+         to: `${user?.email},shihab77023@gmail.com`,
+         subject: `Feedback of ${assignment?.taskName}`,
+         message: `Dear student, \nYour assignment on ${assignment?.taskName} is ${status}. Please check it on the portal.`, */
       }
     );
 
@@ -576,8 +578,88 @@ Loading();
 
 
   };
+  const handleDownload = async () => {
+    try {
+      // If there's an ongoing download, cancel it
+      if (cancelTokenSource) {
+        cancelTokenSource.cancel("Download cancelled");
+      }
 
+      const cancelToken = axios.CancelToken.source();
+      setCancelTokenSource(cancelToken);
 
+      const response = await axios.get(assignment?.fileUrl, {
+        responseType: "blob",
+        onDownloadProgress: (progressEvent) => {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          setDownloadProgress(percentCompleted);
+        },
+        cancelToken: cancelToken.token,
+      });
+
+      // Determine file name and extension
+      const fileName = assignment?.fileUrl.split("/").pop();
+      const fileExtension = fileName.split(".").pop();
+      const mimeType = getMimeType(fileExtension);
+
+      // Create Blob with response data
+      const blob = new Blob([response.data], { type: mimeType });
+
+      // Save file
+      saveAs(blob, fileName);
+    } catch (error) {
+      if (axios.isCancel(error)) {
+        console.log("Download cancelled:", error.message);
+      } else {
+        console.error("Error downloading the file:", error);
+      }
+    } finally {
+      setCancelTokenSource(null);
+      setDownloadProgress(0);
+    }
+  };
+
+  const getMimeType = (extension) => {
+    switch (extension.toLowerCase()) {
+      case "pdf":
+        return "application/pdf";
+      case "doc":
+      case "docx":
+        return "application/msword";
+      case "xls":
+      case "xlsx":
+        return "application/vnd.ms-excel";
+      case "ppt":
+      case "pptx":
+        return "application/vnd.ms-powerpoint";
+      default:
+        return "application/octet-stream";
+    }
+  };
+
+  useEffect(() => {
+    // Cleanup the download if component unmounts or taskData?.additionalFiles changes
+    return () => {
+      if (cancelTokenSource) {
+        cancelTokenSource.cancel("Download cancelled due to component unmount");
+      }
+    };
+  }, [assignment?.fileUrl, cancelTokenSource]);
+
+  useEffect(() => {
+    // Cleanup the download if taskData?.additionalFiles changes
+    return () => {
+      if (cancelTokenSource) {
+        cancelTokenSource.cancel(
+          "Download cancelled due to change in taskData"
+        );
+        setCancelTokenSource(null);
+        setDownloadProgress(0);
+      }
+    };
+  }, [assignment?.fileUrl, cancelTokenSource]);
   return (
     <div>
       <Layout>
@@ -588,8 +670,34 @@ Loading();
         <div className="flex mt-24 me-10">
           <div className="w-full">
             <div className="flex justify-between gap-10">
-              <div className="px-10 flex gap-10 pb-3 text-lg mt-10">
+              <div className="px-10 grid gap-10 pb-3 text-lg mt-10">
                 <p className="text-lg font-bold">Assignment</p>
+                <div className="mt-5">
+                  <button
+                    className="bg-blue text-white p-3 rounded-lg text-xl"
+                    onClick={cancelTokenSource ? null : handleDownload}
+                    disabled={cancelTokenSource !== null}
+                  >
+                    {cancelTokenSource
+                      ? `Downloading... ${downloadProgress}%`
+                      : "Download"}
+                  </button>
+                  {cancelTokenSource && (
+                    <button
+                      className="bg-red text-white p-3 rounded-lg text-xl"
+                      onClick={() => {
+                        cancelTokenSource.cancel("Download cancelled by user");
+                      }}
+                    >
+                      Cancel
+                    </button>
+                  )}
+                  {/*  {downloadProgress > 0 && (
+                <div className="ml-4 flex items-center">
+                  <p>{downloadProgress}%</p>
+                </div>
+              )} */}
+                </div>
                 {/*   <Link
                   to="/mentorAssignments"
                   onClick={() => handleTabClick("Assignments")}
@@ -849,7 +957,7 @@ Loading();
                   {!assignment?.submitter.result && (
                     <form onSubmit={handleSubmit}>
                       <div className=" ms-10 my-10">
-                        <p className="text-2xl font-bold mb-10">SkillParameter</p>
+                        {/* <p className="text-2xl font-bold mb-10">SkillParameter</p> */}
 
                         <div className=" flex ">
                           {!pointGiven && (
@@ -1080,9 +1188,9 @@ Loading();
                       </div>
 
                       <div className=" ms-10 my-10">
-                        <p className="text-2xl font-bold mb-10">
+                        {/* <p className="text-2xl font-bold mb-10">
                           earningParameter
-                        </p>
+                        </p> */}
 
                         <div className=" flex ">
                           {!pointGiven && (
