@@ -21,6 +21,7 @@ import { AuthContext } from "../../../contexts/AuthProvider";
 import { Link } from "react-router-dom";
 import RoundAvatar from "../../Dashboard/Shared/RoundAvatar";
 import { CircularProgress } from "@mui/material";
+import axios from "axios";
 // Define a custom theme
 const theme = createTheme({
   components: {
@@ -93,6 +94,7 @@ const DashboardUserUpdate = ({
 }) => {
   const { userInfo } = useContext(AuthContext);
   const [currentWeek, setCurrentWeek] = useState({});
+  const [completionPercentage, setCompletionPercentage] = useState(0);
   useEffect(() => {
     const currentDateTime = new Date();
     weeks?.forEach((element) => {
@@ -125,16 +127,47 @@ const DashboardUserUpdate = ({
   } = dashboardTheme;
   // console.log(dashboardTheme);
 
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/chapters`)
+      .then((response) => {
+        const currentCourseChapter = response?.data?.filter(
+          (item) => item?.courseId === selectedCourse?._id
+        );
+        if (currentCourseChapter) {
+          let totalCompleted = 0;
+          let totalTask = 0;
+          currentCourseChapter?.forEach((item) => {
+            item?.tasks?.forEach((singleTask) => {
+              totalTask++;
+              if (singleTask?.participants) {
+                if (
+                  singleTask?.participants?.find(
+                    (item) => item?.participantId === userInfo?._id
+                  )
+                ) {
+                  totalCompleted++;
+                }
+              }
+            });
+          });
+          if (totalCompleted !== 0 && totalTask !== 0)
+            setCompletionPercentage(
+              parseInt((totalCompleted / totalTask) * 100)
+            );
+        }
+      })
+      .catch((error) => console.error(error));
+  }, [userInfo, selectedCourse]);
+
   return (
-
     <div>
-
       <div className=" relative w-fit">
-      {isLoading && (
-        <div className=" flex align-items-center my-5 py-5">
-          <CircularProgress className="w-full mx-auto" />
-        </div>
-      )}
+        {isLoading && (
+          <div className=" flex align-items-center my-5 py-5">
+            <CircularProgress className="w-full mx-auto" />
+          </div>
+        )}
         <h1 className="text-[22px] lg:text-[40px] font-[700]">
           Welcome, {userInfo?.name}
         </h1>
@@ -218,7 +251,10 @@ const DashboardUserUpdate = ({
                   <div className="flex flex-col lg:flex-row items-center justify-center gap-3 lg:justify-around h-full">
                     <h1 className="lg:text-[26px] text-[15px] font-[600] text-white text-center z-[1]">
                       {courseCompletionText}{" "}
-                      <span className="text-[#FFDB70]">0%</span> complete
+                      <span className="text-[#FFDB70]">
+                        {completionPercentage}%
+                      </span>{" "}
+                      complete
                     </h1>
                   </div>
                 </>
@@ -234,7 +270,10 @@ const DashboardUserUpdate = ({
                   <div className="flex flex-col lg:flex-row items-center justify-center gap-3 lg:justify-around h-full">
                     <h1 className="lg:text-[26px] text-[15px] font-[600] text-white text-center z-[1]">
                       {courseCompletionText}{" "}
-                      <span className="text-[#FFDB70]">0%</span> complete
+                      <span className="text-[#FFDB70]">
+                        {completionPercentage}%
+                      </span>{" "}
+                      complete
                     </h1>
                   </div>
                 </>
