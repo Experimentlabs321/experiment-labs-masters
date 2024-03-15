@@ -188,12 +188,12 @@ const Payment = () => {
           to: data?.email,
           templateType: "emailAction",
           organizationId: organizationData?._id,
-          templateName:"courseWelcome",
+          templateName: "courseWelcome",
           learner_name: data?.name,
           course_name: course?.courseFullName,
           site_name: organizationData?.organizationName,
-          site_email: organizationData?.email
-        }
+          site_email: organizationData?.email,
+        };
 
         const updateOrg = await axios.post(
           `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
@@ -271,14 +271,14 @@ const Payment = () => {
           const newData = {
             to: data?.email,
             templateType: "emailAction",
-            templateName:"courseWelcome",
+            templateName: "courseWelcome",
             organizationId: organizationData?._id,
             learner_name: data?.name,
             course_name: course?.courseFullName,
             site_name: organizationData?.organizationName,
-            site_email: organizationData?.email
-          }
-  
+            site_email: organizationData?.email,
+          };
+
           const updateOrg = await axios.post(
             `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
             // `http://localhost:5000/api/v1/sendMail`,
@@ -408,12 +408,10 @@ const Payment = () => {
             const sendMail = await axios.post(
               `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
               {
-               
                 to: email,
                 templateType: "emailAction",
                 templateName: "learnerSignUp",
                 organizationId: organizationData?._id,
-               
               }
             );
           }
@@ -454,12 +452,10 @@ const Payment = () => {
               const sendMail = await axios.post(
                 `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
                 {
-                 
                   to: googleMail,
                   templateType: "emailAction",
                   templateName: "learnerSignUp",
                   organizationId: organizationData?._id,
-                 
                 }
               );
             }
@@ -649,7 +645,10 @@ const Payment = () => {
                                   </p>
                                   <p className="mt-[10px] font-[600] text-[1.07rem]">
                                     Valid for first{" "}
-                                    {+offer?.maxUseCount - +offer?.usedCount}{" "}
+                                    {+offer?.maxUseCount -
+                                      (+offer?.usedCount
+                                        ? +offer?.usedCount
+                                        : 0)}{" "}
                                     learners.{" "}
                                   </p>
                                 </div>
