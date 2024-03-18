@@ -10,6 +10,9 @@ const Profile = () => {
   const { email } = useParams();
   const [profileInfo, setProfileInfo] = useState({});
   const [courseData, setCourseData] = useState([]);
+  const [weekData, setWeekData] = useState({});
+  const [chapterData, setChapterData] = useState({});
+  const [chapters, setChapters] = useState({});
   const [tableWidth, setTableWidth] = useState("100%");
   useEffect(() => {
     // Calculate the desired width (e.g., 200px less than the screen width)
@@ -70,6 +73,79 @@ const Profile = () => {
     fetchCourseDetails();
   }, [profileInfo]);
   console.log("course  ", courseData);
+  useEffect(() => {
+    const fetchWeekDetails = async () => {
+      const courses = profileInfo?.courses || [];
+      const courseDetailsPromises = courses.map(async (course) => {
+        const courseId = course.courseId;
+        try {
+          const response = await axios.get(
+            `${process.env.REACT_APP_SERVER_API}/api/v1/weeks/courseId/${courseId}`
+          );
+          return response?.data;
+        } catch (error) {
+          console.error(
+            `Error fetching course details for courseId: ${courseId}`,
+            error
+          );
+          return null;
+        }
+      });
+
+      const courseDetails = await Promise.all(courseDetailsPromises);
+      setWeekData(courseDetails.filter(Boolean)); // Remove null values
+    };
+
+    fetchWeekDetails();
+  }, [profileInfo]);
+  useEffect(() => {
+    const fetchChapterDetails = async () => {
+      // Ensure weekData is an array before proceeding
+      if (!Array.isArray(weekData)) {
+        console.error('weekData is not an array:', weekData);
+        return; // Early return if weekData is not an array
+      }
+  
+      // Loop through each week in weekData
+      const allWeekDetailsPromises = weekData.map(async (week) => {
+        // Ensure week is an array
+        if (!Array.isArray(week)) {
+          console.error('Week is not an array:', week);
+          return []; // Return an empty array to keep consistent structure
+        }
+        const courseDetailsPromises = week.map(async (course) => {
+          const courseId = course?._id;
+          try {
+            const response = await axios.get(
+              `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/weekId/${courseId}`
+            );
+            return response?.data;
+          } catch (error) {
+            console.error(`Error fetching course details for courseId: ${courseId}`, error);
+            return null;
+          }
+        });
+  
+        const weekDetails = await Promise.all(courseDetailsPromises);
+        return weekDetails.flat().filter(Boolean); // Flatten and remove null values for this week
+      });
+  
+      // Wait for all weeks to be processed, then flatten the results
+      const allWeekDetails = await Promise.all(allWeekDetailsPromises);
+      const flattenedWeekDetails = allWeekDetails.flat();
+  
+      setChapterData(flattenedWeekDetails);
+      // Assuming you want to update chapters state as well
+      const allChapters = flattenedWeekDetails.flatMap(week => week);
+      setChapters(allChapters); // Set chapters state once with all processed data
+    };
+  
+    fetchChapterDetails();
+  }, [weekData]); // Ensure dependencies are correctly listed if there are more
+  
+  console.log("week  ", weekData);
+  console.log("chapter  ", chapterData);
+  console.log("chapterssss  ", chapters);
   const handleSubmit = async (event) => {
     event.preventDefault();
 
