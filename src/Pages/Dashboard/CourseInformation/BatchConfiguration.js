@@ -647,7 +647,7 @@ const BatchConfiguration = ({
                     className="bg-[#F6F7FF] font-sans border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
                     name="batchStartDate"
                     defaultValue={selectedBatches[0]?.batchStartDate}
-                    min={getCurrentDate()}
+                    // min={getCurrentDate()}
                     type="date"
                   />
                 </div>
@@ -661,7 +661,7 @@ const BatchConfiguration = ({
                     name="batchEndDate"
                     defaultValue={selectedBatches[0]?.batchEndDate}
                     type="date"
-                    min={getCurrentDate()}
+                    // min={getCurrentDate()}
                   />
                 </div>
                 <div className=" basis-1/2 px-2">
