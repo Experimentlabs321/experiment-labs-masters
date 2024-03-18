@@ -76,19 +76,49 @@ const EditFiles = () => {
       .then((response) => {
         setFileData(response?.data);
         // setSelectedFile(response?.data?.additionalFiles);
-        setSelectedBatches(response?.data?.batches);
-        setSkillParameterData(response?.data?.skillParameterData);
-        setEarningParameterData(response?.data?.earningParameterData);
-        setTaskDrip(response?.data?.taskDrip);
-        setEnableDownload(response?.data?.enableDownload);
-        setFileDescription(response?.data?.fileDescription);
+        setSelectedBatches(
+          response?.data?.batches ? response?.data?.batches : selectedBatches
+        );
+        setSkillParameterData(
+          response?.data?.skillParameterData
+            ? response?.data?.skillParameterData
+            : skillParameterData
+        );
+        setEarningParameterData(
+          response?.data?.earningParameterData
+            ? response?.data?.earningParameterData
+            : earningParameterData
+        );
+        setTaskDrip(
+          response?.data?.taskDrip ? response?.data?.taskDrip : taskDrip
+        );
+        setEnableDownload(
+          response?.data?.enableDownload
+            ? response?.data?.enableDownload
+            : enableDownload
+        );
+        setFileDescription(
+          response?.data?.fileDescription
+            ? response?.data?.fileDescription
+            : fileDescription
+        );
       });
   }, [id]);
 
   useEffect(() => {
+    if (fileData?.chapterId)
+      axios
+        .get(
+          `${process.env.REACT_APP_BACKEND_API}/chapter/${fileData?.chapterId}`
+        )
+        .then((res) => setChapter(res?.data))
+        .catch((error) => console.error(error));
+  }, [fileData]);
+
+  useEffect(() => {
     const fetchData = {
       organizationId: userInfo?.organizationId,
-      courseId: fileData?.courseId,
+      courseId: chapter?.courseId,
     };
     axios
       .get(
@@ -104,14 +134,7 @@ const EditFiles = () => {
       )
       .then((res) => setEarningCategories(res?.data))
       .catch((error) => console.error(error));
-
-    axios
-      .get(
-        `${process.env.REACT_APP_BACKEND_API}/chapter/${fileData?.chapterId}`
-      )
-      .then((res) => setChapter(res?.data))
-      .catch((error) => console.error(error));
-  }, [fileData, userInfo]);
+  }, [chapter, userInfo]);
 
   useEffect(() => {
     if (chapter?.courseId)
