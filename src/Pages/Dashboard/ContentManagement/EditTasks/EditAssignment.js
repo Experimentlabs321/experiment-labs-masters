@@ -47,8 +47,7 @@ const EditAssignment = () => {
   const [schedule, setSchedule] = useState([]);
   const [contentStage, setContentStage] = useState([]);
   const [orgData, setOrgData] = useState({});
-  const [taskDrip, setTaskDrip] = useState();
-  const [enableDrip, setEnableDrip] = useState();
+  const [taskDrip, setTaskDrip] = useState(false);
 
   useEffect(() => {
     if (id)
@@ -58,13 +57,31 @@ const EditAssignment = () => {
         )
         .then((response) => {
           setAssignmentData(response?.data);
-          setSelectedBatches(response?.data?.batches);
-          setSchedule(response?.data?.schedule);
-          setInstructions(response?.data?.instructions);
+          setSelectedBatches(
+            response?.data?.batches ? response?.data?.batches : selectedBatches
+          );
+          setSchedule(
+            response?.data?.schedule ? response?.data?.schedule : schedule
+          );
+          setInstructions(
+            response?.data?.instructions
+              ? response?.data?.instructions
+              : instructions
+          );
           // setSelectedFile(response?.data?.file);
-          setSkillParameterData(response?.data?.skillParameterData);
-          setEarningParameterData(response?.data?.earningParameterData);
-          setTaskDrip(response?.data?.taskDrip);
+          setSkillParameterData(
+            response?.data?.skillParameterData
+              ? response?.data?.skillParameterData
+              : skillParameterData
+          );
+          setEarningParameterData(
+            response?.data?.earningParameterData
+              ? response?.data?.earningParameterData
+              : earningParameterData
+          );
+          setTaskDrip(
+            response?.data?.taskDrip ? response?.data?.taskDrip : taskDrip
+          );
           setContentStage(
             response?.data?.contentStage === undefined
               ? []
@@ -74,15 +91,18 @@ const EditAssignment = () => {
   }, [id]);
 
   useEffect(() => {
-    // axios
-    //   .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
-    //   .then((response) => {
-    //     setChapter(response?.data);
-    //   })
-    //   .then(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/${assignmentData?.chapterId}`
+      )
+      .then((res) => setChapter(res?.data))
+      .catch((error) => console.error(error));
+  }, [assignmentData]);
+
+  useEffect(() => {
     const fetchData = {
       organizationId: userInfo?.organizationId,
-      courseId: assignmentData?.courseId,
+      courseId: chapter?.courseId,
     };
     axios
       .get(
@@ -93,21 +113,12 @@ const EditAssignment = () => {
       .catch((error) => console.error(error));
     axios
       .post(
-        `${process.env.REACT_APP_BACKEND_API}/itemCategoryByCourseId`,
+        `${process.env.REACT_APP_SERVER_API}/api/v1/earningCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
         fetchData
       )
       .then((res) => setEarningCategories(res?.data))
       .catch((error) => console.error(error));
-
-    axios
-      .get(
-        `${process.env.REACT_APP_BACKEND_API}/chapter/${assignmentData?.chapterId}`
-      )
-      .then((res) => setChapter(res?.data))
-      .catch((error) => console.error(error));
-    // })
-    // .catch((error) => console.error(error));
-  }, [assignmentData, userInfo]);
+  }, [chapter, userInfo]);
 
   useEffect(() => {
     if (chapter?.courseId)
@@ -123,13 +134,13 @@ const EditAssignment = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${assignmentData?.courseId}`
+        `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${course?._id}`
       )
       .then((response) => {
         setBatchesData(response?.data);
       })
       .catch((error) => console.error(error));
-  }, [assignmentData]);
+  }, [course]);
 
   useEffect(() => {
     axios
@@ -217,25 +228,21 @@ const EditAssignment = () => {
     };
 
     setAssignmentData(manageAssignment);
-    console.log(manageAssignment);
 
     if (submitPermission) {
       const newAssignment = await axios.put(
         `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/assignments/taskId/${assignmentData?._id}`,
         manageAssignment
       );
-      console.log(newAssignment);
       if (newAssignment?.data?.result?.acknowledged) {
         toast.success("Assignment edited Successfully");
         navigate(-1);
       }
-
-      console.log(manageAssignment);
     }
     Loading().close();
   };
 
-  console.log(selectedBatches);
+  console.log(assignmentData?.chapterId);
 
   return (
     <div>

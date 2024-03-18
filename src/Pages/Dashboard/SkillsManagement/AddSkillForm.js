@@ -16,6 +16,7 @@ const AddSkillForm = ({
   setSkillCategories,
   selectedCourse,
   userInfo,
+  itemDetails
 }) => {
   const handleAddSkill = async (event) => {
     event.preventDefault();
@@ -27,7 +28,7 @@ const AddSkillForm = ({
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "The skill name is already exist!",
+        text: itemDetails?.theSkillNameIsAlreadyExist ? itemDetails?.theSkillNameIsAlreadyExist : "The skill name is already exist!",
       });
       return;
     }
@@ -47,7 +48,7 @@ const AddSkillForm = ({
     );
 
     if (newSkill?.data?.acknowledged) {
-      toast.success("Skill added Successfully");
+      toast.success(itemDetails?.skillAddedSuccessfully ? itemDetails?.skillAddedSuccessfully : "Skill added Successfully");
       const selectedCategorySkills = selectedSkillCategory?.skills
         ? [
             ...selectedSkillCategory?.skills,
@@ -113,14 +114,16 @@ const AddSkillForm = ({
                   alt="UploadingImg"
                 />
                 <p className="mt-[-38px] text-base font-semibold text-[#fff] mb-4">
-                  Upload Icon
+                { itemDetails?.uploadIcon ? itemDetails?.uploadIcon : "Upload Icon" }
+                  
                 </p>
               </div>
               <div className="w-full pl-8">
                 <div className="grid grid-cols-1 gap-x-6 gap-y-4 mt-2 sm:grid-cols-2 w-full">
                   <div>
                     <label className="text-[16px] font-[600]" htmlFor="case">
-                      Skill Category
+                    { itemDetails?.skillCategory ? itemDetails?.skillCategory : "Skill Category" }
+                      
                     </label>
                     <select
                       onChange={(e) =>
@@ -152,7 +155,8 @@ const AddSkillForm = ({
                   </div>
                   <div>
                     <label className="text-[16px] font-[600]" htmlFor="case">
-                      Skill Name
+                    { itemDetails?.skillName ? itemDetails?.skillName : "Skill Name" }
+                      
                     </label>
                     <input
                       id="skillName"
@@ -163,6 +167,7 @@ const AddSkillForm = ({
                   </div>
                   <>
                     <Parameters
+                    itemDetails={itemDetails}
                       parameters={parameters}
                       setParameters={setParameters}
                       skillCategories={skillCategories}
@@ -174,7 +179,9 @@ const AddSkillForm = ({
             </div>
             <div className="flex items-center text-center">
               <div>
-                <p className="w-[145px] text-[16px] font-[600]">Description</p>
+                <p className="w-[145px] text-[16px] font-[600]">
+                { itemDetails?.description ? itemDetails?.description : "Description" }
+                  </p>
               </div>
               <div class="w-full pl-8 mt-4 flex justify-center items-center col-span-2 ">
                 <textarea
@@ -183,7 +190,7 @@ const AddSkillForm = ({
                   rows={3}
                   className=" w-full p-4"
                   type="text"
-                  placeholder="Description"
+                  placeholder={ itemDetails?.description ? itemDetails?.description : "Description" }
                   style={{
                     borderRadius: "8px",
                     border: "1px solid var(--neutral-300, #BFBFBF)",

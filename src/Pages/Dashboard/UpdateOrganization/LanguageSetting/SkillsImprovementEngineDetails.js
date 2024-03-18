@@ -12,6 +12,7 @@ const SkillsImprovementEngineDetails = () => {
     const { userInfo } = useContext(AuthContext)
     const [adminLoading, setAdminLoading] = useState(false);
     const [itemDetails, setItemDetails] = useState();
+
     useEffect(() => {
         if (userInfo) {
             setAdminLoading(true);
@@ -32,6 +33,7 @@ const SkillsImprovementEngineDetails = () => {
         setAdminLoading(false);
     }, [userInfo]);
     console.log(itemDetails)
+    
     const fetchContentDetails = () => {
         if (userInfo) {
             setAdminLoading(true);

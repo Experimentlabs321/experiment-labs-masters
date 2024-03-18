@@ -39,7 +39,7 @@ const CourseAccess = () => {
     setSelectedOption(option);
     setIsOpen(false);
   };
-  console.log(courses)
+  console.log(courses);
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const stateParam = queryParams.get("state");
@@ -52,11 +52,11 @@ const CourseAccess = () => {
         )
         .then((response) => {
           setMyCourses(response?.data);
-          setIsLoading(false)
+          setIsLoading(false);
         })
         .catch((error) => {
-          console.error(error)
-          setIsLoading(false)
+          console.error(error);
+          setIsLoading(false);
         });
       await axios
         .get(
@@ -65,11 +65,11 @@ const CourseAccess = () => {
         .then((response) => {
           setCourses(response?.data);
           setFilterData(response?.data);
-          setIsLoading(false)
+          setIsLoading(false);
         })
         .catch((error) => {
-          console.error(error)
-          setIsLoading(false)
+          console.error(error);
+          setIsLoading(false);
         });
       await axios
         .get(
@@ -77,11 +77,11 @@ const CourseAccess = () => {
         )
         .then((response) => {
           setBundles(response?.data);
-          setIsLoading(false)
+          setIsLoading(false);
         })
         .catch((error) => {
-          console.error(error)
-          setIsLoading(false)
+          console.error(error);
+          setIsLoading(false);
         });
     };
     fetchAllData();
@@ -100,73 +100,73 @@ const CourseAccess = () => {
       )
       .then((response) => {
         setCourseCategories(response?.data);
-        setIsLoading(false)
+        setIsLoading(false);
       })
       .catch((error) => {
-        console.error(error)
-        setIsLoading(false)
+        console.error(error);
+        setIsLoading(false);
       });
   }, [userInfo]);
 
-  useEffect(() => {
-    if (selectedOption !== "All") {
-      if (stateParams === "myCourses") {
-        const filteredCourses = myCourses?.filter(
-          (item) => item?.courseCategory === selectedOption
-        );
-        setShowCourses(filteredCourses);
-      } else if (stateParams === "allCourses") {
-        const filteredCourses = courses?.filter(
-          (item) => item?.courseCategory === selectedOption
-        );
-        setShowCourses(filteredCourses);
-      }
-    } else {
-      // If selectedOption is "All", show all courses without filtering
-      setShowCourses(stateParams === "myCourses" ? myCourses : courses);
-    }
-    // Set isLoading to false after filtering
-    setIsLoading(false);
-  }, [selectedOption, stateParams, myCourses, courses]);
+  // useEffect(() => {
+  //   if (selectedOption !== "All") {
+  //     if (stateParams === "myCourses") {
+  //       const filteredCourses = myCourses?.filter(
+  //         (item) => item?.courseCategory === selectedOption
+  //       );
+  //       setShowCourses(filteredCourses);
+  //     } else if (stateParams === "allCourses") {
+  //       const filteredCourses = courses?.filter(
+  //         (item) => item?.courseCategory === selectedOption
+  //       );
+  //       setShowCourses(filteredCourses);
+  //     }
+  //   } else {
+  //     // If selectedOption is "All", show all courses without filtering
+  //     setShowCourses(stateParams === "myCourses" ? myCourses : courses);
+  //   }
+  //   // Set isLoading to false after filtering
+  //   setIsLoading(false);
+  // }, [selectedOption, stateParams, myCourses, courses]);
   console.log(selectedOption);
 
-  // useEffect(() => {
-  //   if (stateParams === "myCourses") {
-  //     Loading();
-  //     axios
-  //       .get(
-  //         `${process.env.REACT_APP_SERVER_API}/api/v1/courses/userId/${userInfo._id}`
-  //       )
-  //       .then((response) => {
-  //         setShowCourses(response?.data);
-  //         Loading().close();
-  //       })
-  //       .catch((error) => console.error(error));
-  //   } else if (stateParams === "allCourses") {
-  //     Loading();
-  //     axios
-  //       .get(
-  //         `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
-  //       )
-  //       .then((response) => {
-  //         setShowCourses(response?.data);
-  //         setFilterData(response?.data);
-  //         Loading().close();
-  //       })
-  //       .catch((error) => console.error(error));
-  //   } else if (stateParams === "bundles") {
-  //     Loading();
-  //     axios
-  //       .get(
-  //         `${process.env.REACT_APP_SERVER_API}/api/v1/bundles/organizationId/${userInfo.organizationId}`
-  //       )
-  //       .then((response) => {
-  //         setShowCourses(response?.data);
-  //         Loading().close();
-  //       })
-  //       .catch((error) => console.error(error));
-  //   }
-  // }, [userInfo, stateParams]);
+  useEffect(() => {
+    if (stateParams === "myCourses") {
+      Loading();
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/userId/${userInfo._id}`
+        )
+        .then((response) => {
+          setShowCourses(response?.data);
+          Loading().close();
+        })
+        .catch((error) => console.error(error));
+    } else if (stateParams === "allCourses") {
+      Loading();
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
+        )
+        .then((response) => {
+          setShowCourses(response?.data);
+          setFilterData(response?.data);
+          Loading().close();
+        })
+        .catch((error) => console.error(error));
+    } else if (stateParams === "bundles") {
+      Loading();
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/bundles/organizationId/${userInfo.organizationId}`
+        )
+        .then((response) => {
+          setShowCourses(response?.data);
+          Loading().close();
+        })
+        .catch((error) => console.error(error));
+    }
+  }, [userInfo, stateParams]);
 
   const daysDifferenceFromEnrolled = (enrolledDate) => {
     // Get the current date
@@ -199,6 +199,8 @@ const CourseAccess = () => {
       }
     });
   };
+
+  console.log(bundles);
 
   return (
     <div>
@@ -294,10 +296,11 @@ const CourseAccess = () => {
                     setStateParams("myCourses");
                     setShowCourses(myCourses);
                   }}
-                  className={`text-[18px] font-[700] ${stateParams === "myCourses"
+                  className={`text-[18px] font-[700] ${
+                    stateParams === "myCourses"
                       ? "text-[#3E4DAC] underline"
                       : "text-black no-underline"
-                    }`}
+                  }`}
                 >
                   My Courses
                 </button>
@@ -307,10 +310,11 @@ const CourseAccess = () => {
                   setStateParams("allCourses");
                   setShowCourses(filterData);
                 }}
-                className={`text-[18px] font-[700] ${stateParams === "allCourses"
+                className={`text-[18px] font-[700] ${
+                  stateParams === "allCourses"
                     ? "text-[#3E4DAC] underline"
                     : "text-black no-underline"
-                  }`}
+                }`}
               >
                 All Courses
               </button>
@@ -364,7 +368,6 @@ const CourseAccess = () => {
                   ))}
                 </ul>
               )}
-
             </div>
           </div>
 
@@ -375,20 +378,22 @@ const CourseAccess = () => {
                   setStateParams("bundles");
                   setShowCourses(bundles);
                 }}
-                className={`text-[18px] font-[700] bg-[#677bff0a] rounded-md px-2 py-1 mb-5 ${stateParams !== "bundles"
+                className={`text-[18px] font-[700] bg-[#677bff0a] rounded-md px-2 py-1 mb-5 ${
+                  stateParams !== "bundles"
                     ? "text-[#3E4DAC] "
                     : "text-black no-underline"
-                  }`}
+                }`}
               >
                 Show Bundles
               </button>
             )}
             {stateParams !== "bundles" && (
               <div
-                className={`flex flex-wrap ${showCourses?.length <= 2
+                className={`flex flex-wrap ${
+                  showCourses?.length <= 2
                     ? "justify-start gap-x-14"
                     : "justify-between gap-x-2"
-                  }  gap-y-5`}
+                }  gap-y-5`}
               >
                 {showCourses?.map((course, index) => {
                   const date = new Date(course?.courseStartingDate);
@@ -421,15 +426,15 @@ const CourseAccess = () => {
                                   !userInfo?.courses?.find(
                                     (item) => item?.courseId === course?._id
                                   )
-                                  ? `/payment/${course?._id}`
-                                  : `/questLevels/${course?._id}`
+                                ? `/payment/${course?._id}`
+                                : `/questLevels/${course?._id}`
                             }
                             target={
                               Role === "user" &&
-                                stateParams === "allCourses" &&
-                                !userInfo?.courses?.find(
-                                  (item) => item?.courseId === course?._id
-                                )
+                              stateParams === "allCourses" &&
+                              !userInfo?.courses?.find(
+                                (item) => item?.courseId === course?._id
+                              )
                                 ? "_blank"
                                 : "_self"
                             }
@@ -501,8 +506,9 @@ const CourseAccess = () => {
                               )}
                             </div>
                             <div
-                              className={`${Role === "admin" ? "block" : "hidden"
-                                } relative`}
+                              className={`${
+                                Role === "admin" ? "block" : "hidden"
+                              } relative`}
                             >
                               <button
                                 onClick={(e) => {
@@ -563,15 +569,17 @@ const CourseAccess = () => {
                                     !userInfo?.courses?.find(
                                       (item) => item?.courseId === course?._id
                                     )
-                                    ? (course?.courseInitialUrl) ? `${course?.courseInitialUrl}` : `/payment/${course?._id}`
-                                    : `/questLevels/${course?._id}`
+                                  ? course?.courseInitialUrl
+                                    ? `${course?.courseInitialUrl}`
+                                    : `/payment/${course?._id}`
+                                  : `/questLevels/${course?._id}`
                               }
                               target={
                                 Role === "user" &&
-                                  stateParams === "allCourses" &&
-                                  !userInfo?.courses?.find(
-                                    (item) => item?.courseId === course?._id
-                                  )
+                                stateParams === "allCourses" &&
+                                !userInfo?.courses?.find(
+                                  (item) => item?.courseId === course?._id
+                                )
                                   ? "_blank"
                                   : "_self"
                               }
@@ -643,8 +651,9 @@ const CourseAccess = () => {
                                 )}
                               </div>
                               <div
-                                className={`${Role === "admin" ? "block" : "hidden"
-                                  } relative`}
+                                className={`${
+                                  Role === "admin" ? "block" : "hidden"
+                                } relative`}
                               >
                                 <button
                                   onClick={(e) => {
@@ -701,10 +710,11 @@ const CourseAccess = () => {
             )}
             {stateParams === "bundles" && (
               <div
-                className={`flex flex-wrap ${showCourses?.length <= 2
+                className={`flex flex-wrap ${
+                  showCourses?.length <= 2
                     ? "justify-start gap-x-14"
                     : "justify-between gap-x-2"
-                  }  gap-y-5`}
+                }  gap-y-5`}
               >
                 {showCourses?.map((course, index) => {
                   const date = new Date(course?.bundleStartingDate);
@@ -738,15 +748,15 @@ const CourseAccess = () => {
                                   !myCourses?.find(
                                     (item) => item?._id === course?._id
                                   )
-                                  ? `/payment/${course?._id}`
-                                  : `/questLevels/${course?._id}`
+                                ? `/payment/${course?._id}`
+                                : `/questLevels/${course?._id}`
                             }
                             target={
                               Role === "user" &&
-                                stateParams === "allCourses" &&
-                                !myCourses?.find(
-                                  (item) => item?._id === course?._id
-                                )
+                              stateParams === "allCourses" &&
+                              !myCourses?.find(
+                                (item) => item?._id === course?._id
+                              )
                                 ? "_blank"
                                 : "_self"
                             }
@@ -818,8 +828,9 @@ const CourseAccess = () => {
                               )}
                             </div>
                             <div
-                              className={`${Role === "admin" ? "block" : "hidden"
-                                } relative`}
+                              className={`${
+                                Role === "admin" ? "block" : "hidden"
+                              } relative`}
                             >
                               <button
                                 onClick={(e) => {
@@ -880,15 +891,15 @@ const CourseAccess = () => {
                                     !userInfo?.courses?.find(
                                       (item) => item?.bundleId === course?._id
                                     )
-                                    ? `/bundle/payment/${course?._id}`
-                                    : `/courseAccess`
+                                  ? `/bundle/payment/${course?._id}`
+                                  : `/courseAccess`
                               }
                               target={
                                 Role === "user" &&
-                                  stateParams === "allCourses" &&
-                                  !myCourses?.find(
-                                    (item) => item?._id === course?._id
-                                  )
+                                stateParams === "allCourses" &&
+                                !myCourses?.find(
+                                  (item) => item?._id === course?._id
+                                )
                                   ? "_blank"
                                   : "_self"
                               }
@@ -960,8 +971,9 @@ const CourseAccess = () => {
                                 )}
                               </div>
                               <div
-                                className={`${Role === "admin" ? "block" : "hidden"
-                                  } relative`}
+                                className={`${
+                                  Role === "admin" ? "block" : "hidden"
+                                } relative`}
                               >
                                 <button
                                   onClick={(e) => {

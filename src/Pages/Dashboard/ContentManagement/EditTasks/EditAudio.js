@@ -73,29 +73,44 @@ const EditAudio = () => {
       )
       .then((response) => {
         setAudioData(response?.data);
-        setSelectedBatches(response?.data?.batches);
-        setSkillParameterData(response?.data?.skillParameterData);
-        setEarningParameterData(response?.data?.earningParameterData);
-        setTaskDrip(response?.data?.taskDrip);
-        setEnableDownload(response?.data?.enableDownload);
+        setSelectedBatches(
+          response?.data?.batches ? response?.data?.batches : selectedBatches
+        );
+        setSkillParameterData(
+          response?.data?.skillParameterData
+            ? response?.data?.skillParameterData
+            : skillParameterData
+        );
+        setEarningParameterData(
+          response?.data?.earningParameterData
+            ? response?.data?.earningParameterData
+            : earningParameterData
+        );
+        setTaskDrip(
+          response?.data?.taskDrip ? response?.data?.taskDrip : taskDrip
+        );
+        setEnableDownload(
+          response?.data?.enableDownload
+            ? response?.data?.enableDownload
+            : enableDownload
+        );
       });
   }, [id]);
 
   useEffect(() => {
-    if (audioData?.courseId)
+    if (audioData?.chapterId)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${audioData?.courseId}`
+          `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/${audioData?.chapterId}`
         )
-        .then((response) => {
-          setCourse(response?.data);
-        });
+        .then((res) => setChapter(res?.data))
+        .catch((error) => console.error(error));
   }, [audioData]);
 
   useEffect(() => {
     const fetchData = {
       organizationId: userInfo?.organizationId,
-      courseId: audioData?.courseId,
+      courseId: chapter?.courseId,
     };
     axios
       .get(
@@ -114,19 +129,12 @@ const EditAudio = () => {
 
     axios
       .post(
-        `${process.env.REACT_APP_BACKEND_API}/itemCategoryByCourseId`,
+        `${process.env.REACT_APP_SERVER_API}/api/v1/earningCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
         fetchData
       )
       .then((res) => setEarningCategories(res?.data))
       .catch((error) => console.error(error));
-
-    axios
-      .get(
-        `${process.env.REACT_APP_BACKEND_API}/chapter/${audioData?.chapterId}`
-      )
-      .then((res) => setChapter(res?.data))
-      .catch((error) => console.error(error));
-  }, [audioData, userInfo]);
+  }, [chapter, userInfo]);
 
   useEffect(() => {
     axios
