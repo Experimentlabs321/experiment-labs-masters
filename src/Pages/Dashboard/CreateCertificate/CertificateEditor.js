@@ -1118,26 +1118,6 @@ const CertificateEditor = ({
                       }}
                     />
                     <span className="ml-1">Bold</span>
-                    {/* <input
-                      type="number"
-                      id={"certificateTextFontWeight" + index}
-                      name={"certificateTextFontWeight" + index}
-                      className="mt-1 p-2 border w-full rounded-md"
-                      value={content.contentFontWeight}
-                      onChange={async (e) => {
-                        // e.preventDefault();
-                        const value = e.target.value;
-                        const updatedCertificateTextContents = [
-                          ...certificateTextContents,
-                        ];
-                        updatedCertificateTextContents[
-                          index
-                        ].contentFontWeight = await value;
-                        setCertificateTextContents(
-                          updatedCertificateTextContents
-                        );
-                      }}
-                    /> */}
                   </div>
 
                   <div className="mb-4">
@@ -1431,6 +1411,37 @@ const CertificateEditor = ({
                     setCount(count + 1);
                   }}
                 />
+              </div>
+
+              <div className="mb-4">
+                <label
+                  htmlFor={"issuingDateFontWeight"}
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Issuing date font weight
+                </label>
+                <input
+                  type="radio"
+                  checked={showIssuingDate?.contentFontWeight === "normal"}
+                  value={"normal"}
+                  onChange={async (e) => {
+                    // e.preventDefault();
+                    showIssuingDate.contentFontWeight = await e.target.value;
+                    setCount(count + 1);
+                  }}
+                />
+                <span className="ml-1 mr-3">Normal</span>
+                <input
+                  type="radio"
+                  checked={showIssuingDate?.contentFontWeight === "bold"}
+                  value={"bold"}
+                  onChange={async (e) => {
+                    // e.preventDefault();
+                    showIssuingDate.contentFontWeight = await e.target.value;
+                    setCount(count + 1);
+                  }}
+                />
+                <span className="ml-1">Bold</span>
               </div>
 
               <div className="mb-4">

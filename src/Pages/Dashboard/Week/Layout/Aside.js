@@ -53,7 +53,6 @@ const Aside = ({
 
   const asideRef = useRef(null); // Create a ref for the aside element
 
-
   // Effect for handling clicks outside of the aside
   useEffect(() => {
     function handleClickOutside(event) {
@@ -64,8 +63,6 @@ const Aside = ({
         }
       }
     }
-
-
 
     // Add click event listener
     document.addEventListener("mousedown", handleClickOutside);
@@ -220,8 +217,9 @@ const Aside = ({
     <aside
       ref={asideRef}
       id="sidebar"
-      className={`fixed ${toggleButton ? " lg:flex" : "hidden"
-        } z-20 h-full top-0 bg-[#141414] shadow-lg left-0  flex-shrink-0 flex-col w-[324px] transition duration-500 ease-in-out delay-150`}
+      className={`fixed ${
+        toggleButton ? " lg:flex" : "hidden"
+      } z-20 h-full top-0 bg-[#141414] shadow-lg left-0  flex-shrink-0 flex-col w-[324px] transition duration-500 ease-in-out delay-150`}
       aria-label="Sidebar"
     >
       <div className=" flex-1 flex flex-col min-h-0 pt-0">
@@ -272,7 +270,7 @@ const Aside = ({
               {chapters?.map((item, index) => {
                 const chapterIndex = index;
                 return (
-                  <li key={item?._id} className="sortable-chapter">
+                  <li key={item?._id} className="">
                     <div>
                       <div
                         onClick={() => setOpenTopic(item?.chapterName)}
@@ -378,8 +376,9 @@ const Aside = ({
                         </h1>
                       </div>
                       <div
-                        className={`overflow-auto max-h-[calc(100vh-200px)] lg:overflow-hidden ${openTopic === item?.chapterName ? "" : "hidden"
-                          } sub-items`}
+                        className={` ${
+                          openTopic === item?.chapterName ? "" : "hidden"
+                        } sub-items`}
                       >
                         {Role === "admin" &&
                           item?.tasks?.map((task, index) => (
@@ -392,19 +391,21 @@ const Aside = ({
                                   JSON.stringify(task)
                                 );
                               }}
-                              className={`${openTask?.taskId === task?.taskId
-                                ? "bg-[#FFFDCF] border-[#3E4DAC] border-l-[12px] pl-[8px]"
-                                : "pl-[20px]"
-                                }  text-white font-normal flex items-center justify-between pr-[10px] py-[13px] group cursor-pointer`}
+                              className={`${
+                                openTask?.taskId === task?.taskId
+                                  ? "bg-[#FFFDCF] border-[#3E4DAC] border-l-[12px] pl-[8px]"
+                                  : "pl-[20px]"
+                              }  text-white font-normal flex items-center justify-between pr-[10px] py-[13px] group cursor-pointer`}
                             >
                               <div className="flex items-center">
                                 <div className="min-w-[40px] max-w-[40px] min-h-[40px] max-h-[40px] text-black flex items-center justify-center rounded-full ">
                                   {task?.taskType === "Reading" && (
                                     <img
-                                      className={`${openTask?.taskId === task?.taskId
-                                        ? "border-black"
-                                        : "border-white"
-                                        }  border p-[5px] rounded-full `}
+                                      className={`${
+                                        openTask?.taskId === task?.taskId
+                                          ? "border-black"
+                                          : "border-white"
+                                      }  border p-[5px] rounded-full `}
                                       src={
                                         openTask?.taskId === task?.taskId
                                           ? ReadingActive
@@ -415,10 +416,11 @@ const Aside = ({
                                   )}
                                   {task?.taskType === "Assignment" && (
                                     <img
-                                      className={`${openTask?.taskId === task?.taskId
-                                        ? "border-black"
-                                        : "border-white"
-                                        }  border p-[5px] rounded-full `}
+                                      className={`${
+                                        openTask?.taskId === task?.taskId
+                                          ? "border-black"
+                                          : "border-white"
+                                      }  border p-[5px] rounded-full `}
                                       src={
                                         openTask?.taskId === task?.taskId
                                           ? AssignmentActive
@@ -429,10 +431,11 @@ const Aside = ({
                                   )}
                                   {task?.taskType === "Classes" && (
                                     <img
-                                      className={`${openTask?.taskId === task?.taskId
-                                        ? "border-black"
-                                        : "border-white"
-                                        }  border p-[5px] rounded-full `}
+                                      className={`${
+                                        openTask?.taskId === task?.taskId
+                                          ? "border-black"
+                                          : "border-white"
+                                      }  border p-[5px] rounded-full `}
                                       src={
                                         openTask?.taskId === task?.taskId
                                           ? ClassesActive
@@ -443,10 +446,11 @@ const Aside = ({
                                   )}
                                   {task?.taskType === "Quiz" && (
                                     <img
-                                      className={`${openTask?.taskId === task?.taskId
-                                        ? "border-black"
-                                        : "border-white"
-                                        }  border p-[5px] rounded-full `}
+                                      className={`${
+                                        openTask?.taskId === task?.taskId
+                                          ? "border-black"
+                                          : "border-white"
+                                      }  border p-[5px] rounded-full `}
                                       src={
                                         openTask?.taskId === task?.taskId
                                           ? QuizActive
@@ -457,10 +461,11 @@ const Aside = ({
                                   )}
                                   {task?.taskType === "Live Test" && (
                                     <img
-                                      className={`${openTask?.taskId === task?.taskId
-                                        ? "border-black"
-                                        : "border-white"
-                                        }  border p-[5px] rounded-full `}
+                                      className={`${
+                                        openTask?.taskId === task?.taskId
+                                          ? "border-black"
+                                          : "border-white"
+                                      }  border p-[5px] rounded-full `}
                                       src={
                                         openTask?.taskId === task?.taskId
                                           ? LiveTestActive
@@ -471,10 +476,11 @@ const Aside = ({
                                   )}
                                   {task?.taskType === "Video" && (
                                     <img
-                                      className={`${openTask?.taskId === task?.taskId
-                                        ? "border-black"
-                                        : "border-white"
-                                        }  border p-[5px] rounded-full `}
+                                      className={`${
+                                        openTask?.taskId === task?.taskId
+                                          ? "border-black"
+                                          : "border-white"
+                                      }  border p-[5px] rounded-full `}
                                       src={
                                         openTask?.taskId === task?.taskId
                                           ? VideoActive
@@ -485,10 +491,11 @@ const Aside = ({
                                   )}
                                   {task?.taskType === "Audio" && (
                                     <img
-                                      className={`${openTask?.taskId === task?.taskId
-                                        ? "border-black"
-                                        : "border-white"
-                                        }  border p-[5px] rounded-full `}
+                                      className={`${
+                                        openTask?.taskId === task?.taskId
+                                          ? "border-black"
+                                          : "border-white"
+                                      }  border p-[5px] rounded-full `}
                                       src={
                                         openTask?.taskId === task?.taskId
                                           ? AudioActive
@@ -499,10 +506,11 @@ const Aside = ({
                                   )}
                                   {task?.taskType === "Files" && (
                                     <img
-                                      className={`${openTask?.taskId === task?.taskId
-                                        ? "border-black"
-                                        : "border-white"
-                                        }  border p-[5px] rounded-full `}
+                                      className={`${
+                                        openTask?.taskId === task?.taskId
+                                          ? "border-black"
+                                          : "border-white"
+                                      }  border p-[5px] rounded-full `}
                                       src={
                                         openTask?.taskId === task?.taskId
                                           ? FilesActive
@@ -513,10 +521,11 @@ const Aside = ({
                                   )}
                                   {task?.taskType === "Schedule" && (
                                     <img
-                                      className={`${openTask?.taskId === task?.taskId
-                                        ? "border-black"
-                                        : "border-white"
-                                        }  border p-[5px] rounded-full `}
+                                      className={`${
+                                        openTask?.taskId === task?.taskId
+                                          ? "border-black"
+                                          : "border-white"
+                                      }  border p-[5px] rounded-full `}
                                       src={
                                         openTask?.taskId === task?.taskId
                                           ? calendar
@@ -530,19 +539,21 @@ const Aside = ({
                                   className={`text-white ml-3 text-[18px] font-[500]  `}
                                 >
                                   <span
-                                    className={`mr-[5px] ${openTask?.taskId === task?.taskId
-                                      ? "text-black"
-                                      : "text-white"
-                                      } `}
+                                    className={`mr-[5px] ${
+                                      openTask?.taskId === task?.taskId
+                                        ? "text-black"
+                                        : "text-white"
+                                    } `}
                                   >
                                     {/* Task {index + 1}:  */}
                                     {task?.taskType}:
                                   </span>{" "}
                                   <span
-                                    className={`mr-[22px] ${openTask?.taskId === task?.taskId
-                                      ? "text-[#3E4DAC]"
-                                      : "text-[#A4B0FF]"
-                                      }  `}
+                                    className={`mr-[22px] ${
+                                      openTask?.taskId === task?.taskId
+                                        ? "text-[#3E4DAC]"
+                                        : "text-[#A4B0FF]"
+                                    }  `}
                                   >
                                     {task?.taskName}
                                   </span>
@@ -630,23 +641,25 @@ const Aside = ({
                                   } else
                                     toast.error("Complete the Previous Task");
                                 }}
-                                className={`${openTask?.taskId === task?.taskId
-                                  ? "bg-[#FFFDCF] border-[#3E4DAC] border-l-[12px] pl-[8px]"
-                                  : "pl-[20px]"
-                                  }  text-white font-normal flex items-center justify-between pr-[10px] py-[13px] group cursor-pointer`}
+                                className={`${
+                                  openTask?.taskId === task?.taskId
+                                    ? "bg-[#FFFDCF] border-[#3E4DAC] border-l-[12px] pl-[8px]"
+                                    : "pl-[20px]"
+                                }  text-white font-normal flex items-center justify-between pr-[10px] py-[13px] group cursor-pointer`}
                               >
                                 <div className="flex items-center">
                                   <div className="min-w-[40px] max-w-[40px] min-h-[40px] max-h-[40px] text-black flex items-center justify-center rounded-full ">
                                     {task?.taskType === "Reading" && (
                                       <img
-                                        className={`${openTask?.taskId === task?.taskId
-                                          ? "border-black"
-                                          : "border-white"
-                                          }  border p-[5px] rounded-full `}
+                                        className={`${
+                                          openTask?.taskId === task?.taskId
+                                            ? "border-black"
+                                            : "border-white"
+                                        }  border p-[5px] rounded-full `}
                                         src={
                                           openTask?.taskId === task?.taskId
                                             ? (isPreviousTaskCompleted &&
-                                              isPrevChapterCompleted) ||
+                                                isPrevChapterCompleted) ||
                                               !(
                                                 courseData?.enableDrip ||
                                                 task?.taskDrip
@@ -654,27 +667,28 @@ const Aside = ({
                                               ? ReadingActive
                                               : lock
                                             : (isPreviousTaskCompleted &&
-                                              isPrevChapterCompleted) ||
+                                                isPrevChapterCompleted) ||
                                               !(
                                                 courseData?.enableDrip ||
                                                 task?.taskDrip
                                               )
-                                              ? Reading
-                                              : lock
+                                            ? Reading
+                                            : lock
                                         }
                                         alt="TaskIcon"
                                       />
                                     )}
                                     {task?.taskType === "Assignment" && (
                                       <img
-                                        className={`${openTask?.taskId === task?.taskId
-                                          ? "border-black"
-                                          : "border-white"
-                                          }  border p-[5px] rounded-full `}
+                                        className={`${
+                                          openTask?.taskId === task?.taskId
+                                            ? "border-black"
+                                            : "border-white"
+                                        }  border p-[5px] rounded-full `}
                                         src={
                                           openTask?.taskId === task?.taskId
                                             ? (isPreviousTaskCompleted &&
-                                              isPrevChapterCompleted) ||
+                                                isPrevChapterCompleted) ||
                                               !(
                                                 courseData?.enableDrip ||
                                                 task?.taskDrip
@@ -682,27 +696,28 @@ const Aside = ({
                                               ? AssignmentActive
                                               : lock
                                             : (isPreviousTaskCompleted &&
-                                              isPrevChapterCompleted) ||
+                                                isPrevChapterCompleted) ||
                                               !(
                                                 courseData?.enableDrip ||
                                                 task?.taskDrip
                                               )
-                                              ? Assignment
-                                              : lock
+                                            ? Assignment
+                                            : lock
                                         }
                                         alt="TaskIcon"
                                       />
                                     )}
                                     {task?.taskType === "Classes" && (
                                       <img
-                                        className={`${openTask?.taskId === task?.taskId
-                                          ? "border-black"
-                                          : "border-white"
-                                          }  border p-[5px] rounded-full `}
+                                        className={`${
+                                          openTask?.taskId === task?.taskId
+                                            ? "border-black"
+                                            : "border-white"
+                                        }  border p-[5px] rounded-full `}
                                         src={
                                           openTask?.taskId === task?.taskId
                                             ? (isPreviousTaskCompleted &&
-                                              isPrevChapterCompleted) ||
+                                                isPrevChapterCompleted) ||
                                               !(
                                                 courseData?.enableDrip ||
                                                 task?.taskDrip
@@ -710,27 +725,28 @@ const Aside = ({
                                               ? ClassesActive
                                               : lock
                                             : (isPreviousTaskCompleted &&
-                                              isPrevChapterCompleted) ||
+                                                isPrevChapterCompleted) ||
                                               !(
                                                 courseData?.enableDrip ||
                                                 task?.taskDrip
                                               )
-                                              ? Classes
-                                              : lock
+                                            ? Classes
+                                            : lock
                                         }
                                         alt="TaskIcon"
                                       />
                                     )}
                                     {task?.taskType === "Quiz" && (
                                       <img
-                                        className={`${openTask?.taskId === task?.taskId
-                                          ? "border-black"
-                                          : "border-white"
-                                          }  border p-[5px] rounded-full `}
+                                        className={`${
+                                          openTask?.taskId === task?.taskId
+                                            ? "border-black"
+                                            : "border-white"
+                                        }  border p-[5px] rounded-full `}
                                         src={
                                           openTask?.taskId === task?.taskId
                                             ? (isPreviousTaskCompleted &&
-                                              isPrevChapterCompleted) ||
+                                                isPrevChapterCompleted) ||
                                               !(
                                                 courseData?.enableDrip ||
                                                 task?.taskDrip
@@ -738,27 +754,28 @@ const Aside = ({
                                               ? QuizActive
                                               : lock
                                             : (isPreviousTaskCompleted &&
-                                              isPrevChapterCompleted) ||
+                                                isPrevChapterCompleted) ||
                                               !(
                                                 courseData?.enableDrip ||
                                                 task?.taskDrip
                                               )
-                                              ? Quiz
-                                              : lock
+                                            ? Quiz
+                                            : lock
                                         }
                                         alt="TaskIcon"
                                       />
                                     )}
                                     {task?.taskType === "Live Test" && (
                                       <img
-                                        className={`${openTask?.taskId === task?.taskId
-                                          ? "border-black"
-                                          : "border-white"
-                                          }  border p-[5px] rounded-full `}
+                                        className={`${
+                                          openTask?.taskId === task?.taskId
+                                            ? "border-black"
+                                            : "border-white"
+                                        }  border p-[5px] rounded-full `}
                                         src={
                                           openTask?.taskId === task?.taskId
                                             ? (isPreviousTaskCompleted &&
-                                              isPrevChapterCompleted) ||
+                                                isPrevChapterCompleted) ||
                                               !(
                                                 courseData?.enableDrip ||
                                                 task?.taskDrip
@@ -766,27 +783,28 @@ const Aside = ({
                                               ? LiveTestActive
                                               : lock
                                             : (isPreviousTaskCompleted &&
-                                              isPrevChapterCompleted) ||
+                                                isPrevChapterCompleted) ||
                                               !(
                                                 courseData?.enableDrip ||
                                                 task?.taskDrip
                                               )
-                                              ? LiveTest
-                                              : lock
+                                            ? LiveTest
+                                            : lock
                                         }
                                         alt="TaskIcon"
                                       />
                                     )}
                                     {task?.taskType === "Video" && (
                                       <img
-                                        className={`${openTask?.taskId === task?.taskId
-                                          ? "border-black"
-                                          : "border-white"
-                                          }  border p-[5px] rounded-full `}
+                                        className={`${
+                                          openTask?.taskId === task?.taskId
+                                            ? "border-black"
+                                            : "border-white"
+                                        }  border p-[5px] rounded-full `}
                                         src={
                                           openTask?.taskId === task?.taskId
                                             ? (isPreviousTaskCompleted &&
-                                              isPrevChapterCompleted) ||
+                                                isPrevChapterCompleted) ||
                                               !(
                                                 courseData?.enableDrip ||
                                                 task?.taskDrip
@@ -794,27 +812,28 @@ const Aside = ({
                                               ? VideoActive
                                               : lock
                                             : (isPreviousTaskCompleted &&
-                                              isPrevChapterCompleted) ||
+                                                isPrevChapterCompleted) ||
                                               !(
                                                 courseData?.enableDrip ||
                                                 task?.taskDrip
                                               )
-                                              ? Video
-                                              : lock
+                                            ? Video
+                                            : lock
                                         }
                                         alt="TaskIcon"
                                       />
                                     )}
                                     {task?.taskType === "Audio" && (
                                       <img
-                                        className={`${openTask?.taskId === task?.taskId
-                                          ? "border-black"
-                                          : "border-white"
-                                          }  border p-[5px] rounded-full `}
+                                        className={`${
+                                          openTask?.taskId === task?.taskId
+                                            ? "border-black"
+                                            : "border-white"
+                                        }  border p-[5px] rounded-full `}
                                         src={
                                           openTask?.taskId === task?.taskId
                                             ? (isPreviousTaskCompleted &&
-                                              isPrevChapterCompleted) ||
+                                                isPrevChapterCompleted) ||
                                               !(
                                                 courseData?.enableDrip ||
                                                 task?.taskDrip
@@ -822,27 +841,28 @@ const Aside = ({
                                               ? AudioActive
                                               : lock
                                             : (isPreviousTaskCompleted &&
-                                              isPrevChapterCompleted) ||
+                                                isPrevChapterCompleted) ||
                                               !(
                                                 courseData?.enableDrip ||
                                                 task?.taskDrip
                                               )
-                                              ? Audio
-                                              : lock
+                                            ? Audio
+                                            : lock
                                         }
                                         alt="TaskIcon"
                                       />
                                     )}
                                     {task?.taskType === "Files" && (
                                       <img
-                                        className={`${openTask?.taskId === task?.taskId
-                                          ? "border-black"
-                                          : "border-white"
-                                          }  border p-[5px] rounded-full `}
+                                        className={`${
+                                          openTask?.taskId === task?.taskId
+                                            ? "border-black"
+                                            : "border-white"
+                                        }  border p-[5px] rounded-full `}
                                         src={
                                           openTask?.taskId === task?.taskId
                                             ? (isPreviousTaskCompleted &&
-                                              isPrevChapterCompleted) ||
+                                                isPrevChapterCompleted) ||
                                               !(
                                                 courseData?.enableDrip ||
                                                 task?.taskDrip
@@ -850,27 +870,28 @@ const Aside = ({
                                               ? FilesActive
                                               : lock
                                             : (isPreviousTaskCompleted &&
-                                              isPrevChapterCompleted) ||
+                                                isPrevChapterCompleted) ||
                                               !(
                                                 courseData?.enableDrip ||
                                                 task?.taskDrip
                                               )
-                                              ? Files
-                                              : lock
+                                            ? Files
+                                            : lock
                                         }
                                         alt="TaskIcon"
                                       />
                                     )}
                                     {task?.taskType === "Schedule" && (
                                       <img
-                                        className={`${openTask?.taskId === task?.taskId
-                                          ? "border-black"
-                                          : "border-white"
-                                          }  border p-[5px] rounded-full `}
+                                        className={`${
+                                          openTask?.taskId === task?.taskId
+                                            ? "border-black"
+                                            : "border-white"
+                                        }  border p-[5px] rounded-full `}
                                         src={
                                           openTask?.taskId === task?.taskId
                                             ? (isPreviousTaskCompleted &&
-                                              isPrevChapterCompleted) ||
+                                                isPrevChapterCompleted) ||
                                               !(
                                                 courseData?.enableDrip ||
                                                 task?.taskDrip
@@ -878,13 +899,13 @@ const Aside = ({
                                               ? calendar
                                               : lock
                                             : (isPreviousTaskCompleted &&
-                                              isPrevChapterCompleted) ||
+                                                isPrevChapterCompleted) ||
                                               !(
                                                 courseData?.enableDrip ||
                                                 task?.taskDrip
                                               )
-                                              ? calendar
-                                              : lock
+                                            ? calendar
+                                            : lock
                                         }
                                         alt="TaskIcon"
                                       />
@@ -894,19 +915,21 @@ const Aside = ({
                                     className={`text-white ml-3 text-[18px] font-[500]  `}
                                   >
                                     <span
-                                      className={`mr-[5px] ${openTask?.taskId === task?.taskId
-                                        ? "text-black"
-                                        : "text-white"
-                                        } `}
+                                      className={`mr-[5px] ${
+                                        openTask?.taskId === task?.taskId
+                                          ? "text-black"
+                                          : "text-white"
+                                      } `}
                                     >
                                       {/* Task {index + 1}:  */}
                                       {task?.taskType}:
                                     </span>{" "}
                                     <span
-                                      className={`mr-[22px] ${openTask?.taskId === task?.taskId
-                                        ? "text-[#3E4DAC]"
-                                        : "text-[#A4B0FF]"
-                                        }  `}
+                                      className={`mr-[22px] ${
+                                        openTask?.taskId === task?.taskId
+                                          ? "text-[#3E4DAC]"
+                                          : "text-[#A4B0FF]"
+                                      }  `}
                                     >
                                       {task?.taskName}
                                     </span>

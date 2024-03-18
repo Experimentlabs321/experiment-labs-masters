@@ -65,7 +65,7 @@ const EditReading = () => {
   const [batchesData, setBatchesData] = useState([]);
   const [selectedBatches, setSelectedBatches] = useState([]);
   const [orgData, setOrgData] = useState({});
-  const [taskDrip, setTaskDrip] = useState();
+  const [taskDrip, setTaskDrip] = useState(false);
   const [enableDownload, setEnableDownload] = useState(false);
 
   useEffect(() => {
@@ -74,31 +74,48 @@ const EditReading = () => {
         `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/readings/taskId/${id}`
       )
       .then((response) => {
-        setReadingData(response?.data);
-        setReadingMaterial(response?.data?.readingMaterial);
-        setSelectedBatches(response?.data?.batches);
-        setSkillParameterData(response?.data?.skillParameterData);
-        setEarningParameterData(response?.data?.earningParameterData);
-        setTaskDrip(response?.data?.taskDrip);
-        setEnableDownload(response?.data?.enableDownload);
+        setReadingData(response?.data ? response?.data : {});
+        setReadingMaterial(
+          response?.data?.readingMaterial ? response?.data?.readingMaterial : ""
+        );
+        setSelectedBatches(
+          response?.data?.batches ? response?.data?.batches : []
+        );
+        setSkillParameterData(
+          response?.data?.skillParameterData
+            ? response?.data?.skillParameterData
+            : skillParameterData
+        );
+        setEarningParameterData(
+          response?.data?.earningParameterData
+            ? response?.data?.earningParameterData
+            : earningParameterData
+        );
+        setTaskDrip(
+          response?.data?.taskDrip ? response?.data?.taskDrip : taskDrip
+        );
+        setEnableDownload(
+          response?.data?.enableDownload
+            ? response?.data?.enableDownload
+            : enableDownload
+        );
       });
   }, [id]);
 
   useEffect(() => {
-    if (readingData?.courseId)
+    if (readingData?.chapterId)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${readingData?.courseId}`
+          `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/${readingData?.chapterId}`
         )
-        .then((response) => {
-          setCourse(response?.data);
-        });
+        .then((res) => setChapter(res?.data))
+        .catch((error) => console.error(error));
   }, [readingData]);
 
   useEffect(() => {
     const fetchData = {
       organizationId: userInfo?.organizationId,
-      courseId: readingData?.courseId,
+      courseId: chapter?.courseId,
     };
     axios
       .get(
@@ -122,25 +139,19 @@ const EditReading = () => {
       )
       .then((res) => setEarningCategories(res?.data))
       .catch((error) => console.error(error));
-
-    axios
-      .get(
-        `${process.env.REACT_APP_BACKEND_API}/chapter/${readingData?.chapterId}`
-      )
-      .then((res) => setChapter(res?.data))
-      .catch((error) => console.error(error));
-  }, [readingData, userInfo]);
+  }, [chapter, userInfo]);
 
   useEffect(() => {
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${readingData?.courseId}`
-      )
-      .then((response) => {
-        setBatchesData(response?.data);
-      })
-      .catch((error) => console.error(error));
-  }, [readingData]);
+    if (course?._id)
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${course?._id}`
+        )
+        .then((response) => {
+          setBatchesData(response?.data);
+        })
+        .catch((error) => console.error(error));
+  }, [course]);
 
   useEffect(() => {
     axios

@@ -311,6 +311,7 @@ const DownloadCertificate = () => {
                         }px`,
                         fontFamily: `${certificateTemplate?.showIssuingDate?.contentFontFamily}`,
                         color: `${certificateTemplate?.showIssuingDate?.contentColor}`,
+                        fontWeight: `${certificateTemplate?.showIssuingDate?.contentFontWeight}`,
                       }}
                     >
                       <br />
