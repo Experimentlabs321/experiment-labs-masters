@@ -1,6 +1,6 @@
 //SkillsImprovementEngine
 
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Layout from '../Layout';
 import Badge from '@mui/material/Badge';
 import SearchIcon from '@mui/icons-material/Search';
@@ -14,16 +14,42 @@ import utrashalt from '../../../assets/SkillsManagement/u_trash-alt.svg'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import img1 from '../../../assets/PointsRedemptions/uploadimg.png'
 import { Box, FormControlLabel, Slider, Stack, Switch, Typography, styled } from '@mui/material';
+import { AuthContext } from '../../../contexts/AuthProvider';
+import axios from 'axios';
 
 
 const SkillsImprovementEngine = () => {
-
+   const {userInfo} =useContext(AuthContext)
     const [proceed, setproceed] = useState(false);
     const [isOpenEvluationSubskill, setisOpenEvluationSubSkill] = useState(false);
     const [selectedOptionssubskill, setSelectedOptionssubskill] = useState([]);
     const [isOpenEvluationParameters, setisOpenEvluationParameters] = useState(false);
 
     const [selectedOptionsParameters, setSelectedOptionsParameters] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [itemDetails, setItemDetails] = useState();
+
+    useEffect(() => {
+        if (userInfo) {
+            setLoading(true);
+            axios
+                .get(
+                    `${process.env.REACT_APP_SERVER_API}/api/v1/language/getSkillsManagementSubDetailsByOrganizationAndName/skillsImprovementEngine/organizationsId/${userInfo?.organizationId}`
+                )
+                .then((response) => {
+
+                    console.log(response)
+                    setItemDetails(response?.data);
+
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
+        }
+        setLoading(false);
+    }, [userInfo]);
+    console.log(itemDetails)
+    
 
 
     //Sub Skill
@@ -300,7 +326,7 @@ const SkillsImprovementEngine = () => {
                 <div className='flex items-center justify-center gap-7 pt-20 lg:pt-10 '>
                     <div className="UserManagement origin-top-left rotate-[-0.51deg] text-zinc-500 text-[30px] font-medium">Skills Management</div>
                     <div className="Input w-[425px] h-16 relative bg-slate-100 rounded-[40px] shadow-inner">
-                        <input className="Search w-[329px] left-[32px] top-[12px] absolute text-zinc-500 text-[20px] font-light leading-10 bg-transparent focus:outline-0" placeholder='Search' />
+                        <input className="Search w-[329px] left-[32px] top-[12px] absolute text-zinc-500 text-[20px] font-light leading-10 bg-transparent focus:outline-0" placeholder={itemDetails?.search ? itemDetails?.search : "Search" } />
                         <div className="Button w-10 h-10 left-[373px] top-[12px] absolute bg-zinc-500 rounded-[32px] shadow">
                             <SearchIcon className="Search1 w-6 h-6 left-[8px] top-[8px] absolute text-white" />
                         </div>
@@ -312,7 +338,10 @@ const SkillsImprovementEngine = () => {
 
                 <div className='mx-12  mt-14 ' style={{ border: "1px solid #B7B7B7", borderRadius: "8px" }}>
                     <div className='ms-[28px]  '>
-                        <p className='font-semibold text-[#000000]  py-2'>Course Selection</p>
+                        <p className='font-semibold text-[#000000]  py-2'>
+                        {itemDetails?.courseSelection ? itemDetails?.courseSelection : "Course Selection" }
+                            
+                            </p>
                         <div className="custom-dropdown flex justify-between items-center gap-2  h-[40px] w-[23%] px-2 text-[#535353] font-normal"
                             style={{
                                 borderRadius: "8px",
@@ -326,11 +355,13 @@ const SkillsImprovementEngine = () => {
                                     type="checkbox"
 
                                 />
-                                <span>Select Categories</span>
+                                <span>
+                                {itemDetails?.selectCategories ? itemDetails?.selectCategories : "Select Categories" }
+                                    </span>
 
                             </div>
                             <div className="select-option" onClick={toggleDropdownCourseSelection}>
-                                <img src={arrow}></img>
+                                <img src={arrow} alt=''></img>
                                 <i className={`dropdown-arrow ${isOpenEvluationCourseSelection ? 'open' : ''}`}></i>
                             </div>
 
@@ -350,7 +381,9 @@ const SkillsImprovementEngine = () => {
                                         checked={selectedOptionsCourseSelection.length === 4}
                                         onChange={handleSelectAllCourseSelection}
                                     />
-                                    <label className='text-[#009EF9] text-xs font-medium' htmlFor="selectAll">Select All</label>
+                                    <label className='text-[#009EF9] text-xs font-medium' htmlFor="selectAll">
+                                    {itemDetails?.selectAll ? itemDetails?.selectAll : "Select All" }
+                                        </label>
                                 </div>
                                 <ul className="p-3 ">
 
@@ -409,7 +442,9 @@ const SkillsImprovementEngine = () => {
                     </div>
                     <div className='flex mx-6 items-center  '>
                         <div className='w-full'>
-                            <p className='font-semibold text-[#000000]  py-2'>Skill Category</p>
+                            <p className='font-semibold text-[#000000]  py-2'>
+                            {itemDetails?.skillCategory ? itemDetails?.skillCategory : "Skill Category" }
+                                </p>
                             <div className=" flex gap-2 h-[40px] w-[100%] px-2 text-[#535353] "
                              style={{
                                 borderRadius: "8px",
@@ -432,7 +467,9 @@ const SkillsImprovementEngine = () => {
                             </div>
                         </div>
                         <div className=' w-full ms-[26px]  '>
-                            <p className='font-semibold text-[#000000]  py-2'>Skill Name</p>
+                            <p className='font-semibold text-[#000000]  py-2'>
+                            {itemDetails?.skillName ? itemDetails?.skillName : "Skill Name" }
+                                </p>
                             <div className="custom-dropdown flex justify-between items-center gap-2 h-[40px] w-[100%] px-2 text-[#535353] font-normal"
                              style={{
                                 borderRadius: "8px",
@@ -447,11 +484,13 @@ const SkillsImprovementEngine = () => {
 
 
                                     />
-                                    <span>Select Categories</span>
+                                    <span>
+                                    {itemDetails?.selectCategories ? itemDetails?.selectCategories : "Select Categories" }
+                                        </span>
 
                                 </div>
                                 <div className="select-option" onClick={toggleDropdownSubSkill}>
-                                    <img src={arrow}></img>
+                                    <img src={arrow} alt=''/>
                                     <i className={`dropdown-arrow ${isOpenEvluationSubskill ? 'open' : ''}`}></i>
                                 </div>
 
@@ -471,7 +510,9 @@ const SkillsImprovementEngine = () => {
                                             checked={selectedOptionssubskill.length === 4}
                                             onChange={handleSelectAllsubskill}
                                         />
-                                        <label className='text-[#009EF9] text-xs font-medium' htmlFor="selectAll">Select All</label>
+                                        <label className='text-[#009EF9] text-xs font-medium' htmlFor="selectAll">
+                                        {itemDetails?.selectAll ? itemDetails?.selectAll : "Select All" }
+                                            </label>
                                     </div>
                                     <ul className="p-3 ">
 
@@ -530,7 +571,9 @@ const SkillsImprovementEngine = () => {
                         </div>
 
                         <div className=' w-full ms-[26px] '>
-                            <p className='font-semibold text-[#000000]  py-2'> Skill Parameters</p>
+                            <p className='font-semibold text-[#000000]  py-2'>
+                            {itemDetails?.skillParameters ? itemDetails?.skillParameters : "Skill Parameters" }
+                                 </p>
                             <div className="custom-dropdown flex justify-between items-center gap-2 h-[40px] w-[100%] px-2 text-[#535353] font-normal"
                              style={{
                                 borderRadius: "8px",
@@ -545,11 +588,13 @@ const SkillsImprovementEngine = () => {
 
 
                                     />
-                                    <span>Select Categories</span>
+                                    <span>
+                                    {itemDetails?.selectCategories ? itemDetails?.selectCategories : "Select Categories" }
+                                        </span>
 
                                 </div>
                                 <div className="select-option" onClick={toggleDropdownParameters}>
-                                    <img src={arrow}></img>
+                                    <img src={arrow} alt=''/>
                                     <i className={`dropdown-arrow ${isOpenEvluationParameters ? 'open' : ''}`}></i>
                                 </div>
 
@@ -569,7 +614,9 @@ const SkillsImprovementEngine = () => {
                                             checked={selectedOptionsParameters.length === 4}
                                             onChange={handleSelectAllParameters}
                                         />
-                                        <label className='text-[#009EF9] text-xs font-medium' htmlFor="selectAll">Select All</label>
+                                        <label className='text-[#009EF9] text-xs font-medium' htmlFor="selectAll">
+                                        {itemDetails?.selectAll ? itemDetails?.selectAll : "Select All" }
+                                            </label>
                                     </div>
                                     <ul className="p-3 ">
 

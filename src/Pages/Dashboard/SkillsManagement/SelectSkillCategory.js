@@ -13,6 +13,7 @@ const SelectSkillCategory = ({
   categoryThreeDot,
   setSkillCategories,
   selectedCourse,
+  itemDetails
 }) => {
   const { userInfo } = useContext(AuthContext);
   const [editCategoryOpen, setEditCategoryOpen] = useState(false);
@@ -21,8 +22,8 @@ const SelectSkillCategory = ({
     if (!selectedCourse?._id || !userInfo?.organizationId) {
       Swal.fire({
         icon: "warning",
-        title: "There is no course",
-        text: "Please create a course first!",
+        title:itemDetails?.thereIsNoCourse ? itemDetails?.thereIsNoCourse : "There is no course",
+        text:itemDetails?.pleaseCreateACourseFirst ? itemDetails?.pleaseCreateACourseFirst : "Please create a course first!",
       });
       return;
     }
@@ -36,7 +37,7 @@ const SelectSkillCategory = ({
     );
 
     if (newChapter?.data?.acknowledged) {
-      toast.success("Category added Successfully");
+      toast.success(itemDetails?.categoryAddedSuccessfully ? itemDetails?.categoryAddedSuccessfully : "Category added Successfully");
       setSkillCategories([
         ...skillCategories,
         { categoryName: `category ${skillCategories?.length + 1}` },
@@ -60,8 +61,8 @@ const SelectSkillCategory = ({
       setEditCategoryOpen(false);
       Swal.fire({
         icon: "error",
-        title: "Category already exist!",
-        text: "Please enter an unique category name!",
+        title: itemDetails?.categoryAlreadyExist ? itemDetails?.categoryAlreadyExist : "Category already exist!",
+        text: itemDetails?.pleaseEnterAnUniqueCategoryName ? itemDetails?.pleaseEnterAnUniqueCategoryName : "Please enter an unique category name!",
       });
       return;
     }
@@ -78,7 +79,7 @@ const SelectSkillCategory = ({
     console.log(updatedCategory);
 
     if (updatedCategory?.status === 200) {
-      toast.success("Week Updated Successfully");
+      toast.success(itemDetails?.weekUpdatedSuccessfully ? itemDetails?.weekUpdatedSuccessfully : "Week Updated Successfully");
       const updatedCategoriesArray = [...skillCategories];
       const selectedIndex = updatedCategoriesArray.findIndex(
         (category) =>
@@ -99,8 +100,8 @@ const SelectSkillCategory = ({
       courseId: selectedCourse?._id,
     };
     await Swal.fire({
-      title: "Are you sure?",
-      text: "Once deleted, the category will not recover!",
+      title:itemDetails?.areYouSure ? itemDetails?.areYouSure : "Are you sure?",
+      text: itemDetails?.onceDeletedTheCategoryWillNotRecover ? itemDetails?.onceDeletedTheCategoryWillNotRecover : "Once deleted, the category will not recover!",
       icon: "warning",
       buttons: true,
       showCancelButton: true,
@@ -126,7 +127,7 @@ const SelectSkillCategory = ({
           })
           .then((result) => {
             if (result?.acknowledged) {
-              toast.success("Category Deleted Successfully!");
+              toast.success(itemDetails?.categoryDeletedSuccessfully ? itemDetails?.categoryDeletedSuccessfully :"Category Deleted Successfully!");
               const remainingCategories = skillCategories.filter(
                 (category) => category?.categoryName !== name
               );
@@ -152,7 +153,8 @@ const SelectSkillCategory = ({
         borderRadius="15px"
         title={
           <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
-            Edit Category Name
+           { itemDetails?.editCategoryName ? itemDetails?.editCategoryName : "Edit Category Name" }
+            
           </p>
         }
       >
@@ -160,7 +162,7 @@ const SelectSkillCategory = ({
           onSubmit={handleEditCategoryName}
           className="px-[32px] py-[24px] "
         >
-          <h1 className=" text-[18px] font-[700] mb-[20px] ">Category Name</h1>
+          <h1 className=" text-[18px] font-[700] mb-[20px] ">{ itemDetails?.categoryName ? itemDetails?.categoryName : "Category Name" }</h1>
           <input
             type="text"
             id="categoryName"
@@ -172,7 +174,7 @@ const SelectSkillCategory = ({
           <div className="w-full flex items-center justify-center mt-[40px]">
             <input
               type="submit"
-              value="Update"
+              value={ itemDetails?.update ? itemDetails?.update : "Update" }
               className="py-[15px] px-[48px] cursor-pointer text-[20px] font-[700] rounded-[8px] bg-[#3E4DAC] text-white "
             />
           </div>
@@ -180,7 +182,8 @@ const SelectSkillCategory = ({
       </DialogLayout>
       {/* Edit category name end */}
       <h1 className=" text-[#737373] text-[24px] font-[500] mt-5 mb-2 ">
-        Select Skill Category
+      { itemDetails?.selectSkillCategory ? itemDetails?.selectSkillCategory : "Select Skill Category" }
+        
       </h1>
       <div className="flex flex-wrap gap-y-2 items-center">
         {skillCategories?.map((item, index) => (
@@ -230,7 +233,8 @@ const SelectSkillCategory = ({
                     }}
                     className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
                   >
-                    Edit Category Name
+                    { itemDetails?.editCategoryName ? itemDetails?.editCategoryName : "Edit Category Name" }
+                    
                   </li>
                   <li
                     className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
@@ -238,7 +242,8 @@ const SelectSkillCategory = ({
                       handleCategoryDelete(selectedSkillCategory?.categoryName);
                     }}
                   >
-                    Delete Category
+                    { itemDetails?.deleteCategory ? itemDetails?.deleteCategory : "Delete Category" }
+                    
                   </li>
                 </ul>
               )}
@@ -248,7 +253,8 @@ const SelectSkillCategory = ({
           <div
             className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
           >
-            Please Add Category...
+            { itemDetails?.pleaseAddCategory ? itemDetails?.pleaseAddCategory : "Please Add Category" }
+            ...
           </div>
         )}
         <button

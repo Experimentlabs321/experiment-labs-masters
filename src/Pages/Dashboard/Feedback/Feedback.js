@@ -48,7 +48,50 @@ const Feedback = () => {
     useState(false);
 
   const [currentPage, setCurrentPage] = useState("Live class Feedback");
+  const [loading, setLoading] = useState(false);
+  const [itemDetails, setItemDetails] = useState();
 
+  useEffect(() => {
+    if (userInfo) {
+      setLoading(true);
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/language/getItemDetailsByOrganizationAndName/feedback/organizationsId/${userInfo?.organizationId}`
+        )
+        .then((response) => {
+          setItemDetails(response?.data);
+
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+    setLoading(false);
+  }, [userInfo]);
+//console.log(itemDetails)
+
+const [itemFeedbackSettingDetails, setItemFeedbackSettingDetails] = useState();
+
+useEffect(() => {
+    if (userInfo) {
+        setLoading(true);
+        axios
+            .get(
+                `${process.env.REACT_APP_SERVER_API}/api/v1/language/getFeedbackSubDetailsByOrganizationAndName/feedbackSettings/organizationsId/${userInfo?.organizationId}`
+            )
+            .then((response) => {
+
+                console.log(response)
+                setItemFeedbackSettingDetails(response?.data);
+
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }
+    setLoading(false);
+}, [userInfo]);
+console.log(itemFeedbackSettingDetails)
   useEffect(() => {
     axios
       .get(
@@ -108,8 +151,8 @@ const Feedback = () => {
     };
     console.log(deleteData);
     await Swal.fire({
-      title: "Are you sure?",
-      text: "Once deleted, the item will not recover!",
+      title:itemFeedbackSettingDetails?.areYouSure ? itemFeedbackSettingDetails?.areYouSure : "Are you sure?",
+      text:itemFeedbackSettingDetails?.onceDeletedTheItemWillNotRecover ? itemFeedbackSettingDetails?.onceDeletedTheItemWillNotRecover : "Once deleted, the item will not recover!",
       icon: "warning",
       buttons: true,
       showCancelButton: true,
@@ -127,7 +170,7 @@ const Feedback = () => {
           .then((result) => {
             console.log(result);
             if (result?.ok) {
-              toast.success("Item Deleted Successfully!");
+              toast.success(itemFeedbackSettingDetails?.itemDeletedSuccessfully ? itemFeedbackSettingDetails?.itemDeletedSuccessfully :"Item Deleted Successfully!");
               const remainingItems =
                 selectedFeedbackCategory?.feedbackItems?.filter(
                   (item) => item?.feedbackItemName !== name
@@ -166,12 +209,13 @@ const Feedback = () => {
       <Layout>
         <div className="flex items-center justify-between container mx-auto px-4 gap-7 pt-20 lg:pt-10 ">
           <div className="UserManagement origin-top-left rotate-[-0.51deg] text-zinc-500 text-[30px] font-medium">
-            Feedback
+          {itemDetails?.feedback ? itemDetails?.feedback : "Feedback" }
+            
           </div>
           <div className="Input w-[425px] h-16 relative bg-slate-100 rounded-[40px] shadow-inner">
             <input
               className="Search w-[329px] left-[32px] top-[12px] absolute text-zinc-500 text-[20px] font-light leading-10 bg-transparent focus:outline-0"
-              placeholder="Search"
+              placeholder={itemDetails?.search ? itemDetails?.search : "Search" }
             />
             <div className="Button w-10 h-10 left-[373px] top-[12px] absolute bg-zinc-500 rounded-[32px] shadow">
               <SearchIcon className="Search1 w-6 h-6 left-[8px] top-[8px] absolute text-white" />
@@ -189,7 +233,8 @@ const Feedback = () => {
               : "bg-white border-2 border-gray-400 text-black"
               }`}
           >
-            Live class Feedback
+            {itemDetails?.liveClassFeedback ? itemDetails?.liveClassFeedback : "Live class Feedback" }
+            
           </button>
      {/*      <button
             onClick={() => setCurrentPage("Doubt class feedback")}
@@ -207,7 +252,8 @@ const Feedback = () => {
               : "bg-white border-2 border-gray-400 text-black"
               }`}
           >
-            Feedback Settings
+            {itemDetails?.feedbackSettings ? itemDetails?.feedbackSettings : "Feedback Settings" }
+            
           </button>
 
 
@@ -232,14 +278,16 @@ const Feedback = () => {
             <div className="px-4 mt-[40px]">
               <div>
                 <h1 className=" text-[#737373] text-[24px] font-[500] mb-2 ">
-                  Select Course
+                {itemFeedbackSettingDetails?.selectCourse ? itemFeedbackSettingDetails?.selectCourse : "Select Course" }
+                  
                 </h1>
                 <div className="flex flex-wrap">
                   {!courses[0] && (
                     <div
                       className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
                     >
-                      No course added yet!
+                      {itemFeedbackSettingDetails?.noCourseAddedYet ? itemFeedbackSettingDetails?.noCourseAddedYet : "No course added yet!" }
+                      
                     </div>
                   )}
                   {courses?.map((item, index) => (
@@ -258,7 +306,8 @@ const Feedback = () => {
               </div>
               <div className="flex items-center gap-5 mt-5">
                 <p className="text-xl font-medium text-zinc-500">
-                  Set Feedbacks :{" "}
+                {itemFeedbackSettingDetails?.setFeedbacks ? itemFeedbackSettingDetails?.setFeedbacks : "Set Feedbacks" }
+                   :{" "}
                 </p>
                 <button style={buttonStyle} onClick={handleToggle}>
                   {isToggled ? (
@@ -271,6 +320,7 @@ const Feedback = () => {
 
               {isToggled && (
                 <SelectFeedbackCategory
+                itemFeedbackSettingDetails={itemFeedbackSettingDetails}
                   setFeedbackCategories={setFeedbackCategories}
                   feedbackCategories={feedbackCategories}
                   selectedFeedbackCategory={selectedFeedbackCategory}
@@ -289,7 +339,7 @@ const Feedback = () => {
                       Swal.fire({
                         icon: "error",
                         title: "Oops...",
-                        text: "Please add at least one category!",
+                        text:itemFeedbackSettingDetails?.pleaseAddAtLeastOneCategory ? itemFeedbackSettingDetails?.pleaseAddAtLeastOneCategory : "Please add at least one category!",
                       });
                       return;
                     }
@@ -303,7 +353,8 @@ const Feedback = () => {
                     <AddSharpIcon sx={{ fontSize: 150 }} />
                   </div>
                   <div className="text-[#8F8F8F] pb-5  mt-[-10px] font-medium text-base">
-                    Add Details
+                  {itemFeedbackSettingDetails?.addDetails ? itemFeedbackSettingDetails?.addDetails : "Add Details" }
+                    
                   </div>
                 </div>
               )}
@@ -353,7 +404,8 @@ const Feedback = () => {
                             setIsOpenFeedbackItemAddForm(false);
                           }}
                         >
-                          Edit Item
+                          {itemFeedbackSettingDetails?.editItem ? itemFeedbackSettingDetails?.editItem : "Edit Item" }
+                          
                         </li>
                         <li
                           className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
@@ -361,7 +413,8 @@ const Feedback = () => {
                             handleItemDelete(item?.feedbackItemName)
                           }
                         >
-                          Delete Item
+                          {itemFeedbackSettingDetails?.deleteItem ? itemFeedbackSettingDetails?.deleteItem : "Delete Item" }
+                          
                         </li>
                       </ul>
                     )}
@@ -390,6 +443,7 @@ const Feedback = () => {
             </div>
             {isOpenFeedbackItemAddForm && (
               <AddFeedbackItemForm
+              itemFeedbackSettingDetails={itemFeedbackSettingDetails}
                 setIsOpenFeedbackItemAddForm={setIsOpenFeedbackItemAddForm}
                 UploadingImg={UploadingImg}
                 selectedFeedbackCategory={selectedFeedbackCategory}
@@ -404,6 +458,7 @@ const Feedback = () => {
 
             {isOpenFeedbackItemEditForm && selectedFeedback?.feedbackItemName && (
               <EditFeedbackItemForm
+              itemFeedbackSettingDetails={itemFeedbackSettingDetails}
                 selectedFeedback={selectedFeedback}
                 setIsOpenFeedbackItemEditForm={setIsOpenFeedbackItemEditForm}
                 setIsOpenFeedbackItemAddForm={setIsOpenFeedbackItemAddForm}

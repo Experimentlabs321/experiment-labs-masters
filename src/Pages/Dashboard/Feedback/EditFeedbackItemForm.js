@@ -18,6 +18,7 @@ const EditFeedbackItemForm = ({
   selectedCourse,
   userInfo,
   courseId,
+  itemFeedbackSettingDetails,
 }) => {
   console.log(selectedFeedback);
 
@@ -112,7 +113,7 @@ const EditFeedbackItemForm = ({
       );
 
       if (updatedItem?.data?.acknowledged) {
-        toast.success("Item Updated Successfully");
+        toast.success(itemFeedbackSettingDetails?.itemUpdatedSuccessfully ? itemFeedbackSettingDetails?.itemUpdatedSuccessfully :"Item Updated Successfully");
         const updateItemsArray = [...selectedFeedbackCategory?.feedbackItems];
         const selectedFeedbackIndex = updateItemsArray?.findIndex(
           (item) =>
@@ -143,8 +144,8 @@ const EditFeedbackItemForm = ({
         setIsOpenFeedbackItemEditForm(false);
         Swal.fire({
           icon: "error",
-          title: "Item already exist!",
-          text: "Please enter an unique item name!",
+          title:itemFeedbackSettingDetails?.itemAlreadyExist ? itemFeedbackSettingDetails?.itemAlreadyExist : "Item already exist!",
+          text:itemFeedbackSettingDetails?.pleaseEnterAnUniqueItemName ? itemFeedbackSettingDetails?.pleaseEnterAnUniqueItemName : "Please enter an unique item name!",
         });
         return;
       }
@@ -221,7 +222,7 @@ const EditFeedbackItemForm = ({
               ]);
               setIsOpenFeedbackItemEditForm(false);
               event.target.reset();
-              toast.success("Item Updated Successfully!");
+              toast.success(itemFeedbackSettingDetails?.itemUpdatedSuccessfully ? itemFeedbackSettingDetails?.itemUpdatedSuccessfully :"Item Updated Successfully!");
             }
           })
           .catch((error) => {
@@ -258,14 +259,16 @@ const EditFeedbackItemForm = ({
                     alt="UploadingImg"
                   />
                   <p className="mt-[-60px] text-base font-semibold text-[#fff] mb-4">
-                    Upload Icon
+                  {itemFeedbackSettingDetails?.uploadIcon ? itemFeedbackSettingDetails?.uploadIcon : "Upload Icon" }
+                    
                   </p>
 
                   <label
                     className="mt-[-16px] flex items-center px-5 py-2 rounded-lg bg-[#FFDB70] text-xs font-bold"
                     htmlFor="input-file-upload"
                   >
-                    Browser
+                    {itemFeedbackSettingDetails?.browser ? itemFeedbackSettingDetails?.browser : "Browser" }
+                    
                   </label>
                   <input
                     className="w-[1%]"
@@ -284,7 +287,8 @@ const EditFeedbackItemForm = ({
                 <div className="grid grid-cols-1 gap-x-6 gap-y-4 mt-2 sm:grid-cols-2 w-full">
                   <div>
                     <label className="text-[16px] font-[600]" htmlFor="case">
-                      Feedback Category
+                    {itemFeedbackSettingDetails?.feedbackCategory ? itemFeedbackSettingDetails?.feedbackCategory : "Feedback Category" }
+                      
                     </label>
                     <select
                       defaultValue={selectedFeedbackCategory?.categoryName}
@@ -310,7 +314,8 @@ const EditFeedbackItemForm = ({
 
                   <div>
                     <label className="text-[16px] font-[600]" htmlFor="case">
-                      Feedback Item Name
+                    {itemFeedbackSettingDetails?.itemRating ? itemFeedbackSettingDetails?.itemRating : "Feedback Item Name" }
+                      
                     </label>
                     <input
                       id="feedbackItemName"
@@ -323,7 +328,8 @@ const EditFeedbackItemForm = ({
 
                   <div className=" flex flex-col justify-center ">
                     <p className="font-semibold text-[#000000]  py-2">
-                      Item Rating
+                    {itemFeedbackSettingDetails?.browser ? itemFeedbackSettingDetails?.browser : "Item Rating" }
+                      
                     </p>
                     <div className=" flex gap-7 items-center  h-[40px]   text-[#535353] ">
                       <div>
@@ -366,7 +372,8 @@ const EditFeedbackItemForm = ({
 
                   <div className="flex flex-col justify-center">
                     <p className="font-semibold text-[#000000] py-2">
-                      Give Access
+                    {itemFeedbackSettingDetails?.giveAccess ? itemFeedbackSettingDetails?.giveAccess : "Give Access" }
+                      
                     </p>
                     <div className="flex gap-7 items-center h-[40px] text-[#535353]">
                       <div className="flex items-center">
@@ -387,7 +394,8 @@ const EditFeedbackItemForm = ({
                           htmlFor="ExecutionMentor"
                           className="peer-checked/draft: font-normal"
                         >
-                          Execution mentor
+                          {itemFeedbackSettingDetails?.executionMentor ? itemFeedbackSettingDetails?.executionMentor : "Execution mentor" }
+                          
                         </label>
                       </div>
 
@@ -409,7 +417,8 @@ const EditFeedbackItemForm = ({
                           htmlFor="ExpertMentor"
                           className="peer-checked/published: font-normal"
                         >
-                          Expert mentor
+                          {itemFeedbackSettingDetails?.expertMentor ? itemFeedbackSettingDetails?.expertMentor : "Expert mentor" }
+                          
                         </label>
                       </div>
                     </div>
@@ -418,7 +427,7 @@ const EditFeedbackItemForm = ({
                 <div className=" mt-5  ">
                   <input
                     type="submit"
-                    value="Update"
+                    value={itemFeedbackSettingDetails?.update ? itemFeedbackSettingDetails?.update : "Update" }
                     className="bg-[#2EB0FB] cursor-pointer rounded-lg p-2 font-semibold text-[#fff]"
                   />
                 </div>
