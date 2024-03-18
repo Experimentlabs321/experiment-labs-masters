@@ -397,6 +397,11 @@ const EditReading = () => {
                         Selected file: {selectedFile.name}
                       </p>
                     )}
+                    {readingData && (
+                      <p className=" text-center break-words max-w-full overflow-hidden">
+                        {readingData?.additionalFiles}
+                      </p>
+                    )}
                     {!selectedFile && (
                       <>
                         <div className="flex gap-2 justify-center w-full">
