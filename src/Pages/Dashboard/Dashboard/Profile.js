@@ -139,7 +139,6 @@ const Profile = () => {
       const allChapters = flattenedWeekDetails.flatMap(week => week);
       setChapters(allChapters); // Set chapters state once with all processed data
     };
-  
     fetchChapterDetails();
   }, [weekData]); // Ensure dependencies are correctly listed if there are more
   
