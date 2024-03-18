@@ -228,11 +228,28 @@ const WeekDetails = ({
       // Proceed with deletion
       Loading();
       if (chapters?.length === 1) {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "There is only one chapter. Delete is not possible!",
-        });
+        await axios
+          .put(
+            `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/deleteTasksInChapter/chapterId/${id}`
+          )
+          .then((result) => {
+            console.log(result);
+            if (result?.status === 200) {
+              Swal.fire({
+                icon: "warning",
+                title: "Tasks in chapter deleted!",
+                text: "There is only one chapter. Delete chapter is not possible!",
+              });
+              setCount(count + 1);
+            } else {
+              toast.error("Oops...! Something went wrong.");
+            }
+          })
+          .catch((error) => {
+            toast.error("Oops...! Something went wrong.");
+            console.error(error);
+            Loading().close();
+          });
         return;
       }
 

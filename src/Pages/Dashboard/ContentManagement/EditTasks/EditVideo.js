@@ -65,7 +65,7 @@ const EditVideo = () => {
   const [videoData, setVideoData] = useState({});
   const [openAddYoutubeLink, setOpenAddYoutubeLink] = useState(false);
   const [youtubeVideoLink, setYoutubeVideoLink] = useState(null);
-  const [taskDrip, setTaskDrip] = useState();
+  const [taskDrip, setTaskDrip] = useState(false);
 
   const [batchesData, setBatchesData] = useState([]);
   const [selectedBatches, setSelectedBatches] = useState([]);
@@ -78,42 +78,40 @@ const EditVideo = () => {
         `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/videos/taskId/${id}`
       )
       .then((response) => {
-        setVideoData(response?.data);
-        setSelectedBatches(response?.data?.batches);
-        setSkillParameterData(response?.data?.skillParameterData);
-        setEarningParameterData(response?.data?.earningParameterData);
-        setTaskDrip(response?.data?.taskDrip);
-        setEnableDownload(response?.data?.enableDownload);
+        setVideoData(response?.data ? response?.data : videoData);
+        setSelectedBatches(
+          response?.data?.batches ? response?.data?.batches : selectedBatches
+        );
+        setSkillParameterData(
+          response?.data?.skillParameterData
+            ? response?.data?.skillParameterData
+            : skillParameterData
+        );
+        setEarningParameterData(
+          response?.data?.earningParameterData
+            ? response?.data?.earningParameterData
+            : earningParameterData
+        );
+        setTaskDrip(
+          response?.data?.taskDrip ? response?.data?.taskDrip : taskDrip
+        );
+        setEnableDownload(
+          response?.data?.enableDownload
+            ? response?.data?.enableDownload
+            : enableDownload
+        );
       });
   }, [id]);
 
   useEffect(() => {
-    const fetchData = {
-      organizationId: userInfo?.organizationId,
-      courseId: videoData?.courseId,
-    };
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
-        fetchData
-      )
-      .then((res) => setSkillCategories(res?.data))
-      .catch((error) => console.error(error));
-    axios
-      .post(
-        `${process.env.REACT_APP_BACKEND_API}/itemCategoryByCourseId`,
-        fetchData
-      )
-      .then((res) => setEarningCategories(res?.data))
-      .catch((error) => console.error(error));
-
-    axios
-      .get(
-        `${process.env.REACT_APP_BACKEND_API}/chapter/${videoData?.chapterId}`
-      )
-      .then((res) => setChapter(res?.data))
-      .catch((error) => console.error(error));
-  }, [videoData, userInfo]);
+    if (videoData?.chapterId)
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/${videoData?.chapterId}`
+        )
+        .then((res) => setChapter(res?.data))
+        .catch((error) => console.error(error));
+  }, [videoData]);
 
   useEffect(() => {
     if (chapter?.courseId)
@@ -125,6 +123,35 @@ const EditVideo = () => {
           setCourse(response?.data);
         });
   }, [chapter]);
+
+  useEffect(() => {
+    const fetchData = {
+      organizationId: userInfo?.organizationId,
+      courseId: chapter?.courseId,
+    };
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
+        fetchData
+      )
+      .then((res) => setSkillCategories(res?.data))
+      .catch((error) => console.error(error));
+
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${fetchData?.courseId}`
+      )
+      .then((res) => setCourse(res?.data))
+      .catch((error) => console.error(error));
+
+    axios
+      .post(
+        `${process.env.REACT_APP_BACKEND_API}/itemCategoryByCourseId`,
+        fetchData
+      )
+      .then((res) => setEarningCategories(res?.data))
+      .catch((error) => console.error(error));
+  }, [chapter, userInfo]);
 
   useEffect(() => {
     axios

@@ -125,6 +125,7 @@ const CreateCertificate = () => {
     contentColor: "#000000",
     contentFontSize: 35,
     allowShowIssuingDate: "0",
+    contentFontWeight: "normal",
   });
   const currentDate = new Date();
 
@@ -380,6 +381,7 @@ const CreateCertificate = () => {
                         }px`,
                         fontFamily: `${showIssuingDate?.contentFontFamily}`,
                         color: `${showIssuingDate?.contentColor}`,
+                        fontWeight: `${showIssuingDate?.contentFontWeight}`,
                       }}
                     >
                       <br />
