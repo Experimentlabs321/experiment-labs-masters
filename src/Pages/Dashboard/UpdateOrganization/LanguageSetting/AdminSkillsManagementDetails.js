@@ -31,6 +31,7 @@ const AdminSkillsManagementDetails = () => {
     setAdminLoading(false);
   }, [userInfo]);
   console.log(itemDetails)
+
   const fetchContentDetails = () => {
     if (userInfo) {
       setAdminLoading(true);
@@ -56,6 +57,8 @@ const AdminSkillsManagementDetails = () => {
     const newShowSkillsManagementName = form.showSkillsManagement?.value;
     const newSkillsCreationsName = form.skillsCreations?.value;
     const newSkillsImprovementEngineName = form.skillsImprovementEngine?.value;
+    const removeSkillsManagement = form.removeSkillsManagement?.value;
+    const visibilityOfSkillsManagementEditedSuccessfully = form.visibilityOfSkillsManagementEditedSuccessfully?.value;
 
     const itemDetails = {
       skillsManagement: newSkillsManagementName,
@@ -63,6 +66,8 @@ const AdminSkillsManagementDetails = () => {
       showSkillsManagement: newShowSkillsManagementName,
       skillsCreations: newSkillsCreationsName,
       skillsImprovementEngine: newSkillsImprovementEngineName,
+      removeSkillsManagement: removeSkillsManagement,
+      visibilityOfSkillsManagementEditedSuccessfully: visibilityOfSkillsManagementEditedSuccessfully,
 
 
     };
@@ -108,12 +113,20 @@ const AdminSkillsManagementDetails = () => {
                 <input name='showSkillsManagement' defaultValue={itemDetails?.showSkillsManagement} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
               </div>
               <div className='flex justify-between items-center w-[100%] '>
+                <p className='text-lg font-medium'>Remove Skills Management</p>
+                <input name='removeSkillsManagement' defaultValue={itemDetails?.removeSkillsManagement} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+              </div>
+              <div className='flex justify-between items-center w-[100%] '>
                 <p className='text-lg font-medium'>Skills Creations</p>
                 <input name='skillsCreations' type='text' defaultValue={itemDetails?.skillsCreations} className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
               </div>
               <div className='flex justify-between items-center w-[100%] '>
                 <p className='text-lg font-medium'>Skills Improvement Engine</p>
                 <input name='skillsImprovementEngine' defaultValue={itemDetails?.skillsImprovementEngine} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+              </div>
+              <div className='flex justify-between items-center w-[100%] '>
+                <p className='text-lg font-medium'>Visibility of skills management edited successfully</p>
+                <input name='visibilityOfSkillsManagementEditedSuccessfully' defaultValue={itemDetails?.visibilityOfSkillsManagementEditedSuccessfully} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
               </div>
 
             </div>

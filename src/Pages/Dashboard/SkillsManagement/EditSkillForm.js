@@ -18,6 +18,7 @@ const EditSkillForm = ({
   userInfo,
   selectedSkill,
   setIsOpenSkillEditForm,
+  itemDetails
 }) => {
   useEffect(() => {
     setParameters(selectedSkill?.parameters);
@@ -43,7 +44,7 @@ const EditSkillForm = ({
         data
       );
       if (updatedSkill?.data?.acknowledged) {
-        toast.success("Skill Updated Successfully");
+        toast.success(itemDetails?.skillUpdatedSuccessfully ? itemDetails?.skillUpdatedSuccessfully : "Skill Updated Successfully");
         const updateSkillsArray = [...selectedSkillCategory?.skills];
         const selectedSkillIndex = updateSkillsArray?.findIndex(
           (skill) => skill?.skillName === selectedSkill?.skillName
@@ -132,7 +133,7 @@ const EditSkillForm = ({
               setParameters([]);
               setIsOpenSkillEditForm(false);
               event.target.reset();
-              toast.success("Skill Updated Successfully!");
+              toast.success(itemDetails?.skillUpdatedSuccessfully ? itemDetails?.skillUpdatedSuccessfully : "Skill Updated Successfully!");
             }
           })
           .catch((error) => {
@@ -172,14 +173,16 @@ const EditSkillForm = ({
                   alt="UploadingImg"
                 />
                 <p className="mt-[-38px] text-base font-semibold text-[#fff] mb-4">
-                  Upload Icon
+                  {itemDetails?.uploadIcon ? itemDetails?.uploadIcon : "Upload Icon"}
+                  
                 </p>
               </div>
               <div className="w-full pl-8">
                 <div className="grid grid-cols-1 gap-x-6 gap-y-4 mt-2 sm:grid-cols-2 w-full">
                   <div>
                     <label className="text-[16px] font-[600]" htmlFor="case">
-                      Skill Category
+                    {itemDetails?.skillCategory ? itemDetails?.skillCategory : "Skill Category"}
+                      
                     </label>
                     <select
                       defaultValue={selectedSkillCategory?.categoryName}
@@ -204,7 +207,8 @@ const EditSkillForm = ({
                   </div>
                   <div>
                     <label className="text-[16px] font-[600]" htmlFor="case">
-                      Skill Name
+                    {itemDetails?.skillName ? itemDetails?.skillName : "Skill Name"}
+                      
                     </label>
                     <input
                       id="skillName"
@@ -216,6 +220,7 @@ const EditSkillForm = ({
                   </div>
                   <>
                     <Parameters
+                    itemDetails={itemDetails}
                       parameters={parameters}
                       setParameters={setParameters}
                       skillCategories={skillCategories}
@@ -227,7 +232,9 @@ const EditSkillForm = ({
             </div>
             <div className="flex items-center text-center">
               <div>
-                <p className="w-[145px] text-[16px] font-[600]">Description</p>
+                <p className="w-[145px] text-[16px] font-[600]">
+                {itemDetails?.description ? itemDetails?.description : "Description"}
+                  </p>
               </div>
               <div class="w-full pl-8 mt-4 flex justify-center items-center col-span-2 ">
                 <textarea

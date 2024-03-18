@@ -32,6 +32,7 @@ const AdminLiveClassFeedbackDetails = () => {
     setAdminLoading(false);
   }, [userInfo]);
   console.log(itemDetails)
+
   const fetchContentDetails = () => {
     if (userInfo) {
       setAdminLoading(true);
@@ -60,6 +61,11 @@ const AdminLiveClassFeedbackDetails = () => {
     const newTotalStudentsName = form.totalStudents?.value;
     const newThereIsNoResultName = form.thereIsNoResult?.value;
     const newStudentsName = form.students?.value;
+    const noCourseAddedYet = form.noCourseAddedYet?.value;
+  
+    const allComments = form.allComments?.value;
+    const studentFeedback = form.studentFeedback?.value;
+
 
 
     const itemDetail = {
@@ -70,6 +76,11 @@ const AdminLiveClassFeedbackDetails = () => {
       totalStudents: newTotalStudentsName,
       thereIsNoResult: newThereIsNoResultName,
       students: newStudentsName,
+      noCourseAddedYet: noCourseAddedYet,
+      
+      allComments: allComments,
+      studentFeedback: studentFeedback,
+    
 
 
 
@@ -131,6 +142,20 @@ const AdminLiveClassFeedbackDetails = () => {
                 <p className='text-lg font-medium'>Students</p>
                 <input name='students' type='text' defaultValue={itemDetails?.students} className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
               </div>
+              <div className='flex justify-between items-center w-[100%]'>
+                <p className='text-lg font-medium'>No course added yet!</p>
+                <input name='noCourseAddedYet' type='text' defaultValue={itemDetails?.noCourseAddedYet} className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+              </div>
+             
+              <div className='flex justify-between items-center w-[100%]'>
+                <p className='text-lg font-medium'>All Comments</p>
+                <input name='allComments' type='text' defaultValue={itemDetails?.allComments} className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+              </div>
+              <div className='flex justify-between items-center w-[100%]'>
+                <p className='text-lg font-medium'>Student Feedback</p>
+                <input name='studentFeedback' type='text' defaultValue={itemDetails?.studentFeedback} className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+              </div>
+           
 
             </div>
             <div className="flex items-center justify-center mt-20 mb-10">
