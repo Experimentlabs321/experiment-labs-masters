@@ -97,7 +97,10 @@ const EmailTemplateRow = ({ title, description, active, templateId, template, fe
           <h1 className="text-xl font-semibold"> Available variables for use in email</h1>
           <p className="text-base from-neutral-700">{`For example if you want to use learner email, write like this: {{ learn email }}`}</p>
           <div className="flex gap-3">
-            <p className="text-base font-medium"> site_name</p>
+            {
+              template?.availableVariables?.map((variable,index)=><p className="text-base font-medium"> {variable}</p>)
+            }
+            {/* <p className="text-base font-medium"> site_name</p>
             <p className="text-base font-medium"> site_email</p>
             <p className="text-base font-medium"> learner_name</p>
             <p className="text-base font-medium"> learner_email</p>
@@ -106,7 +109,7 @@ const EmailTemplateRow = ({ title, description, active, templateId, template, fe
             <p className="text-base font-medium"> start_time</p>
             <p className="text-base font-medium"> end_time</p>
             <p className="text-base font-medium"> meeting_link</p>
-            <p className="text-base font-medium"> user_name</p>
+            <p className="text-base font-medium"> user_name</p> */}
           </div>
         </div>
       </div>}
