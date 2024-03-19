@@ -30,6 +30,7 @@ const AdminAssignmentsDetails = () => {
     setAdminLoading(false);
   }, [userInfo]);
   console.log(itemDetails)
+
   const fetchContentDetails = () => {
     if (userInfo) {
       setAdminLoading(true);
@@ -63,6 +64,7 @@ const AdminAssignmentsDetails = () => {
     const newViewName = form.view?.value;
     const newPendingName = form.pending?.value;
     const newEvaluatedName = form.evaluated?.value;
+    const submitted = form.submitted?.value;
    
 
 
@@ -81,6 +83,7 @@ const AdminAssignmentsDetails = () => {
       view: newViewName,
       pending: newPendingName,
       evaluated: newEvaluatedName,
+      submitted: submitted,
     
 
 
@@ -167,6 +170,10 @@ const AdminAssignmentsDetails = () => {
               <div className='flex justify-between items-center w-[100%]'>
                 <p className='text-lg font-medium'>Evaluated</p>
                 <input name='evaluated' defaultValue={itemDetails?.evaluated} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+              </div>
+              <div className='flex justify-between items-center w-[100%]'>
+                <p className='text-lg font-medium'>Submitted</p>
+                <input name='submitted' defaultValue={itemDetails?.submitted} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
               </div>
           
 

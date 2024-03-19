@@ -135,6 +135,27 @@ const ExecutionMentorSchedule = () => {
   const { agenda } = useParams();
   const { user, userInfo } = useContext(AuthContext);
   const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [itemDetails, setItemDetails] = useState();
+
+  useEffect(() => {
+    if (userInfo) {
+      setLoading(true);
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/language/getItemDetailsByOrganizationAndName/schedule/organizationsId/${userInfo?.organizationId}`
+        )
+        .then((response) => {
+          setItemDetails(response?.data);
+
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+    setLoading(false);
+  }, [userInfo]);
+  //console.log(itemDetails)
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACKEND_API}/events`)
@@ -226,7 +247,7 @@ const ExecutionMentorSchedule = () => {
         <div className="flex mt-24">
           <div className="w-full mx-10 mt-10">
             <div className="text-2xl font-semibold">
-              <p>My Schedule</p>
+              <p>{itemDetails?.mySchedule ? itemDetails?.mySchedule : "My Schedule"}</p>
             </div>
 
             {/* <div className="mt-10">

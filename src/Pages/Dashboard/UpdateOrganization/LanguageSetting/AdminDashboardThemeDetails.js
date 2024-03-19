@@ -34,6 +34,7 @@ const AdminDashboardThemeDetails = () => {
     setAdminLoading(false);
   }, [userInfo]);
   console.log(itemDetails)
+
   const fetchContentDetails = () => {
     if (userInfo) {
       setAdminLoading(true);
@@ -80,6 +81,16 @@ const AdminDashboardThemeDetails = () => {
     const addSchedule = form.addSchedule?.value;
     const removeSchedule = form.removeSchedule?.value;
     const save = form.save?.value;
+    const avatarBackground = form.avatarBackground?.value;
+    const weekOne = form.weekOne?.value;
+    const completed = form.completed?.value;
+    const postProgrammeSupport = form.postProgrammeSupport?.value;
+    const date = form.date?.value;
+    const time = form.time?.value;
+    const joinMeeting = form.joinMeeting?.value;
+    const courseType = form.courseType?.value;
+    const labJourneySection = form.labJourneySection?.value;
+    const schedule = form.schedule?.value;
 
     const itemDetail = {
 
@@ -108,6 +119,16 @@ const AdminDashboardThemeDetails = () => {
       addSchedule: addSchedule,
       removeSchedule: removeSchedule,
       save: save,
+      avatarBackground: avatarBackground,
+      weekOne: weekOne,
+      completed: completed,
+      postProgrammeSupport: postProgrammeSupport,
+      date: date,
+      time: time,
+      joinMeeting: joinMeeting,
+      courseType: courseType,
+      labJourneySection: labJourneySection,
+      schedule: schedule,
 
     };
     console.log(itemDetail)
@@ -243,6 +264,46 @@ const AdminDashboardThemeDetails = () => {
           <div className='flex justify-between items-center w-[100%]'>
             <p className='text-lg font-medium'>Save</p>
             <input name='save' defaultValue={itemDetails?.save} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+          </div>
+          <div className='flex justify-between items-center w-[100%]'>
+            <p className='text-lg font-medium'>Avatar Background</p>
+            <input name='avatarBackground' defaultValue={itemDetails?.avatarBackground} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+          </div>
+          <div className='flex justify-between items-center w-[100%]'>
+            <p className='text-lg font-medium'>Week 1</p>
+            <input name='weekOne' defaultValue={itemDetails?.weekOne} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+          </div>
+          <div className='flex justify-between items-center w-[100%]'>
+            <p className='text-lg font-medium'>Completed</p>
+            <input name='completed' defaultValue={itemDetails?.completed} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+          </div>
+          <div className='flex justify-between items-center w-[100%]'>
+            <p className='text-lg font-medium'>Post Programme Support</p>
+            <input name='postProgrammeSupport' defaultValue={itemDetails?.postProgrammeSupport} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+          </div>
+          <div className='flex justify-between items-center w-[100%]'>
+            <p className='text-lg font-medium'>Date</p>
+            <input name='date' defaultValue={itemDetails?.date} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+          </div>
+          <div className='flex justify-between items-center w-[100%]'>
+            <p className='text-lg font-medium'>Time</p>
+            <input name='time' defaultValue={itemDetails?.time} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+          </div>
+          <div className='flex justify-between items-center w-[100%]'>
+            <p className='text-lg font-medium'>Join Meeting</p>
+            <input name='joinMeeting' defaultValue={itemDetails?.joinMeeting} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+          </div>
+          <div className='flex justify-between items-center w-[100%]'>
+            <p className='text-lg font-medium'>Course Type</p>
+            <input name='courseType' defaultValue={itemDetails?.courseType} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+          </div>
+          <div className='flex justify-between items-center w-[100%]'>
+            <p className='text-lg font-medium'>Lab Journey Section</p>
+            <input name='labJourneySection' defaultValue={itemDetails?.labJourneySection} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+          </div>
+          <div className='flex justify-between items-center w-[100%]'>
+            <p className='text-lg font-medium'>Schedule</p>
+            <input name='schedule' defaultValue={itemDetails?.schedule} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
           </div>
   
   

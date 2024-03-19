@@ -21,9 +21,9 @@ const MentorAssignments = () => {
   const [filteredAssignments, setFilteredAssignment] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  console.log(selectedCourse)
+ /*  console.log(selectedCourse)
   console.log(selectedBatch)
-  console.log(selectedStatus)
+  console.log(selectedStatus) */
 
   const handleTabClick = (tab) => {
     setSelectedTab(tab);
@@ -33,6 +33,27 @@ const MentorAssignments = () => {
 
 
   const { userInfo } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
+  const [itemDetails, setItemDetails] = useState();
+
+  useEffect(() => {
+    if (userInfo) {
+      setLoading(true);
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/language/getItemDetailsByOrganizationAndName/assignments/organizationsId/${userInfo?.organizationId}`
+        )
+        .then((response) => {
+          setItemDetails(response?.data);
+
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+    setLoading(false);
+  }, [userInfo]);
+ // console.log(itemDetails)
 
   //console.log(userInfo);
 
@@ -54,12 +75,12 @@ const MentorAssignments = () => {
         setIsLoading(false)});
     setIsLoading(false);
   }, [userInfo]);
-  console.log(userInfo.organizationId);
+  //console.log(userInfo.organizationId);
 
   const filteredData = assignments.filter((item) => !item?.submitter.result);
   //setPendingEvaluations(filteredData.length)
 
-  console.log(assignments);
+  //console.log(assignments);
   // console.log(countSubmittedResult)
 
   /////////////////////////////
@@ -137,7 +158,7 @@ const MentorAssignments = () => {
         )
       );
     }
-    console.log(filtered);
+    //console.log(filtered);
 
     // Apply batch filter
     if (selectedBatch?._id) {
@@ -202,7 +223,7 @@ const MentorAssignments = () => {
 
 
               <div className="mt-10 text-[#F50000] text-lg font-medium">
-                <p>Pending evaluations - {filteredData.length}</p>
+                <p>{itemDetails?.pendingEvaluations ? itemDetails?.pendingEvaluations : "Pending evaluations"}  - {filteredData.length}</p>
               </div>
             </div>
             {/*  <div>
@@ -272,7 +293,7 @@ const MentorAssignments = () => {
                   setSelectedCourse(course);
                 }}
               >
-                <option value="">Select Course</option>
+                <option value="">{itemDetails?.selectCourse ? itemDetails?.selectCourse : "Select Course"}</option>
                 {courses?.map((course) => (
                   <option key={course._id} value={course._id}>
                     {course?.courseFullName}
@@ -290,7 +311,7 @@ const MentorAssignments = () => {
                   setSelectedBatch(batch);
                 }}
               >
-                <option value="">Select Batch</option>
+                <option value="">{itemDetails?.selectBatch ? itemDetails?.selectBatch : "Select Batch"}</option>
                 {batchesData?.map((batch) => (
                   <option key={batch?._id} value={batch?._id}>
                     {batch?.batchName}
@@ -305,13 +326,15 @@ const MentorAssignments = () => {
                   setSelectedStatus(e.currentTarget.value);
                 }}
               >
-                <option value="">Select Status</option>
+                <option value="">{itemDetails?.selectStatus ? itemDetails?.selectStatus : "Select Status"} </option>
 
                 <option value="Submitted">
-                  Submitted
+                {itemDetails?.submitted ? itemDetails?.submitted : "Submitted"}
+                  
                 </option>
                 <option value="Pending" >
-                  Pending
+                {itemDetails?.pending ? itemDetails?.pending : "Pending"}
+                  
                 </option>
 
               </select>
@@ -320,7 +343,8 @@ const MentorAssignments = () => {
                 className="bg-sky-500 hover:bg-opacity-70 text-white px-4 py-2 rounded"
                 onClick={applyFilters}
               >
-                Apply Filters
+                {itemDetails?.applyFilters ? itemDetails?.applyFilters : "Apply Filters"}
+                
               </button>
             </div>
 
@@ -388,11 +412,11 @@ const MentorAssignments = () => {
               <table className="min-w-full font-sans bg-white border border-gray-300">
                 <thead className="bg-gray-800 text-white sticky top-0">
                   <tr>
-                    <th className="py-3 px-6 border-b text-left">Student Name</th>
-                    <th className="py-3 px-6 border-b text-left">Assignment Name</th>
-                    <th className="py-3 px-6 border-b text-left">Submission Date</th>
-                    <th className="py-3 px-6 border-b text-center">Status</th>
-                    <th className="py-3 px-6 border-b text-left"> View Assignment</th>
+                    <th className="py-3 px-6 border-b text-left">{itemDetails?.studentName ? itemDetails?.studentName : "Student Name"}</th>
+                    <th className="py-3 px-6 border-b text-left"> {itemDetails?.assignmentName ? itemDetails?.assignmentName : "Assignment Name"}</th>
+                    <th className="py-3 px-6 border-b text-left">{itemDetails?.submissionDate ? itemDetails?.submissionDate : "Submission Date"}</th>
+                    <th className="py-3 px-6 border-b text-center">{itemDetails?.status ? itemDetails?.status : "Status"}</th>
+                    <th className="py-3 px-6 border-b text-left"> {itemDetails?.viewAssignment ? itemDetails?.viewAssignment : "View Assignment"} </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -417,11 +441,11 @@ const MentorAssignments = () => {
                           <td className="py-4 px-6 border-b text-left">
                             {assignment?.submitter?.result ? (
                               <span className="text-green font-semibold">
-                                &#x2713; Evaluated
+                                &#x2713; {itemDetails?.evaluated ? itemDetails?.evaluated : "Evaluated"} 
                               </span>
                             ) : (
                               <span className="text-red-600 font-semibold">
-                                &#x2717; Pending
+                                &#x2717; {itemDetails?.pending ? itemDetails?.pending : "Pending"} 
                               </span>
                             )}
                           </td>
@@ -431,7 +455,7 @@ const MentorAssignments = () => {
                               className="flex gap-2 bg-[#081765] hover:bg-opacity-70 text-[#fff] p-2 rounded-md mb-2 mt-3"
                             >
                               <img src={eye} alt="eye" />
-                              <p className="text-base font-normal">View</p>
+                              <p className="text-base font-normal">{itemDetails?.view ? itemDetails?.view : "View"}</p>
                             </Link>
                           </td>
                         </tr>
