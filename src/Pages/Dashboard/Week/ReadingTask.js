@@ -34,7 +34,10 @@ const ReadingTask = ({ taskData, count, setCount }) => {
     )
       setCompletionStatus(true);
     else setCompletionStatus(false);
-    if (taskData?.additionalFiles) {
+    if (
+      taskData?.additionalFiles &&
+      taskData?.additionalFiles !== additionalFile
+    ) {
       setAdditionalFile(
         `https://docs.google.com/viewer?url=${taskData?.additionalFiles}&embedded=true`
       );

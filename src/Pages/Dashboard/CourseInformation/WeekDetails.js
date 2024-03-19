@@ -714,7 +714,7 @@ const WeekDetails = ({
                             item?.status === "In Progress")
                       );
 
-                    const isPrevChapterCompleted =
+                    let isPrevChapterCompleted =
                       chapterIndex === 0 ||
                       chapters?.[chapterIndex - 1]?.tasks?.[
                         chapters?.[chapterIndex - 1]?.tasks?.length - 1
@@ -724,6 +724,8 @@ const WeekDetails = ({
                           (item?.status === "Completed" ||
                             item?.status === "In Progress")
                       );
+
+                    if (taskIndex !== 0) isPrevChapterCompleted = true;
 
                     return (
                       <div key={task?.taskId} className="relative">

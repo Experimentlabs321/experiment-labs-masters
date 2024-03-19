@@ -468,7 +468,7 @@ const Dashboard = () => {
                       {/* Add any additional content or components specific to user requester events */}
                     </div>
                   )
-                    : <p className="text-center font-medium text-sky-400 mt-5 ">No Upcoming Schudeled Events</p>}
+                    : <p className="text-center font-medium text-sky-400 mt-5 ">No Upcoming Scheduled Events</p>}
                 </div>)}
             </div>
           </div>

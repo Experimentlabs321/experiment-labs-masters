@@ -8,7 +8,6 @@ import axios from "axios";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Loading from "../../Shared/Loading/Loading";
 
-
 const Announcements = () => {
   const { user, userInfo } = useContext(AuthContext);
   const { announcements, unreadAnnouncements, fetchAnnouncements } =
@@ -28,7 +27,6 @@ const Announcements = () => {
         )
         .then((response) => {
           setItemDetails(response?.data);
-
         })
         .finally(() => {
           setLoading(false);
@@ -36,7 +34,7 @@ const Announcements = () => {
     }
     setLoading(false);
   }, [userInfo]);
-//  console.log(itemDetails)
+  //  console.log(itemDetails)
 
   const handleDate = (dateTime) => {
     const date = new Date(dateTime).toDateString();
@@ -80,24 +78,30 @@ const Announcements = () => {
   return (
     <div>
       <Layout>
-        <div className="p-4">
-          <div className="flex items-center justify-between h-24 ">
-            <h1 className="text-3xl font-bold"> {itemDetails?.announcements ? itemDetails?.announcements : "Announcements"}</h1>
+        <div className="p-4 mt-10 lg:mt-0">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-center lg:justify-between gap-1 h-32 lg:h-24 ">
+            <h1 className="text-3xl font-bold">
+              {" "}
+              {itemDetails?.announcements
+                ? itemDetails?.announcements
+                : "Announcements"}
+            </h1>
 
             {userInfo?.role === "admin" && (
               <button
                 onClick={() => setShowAnnouncementForm(true)}
                 className="bg-sky-500 text-white px-4 py-2 font-medium rounded hover:bg-sky-600 transition duration-300"
               >
-                {itemDetails?.publishAnnouncement ? itemDetails?.publishAnnouncement : "Publish Announcement"}
-                
+                {itemDetails?.publishAnnouncement
+                  ? itemDetails?.publishAnnouncement
+                  : "Publish Announcement"}
               </button>
             )}
           </div>
 
           {showAnnouncementForm && (
             <AdminAnnouncementForm
-            itemDetails={itemDetails}
+              itemDetails={itemDetails}
               setShowAnnouncementForm={setShowAnnouncementForm}
             />
           )}
@@ -106,7 +110,9 @@ const Announcements = () => {
           <DialogLayoutForFromControl
             title={
               <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
-               {itemDetails?.announcements ? itemDetails?.announcements : "Announcements"}
+                {itemDetails?.announcements
+                  ? itemDetails?.announcements
+                  : "Announcements"}
               </p>
             }
             width={800}
@@ -137,7 +143,8 @@ const Announcements = () => {
                       </span>
                     </small>
                     <div className=" bg-[#F7E7E9] text-[#E63946] w-fit h-fit py-[6px] px-[8px] rounded text-[12px] whitespace-nowrap font-bold uppercase">
-                      {displayingAnnouncement?.urgency} {itemDetails?.urgency ? itemDetails?.urgency : "URGENCY"} 
+                      {displayingAnnouncement?.urgency}{" "}
+                      {itemDetails?.urgency ? itemDetails?.urgency : "URGENCY"}
                     </div>
                   </div>
                   <div className=" my-2">
@@ -165,9 +172,9 @@ const Announcements = () => {
                       )
                         ? "bg-sky-50"
                         : "bg-[#f9fafb]"
-                    } cursor-pointer  grid grid-cols-12 mb-5 w-[700px] border border-[#E5E8EC] rounded-md`}
+                    } cursor-pointer  grid grid-cols-12 mb-5 lg:w-[700px] border border-[#E5E8EC] rounded-md`}
                   >
-                    <div className=" col-span-4 h-full bg-[#EAEAEA]">
+                    <div className=" col-span-12 lg:col-span-4 h-full overflow-hidden bg-[#EAEAEA]">
                       <img
                         onClick={() => {
                           setDisplayingAnnouncement(announcement);
@@ -175,11 +182,11 @@ const Announcements = () => {
                           handleMarkAsRead(announcement);
                         }}
                         alt="Announcement Img"
-                        className=" h-full mx-auto object-contain"
+                        className=" h-full mx-auto object-contain rounded-t-md lg:rounded-none"
                         src={announcement?.imageUrl}
                       />
                     </div>
-                    <div className=" col-span-8 my-[10px] mx-[20px]">
+                    <div className=" col-span-12 lg:col-span-8 my-[10px] mx-[20px]">
                       <div
                         onClick={() => {
                           setDisplayingAnnouncement(announcement);
@@ -194,7 +201,10 @@ const Announcements = () => {
                           <div
                             className={` bg-[#F7E7E9] text-[#E63946] w-fit h-fit py-[6px] px-[8px] mt-1 rounded text-[12px] whitespace-nowrap font-bold uppercase`}
                           >
-                            {announcement?.urgency} {itemDetails?.urgency ? itemDetails?.urgency : "URGENCY"}
+                            {announcement?.urgency}{" "}
+                            {itemDetails?.urgency
+                              ? itemDetails?.urgency
+                              : "URGENCY"}
                           </div>
                         </div>
                         <div className=" my-2">

@@ -200,6 +200,11 @@ const General = ({
                   ) : (
                     selectedFile && <p>Selected file: {selectedFile.name}</p>
                   )}
+                  {assignmentData && (
+                    <p className=" text-center break-words max-w-full overflow-hidden">
+                      {assignmentData?.file}
+                    </p>
+                  )}
                   {selectedFile && (
                     <p className=" text-center break-words max-w-full overflow-hidden">
                       Selected file: {selectedFile.name}
@@ -256,7 +261,7 @@ const General = ({
                       name={option?.batchName}
                       value={option?.batchName}
                       checked={selectedBatches?.find(
-                        (item) => item?.batchName === option?.batchName
+                        (item) => item?.batchId === option?._id
                       )}
                       onChange={(e) => handleOptionChangeBatch(e, option)}
                       className=" mb-1"

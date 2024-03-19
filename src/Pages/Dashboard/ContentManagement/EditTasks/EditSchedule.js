@@ -57,19 +57,6 @@ const EditSchedule = ({ taskData }) => {
   const [scheduleData, setScheduleData] = useState({});
 
   // Save current location before redirecting to Google sign-in
-
-  useEffect(() => {
-    axios
-      .get(
-        `${
-          process.env.REACT_APP_SERVER_API
-        }/api/v1/batches/courseId/${localStorage.getItem("courseId")}`
-      )
-      .then((response) => {
-        setBatchesData(response?.data);
-      })
-      .catch((error) => console.error(error));
-  }, [chapter?.courseId]);
   useEffect(() => {
     axios
       .get(
@@ -95,13 +82,13 @@ const EditSchedule = ({ taskData }) => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${scheduleData?.courseId}`
+        `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${chapter?.courseId}`
       )
       .then((response) => {
         setBatchesData(response?.data);
       })
       .catch((error) => console.error(error));
-  }, [scheduleData]);
+  }, [chapter]);
   const handleOptionChangeBatch = (event, optionValue) => {
     // const optionValue = event.target.value;
     const isChecked = event.target.checked;
