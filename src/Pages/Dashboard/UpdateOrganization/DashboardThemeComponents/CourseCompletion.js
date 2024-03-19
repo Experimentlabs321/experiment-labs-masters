@@ -6,7 +6,7 @@ import RoundAvatar from '../../Shared/RoundAvatar';
 import courseCompletionImg from "../../../../assets/Dashboard/person.png";
 
 
-const CourseCompletion = ({ isAvatar, courseCompletionText, courseCompletionBgColor, avatarBg, courseCompletionDesign }) => {
+const CourseCompletion = ({ isAvatar, courseCompletionText, courseCompletionBgColor, avatarBg, courseCompletionDesign,complete }) => {
     // console.log(courseCompletionDesign);
     return (
         <div className='my-5'>
@@ -28,7 +28,7 @@ const CourseCompletion = ({ isAvatar, courseCompletionText, courseCompletionBgCo
                             <h1 className="lg:text-[26px] text-[15px] font-[600] text-white text-center z-[1]">
                                 {courseCompletionText}{" "}
                                 <span className="text-[#FFDB70]">0%</span>{" "}
-                                complete
+                                {complete}
                             </h1>
                         </div>
                     </>
@@ -41,7 +41,7 @@ const CourseCompletion = ({ isAvatar, courseCompletionText, courseCompletionBgCo
                             <h1 className="lg:text-[26px] text-[15px] font-[600] text-white text-center z-[1]">
                                 {courseCompletionText}{" "}
                                 <span className="text-[#FFDB70]">0%</span>{" "}
-                                complete
+                                {complete}
                             </h1>
                         </div>
                     </>

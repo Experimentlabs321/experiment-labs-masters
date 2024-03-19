@@ -32,6 +32,7 @@ const AdminPaymentIntegrationDetails = () => {
     setAdminLoading(false);
   }, [userInfo]);
   console.log(itemDetails)
+
   const fetchContentDetails = () => {
     if (userInfo) {
       setAdminLoading(true);
@@ -56,12 +57,14 @@ const AdminPaymentIntegrationDetails = () => {
     const keyId = form.keyId?.value;
     const keySecret = form.keySecret?.value;
     const save = form.save?.value;
+    const updatedSuccessfully = form.updatedSuccessfully?.value;
 
     const itemDetail = {
 
       keyId: keyId,
       keySecret: keySecret,
       save: save,
+      updatedSuccessfully: updatedSuccessfully,
 
     };
     console.log(itemDetail)
@@ -104,6 +107,10 @@ const AdminPaymentIntegrationDetails = () => {
               <div className='flex justify-between items-center w-[100%]'>
                 <p className='text-lg font-medium'>Save</p>
                 <input name='save' defaultValue={itemDetails?.save} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+              </div>
+              <div className='flex justify-between items-center w-[100%]'>
+                <p className='text-lg font-medium'>Updated successfully</p>
+                <input name='updatedSuccessfully' defaultValue={itemDetails?.updatedSuccessfully} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
               </div>
 
 

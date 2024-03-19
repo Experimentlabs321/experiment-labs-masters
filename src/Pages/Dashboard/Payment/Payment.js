@@ -162,11 +162,11 @@ const Payment = () => {
         ], // Array of objects, each containing courseId and batchId
         coupon: coupon || "",
         couponId: selectOffer._id || "",
-        discountAmount: +couponDiscount || "",
+        discountAmount: Math.round(+couponDiscount) || "",
         email: data?.email,
         organizationId: organizationData?._id,
         organizationName: organizationData?.organizationName,
-        originalPrice: +selectedBatch?.price,
+        originalPrice: Math.round(+selectedBatch?.price),
         paidAmount: 0,
         userId: data?._id,
       };
@@ -210,7 +210,7 @@ const Payment = () => {
     } = await axios.post(
       `${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/checkout`,
       {
-        price: +(+selectedBatch.price - +couponDiscount),
+        price: Math.round(+(+selectedBatch.price - +couponDiscount)),
         paymentInstance: {
           key_id: organizationData?.paymentInstance?.key_id,
           key_secret: organizationData?.paymentInstance?.key_secret,
@@ -222,7 +222,7 @@ const Payment = () => {
 
     const options = {
       key: organizationData?.paymentInstance?.key_id,
-      amount: +order?.amount,
+      amount: Math.round(+order?.amount),
       key_secret: organizationData?.paymentInstance?.key_secret,
       currency: "INR",
       name: organizationData?.organizationName,
@@ -247,9 +247,9 @@ const Payment = () => {
         response.batchId = selectedBatch?._id;
         response.email = data?.email;
         response.userId = data?._id;
-        response.paidAmount = +order?.amount / 100;
-        response.originalPrice = +selectedBatch?.price;
-        response.discountAmount = +couponDiscount || "";
+        response.paidAmount = Math.round(+order?.amount / 100);
+        response.originalPrice = Math.round(+selectedBatch?.price);
+        response.discountAmount = Math.round(+couponDiscount) || "";
         response.couponId = selectOffer._id || "";
         response.coupon = coupon || "";
         response.organizationId = organizationData?._id;
@@ -671,7 +671,7 @@ const Payment = () => {
                                   Total Price
                                 </td>
                                 <td id="bundle-cost" className="py-2">
-                                  ₹{selectedBatch?.price || "N/A"}
+                                  ₹{ Math.round(selectedBatch?.price) || "N/A"}
                                 </td>
                               </tr>
                               <tr
@@ -683,7 +683,7 @@ const Payment = () => {
                                 <td>Coupon Discount</td>
                                 <td className="py-2" id="coupon-discount">
                                   ₹
-                                  {couponDiscount >= 0 ? couponDiscount : "N/A"}
+                                  {couponDiscount >= 0 ? Math.round(couponDiscount) : "N/A"}
                                 </td>
                               </tr>
                             </tbody>
@@ -693,7 +693,7 @@ const Payment = () => {
                                 <td className="py-2" id="total-to-be-paid">
                                   ₹
                                   {selectedBatch?.price
-                                    ? +selectedBatch?.price - +couponDiscount
+                                    ? Math.round(+selectedBatch?.price - +couponDiscount)
                                     : "N/A"}
                                 </td>
                               </tr>
@@ -709,9 +709,7 @@ const Payment = () => {
                           <p className="m-0">Net Payable amount</p>
                           <h4 className="m-0 text-2xl">
                             ₹
-                            {selectedBatch?.price
-                              ? +selectedBatch?.price - +couponDiscount
-                              : "N/A"}
+                            {selectedBatch?.price ? Math.round(+selectedBatch?.price - +couponDiscount) : "N/A"}
                           </h4>
                         </div>
                         <div>
