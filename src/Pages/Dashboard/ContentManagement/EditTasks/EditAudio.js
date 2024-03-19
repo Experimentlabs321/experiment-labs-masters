@@ -67,34 +67,35 @@ const EditAudio = () => {
   const [enableDownload, setEnableDownload] = useState(false);
 
   useEffect(() => {
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/audios/taskId/${id}`
-      )
-      .then((response) => {
-        setAudioData(response?.data);
-        setSelectedBatches(
-          response?.data?.batches ? response?.data?.batches : selectedBatches
-        );
-        setSkillParameterData(
-          response?.data?.skillParameterData
-            ? response?.data?.skillParameterData
-            : skillParameterData
-        );
-        setEarningParameterData(
-          response?.data?.earningParameterData
-            ? response?.data?.earningParameterData
-            : earningParameterData
-        );
-        setTaskDrip(
-          response?.data?.taskDrip ? response?.data?.taskDrip : taskDrip
-        );
-        setEnableDownload(
-          response?.data?.enableDownload
-            ? response?.data?.enableDownload
-            : enableDownload
-        );
-      });
+    if (id)
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/audios/taskId/${id}`
+        )
+        .then((response) => {
+          setAudioData(response?.data);
+          setSelectedBatches(
+            response?.data?.batches ? response?.data?.batches : selectedBatches
+          );
+          setSkillParameterData(
+            response?.data?.skillParameterData
+              ? response?.data?.skillParameterData
+              : skillParameterData
+          );
+          setEarningParameterData(
+            response?.data?.earningParameterData
+              ? response?.data?.earningParameterData
+              : earningParameterData
+          );
+          setTaskDrip(
+            response?.data?.taskDrip ? response?.data?.taskDrip : taskDrip
+          );
+          setEnableDownload(
+            response?.data?.enableDownload
+              ? response?.data?.enableDownload
+              : enableDownload
+          );
+        });
   }, [id]);
 
   useEffect(() => {
@@ -112,50 +113,54 @@ const EditAudio = () => {
       organizationId: userInfo?.organizationId,
       courseId: chapter?.courseId,
     };
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
-        fetchData
-      )
-      .then((res) => setSkillCategories(res?.data))
-      .catch((error) => console.error(error));
+    if (chapter?.courseId && userInfo?.organizationId) {
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
+          fetchData
+        )
+        .then((res) => setSkillCategories(res?.data))
+        .catch((error) => console.error(error));
 
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${fetchData?.courseId}`
-      )
-      .then((res) => setCourse(res?.data))
-      .catch((error) => console.error(error));
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${fetchData?.courseId}`
+        )
+        .then((res) => setCourse(res?.data))
+        .catch((error) => console.error(error));
 
-    axios
-      .post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/earningCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
-        fetchData
-      )
-      .then((res) => setEarningCategories(res?.data))
-      .catch((error) => console.error(error));
+      axios
+        .post(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/earningCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
+          fetchData
+        )
+        .then((res) => setEarningCategories(res?.data))
+        .catch((error) => console.error(error));
+    }
   }, [chapter, userInfo]);
 
   useEffect(() => {
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${audioData?.courseId}`
-      )
-      .then((response) => {
-        setBatchesData(response?.data);
-      })
-      .catch((error) => console.error(error));
-  }, [audioData]);
+    if (chapter?.courseId)
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${chapter?.courseId}`
+        )
+        .then((response) => {
+          setBatchesData(response?.data);
+        })
+        .catch((error) => console.error(error));
+  }, [chapter]);
 
   useEffect(() => {
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
-      )
-      .then((response) => {
-        setOrgData(response?.data);
-      })
-      .catch((error) => console.error(error));
+    if (userInfo?.organizationId)
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
+        )
+        .then((response) => {
+          setOrgData(response?.data);
+        })
+        .catch((error) => console.error(error));
   }, [userInfo]);
 
   const handleOptionChangeBatch = (event, optionValue) => {

@@ -69,40 +69,41 @@ const EditFiles = () => {
   const [enableDownload, setEnableDownload] = useState(false);
 
   useEffect(() => {
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/files/taskId/${id}`
-      )
-      .then((response) => {
-        setFileData(response?.data);
-        // setSelectedFile(response?.data?.additionalFiles);
-        setSelectedBatches(
-          response?.data?.batches ? response?.data?.batches : selectedBatches
-        );
-        setSkillParameterData(
-          response?.data?.skillParameterData
-            ? response?.data?.skillParameterData
-            : skillParameterData
-        );
-        setEarningParameterData(
-          response?.data?.earningParameterData
-            ? response?.data?.earningParameterData
-            : earningParameterData
-        );
-        setTaskDrip(
-          response?.data?.taskDrip ? response?.data?.taskDrip : taskDrip
-        );
-        setEnableDownload(
-          response?.data?.enableDownload
-            ? response?.data?.enableDownload
-            : enableDownload
-        );
-        setFileDescription(
-          response?.data?.fileDescription
-            ? response?.data?.fileDescription
-            : fileDescription
-        );
-      });
+    if (id)
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/files/taskId/${id}`
+        )
+        .then((response) => {
+          setFileData(response?.data);
+          // setSelectedFile(response?.data?.additionalFiles);
+          setSelectedBatches(
+            response?.data?.batches ? response?.data?.batches : selectedBatches
+          );
+          setSkillParameterData(
+            response?.data?.skillParameterData
+              ? response?.data?.skillParameterData
+              : skillParameterData
+          );
+          setEarningParameterData(
+            response?.data?.earningParameterData
+              ? response?.data?.earningParameterData
+              : earningParameterData
+          );
+          setTaskDrip(
+            response?.data?.taskDrip ? response?.data?.taskDrip : taskDrip
+          );
+          setEnableDownload(
+            response?.data?.enableDownload
+              ? response?.data?.enableDownload
+              : enableDownload
+          );
+          setFileDescription(
+            response?.data?.fileDescription
+              ? response?.data?.fileDescription
+              : fileDescription
+          );
+        });
   }, [id]);
 
   useEffect(() => {
@@ -120,20 +121,22 @@ const EditFiles = () => {
       organizationId: userInfo?.organizationId,
       courseId: chapter?.courseId,
     };
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
-        fetchData
-      )
-      .then((res) => setSkillCategories(res?.data))
-      .catch((error) => console.error(error));
-    axios
-      .post(
-        `${process.env.REACT_APP_BACKEND_API}/itemCategoryByCourseId`,
-        fetchData
-      )
-      .then((res) => setEarningCategories(res?.data))
-      .catch((error) => console.error(error));
+    if (chapter?.courseId && userInfo?.organizationId) {
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
+          fetchData
+        )
+        .then((res) => setSkillCategories(res?.data))
+        .catch((error) => console.error(error));
+      axios
+        .post(
+          `${process.env.REACT_APP_BACKEND_API}/itemCategoryByCourseId`,
+          fetchData
+        )
+        .then((res) => setEarningCategories(res?.data))
+        .catch((error) => console.error(error));
+    }
   }, [chapter, userInfo]);
 
   useEffect(() => {
@@ -148,25 +151,27 @@ const EditFiles = () => {
   }, [chapter]);
 
   useEffect(() => {
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${chapter?.courseId}`
-      )
-      .then((response) => {
-        setBatchesData(response?.data);
-      })
-      .catch((error) => console.error(error));
+    if (chapter?.courseId)
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${chapter?.courseId}`
+        )
+        .then((response) => {
+          setBatchesData(response?.data);
+        })
+        .catch((error) => console.error(error));
   }, [chapter]);
 
   useEffect(() => {
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
-      )
-      .then((response) => {
-        setOrgData(response?.data);
-      })
-      .catch((error) => console.error(error));
+    if (userInfo?.organizationId)
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
+        )
+        .then((response) => {
+          setOrgData(response?.data);
+        })
+        .catch((error) => console.error(error));
   }, [userInfo]);
 
   const handleOptionChangeBatch = (event, optionValue) => {

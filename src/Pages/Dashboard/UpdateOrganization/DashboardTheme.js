@@ -17,6 +17,28 @@ const DashboardTheme = ({
   dashboardTheme,
   setDashboardTheme,
 }) => {
+  const [loading, setLoading] = useState(false);
+  const [itemDetails, setItemDetails] = useState();
+  useEffect(() => {
+    if (userInfo) {
+      setLoading(true);
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/language/getUpdateOrganizationSubDetailsByOrganizationAndName/dashboardTheme/organizationsId/${userInfo?.organizationId}`
+        )
+        .then((response) => {
+
+          console.log(response)
+          setItemDetails(response?.data);
+
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+    setLoading(false);
+  }, [userInfo]);
+  console.log(itemDetails)
   const [courseCompletionText, setCourseCompletionText] = useState(
     dashboardTheme?.courseCompletionText || "Your course is"
   );
@@ -298,7 +320,7 @@ const DashboardTheme = ({
               ></div>
             </div>
             <div className="ml-3 text-gray-700 font-semibold text-xl">
-              {!addCourseCompletion ? "Add Section" : "Remove Section"}
+              {!addCourseCompletion ? itemDetails?.addSection ? itemDetails?.addSection :"Add Section" : itemDetails?.removeSection ? itemDetails?.removeSection :"Remove Section"}
             </div>
           </label>
         </div>
@@ -306,6 +328,7 @@ const DashboardTheme = ({
 
         {/* Design */}
         <CourseCompletion
+          complete={itemDetails?.complete ? itemDetails?.complete :"Complete"}
           courseCompletionText={courseCompletionText}
           courseCompletionBgColor={courseCompletionBgColor}
           isAvatar={isAvatar}
@@ -324,7 +347,8 @@ const DashboardTheme = ({
                   htmlFor="textInput"
                   className="block text-lg font-semibold text-gray-700"
                 >
-                  Change Text
+                  {itemDetails?.changeText ? itemDetails?.changeText :"Change Text"}
+                  
                 </label>
                 <input
                   type="text"
@@ -342,7 +366,8 @@ const DashboardTheme = ({
                   htmlFor="colorInput"
                   className="block text-lg font-medium text-gray-700"
                 >
-                  Change Color
+                  {itemDetails?.changeColor ? itemDetails?.changeColor :"Change Color"}
+                  
                 </label>
                 <input
                   type="color"
@@ -356,7 +381,8 @@ const DashboardTheme = ({
 
               <div className="flex flex-col items-start">
                 <label className="block text-lg font-medium text-gray-700">
-                  Design
+                {itemDetails?.design ? itemDetails?.design :"Design"}
+                  
                 </label>
                 <div className="ml-2 flex items-center space-x-4">
                   <label className="flex items-center">
@@ -369,7 +395,7 @@ const DashboardTheme = ({
                       }
                       className="mr-1"
                     />
-                    <span>Add</span>
+                    <span>{itemDetails?.add ? itemDetails?.add :"Add"}</span>
                   </label>
                   <label className="flex items-center">
                     <input
@@ -381,7 +407,7 @@ const DashboardTheme = ({
                         setCourseCompletionDesign(!courseCompletionDesign)
                       }
                     />
-                    <span>Remove</span>
+                    <span>{itemDetails?.remove ? itemDetails?.remove :"Remove"}</span>
                   </label>
                 </div>
               </div>
@@ -389,7 +415,8 @@ const DashboardTheme = ({
               {/* Avatar Type Input */}
               <div className="flex flex-col items-start">
                 <label className="block text-lg font-medium text-gray-700">
-                  Image Type
+                {itemDetails?.imageType ? itemDetails?.imageType :"Image Type"}
+                  
                 </label>
                 <div className="ml-2 flex items-center space-x-4">
                   <label className="flex items-center">
@@ -400,7 +427,7 @@ const DashboardTheme = ({
                       onChange={() => setIsAvatar(!isAvatar)}
                       className="mr-1"
                     />
-                    <span>Default</span>
+                    <span>{itemDetails?.default ? itemDetails?.default :"Default"}</span>
                   </label>
                   <label className="flex items-center">
                     <input
@@ -410,7 +437,7 @@ const DashboardTheme = ({
                       checked={isAvatar}
                       onChange={() => setIsAvatar(!isAvatar)}
                     />
-                    <span>Avatar</span>
+                    <span>{itemDetails?.avatar ? itemDetails?.avatar :"Avatar"}</span>
                   </label>
                 </div>
               </div>
@@ -422,7 +449,8 @@ const DashboardTheme = ({
                     htmlFor="avatarBgColor"
                     className="block text-lg font-medium text-gray-700"
                   >
-                    Avatar Background
+                    {itemDetails?.avatarBackground ? itemDetails?.avatarBackground :"Avatar Background"}
+                    
                   </label>
                   <input
                     type="color"
@@ -464,7 +492,7 @@ const DashboardTheme = ({
               ></div>
             </div>
             <div className="ml-3 text-gray-700 font-semibold text-xl">
-              {!addOpenBox ? "Add Section" : "Remove Section"}
+              {!addOpenBox ? itemDetails?.addSection ? itemDetails?.addSection : "Add Section" : itemDetails?.removeSection ? itemDetails?.removeSection :"Remove Section"}
             </div>
           </label>
         </div>
@@ -485,7 +513,8 @@ const DashboardTheme = ({
                   htmlFor="textInput"
                   className="block text-lg font-semibold text-gray-700"
                 >
-                  Button Text
+                  {itemDetails?.buttonText ? itemDetails?.buttonText :"Button Text"}
+                  
                 </label>
                 <input
                   type="text"
@@ -504,7 +533,8 @@ const DashboardTheme = ({
                   htmlFor="colorInput"
                   className="block text-lg font-medium text-gray-700"
                 >
-                  Change Button
+                  {itemDetails?.changeButton ? itemDetails?.changeButton :"Change Button"}
+                  
                 </label>
                 <input
                   type="color"
@@ -521,7 +551,8 @@ const DashboardTheme = ({
                   htmlFor="colorInput"
                   className="block text-lg font-medium text-gray-700"
                 >
-                  Change Card
+                  {itemDetails?.changeCard ? itemDetails?.changeCard :"Change Card"}
+                  
                 </label>
                 <input
                   type="color"
@@ -539,7 +570,8 @@ const DashboardTheme = ({
                   htmlFor="imageInput"
                   className="block text-lg font-medium text-gray-700"
                 >
-                  Change Image
+                  {itemDetails?.changeImage ? itemDetails?.changeImage :"Change Image"}
+                  
                 </label>
                 {fileLoading ? (
                   <img
@@ -589,12 +621,13 @@ const DashboardTheme = ({
               ></div>
             </div>
             <div className="ml-3 text-gray-700 font-semibold text-xl">
-              {!addJoinQuest ? "Add Section" : "Remove Section"}
+              {!addJoinQuest ? itemDetails?.addSection ? itemDetails?.addSection : "Add Section" : itemDetails?.removeSection ? itemDetails?.removeSection :"Remove Section"}
             </div>
           </label>
         </div>
 
         <JoinQuest
+          weekOne={itemDetails?.weekOne ? itemDetails?.weekOne : "Week 1"}
           joinQuestBtnText={joinQuestBtnText}
           joinQuestBtnBg={joinQuestBtnBg}
           joinQuestCardBg={joinQuestCardBg}
@@ -611,7 +644,8 @@ const DashboardTheme = ({
                   htmlFor="textInput"
                   className="block text-lg font-semibold text-gray-700"
                 >
-                  Button Text
+                  {itemDetails?.buttonText ? itemDetails?.buttonText : "Button Text"}
+                  
                 </label>
                 <input
                   type="text"
@@ -630,7 +664,8 @@ const DashboardTheme = ({
                   htmlFor="colorInput"
                   className="block text-lg font-medium text-gray-700"
                 >
-                  Change Button
+                  {itemDetails?.changeButton ? itemDetails?.changeButton : "Change Button"}
+                  
                 </label>
                 <input
                   type="color"
@@ -647,7 +682,8 @@ const DashboardTheme = ({
                   htmlFor="colorInput"
                   className="block text-lg font-medium text-gray-700"
                 >
-                  Change Card
+                  {itemDetails?.changeCard ? itemDetails?.changeCard : "Change Card"}
+                  
                 </label>
                 <input
                   type="color"
@@ -664,7 +700,8 @@ const DashboardTheme = ({
                   htmlFor="colorInput"
                   className="block text-lg font-medium text-gray-700"
                 >
-                  Change ImageBg
+                  {itemDetails?.changeImageBg ? itemDetails?.changeImageBg : "Change ImageBg"}
+                  
                 </label>
                 <input
                   type="color"
@@ -682,7 +719,8 @@ const DashboardTheme = ({
                   htmlFor="imageInput"
                   className="block text-lg font-medium text-gray-700"
                 >
-                  Change Image
+                  {itemDetails?.changeImage ? itemDetails?.changeImage : "Change Image"}
+                  
                 </label>
                 {fileLoading ? (
                   <img
@@ -733,12 +771,13 @@ const DashboardTheme = ({
               ></div>
             </div>
             <div className="ml-3 text-gray-700 font-semibold text-xl">
-              {!addChallenges ? "Add Section" : "Remove Section"}
+              {!addChallenges ? itemDetails?.addSection ? itemDetails?.addSection : "Add Section" : itemDetails?.removeSection ? itemDetails?.removeSection :"Remove Section"}
             </div>
           </label>
         </div>
 
         <Challenges
+        completed={itemDetails?.completed ? itemDetails?.completed : "Completed"}
           challengesHeaderText={challengesHeaderText}
           challengesBtnText={challengesBtnText}
           challengesBtnBg={challengesBtnBg}
@@ -757,7 +796,8 @@ const DashboardTheme = ({
                   htmlFor="textInput"
                   className="block text-lg font-semibold text-gray-700"
                 >
-                  Header Text
+                  {itemDetails?.headerText ? itemDetails?.headerText : "Header Text"}
+                  
                 </label>
                 <input
                   type="text"
@@ -775,7 +815,8 @@ const DashboardTheme = ({
                   htmlFor="textInput"
                   className="block text-lg font-semibold text-gray-700"
                 >
-                  Button Text
+                  {itemDetails?.buttonText ? itemDetails?.buttonText : "Button Text"}
+                  
                 </label>
                 <input
                   type="text"
@@ -794,7 +835,8 @@ const DashboardTheme = ({
                   htmlFor="colorInput"
                   className="block text-lg font-medium text-gray-700"
                 >
-                  Change Button
+                  {itemDetails?.changeButton ? itemDetails?.changeButton : "Change Button"}
+                  
                 </label>
                 <input
                   type="color"
@@ -811,7 +853,8 @@ const DashboardTheme = ({
                   htmlFor="colorInput"
                   className="block text-lg font-medium text-gray-700"
                 >
-                  Change Card
+                  {itemDetails?.changeCard ? itemDetails?.changeCard : "Change Card"}
+                  
                 </label>
                 <input
                   type="color"
@@ -828,7 +871,8 @@ const DashboardTheme = ({
                   htmlFor="colorInput"
                   className="block text-lg font-medium text-gray-700"
                 >
-                  Change Progress
+                  {itemDetails?.changeProgress ? itemDetails?.changeProgress : "Change Progress"}
+                  
                 </label>
                 <input
                   type="color"
@@ -845,7 +889,8 @@ const DashboardTheme = ({
                   htmlFor="colorInput"
                   className="block text-lg font-medium text-gray-700"
                 >
-                  Change ImageBg
+                  {itemDetails?.changeImageBg ? itemDetails?.changeImageBg : "Change ImageBg"}
+                  
                 </label>
                 <input
                   type="color"
@@ -863,7 +908,8 @@ const DashboardTheme = ({
                   htmlFor="imageInput"
                   className="block text-lg font-medium text-gray-700"
                 >
-                  Change Image
+                  {itemDetails?.changeImage ? itemDetails?.changeImage : "Change Image"}
+                  
                 </label>
                 {fileLoading ? (
                   <img
@@ -916,12 +962,13 @@ const DashboardTheme = ({
               ></div>
             </div>
             <div className="ml-3 text-gray-700 font-semibold text-xl">
-              {!addRequestSlots ? "Add Section" : "Remove Section"}
+              {!addRequestSlots ? itemDetails?.addSection ? itemDetails?.addSection : "Add Section" : itemDetails?.removeSection ? itemDetails?.removeSection :"Remove Section"}
             </div>
           </label>
         </div>
 
         <RequestSlots
+        itemDetails={itemDetails}
           slotsHeaderText={slotsHeaderText}
           slotsBtnText={slotsBtnText}
           slotsBtnBg={slotsBtnBg}
@@ -937,7 +984,8 @@ const DashboardTheme = ({
                   htmlFor="textInput"
                   className="block text-lg font-semibold text-gray-700"
                 >
-                  Header Text
+                  {itemDetails?.headerText ? itemDetails?.headerText : "Header Text"}
+                  
                 </label>
                 <input
                   type="text"
@@ -955,7 +1003,8 @@ const DashboardTheme = ({
                   htmlFor="textInput"
                   className="block text-lg font-semibold text-gray-700"
                 >
-                  Button Text
+                  {itemDetails?.buttonText ? itemDetails?.buttonText : "Button Text"}
+                  
                 </label>
                 <input
                   type="text"
@@ -974,7 +1023,8 @@ const DashboardTheme = ({
                   htmlFor="colorInput"
                   className="block text-lg font-medium text-gray-700"
                 >
-                  Change Button
+                  {itemDetails?.changeButton ? itemDetails?.changeButton : "Change Button"}
+                  
                 </label>
                 <input
                   type="color"
@@ -991,7 +1041,8 @@ const DashboardTheme = ({
                   htmlFor="colorInput"
                   className="block text-lg font-medium text-gray-700"
                 >
-                  Change Card
+                  {itemDetails?.changeCard ? itemDetails?.changeCard : "Change Card"}
+                  
                 </label>
                 <input
                   type="color"
@@ -1032,7 +1083,7 @@ const DashboardTheme = ({
               ></div>
             </div>
             <div className="ml-3 text-gray-700 font-semibold text-xl">
-              {!addCourses ? "Add Section" : "Remove Section"}
+              {!addCourses ? itemDetails?.addSection ? itemDetails?.addSection : "Add Section" : itemDetails?.removeSection ? itemDetails?.removeSection :"Remove Section"}
             </div>
           </label>
         </div>
@@ -1042,7 +1093,8 @@ const DashboardTheme = ({
             <div className="flex justify-between items-center gap-8">
               <div className="flex flex-col items-start">
                 <label className="block text-lg font-medium text-gray-700">
-                  Course Type
+                {itemDetails?.courseType ? itemDetails?.courseType : "Course Type"}
+                  
                 </label>
                 <div className="ml-2 flex items-center space-x-4">
                   <label className="flex items-center">
@@ -1053,7 +1105,7 @@ const DashboardTheme = ({
                       onChange={() => setMyCoursesChecked(!myCoursesChecked)}
                       className="mr-1"
                     />
-                    <span>My Courses</span>
+                    <span>{itemDetails?.myCourses ? itemDetails?.myCourses : "My Courses"} </span>
                   </label>
                   <label className="flex items-center">
                     <input
@@ -1063,7 +1115,7 @@ const DashboardTheme = ({
                       checked={allCoursesChecked}
                       onChange={() => setAllCoursesChecked(!allCoursesChecked)}
                     />
-                    <span>All Courses</span>
+                    <span>{itemDetails?.allCourses ? itemDetails?.allCourses : "All Courses"}</span>
                   </label>
                 </div>
               </div>
@@ -1094,7 +1146,7 @@ const DashboardTheme = ({
               ></div>
             </div>
             <div className="ml-3 text-gray-700 font-semibold text-xl">
-              {!showLabJourney ? "Add" : "Remove"} Lab Journey Section
+              {!showLabJourney ? itemDetails?.add ? itemDetails?.add : "Add" : itemDetails?.remove ? itemDetails?.remove : "Remove"} {itemDetails?.labJourneySection ? itemDetails?.labJourneySection : "Lab Journey Section"} 
             </div>
           </label>
         </div>
@@ -1121,7 +1173,7 @@ const DashboardTheme = ({
               ></div>
             </div>
             <div className="ml-3 text-gray-700 font-semibold text-xl">
-              {!showSchedule ? "Add" : "Remove"} Schedule
+              {!showSchedule ? itemDetails?.add ? itemDetails?.add : "Add" : itemDetails?.remove ? itemDetails?.remove : "Remove"} {itemDetails?.schedule ? itemDetails?.schedule : "Schedule"} 
             </div>
           </label>
         </div>
@@ -1129,7 +1181,7 @@ const DashboardTheme = ({
         {/* Submit Button */}
         <input
           className="bg-green my-8 hover:bg-opacity-60 text-white py-3 px-4 font-bold rounded-lg"
-          value="Save"
+          value={itemDetails?.save ? itemDetails?.save : "Save"}
           type="submit"
         />
       </form>

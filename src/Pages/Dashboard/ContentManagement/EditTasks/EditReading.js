@@ -69,37 +69,40 @@ const EditReading = () => {
   const [enableDownload, setEnableDownload] = useState(false);
 
   useEffect(() => {
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/readings/taskId/${id}`
-      )
-      .then((response) => {
-        setReadingData(response?.data ? response?.data : {});
-        setReadingMaterial(
-          response?.data?.readingMaterial ? response?.data?.readingMaterial : ""
-        );
-        setSelectedBatches(
-          response?.data?.batches ? response?.data?.batches : []
-        );
-        setSkillParameterData(
-          response?.data?.skillParameterData
-            ? response?.data?.skillParameterData
-            : skillParameterData
-        );
-        setEarningParameterData(
-          response?.data?.earningParameterData
-            ? response?.data?.earningParameterData
-            : earningParameterData
-        );
-        setTaskDrip(
-          response?.data?.taskDrip ? response?.data?.taskDrip : taskDrip
-        );
-        setEnableDownload(
-          response?.data?.enableDownload
-            ? response?.data?.enableDownload
-            : enableDownload
-        );
-      });
+    if (id)
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/readings/taskId/${id}`
+        )
+        .then((response) => {
+          setReadingData(response?.data ? response?.data : {});
+          setReadingMaterial(
+            response?.data?.readingMaterial
+              ? response?.data?.readingMaterial
+              : ""
+          );
+          setSelectedBatches(
+            response?.data?.batches ? response?.data?.batches : []
+          );
+          setSkillParameterData(
+            response?.data?.skillParameterData
+              ? response?.data?.skillParameterData
+              : skillParameterData
+          );
+          setEarningParameterData(
+            response?.data?.earningParameterData
+              ? response?.data?.earningParameterData
+              : earningParameterData
+          );
+          setTaskDrip(
+            response?.data?.taskDrip ? response?.data?.taskDrip : taskDrip
+          );
+          setEnableDownload(
+            response?.data?.enableDownload
+              ? response?.data?.enableDownload
+              : enableDownload
+          );
+        });
   }, [id]);
 
   useEffect(() => {
@@ -117,28 +120,30 @@ const EditReading = () => {
       organizationId: userInfo?.organizationId,
       courseId: chapter?.courseId,
     };
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
-        fetchData
-      )
-      .then((res) => setSkillCategories(res?.data))
-      .catch((error) => console.error(error));
+    if (userInfo?.organizationId && chapter?.courseId) {
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
+          fetchData
+        )
+        .then((res) => setSkillCategories(res?.data))
+        .catch((error) => console.error(error));
 
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${fetchData?.courseId}`
-      )
-      .then((res) => setCourse(res?.data))
-      .catch((error) => console.error(error));
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${fetchData?.courseId}`
+        )
+        .then((res) => setCourse(res?.data))
+        .catch((error) => console.error(error));
 
-    axios
-      .post(
-        `${process.env.REACT_APP_BACKEND_API}/itemCategoryByCourseId`,
-        fetchData
-      )
-      .then((res) => setEarningCategories(res?.data))
-      .catch((error) => console.error(error));
+      axios
+        .post(
+          `${process.env.REACT_APP_BACKEND_API}/itemCategoryByCourseId`,
+          fetchData
+        )
+        .then((res) => setEarningCategories(res?.data))
+        .catch((error) => console.error(error));
+    }
   }, [chapter, userInfo]);
 
   useEffect(() => {
@@ -154,14 +159,15 @@ const EditReading = () => {
   }, [course]);
 
   useEffect(() => {
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
-      )
-      .then((response) => {
-        setOrgData(response?.data);
-      })
-      .catch((error) => console.error(error));
+    if (userInfo?.organizationId)
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
+        )
+        .then((response) => {
+          setOrgData(response?.data);
+        })
+        .catch((error) => console.error(error));
   }, [userInfo]);
 
   const handleOptionChangeBatch = (event, optionValue) => {
@@ -229,7 +235,7 @@ const EditReading = () => {
     <div>
       <Layout>
         <div>
-          <div className=" border-b-2 ">
+          <div className=" hidden lg:block border-b-2 ">
             <div className="container mx-auto px-4 flex items-center justify-between ">
               <div className="flex items-center pt-[30px] pb-[30px] ">
                 <Link
@@ -335,11 +341,11 @@ const EditReading = () => {
           <ReadingTask taskData={readingData} />
         </div>
         <div className={`${preview ? "hidden" : "block"}`}>
-          <div className="text-[#3E4DAC] text-[26px] font-bold  py-[35px] ps-[40px]">
+          <div className="text-[#3E4DAC] text-[26px] mt-[70px] lg:mt-0 font-bold  py-[35px] ps-2 lg:ps-[40px]">
             <p>Manage Reading in {chapter?.chapterName}</p>
           </div>
           <form onSubmit={handleSubmit}>
-            <div className="flex  me-20 py-[35px] ps-[40px]">
+            <div className="flex flex-col gap-4 lg:gap-0 lg:flex-row lg:me-20 py-[35px] px-2 lg:ps-[40px]">
               <div className="w-full">
                 <div className="">
                   <div className="flex items-center gap-4">
@@ -453,7 +459,7 @@ const EditReading = () => {
               </div>
             </div>
 
-            <div className="me-20 py-[35px] ps-[40px]">
+            <div className="me-20 py-[35px]  px-2 lg:ps-[40px]">
               <div>
                 <div className="flex items-center gap-4">
                   <p className="h-2 w-2 bg-black rounded-full"></p>
@@ -489,7 +495,7 @@ const EditReading = () => {
               </div>
             </div>
 
-            <div className="space-y-4 mb-8 ps-[40px]">
+            <div className="space-y-4 mb-8 px-2 lg:ps-[40px]">
               <fieldset>
                 <div className="flex items-center gap-4 mb-5">
                   <p className="h-2 w-2 bg-black rounded-full"></p>
@@ -545,7 +551,7 @@ const EditReading = () => {
                 </p>
               )}
             </div>
-            <div className="ml-[40px] space-y-4 mb-8">
+            <div className="  px-2 lg:ps-[40px] space-y-4 mb-8">
               <fieldset>
                 <div className="flex items-center gap-4 mb-5">
                   <p className="h-2 w-2 bg-black rounded-full"></p>

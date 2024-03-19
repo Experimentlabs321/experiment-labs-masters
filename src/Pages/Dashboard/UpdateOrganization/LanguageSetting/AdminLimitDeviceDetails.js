@@ -33,6 +33,7 @@ const AdminLimitDeviceDetails = () => {
     setAdminLoading(false);
   }, [userInfo]);
   console.log(itemDetails)
+
   const fetchContentDetails = () => {
     if (userInfo) {
       setAdminLoading(true);
@@ -57,10 +58,12 @@ const AdminLimitDeviceDetails = () => {
     const deviceLimit = form.deviceLimit?.value;
  
     const save = form.save?.value;
+    const updatedSuccessfully = form.updatedSuccessfully?.value;
 
     const itemDetail = {
 
       deviceLimit: deviceLimit,
+      updatedSuccessfully: updatedSuccessfully,
     
       save: save,
 
@@ -102,6 +105,10 @@ const AdminLimitDeviceDetails = () => {
               <div className='flex justify-between items-center w-[100%]'>
                 <p className='text-lg font-medium'>Save</p>
                 <input name='save' defaultValue={itemDetails?.save} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+              </div>
+              <div className='flex justify-between items-center w-[100%]'>
+                <p className='text-lg font-medium'>Updated successfully!</p>
+                <input name='updatedSuccessfully' defaultValue={itemDetails?.updatedSuccessfully} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
               </div>
 
 

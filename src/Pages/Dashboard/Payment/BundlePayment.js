@@ -136,11 +136,11 @@ const BundlePayment = () => {
         courses: course?.courses, // Array of objects, each containing courseId and batchId
         coupon: coupon || "",
         couponId: selectOffer._id || "",
-        discountAmount: +couponDiscount || "",
+        discountAmount: Math.round(+couponDiscount) || "",
         email: data?.email,
         organizationId: organizationData?._id,
         organizationName: organizationData?.organizationName,
-        originalPrice: +course?.price,
+        originalPrice: Math.round(+course?.price),
         paidAmount: 0,
         userId: data?._id,
       };
@@ -168,7 +168,7 @@ const BundlePayment = () => {
     } = await axios.post(
       `${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/checkout`,
       {
-        price: +(+course.price - +couponDiscount),
+        price: Math.round(+(+course.price - +couponDiscount)),
         paymentInstance: {
           key_id: organizationData?.paymentInstance?.key_id,
           key_secret: organizationData?.paymentInstance?.key_secret,
@@ -180,7 +180,7 @@ const BundlePayment = () => {
 
     const options = {
       key: organizationData?.paymentInstance?.key_id,
-      amount: +order?.amount,
+      amount: Math.round(+order?.amount),
       key_secret: organizationData?.paymentInstance?.key_secret,
       currency: "INR",
       name: organizationData?.organizationName,
@@ -206,9 +206,9 @@ const BundlePayment = () => {
         response.courses = course?.courses;
         response.email = data?.email;
         response.userId = data?._id;
-        response.paidAmount = +order?.amount / 100;
-        response.originalPrice = +course?.price;
-        response.discountAmount = +couponDiscount || "";
+        response.paidAmount = Math.round(+order?.amount / 100);
+        response.originalPrice = Math.round(+course?.price);
+        response.discountAmount = Math.round(+couponDiscount) || "";
         response.couponId = selectOffer._id || "";
         response.coupon = coupon || "";
         response.organizationId = organizationData?._id;
@@ -546,7 +546,7 @@ const BundlePayment = () => {
                                 Total Price
                               </td>
                               <td id="bundle-cost" className="py-2">
-                                ₹{course?.price || "N/A"}
+                                ₹{Math.round(course?.price) || "N/A"}
                               </td>
                             </tr>
                             <tr
@@ -557,7 +557,7 @@ const BundlePayment = () => {
                             >
                               <td>Coupon Discount</td>
                               <td className="py-2" id="coupon-discount">
-                                ₹{couponDiscount >= 0 ? couponDiscount : "N/A"}
+                                ₹{couponDiscount >= 0 ? Math.round(couponDiscount) : "N/A"}
                               </td>
                             </tr>
                           </tbody>
@@ -567,7 +567,7 @@ const BundlePayment = () => {
                               <td className="py-2" id="total-to-be-paid">
                                 ₹
                                 {course?.price
-                                  ? +course?.price - +couponDiscount
+                                  ? Math.round(+course?.price - +couponDiscount)
                                   : "N/A"}
                               </td>
                             </tr>
@@ -584,7 +584,7 @@ const BundlePayment = () => {
                         <h4 className="m-0 text-2xl">
                           ₹
                           {course?.price
-                            ? +course?.price - +couponDiscount
+                            ? Math.round(+course?.price - +couponDiscount)
                             : "N/A"}
                         </h4>
                       </div>

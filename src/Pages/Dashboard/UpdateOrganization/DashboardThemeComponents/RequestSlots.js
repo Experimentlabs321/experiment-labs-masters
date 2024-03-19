@@ -2,7 +2,7 @@ import React from 'react';
 import DashboardPrimaryButton from '../../Shared/DashboardPrimaryButton';
 import RightArrowWhite from "../../../../assets/Dashboard/RightArrowWhite.png";
 
-const RequestSlots = ({ slotsHeaderText, slotsBtnText, slotsBtnBg, slotsCardBg }) => {
+const RequestSlots = ({ slotsHeaderText, slotsBtnText, slotsBtnBg, slotsCardBg , itemDetails }) => {
     return (
         <div className="w-[250px] lg:w-[355px] min-w-[250px] lg:min-w-min h-[370px] lg:h-[515px]">
             <h1 className="text-[18px] lg:text-[25px] font-[700] text-center pb-[32px]">
@@ -18,13 +18,15 @@ const RequestSlots = ({ slotsHeaderText, slotsBtnText, slotsBtnBg, slotsCardBg }
                 <div>
                     <h1 className="text-white text-[18px] font-[700]">
                         <span className="pr-4">{"<"}</span>
-                        Post Programme Support
+                        {itemDetails?.postProgrammeSupport ? itemDetails?.postProgrammeSupport : "Post Programme Support"}
+                        
                         <span className=" pl-4 ">{">"}</span>
                     </h1>
                 </div>
                 <div className="w-full relative">
                     <p className="text-[#C0C0C0] text-[18px] font-[600] pb-[18px]">
-                        Date
+                    {itemDetails?.date ? itemDetails?.date : "Date"}
+                        
                     </p>
                     <div className="relative inline-flex w-full">
                         <input
@@ -36,7 +38,8 @@ const RequestSlots = ({ slotsHeaderText, slotsBtnText, slotsBtnBg, slotsCardBg }
                         />
                     </div>
                     <p className="text-[#C0C0C0] text-[18px] font-[600] py-[18px]">
-                        Time
+                    {itemDetails?.time ? itemDetails?.time : "Time"}
+                        
                     </p>
                     <div className="relative inline-flex w-full">
                         <input
@@ -61,7 +64,7 @@ const RequestSlots = ({ slotsHeaderText, slotsBtnText, slotsBtnBg, slotsCardBg }
                         className="bg-[#0F3934] w-full py-[15px] px-[23px] rounded-[13px] text-[12px] lg:text-[18px] font-[700] z-[1]"
                     >
                         <p className="flex items-center justify-center text-white">
-                            Join Meeting{" "}
+                        {itemDetails?.joinMeeting ? itemDetails?.joinMeeting : "Join Meeting"}{" "}
                             <img
                                 className="pl-1 w-[21px] lg:w-[32px]"
                                 src={RightArrowWhite}

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import questImg from "../../../../assets/Dashboard/WeekUpdate.png";
 import RightArrowBlack from "../../../../assets/Dashboard/RightArrowBlack.png";
 
-const JoinQuest = ({joinQuestBtnText,joinQuestBtnBg, joinQuestCardBg, joinQuestImgBg, joinQuestImg}) => {
+const JoinQuest = ({joinQuestBtnText,joinQuestBtnBg, joinQuestCardBg, joinQuestImgBg, joinQuestImg,weekOne}) => {
     return (
         <div
             style={{
@@ -18,7 +18,7 @@ const JoinQuest = ({joinQuestBtnText,joinQuestBtnBg, joinQuestCardBg, joinQuestI
             </div>
             <div className="flex flex-col gap-3">
                 <h1 className="text-white text-[13px] lg:text-[22px] font-[700] text-center lg:text-left">
-                    Week 1
+                   {weekOne}
                 </h1>
                 <DashboardPrimaryButton
                     bgColor={joinQuestBtnBg}

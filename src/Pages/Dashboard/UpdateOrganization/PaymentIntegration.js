@@ -1,11 +1,35 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import axios from "axios";
 import Swal from "sweetalert2";
+import { AuthContext } from '../../../contexts/AuthProvider';
 
 const PaymentIntegration = ({ paymentInstance, setPaymentInstance, orgData }) => {
+    const {userInfo} = useContext(AuthContext)
     console.log(paymentInstance);
     const [key_id, setKey_id] = useState(paymentInstance?.key_id);
     const [key_secret, setKey_secret] = useState(paymentInstance?.key_secret);
+    const [loading, setLoading] = useState(false);
+    const [itemDetails, setItemDetails] = useState();
+    useEffect(() => {
+      if (userInfo) {
+        setLoading(true);
+        axios
+          .get(
+            `${process.env.REACT_APP_SERVER_API}/api/v1/language/getUpdateOrganizationSubDetailsByOrganizationAndName/paymentIntegration/organizationsId/${userInfo?.organizationId}`
+          )
+          .then((response) => {
+  
+            console.log(response)
+            setItemDetails(response?.data);
+  
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      }
+      setLoading(false);
+    }, [userInfo]);
+    console.log(itemDetails)
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -17,6 +41,7 @@ const PaymentIntegration = ({ paymentInstance, setPaymentInstance, orgData }) =>
                 key_secret
             }
         };
+
         // console.log("Data ==========>",orgInfo);
 
         const updateOrg = await axios.put(
@@ -27,7 +52,7 @@ const PaymentIntegration = ({ paymentInstance, setPaymentInstance, orgData }) =>
         if (updateOrg?.data?.acknowledged) {
             setPaymentInstance(orgInfo?.paymentInstance);
             Swal.fire({
-                title: "Updated successfully!",
+                title: itemDetails?.updatedSuccessfully ? itemDetails?.updatedSuccessfully : "Updated successfully!",
                 icon: "success",
               });
         }
@@ -42,7 +67,8 @@ const PaymentIntegration = ({ paymentInstance, setPaymentInstance, orgData }) =>
                             htmlFor="textInput"
                             className="block text-lg font-semibold text-gray-700"
                         >
-                            Key Id
+                            {itemDetails?.keyId ? itemDetails?.keyId : "Key Id"}
+                            
                         </label>
                         <input
                             type="text"
@@ -56,7 +82,8 @@ const PaymentIntegration = ({ paymentInstance, setPaymentInstance, orgData }) =>
                             htmlFor="textInput"
                             className="block text-lg font-semibold text-gray-700"
                         >
-                            Key Secret
+                            {itemDetails?.keySecret ? itemDetails?.keySecret : "Key Secret"}
+                            
                         </label>
                         <input
                             type="text"
@@ -68,7 +95,7 @@ const PaymentIntegration = ({ paymentInstance, setPaymentInstance, orgData }) =>
                 </div>
                 <input
                     className="bg-green my-8 hover:bg-opacity-60 text-white py-3 px-4 font-bold rounded-lg cursor-pointer"
-                    value="Save"
+                    value={itemDetails?.save ? itemDetails?.save : "Save"}
                     type="submit"
                 />
             </form>

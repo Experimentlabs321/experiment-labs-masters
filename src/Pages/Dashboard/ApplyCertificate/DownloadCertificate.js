@@ -144,9 +144,9 @@ const DownloadCertificate = () => {
       <div className="relative">
         {completionPercentage <
           certificateTemplate?.requiredCompletionPercentage && (
-          <div className="absolute z-40 h-full w-full flex flex-col items-center justify-center">
+          <div className="absolute z-10 h-full w-full flex flex-col items-center justify-center">
             <img className=" min-w-[40px]" src={Locked} alt="something" />
-            <p className=" text-black text-center font-sans mt-4">
+            <p className=" max-w-[350px] text-black text-center font-sans mt-4">
               To unlock the certificate you have to complete at least{" "}
               {certificateTemplate?.requiredCompletionPercentage}% of the
               course.
@@ -472,7 +472,7 @@ const DownloadCertificate = () => {
     <div>
       <Layout>
         <div className="px-4">
-          <div className=" mt-10 relative overflow-hidden">
+          <div className=" mt-20 lg:mt-10 relative overflow-hidden">
             <div
               ref={sectionRef}
               style={{
