@@ -470,105 +470,112 @@ const CourseInformation = () => {
   };
 
   useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/courses/${id}`)
-      .then((response) => {
-        setCourseData(response?.data);
-      })
-      .catch((error) => console.error(error));
+    if (id)
+      axios
+        .get(`${process.env.REACT_APP_SERVER_API}/api/v1/courses/${id}`)
+        .then((response) => {
+          setCourseData(response?.data);
+        })
+        .catch((error) => console.error(error));
   }, [id]);
 
   useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/weeks/courseId/${id}`)
-      .then((response) => {
-        setWeeks(response?.data);
-        const currentDateTime = new Date();
-        const queryParameters = new URLSearchParams(window.location.search);
-        const queryWeek = queryParameters.get("week");
-        if (queryWeek) {
-          setCurrentWeek(
-            response?.data?.find((item) => item?._id === queryWeek)
-          );
-          localStorage.setItem(
-            "currentWeek",
-            JSON.stringify(
+    if (id)
+      axios
+        .get(`${process.env.REACT_APP_SERVER_API}/api/v1/weeks/courseId/${id}`)
+        .then((response) => {
+          setWeeks(response?.data);
+          const currentDateTime = new Date();
+          const queryParameters = new URLSearchParams(window.location.search);
+          const queryWeek = queryParameters.get("week");
+          if (queryWeek) {
+            setCurrentWeek(
               response?.data?.find((item) => item?._id === queryWeek)
-            )
-          );
-        } else {
-          response?.data?.forEach((element) => {
-            const weekStartDate = new Date(element?.weekStartDate);
-            const weekEndDate = new Date(element?.weekEndDate);
-            if (
-              weekStartDate <= currentDateTime &&
-              weekEndDate >= currentDateTime
-            ) {
-              setCurrentWeek(element);
-              localStorage.setItem("currentWeek", JSON.stringify(element));
-              return;
-            }
-            if (!currentWeek) {
-              setCurrentWeek(response?.data[0]);
-              localStorage.setItem(
-                "currentWeek",
-                JSON.stringify(response?.data[0])
-              );
-            }
-          });
-        }
-      })
-      .catch((error) => console.error(error));
-  }, [id]);
-
-  useEffect(() => {
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/weekId/${currentWeek?._id}`
-      )
-      .then((response) => {
-        if (Role === "admin") setChapters(response?.data);
-        else {
-          let chapterWithFilteredTask = [];
-          const batchId = userInfo?.courses?.find(
-            (item) => item?.courseId === courseData?._id
-          )?.batchId;
-          console.log(batchId);
-          response?.data?.forEach((item) => {
-            let singleChapter = { ...item };
-            singleChapter.tasks = [];
-            item?.tasks?.forEach((singleTask) => {
+            );
+            localStorage.setItem(
+              "currentWeek",
+              JSON.stringify(
+                response?.data?.find((item) => item?._id === queryWeek)
+              )
+            );
+          } else {
+            response?.data?.forEach((element) => {
+              const weekStartDate = new Date(element?.weekStartDate);
+              const weekEndDate = new Date(element?.weekEndDate);
               if (
-                singleTask?.batches?.find(
-                  (singleBatch) => singleBatch?.batchId === batchId
-                )
+                weekStartDate <= currentDateTime &&
+                weekEndDate >= currentDateTime
               ) {
-                singleChapter.tasks.push(singleTask);
-                console.log(item);
+                setCurrentWeek(element);
+                localStorage.setItem("currentWeek", JSON.stringify(element));
+                return;
+              }
+              if (!currentWeek) {
+                setCurrentWeek(response?.data[0]);
+                localStorage.setItem(
+                  "currentWeek",
+                  JSON.stringify(response?.data[0])
+                );
               }
             });
-            chapterWithFilteredTask.push(singleChapter);
-          });
-          setChapters(chapterWithFilteredTask);
-          console.log("tasks =======>", chapterWithFilteredTask[0]?.tasks);
-        }
-        setIsLoading(false);
-      })
-      .catch((error) => console.error(error));
-    setIsLoading(false);
+          }
+        })
+        .catch((error) => console.error(error));
+  }, [id]);
+
+  useEffect(() => {
+    if (currentWeek?._id) {
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/weekId/${currentWeek?._id}`
+        )
+        .then((response) => {
+          if (Role === "admin") setChapters(response?.data);
+          else {
+            let chapterWithFilteredTask = [];
+            const batchId = userInfo?.courses?.find(
+              (item) => item?.courseId === courseData?._id
+            )?.batchId;
+            console.log(batchId);
+            response?.data?.forEach((item) => {
+              let singleChapter = { ...item };
+              singleChapter.tasks = [];
+              item?.tasks?.forEach((singleTask) => {
+                if (
+                  singleTask?.batches?.find(
+                    (singleBatch) => singleBatch?.batchId === batchId
+                  )
+                ) {
+                  singleChapter.tasks.push(singleTask);
+                  console.log(item);
+                }
+              });
+              chapterWithFilteredTask.push(singleChapter);
+            });
+            setChapters(chapterWithFilteredTask);
+            console.log("tasks =======>", chapterWithFilteredTask[0]?.tasks);
+          }
+          setIsLoading(false);
+        })
+        .catch((error) => console.error(error));
+      setIsLoading(false);
+    }
   }, [currentWeek, userInfo, Role, courseData, count]);
 
   useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${id}`)
-      .then((response) => {
-        setBatchesData(response?.data);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        setIsLoading(false);
-      });
+    if (id)
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${id}`
+        )
+        .then((response) => {
+          setBatchesData(response?.data);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.error(error);
+          setIsLoading(false);
+        });
   }, [id]);
 
   console.log(chapters);
