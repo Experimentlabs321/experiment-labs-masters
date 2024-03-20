@@ -269,6 +269,7 @@ const BundlePayment = () => {
           saveUser(email);
         });
       }
+      setLoginOpen(false)
     } catch (error) {
       // Handle any other errors that may occur during the Axios request
       console.error("Error during Axios request:", error);
@@ -318,6 +319,7 @@ const BundlePayment = () => {
         } else {
           saveUser(email);
         }
+        setLoginOpen(false)
       })
       .catch((error) => {
         console.error(error);
@@ -349,6 +351,7 @@ const BundlePayment = () => {
           if (res.data.acknowledged) {
             saveUser(result?.user?.email);
           }
+          setRegisterOpen(false)
         })
         .catch((error) => {
           console.error(error);
@@ -387,6 +390,7 @@ const BundlePayment = () => {
           } else {
             saveUser(email);
           }
+          setRegisterOpen(false)
         })
         .catch((error) => {
           console.error(error);
