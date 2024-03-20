@@ -326,6 +326,7 @@ const Payment = () => {
           saveUser(email);
         });
       }
+      
     } catch (error) {
       // Handle any other errors that may occur during the Axios request
       console.error("Error during Axios request:", error);

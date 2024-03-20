@@ -449,11 +449,10 @@ const WeekDetails = ({
                           )} */}
               </div>
               <div
-                className={`${
-                  openTopics?.find((item) => item === chapter?._id)
+                className={`${openTopics?.find((item) => item === chapter?._id)
                     ? ""
                     : "hidden"
-                } sub-items`}
+                  } sub-items`}
               >
                 {Role === "admin" &&
                   chapter?.tasks?.map((task, taskIndex) => (
@@ -714,7 +713,7 @@ const WeekDetails = ({
                             item?.status === "In Progress")
                       );
 
-                    const isPrevChapterCompleted =
+                    let isPrevChapterCompleted =
                       chapterIndex === 0 ||
                       chapters?.[chapterIndex - 1]?.tasks?.[
                         chapters?.[chapterIndex - 1]?.tasks?.length - 1
@@ -724,6 +723,9 @@ const WeekDetails = ({
                           (item?.status === "Completed" ||
                             item?.status === "In Progress")
                       );
+
+                    if (taskIndex !== 0)
+                      isPrevChapterCompleted = true;
 
                     return (
                       <div key={task?.taskId} className="relative">
@@ -842,7 +844,7 @@ const WeekDetails = ({
                             {courseData?.enableDrip && (
                               <div className="">
                                 {isPreviousTaskCompleted &&
-                                isPrevChapterCompleted ? (
+                                  isPrevChapterCompleted ? (
                                   <Link
                                     onClick={() => {
                                       localStorage.setItem(
@@ -887,7 +889,7 @@ const WeekDetails = ({
                               <div className="">
                                 {(isPreviousTaskCompleted &&
                                   isPrevChapterCompleted) ||
-                                !task?.taskDrip ? (
+                                  !task?.taskDrip ? (
                                   <Link
                                     onClick={() => {
                                       localStorage.setItem(
