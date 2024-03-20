@@ -326,6 +326,7 @@ const Payment = () => {
           saveUser(email);
         });
       }
+      setLoginOpen(false)
     } catch (error) {
       // Handle any other errors that may occur during the Axios request
       console.error("Error during Axios request:", error);
@@ -375,6 +376,7 @@ const Payment = () => {
         } else {
           saveUser(email);
         }
+        setLoginOpen(false)
       })
       .catch((error) => {
         console.error(error);
@@ -415,6 +417,7 @@ const Payment = () => {
               }
             );
           }
+          setRegisterOpen(false)
         })
         .catch((error) => {
           console.error(error);
@@ -462,6 +465,7 @@ const Payment = () => {
           } else {
             saveUser(email);
           }
+          setRegisterOpen(false)
         })
         .catch((error) => {
           console.error(error);
