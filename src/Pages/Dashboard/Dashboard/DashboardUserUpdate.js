@@ -217,6 +217,7 @@ const DashboardUserUpdate = ({
                     className="cursor-pointer py-2 text-[#6A6A6A] text-[14px] font-[400] "
                     onClick={() => {
                       setSelectedCourse(option);
+                      setCompletionPercentage(0);
                       localStorage.setItem("course", option?.courseFullName);
                       setIsOpen(false);
                     }}
