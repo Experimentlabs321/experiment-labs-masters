@@ -218,6 +218,7 @@ const DashboardUserUpdate = ({
                     onClick={() => {
                       setSelectedCourse(option);
                       localStorage.setItem("course", option?.courseFullName);
+                      setIsOpen(false);
                     }}
                   >
                     {option?.courseFullName}

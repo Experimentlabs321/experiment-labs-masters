@@ -390,6 +390,7 @@ const Aside = ({
                                   "task",
                                   JSON.stringify(task)
                                 );
+                                setToggleButton(false);
                               }}
                               className={`${
                                 openTask?.taskId === task?.taskId
@@ -640,6 +641,8 @@ const Aside = ({
                                     );
                                   } else
                                     toast.error("Complete the Previous Task");
+
+                                  setToggleButton(false);
                                 }}
                                 className={`${
                                   openTask?.taskId === task?.taskId
