@@ -287,21 +287,21 @@ const Profile = () => {
           )}
         </div>
         <div
-          style={{ width: `80%`, height: "70vh" }}
+          style={{ height: "70vh" }}
           className="overflow-x-auto mx-24"
         >
-          <table className="min-w-full font-sans bg-white border border-gray-300">
+          <table className="min-w-full font-sans bg-white border border-gray-300 table-fixed">
             <thead className="bg-gray-800 text-white sticky top-0">
-              <tr>
-                <th className="py-3 px-6 border-b text-left">Course Name</th>
-                <th className="py-3 px-6 border-b text-left">
+              <tr className="w-full">
+                <th className="w-1/5 py-3 px-6 border-b text-left">Course Name</th>
+                <th className="w-1/5 py-3 px-6 border-b text-left">
                   Course Category
                 </th>
-                <th className="py-3 px-6 border-b text-left">
+                <th className="w-1/5 py-3 px-6 border-b text-left">
                   Organization Name
                 </th>
-                <th className="py-3 px-6 border-b text-left">Start Date</th>
-                <th className="py-3 px-6 border-b text-left">End Date</th>
+                <th className="w-1/5 py-3 px-6 border-b text-left">Start Date</th>
+                <th className="w-1/5 py-3 px-6 border-b text-left">End Date</th>
               </tr>
             </thead>
             <tbody>
@@ -365,7 +365,7 @@ const Profile = () => {
                   <React.Fragment key={index}> {/* Correct placement of key prop */}
                     <tr
                       key={index}
-                      className={"bg-gray-200"}
+                      className={"bg-gray-200 w-full"}
                     >
                       <td className="py-4 px-6 border-b text-left">
                         {data?.courseFullName || "Not Available"}
@@ -383,28 +383,21 @@ const Profile = () => {
                         {endDate.toLocaleDateString() || "Not Available"}
                       </td>
                     </tr>
-                    <tr
-                      className="bg-sky-600 text-white"
-                      onClick={() => toggleCourseDetails(data._id)}
-                      style={{ cursor: "pointer" }}
-                    >
-                      <td colSpan="5" className="py-2 px-6 border-b">
+                    <tr className="bg-sky-600 text-white cursor-pointer" onClick={() => toggleCourseDetails(data._id)}>
+                      <td colSpan="5" className="py-2 px-6 border-b text-center">
                         <div className="flex justify-center items-center gap-2 w-full">
-                          <div className="text-center flex flex-1 justify-center items-center">
-                            <span>Progress Details: {data?.courseFullName || "Not Available"}</span>
-                          </div>
-                          <div>
-                            {isExpanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                          </div>
+                          <span>Progress Details: {data?.courseFullName || "Not Available"}</span>
+                          {isExpanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                         </div>
                       </td>
                     </tr>
                     {isExpanded && (
                       <>
-                        <tr className={"bg-gray-100"}>
+                        <tr className={"bg-gray-100  sticky top-0"}>
                           <th className="py-2 px-5 border-b text-left">Week</th>
                           <th className="py-2 px-5 border-b text-left">Chapter</th>
                           <th className="py-2 px-5 border-b text-left">Task</th>
+                          <th className="py-2 px-5 border-b text-left">Completion Status</th>
                           <th className="py-2 px-5 border-b text-left">Deadline for completion</th>
                           <th className="py-2 px-5 border-b text-left">WA/Email Nudge</th>
                         </tr>
