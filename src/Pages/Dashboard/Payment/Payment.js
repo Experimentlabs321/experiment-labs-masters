@@ -840,18 +840,11 @@ const Payment = () => {
               </div>
               <div className="max-w-[350px] min-w-[350px]">
                 <div className="mt-3">
-                  <h1 className=" text-black text-base font-[500] ">
-                    Select Batch
+                  <h1 className=" text-black text-base font-[500] mb-3">
+                    <div className="w-1/3 h-8 bg-gray-200 rounded-lg"></div>
                   </h1>
                   <div className="flex flex-wrap">
-                    <select
-                      className="mt-1 p-2 border w-full rounded-md bg-white"
-                      onChange={(e) =>
-                        setSelectedBatch(batchesData[e.target.value])
-                      }
-                    >
-                      <option className="hidden">Select Batch</option>
-                    </select>
+                    <div className="w-full h-10 bg-gray-400 rounded-lg"></div>
                   </div>
                 </div>
               </div>
