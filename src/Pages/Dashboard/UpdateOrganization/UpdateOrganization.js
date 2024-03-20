@@ -599,7 +599,7 @@ const UpdateOrganization = () => {
                   type="text"
                   defaultValue={courseAccessUrl}
                   onChange={(e) => setCourseAccessUrl(courseAccessUrl)}
-                  name="orgRootUrl"
+                  name="courseAccessUrl"
                   className="border rounded-md max-w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]"
                 />
               </div>
@@ -743,7 +743,7 @@ const UpdateOrganization = () => {
               </div>
 
               <input
-                className="bg-green text-white py-3 px-4 font-bold rounded-lg mb-5"
+                className="bg-green text-white py-3 px-4 font-bold rounded-lg mb-5 cursor-pointer"
                 value={itemDetails?.save ? itemDetails?.save :"Save"}
                 type="submit"
               />
