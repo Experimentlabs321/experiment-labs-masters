@@ -93,7 +93,7 @@ const BundlePayment = () => {
     day: "numeric",
   };
 
-  const handleApplyCoupon = () => {
+  const handleApplyCoupon = (coupon) => {
     const filteredCoupon = offers.filter(
       (offer) => offer.code === coupon && offer.disabled !== true
     );
@@ -108,8 +108,7 @@ const BundlePayment = () => {
         discountAmount = +maxDiscountValue;
 
       // console.log("Discount Amount", discountAmount);
-      if (+minCourseValue <= +course?.price)
-        setCouponDiscount(discountAmount);
+      if (+minCourseValue <= +course?.price) setCouponDiscount(discountAmount);
       else {
         Swal.fire({
           title: `Error`,
@@ -131,7 +130,7 @@ const BundlePayment = () => {
     console.log("Data =============>", data);
     Loading();
 
-    if ((+course?.price - +couponDiscount) === 0) {
+    if (+course?.price - +couponDiscount === 0) {
       const enrollData = {
         courses: course?.courses, // Array of objects, each containing courseId and batchId
         coupon: coupon || "",
@@ -476,7 +475,7 @@ const BundlePayment = () => {
                         </div>
                       </div>
                       <button
-                        onClick={handleApplyCoupon}
+                        onClick={() => handleApplyCoupon(coupon)}
                         className=" text-[#5e52ff] bg-[#5e52ff0c] p-2 rounded-sm"
                       >
                         Apply
@@ -497,15 +496,18 @@ const BundlePayment = () => {
                               <div
                                 key={index}
                                 onClick={() => {
-                                  +offer?.maxUseCount < +offer?.usedCount
-                                    ? Swal.fire({
+                                  if (+offer?.maxUseCount < +offer?.usedCount) {
+                                    Swal.fire({
                                       icon: "error",
                                       title: "Error",
                                       text: "Coupon is already been used Maximum Time",
-                                    })
-                                    : setCoupon(offer?.code);
+                                    });
+                                  } else {
+                                    setCoupon(offer?.code);
+                                    handleApplyCoupon(offer?.code);
+                                  }
                                 }}
-                                className="bg-gradient-to-b from-white to-[#ebf1ff] rounded-[7px] border border-blue px-[10px] py-[12px] min-w-[300px]"
+                                className="bg-gradient-to-b cursor-pointer from-white to-[#ebf1ff] rounded-[7px] border border-blue px-[10px] py-[12px] min-w-[300px]"
                               >
                                 <div className="flex items-center justify-between uppercase text-[1.25rem] font-bold">
                                   <h3>{offer?.discountPercent}%</h3>
@@ -527,7 +529,8 @@ const BundlePayment = () => {
                                 </p>
                                 <p className="mt-[10px] font-[600] text-[1.07rem]">
                                   Valid for first{" "}
-                                  {(+offer?.maxUseCount) - (+offer?.usedCount || 0)}{" "}
+                                  {+offer?.maxUseCount -
+                                    (+offer?.usedCount || 0)}{" "}
                                   learners.{" "}
                                 </p>
                               </div>
@@ -561,7 +564,10 @@ const BundlePayment = () => {
                             >
                               <td>Coupon Discount</td>
                               <td className="py-2" id="coupon-discount">
-                                ₹{couponDiscount >= 0 ? Math.round(couponDiscount) : "N/A"}
+                                ₹
+                                {couponDiscount >= 0
+                                  ? Math.round(couponDiscount)
+                                  : "N/A"}
                               </td>
                             </tr>
                           </tbody>
@@ -593,33 +599,31 @@ const BundlePayment = () => {
                         </h4>
                       </div>
                       <div>
-
-                        {
-                          +course?.price - +couponDiscount === 0 ?
-                            <button
-                              onClick={
-                                user
-                                  ? () => handleEnroll(userInfo)
-                                  : () => setLoginOpen(true)
-                              }
-                              id="enroll-now-btn"
-                              className=" px-[18px] py-[9px] text-white font-bold bg-blue rounded-md"
-                            >
-                              Enroll Now
-                            </button>
-                            :
-                            <button
-                              onClick={
-                                user
-                                  ? () => handleEnroll(userInfo)
-                                  : () => setLoginOpen(true)
-                              }
-                              id="enroll-now-btn"
-                              className=" px-[18px] py-[9px] text-white font-bold bg-blue hover:bg-opacity-70 rounded-md"
-                            >
-                              Pay Now
-                            </button>
-                        }
+                        {+course?.price - +couponDiscount === 0 ? (
+                          <button
+                            onClick={
+                              user
+                                ? () => handleEnroll(userInfo)
+                                : () => setLoginOpen(true)
+                            }
+                            id="enroll-now-btn"
+                            className=" px-[18px] py-[9px] text-white font-bold bg-blue rounded-md"
+                          >
+                            Enroll Now
+                          </button>
+                        ) : (
+                          <button
+                            onClick={
+                              user
+                                ? () => handleEnroll(userInfo)
+                                : () => setLoginOpen(true)
+                            }
+                            id="enroll-now-btn"
+                            className=" px-[18px] py-[9px] text-white font-bold bg-blue hover:bg-opacity-70 rounded-md"
+                          >
+                            Pay Now
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>

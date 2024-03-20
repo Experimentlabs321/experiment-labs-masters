@@ -328,7 +328,7 @@ const CertificateEditor = ({
     }
   };
 
-  console.log(certificateTemplate);
+  console.log(selectedCourse, selectedBatch);
 
   return (
     <div className="col-span-3 border-l border-black h-[100vh] overflow-y-scroll p-1 relative flex justify-center items-start">
@@ -385,7 +385,10 @@ const CertificateEditor = ({
             </label>
             <select
               className="mt-1 p-2 border w-full rounded-md bg-white"
-              onChange={(e) => setSelectedCourse(courses[e.target.value])}
+              onChange={(e) => {
+                setSelectedCourse(courses[e.target.value]);
+                setSelectedBatch({});
+              }}
             >
               <option className="hidden">Select Course</option>
               {courses?.map((item, index) => (
@@ -405,7 +408,7 @@ const CertificateEditor = ({
           </div>
 
           {selectedCourse?._id && (
-            <div className="mb-4">
+            <div key={selectedCourse?._id} className="mb-4">
               <label
                 htmlFor="selectBatch"
                 className="block text-sm font-medium text-gray-700"

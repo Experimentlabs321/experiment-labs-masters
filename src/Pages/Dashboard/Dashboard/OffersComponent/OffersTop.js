@@ -200,7 +200,10 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
     setBundleInput("");
     setBundleDropdown(false);
 
-    if (!selectedBundles?.includes(selectedBundle) && !bundleIds?.includes(selectedBundle._id)) {
+    if (
+      !selectedBundles?.includes(selectedBundle) &&
+      !bundleIds?.includes(selectedBundle._id)
+    ) {
       setSelectedBundles([...selectedBundles, selectedBundle]);
       setBundleIds([...bundleIds, selectedBundle._id]);
     }
@@ -304,7 +307,7 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
                 className="mt-1 p-2 border border-gray-300 rounded-md w-full"
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
-                maxLength="8"
+                maxLength="10"
               />
               <button
                 onClick={handleGenerateCode}
@@ -455,9 +458,10 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
                             return (
                               <div
                                 onClick={() => handleBatches(batch)}
-                                className={`px-2 py-1 border-2 rounded-full cursor-pointer ${selectedBatches?.includes(batch._id) &&
+                                className={`px-2 py-1 border-2 rounded-full cursor-pointer ${
+                                  selectedBatches?.includes(batch._id) &&
                                   "bg-[#39249957]"
-                                  }`}
+                                }`}
                                 key={batchIndex}
                               >
                                 {batch.batchName}
@@ -490,8 +494,9 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
               id="discountPercent"
               value={discountPercent}
               onChange={(e) => setDiscountPercent(e.target.value)}
-              className={`mt-1 p-2 border ${errors.discountPercent ? "border-red-500" : "border-gray-300"
-                } rounded-md w-full`}
+              className={`mt-1 p-2 border ${
+                errors.discountPercent ? "border-red-500" : "border-gray-300"
+              } rounded-md w-full`}
             />
             {errors.discountPercent && (
               <p className="text-red-500 text-sm">{errors.discountPercent}</p>
@@ -511,8 +516,9 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
               id="maxDiscountValue"
               value={maxDiscountValue}
               onChange={(e) => setMaxDiscountValue(e.target.value)}
-              className={`mt-1 p-2 border ${errors.maxDiscountValue ? "border-red-500" : "border-gray-300"
-                } rounded-md w-full`}
+              className={`mt-1 p-2 border ${
+                errors.maxDiscountValue ? "border-red-500" : "border-gray-300"
+              } rounded-md w-full`}
             />
             {errors.maxDiscountValue && (
               <p className="text-red-500 text-sm">{errors.maxDiscountValue}</p>
@@ -532,8 +538,9 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
               id="minCourseValue"
               value={minCourseValue}
               onChange={(e) => setMinCourseValue(e.target.value)}
-              className={`mt-1 p-2 border ${errors.minCourseValue ? "border-red-500" : "border-gray-300"
-                } rounded-md w-full`}
+              className={`mt-1 p-2 border ${
+                errors.minCourseValue ? "border-red-500" : "border-gray-300"
+              } rounded-md w-full`}
             />
             {errors.minCourseValue && (
               <p className="text-red-500 text-sm">{errors.minCourseValue}</p>
@@ -553,8 +560,9 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
               id="validTill"
               value={validTill}
               onChange={(e) => setValidTill(e.target.value)}
-              className={`mt-1 p-2 border ${errors.validTill ? "border-red-500" : "border-gray-300"
-                } rounded-md w-full`}
+              className={`mt-1 p-2 border ${
+                errors.validTill ? "border-red-500" : "border-gray-300"
+              } rounded-md w-full`}
               placeholder="yyyy-mm-dd"
               min={new Date().toISOString().split("T")[0]}
             />
@@ -576,8 +584,9 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
               id="maxUseCount"
               value={maxUseCount}
               onChange={(e) => setMaxUseCount(e.target.value)}
-              className={`mt-1 p-2 border ${errors.maxUseCount ? "border-red-500" : "border-gray-300"
-                } rounded-md w-full`}
+              className={`mt-1 p-2 border ${
+                errors.maxUseCount ? "border-red-500" : "border-gray-300"
+              } rounded-md w-full`}
             />
             {errors.maxUseCount && (
               <p className="text-red-500 text-sm">{errors.maxUseCount}</p>

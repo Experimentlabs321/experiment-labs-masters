@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
-export default function WeekChapData({ weekData }) {
+import { format, parseISO } from 'date-fns';
+export default function WeekChapData({ weekData, userId }) {
   const [chapters, setChapters] = useState([]);
 
   useEffect(() => {
@@ -9,7 +9,7 @@ export default function WeekChapData({ weekData }) {
       try {
         const response = await axios.get(`${process.env.REACT_APP_SERVER_API}/api/v1/chapters/weekId/${weekData._id}`);
         // Assuming response.data is an array of chapters
-        setChapters(response.data); 
+        setChapters(response.data);
       } catch (error) {
         console.error(`Error fetching chapters for weekId: ${weekData._id}`, error);
       }
@@ -19,20 +19,19 @@ export default function WeekChapData({ weekData }) {
       fetchChapterDetails();
     }
   }, [weekData]);
-
   return (
     <>
       {chapters.map((chapter, chapterIndex) => {
         // We'll use the chapter index to check if we need to add a rowSpan for the week name
         const isFirstChapter = chapterIndex === 0;
         const chapterTaskRows = chapter.tasks ? chapter.tasks.length : 0;
-
-        return chapter.tasks.map((task, taskIndex) => (
+        console.log(chapter);
+        return chapter?.tasks?.map((task, taskIndex) => (
           <tr key={task._id} className="border-b">
             {isFirstChapter && taskIndex === 0 && (
               // rowspan for the week name should be the total count of all tasks in all chapters
-              <td rowSpan={chapters.reduce((sum, curr) => sum + (curr.tasks ? curr.tasks.length : 0), 0)} 
-              className="min-w-[120px] py-2 px-5 text-left border-r align-top">
+              <td rowSpan={chapters.reduce((sum, curr) => sum + (curr.tasks ? curr.tasks.length : 0), 0)}
+                className="min-w-[120px] py-2 px-5 text-left border-r align-top">
                 {weekData.weekName}
               </td>
             )}
@@ -42,8 +41,29 @@ export default function WeekChapData({ weekData }) {
                 {chapter.chapterName}
               </td>
             )}
-            <td className="min-w-[120px] py-2 px-5 text-left">{task.taskName}</td>
+            <td className="min-w-[120px] py-2 px-5 border-r text-left">{task.taskName}</td>
             {/* Additional task details columns can be added here */}
+            <td className="py-2 px-5 border-r text-left">
+              {
+                // Find if the userId matches any participantId in the task's participants array
+                task.participants?.find(participant => participant.participantId === userId)
+                  ? task.participants.find(participant => participant.participantId === userId).status
+                  : 'Yet to start'
+              }
+            </td>
+            {isFirstChapter && taskIndex === 0 && (
+              // rowspan for the week name should be the total count of all tasks in all chapters
+
+              <td rowSpan={chapters.reduce((sum, curr) => sum + (curr.tasks ? curr.tasks.length : 0), 0)}
+                className="min-w-[120px] py-2 px-5 text-left border-r align-top">
+                {
+                  task.participants?.find(participant => participant.participantId === userId)?.status === 'Completed'
+                    ? 'None'
+                    : weekData?.weekEndDate // Directly show weekEndDate without formatting
+                }
+              </td>
+            )}
+
           </tr>
         ));
       })}
