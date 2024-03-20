@@ -402,7 +402,7 @@ const Profile = () => {
                           <th className="py-2 px-5 border-b text-left">WA/Email Nudge</th>
                         </tr>
                         {courseWeekData?.map((weekDetail, index) => (
-                          <WeekChapData weekData={weekDetail} serial={index} key={index} />
+                          <WeekChapData userId={profileInfo?._id} weekData={weekDetail} serial={index} key={index} />
                         ))}
 
                       </>
