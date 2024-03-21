@@ -141,7 +141,10 @@ const CourseAccess = () => {
           setShowCourses(response?.data);
           Loading().close();
         })
-        .catch((error) => console.error(error));
+        .catch((error) => {
+          console.error(error);
+          Loading().close();
+        });
     } else if (stateParams === "allCourses") {
       Loading();
       axios
@@ -153,7 +156,10 @@ const CourseAccess = () => {
           setFilterData(response?.data);
           Loading().close();
         })
-        .catch((error) => console.error(error));
+        .catch((error) => {
+          console.error(error);
+          Loading().close();
+        });
     } else if (stateParams === "bundles") {
       Loading();
       axios
@@ -164,7 +170,10 @@ const CourseAccess = () => {
           setShowCourses(response?.data);
           Loading().close();
         })
-        .catch((error) => console.error(error));
+        .catch((error) => {
+          console.error(error);
+          Loading().close();
+        });
     }
   }, [userInfo, stateParams]);
 
@@ -372,7 +381,7 @@ const CourseAccess = () => {
           </div>
 
           <div className="mb-[60px] mt-[20px] ">
-            {stateParams === "allCourses" && (
+            {stateParams === "allCourses" && Role === "admin" && (
               <button
                 onClick={() => {
                   setStateParams("bundles");

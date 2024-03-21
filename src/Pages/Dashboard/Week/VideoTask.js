@@ -11,13 +11,11 @@ import Loading from "../../Shared/Loading/Loading";
 import Quiz from "./SubFile/Shared/Quiz";
 import { saveAs } from "file-saver";
 const VideoTask = ({ taskData, count, setCount }) => {
-  console.log(taskData);
   const navigate = useNavigate();
   const [currentTime, setCurrentTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const { userInfo, user } = useContext(AuthContext);
   const [durations, setDuration] = useState(0);
-  console.log("durations ", durations);
   if (userInfo.role !== "admin") {
     window.addEventListener("contextmenu", (e) => {
       e.preventDefault();
@@ -47,8 +45,6 @@ const VideoTask = ({ taskData, count, setCount }) => {
       )
     )
       setCompletionStatus(true);
-
-    console.log(taskData);
   }, [taskData, user]);
 
   const videoRef = useRef(null);
@@ -95,7 +91,7 @@ const VideoTask = ({ taskData, count, setCount }) => {
         const durationWatched =
           (myCurrentTime.getTime() - startTime.getTime()) / 1000;
         setTotalWatchedTime(totalWatchedTime + durationWatched);
-        console.log("Api Called Duration Added: ", durationWatched);
+        // console.log("Api Called Duration Added: ", durationWatched);
       }
       setStartTime(myCurrentTime);
     } catch (error) {
@@ -105,7 +101,7 @@ const VideoTask = ({ taskData, count, setCount }) => {
 
   const setupEventListeners = (video) => {
     // Add the console log here to check the video object
-    console.log(video, video instanceof HTMLVideoElement);
+    // console.log(video, video instanceof HTMLVideoElement);
 
     if (!(video instanceof HTMLVideoElement)) {
       console.error(
@@ -202,7 +198,7 @@ const VideoTask = ({ taskData, count, setCount }) => {
       setOverlayVisible(openQuiz);
     }
   };
-  console.log(taskData?.additionalFiles);
+  // console.log(taskData?.additionalFiles);
   const [downloadProgress, setDownloadProgress] = useState(0);
   const [cancelTokenSource, setCancelTokenSource] = useState(null);
 
@@ -303,7 +299,7 @@ const VideoTask = ({ taskData, count, setCount }) => {
                     onProgress={handleProgress}
                     onPause={() => {
                       if (durations) {
-                        console.log("Watched duration: ", durations);
+                        // console.log("Watched duration: ", durations);
                         setDuration(durations);
                       }
                     }}

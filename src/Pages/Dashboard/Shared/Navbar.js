@@ -8,8 +8,7 @@ const Navbar = () => {
   const { userInfo } = useContext(AuthContext);
   const [orgData, setOrgData] = useState({});
   const getInitials = () => {
-    const firstNameInitial =
-      userInfo?.name?.charAt(0)?.toUpperCase() || "";
+    const firstNameInitial = userInfo?.name?.charAt(0)?.toUpperCase() || "";
     const lastNameInitial = userInfo?.lastName?.charAt(0)?.toUpperCase() || "";
     return `${firstNameInitial}${lastNameInitial}`;
   };
@@ -36,9 +35,12 @@ const Navbar = () => {
       )
       .then((response) => {
         setOrgData(response?.data);
+        localStorage.setItem("organizationLogo", response?.data?.org_logo);
       })
       .catch((error) => console.error(error));
   }, [userInfo]);
+
+  const orgLogo = localStorage.getItem("organizationLogo");
   return (
     <nav className={`bg-[#151718] fixed z-30 w-full }`}>
       <div className="px-[10px] py-[18px] lg:px-10 lg:pl-3">
@@ -69,7 +71,7 @@ const Navbar = () => {
             <img
               className="h-6 lg:h-8"
               // className="w-[100px]"
-              src={orgData?.org_logo}
+              src={orgLogo}
               alt="icon"
             />
           </div>
@@ -92,20 +94,22 @@ const Navbar = () => {
                 Notification
               </h1>
             </div> */}
-                  {
-                    userInfo?.profileImg ? <img
-                    className="w-[59px] h-[59px] md:w-[64px] md:h-[64px]  lg:w-[80px] rounded-full lg:h-[82px]"
-                    src={userInfo?.profileImg}
-                    alt="user"
-                  /> : <div className="w-[59px] h-[59px] md:w-[64px] md:h-[64px]  lg:w-[80px] rounded-full lg:h-[82px] object-contain object-center  overflow-hidden">
-                      <div
-                        className="w-full h-full flex items-center text-red-50 justify-center text-xl md:text-3xl font-bold"
-                        style={{ backgroundColor }}
-                      >
-                        {getInitials()}
-                      </div>
-                    </div>
-                  }
+            {userInfo?.profileImg ? (
+              <img
+                className="w-[59px] h-[59px] md:w-[64px] md:h-[64px]  lg:w-[80px] rounded-full lg:h-[82px]"
+                src={userInfo?.profileImg}
+                alt="user"
+              />
+            ) : (
+              <div className="w-[59px] h-[59px] md:w-[64px] md:h-[64px]  lg:w-[80px] rounded-full lg:h-[82px] object-contain object-center  overflow-hidden">
+                <div
+                  className="w-full h-full flex items-center text-red-50 justify-center text-xl md:text-3xl font-bold"
+                  style={{ backgroundColor }}
+                >
+                  {getInitials()}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
