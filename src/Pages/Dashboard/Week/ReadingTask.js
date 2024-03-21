@@ -9,6 +9,7 @@ import icon from "../../../icon192.png";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../Shared/Loading/Loading";
 import { saveAs } from "file-saver";
+import { CircularProgress } from "@mui/material";
 
 const ReadingTask = ({ taskData, count, setCount }) => {
   const navigate = useNavigate();
@@ -115,6 +116,7 @@ const ReadingTask = ({ taskData, count, setCount }) => {
   console.log(taskData);
   const [downloadProgress, setDownloadProgress] = useState(0);
   const [cancelTokenSource, setCancelTokenSource] = useState(null);
+  const [iframeLoaded, setIframeLoaded] = useState(false);
 
   const handleDownload = async () => {
     try {
@@ -216,8 +218,18 @@ const ReadingTask = ({ taskData, count, setCount }) => {
         </button>
       )}
 
+      {!iframeLoaded && (
+        <div className=" flex align-items-center my-5 py-5 w-full">
+          <CircularProgress className="w-full mx-auto" />
+        </div>
+      )}
+
       {additionalFile && (
-        <div className="min-h-[72vh] mb-[60px]">
+        <div
+          key={taskData?._id}
+          className="min-h-[72vh] mb-[60px]"
+          style={{ display: iframeLoaded ? "block" : "none" }}
+        >
           <div className="container mx-auto relative">
             {isOverlayVisible && (
               <div
@@ -236,14 +248,22 @@ const ReadingTask = ({ taskData, count, setCount }) => {
                   <img
                     src={taskData?.additionalFiles}
                     alt="Img"
+                    onLoad={() => {
+                      console.log("iframe loaded");
+                      setIframeLoaded(true);
+                    }}
                     className="w-[90%] mx-auto h-[68vh] border-[10px] border-b-50 rounded-lg border-[#292929]"
                   />
                 </div>
               ) : (
                 <iframe
-                  id="document"
-                  key={taskData?._id || additionalFile}
-                  src={additionalFile}
+                  id={taskData?._id}
+                  key={taskData?._id}
+                  src={additionalFile && additionalFile}
+                  onLoad={() => {
+                    console.log("iframe loaded");
+                    setIframeLoaded(true);
+                  }}
                   title="Your Document"
                   className="h-[68vh] mx-auto border-x-30 mt-40 border-[10px] border-b-50 rounded-lg border-[#292929]"
                   width="90%"
@@ -278,7 +298,7 @@ const ReadingTask = ({ taskData, count, setCount }) => {
               </button>
               {cancelTokenSource && (
                 <button
-                  className="bg-red text-white p-3 rounded-lg text-xl ml-4"
+                  className="bg-red-400 text-white p-3 rounded-lg text-xl ml-4"
                   onClick={() => {
                     cancelTokenSource.cancel("Download cancelled by user");
                   }}
