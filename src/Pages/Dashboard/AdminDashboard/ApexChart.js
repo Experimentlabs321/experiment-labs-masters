@@ -59,7 +59,6 @@ const ApexChart = ({ selectedFilter, students, setTotalStudents, setTotalEnrolle
       const dayArr = dayAndStudentCountArray?.map(item => item.day);
       const totalStudentsPerDay = dayAndStudentCountArray?.map(item => item.totalStudents);
 
-
       const totalStudentsSum = totalStudentsPerDay?.reduce((total, count) => total + count, 0);
 
       setSevenDayArr(dayArr);
