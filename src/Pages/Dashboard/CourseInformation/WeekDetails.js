@@ -573,7 +573,7 @@ const WeekDetails = ({
                                     JSON.stringify(courseData?._id)
                                   );
                                 }}
-                                to={`/week/${currentWeek?._id}`}
+                                to={`/taskDetails/${task?.taskId}?taskType=${task?.taskType}`}
                                 className="text-[#3E4DAC] text-[22px] font-[700] "
                               >
                                 {task?.taskName}
@@ -863,7 +863,7 @@ const WeekDetails = ({
                                         JSON.stringify(courseData?._id)
                                       );
                                     }}
-                                    to={`/week/${currentWeek?._id}`}
+                                    to={`/taskDetails/${task?.taskId}?taskType=${task?.taskType}`}
                                     className="text-[#3E4DAC] text-[22px] font-[700]"
                                   >
                                     {task?.taskName}
@@ -908,7 +908,7 @@ const WeekDetails = ({
                                         JSON.stringify(courseData?._id)
                                       );
                                     }}
-                                    to={`/week/${currentWeek?._id}`}
+                                    to={`/taskDetails/${task?.taskId}?taskType=${task?.taskType}`}
                                     className="text-[#3E4DAC] text-[22px] font-[700]"
                                   >
                                     {task?.taskName}
