@@ -104,7 +104,7 @@ const AddingEditingCalQues = () => {
       },
     };
 
-    const course = await axios.post(
+ /*    const course = await axios.post(
       `${process.env.REACT_APP_BACKEND_API}/courses`,
       addCourse
     );
@@ -112,7 +112,7 @@ const AddingEditingCalQues = () => {
     if (course?.data?.acknowledged) {
       toast.success("Course added Successfully");
       form.reset();
-    }
+    } */
 
     console.log("Add Course----->", addCourse);
   };

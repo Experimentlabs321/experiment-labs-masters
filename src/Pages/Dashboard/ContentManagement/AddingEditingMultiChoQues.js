@@ -4,18 +4,12 @@ import arrowDown from "../../../assets/SkillsManagement/arrow.svg";
 import arrowright from "../../../assets/SkillsManagement/arrowright.svg";
 import required from "../../../assets/ContentManagement/required.png";
 import back from '../../../assets/ContentManagement/back.svg'
-
-
-import Badge from "@mui/material/Badge";
-import MailIcon from "@mui/icons-material/Mail";
-import SearchIcon from "@mui/icons-material/Search";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import { Link } from "react-router-dom";
 import Level from "../Dashboard/Level";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { AuthContext } from "../../../contexts/AuthProvider";
-
+import TextEditor from "../../Shared/TextEditor/TextEditor";
 
 
 
@@ -28,8 +22,20 @@ const AddingEditingMultiChoQues = () => {
     ///
     const [isOpenGeneralCourseInfo, setIsOpenGeneralCourseInfo] = useState(true);
     const [isOpenCourseFormat, setIsOpenCourseFormat] = useState(false);
-    
+    const [isShuffleChecked, setShuffleChecked] = useState(false);
+    const [selectedOneOrMultipleOption, setSelectedOneOrMultipleOption] = useState('one');
+    const [questionText, setQuestionText] = useState("");
+    const [generalFeedback, setGeneralFeedback] = useState("");
 
+
+
+    const handleShuffleCheckboxChange = (event) => {
+        setShuffleChecked(event.target.checked);
+    };
+
+    const handleRadioOneOrMultipleChange = (event) => {
+        setSelectedOneOrMultipleOption(event.target.value);
+    };
 
     const toggleDropdownCourseSelection = () => {
         setIsOpenGeneralCourseInfo(!isOpenGeneralCourseInfo);
@@ -37,9 +43,26 @@ const AddingEditingMultiChoQues = () => {
     const toggleDropdownCourseFormat = () => {
         setIsOpenCourseFormat(!isOpenCourseFormat);
     };
-   
+
+    /* const [divCount, setDivCount] = useState(1); 
+    const [options, setOptions] = useState([{ answerFormula: '', feedback: '', answer: '' }]);  */
+    const [divCount, setDivCount] = useState(2); // Initialize with 2 div elements
+    const [options, setOptions] = useState(Array.from({ length: 2 }, () => ({ answerFormula: '', feedback: '', answer: '' }))); // Initialize with 2 sets of empty answers
 
 
+    // Function to add more div elements
+    const addMoreDiv = (e) => {
+        e.preventDefault();
+        setDivCount(prevCount => prevCount + 1); // Increment the count by 1
+        setOptions(prevOptions => [...prevOptions, { answerFormula: '', feedback: '', answer: '' }]); // Add a new object to the Options array
+    };
+
+    // Function to handle input changes in each div
+    const handleInputChange = (index, value, name) => {
+        const newOptions = [...options];
+        newOptions[index][name] = value;
+        setOptions(newOptions);
+    };
     // add course category
     const [isOpenAddCourseCategory, setIsOpenAddCourseCategory] = useState(false);
 
@@ -51,7 +74,7 @@ const AddingEditingMultiChoQues = () => {
         setIsOpenAddCourseCategory(false);
     };
 
- 
+    console.log(options)
 
 
     const { user } = useContext(AuthContext);
@@ -63,75 +86,31 @@ const AddingEditingMultiChoQues = () => {
         event.preventDefault();
         const form = event.target;
 
-        const questionNumber = form.questionNumber?.value;
-        const questionTitle = form.questionTitle?.value;
-        const courseStartingDate = form.courseStartingDate?.value;
-        //  const courseStartingTime = form.courseStartingTime?.value;
-        const courseEndingDate = form.courseEndingDate?.value;
-        //  const courseEndingTime = form.courseEndingTime?.value;
-        const defaultMarks = form.defaultMarks?.value;
-        const courseCategory = +form.courseCategory?.value;
-        const questionStatus = +form.questionStatus?.value;
-        const generalFeedback = form.generalFeedback?.value;
-        const courseFormat = form.courseFormat?.value;
-        const gradesFormat = form.gradesFormat?.value;
-        const groups = form.groups?.value;
-        const showactivitydates = +form.showactivitydates?.value;
-        const numberOfWeeks = +form.numberofWeeks?.value;
-        // const weekChapterName = form.weekChapterName?.value;
-        const showactivityreports = +form.showactivityreports?.value;
-        const enableCompletionTracking = +form.enableCompletionTracking?.value;
-        // const certificateGeneration = form.certificateGeneration?.value;
-        const showactivitycompletionconditions =
-            +form.showactivitycompletionconditions?.value;
-        //  const showGradebooktostudents = form.showGradebooktostudents.value;
-        // const newCourseStartingDate = Math.floor(
-        //   new Date(courseStartingDate).getTime() / 1000
-        // );
-        // const newCourseEndingDate = Math.floor(
-        //   new Date(courseEndingDate).getTime() / 1000
-        // );
+        const questionName = form.questionName?.value;
 
-        const addCourse = {
-            questionNumber,
-            questionTitle,
-            courseStartingDate,
-            //  courseStartingTime,
-            courseEndingDate,
-            // courseEndingTime,
+        const defaultMarks = form.defaultMarks?.value;
+        const category = form.category?.value;
+        const questionStatus = form.questionStatus?.value;
+
+
+
+
+        const addQuestion = {
+            questionName,
+            questionText,
             defaultMarks,
-            courseCategory,
-            courseThumbnail: '',
-            questionStatus,
+            shuffleTheChoices: isShuffleChecked,
+            oneOrMultipleOption: selectedOneOrMultipleOption,
+            category,
             generalFeedback,
-            courseFormat,
-            gradesFormat,
-            groups,
-            showactivitydates,
-            numberOfWeeks,
-            // weekChapterName: formData,
-            showactivityreports,
-            enableCompletionTracking,
-            // certificateGeneration,
-            showactivitycompletionconditions,
-            //showGradebooktostudents,
-            // newCourseEndingDate,
-            // newCourseStartingDate,
-            creator: {
-                name: user?.displayName,
-                email: user?.email,
-                photoURL: user?.photoURL
-            }
+            questionStatus,
+            options,
+
+
+
+
         };
 
-        const course = await axios.post(`${process.env.REACT_APP_BACKEND_API}/courses`, addCourse);
-
-        if (course?.data?.acknowledged) {
-            toast.success("Course added Successfully");
-            form.reset();
-        }
-
-        console.log("Add Course----->", addCourse);
 
     };
 
@@ -139,11 +118,11 @@ const AddingEditingMultiChoQues = () => {
         <div>
             <Layout>
 
-                <div className='text-[#3E4DAC] text-[26px] font-bold  py-[35px] ps-[40px]'>
+                {/*  <div className='text-[#3E4DAC] text-[26px] font-bold  py-[35px] ps-[40px]'>
                     <p></p>
 
-                </div>
-                <div className='px-10 flex  justify-between pb-3 text-lg'>
+                </div> */}
+                {/*     <div className='px-10 flex  justify-between pb-3 text-lg'>
                     <Link to='/quizGeneralinfo'
                         onClick={() => handleTabClick('Quiz General Information')}
                         style={{
@@ -189,14 +168,14 @@ const AddingEditingMultiChoQues = () => {
                     >
                         Evaluation Parameter
                     </Link>
-                </div>
+                </div> */}
 
                 <div className="mx-10 mt-10">
                     <div className="flex justify-between items-center mb-10">
-                        <p className=" text-[26px] font-bold ">Adding/Editing Calculation Multiple Choice Question </p>
+                        <p className=" text-[26px] font-bold ">Adding/Editing Multiple choice Question </p>
                         <Link to='/manageQuestion' className='bg-[#3E4DAC] flex  px-4 py-2 rounded-lg text-[#fff]'>
-                            <img src={back} alt="back"/>
-                            <p className="">Back</p>
+                            <img src={back} alt="back" />
+                            {/* <p className="">Back</p> */}
                         </Link>
 
                     </div>
@@ -211,10 +190,10 @@ const AddingEditingMultiChoQues = () => {
                             </h1>
                             <p className="text-[25px] font-bold">General</p>
                             {!isOpenGeneralCourseInfo && (
-                                <img className="w-6" src={arrowright} alt="arrowRight"/>
+                                <img className="w-6" src={arrowright} alt="arrowRight" />
                             )}
 
-                            {isOpenGeneralCourseInfo && <img src={arrowDown} alt="arrowDown"/>}
+                            {isOpenGeneralCourseInfo && <img src={arrowDown} alt="arrowDown" />}
 
                             <i
                                 className={`dropdown-arrow ${isOpenGeneralCourseInfo ? "open" : ""
@@ -229,15 +208,15 @@ const AddingEditingMultiChoQues = () => {
                                             <p className="h-2 w-2 bg-black rounded-full"></p>
                                             <p className="font-bold text-lg me-[36px]">
                                                 {" "}
-                                                Question Number
+                                                Question Name
                                             </p>
                                             <img src={required} alt="required" />
                                         </div>
 
                                         <input
                                             required
-                                            className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                                            name="questionNumber"
+                                            className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                                            name="questionName"
                                             type="text"
                                             placeholder="Eg. Entrepreneurship Lab"
                                         />
@@ -248,18 +227,16 @@ const AddingEditingMultiChoQues = () => {
                                             <p className="h-2 w-2 bg-black rounded-full"></p>
                                             <p className="font-bold text-lg me-[36px]">
                                                 {" "}
-                                                Question Title
+                                                Question Text
                                             </p>
                                             <img src={required} alt="required" />
                                         </div>
 
-                                        <input
-                                            required
-                                            className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                                            name="questionTitle"
-                                            type="text"
-                                            placeholder="Eg. Entrepreneurship Lab"
-                                        />
+                                        <div className="w-[95%] mt-10">
+                                            <div className="bg-white text-black textEditor">
+                                                <TextEditor value={questionText} setValue={setQuestionText} />
+                                            </div>
+                                        </div>
                                     </div>
 
 
@@ -273,7 +250,7 @@ const AddingEditingMultiChoQues = () => {
                                         </div>
 
                                         <input
-                                            className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                                            className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                                             name="defaultMarks"
                                             type="text"
                                             placeholder="Eg. 2"
@@ -288,29 +265,40 @@ const AddingEditingMultiChoQues = () => {
                                                 One Or Multiple Answers ?
                                             </p>
                                             <div className="text-sm font-semibold flex items-center">
-                                                <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike" />
-                                                <label className=" ms-2" for="vehicle1"> Shuffle the choices ?</label>
+                                                <input
+                                                    type="checkbox"
+                                                    id="shuffleCheckbox"
+                                                    name="shuffleCheckbox"
+                                                    value="shuffleCheckbox"
+                                                    checked={isShuffleChecked}
+                                                    onChange={handleShuffleCheckboxChange}
+                                                />
+                                                <label className="ms-2" htmlFor="shuffleCheckbox"> Shuffle the choices ?</label>
                                             </div>
                                         </div>
 
-                                        <div className=" items-center flex gap-2  mt-2 ms-6  w-[319px] h-[50px] ps-2 text-[#535353] focus:outline-0 ">
+                                        <div className="items-center flex gap-2 mt-2 ms-6 w-[90%x] h-[50px] ps-2 text-[#535353] focus:outline-0">
                                             <div className="">
                                                 <input
                                                     type="radio"
                                                     id="One"
                                                     name="oneOrMultipleAnswers"
-                                                    value="1"
+                                                    value="one"
+                                                    checked={selectedOneOrMultipleOption === 'one'}
+                                                    onChange={handleRadioOneOrMultipleChange}
                                                 />
-                                                <lebel> One</lebel>
+                                                <label htmlFor="One"> One</label>
                                             </div>
-                                            <div className=" ms-[55px]">
+                                            <div className="ms-[55px]">
                                                 <input
                                                     type="radio"
                                                     id="Multiple"
                                                     name="oneOrMultipleAnswers"
-                                                    value="0"
+                                                    value="multiple"
+                                                    checked={selectedOneOrMultipleOption === 'multiple'}
+                                                    onChange={handleRadioOneOrMultipleChange}
                                                 />
-                                                <lebel> Multiple</lebel>
+                                                <label htmlFor="Multiple"> Multiple</label>
                                             </div>
                                         </div>
                                     </div>
@@ -328,14 +316,14 @@ const AddingEditingMultiChoQues = () => {
                                             <img src={required} alt="required" />
                                         </div>
 
-                                        <div className=" flex gap-2  mt-6 ms-6 border rounded-md w-[381px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]  ">
+                                        <div className=" flex gap-2  mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]  ">
                                             <select
                                                 required
                                                 className="w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold focus:outline-0"
                                                 name="category"
                                             // id="option"
                                             >
-                                                <option className="" value="1">
+                                                <option className="" value="Web Development">
                                                     Web Development
                                                 </option>
                                                 <option value="Parent"></option>
@@ -386,14 +374,7 @@ const AddingEditingMultiChoQues = () => {
                                         </div>
                                     </div>
 
-
-
-
-
-
-
                                     <div className="mt-20">
-
 
                                         <div className="mt-20">
                                             <div className="flex items-center gap-4">
@@ -403,12 +384,11 @@ const AddingEditingMultiChoQues = () => {
                                                 </p>
                                             </div>
 
-                                            <input
-                                                className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                                                name="generalFeedback"
-                                                type="text"
-                                                placeholder="Eg. 02283847"
-                                            ></input>
+                                            <div className="w-[95%] mt-10">
+                                                <div className="bg-white text-black textEditor">
+                                                    <TextEditor value={generalFeedback} setValue={setGeneralFeedback} />
+                                                </div>
+                                            </div>
                                         </div>
 
                                         <div className="mt-20">
@@ -419,24 +399,24 @@ const AddingEditingMultiChoQues = () => {
                                                 </p>
                                             </div>
 
-                                            <div className=" items-center flex gap-2  mt-2 ms-6  w-[319px] h-[50px] ps-2 text-[#535353] focus:outline-0 ">
-                                                <div className="">
+                                            <div className=" items-center flex gap-2  mt-2 ms-6  w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 ">
+                                                <div className="flex gap-2">
                                                     <input
                                                         type="radio"
                                                         id="Ready"
                                                         name="questionStatus"
-                                                        value="1"
+                                                        value="ready"
                                                     />
-                                                    <lebel> Ready</lebel>
+                                                    <label> Ready</label>
                                                 </div>
-                                                <div className=" ms-[55px]">
+                                                <div className="flex gap-2 ms-[55px]">
                                                     <input
                                                         type="radio"
                                                         id="Draft"
                                                         name="questionStatus"
-                                                        value="0"
+                                                        value="draft"
                                                     />
-                                                    <lebel> Draft</lebel>
+                                                    <label>Draft</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -445,7 +425,7 @@ const AddingEditingMultiChoQues = () => {
                                             <div className='flex items-center gap-4'>
                                                 <p className='h-2 w-2 bg-black rounded-full'></p>
                                                 <p className='font-semibold text-[#000000]  py-2'>Number the choices ?</p>
-                                               
+
 
                                             </div>
                                             <div
@@ -462,7 +442,7 @@ const AddingEditingMultiChoQues = () => {
                                                     id="option"
                                                 >
 
-                                                    <option className="" value="Student">A.B.C.D....</option>
+                                                    <option className="" value="Student">A.B.C.D</option>
                                                     <option value="Parent"></option>
                                                     <option value="Counselor"></option>
                                                     <option value="Others"></option>
@@ -488,10 +468,10 @@ const AddingEditingMultiChoQues = () => {
                                 </h1>
                                 <p className="text-[25px] font-bold">Answers Options</p>
                                 {!isOpenCourseFormat && (
-                                    <img className="w-6" src={arrowright} alt="arrowRight"/>
+                                    <img className="w-6" src={arrowright} alt="arrowRight" />
                                 )}
 
-                                {isOpenCourseFormat && <img src={arrowDown} alt="arrowDown"/>}
+                                {isOpenCourseFormat && <img src={arrowDown} alt="arrowDown" />}
 
                                 <i
                                     className={`dropdown-arrow ${isOpenCourseFormat ? "open" : ""}`}
@@ -500,22 +480,113 @@ const AddingEditingMultiChoQues = () => {
 
 
 
-                            <div className="flex justify-between items-center mb-10 mt-10">
+                            {/*   <div className="flex justify-between items-center mb-10 mt-10">
 
                                 <Link to='/manageQuestion' className='bg-[#3E4DAC] flex text-base font-bold  px-4 py-2 rounded-lg text-[#fff]'>
 
                                     <p className="">Add More Answer Blank</p>
                                 </Link>
 
-                            </div>
+                            </div> */}
                         </div>
 
 
 
                         {isOpenCourseFormat && (
                             <div>
+                                <div>
+                                    {/* Render div elements based on the divCount state */}
+                                    {options.map((answer, index) => (
+                                        <div key={index} className="dropdown-menu mt-[71px] mb-[45px] flex justify-between me-10 bg-[#F7F7F7] p-5 rounded-lg">
+                                            {/* Content of the div */}
+                                            <div className="">
+                                                <div className="">
+                                                    <div className="flex items-center gap-4">
+                                                        <p className="h-2 w-2 bg-black rounded-full"></p>
+                                                        <p className="font-bold text-lg me-[36px]">
+                                                            Choice {index + 1}
+                                                        </p>
+                                                        <img src={required} alt="required" />
+                                                    </div>
+                                                    {/* Text editor for answerFormula */}
+                                                    <div className="w-[95%] mt-10">
+                                                        <div className="bg-white text-black textEditor">
+                                                            {/* Pass props to the TextEditor component */}
+                                                            <TextEditor
+                                                                value={answer.answerFormula}
+                                                                setValue={(value) => handleInputChange(index, value, 'answerFormula')}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className='mt-20 '>
+                                                    <div className='flex items-center gap-4'>
+                                                        <p className='h-2 w-2 bg-black rounded-full'></p>
+                                                        <p className='font-semibold text-[#000000]  py-2'>Answer</p>
+                                                        <img src={required} alt="required" />
+                                                    </div>
+                                                    <div className=" items-center flex gap-2  mt-2 ms-6  w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 ">
+                                                        <div className="flex gap-2">
+                                                            <input
+                                                                type="radio"
+                                                                id={`wrong${index}`}
+                                                                name={`answer${index}`}
+                                                                value="wrong"
+                                                                checked={answer.answer === "wrong"}
+                                                                onChange={(e) => handleInputChange(index, e.target.value, 'answer')}
+                                                            />
+                                                            <label htmlFor={`wrong${index}`}> Wrong</label>
+                                                        </div>
+                                                        <div className="flex gap-2 ms-[55px]">
+                                                            <input
+                                                                type="radio"
+                                                                id={`correct${index}`}
+                                                                name={`answer${index}`}
+                                                                value="correct"
+                                                                checked={answer.answer === "correct"}
+                                                                onChange={(e) => handleInputChange(index, e.target.value, 'answer')}
+                                                            />
+                                                            <label htmlFor={`correct${index}`}>Correct</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className=" me-10">
+                                                <div className="">
+                                                    <div className="flex items-center gap-4">
+                                                        <p className="h-2 w-2 bg-black rounded-full"></p>
+                                                        <p className="font-bold text-lg me-[36px]">
+                                                            Feedback
+                                                        </p>
+                                                    </div>
+                                                    {/* Text editor for feedback */}
+                                                    <div className="w-[95%] mt-10">
+                                                        <div className="bg-white text-black textEditor">
+                                                            {/* Pass props to the TextEditor component */}
+                                                            <TextEditor
+                                                                value={answer.feedback}
+                                                                setValue={(value) => handleInputChange(index, value, 'feedback')}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    <div className="w-full flex justify-center items-center my-10">
 
-                                <div className="dropdown-menu mt-[71px] mb-[45px] flex justify-between me-10 bg-[#F7F7F7] p-5 rounded-lg">
+                                        <button onClick={addMoreDiv} className='bg-[#3E4DAC] flex text-base font-bold  px-4 py-2 rounded-lg text-[#fff]'>
+
+                                            <p className="">Add More Option</p>
+                                        </button>
+
+                                    </div>
+                                    {/* <button onClick={addMoreDiv}>Add More</button> */}
+                                    {/* Displaying answers array for debugging purposes */}
+                                    {/* <pre>{JSON.stringify(answers, null, 2)}</pre> */}
+                                </div>
+
+                                {/*   <div className="dropdown-menu mt-[71px] mb-[45px] flex justify-between me-10 bg-[#F7F7F7] p-5 rounded-lg">
                                     <div className="">
 
                                         <div className="">
@@ -587,10 +658,10 @@ const AddingEditingMultiChoQues = () => {
                                             ></input>
                                         </div>
                                     </div>
-                                </div>
+                                </div> */}
 
 
-                                <div className="dropdown-menu mt-[71px] mb-[45px] flex justify-between me-10 bg-[#F7F7F7] p-5 rounded-lg">
+                                {/* <div className="dropdown-menu mt-[71px] mb-[45px] flex justify-between me-10 bg-[#F7F7F7] p-5 rounded-lg">
                                     <div className="">
 
                                         <div className="">
@@ -662,7 +733,7 @@ const AddingEditingMultiChoQues = () => {
                                             ></input>
                                         </div>
                                     </div>
-                                </div>
+                                </div> */}
 
 
                             </div>
