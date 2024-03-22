@@ -449,11 +449,10 @@ const WeekDetails = ({
                           )} */}
               </div>
               <div
-                className={`${
-                  openTopics?.find((item) => item === chapter?._id)
+                className={`${openTopics?.find((item) => item === chapter?._id)
                     ? ""
                     : "hidden"
-                } sub-items`}
+                  } sub-items`}
               >
                 {Role === "admin" &&
                   chapter?.tasks?.map((task, taskIndex) => (
@@ -844,7 +843,7 @@ const WeekDetails = ({
                             {courseData?.enableDrip && (
                               <div className="">
                                 {isPreviousTaskCompleted &&
-                                isPrevChapterCompleted ? (
+                                  isPrevChapterCompleted ? (
                                   <Link
                                     onClick={() => {
                                       localStorage.setItem(
@@ -889,7 +888,7 @@ const WeekDetails = ({
                               <div className="">
                                 {(isPreviousTaskCompleted &&
                                   isPrevChapterCompleted) ||
-                                !task?.taskDrip ? (
+                                  !task?.taskDrip ? (
                                   <Link
                                     onClick={() => {
                                       localStorage.setItem(
