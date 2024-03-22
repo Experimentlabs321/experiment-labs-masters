@@ -5,6 +5,8 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import { saveAs } from "file-saver";
 import Loading from "../../Shared/Loading/Loading";
+import Quiz from "./SubFile/Shared/Quiz";
+import { CircularProgress } from "@mui/material";
 
 const FilesTask = ({ taskData, count, setCount }) => {
   const { userInfo, user } = useContext(AuthContext);
@@ -20,18 +22,39 @@ const FilesTask = ({ taskData, count, setCount }) => {
   const [isOverlayVisible, setOverlayVisible] = useState(false);
   console.log(taskData);
   const [completionStatus, setCompletionStatus] = useState(false);
+  const [additionalFile, setAdditionalFile] = useState("");
   const pdfContainerRef = useRef(null);
+  // useEffect(() => {
+  //   setCompletionStatus(false);
+  //   if (
+  //     taskData?.participants?.find(
+  //       (item) => item?.participant?.email === user?.email
+  //     )
+  //   )
+  //     setCompletionStatus(true);
+
+  //   console.log(taskData);
+  // }, [taskData, user, count, taskData?._id]);
+
   useEffect(() => {
-    setCompletionStatus(false);
     if (
       taskData?.participants?.find(
         (item) => item?.participant?.email === user?.email
       )
     )
       setCompletionStatus(true);
-
-    console.log(taskData);
-  }, [taskData, user, count, taskData?._id]);
+    else setCompletionStatus(false);
+    if (
+      taskData?.additionalFiles &&
+      taskData?.additionalFiles !== additionalFile
+    ) {
+      setAdditionalFile(
+        `https://docs.google.com/viewer?url=${taskData?.additionalFiles}&embedded=true`
+      );
+    } else {
+      setAdditionalFile("");
+    }
+  }, [taskData, taskData?._id, user]);
 
   const handleCompletion = async () => {
     Loading();
@@ -95,6 +118,7 @@ const FilesTask = ({ taskData, count, setCount }) => {
   console.log(taskData?.fileDescription);
   const [downloadProgress, setDownloadProgress] = useState(0);
   const [cancelTokenSource, setCancelTokenSource] = useState(null);
+  const [iframeLoaded, setIframeLoaded] = useState(false);
 
   const handleDownload = async () => {
     try {
@@ -168,85 +192,166 @@ const FilesTask = ({ taskData, count, setCount }) => {
   }, [taskData?.additionalFiles, cancelTokenSource]);
   return (
     <div>
-      {/* <div className="h-full flex items-center justify-center ">
-        <object
-          className="  border-x-[30px] mt-[40px] border-t-[30px] border-b-[50px] rounded-lg border-[#292929]"
-          // data={taskData?.additionalFiles}
-          data={`https://docs.google.com/viewer?url=${taskData?.additionalFiles}&embedded=true`}
-          type="application/pdf"
-          width="865px"
-          height="500px"
-        >
-          <p>
-            Alternative text - include a link{" "}
-            <a href="http://africau.edu/images/default/sample.pdf">
-              to the PDF!
-            </a>
-          </p>
-        </object>
-      </div> */}
-      {completionStatus ? (
-        <div className="container mx-auto relative z-10">
-          <button className="bg-green py-2 px-5 my-4 float-right mr-4 rounded-lg text-lg text-white font-bold">
-            Completed <CheckCircleOutlineIcon />
-          </button>
-        </div>
-      ) : (
-        <button
-          onClick={handleCompletion}
-          className="bg-green py-2 px-5 my-4 float-right mr-4 rounded-lg text-lg text-white font-bold relative z-10"
-        >
-          Mark as complete <CheckCircleOutlineIcon />
-        </button>
-      )}
-
-      {taskData?.additionalFiles && (
-        <>
-          <div className="h-[70vh] mb-[60px] ">
-            <iframe
-              className="h-[68vh] mx-auto border-x-[30px] mt-[40px] border-t-[30px] border-b-[50px] rounded-lg border-[#292929]"
-              src={`https://docs.google.com/viewer?url=${taskData?.additionalFiles}&embedded=true`}
-              width="90%"
-              height="80vh"
-              title="W3Schools Free Online Web Tutorials"
-            ></iframe>
+      <div>
+        {completionStatus ? (
+          <div className="container mx-auto relative z-10">
+            <button className="bg-green py-2 px-5 my-4 float-right mr-4 rounded-lg text-lg text-white font-bold">
+              Completed <CheckCircleOutlineIcon />
+            </button>
           </div>
+        ) : (
+          <button
+            onClick={handleCompletion}
+            className="bg-green py-2 px-5 my-4 float-right mr-4 rounded-lg text-lg text-white font-bold relative z-10"
+          >
+            Mark as complete <CheckCircleOutlineIcon />
+          </button>
+        )}
 
-          {taskData?.enableDownload && (
-            <div className="flex justify-end me-20 my-10">
-              <button
-                className="bg-blue text-white p-3 rounded-lg text-xl"
-                onClick={cancelTokenSource ? null : handleDownload}
-                disabled={cancelTokenSource !== null}
-              >
-                {cancelTokenSource
-                  ? `Downloading... ${downloadProgress}%`
-                  : "Download"}
-              </button>
-              {cancelTokenSource && (
-                <button
-                  className="bg-red text-white p-3 rounded-lg text-xl ml-4"
-                  onClick={() => {
-                    cancelTokenSource.cancel("Download cancelled by user");
-                  }}
-                >
-                  Cancel
-                </button>
+        {!iframeLoaded && (
+          <div className=" flex align-items-center my-5 py-5 w-full">
+            <CircularProgress className="w-full mx-auto" />
+          </div>
+        )}
+
+        {additionalFile && (
+          <div
+            key={taskData?._id}
+            className="min-h-[72vh] mb-[60px]"
+            style={{ display: iframeLoaded ? "block" : "none" }}
+          >
+            <div className="container mx-auto relative">
+              {isOverlayVisible && (
+                <div
+                  className="fixed top-0 left-0 w-full h-full z-[9999] bg-transparent"
+                  onClick={handleCompletion}
+                ></div>
               )}
-              {/*  {downloadProgress > 0 && (
-            <div className="ml-4 flex items-center">
-              <p>{downloadProgress}%</p>
-            </div>
-          )} */}
-            </div>
-          )}
-        </>
-      )}
 
-      <div
-        className={`my-5 mb-5 px-2 ${!taskData?.additionalFiles ? " " : ""}`}
-        dangerouslySetInnerHTML={{ __html: taskData?.fileDescription }}
-      />
+              <>
+                {additionalFile &&
+                  (taskData?.additionalFiles.endsWith(".png") ||
+                  taskData?.additionalFiles.endsWith(".jpg") ||
+                  taskData?.additionalFiles.endsWith(".jpeg") ||
+                  taskData?.additionalFiles.endsWith(".gif") ||
+                  taskData?.additionalFiles.endsWith(".bmp") ? (
+                    <div className="">
+                      <img
+                        src={taskData?.additionalFiles}
+                        alt="Img"
+                        onLoad={() => {
+                          console.log("iframe loaded");
+                          setIframeLoaded(true);
+                        }}
+                        className="w-[90%] mx-auto h-[68vh] border-[10px] border-b-50 rounded-lg border-[#292929]"
+                      />
+                    </div>
+                  ) : taskData?.additionalFiles.endsWith(".mp4") ||
+                    taskData?.additionalFiles.endsWith(".mov") ||
+                    taskData?.additionalFiles.endsWith(".wmv") ||
+                    taskData?.additionalFiles.endsWith(".flv") ||
+                    taskData?.additionalFiles.endsWith(".avi") ||
+                    taskData?.additionalFiles.endsWith(".avchd") ||
+                    taskData?.additionalFiles.endsWith(".webm") ||
+                    taskData?.additionalFiles.endsWith(".mkv") ? (
+                    <div className="">
+                      <video
+                        key={taskData?._id}
+                        className="mx-auto rounded-lg border-[#292929]"
+                        width="90%"
+                        height="80vh"
+                        onLoadedData={() => {
+                          console.log("iframe loaded");
+                          setIframeLoaded(true);
+                        }}
+                        controls
+                        controlsList="nodownload"
+                        disablePictureInPicture
+                      >
+                        <source
+                          src={taskData?.additionalFiles}
+                          type="video/mp4"
+                        />
+                      </video>
+                    </div>
+                  ) : (
+                    <>
+                      <iframe
+                        id={taskData?._id}
+                        key={taskData?._id}
+                        src={additionalFile && additionalFile}
+                        onLoad={() => {
+                          console.log("iframe loaded");
+                          setIframeLoaded(true);
+                        }}
+                        title="Your Document"
+                        className="h-[68vh] mx-auto border-x-30 mt-40 border-[10px] border-b-50 rounded-lg border-[#292929]"
+                        width="90%"
+                        height="80vh"
+                      ></iframe>
+                    </>
+                  ))}
+              </>
+
+              {/* <iframe
+            id="document"
+            // key={additionalFile}
+            key={taskData?._id || additionalFile}
+            src="https://experiment-labs-my-bucket.s3.eu-north-1.amazonaws.com/_Level+1+-+Getting+Started+Edvanta.pdf"
+            // src={`https://docs.google.com/viewer?url=${
+            //   taskData?.additionalFiles ? taskData?.additionalFiles : ""
+            // }&embedded=true`
+            title="Your Document"
+            className="h-[68vh] mx-auto border-x-30 mt-40 border-[10px] border-b-50 rounded-lg border-[#292929]"
+            width="90%"
+            height="80vh"
+          ></iframe> */}
+            </div>
+            {taskData?.enableDownload && (
+              <div className="flex justify-end me-20 my-10">
+                <button
+                  className="bg-blue text-white p-3 rounded-lg text-xl"
+                  onClick={cancelTokenSource ? null : handleDownload}
+                  disabled={cancelTokenSource !== null}
+                >
+                  {cancelTokenSource
+                    ? `Downloading... ${downloadProgress}%`
+                    : "Download"}
+                </button>
+                {cancelTokenSource && (
+                  <button
+                    className="bg-red-400 text-white p-3 rounded-lg text-xl ml-4"
+                    onClick={() => {
+                      cancelTokenSource.cancel("Download cancelled by user");
+                    }}
+                  >
+                    Cancel
+                  </button>
+                )}
+                {/*  {downloadProgress > 0 && (
+                <div className="ml-4 flex items-center">
+                  <p>{downloadProgress}%</p>
+                </div>
+              )} */}
+              </div>
+            )}
+          </div>
+        )}
+        {openQuiz && (
+          <Quiz
+            setOpenQuiz={setOpenQuiz}
+            setCompletionStatus={setCompletionStatus}
+            openQuiz={openQuiz}
+            taskData={taskData}
+            questions={taskData?.completionParameter?.questions}
+          />
+        )}
+        <div className="px-4 py-20 textEditor">
+          <div
+            dangerouslySetInnerHTML={{ __html: taskData?.readingMaterial }}
+          />
+        </div>
+      </div>
     </div>
   );
 };

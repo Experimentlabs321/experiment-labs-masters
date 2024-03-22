@@ -5,6 +5,11 @@ import axios from "axios";
 import TextEditor from '../../../Shared/TextEditor/TextEditor';
 import JoditEditor from "jodit-react";
 import "./style.css";
+// import EmailEditor from 'react-email-editor';
+// import { Editor, EditorState } from 'draft-js';
+// import 'draft-js/dist/Draft.css';
+
+
 
 const EmailTemplateRow = ({ title, description, active, templateId, template, fetchEmailActionTemplates }) => {
   const [isActive, setIsActive] = useState(active);
@@ -17,7 +22,9 @@ const EmailTemplateRow = ({ title, description, active, templateId, template, fe
   console.log("selected Html", template?.htmlPart);
 
   const handleActive = async (templateId) => {
-    const response = await axios.put(`${process.env.REACT_APP_SERVER_API}/api/v1/sendMail/templateId/${templateId}`,
+    const response = await axios.put(
+      `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail/templateId/${templateId}`,
+      // `http://localhost:5000/api/v1/sendMail/templateId/${templateId}`,
       {
         active: !isActive + "",
         action: "none"
@@ -27,7 +34,8 @@ const EmailTemplateRow = ({ title, description, active, templateId, template, fe
   }
 
   const handleUpdate = async () => {
-    const response = await axios.put(`${process.env.REACT_APP_SERVER_API}/api/v1/sendMail/templateId/${templateId}`,
+    const response = await axios.put(
+      `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail/templateId/${templateId}`,
       {
         htmlPart: selectedHtmlPart,
         email: template?.email,
@@ -47,6 +55,33 @@ const EmailTemplateRow = ({ title, description, active, templateId, template, fe
     }
     console.log(template?.templateName, selectedHtmlPart, selectedSubject, action);
   }
+
+  // const emailEditorRef = useRef(null);
+
+  // const exportHtml = () => {
+  //   emailEditorRef.current.editor.exportHtml((data) => {
+  //     const { design, html } = data;
+  //     console.log('exportHtml', html);
+  //   });
+  // };
+
+  // const onLoad = () => {
+  //   // editor instance is created
+  //   // you can load your template here;
+  //   // const templateJson = {};
+  //   emailEditorRef.current.editor.loadDesign(selectedHtmlPart);
+  // }
+
+  // const onReady = () => {
+  //   // editor is ready
+  //   console.log('onReady');
+  // };
+
+  // const [editorState, setEditorState] = React.useState(
+  //   () => EditorState.createEmpty(),
+  // );
+
+
 
   return (
     <div>
@@ -89,6 +124,14 @@ const EmailTemplateRow = ({ title, description, active, templateId, template, fe
               setSelectedHtmlPart(content);
             }}
           />
+          {/* <EmailEditor
+            ref={emailEditorRef}
+            onLoad={onLoad}
+            onReady={onReady}
+          /> */}
+          {/* <Editor editorState={setSelectedHtmlPart} onChange={setEditorState} /> */}
+          {/* <EditorProvider slotBefore={<MenuBar />} extensions={extensions} content={selectedHtmlPart}></EditorProvider> */}
+          
         </div>
         <button onClick={handleUpdate} type="submit" className="bg-blue hover:bg-opacity-70 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
           Update
@@ -98,7 +141,7 @@ const EmailTemplateRow = ({ title, description, active, templateId, template, fe
           <p className="text-base from-neutral-700">{`For example if you want to use learner email, write like this: {{ learn email }}`}</p>
           <div className="flex gap-3">
             {
-              template?.availableVariables?.map((variable,index)=><p className="text-base font-medium"> {variable}</p>)
+              template?.availableVariables?.map((variable, index) => <p className="text-base font-medium"> {variable}</p>)
             }
             {/* <p className="text-base font-medium"> site_name</p>
             <p className="text-base font-medium"> site_email</p>

@@ -4,7 +4,7 @@ import Loading from '../../../Shared/Loading/Loading';
 import Swal from "sweetalert2";
 import axios from "axios";
 
-const SESSendTestEmail = ({ setShowTestSendForm, orgData, email, fetchSESIntegrationData}) => {
+const SESSendTestEmail = ({ setShowTestSendForm, orgData, email, fetchSESIntegrationData }) => {
     const [formData, setFormData] = useState({
         to: '',
         subject: '',

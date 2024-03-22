@@ -130,6 +130,7 @@ import CreateBundle from "../../Pages/Dashboard/CreateBundle/CreateBundle";
 import EditBundle from "../../Pages/Dashboard/ContentManagement/EditBundle";
 import BundlePayment from "../../Pages/Dashboard/Payment/BundlePayment";
 import SalesAndRevenue from "../../Pages/Dashboard/SalesAndRevenue/SalesAndRevenue";
+import TaskDetails from "../../Pages/Dashboard/Week/Layout/TaskDetails";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -270,6 +271,10 @@ const router = createBrowserRouter([
   {
     path: "/week/:id",
     element: <Week />,
+  },
+  {
+    path: "/taskDetails/:id",
+    element: <TaskDetails />,
   },
   {
     path: "/careerAnalysis",

@@ -16,7 +16,7 @@ import AudioActive from "../../../../assets/Dashboard/AudioActive.png";
 import Files from "../../../../assets/Dashboard/Files.png";
 import FilesActive from "../../../../assets/Dashboard/FilesActive.png";
 import calendar from "../../../../assets/Dashboard/calendar.png";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import lock from "../../../../assets/Dashboard/lockWhiteIcon.jpg";
 import { AuthContext } from "../../../../contexts/AuthProvider";
 import toast from "react-hot-toast";
@@ -50,6 +50,7 @@ const Aside = ({
   const [clickedChapter, setClickedChapter] = useState({});
   const options = ["Category name"];
   const { userInfo } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const asideRef = useRef(null); // Create a ref for the aside element
 
@@ -617,7 +618,7 @@ const Aside = ({
                                     item?.status === "In Progress")
                               );
 
-                            const isPrevChapterCompleted =
+                            let isPrevChapterCompleted =
                               chapterIndex === 0 ||
                               chapters?.[chapterIndex - 1]?.tasks?.[
                                 chapters?.[chapterIndex - 1]?.tasks?.length - 1
@@ -627,6 +628,8 @@ const Aside = ({
                                   (item?.status === "Completed" ||
                                     item?.status === "In Progress")
                               );
+
+                            if (index !== 0) isPrevChapterCompleted = true;
 
                             return (
                               <div
@@ -641,6 +644,9 @@ const Aside = ({
                                     localStorage.setItem(
                                       "task",
                                       JSON.stringify(task)
+                                    );
+                                    navigate(
+                                      `/taskDetails/${task?.taskId}?taskType=${task?.taskType}`
                                     );
                                   } else
                                     toast.error("Complete the Previous Task");

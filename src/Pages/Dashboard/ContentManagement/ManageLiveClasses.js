@@ -21,7 +21,7 @@ import Badge from "@mui/material/Badge";
 import MailIcon from "@mui/icons-material/Mail";
 import SearchIcon from "@mui/icons-material/Search";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useParams, useNavigate } from "react-router-dom";
 import Level from "../Dashboard/Level";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
@@ -137,142 +137,6 @@ const ManageLiveClasses = () => {
     }
   }, [location.search]);
 
-  const connectZoom = async () => {
-    const clientIdValue = process.env.REACT_APP_zoom_clientId;
-    const redirectURI = process.env.REACT_APP_zoom_redirectUri; // Make sure it matches the URI registered in your Zoom app
-    console.log("Clicked", clientIdValue);
-    window.location.href = `https://zoom.us/oauth/authorize?response_type=code&client_id=${clientIdValue}&redirect_uri=${redirectURI}`;
-  };
-
-  const exchangeCodeForToken = async (code) => {
-    let manageClass = JSON.parse(localStorage.getItem("manageClass"));
-    console.log(manageClass);
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND_API}/createMeeting`,
-        {
-          authCode: code,
-          manageClass: {
-            topic: manageClass?.agenda,
-            // start_time: manageClass?.courseStartingDateTime,
-            duration: +manageClass?.duration,
-            password: manageClass?.password,
-            type: 1,
-          },
-        }
-      );
-
-      setIsConnected(true);
-      console.log("Meeting created:", response.data.meeting);
-      const meetingData = response.data.meeting;
-      manageClass = { ...manageClass, meetingData: meetingData };
-      const newClass = await axios.post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/classes`,
-        manageClass
-      );
-
-      console.log(newClass);
-
-      if (newClass?.data?.result?.acknowledged) {
-        toast.success("Class added Successfully");
-      }
-    } catch (error) {
-      console.error("Error creating meeting:", error);
-    }
-    Loading().close();
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    Loading();
-    const form = event.target;
-
-    const className = form.className?.value;
-    const classType = form.classType?.value;
-    const instanceType = form.instanceType?.value;
-    const roomNumber = form.roomNumber?.value;
-    const location = form.location?.value;
-    const agenda = form.agenda?.value;
-    const password = form.password?.value;
-    const email = form.email?.value;
-    const duration = +form.duration?.value;
-    // const sessionmayberecorded = +form.sessionmayberecorded?.value;
-    // const waitformoderator = +form.waitformoderator?.value;
-    // const disablewebcams = +form.disablewebcams?.value;
-    // const disablemicrophones = +form.disablemicrophones?.value;
-    // const disableprivatechat = +form.disableprivatechat?.value;
-    // const disablepublicchat = +form.disablepublicchat?.value;
-    // const disablesharednotes = +form.disablesharednotes?.value;
-    // const hideuserlist = +form.hideuserlist?.value;
-    const courseStartingDateTime = form.courseStartingDateTime?.value;
-    // const courseEndDateTime = form.courseEndDateTime?.value;
-    // const itemEarningParameter = form.itemEarningParameter?.value;
-    // const itemEarningParameter1 = form.itemEarningParameter1?.value;
-    const week = await JSON.parse(localStorage.getItem("currentWeek"));
-    const manageClass = {
-      className,
-      classType,
-      instanceType,
-      roomNumber,
-      location,
-      agenda,
-      taskName: agenda,
-      taskType: "Classes",
-      password,
-      email,
-      duration,
-      // sessionmayberecorded,
-      // waitformoderator,
-      // disablewebcams,
-      // disablemicrophones,
-      // disableprivatechat,
-      // disablepublicchat,
-      // disablesharednotes,
-      // hideuserlist,
-      courseStartingDateTime,
-      skillParameterData: skillParameterData,
-      earningParameterData: earningParameterData,
-      chapterId: id,
-      courseId: chapter?.courseId,
-      weekId: week?._id,
-      mentors: selectedMentors,
-      batches: [
-        {
-          batchName: selectedBatch?.batchName,
-          batchId: selectedBatch?._id,
-        },
-      ],
-    };
-
-    localStorage.setItem("manageClass", JSON.stringify(manageClass));
-    // console.log(JSON.parse(localStorage.getItem('manageClass')));
-    await connectZoom();
-
-    const newNotification = await axios.post(
-      `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/notifications/addNotification`,
-      {
-        message: `New reading material added in course ${course?.courseFullName}.`,
-        dateTime: new Date(),
-        redirectLink: `/questLevels/${course?._id}?week=${chapter?.weekId}`,
-        recipient: {
-          type: "Students",
-          organizationId: orgData?._id,
-          courseId: course?._id,
-          batches: [
-            {
-              batchName: selectedBatch?.batchName,
-              batchId: selectedBatch?._id,
-            },
-          ],
-        },
-        type: "Create Task",
-        readBy: [],
-        notificationTriggeredBy: user?.email,
-      }
-    );
-    console.log(newNotification);
-  };
-
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
@@ -363,6 +227,163 @@ const ManageLiveClasses = () => {
     }
   };
 
+  const navigate = useNavigate();
+
+  const connectZoom = async () => {
+    const clientIdValue = orgData?.zoom_clientId;
+    const redirectURI = orgData?.zoom_redirectUri; // Make sure it matches the URI registered in your Zoom app
+    // console.log("Clicked ===========>", clientIdValue);
+    // console.log("Clicked ===========>", redirectURI);
+    window.location.href = `https://zoom.us/oauth/authorize?response_type=code&client_id=${clientIdValue}&redirect_uri=${redirectURI}`;
+  };
+
+  const exchangeCodeForToken = async (code) => {
+    let manageClass = JSON.parse(localStorage.getItem("manageClass"));
+    console.log("Came Here 239");
+    console.log(manageClass);
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/classes`,
+        // `http://localhost:5000/api/v1/classes`,
+        {
+          authCode: code,
+          manageClass: {
+            topic: manageClass?.className,
+            // start_time: manageClass?.courseStartingDateTime,
+            duration: +manageClass?.duration,
+            password: manageClass?.password,
+            type: 1,
+          },
+          clientID: manageClass?.clientID,
+          clientSecret: manageClass?.clientSecret,
+          redirectURI: manageClass?.redirectURI
+        }
+      );
+      console.log("Came Here 254 ===============>", response);
+      setIsConnected(true);
+      console.log("Meeting created: ==================>", response.data.meeting);
+      const meetingData = response.data.meeting;
+      manageClass = { ...manageClass, meetingData: meetingData };
+      const newClass = await axios.post(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/classes`,
+        // `http://localhost:5000/api/v1/tasks/taskType/classes`,
+        manageClass
+      );
+
+      console.log("New Class ====================>", newClass);
+
+      if (newClass?.data?.result?.acknowledged) {
+        toast.success("Class added Successfully");
+        Loading().close();
+        navigate(-2);
+      }
+    } catch (error) {
+      console.error("Error creating meeting:", error);
+      Loading().close();
+    }
+    
+  };
+
+  
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    Loading();
+    const form = event.target;
+
+    const className = form.className?.value;
+    // const classType = form.classType?.value;
+    // const instanceType = form.instanceType?.value;
+    // const roomNumber = form.roomNumber?.value;
+    // const location = form.location?.value;
+    // const agenda = form.agenda?.value;
+    const password = form.password?.value;
+    // const email = form.email?.value;
+    const duration = +form.duration?.value;
+    // const sessionmayberecorded = +form.sessionmayberecorded?.value;
+    // const waitformoderator = +form.waitformoderator?.value;
+    // const disablewebcams = +form.disablewebcams?.value;
+    // const disablemicrophones = +form.disablemicrophones?.value;
+    // const disableprivatechat = +form.disableprivatechat?.value;
+    // const disablepublicchat = +form.disablepublicchat?.value;
+    // const disablesharednotes = +form.disablesharednotes?.value;
+    // const hideuserlist = +form.hideuserlist?.value;
+    const courseStartingDateTime = form.courseStartingDateTime?.value;
+    // const courseEndDateTime = form.courseEndDateTime?.value;
+    // const itemEarningParameter = form.itemEarningParameter?.value;
+    // const itemEarningParameter1 = form.itemEarningParameter1?.value;
+    const week = await JSON.parse(localStorage.getItem("currentWeek"));
+    const manageClass = {
+      taskName: className,
+      // classType,
+      // instanceType,
+      // roomNumber,
+      // location,
+      // agenda,
+      // taskName: agenda,
+      taskType: "Classes",
+      password,
+      // email,
+      duration,
+      clientID: orgData?.zoom_clientId,
+      clientSecret: orgData?.zoom_clientSecret,
+      redirectURI: orgData?.zoom_redirectUri,
+      // sessionmayberecorded,
+      // waitformoderator,
+      // disablewebcams,
+      // disablemicrophones,
+      // disableprivatechat,
+      // disablepublicchat,
+      // disablesharednotes,
+      // hideuserlist,
+      taskDrip,
+      courseStartingDateTime,
+      skillParameterData: skillParameterData,
+      earningParameterData: earningParameterData,
+      chapterId: id,
+      courseId: chapter?.courseId,
+      weekId: week?._id,
+      mentors: selectedMentors,
+      batches: [
+        {
+          batchName: selectedBatch?.batchName,
+          batchId: selectedBatch?._id,
+        },
+      ],
+    };
+
+    localStorage.setItem("manageClass", JSON.stringify(manageClass));
+    // console.log(JSON.parse(localStorage.getItem('manageClass')));
+    await connectZoom();
+
+    const newNotification = await axios.post(
+      `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/notifications/addNotification`,
+      {
+        message: `New reading material added in course ${course?.courseFullName}.`,
+        dateTime: new Date(),
+        redirectLink: `/questLevels/${course?._id}?week=${chapter?.weekId}`,
+        recipient: {
+          type: "Students",
+          organizationId: orgData?._id,
+          courseId: course?._id,
+          batches: [
+            {
+              batchName: selectedBatch?.batchName,
+              batchId: selectedBatch?._id,
+            },
+          ],
+        },
+        type: "Create Task",
+        readBy: [],
+        notificationTriggeredBy: user?.email,
+      }
+    );
+    console.log(newNotification);
+    
+    
+    
+  };
+
   console.log(mentors);
 
   return (
@@ -388,7 +409,7 @@ const ManageLiveClasses = () => {
           </div>
           {isOpenGeneral && (
             <div className="dropdown-menu mt-[71px] mb-[45px] border-b-2  ">
-              <div className="flex justify-between">
+              <div className="flex items-start gap-40">
                 <div className="">
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
@@ -405,7 +426,57 @@ const ManageLiveClasses = () => {
                   />
                 </div>
 
+                <div>
+                  <div className="flex items-center gap-4">
+                    <p className="h-2 w-2 bg-black rounded-full"></p>
+                    <p className="font-bold text-lg me-[36px]">Select Mentors</p>
+                    <img src={required} alt="required" />
+                  </div>
+                  <ul className="flex gap-4 flex-wrap ">
+                    {mentors?.map((option, index) => {
+                      return (
+                        <>
+                          <li className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] ms-6">
+                            <input
+                              type="checkbox"
+                              id="student"
+                              name={option?._id}
+                              value={option?.email}
+                              checked={selectedMentors.find(
+                                (item) => item?.mentorEmail === option?.email
+                              )}
+                              onChange={(e) => handleOptionChangeBatch(e, option)}
+                              className=" mb-1"
+                            />
+                            <div className="flex mb-1 items-center">
+                              <label className="ms-4" htmlFor={option?.batchName}>
+                                {option?.name}
+                              </label>
+                            </div>
+                          </li>
+                        </>
+                      );
+                    })}
+                  </ul>
+                </div>
+
                 <div className="">
+                  <div className="flex items-center gap-4">
+                    <p className="h-2 w-2 bg-black rounded-full"></p>
+                    <p className="font-bold text-lg">Password</p>
+                    <img src={required} alt="required" />
+                  </div>
+
+                  <input
+                    required
+                    className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                    name="password"
+                    type="text"
+                    placeholder="Password"
+                  />
+                </div>
+
+                {/* <div className="">
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
                     <p className="font-bold text-lg me-[36px]">Class Type</p>
@@ -436,9 +507,9 @@ const ManageLiveClasses = () => {
                       </option>
                     </select>
                   </div>
-                </div>
+                </div> */}
 
-                <div className="me-20">
+                {/* <div className="me-20">
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
                     <p className="font-bold text-lg me-[36px]">Instance Type</p>
@@ -472,75 +543,102 @@ const ManageLiveClasses = () => {
                       </option>
                     </select>
                   </div>
+                </div> */}
+              </div>
+
+
+              <div className="flex items-start mt-[50px] gap-40">
+                <div>
+                  <div className="flex items-center gap-4">
+                    <p className="h-2 w-2 bg-black rounded-full"></p>
+                    <p className="font-bold text-lg me-[36px]">Select Batch</p>
+                    <img src={required} alt="required" />
+                  </div>
+                  <ul className="flex gap-4 flex-wrap ">
+                    {batchesData?.map((option, index) => {
+                      return (
+                        <>
+                          <li className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] ">
+                            <input
+                              type="radio"
+                              id="student"
+                              name={option?.batchName}
+                              value={option?.batchName}
+                              checked={
+                                selectedBatch?.batchName === option?.batchName
+                              }
+                              onChange={() => setSelectedBatch(option)}
+                              className=" mb-1"
+                            />
+                            <div className="flex mb-1 items-center">
+                              <label className="ms-4" htmlFor={option?.batchName}>
+                                {option?.batchName}
+                              </label>
+                            </div>
+                          </li>
+                        </>
+                      );
+                    })}
+                  </ul>
+
+                </div>
+                <div className="space-y-4 mb-8">
+                  <fieldset>
+                    <div className="flex items-center gap-4 mb-5">
+                      <p className="h-2 w-2 bg-black rounded-full"></p>
+                      <p className="font-bold text-lg me-[36px]">Enable Drip</p>
+                      <img src={required} alt="" />
+                    </div>
+                    <div className="flex items-center space-x-4">
+                      <div className="flex items-center ms-6">
+                        <input
+                          type="radio"
+                          id="radioYes"
+                          name="radioOption"
+                          checked={taskDrip === true}
+                          onChange={() => setTaskDrip(true)}
+                          disabled={course?.enableDrip}
+                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
+                        />
+                        <label
+                          htmlFor="radioYes"
+                          className={`ml-2 text-sm font-medium ${enableDrip ? "text-gray-400" : "text-gray-900"
+                            }`}
+                        >
+                          Yes
+                        </label>
+                      </div>
+
+                      <div className="flex items-center">
+                        <input
+                          type="radio"
+                          id="radioNo"
+                          name="radioOption"
+                          checked={taskDrip === false}
+                          onChange={() => setTaskDrip(false)}
+                          disabled={course?.enableDrip}
+                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
+                        />
+                        <label
+                          htmlFor="radioNo"
+                          className={`ml-2 text-sm font-medium ${enableDrip ? "text-gray-400" : "text-gray-900"
+                            }`}
+                        >
+                          No
+                        </label>
+                      </div>
+                    </div>
+                  </fieldset>
+
+                  {course?.enableDrip && (
+                    <p className="text-sm text-red-500">
+                      Course Drip Must Be Turned Off to add Task Drip.
+                    </p>
+                  )}
                 </div>
               </div>
-              <div>
-                <div className="flex items-center gap-4 mt-[50px]">
-                  <p className="h-2 w-2 bg-black rounded-full"></p>
-                  <p className="font-bold text-lg me-[36px]">Select Batch</p>
-                  <img src={required} alt="required" />
-                </div>
-                <ul className="flex gap-4 flex-wrap ">
-                  {batchesData?.map((option, index) => {
-                    return (
-                      <>
-                        <li className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] ">
-                          <input
-                            type="radio"
-                            id="student"
-                            name={option?.batchName}
-                            value={option?.batchName}
-                            checked={
-                              selectedBatch?.batchName === option?.batchName
-                            }
-                            onChange={() => setSelectedBatch(option)}
-                            className=" mb-1"
-                          />
-                          <div className="flex mb-1 items-center">
-                            <label className="ms-4" htmlFor={option?.batchName}>
-                              {option?.batchName}
-                            </label>
-                          </div>
-                        </li>
-                      </>
-                    );
-                  })}
-                </ul>
-              </div>
-              <div>
-                <div className="flex items-center gap-4 mt-[50px]">
-                  <p className="h-2 w-2 bg-black rounded-full"></p>
-                  <p className="font-bold text-lg me-[36px]">Select Mentors</p>
-                  <img src={required} alt="required" />
-                </div>
-                <ul className="flex gap-4 flex-wrap ">
-                  {mentors?.map((option, index) => {
-                    return (
-                      <>
-                        <li className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] ">
-                          <input
-                            type="checkbox"
-                            id="student"
-                            name={option?._id}
-                            value={option?.email}
-                            checked={selectedMentors.find(
-                              (item) => item?.mentorEmail === option?.email
-                            )}
-                            onChange={(e) => handleOptionChangeBatch(e, option)}
-                            className=" mb-1"
-                          />
-                          <div className="flex mb-1 items-center">
-                            <label className="ms-4" htmlFor={option?.batchName}>
-                              {option?.name}
-                            </label>
-                          </div>
-                        </li>
-                      </>
-                    );
-                  })}
-                </ul>
-              </div>
-              <div className="flex justify-between mt-[90px] mb-20">
+
+              {/* <div className="flex justify-between mt-[90px] mb-20">
                 <div className="">
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
@@ -576,10 +674,10 @@ const ManageLiveClasses = () => {
                     placeholder="Number"
                   />
                 </div>
-              </div>
+              </div> */}
 
-              <div className="flex justify-between mt-[116px] mb-20">
-                <div className="">
+              <div className="">
+                {/* <div className="">
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
                     <p className="font-bold text-lg me-[36px]">Agenda</p>
@@ -595,24 +693,10 @@ const ManageLiveClasses = () => {
                       />
                     </div>
                   </div>
-                </div>
+                </div> */}
 
-                <div className="me-10">
-                  <div className="flex items-center gap-4">
-                    <p className="h-2 w-2 bg-black rounded-full"></p>
-                    <p className="font-bold text-lg me-[36px]">Password</p>
-                    <img src={required} alt="required" />
-                  </div>
 
-                  <input
-                    required
-                    className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                    name="password"
-                    type="text"
-                    placeholder="Password"
-                  />
-                </div>
-                <div className="me-20">
+                {/* <div className="me-20">
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
                     <p className="font-bold text-lg me-[36px]">Email</p>
@@ -626,64 +710,9 @@ const ManageLiveClasses = () => {
                     type="email"
                     placeholder="Email"
                   />
-                </div>
+                </div> */}
               </div>
-              <div className="space-y-4 mb-8">
-                <fieldset>
-                  <div className="flex items-center gap-4 mb-5">
-                    <p className="h-2 w-2 bg-black rounded-full"></p>
-                    <p className="font-bold text-lg me-[36px]">Enable Drip</p>
-                    <img src={required} alt="" />
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <div className="flex items-center">
-                      <input
-                        type="radio"
-                        id="radioYes"
-                        name="radioOption"
-                        checked={taskDrip === true}
-                        onChange={() => setTaskDrip(true)}
-                        disabled={course?.enableDrip}
-                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
-                      />
-                      <label
-                        htmlFor="radioYes"
-                        className={`ml-2 text-sm font-medium ${
-                          enableDrip ? "text-gray-400" : "text-gray-900"
-                        }`}
-                      >
-                        Yes
-                      </label>
-                    </div>
 
-                    <div className="flex items-center">
-                      <input
-                        type="radio"
-                        id="radioNo"
-                        name="radioOption"
-                        checked={taskDrip === false}
-                        onChange={() => setTaskDrip(false)}
-                        disabled={course?.enableDrip}
-                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
-                      />
-                      <label
-                        htmlFor="radioNo"
-                        className={`ml-2 text-sm font-medium ${
-                          enableDrip ? "text-gray-400" : "text-gray-900"
-                        }`}
-                      >
-                        No
-                      </label>
-                    </div>
-                  </div>
-                </fieldset>
-
-                {course?.enableDrip && (
-                  <p className="text-sm text-red-500">
-                    Course Drip Must Be Turned Off to add Task Drip.
-                  </p>
-                )}
-              </div>
             </div>
           )}
 
@@ -761,27 +790,26 @@ const ManageLiveClasses = () => {
 
           {(orgData?.showPointsAndRedemptions ||
             orgData?.showSkillsManagement) && (
-            <div
-              className="select-option flex items-center gap-[40px] mt-12"
-              onClick={toggleDropdownevaluationParameter}
-            >
-              <h1 className=" h-[60px] w-[60px] bg-[#E1E6FF] rounded-full flex justify-center items-center text-[25px]">
-                3
-              </h1>
-              <p className="text-[25px] font-bold">Evaluation Parameter</p>
-              {!isOpenevaluationParameter && (
-                <img className="w-6" src={arrowright}></img>
-              )}
+              <div
+                className="select-option flex items-center gap-[40px] mt-12"
+                onClick={toggleDropdownevaluationParameter}
+              >
+                <h1 className=" h-[60px] w-[60px] bg-[#E1E6FF] rounded-full flex justify-center items-center text-[25px]">
+                  3
+                </h1>
+                <p className="text-[25px] font-bold">Evaluation Parameter</p>
+                {!isOpenevaluationParameter && (
+                  <img className="w-6" src={arrowright}></img>
+                )}
 
-              {isOpenevaluationParameter && <img src={arrowDown}></img>}
+                {isOpenevaluationParameter && <img src={arrowDown}></img>}
 
-              <i
-                className={`dropdown-arrow ${
-                  isOpenevaluationParameter ? "open" : ""
-                }`}
-              ></i>
-            </div>
-          )}
+                <i
+                  className={`dropdown-arrow ${isOpenevaluationParameter ? "open" : ""
+                    }`}
+                ></i>
+              </div>
+            )}
 
           {isOpenevaluationParameter && (
             <div className="dropdown-menu mt-[71px] mb-[45px] ">
