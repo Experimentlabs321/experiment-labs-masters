@@ -20,6 +20,28 @@ const MyStudents = () => {
   const [selectedBatch, setSelectedBatch] = useState({});
   const [currentPage, setCurrentPage] = useState("My Learners");
   const [selectedValidationStatus, setSelectedValidationStatus] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [itemDetails, setItemDetails] = useState();
+  useEffect(() => {
+    if (userInfo) {
+      setLoading(true);
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/language/getMyLearnersSubDetailsByOrganizationAndName/myLearners/organizationsId/${userInfo?.organizationId}`
+        )
+        .then((response) => {
+
+          console.log(response)
+          setItemDetails(response?.data);
+
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+    setLoading(false);
+  }, [userInfo]);
+ // console.log(itemDetails)
 
   useEffect(() => {
     axios
@@ -179,7 +201,8 @@ const MyStudents = () => {
                   : "bg-white border-2 border-gray-400 text-black"
               }`}
             >
-              My Learners
+              {itemDetails?.myLearners ? itemDetails?.myLearners : "My Learners"}
+              
             </button>
             <button
               onClick={() => setCurrentPage("Add Learners")}
@@ -189,12 +212,13 @@ const MyStudents = () => {
                   : "bg-white border-2 border-gray-400 text-black"
               }`}
             >
-              Add Learners
+              {itemDetails?.addLearners ? itemDetails?.addLearners : "Add Learners"}
+              
             </button>
           </div>
           {currentPage === "My Learners" ? (
             <>
-              <h1 className="text-xl font-bold">My Learners</h1>
+              <h1 className="text-xl font-bold">{itemDetails?.myLearners ? itemDetails?.myLearners : "My Learners"}</h1>
               <div>
                 <div>
                   <input
@@ -211,7 +235,7 @@ const MyStudents = () => {
                       );
                     }}
                     name="Search"
-                    placeholder="Search"
+                    placeholder={itemDetails?.search ? itemDetails?.search : "Search"}
                     className="block w-full px-4 py-2 mt-2 rounded-md border bg-white border-[#B7B7B7] focus:border-blue-500 focus:outline-none focus:ring"
                   />
                 </div>
@@ -230,7 +254,7 @@ const MyStudents = () => {
                       applyFilters(course, "", selectedValidationStatus);
                     }}
                   >
-                    <option value="">Select Course</option>
+                    <option value="">{itemDetails?.selectCourse ? itemDetails?.selectCourse : "Select Course"}</option>
                     {courses?.map((course) => (
                       <option key={course._id} value={course._id}>
                         {course?.courseFullName}
@@ -254,7 +278,7 @@ const MyStudents = () => {
                       );
                     }}
                   >
-                    <option value="">Select Batch</option>
+                    <option value="">{itemDetails?.selectBatch ? itemDetails?.selectBatch : "Select Batch"}</option>
                     {batchesData?.map((batch) => (
                       <option key={batch?._id} value={batch?._id}>
                         {batch?.batchName}
@@ -274,10 +298,10 @@ const MyStudents = () => {
                       );
                     }}
                   >
-                    <option value="">Select Validation</option>
-                    <option value="Paid">Paid</option>
-                    <option value="Unpaid">Unpaid</option>
-                    <option value="Expired">Expired</option>
+                    <option value="">{itemDetails?.selectValidation ? itemDetails?.selectValidation : "Select Validation"}</option>
+                    <option value="Paid">{itemDetails?.paid ? itemDetails?.paid : "Paid"}</option>
+                    <option value="Unpaid">{itemDetails?.unpaid ? itemDetails?.unpaid : "Unpaid"}</option>
+                    <option value="Expired">{itemDetails?.expired ? itemDetails?.expired : "Expired"}</option>
                   </select>
 
                   {/* Apply Filters Button */}
@@ -296,14 +320,16 @@ const MyStudents = () => {
                 <table className="min-w-full font-sans bg-white border border-gray-300">
                   <thead className="bg-gray-800 text-white sticky top-0">
                     <tr>
-                      <th className="py-3 px-6 border-b text-left">Name</th>
-                      <th className="py-3 px-6 border-b text-left">Email</th>
-                      <th className="py-3 px-6 border-b text-left">phone</th>
+                      <th className="py-3 px-6 border-b text-left">{itemDetails?.name ? itemDetails?.name : "Name"}</th>
+                      <th className="py-3 px-6 border-b text-left">{itemDetails?.email ? itemDetails?.email : "Email"}</th>
+                      <th className="py-3 px-6 border-b text-left">{itemDetails?.phone ? itemDetails?.phone : "Phone"}</th>
                       <th className="py-3 px-6 border-b text-left">
-                        Joining Date
+                      {itemDetails?.joiningDate ? itemDetails?.joiningDate : "Joining Date"}
+                        
                       </th>
                       <th className="py-3 px-6 border-b text-left">
-                        Paid/Unpaid
+                      {itemDetails?.paidOrUnpaid ? itemDetails?.paidOrUnpaid : "Paid/Unpaid"}
+                        
                       </th>
                     </tr>
                   </thead>
@@ -355,18 +381,18 @@ const MyStudents = () => {
                                 selectedValidationStatus === "Expired") ? (
                                 <Link to={`/profile/${student?.email}`}>
                                   <span className="text-orange-600 font-semibold">
-                                    &#9888; Expired
+                                    &#9888; {itemDetails?.expired ? itemDetails?.expired : "Expired"}
                                   </span>
                                 </Link>
                               ) : (
                                 <Link to={`/profile/${student?.email}`}>
                                   {student?.courses && student?.courses[0] ? (
                                     <span className="text-green font-semibold">
-                                      &#x2713; Paid
+                                      &#x2713; {itemDetails?.paid ? itemDetails?.paid : "Paid"}
                                     </span>
                                   ) : (
                                     <span className="text-red-600 font-semibold">
-                                      &#x2717; Unpaid
+                                      &#x2717; {itemDetails?.unpaid ? itemDetails?.unpaid : "Unpaid"}
                                     </span>
                                   )}
                                 </Link>

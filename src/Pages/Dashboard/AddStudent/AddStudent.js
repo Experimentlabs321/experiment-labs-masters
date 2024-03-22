@@ -23,6 +23,28 @@ const AddStudent = () => {
   const [selectedBatch, setSelectedBatch] = useState({});
   const [phone, setPhone] = useState("");
   const rootUrl = window.location.origin;
+  const [loading, setLoading] = useState(false);
+  const [itemDetails, setItemDetails] = useState();
+  useEffect(() => {
+    if (userInfo) {
+      setLoading(true);
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/language/getMyLearnersSubDetailsByOrganizationAndName/addLearners/organizationsId/${userInfo?.organizationId}`
+        )
+        .then((response) => {
+
+          console.log(response)
+          setItemDetails(response?.data);
+
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+    setLoading(false);
+  }, [userInfo]);
+  //console.log(itemDetails)
 
   useEffect(() => {
     axios
@@ -175,12 +197,14 @@ const AddStudent = () => {
             />
           </button>
           <p className=" text-left text-[20px] text-[#3F3F3F] font-medium tracking-wider">
-            Add Student
+          {itemDetails?.addStudent ? itemDetails?.addStudent : "Add Student"}
+            
           </p>
         </div>
         {addBulkUpload && (
           <div className="w-full overflow-hidden">
             <BulkUpload
+            itemDetails={itemDetails}
             //  schoolInfo={schoolInfo}
             />
           </div>
@@ -192,19 +216,22 @@ const AddStudent = () => {
                 onClick={() => setAddBulkUpload(true)}
                 className="flex gap-2 py-1 px-7 text-white bg-[#3E4DAC] items-center rounded-3xl"
               >
-                Bulk Upload
+                {itemDetails?.bulkUpload ? itemDetails?.bulkUpload : "Bulk Upload"}
+                
               </button>
             </div>
             <div className="mt-3">
               <h1 className=" text-[#737373] text-[24px] font-[500] mb-2 ">
-                Select Course
+              {itemDetails?.selectCourse ? itemDetails?.selectCourse : "Select Course"}
+                
               </h1>
               <div className="flex flex-wrap">
                 {!courses[0] && (
                   <div
                     className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
                   >
-                    No course added yet!
+                    {itemDetails?.noCourseAddedYet ? itemDetails?.noCourseAddedYet : "No course added yet"}
+                    !
                   </div>
                 )}
                 {courses?.map((item, index) => (
@@ -226,14 +253,16 @@ const AddStudent = () => {
             {selectedCourse?._id && (
               <div className="mt-3">
                 <h1 className=" text-[#737373] text-[24px] font-[500] mb-2 ">
-                  Select Batch
+                {itemDetails?.selectBatch ? itemDetails?.selectBatch : "Select Batch"}
+                  
                 </h1>
                 <div className="flex flex-wrap">
                   {!batchesData[0] && (
                     <div
                       className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
                     >
-                      No batch added yet!
+                      {itemDetails?.noBatchAddedYet ? itemDetails?.noBatchAddedYet : "No batch added yet"}
+                      !
                     </div>
                   )}
                   {batchesData?.map((item, index) => (
@@ -281,7 +310,7 @@ const AddStudent = () => {
                         />
                         {selectedFile && (
                           <p className="text-[18px] font-[700] m-[5px] ">
-                            File:{" "}
+                            {itemDetails?.file ? itemDetails?.file : "File"}:{" "}
                             <span className="font-[500]">
                               {selectedFile?.name}
                             </span>
@@ -309,7 +338,8 @@ const AddStudent = () => {
                 <div className="flex justify-between my-4">
                   <div className="flex flex-col gap-2  w-[40%]">
                     <label htmlFor="name" className="text-[17px] font-medium">
-                      Student Name
+                    {itemDetails?.studentName ? itemDetails?.studentName : "Student Name"}
+                      
                     </label>
                     <input
                       required
@@ -322,7 +352,8 @@ const AddStudent = () => {
                   </div>
                   <div className="flex flex-col gap-2  w-[40%]">
                     <label htmlFor="email" className="text-[17px] font-medium">
-                      Student Email
+                    {itemDetails?.studentEmail ? itemDetails?.studentEmail : "Student Email"}
+                      
                     </label>
                     <input
                       required
@@ -337,14 +368,15 @@ const AddStudent = () => {
                 <div className="flex justify-between my-4">
                   <div className="flex flex-col gap-2  w-[40%]">
                     <label htmlFor="phone" className="text-[17px] font-medium">
-                      Student Phone Number
+                    {itemDetails?.studentPhoneNumber ? itemDetails?.studentPhoneNumber : "Student Phone Number"}
+                      
                     </label>
                     <PhoneInput
                       style={{ backgroundColor: "#EEF0FF" }}
                       international="true"
                       className="bg-[#EEF0FF] px-[10px] py-1 rounded-md shadow"
                       defaultCountry="IN"
-                      placeholder="Enter phone number"
+                      placeholder={itemDetails?.enterPhoneNumber ? itemDetails?.enterPhoneNumber : "Enter phone number"}
                       value={phone}
                       onChange={setPhone}
                     />
@@ -359,7 +391,8 @@ const AddStudent = () => {
                   </div>
                   <div className="flex flex-col gap-2  w-[40%]">
                     <label htmlFor="email" className="text-[17px] font-medium">
-                      Student Status
+                    {itemDetails?.studentStatus ? itemDetails?.studentStatus : "Student Status"}
+                      
                     </label>
                     <select
                       required
@@ -367,8 +400,8 @@ const AddStudent = () => {
                       id="studentStatus"
                       className="bg-[#EEF0FF] px-[10px] py-1 rounded-md shadow"
                     >
-                      <option value={"Free"}>Free</option>
-                      <option value={"Paid"}>Paid</option>
+                      <option value={"Free"}>{itemDetails?.free ? itemDetails?.free : "Free"}</option>
+                      <option value={"Paid"}>{itemDetails?.paid ? itemDetails?.paid : "Paid"}</option>
                     </select>
                   </div>
                 </div>
@@ -377,7 +410,8 @@ const AddStudent = () => {
                     type="submit"
                     className="flex gap-2 py-3 px-7 text-white bg-[#3E4DAC] items-center rounded-3xl"
                   >
-                    Add Student
+                    {itemDetails?.addStudent ? itemDetails?.addStudent : "Add Student"}
+                    
                   </button>
                 </div>
               </form>

@@ -6,13 +6,13 @@ import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthProvider";
 
-const BulkUpload = () => {
+const BulkUpload = ({itemDetails}) => {
   const { userInfo } = useContext(AuthContext);
   const [file, setFile] = useState(null);
   const [jsonData, setJsonData] = useState(null);
   const [dragActive, setDragActive] = useState(false);
   const [tableWidth, setTableWidth] = useState("100%");
-  console.log(userInfo);
+  console.log(itemDetails);
 
   useEffect(() => {
     // Calculate the desired width (e.g., 200px less than the screen width)
@@ -116,7 +116,7 @@ const BulkUpload = () => {
       console.log(newUsers);
       if (newUsers) {
         Swal.fire({
-          title: "New Users created successfully!",
+          title:itemDetails?.newUsersCreatedSuccessfully ? itemDetails?.newUsersCreatedSuccessfully : "New Users created successfully!",
           icon: "success",
         });
         //   navigate("/counselorDashboard/MyStudents");
@@ -131,7 +131,7 @@ const BulkUpload = () => {
   };
   return (
     <div className="w-full">
-      <p className="text-[17px] mt-6 mb-2 font-medium">Upload File(xlsx)</p>
+      <p className="text-[17px] mt-6 mb-2 font-medium">{itemDetails?.uploadFile ? itemDetails?.uploadFile : "Upload File"}(xlsx)</p>
       <div className="flex items-center">
         <div
           className="w-[220px] h-[220px] bg-[#F6F7FF] flex flex-col items-center justify-center rounded-lg "
@@ -147,9 +147,9 @@ const BulkUpload = () => {
           <>
             <CloudUploadIcon className={` ${dragActive && "animate-ping"} `} />
             <p className="text-[17px] font-semibold mb-3 mt-3">
-              Drag and drop{" "}
+            {itemDetails?.dragAndDrop ? itemDetails?.dragAndDrop : "Drag and drop"} {" "}
             </p>
-            <p className="text-sm font-medium mb-3">Or</p>
+            <p className="text-sm font-medium mb-3">{itemDetails?.or ? itemDetails?.or : "Or"}</p>
           </>
           <>
             <div className="flex gap-2 justify-center w-full">
@@ -157,7 +157,8 @@ const BulkUpload = () => {
                 className="flex items-center px-5 py-2 rounded-lg bg-[#FFDB70] text-xs font-bold"
                 htmlFor="input-file-upload"
               >
-                Browser
+                {itemDetails?.browser ? itemDetails?.browser : "Browser"}
+                
               </label>
               <input
                 className="hidden"
@@ -173,7 +174,8 @@ const BulkUpload = () => {
         </div>
         <div className=" w-auto mx-auto">
           <p className="text-xl font-medium">
-            Please follow the the given template of xlsx file to enter student
+          {itemDetails?.pleaseFollowTheGivenTemplateOfXlsxFileToEnterStudentData ? itemDetails?.pleaseFollowTheGivenTemplateOfXlsxFileToEnterStudentData : "Drag and drop"}
+            Please follow the given template of xlsx file to enter student
             data.
           </p>
           <div className="w-full flex justify-center">
@@ -182,7 +184,8 @@ const BulkUpload = () => {
               target="_blank"
               to="https://docs.google.com/spreadsheets/d/1U5dewnhOj7gFiCUhj-Yfa60woPI2I4-6YmMtK5hAeX0/edit?usp=sharing"
             >
-              Download Template
+              {itemDetails?.downloadTemplate ? itemDetails?.downloadTemplate : "Download Template"}
+              
             </Link>
           </div>
         </div>
@@ -236,13 +239,16 @@ const BulkUpload = () => {
                     <thead>
                       <tr className="bg-gray-100">
                         <th className="py-3 px-4 border-b border-r whitespace-nowrap">
-                          Name
+                        {itemDetails?.name ? itemDetails?.name : "Name"}
+                          
                         </th>
                         <th className="py-3 px-4 border-b border-r whitespace-nowrap">
-                          Email
+                        {itemDetails?.email ? itemDetails?.email : "Email"}
+                          
                         </th>
                         <th className="py-3 px-4 border-b border-r whitespace-nowrap">
-                          Phone
+                        {itemDetails?.phone ? itemDetails?.phone : "Phone"}
+                          
                         </th>
                       </tr>
                     </thead>
@@ -275,7 +281,8 @@ const BulkUpload = () => {
             onClick={() => handleAddStudents()}
             className="flex mt-6 gap-2 py-3 px-7 text-white bg-[#3E4DAC] items-center rounded-3xl"
           >
-            Add Students
+            {itemDetails?.addStudents ? itemDetails?.addStudents : "Add Students"}
+            
           </button>
         </>
       )}
