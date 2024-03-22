@@ -391,6 +391,9 @@ const Aside = ({
                                   "task",
                                   JSON.stringify(task)
                                 );
+                                navigate(
+                                  `/taskDetails/${task?.taskId}?taskType=${task?.taskType}`
+                                );
                                 if (window.innerWidth <= 768) {
                                   // If the click is outside the sidebar and we're on a mobile device, hide the sidebar
                                   setToggleButton(false); // Assuming setToggleButton(true) hides the sidebar

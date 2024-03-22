@@ -150,7 +150,9 @@ const QuizGeneralInformation = () => {
         localStorage.setItem("courseId", JSON.stringify(courseData?._id));
         toast.success("Quiz added Successfully");
         e.target.reset();
-        navigate(`/editTask/${currentWeek?._id}`);
+        navigate(
+          `/editTask/${newQuiz?.data?.result?.insertedId}?taskType=Quiz`
+        );
       }
 
       console.log(formData);
