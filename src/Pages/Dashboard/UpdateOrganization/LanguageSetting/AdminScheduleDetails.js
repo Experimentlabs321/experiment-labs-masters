@@ -31,6 +31,7 @@ const AdminScheduleDetails = () => {
     setAdminLoading(false);
   }, [userInfo]);
   console.log(itemDetails)
+  
   const fetchContentDetails = () => {
     if (userInfo) {
       setAdminLoading(true);

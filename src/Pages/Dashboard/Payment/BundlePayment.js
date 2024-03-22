@@ -93,7 +93,7 @@ const BundlePayment = () => {
     day: "numeric",
   };
 
-  const handleApplyCoupon = () => {
+  const handleApplyCoupon = (coupon) => {
     const filteredCoupon = offers.filter(
       (offer) => offer.code === coupon && offer.disabled !== true
     );
@@ -108,8 +108,7 @@ const BundlePayment = () => {
         discountAmount = +maxDiscountValue;
 
       // console.log("Discount Amount", discountAmount);
-      if (+minCourseValue <= +course?.price)
-        setCouponDiscount(discountAmount);
+      if (+minCourseValue <= +course?.price) setCouponDiscount(discountAmount);
       else {
         Swal.fire({
           title: `Error`,
@@ -131,16 +130,16 @@ const BundlePayment = () => {
     console.log("Data =============>", data);
     Loading();
 
-    if ((+course?.price - +couponDiscount) === 0) {
+    if (+course?.price - +couponDiscount === 0) {
       const enrollData = {
         courses: course?.courses, // Array of objects, each containing courseId and batchId
         coupon: coupon || "",
         couponId: selectOffer._id || "",
-        discountAmount: +couponDiscount || "",
+        discountAmount: Math.round(+couponDiscount) || "",
         email: data?.email,
         organizationId: organizationData?._id,
         organizationName: organizationData?.organizationName,
-        originalPrice: +course?.price,
+        originalPrice: Math.round(+course?.price),
         paidAmount: 0,
         userId: data?._id,
       };
@@ -168,7 +167,7 @@ const BundlePayment = () => {
     } = await axios.post(
       `${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/checkout`,
       {
-        price: +(+course.price - +couponDiscount),
+        price: Math.round(+(+course.price - +couponDiscount)),
         paymentInstance: {
           key_id: organizationData?.paymentInstance?.key_id,
           key_secret: organizationData?.paymentInstance?.key_secret,
@@ -180,7 +179,7 @@ const BundlePayment = () => {
 
     const options = {
       key: organizationData?.paymentInstance?.key_id,
-      amount: +order?.amount,
+      amount: Math.round(+order?.amount),
       key_secret: organizationData?.paymentInstance?.key_secret,
       currency: "INR",
       name: organizationData?.organizationName,
@@ -206,9 +205,9 @@ const BundlePayment = () => {
         response.courses = course?.courses;
         response.email = data?.email;
         response.userId = data?._id;
-        response.paidAmount = +order?.amount / 100;
-        response.originalPrice = +course?.price;
-        response.discountAmount = +couponDiscount || "";
+        response.paidAmount = Math.round(+order?.amount / 100);
+        response.originalPrice = Math.round(+course?.price);
+        response.discountAmount = Math.round(+couponDiscount) || "";
         response.couponId = selectOffer._id || "";
         response.coupon = coupon || "";
         response.organizationId = organizationData?._id;
@@ -269,6 +268,7 @@ const BundlePayment = () => {
           saveUser(email);
         });
       }
+      setLoginOpen(false)
     } catch (error) {
       // Handle any other errors that may occur during the Axios request
       console.error("Error during Axios request:", error);
@@ -318,6 +318,7 @@ const BundlePayment = () => {
         } else {
           saveUser(email);
         }
+        setLoginOpen(false)
       })
       .catch((error) => {
         console.error(error);
@@ -349,6 +350,7 @@ const BundlePayment = () => {
           if (res.data.acknowledged) {
             saveUser(result?.user?.email);
           }
+          setRegisterOpen(false)
         })
         .catch((error) => {
           console.error(error);
@@ -387,6 +389,7 @@ const BundlePayment = () => {
           } else {
             saveUser(email);
           }
+          setRegisterOpen(false)
         })
         .catch((error) => {
           console.error(error);
@@ -472,7 +475,7 @@ const BundlePayment = () => {
                         </div>
                       </div>
                       <button
-                        onClick={handleApplyCoupon}
+                        onClick={() => handleApplyCoupon(coupon)}
                         className=" text-[#5e52ff] bg-[#5e52ff0c] p-2 rounded-sm"
                       >
                         Apply
@@ -493,15 +496,18 @@ const BundlePayment = () => {
                               <div
                                 key={index}
                                 onClick={() => {
-                                  +offer?.maxUseCount < +offer?.usedCount
-                                    ? Swal.fire({
+                                  if (+offer?.maxUseCount < +offer?.usedCount) {
+                                    Swal.fire({
                                       icon: "error",
                                       title: "Error",
                                       text: "Coupon is already been used Maximum Time",
-                                    })
-                                    : setCoupon(offer?.code);
+                                    });
+                                  } else {
+                                    setCoupon(offer?.code);
+                                    handleApplyCoupon(offer?.code);
+                                  }
                                 }}
-                                className="bg-gradient-to-b from-white to-[#ebf1ff] rounded-[7px] border border-blue px-[10px] py-[12px] min-w-[300px]"
+                                className="bg-gradient-to-b cursor-pointer from-white to-[#ebf1ff] rounded-[7px] border border-blue px-[10px] py-[12px] min-w-[300px]"
                               >
                                 <div className="flex items-center justify-between uppercase text-[1.25rem] font-bold">
                                   <h3>{offer?.discountPercent}%</h3>
@@ -523,7 +529,8 @@ const BundlePayment = () => {
                                 </p>
                                 <p className="mt-[10px] font-[600] text-[1.07rem]">
                                   Valid for first{" "}
-                                  {(+offer?.maxUseCount) - (+offer?.usedCount || 0)}{" "}
+                                  {+offer?.maxUseCount -
+                                    (+offer?.usedCount || 0)}{" "}
                                   learners.{" "}
                                 </p>
                               </div>
@@ -546,7 +553,7 @@ const BundlePayment = () => {
                                 Total Price
                               </td>
                               <td id="bundle-cost" className="py-2">
-                                ₹{course?.price || "N/A"}
+                                ₹{Math.round(course?.price) || "N/A"}
                               </td>
                             </tr>
                             <tr
@@ -557,7 +564,10 @@ const BundlePayment = () => {
                             >
                               <td>Coupon Discount</td>
                               <td className="py-2" id="coupon-discount">
-                                ₹{couponDiscount >= 0 ? couponDiscount : "N/A"}
+                                ₹
+                                {couponDiscount >= 0
+                                  ? Math.round(couponDiscount)
+                                  : "N/A"}
                               </td>
                             </tr>
                           </tbody>
@@ -567,7 +577,7 @@ const BundlePayment = () => {
                               <td className="py-2" id="total-to-be-paid">
                                 ₹
                                 {course?.price
-                                  ? +course?.price - +couponDiscount
+                                  ? Math.round(+course?.price - +couponDiscount)
                                   : "N/A"}
                               </td>
                             </tr>
@@ -584,38 +594,36 @@ const BundlePayment = () => {
                         <h4 className="m-0 text-2xl">
                           ₹
                           {course?.price
-                            ? +course?.price - +couponDiscount
+                            ? Math.round(+course?.price - +couponDiscount)
                             : "N/A"}
                         </h4>
                       </div>
                       <div>
-
-                        {
-                          +course?.price - +couponDiscount === 0 ?
-                            <button
-                              onClick={
-                                user
-                                  ? () => handleEnroll(userInfo)
-                                  : () => setLoginOpen(true)
-                              }
-                              id="enroll-now-btn"
-                              className=" px-[18px] py-[9px] text-white font-bold bg-blue rounded-md"
-                            >
-                              Enroll Now
-                            </button>
-                            :
-                            <button
-                              onClick={
-                                user
-                                  ? () => handleEnroll(userInfo)
-                                  : () => setLoginOpen(true)
-                              }
-                              id="enroll-now-btn"
-                              className=" px-[18px] py-[9px] text-white font-bold bg-blue hover:bg-opacity-70 rounded-md"
-                            >
-                              Pay Now
-                            </button>
-                        }
+                        {+course?.price - +couponDiscount === 0 ? (
+                          <button
+                            onClick={
+                              user
+                                ? () => handleEnroll(userInfo)
+                                : () => setLoginOpen(true)
+                            }
+                            id="enroll-now-btn"
+                            className=" px-[18px] py-[9px] text-white font-bold bg-blue rounded-md"
+                          >
+                            Enroll Now
+                          </button>
+                        ) : (
+                          <button
+                            onClick={
+                              user
+                                ? () => handleEnroll(userInfo)
+                                : () => setLoginOpen(true)
+                            }
+                            id="enroll-now-btn"
+                            className=" px-[18px] py-[9px] text-white font-bold bg-blue hover:bg-opacity-70 rounded-md"
+                          >
+                            Pay Now
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>

@@ -6,16 +6,34 @@ import axios from "axios";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { red } from "@mui/material/colors";
 import Swal from "sweetalert2";
+import WeekChapData from "./OffersComponent/WeekChapData";
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 const Profile = () => {
   const { email } = useParams();
   const [profileInfo, setProfileInfo] = useState({});
   const [courseData, setCourseData] = useState([]);
+  const [weekData, setWeekData] = useState({});
+  const [chapterData, setChapterData] = useState({});
+  const [chapters, setChapters] = useState({});
   const [tableWidth, setTableWidth] = useState("100%");
+  const [expandedCourseId, setExpandedCourseId] = useState(null);
+  const [expandedRows, setExpandedRows] = useState({});
+  // Toggle the expansion of a row
+  const toggleCourseDetails = (courseId) => {
+    console.log(`Toggling course details for: ${courseId}`);
+    setExpandedRows(prevExpandedRows => {
+      const isRowCurrentlyExpanded = !!prevExpandedRows[courseId];
+      return {
+        ...prevExpandedRows,
+        [courseId]: !isRowCurrentlyExpanded
+      };
+    });
+  };
   useEffect(() => {
     // Calculate the desired width (e.g., 200px less than the screen width)
     const screenWidth = window.innerWidth;
     const desiredWidth = screenWidth - 350;
-
     // Set the table width as a string
     setTableWidth(`${desiredWidth}px`);
 
@@ -70,6 +88,78 @@ const Profile = () => {
     fetchCourseDetails();
   }, [profileInfo]);
   console.log("course  ", courseData);
+  useEffect(() => {
+    const fetchWeekDetails = async () => {
+      const courses = profileInfo?.courses || [];
+      const courseDetailsPromises = courses.map(async (course) => {
+        const courseId = course.courseId;
+        try {
+          const response = await axios.get(
+            `${process.env.REACT_APP_SERVER_API}/api/v1/weeks/courseId/${courseId}`
+          );
+          return response?.data;
+        } catch (error) {
+          console.error(
+            `Error fetching course details for courseId: ${courseId}`,
+            error
+          );
+          return null;
+        }
+      });
+
+      const courseDetails = await Promise.all(courseDetailsPromises);
+      setWeekData(courseDetails.filter(Boolean)); // Remove null values
+    };
+
+    fetchWeekDetails();
+  }, [profileInfo]);
+  // useEffect(() => {
+  //   const fetchChapterDetails = async () => {
+  //     // Ensure weekData is an array before proceeding
+  //     if (!Array.isArray(weekData)) {
+  //       console.error('weekData is not an array:', weekData);
+  //       return; // Early return if weekData is not an array
+  //     }
+
+  //     // Loop through each week in weekData
+  //     const allWeekDetailsPromises = weekData.map(async (week) => {
+  //       // Ensure week is an array
+  //       if (!Array.isArray(week)) {
+  //         console.error('Week is not an array:', week);
+  //         return []; // Return an empty array to keep consistent structure
+  //       }
+  //       const courseDetailsPromises = week.map(async (course) => {
+  //         const courseId = course?._id;
+  //         try {
+  //           const response = await axios.get(
+  //             `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/weekId/${courseId}`
+  //           );
+  //           return response?.data;
+  //         } catch (error) {
+  //           console.error(`Error fetching course details for courseId: ${courseId}`, error);
+  //           return null;
+  //         }
+  //       });
+
+  //       const weekDetails = await Promise.all(courseDetailsPromises);
+  //       return weekDetails.flat().filter(Boolean); // Flatten and remove null values for this week
+  //     });
+
+  //     // Wait for all weeks to be processed, then flatten the results
+  //     const allWeekDetails = await Promise.all(allWeekDetailsPromises);
+  //     const flattenedWeekDetails = allWeekDetails.flat();
+
+  //     setChapterData(flattenedWeekDetails);
+  //     // Assuming you want to update chapters state as well
+  //     const allChapters = flattenedWeekDetails.flatMap(week => week);
+  //     setChapters(allChapters); // Set chapters state once with all processed data
+  //   };
+  //   fetchChapterDetails();
+  // }, [weekData]); // Ensure dependencies are correctly listed if there are more
+
+  console.log("week  ", weekData);
+  // console.log("chapter  ", chapterData);
+  // console.log("chapterssss  ", chapters);
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -105,6 +195,7 @@ const Profile = () => {
       });
     }
   };
+
   return (
     <div>
       <Layout>
@@ -196,50 +287,131 @@ const Profile = () => {
           )}
         </div>
         <div
-          style={{ width: `70%`, height: "70vh" }}
+          style={{ height: "70vh" }}
           className="overflow-x-auto mx-24"
         >
-          <table className="min-w-full font-sans bg-white border border-gray-300">
+          <table className="min-w-full font-sans bg-white border border-gray-300 table-fixed">
             <thead className="bg-gray-800 text-white sticky top-0">
-              <tr>
-                <th className="py-3 px-6 border-b text-left">Course Name</th>
-                <th className="py-3 px-6 border-b text-left">
+              <tr className="w-full">
+                <th className="w-1/5 py-3 px-6 border-b text-left">Course Name</th>
+                <th className="w-1/5 py-3 px-6 border-b text-left">
                   Course Category
                 </th>
-                <th className="py-3 px-6 border-b text-left">
+                <th className="w-1/5 py-3 px-6 border-b text-left">
                   Organization Name
                 </th>
-                <th className="py-3 px-6 border-b text-left">Start Date</th>
-                <th className="py-3 px-6 border-b text-left">End Date</th>
+                <th className="w-1/5 py-3 px-6 border-b text-left">Start Date</th>
+                <th className="w-1/5 py-3 px-6 border-b text-left">End Date</th>
               </tr>
             </thead>
             <tbody>
+              {/* {courseData.map((data, index) => {
+                const startDate = new Date(data?.courseStartingDate);
+                const endDate = new Date(data?.courseEndingDate);
+                const isExpanded = expandedCourseId === _id;
+                return (
+                  <>
+                    <tr
+                      key={index}
+                      className={index % 2 === 0 ? "bg-gray-100" : "bg-gray-50"}
+                    >
+                      <td className="py-4 px-6 border-b text-left">
+                        {data?.courseFullName || "Not Available"}
+                      </td>
+                      <td className="py-4 px-6 border-b text-left">
+                        {data?.courseCategory || "Not Available"}
+                      </td>
+                      <td className="py-4 px-6 border-b text-left">
+                        {data?.organization?.organizationName || "Not Available"}
+                      </td>
+                      <td className="py-4 px-6 border-b text-left">
+                        {startDate.toLocaleDateString() || "Not Available"}
+                      </td>
+                      <td className="py-4 px-6 border-b text-left">
+                        {endDate.toLocaleDateString() || "Not Available"}
+                      </td>
+                    </tr>
+                    <tr
+                      key={_id}
+                      className={index % 2 === 0 ? "bg-gray-100" : "bg-gray-50"}
+                      onClick={() => toggleCourseDetails(_id)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <td colSpan="5" className="py-4 text-center border-b">
+                        Progress Details : {data?.courseFullName || "Not Available"}
+                      </td>
+                    </tr>
+                    {expandedCourseId === _id && (
+                      <>
+                        <tr className={index % 2 === 0 ? "bg-gray-100" : "bg-gray-50"}>
+                          <th className="py-2 px-5 border-b text-left">Week</th>
+                          <th className="py-2 px-5 border-b text-left">Chapter</th>
+                          <th className="py-2 px-5 border-b text-left">Task</th>
+                          <th className="py-2 px-5 border-b text-left">Deadline for completion</th>
+                          <th className="py-2 px-5 border-b text-left">WA/Email Nudge</th>
+                        </tr>
+                       
+                      </>
+                    )}
+                  </>
+                );
+              })} */}
               {courseData.map((data, index) => {
                 const startDate = new Date(data?.courseStartingDate);
                 const endDate = new Date(data?.courseEndingDate);
+                const isExpanded = !!expandedRows[data._id];
+                const courseWeekData = weekData.find((weekArray) => weekArray[0]?.courseId === data._id);
                 return (
-                  <tr
-                    key={index}
-                    className={index % 2 === 0 ? "bg-gray-100" : "bg-gray-50"}
-                  >
-                    <td className="py-4 px-6 border-b text-left">
-                      {data?.courseFullName || "Not Available"}
-                    </td>
-                    <td className="py-4 px-6 border-b text-left">
-                      {data?.courseCategory || "Not Available"}
-                    </td>
-                    <td className="py-4 px-6 border-b text-left">
-                      {data?.organization?.organizationName || "Not Available"}
-                    </td>
-                    <td className="py-4 px-6 border-b text-left">
-                      {startDate.toLocaleDateString() || "Not Available"}
-                    </td>
-                    <td className="py-4 px-6 border-b text-left">
-                      {endDate.toLocaleDateString() || "Not Available"}
-                    </td>
-                  </tr>
+                  <React.Fragment key={index}> {/* Correct placement of key prop */}
+                    <tr
+                      key={index}
+                      className={"bg-gray-200 w-full"}
+                    >
+                      <td className="py-4 px-6 border-b text-left">
+                        {data?.courseFullName || "Not Available"}
+                      </td>
+                      <td className="py-4 px-6 border-b text-left">
+                        {data?.courseCategory || "Not Available"}
+                      </td>
+                      <td className="py-4 px-6 border-b text-left">
+                        {data?.organization?.organizationName || "Not Available"}
+                      </td>
+                      <td className="py-4 px-6 border-b text-left">
+                        {startDate.toLocaleDateString() || "Not Available"}
+                      </td>
+                      <td className="py-4 px-6 border-b text-left">
+                        {endDate.toLocaleDateString() || "Not Available"}
+                      </td>
+                    </tr>
+                    <tr className="bg-sky-600 text-white cursor-pointer" onClick={() => toggleCourseDetails(data._id)}>
+                      <td colSpan="5" className="py-2 px-6 border-b text-center">
+                        <div className="flex justify-center items-center gap-2 w-full">
+                          <span>Progress Details: {data?.courseFullName || "Not Available"}</span>
+                          {isExpanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                        </div>
+                      </td>
+                    </tr>
+                    {isExpanded && (
+                      <>
+                        <tr className={"bg-gray-100  sticky top-0"}>
+                          <th className="py-2 px-5 border-b text-left">Week</th>
+                          <th className="py-2 px-5 border-b text-left">Chapter</th>
+                          <th className="py-2 px-5 border-b text-left">Task</th>
+                          <th className="py-2 px-5 border-b text-left">Completion Status</th>
+                          <th className="py-2 px-5 border-b text-left">Deadline for completion</th>
+                          <th className="py-2 px-5 border-b text-left">WA/Email Nudge</th>
+                        </tr>
+                        {courseWeekData?.map((weekDetail, index) => (
+                          <WeekChapData userId={profileInfo?._id} weekData={weekDetail} serial={index} key={index} />
+                        ))}
+
+                      </>
+                    )}
+
+                  </React.Fragment>
                 );
               })}
+
             </tbody>
           </table>
         </div>

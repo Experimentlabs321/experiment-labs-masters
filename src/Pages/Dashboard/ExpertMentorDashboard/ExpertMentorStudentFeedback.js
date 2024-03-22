@@ -50,6 +50,28 @@ const ExpertMentorStudentFeedback = ({admin}) => {
   const [selectedClassShow, setSelectedClassShow] = useState(
     classes?.length > 0 ? classes[0] : {}
   );
+  const [loading, setLoading] = useState(false);
+  const [itemDetails, setItemDetails] = useState();
+  useEffect(() => {
+    if (userInfo) {
+      setLoading(true);
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/language/getFeedbackSubDetailsByOrganizationAndName/liveClassFeedback/organizationsId/${userInfo?.organizationId}`
+        )
+        .then((response) => {
+
+          console.log(response)
+          setItemDetails(response?.data);
+
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+    setLoading(false);
+  }, [userInfo]);
+  console.log(itemDetails)
 
   const handleTabClick1 = (tab) => {
     setSelectedTab1(tab);
@@ -296,14 +318,16 @@ const ExpertMentorStudentFeedback = ({admin}) => {
         <div className="mt-20 ms-10">
           <div>
             <h1 className=" text-[#737373] text-[24px] font-[500] mb-2 ">
-              Select Course
+              {itemDetails?.selectCourse ? itemDetails?.selectCourse :"Select Course"}
+              
             </h1>
             <div className="flex flex-wrap">
               {!courses[0] && (
                 <div
                   className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
                 >
-                  No course added yet!
+                  {itemDetails?.noCourseAddedYet ? itemDetails?.noCourseAddedYet :"No course added yet!"}
+                  
                 </div>
               )}
               {courses?.map((item, index) => (
@@ -324,10 +348,14 @@ const ExpertMentorStudentFeedback = ({admin}) => {
 
           <div className="flex items-center gap-5">
             <p className="text-[#676767] text-xl font-semibold">
-              Select Class :
+            {itemDetails?.selectClass ? itemDetails?.selectClass :"Select Class"}
+              
+               :
             </p>
             {!classes?.length ? (
-              <p className="my-10 text-red-600">Class not found</p>
+              <p className="my-10 text-red-600">
+                {itemDetails?.classNotFound ? itemDetails?.classNotFound :"Class not found"}
+                </p>
             ) : (
               <select
                 className="my-10 py-3 px-5 text-[#676767] text-lg font-semibold focus:outline-none"
@@ -354,7 +382,8 @@ const ExpertMentorStudentFeedback = ({admin}) => {
             <span>
               <img src={ranking} alt="icon" />
             </span>{" "}
-            Rating
+            {itemDetails?.rating ? itemDetails?.rating :"Rating"}
+            
           </p>
         </div>
 
@@ -405,7 +434,7 @@ const ExpertMentorStudentFeedback = ({admin}) => {
           </div>
 
           <div className="my-10 me-10">
-            <p>Total Students - 1000</p>
+            <p>{itemDetails?.totalStudents ? itemDetails?.totalStudents :"Total Students"} - 1000</p>
           </div>
         </div>
 
@@ -473,7 +502,7 @@ const ExpertMentorStudentFeedback = ({admin}) => {
                               data?.taskId === selectedClass) && (
                               <div>
                                 <p className="text-lg font-normal">
-                                  {data?.givenFeedbacks.length} students
+                                  {data?.givenFeedbacks.length} {itemDetails?.students ? itemDetails?.students :"students"}
                                 </p>
                                 {data?.givenFeedbacks?.map((givenFeedback) =>
                                   givenFeedback.categories?.map((category) =>
@@ -569,7 +598,7 @@ const ExpertMentorStudentFeedback = ({admin}) => {
               </div>
             </div>
 
-            <div className="ms-10 text-lg font-semibold">All Comments</div>
+            <div className="ms-10 text-lg font-semibold">{itemDetails?.allComments ? itemDetails?.allComments :"All Comments"}</div>
 
             <div className="grid grid-cols-2 my-10 gap-10 overflow-auto h-[500px] mx-10">
               {classes?.map(
@@ -625,7 +654,8 @@ const ExpertMentorStudentFeedback = ({admin}) => {
           </>
         ) : (
           <p className="text-[red] ms-10 mt-10 text-lg font-semibold text-center">
-            There is no Result
+            {itemDetails?.thereIsNoResult ? itemDetails?.thereIsNoResult :"There is no Result"}
+            
           </p>
         )}
         </> 
@@ -635,7 +665,7 @@ const ExpertMentorStudentFeedback = ({admin}) => {
           <div>
             <p className="flex items-center gap-2 text-lg font-semibold text-[#3E4DAC]">
               {" "}
-              Student Feedback
+              {itemDetails?.studentFeedback ? itemDetails?.studentFeedback :"Student Feedback"}  
             </p>
           </div>
 
@@ -661,14 +691,16 @@ const ExpertMentorStudentFeedback = ({admin}) => {
         <div className="mt-20 ms-10">
           <div>
             <h1 className=" text-[#737373] text-[24px] font-[500] mb-2 ">
-              Select Course
+            {itemDetails?.selectCourse ? itemDetails?.selectCourse :"Select Course"}
+              
             </h1>
             <div className="flex flex-wrap">
               {!courses[0] && (
                 <div
                   className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
                 >
-                  No course added yet!
+                  {itemDetails?.noCourseAddedYet ? itemDetails?.noCourseAddedYet :"No course added yet!"}
+                  
                 </div>
               )}
               {courses?.map((item, index) => (
@@ -689,10 +721,10 @@ const ExpertMentorStudentFeedback = ({admin}) => {
 
           <div className="flex items-center gap-5">
             <p className="text-[#676767] text-xl font-semibold">
-              Select Class :
+            {itemDetails?.selectClass ? itemDetails?.selectClass :"Select Class"} :
             </p>
             {!classes?.length ? (
-              <p className="my-10 text-red-600">Class not found</p>
+              <p className="my-10 text-red-600">{itemDetails?.classNotFound ? itemDetails?.classNotFound :"Class not found"}</p>
             ) : (
               <select
                 className="my-10 py-3 px-5 text-[#676767] text-lg font-semibold focus:outline-none"
@@ -719,7 +751,8 @@ const ExpertMentorStudentFeedback = ({admin}) => {
             <span>
               <img src={ranking} alt="icon" />
             </span>{" "}
-            Rating
+            {itemDetails?.rating ? itemDetails?.rating :"Rating"}
+            
           </p>
         </div>
 
@@ -770,7 +803,7 @@ const ExpertMentorStudentFeedback = ({admin}) => {
           </div>
 
           <div className="my-10 me-10">
-            <p>Total Students - 1000</p>
+            <p>{itemDetails?.totalStudents ? itemDetails?.totalStudents :"Total Students"} - 1000</p>
           </div>
         </div>
 
@@ -838,7 +871,7 @@ const ExpertMentorStudentFeedback = ({admin}) => {
                               data?.taskId === selectedClass) && (
                               <div>
                                 <p className="text-lg font-normal">
-                                  {data?.givenFeedbacks.length} students
+                                  {data?.givenFeedbacks.length} {itemDetails?.students ? itemDetails?.students :"students"} 
                                 </p>
                                 {data?.givenFeedbacks?.map((givenFeedback) =>
                                   givenFeedback.categories?.map((category) =>
@@ -934,7 +967,7 @@ const ExpertMentorStudentFeedback = ({admin}) => {
               </div>
             </div>
 
-            <div className="ms-10 text-lg font-semibold">All Comments</div>
+            <div className="ms-10 text-lg font-semibold"> {itemDetails?.allComments ? itemDetails?.allComments :"All Comments"}</div>
 
             <div className="grid grid-cols-2 my-10 gap-10 overflow-auto h-[500px] mx-10">
               {classes?.map(
@@ -990,7 +1023,8 @@ const ExpertMentorStudentFeedback = ({admin}) => {
           </>
         ) : (
           <p className="text-[red] ms-10 mt-10 text-lg font-semibold text-center">
-            There is no Result
+            {itemDetails?.thereIsNoResult ? itemDetails?.thereIsNoResult :"There is no Result"}
+            
           </p>
         )}
       </Layout></>

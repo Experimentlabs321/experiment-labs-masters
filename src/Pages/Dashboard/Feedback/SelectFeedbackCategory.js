@@ -1,14 +1,9 @@
 //SelectFeedbackCategory
 
-
 import axios from "axios";
 import React, { useContext, useState } from "react";
 import { toast } from "react-hot-toast";
 import Swal from "sweetalert2";
-
-
-
-
 import { AuthContext } from "../../../contexts/AuthProvider";
 import DialogLayout from "../Shared/DialogLayout";
 
@@ -21,6 +16,7 @@ const SelectFeedbackCategory = ({
   setCategoryThreeDot,
   categoryThreeDot,
   selectedCourse,
+  itemFeedbackSettingDetails
 }) => {
   const { userInfo } = useContext(AuthContext);
   const [editCategoryOpen, setEditCategoryOpen] = useState(false);
@@ -29,8 +25,8 @@ const SelectFeedbackCategory = ({
     if (!selectedCourse?._id || !userInfo?.organizationId) {
       Swal.fire({
         icon: "warning",
-        title: "There is no course",
-        text: "Please create a course first!",
+        title: itemFeedbackSettingDetails?.thereIsNoCourse ? itemFeedbackSettingDetails?.thereIsNoCourse : "There is no course",
+        text:itemFeedbackSettingDetails?.pleaseCreateACourseFirst ? itemFeedbackSettingDetails?.pleaseCreateACourseFirst : "Please create a course first!",
       });
       return;
     }
@@ -45,7 +41,7 @@ const SelectFeedbackCategory = ({
     );
 
     if (newCategory?.data?.acknowledged) {
-      toast.success("Category added Successfully");
+      toast.success(itemFeedbackSettingDetails?.categoryAddedSuccessfully ? itemFeedbackSettingDetails?.categoryAddedSuccessfully :"Category added Successfully");
       setFeedbackCategories([
         ...feedbackCategories,
         { categoryName: `category ${feedbackCategories?.length + 1}`,
@@ -74,8 +70,8 @@ const SelectFeedbackCategory = ({
       setEditCategoryOpen(false);
       Swal.fire({
         icon: "error",
-        title: "Category already exist!",
-        text: "Please enter an unique category name!",
+        title:itemFeedbackSettingDetails?.categoryAlreadyExist ? itemFeedbackSettingDetails?.categoryAlreadyExist : "Category already exist!",
+        text:itemFeedbackSettingDetails?.pleaseEnterAnUniqueCategoryName ? itemFeedbackSettingDetails?.pleaseEnterAnUniqueCategoryName : "Please enter an unique category name!",
       });
       return;
     }
@@ -100,7 +96,7 @@ const SelectFeedbackCategory = ({
     );
 
     if (updatedCategory?.data?.acknowledged) {
-      toast.success("Category Updated Successfully");
+      toast.success(itemFeedbackSettingDetails?.categoryUpdatedSuccessfully ? itemFeedbackSettingDetails?.categoryUpdatedSuccessfully :"Category Updated Successfully");
       const updatedCategoriesArray = [...feedbackCategories];
       const selectedIndex = updatedCategoriesArray.findIndex(
         (category) =>
@@ -117,8 +113,8 @@ const SelectFeedbackCategory = ({
   
   const handleCategoryDelete = async (name) => {
     await Swal.fire({
-      title: "Are you sure?",
-      text: "Once deleted, the category will not recover!",
+      title:itemFeedbackSettingDetails?.areYouSure ? itemFeedbackSettingDetails?.areYouSure : "Are you sure?",
+      text: itemFeedbackSettingDetails?.onceDeletedTheCategoryWillNotRecover ? itemFeedbackSettingDetails?.onceDeletedTheCategoryWillNotRecover : "Once deleted, the category will not recover!",
       icon: "warning",
       buttons: true,
       showCancelButton: true,
@@ -151,7 +147,7 @@ const SelectFeedbackCategory = ({
           .then((result) => {
             console.log(result);
             if (result?.acknowledged) {
-              toast.success("Category Deleted Successfully!");
+              toast.success(itemFeedbackSettingDetails?.categoryDeletedSuccessfully ? itemFeedbackSettingDetails?.categoryDeletedSuccessfully :"Category Deleted Successfully!");
               const remainingCategories = feedbackCategories.filter(
                 (category) => category?.categoryName !== name
               );
@@ -177,7 +173,8 @@ const SelectFeedbackCategory = ({
         borderRadius="15px"
         title={
           <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
-            Edit Category Name
+            {itemFeedbackSettingDetails?.editCategoryName ? itemFeedbackSettingDetails?.editCategoryName : "Edit Category Name" }
+            
           </p>
         }
       >
@@ -185,7 +182,9 @@ const SelectFeedbackCategory = ({
           onSubmit={handleEditCategoryName}
           className="px-[32px] py-[24px] "
         >
-          <h1 className=" text-[18px] font-[700] mb-[20px] ">Category Name</h1>
+          <h1 className=" text-[18px] font-[700] mb-[20px] ">
+          {itemFeedbackSettingDetails?.categoryName ? itemFeedbackSettingDetails?.categoryName : "Category Name" }
+            </h1>
           <input
             type="text"
             id="categoryName"
@@ -194,19 +193,21 @@ const SelectFeedbackCategory = ({
             placeholder="Category"
             className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
           />
-          <h1 className=" text-[18px] font-[700] mb-[20px] ">Rating</h1>
+          <h1 className=" text-[18px] font-[700] mb-[20px] ">
+          {itemFeedbackSettingDetails?.rating ? itemFeedbackSettingDetails?.rating : "Rating" }
+            </h1>
           <input
             type="text"
             id="rating"
             name="rating"
             defaultValue={selectedFeedbackCategory?.rating}
-            placeholder="Rating"
+            placeholder={itemFeedbackSettingDetails?.rating ? itemFeedbackSettingDetails?.rating : "Rating" }
             className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
           />
           <div className="w-full flex items-center justify-center mt-[40px]">
             <input
               type="submit"
-              value="Update"
+              value={itemFeedbackSettingDetails?.update ? itemFeedbackSettingDetails?.update : "Update" }
               className="py-[15px] px-[48px] cursor-pointer text-[20px] font-[700] rounded-[8px] bg-[#3E4DAC] text-white "
             />
           </div>
@@ -214,7 +215,8 @@ const SelectFeedbackCategory = ({
       </DialogLayout>
       {/* Edit category name end */}
       <h1 className=" text-[#737373] text-[24px] font-[500] mt-5 mb-2 ">
-        Feedback Category
+      {itemFeedbackSettingDetails?.feedbackCategory ? itemFeedbackSettingDetails?.feedbackCategory : "Feedback Category" }
+        
       </h1>
       <div className="flex flex-wrap gap-y-2 items-center">
         {feedbackCategories?.map((item, index) => (
@@ -229,7 +231,7 @@ const SelectFeedbackCategory = ({
           >
             {item?.categoryName}
             <br/>
-              Rating :  {item?.rating}
+              {itemFeedbackSettingDetails?.rating ? itemFeedbackSettingDetails?.rating : "Rating" } :  {item?.rating}
             <button
               onBlur={() => setCategoryThreeDot(false)}
               onClick={() => setCategoryThreeDot(!categoryThreeDot)}
@@ -266,7 +268,8 @@ const SelectFeedbackCategory = ({
                     }}
                     className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
                   >
-                    Edit Category Name
+                    {itemFeedbackSettingDetails?.editCategoryName ? itemFeedbackSettingDetails?.editCategoryName : "Edit Category Name" }
+                    
                   </li>
                   <li
                     className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
@@ -276,7 +279,8 @@ const SelectFeedbackCategory = ({
                       );
                     }}
                   >
-                    Delete Category
+                    {itemFeedbackSettingDetails?.deleteCategory ? itemFeedbackSettingDetails?.deleteCategory : "Delete Category" }
+                    
                   </li>
                 </ul>
               )}
@@ -286,7 +290,8 @@ const SelectFeedbackCategory = ({
           <div
             className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
           >
-            Please Add Category...
+            {itemFeedbackSettingDetails?.pleaseAddCategory ? itemFeedbackSettingDetails?.pleaseAddCategory : "Please Add Category" }
+            ...
           </div>
         )}
         <button

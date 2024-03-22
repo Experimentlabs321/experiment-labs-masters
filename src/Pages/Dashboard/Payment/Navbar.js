@@ -26,17 +26,20 @@ const Navbar = (props) => {
   const drawerWidth = 240;
   const { window } = props;
   const { organizationData, setLoginOpen } = props;
+  const orgLogo = localStorage.getItem("organizationLogo");
+  const paymentNavbarLogo = localStorage.getItem("paymentNavbarLogo");
+  const orgRootUrl = localStorage.getItem("orgRootUrl");
 
-  console.log(organizationData)
+  console.log(organizationData);
   localStorage.setItem("organizationFavicon", organizationData?.favicon);
-  localStorage.setItem("paymentNavbarLogo",organizationData?.paymentNavbarLogo);
-  
-
+  localStorage.setItem(
+    "paymentNavbarLogo",
+    organizationData?.paymentNavbarLogo
+  );
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
   };
-
 
   const handleLogout = () => {
     logOut()
@@ -46,7 +49,6 @@ const Navbar = (props) => {
       })
       .catch((error) => console.error(error));
   };
-
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -58,7 +60,6 @@ const Navbar = (props) => {
 
     setState(!state);
   };
-
 
   const handleDashboard = () => {
     const Role = localStorage.getItem("role");
@@ -75,12 +76,11 @@ const Navbar = (props) => {
     }
   };
 
-
   const navItems2 = [
     <>
-      {userInfo && (
+      {!user ? (
         <Button
-          onClick={() => handleLogout()}
+          onClick={() => setLoginOpen(true)}
           sx={{
             bgcolor: "#FF557A",
             borderRadius: "22.5px",
@@ -88,15 +88,48 @@ const Navbar = (props) => {
             color: "white",
             width: "100%",
           }}
-          className="my-2 block border-b border-gray-100 py-1 font-semibold text-gray-500 hover:text-black md:mx-2"
+          variant="contained"
         >
-          Logout
+          Login
         </Button>
+      ) : (
+        <>
+          <Button
+            onClick={() => handleDashboard()}
+            sx={{
+              bgcolor: organizationData?.paymentNavbarAccessDashboardButtonColor
+                ? organizationData?.paymentNavbarAccessDashboardButtonColor
+                : "#94A4FF",
+              borderRadius: "22.5px",
+              ":hover": { bgcolor: "#94A4FF" },
+              color:
+                organizationData?.paymentNavbarAccessDashboardButtonTextColor
+                  ? organizationData?.paymentNavbarAccessDashboardButtonTextColor
+                  : "white",
+              width: "100%",
+              marginBottom: 2,
+            }}
+            className="menu-hover"
+          >
+            Access Dashboard
+          </Button>
+          <Button
+            onClick={() => handleLogout()}
+            sx={{
+              bgcolor: "#FF557A",
+              borderRadius: "22.5px",
+              ":hover": { bgcolor: "#94A4FF" },
+              color: "white",
+              width: "100%",
+            }}
+            className="my-2 block border-b border-gray-100 py-1 font-semibold text-gray-500 hover:text-black md:mx-2"
+          >
+            Logout
+          </Button>
+        </>
       )}
     </>,
   ];
-
-
 
   const drawer = (
     <Box
@@ -109,8 +142,22 @@ const Navbar = (props) => {
       }}
     >
       <div className="my-8 ml-2 flex gap-2 items-center">
-        <img className="h-6 ml-2" src={logo} alt="icon" />
-        <h1 className="text-logo-white font-semibold">Experiment Labs</h1>
+        {/* <img className="h-6 ml-2" src={logo} alt="icon" />
+        <h1 className="text-logo-white font-semibold">Experiment Labs</h1> */}
+        <a
+          href={`${
+            organizationData?.orgRootUrl ? organizationData?.orgRootUrl : "/"
+          }`}
+          className="flex gap-3 items-center"
+        >
+          {paymentNavbarLogo ? (
+            <img className="h-6 lg:h-8" src={paymentNavbarLogo} alt="icon" />
+          ) : (
+            <>
+              <img className="h-6 lg:h-8" src={orgLogo} alt="icon" />
+            </>
+          )}
+        </a>
       </div>
       <Divider />
       <List>
@@ -125,7 +172,6 @@ const Navbar = (props) => {
     </Box>
   );
 
-
   const list = () => (
     <Box
       sx={{ width: "100%", height: "50vh" }}
@@ -137,14 +183,8 @@ const Navbar = (props) => {
     </Box>
   );
 
-
   const container =
     window !== undefined ? () => window().document.body : undefined;
-  const [orgData, setOrgData] = useState({});
-
-  const orgLogo = localStorage.getItem("organizationLogo")
-  const paymentNavbarLogo = localStorage.getItem("paymentNavbarLogo")
-  const orgRootUrl = localStorage.getItem("orgRootUrl")
 
   const navItems = [
     !user ? (
@@ -168,18 +208,21 @@ const Navbar = (props) => {
             <Button
               // onClick={() => graphyLogin(user?.email, user?.displayName)}
               sx={{
-                bgcolor: organizationData?.paymentNavbarAccessDashboardButtonColor ? organizationData?.paymentNavbarAccessDashboardButtonColor : "#94A4FF",
+                bgcolor:
+                  organizationData?.paymentNavbarAccessDashboardButtonColor
+                    ? organizationData?.paymentNavbarAccessDashboardButtonColor
+                    : "#94A4FF",
                 borderRadius: "22.5px",
                 ":hover": { bgcolor: "#94A4FF" },
-                color: organizationData?.paymentNavbarAccessDashboardButtonTextColor ? organizationData?.paymentNavbarAccessDashboardButtonTextColor : "white",
+                color:
+                  organizationData?.paymentNavbarAccessDashboardButtonTextColor
+                    ? organizationData?.paymentNavbarAccessDashboardButtonTextColor
+                    : "white",
                 width: "100%",
               }}
               className="menu-hover"
             >
-              <button
-                onClick={handleDashboard}
-                className=""
-              >
+              <button onClick={handleDashboard} className="">
                 {" "}
                 Access Dashboard
               </button>
@@ -205,10 +248,14 @@ const Navbar = (props) => {
             <Button
               onClick={() => handleLogout()}
               sx={{
-                bgcolor: organizationData?.paymentNavbarLogoutButtonColor ? organizationData?.paymentNavbarLogoutButtonColor : "#FF557A",
+                bgcolor: organizationData?.paymentNavbarLogoutButtonColor
+                  ? organizationData?.paymentNavbarLogoutButtonColor
+                  : "#FF557A",
                 borderRadius: "22.5px",
                 ":hover": { bgcolor: "#94A4FF" },
-                color: organizationData?.paymentNavbarLogoutButtonTextColor ? organizationData?.paymentNavbarLogoutButtonTextColor : "white",
+                color: organizationData?.paymentNavbarLogoutButtonTextColor
+                  ? organizationData?.paymentNavbarLogoutButtonTextColor
+                  : "white",
                 width: "100%",
               }}
               className="my-2 block border-b border-gray-100 py-1 font-semibold text-gray-500 hover:text-black md:mx-2"
@@ -221,28 +268,17 @@ const Navbar = (props) => {
     ),
   ];
 
-
-  useEffect(() => {
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
-      )
-      .then((response) => {
-        setOrgData(response?.data);
-      })
-      .catch((error) => console.error(error));
-  }, [userInfo]);
-
-  console.log(orgData)
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar
         component="nav"
         sx={{
-          bgcolor: (organizationData?.paymentNavbarColor) ? organizationData?.paymentNavbarColor : "#3E4DAC",
+          bgcolor: organizationData?.paymentNavbarColor
+            ? organizationData?.paymentNavbarColor
+            : "#3E4DAC",
           padding: "10px 20px 10px 10px",
-          zIndex: "1"
+          zIndex: "1",
         }}
       >
         <Toolbar>
@@ -251,7 +287,14 @@ const Navbar = (props) => {
             component="div"
             sx={{ flexGrow: 1, color: "black" }}
           >
-            <a  href={`${organizationData?.orgRootUrl ? organizationData?.orgRootUrl : '/'}`} className="flex gap-3 items-center">
+            <a
+              href={`${
+                organizationData?.orgRootUrl
+                  ? organizationData?.orgRootUrl
+                  : "/"
+              }`}
+              className="flex gap-3 items-center"
+            >
               {paymentNavbarLogo ? (
                 <img
                   className="h-6 lg:h-8"
@@ -260,11 +303,7 @@ const Navbar = (props) => {
                 />
               ) : (
                 <>
-                  <img
-                    className="h-6 lg:h-8"
-                    src={orgLogo}
-                    alt="icon"
-                  />
+                  <img className="h-6 lg:h-8" src={orgLogo} alt="icon" />
                 </>
               )}
             </a>

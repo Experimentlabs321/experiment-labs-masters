@@ -81,10 +81,15 @@ const AdminOrganizationThemeDetails = () => {
     const paymentNavbarLogoutButtontextColor = form.paymentNavbarLogoutButtontextColor?.value;
     const save = form.save?.value;
     const organizationTheme = form.organizationTheme?.value;
-    const dashboardTheme = form.dashboardTheme?.value;
     const paymentIntegration = form.paymentIntegration?.value;
     const languageSetting = form.languageSetting?.value;
     const limitDevice = form.limitDevice?.value;
+    const dashboardTheme = form.dashboardTheme?.value;
+    const emailIntegration = form.emailIntegration?.value;
+    const currentFavicon = form.currentFavicon?.value;
+    const faviconHasNotAdded = form.faviconHasNotAdded?.value;
+    const logoHasNotAdded = form.logoHasNotAdded?.value;
+    const imageHasNotAdded = form.imageHasNotAdded?.value;
     
     const itemDetail = {
 
@@ -121,6 +126,12 @@ const AdminOrganizationThemeDetails = () => {
       paymentIntegration: paymentIntegration,
       languageSetting: languageSetting,
       limitDevice: limitDevice,
+      emailIntegration: emailIntegration,
+      currentFavicon: currentFavicon,
+      faviconHasNotAdded: faviconHasNotAdded,
+      logoHasNotAdded: logoHasNotAdded,
+      imageHasNotAdded: imageHasNotAdded,
+    
 
     };
     console.log(itemDetail)
@@ -279,6 +290,30 @@ const AdminOrganizationThemeDetails = () => {
               <div className='flex justify-between items-center w-[100%]'>
                 <p className='text-lg font-medium'>Language Setting</p>
                 <input name='languageSetting' type='text' defaultValue={itemDetails?.languageSetting} className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+              </div>
+              <div className='flex justify-between items-center w-[100%]'>
+                <p className='text-lg font-medium'>Dashboard Theme</p>
+                <input name='dashboardTheme' type='text' defaultValue={itemDetails?.dashboardTheme} className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+              </div>
+              <div className='flex justify-between items-center w-[100%]'>
+                <p className='text-lg font-medium'>Email Integration</p>
+                <input name='emailIntegration' type='text' defaultValue={itemDetails?.emailIntegration} className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+              </div>
+              <div className='flex justify-between items-center w-[100%]'>
+                <p className='text-lg font-medium'>Current Favicon</p>
+                <input name='currentFavicon' type='text' defaultValue={itemDetails?.currentFavicon} className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+              </div>
+              <div className='flex justify-between items-center w-[100%]'>
+                <p className='text-lg font-medium'>Favicon has not added</p>
+                <input name='faviconHasNotAdded' type='text' defaultValue={itemDetails?.faviconHasNotAdded} className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+              </div>
+              <div className='flex justify-between items-center w-[100%]'>
+                <p className='text-lg font-medium'>Logo has not added</p>
+                <input name='logoHasNotAdded' type='text' defaultValue={itemDetails?.logoHasNotAdded} className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+              </div>
+              <div className='flex justify-between items-center w-[100%]'>
+                <p className='text-lg font-medium'>Image has not added</p>
+                <input name='imageHasNotAdded' type='text' defaultValue={itemDetails?.imageHasNotAdded} className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
               </div>
 
 

@@ -22,7 +22,9 @@ const EmailTemplateRow = ({ title, description, active, templateId, template, fe
   console.log("selected Html", template?.htmlPart);
 
   const handleActive = async (templateId) => {
-    const response = await axios.put(`${process.env.REACT_APP_SERVER_API}/api/v1/sendMail/templateId/${templateId}`,
+    const response = await axios.put(
+      `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail/templateId/${templateId}`,
+      // `http://localhost:5000/api/v1/sendMail/templateId/${templateId}`,
       {
         active: !isActive + "",
         action: "none"
@@ -32,7 +34,8 @@ const EmailTemplateRow = ({ title, description, active, templateId, template, fe
   }
 
   const handleUpdate = async () => {
-    const response = await axios.put(`${process.env.REACT_APP_SERVER_API}/api/v1/sendMail/templateId/${templateId}`,
+    const response = await axios.put(
+      `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail/templateId/${templateId}`,
       {
         htmlPart: selectedHtmlPart,
         email: template?.email,

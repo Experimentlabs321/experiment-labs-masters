@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import RightArrowBlack from "../../../../assets/Dashboard/RightArrowBlack.png";
 import challengesImage from "../../../../assets/Dashboard/Challenges.png";
 
-const Challenges = ({ challengesHeaderText, challengesBtnText,challengesBtnBg,challengesCardBg,challengesProgressBg, challengesImgBg, challengesImg }) => {
+const Challenges = ({ completed,challengesHeaderText, challengesBtnText,challengesBtnBg,challengesCardBg,challengesProgressBg, challengesImgBg, challengesImg }) => {
     return (
         <div className="w-[250px] lg:w-[355px] min-w-[250px] lg:min-w-min h-[370px] lg:h-[515px]">
             <h1 className="text-[18px] lg:text-[25px] font-[700] text-center pb-[32px]">
@@ -26,7 +26,7 @@ const Challenges = ({ challengesHeaderText, challengesBtnText,challengesBtnBg,ch
                 <div className="w-full">
                     <small className="text-white pb-[10px] font-[700]">
                         {/* {currentWeekCompletion ? currentWeekCompletion : "O"} */}
-                        10%  Completed
+                        10%  {completed}
                     </small>
                     <div className="relative w-full">
                         <div className="w-full bg-gray-200 rounded-lg h-2">

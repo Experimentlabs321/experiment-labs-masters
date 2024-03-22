@@ -5,6 +5,7 @@ const Parameters = ({
   allParameters,
   parameters,
   setParameters,
+  itemDetails
 }) => {
   const [evaluation, setEvaluation] = useState("");
   const [evaluationDropdown, setEvaluationDropdown] = useState(false);
@@ -75,7 +76,8 @@ const Parameters = ({
     <>
       <div className="relative">
         <label className="text-[16px] font-[600]" htmlFor="case">
-          Evaluation on
+        { itemDetails?.evaluationOn ? itemDetails?.evaluationOn : "Evaluation on" }
+          
         </label>
         <input
           onKeyPress={handleKeyPress}

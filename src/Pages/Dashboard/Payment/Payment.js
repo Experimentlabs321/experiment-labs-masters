@@ -115,7 +115,7 @@ const Payment = () => {
     day: "numeric",
   };
 
-  const handleApplyCoupon = () => {
+  const handleApplyCoupon = (coupon) => {
     const filteredCoupon = offers.filter(
       (offer) => offer.code === coupon && offer.disabled !== true
     );
@@ -162,11 +162,11 @@ const Payment = () => {
         ], // Array of objects, each containing courseId and batchId
         coupon: coupon || "",
         couponId: selectOffer._id || "",
-        discountAmount: +couponDiscount || "",
+        discountAmount: Math.round(+couponDiscount) || "",
         email: data?.email,
         organizationId: organizationData?._id,
         organizationName: organizationData?.organizationName,
-        originalPrice: +selectedBatch?.price,
+        originalPrice: Math.round(+selectedBatch?.price),
         paidAmount: 0,
         userId: data?._id,
       };
@@ -210,7 +210,7 @@ const Payment = () => {
     } = await axios.post(
       `${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/checkout`,
       {
-        price: +(+selectedBatch.price - +couponDiscount),
+        price: Math.round(+(+selectedBatch.price - +couponDiscount)),
         paymentInstance: {
           key_id: organizationData?.paymentInstance?.key_id,
           key_secret: organizationData?.paymentInstance?.key_secret,
@@ -222,7 +222,7 @@ const Payment = () => {
 
     const options = {
       key: organizationData?.paymentInstance?.key_id,
-      amount: +order?.amount,
+      amount: Math.round(+order?.amount),
       key_secret: organizationData?.paymentInstance?.key_secret,
       currency: "INR",
       name: organizationData?.organizationName,
@@ -247,9 +247,9 @@ const Payment = () => {
         response.batchId = selectedBatch?._id;
         response.email = data?.email;
         response.userId = data?._id;
-        response.paidAmount = +order?.amount / 100;
-        response.originalPrice = +selectedBatch?.price;
-        response.discountAmount = +couponDiscount || "";
+        response.paidAmount = Math.round(+order?.amount / 100);
+        response.originalPrice = Math.round(+selectedBatch?.price);
+        response.discountAmount = Math.round(+couponDiscount) || "";
         response.couponId = selectOffer._id || "";
         response.coupon = coupon || "";
         response.organizationId = organizationData?._id;
@@ -326,7 +326,7 @@ const Payment = () => {
           saveUser(email);
         });
       }
-      
+      setLoginOpen(false)
     } catch (error) {
       // Handle any other errors that may occur during the Axios request
       console.error("Error during Axios request:", error);
@@ -376,6 +376,7 @@ const Payment = () => {
         } else {
           saveUser(email);
         }
+        setLoginOpen(false)
       })
       .catch((error) => {
         console.error(error);
@@ -416,6 +417,7 @@ const Payment = () => {
               }
             );
           }
+          setRegisterOpen(false)
         })
         .catch((error) => {
           console.error(error);
@@ -463,6 +465,7 @@ const Payment = () => {
           } else {
             saveUser(email);
           }
+          setRegisterOpen(false)
         })
         .catch((error) => {
           console.error(error);
@@ -593,7 +596,7 @@ const Payment = () => {
                           </div>
                         </div>
                         <button
-                          onClick={handleApplyCoupon}
+                          onClick={() => handleApplyCoupon(coupon)}
                           className=" text-[#5e52ff] bg-[#5e52ff0c] p-2 rounded-sm"
                         >
                           Apply
@@ -614,15 +617,20 @@ const Payment = () => {
                                 <div
                                   key={index}
                                   onClick={() => {
-                                    +offer?.maxUseCount < +offer?.usedCount
-                                      ? Swal.fire({
-                                          icon: "error",
-                                          title: "Error",
-                                          text: "Coupon is already been used Maximum Time",
-                                        })
-                                      : setCoupon(offer?.code);
+                                    if (
+                                      +offer?.maxUseCount < +offer?.usedCount
+                                    ) {
+                                      Swal.fire({
+                                        icon: "error",
+                                        title: "Error",
+                                        text: "Coupon is already been used Maximum Time",
+                                      });
+                                    } else {
+                                      setCoupon(offer?.code);
+                                      handleApplyCoupon(offer?.code);
+                                    }
                                   }}
-                                  className="bg-gradient-to-b from-white to-[#ebf1ff] rounded-[7px] border border-blue px-[10px] py-[12px] min-w-[300px]"
+                                  className="bg-gradient-to-b cursor-pointer from-white to-[#ebf1ff] rounded-[7px] border border-blue px-[10px] py-[12px] min-w-[300px]"
                                 >
                                   <div className="flex items-center justify-between uppercase text-[1.25rem] font-bold">
                                     <h3>{offer?.discountPercent}%</h3>
@@ -672,7 +680,7 @@ const Payment = () => {
                                   Total Price
                                 </td>
                                 <td id="bundle-cost" className="py-2">
-                                  ₹{selectedBatch?.price || "N/A"}
+                                  ₹{Math.round(selectedBatch?.price) || "N/A"}
                                 </td>
                               </tr>
                               <tr
@@ -684,7 +692,9 @@ const Payment = () => {
                                 <td>Coupon Discount</td>
                                 <td className="py-2" id="coupon-discount">
                                   ₹
-                                  {couponDiscount >= 0 ? couponDiscount : "N/A"}
+                                  {couponDiscount >= 0
+                                    ? Math.round(couponDiscount)
+                                    : "N/A"}
                                 </td>
                               </tr>
                             </tbody>
@@ -694,7 +704,9 @@ const Payment = () => {
                                 <td className="py-2" id="total-to-be-paid">
                                   ₹
                                   {selectedBatch?.price
-                                    ? +selectedBatch?.price - +couponDiscount
+                                    ? Math.round(
+                                        +selectedBatch?.price - +couponDiscount
+                                      )
                                     : "N/A"}
                                 </td>
                               </tr>
@@ -711,7 +723,9 @@ const Payment = () => {
                           <h4 className="m-0 text-2xl">
                             ₹
                             {selectedBatch?.price
-                              ? +selectedBatch?.price - +couponDiscount
+                              ? Math.round(
+                                  +selectedBatch?.price - +couponDiscount
+                                )
                               : "N/A"}
                           </h4>
                         </div>
@@ -830,18 +844,11 @@ const Payment = () => {
               </div>
               <div className="max-w-[350px] min-w-[350px]">
                 <div className="mt-3">
-                  <h1 className=" text-black text-base font-[500] ">
-                    Select Batch
+                  <h1 className=" text-black text-base font-[500] mb-3">
+                    <div className="w-1/3 h-8 bg-gray-200 rounded-lg"></div>
                   </h1>
                   <div className="flex flex-wrap">
-                    <select
-                      className="mt-1 p-2 border w-full rounded-md bg-white"
-                      onChange={(e) =>
-                        setSelectedBatch(batchesData[e.target.value])
-                      }
-                    >
-                      <option className="hidden">Select Batch</option>
-                    </select>
+                    <div className="w-full h-10 bg-gray-400 rounded-lg"></div>
                   </div>
                 </div>
               </div>

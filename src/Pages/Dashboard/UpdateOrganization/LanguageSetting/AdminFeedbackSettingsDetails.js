@@ -80,6 +80,23 @@ const AdminFeedbackSettingsDetails = () => {
         const newExecutionMentorName = form.executionMentor?.value;
         const newExpertMentorName = form.expertMentor?.value;
         const newProceedName = form.proceed?.value;
+        const noCourseAddedYet = form.noCourseAddedYet?.value;
+        const pleaseAddCategory = form.pleaseAddCategory?.value;
+        const thereIsNoCourse = form.thereIsNoCourse?.value;
+        const pleaseCreateACourseFirst = form.pleaseCreateACourseFirst?.value;
+        const categoryAddedSuccessfully = form.categoryAddedSuccessfully?.value;
+        const categoryAlreadyExist = form.categoryAlreadyExist?.value;
+        const pleaseEnterAnUniqueCategoryName = form.pleaseEnterAnUniqueCategoryName?.value;
+        const categoryUpdatedSuccessfully = form.categoryUpdatedSuccessfully?.value;
+        const categoryDeletedSuccessfully = form.categoryDeletedSuccessfully?.value;
+        const pleaseAddAtLeastOneCategory = form.pleaseAddAtLeastOneCategory?.value;
+        const theItemNameIsAlreadyExist = form.theItemNameIsAlreadyExist?.value;
+        const itemAddedSuccessfully = form.itemAddedSuccessfully?.value;
+        const itemUpdatedSuccessfully = form.itemUpdatedSuccessfully?.value;
+        const itemAlreadyExist = form.itemAlreadyExist?.value;
+        const pleaseEnterAnUniqueItemName = form.pleaseEnterAnUniqueItemName?.value;
+        const itemDeletedSuccessfully = form.itemDeletedSuccessfully?.value;
+       
       
 
         const itemDetail = {
@@ -109,10 +126,24 @@ const AdminFeedbackSettingsDetails = () => {
             executionMentor: newExecutionMentorName,
             expertMentor: newExpertMentorName,
             proceed: newProceedName,
+            noCourseAddedYet: noCourseAddedYet,
+            pleaseAddCategory: pleaseAddCategory,
+            thereIsNoCourse: thereIsNoCourse,
+            pleaseCreateACourseFirst: pleaseCreateACourseFirst,
+            categoryAddedSuccessfully: categoryAddedSuccessfully,
+            categoryAlreadyExist: categoryAlreadyExist,
+            pleaseEnterAnUniqueCategoryName: pleaseEnterAnUniqueCategoryName,
+            categoryUpdatedSuccessfully: categoryUpdatedSuccessfully,
+            categoryDeletedSuccessfully: categoryDeletedSuccessfully,
+            pleaseAddAtLeastOneCategory: pleaseAddAtLeastOneCategory,
+            theItemNameIsAlreadyExist: theItemNameIsAlreadyExist,
+            itemAddedSuccessfully: itemAddedSuccessfully,
+            itemUpdatedSuccessfully: itemUpdatedSuccessfully,
+            itemAlreadyExist: itemAlreadyExist,
+            pleaseEnterAnUniqueItemName: pleaseEnterAnUniqueItemName,
+            itemDeletedSuccessfully: itemDeletedSuccessfully,
+        
            
-
-
-
         };
         console.log(itemDetail)
         const item = await axios.post(
@@ -240,6 +271,71 @@ const AdminFeedbackSettingsDetails = () => {
                                 <p className='text-lg font-medium'>Proceed</p>
                                 <input name='proceed' defaultValue={itemDetails?.proceed} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
                             </div>
+                            <div className='flex justify-between items-center w-[100%]'>
+                                <p className='text-lg font-medium'>No course added yet!</p>
+                                <input name='noCourseAddedYet' defaultValue={itemDetails?.noCourseAddedYet} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                            </div>
+                            <div className='flex justify-between items-center w-[100%]'>
+                                <p className='text-lg font-medium'>Please Add Category</p>
+                                <input name='pleaseAddCategory' defaultValue={itemDetails?.pleaseAddCategory} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                            </div>
+                            <div className='flex justify-between items-center w-[100%]'>
+                                <p className='text-lg font-medium'>There is no course</p>
+                                <input name='thereIsNoCourse' defaultValue={itemDetails?.thereIsNoCourse} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                            </div>
+                            <div className='flex justify-between items-center w-[100%]'>
+                                <p className='text-lg font-medium'>Please create a course first!</p>
+                                <input name='pleaseCreateACourseFirst' defaultValue={itemDetails?.pleaseCreateACourseFirst} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                            </div>
+                            <div className='flex justify-between items-center w-[100%]'>
+                                <p className='text-lg font-medium'>Category added Successfully</p>
+                                <input name='categoryAddedSuccessfully' defaultValue={itemDetails?.categoryAddedSuccessfully} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                            </div>
+                            <div className='flex justify-between items-center w-[100%]'>
+                                <p className='text-lg font-medium'>Category already exist!</p>
+                                <input name='categoryAlreadyExist' defaultValue={itemDetails?.categoryAlreadyExist} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                            </div>
+                            <div className='flex justify-between items-center w-[100%]'>
+                                <p className='text-lg font-medium'>Please enter an unique category name!</p>
+                                <input name='pleaseEnterAnUniqueCategoryName' defaultValue={itemDetails?.pleaseEnterAnUniqueCategoryName} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                            </div>
+                            <div className='flex justify-between items-center w-[100%]'>
+                                <p className='text-lg font-medium'>Category Updated Successfully</p>
+                                <input name='categoryUpdatedSuccessfully' defaultValue={itemDetails?.categoryUpdatedSuccessfully} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                            </div>
+                            <div className='flex justify-between items-center w-[100%]'>
+                                <p className='text-lg font-medium'>Category Deleted Successfully!</p>
+                                <input name='categoryDeletedSuccessfully' defaultValue={itemDetails?.categoryDeletedSuccessfully} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                            </div>
+                            <div className='flex justify-between items-center w-[100%]'>
+                                <p className='text-lg font-medium'>Please add at least one category!</p>
+                                <input name='pleaseAddAtLeastOneCategory' defaultValue={itemDetails?.pleaseAddAtLeastOneCategory} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                            </div>
+                            <div className='flex justify-between items-center w-[100%]'>
+                                <p className='text-lg font-medium'>Please add at least one category!</p>
+                                <input name='theItemNameIsAlreadyExist' defaultValue={itemDetails?.theItemNameIsAlreadyExist} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                            </div>
+                            <div className='flex justify-between items-center w-[100%]'>
+                                <p className='text-lg font-medium'>Item added Successfully</p>
+                                <input name='itemAddedSuccessfully' defaultValue={itemDetails?.itemAddedSuccessfully} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                            </div>
+                            <div className='flex justify-between items-center w-[100%]'>
+                                <p className='text-lg font-medium'>Item Updated Successfully</p>
+                                <input name='itemUpdatedSuccessfully' defaultValue={itemDetails?.itemUpdatedSuccessfully} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                            </div>
+                            <div className='flex justify-between items-center w-[100%]'>
+                                <p className='text-lg font-medium'>Item already exist!</p>
+                                <input name='itemAlreadyExist' defaultValue={itemDetails?.itemAlreadyExist} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                            </div>
+                            <div className='flex justify-between items-center w-[100%]'>
+                                <p className='text-lg font-medium'>Please enter an unique item name!</p>
+                                <input name='pleaseEnterAnUniqueItemName' defaultValue={itemDetails?.pleaseEnterAnUniqueItemName} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                            </div>
+                            <div className='flex justify-between items-center w-[100%]'>
+                                <p className='text-lg font-medium'>Item Deleted Successfully!</p>
+                                <input name='itemDeletedSuccessfully' defaultValue={itemDetails?.itemDeletedSuccessfully} type='text' className='border border-slate-300 rounded-lg p-2 w-[300px]' placeholder='Text here' />
+                            </div>
+                         
 
 
                         </div>

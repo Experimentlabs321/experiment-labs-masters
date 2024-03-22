@@ -605,7 +605,7 @@ console.log(userInfo)
                   await Swal.fire({
                     icon: "success",
                     title: "Request Sent!",
-                    text: "Your slot request has been sent!",
+                    text: "Your meeting is confirmed. Please go to the Dashboard to access the meeting link",
                   });
                   
                   navigate('/courseAccess');

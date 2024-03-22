@@ -91,12 +91,13 @@ const EditAssignment = () => {
   }, [id]);
 
   useEffect(() => {
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/${assignmentData?.chapterId}`
-      )
-      .then((res) => setChapter(res?.data))
-      .catch((error) => console.error(error));
+    if (assignmentData?.chapterId)
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/${assignmentData?.chapterId}`
+        )
+        .then((res) => setChapter(res?.data))
+        .catch((error) => console.error(error));
   }, [assignmentData]);
 
   useEffect(() => {
@@ -104,20 +105,22 @@ const EditAssignment = () => {
       organizationId: userInfo?.organizationId,
       courseId: chapter?.courseId,
     };
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
-        fetchData
-      )
-      .then((res) => setSkillCategories(res?.data))
-      .catch((error) => console.error(error));
-    axios
-      .post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/earningCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
-        fetchData
-      )
-      .then((res) => setEarningCategories(res?.data))
-      .catch((error) => console.error(error));
+    if (userInfo?.organizationId && chapter?.courseId) {
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
+          fetchData
+        )
+        .then((res) => setSkillCategories(res?.data))
+        .catch((error) => console.error(error));
+      axios
+        .post(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/earningCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
+          fetchData
+        )
+        .then((res) => setEarningCategories(res?.data))
+        .catch((error) => console.error(error));
+    }
   }, [chapter, userInfo]);
 
   useEffect(() => {
@@ -132,25 +135,27 @@ const EditAssignment = () => {
   }, [chapter]);
 
   useEffect(() => {
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${course?._id}`
-      )
-      .then((response) => {
-        setBatchesData(response?.data);
-      })
-      .catch((error) => console.error(error));
+    if (course?._id)
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${course?._id}`
+        )
+        .then((response) => {
+          setBatchesData(response?.data);
+        })
+        .catch((error) => console.error(error));
   }, [course]);
 
   useEffect(() => {
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
-      )
-      .then((response) => {
-        setOrgData(response?.data);
-      })
-      .catch((error) => console.error(error));
+    if (userInfo?.organizationId)
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
+        )
+        .then((response) => {
+          setOrgData(response?.data);
+        })
+        .catch((error) => console.error(error));
   }, [userInfo]);
 
   const handleOptionChangeBatch = (event, optionValue) => {
