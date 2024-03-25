@@ -7,7 +7,7 @@ import bxseditalt from "../../../assets/ContentManagement/bxseditalt.svg";
 import Vector from "../../../assets/ContentManagement/Vector.svg";
 import trash from "../../../assets/ContentManagement/trash.svg";
 import back from "../../../assets/ContentManagement/back.svg";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -21,8 +21,18 @@ import arrow from "../../../assets/SkillsManagement/arrow.svg";
 import { Link, useParams } from "react-router-dom";
 import AddingEditingCalQues from "./AddingEditingCalQues";
 import Layout from "../Layout";
+import DialogLayoutForFromControl from "../Shared/DialogLayoutForFromControl";
+import AddingEditingMultiChoQues from "./AddingEditingMultiChoQues";
+import axios from "axios";
+import { AuthContext } from "../../../contexts/AuthProvider";
+import toast from "react-hot-toast";
 
-const ManageQuestion = () => {
+const ManageQuestion = ({
+  batchesData,
+  selectedBatches,
+  quizData,
+  setQuizData,
+}) => {
   const [selectedTab, setSelectedTab] = useState("Questions");
 
   const handleTabClick = (tab) => {
@@ -81,10 +91,12 @@ const ManageQuestion = () => {
     const isChecked = event.target.checked;
 
     if (isChecked) {
-      setSelectedOptionsQuestionFromQuesBank([
-        ...selectedOptionsQuestionFromQuesBank,
-        optionValue,
-      ]);
+      if (selectedOptionsQuestionFromQuesBank)
+        setSelectedOptionsQuestionFromQuesBank([
+          ...selectedOptionsQuestionFromQuesBank,
+          optionValue,
+        ]);
+      else setSelectedOptionsQuestionFromQuesBank([optionValue]);
       setMove(true);
     } else {
       setSelectedOptionsQuestionFromQuesBank(
@@ -226,11 +238,71 @@ const ManageQuestion = () => {
 
   //
 
+  const updateQuestionsForBatch = async (batchId, newQuestions) => {
+    // Create a copy of the quizObject
+    const updatedQuizObject = { ...quizData };
+
+    // Find the index of the batch with the given batchId
+    const batchIndex = updatedQuizObject.questions.findIndex(
+      (batch) => batch.batchId === batchId
+    );
+
+    // If the batch is found, update its questions array
+    if (batchIndex !== -1) {
+      updatedQuizObject.questions[batchIndex].questions = newQuestions;
+
+      // Update the state with the modified object
+      await setQuizData(updatedQuizObject);
+
+      // Log the updated quizObject (you can remove this in production)
+      console.log(updatedQuizObject);
+      await delete updatedQuizObject?._id;
+
+      const newTask = await axios.put(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/quizes/taskId/${quizData?._id}`,
+        updatedQuizObject
+      );
+      console.log(newTask);
+
+      if (newTask?.data?.result?.acknowledged) {
+        toast.success("Question Added Successfully!");
+      }
+    } else {
+      console.error(`Batch with batchId ${batchId} not found.`);
+    }
+  };
+
   const handleAddSelQues = () => {
+    console.log(quizData);
+    updateQuestionsForBatch(
+      selectedBatchForAddingQuestion?._id,
+      selectedOptionsQuestionFromQuesBank
+    );
     setAddQues(false);
   };
 
   const { id } = useParams();
+
+  // code by shihab
+  const { userInfo } = useContext(AuthContext);
+  const [questionType, setQuestionType] = useState("");
+  const [showQuestionForm, setShowQuestionForm] = useState(false);
+  const [questionBankQuestions, setQuestionBankQuestions] = useState([]);
+  const [selectedBatchForAddingQuestion, setSelectedBatchForAddingQuestion] =
+    useState({});
+
+  useEffect(() => {
+    if (userInfo?.organizationId)
+      axios
+        .get(
+          `http://localhost:5000/api/v1/questionBank/organizationId/${userInfo?.organizationId}`
+        )
+        .then((response) => {
+          if (response?.data) setQuestionBankQuestions(response?.data);
+        });
+  }, [userInfo?.organizationId]);
+
+  console.log(questionBankQuestions);
 
   return (
     <div>
@@ -302,7 +374,7 @@ const ManageQuestion = () => {
           </Link>
         </div> */}
 
-      {selectedTab === "Questions" && (
+      {selectedTab === "Questions" && !showQuestionForm && (
         <div className="mx-10 my-20">
           {!addQues && (
             <div>
@@ -360,7 +432,216 @@ const ManageQuestion = () => {
 
                         <div className="flex items-center">
                           <div>
-                            <BootstrapDialogNewQues
+                            <DialogLayoutForFromControl
+                              title={
+                                <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
+                                  Question Type
+                                </p>
+                              }
+                              width={600}
+                              setOpen={setOpenNewQuesType}
+                              open={openNewQuesType}
+                            >
+                              <form className=" mx-10 text-black w-full">
+                                <div className="flex gap-10">
+                                  <div className="">
+                                    <div className=" ">
+                                      <input
+                                        type="radio"
+                                        id="Calculated"
+                                        name="fav_language"
+                                        value="Calculated"
+                                        onChange={(e) =>
+                                          setQuestionType(e.target.value)
+                                        }
+                                      />
+                                      <label
+                                        className="ms-6 text-sm font-semibold"
+                                        for="Calculated"
+                                      >
+                                        Calculated
+                                      </label>
+                                    </div>
+                                    <div className="mt-6">
+                                      <input
+                                        type="radio"
+                                        id="Matching"
+                                        name="fav_language"
+                                        value="Matching"
+                                        onChange={(e) =>
+                                          setQuestionType(e.target.value)
+                                        }
+                                      />
+                                      <label
+                                        className="ms-6 text-sm font-semibold"
+                                        for="Matching"
+                                      >
+                                        Matching
+                                      </label>
+                                    </div>
+                                    <div className="mt-6">
+                                      <input
+                                        type="radio"
+                                        id="Numerical"
+                                        name="fav_language"
+                                        value="Numerical"
+                                        onChange={(e) =>
+                                          setQuestionType(e.target.value)
+                                        }
+                                      />
+                                      <label
+                                        className="ms-6 text-sm font-semibold"
+                                        for="Numerical"
+                                      >
+                                        Numerical
+                                      </label>
+                                    </div>
+                                    <div className="mt-6">
+                                      <input
+                                        type="radio"
+                                        id="Essay"
+                                        name="fav_language"
+                                        value="Essay"
+                                        onChange={(e) =>
+                                          setQuestionType(e.target.value)
+                                        }
+                                      />
+                                      <label
+                                        className="ms-6 text-sm font-semibold"
+                                        for="Essay"
+                                      >
+                                        Essay
+                                      </label>
+                                    </div>
+                                    <div className="mt-6">
+                                      <input
+                                        type="radio"
+                                        id="Drag and drop into text"
+                                        name="fav_language"
+                                        value="Drag and drop into text"
+                                        onChange={(e) =>
+                                          setQuestionType(e.target.value)
+                                        }
+                                      />
+                                      <label
+                                        className="ms-6 text-sm font-semibold"
+                                        for="Drag and drop into text"
+                                      >
+                                        Drag and drop into text
+                                      </label>
+                                    </div>
+                                  </div>
+                                  <div className="">
+                                    <div className="">
+                                      <input
+                                        type="radio"
+                                        id="Calculated Multichoice"
+                                        name="fav_language"
+                                        value="Calculated Multichoice"
+                                        onChange={(e) =>
+                                          setQuestionType(e.target.value)
+                                        }
+                                      />
+                                      <label
+                                        className="ms-6 text-sm font-semibold"
+                                        for="Calculated Multichoice"
+                                      >
+                                        Calculated Multichoice
+                                      </label>
+                                    </div>
+                                    <div className="mt-6">
+                                      <input
+                                        type="radio"
+                                        id="Multiple choice"
+                                        name="fav_language"
+                                        value="Multiple choice"
+                                        onChange={(e) =>
+                                          setQuestionType(e.target.value)
+                                        }
+                                      />
+                                      <label
+                                        className="ms-6 text-sm font-semibold"
+                                        for="Multiple choice"
+                                      >
+                                        Multiple choice
+                                      </label>
+                                    </div>
+                                    <div className="mt-6">
+                                      <input
+                                        type="radio"
+                                        id="Short answer"
+                                        name="fav_language"
+                                        value="Short answer"
+                                        onChange={(e) =>
+                                          setQuestionType(e.target.value)
+                                        }
+                                      />
+                                      <label
+                                        className="ms-6 text-sm font-semibold"
+                                        for="Short answer"
+                                      >
+                                        Short answer
+                                      </label>
+                                    </div>
+                                    <div className="mt-6">
+                                      <input
+                                        type="radio"
+                                        id="True/False"
+                                        name="fav_language"
+                                        value="True/False"
+                                        onChange={(e) =>
+                                          setQuestionType(e.target.value)
+                                        }
+                                      />
+                                      <label
+                                        className="ms-6 text-sm font-semibold"
+                                        for="True/False"
+                                      >
+                                        True/False
+                                      </label>
+                                    </div>
+                                    <div className="mt-6">
+                                      <input
+                                        type="radio"
+                                        id="Select missing words"
+                                        name="fav_language"
+                                        value="Select missing words"
+                                        onChange={(e) =>
+                                          setQuestionType(e.target.value)
+                                        }
+                                      />
+                                      <label
+                                        className="ms-6 text-sm font-semibold"
+                                        for="True/False"
+                                      >
+                                        Select missing words
+                                      </label>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div className="flex justify-center mt-10">
+                                  {/* <Link
+                                        to="/addingEditingCalQues"
+                                        className="px-10 py-2 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
+                                      >
+                                        {" "}
+                                        Add{" "}
+                                      </Link> */}
+                                  <button
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      console.log(questionType);
+                                      setAddQues(true);
+                                    }}
+                                    className="px-10 py-2 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
+                                  >
+                                    Add
+                                  </button>
+                                </div>
+                              </form>
+                            </DialogLayoutForFromControl>
+                            {/* <BootstrapDialogNewQues
                               onClose={handleCloseNewQuesType}
                               aria-labelledby="customized-dialog-title"
                               open={openNewQuesType}
@@ -384,6 +665,9 @@ const ManageQuestion = () => {
                                             id="Calculated"
                                             name="fav_language"
                                             value="Calculated"
+                                            onChange={(e) =>
+                                              setQuestionType(e.target.value)
+                                            }
                                           />
                                           <label
                                             className="ms-6 text-sm font-semibold"
@@ -398,6 +682,9 @@ const ManageQuestion = () => {
                                             id="Matching"
                                             name="fav_language"
                                             value="Matching"
+                                            onChange={(e) =>
+                                              setQuestionType(e.target.value)
+                                            }
                                           />
                                           <label
                                             className="ms-6 text-sm font-semibold"
@@ -412,6 +699,9 @@ const ManageQuestion = () => {
                                             id="Numerical"
                                             name="fav_language"
                                             value="Numerical"
+                                            onChange={(e) =>
+                                              setQuestionType(e.target.value)
+                                            }
                                           />
                                           <label
                                             className="ms-6 text-sm font-semibold"
@@ -426,6 +716,9 @@ const ManageQuestion = () => {
                                             id="Essay"
                                             name="fav_language"
                                             value="Essay"
+                                            onChange={(e) =>
+                                              setQuestionType(e.target.value)
+                                            }
                                           />
                                           <label
                                             className="ms-6 text-sm font-semibold"
@@ -440,6 +733,9 @@ const ManageQuestion = () => {
                                             id="Drag and drop into text"
                                             name="fav_language"
                                             value="Drag and drop into text"
+                                            onChange={(e) =>
+                                              setQuestionType(e.target.value)
+                                            }
                                           />
                                           <label
                                             className="ms-6 text-sm font-semibold"
@@ -456,6 +752,9 @@ const ManageQuestion = () => {
                                             id="Calculated Multichoice"
                                             name="fav_language"
                                             value="Calculated Multichoice"
+                                            onChange={(e) =>
+                                              setQuestionType(e.target.value)
+                                            }
                                           />
                                           <label
                                             className="ms-6 text-sm font-semibold"
@@ -470,6 +769,9 @@ const ManageQuestion = () => {
                                             id="Multiple choice"
                                             name="fav_language"
                                             value="Multiple choice"
+                                            onChange={(e) =>
+                                              setQuestionType(e.target.value)
+                                            }
                                           />
                                           <label
                                             className="ms-6 text-sm font-semibold"
@@ -484,6 +786,9 @@ const ManageQuestion = () => {
                                             id="Short answer"
                                             name="fav_language"
                                             value="Short answer"
+                                            onChange={(e) =>
+                                              setQuestionType(e.target.value)
+                                            }
                                           />
                                           <label
                                             className="ms-6 text-sm font-semibold"
@@ -498,6 +803,9 @@ const ManageQuestion = () => {
                                             id="True/False"
                                             name="fav_language"
                                             value="True/False"
+                                            onChange={(e) =>
+                                              setQuestionType(e.target.value)
+                                            }
                                           />
                                           <label
                                             className="ms-6 text-sm font-semibold"
@@ -512,6 +820,9 @@ const ManageQuestion = () => {
                                             id="Select missing words"
                                             name="fav_language"
                                             value="Select missing words"
+                                            onChange={(e) =>
+                                              setQuestionType(e.target.value)
+                                            }
                                           />
                                           <label
                                             className="ms-6 text-sm font-semibold"
@@ -524,18 +835,20 @@ const ManageQuestion = () => {
                                     </div>
 
                                     <div className="flex justify-center mt-10">
-                                      <Link
-                                        to="/addingEditingCalQues"
+                                      <button
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          console.log(questionType);
+                                        }}
                                         className="px-10 py-2 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
                                       >
-                                        {" "}
-                                        Add{" "}
-                                      </Link>
+                                        Add
+                                      </button>
                                     </div>
                                   </form>
                                 </Typography>
                               </DialogContent>
-                            </BootstrapDialogNewQues>
+                            </BootstrapDialogNewQues> */}
                           </div>
                         </div>
 
@@ -544,234 +857,241 @@ const ManageQuestion = () => {
                         </button>
 
                         <div className="w-full">
-                          <BootstrapDialogAddFromQuesBank
-                            onClose={handleCloseAddFromQuesBank}
-                            aria-labelledby="customized-dialog-title"
-                            open={openAddFromQuesBank}
-                          >
-                            <BootstrapDialogTitleAddFromQuesBank
-                              id="customized-dialog-title"
-                              onClose={handleCloseAddFromQuesBank}
-                            >
-                              <p className="text-[22px] font-bold text-[#3E4DAC]">
+                          <DialogLayoutForFromControl
+                            title={
+                              <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
                                 Add Question From Question Bank
                               </p>
-                            </BootstrapDialogTitleAddFromQuesBank>
-                            <DialogContent dividers>
-                              <Typography gutterBottom>
-                                <div className=" w-full ">
-                                  <div className="flex justify-between items-center mb-10">
-                                    <div className="  flex items-center">
-                                      <div className="flex items-center gap-4">
-                                        <p className="text-lg font-semibold">
-                                          Select Batch
-                                        </p>
-                                      </div>
-
-                                      <div className=" flex gap-2  ms-6 border rounded-md  h-[40px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]  ">
-                                        <select
-                                          required
-                                          className="w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold focus:outline-0"
-                                          name="courseCategory"
-                                          // id="option"
-                                        >
-                                          <option className="" selected>
-                                            Batch 1
-                                          </option>
-                                          <option value="Parent"></option>
-                                          <option value="Counselor"></option>
-                                          <option value="Others"></option>
-                                        </select>
-                                      </div>
-                                    </div>
-
-                                    <div className="flex ">
-                                      {!allSelectFromQuesBank && (
-                                        <div className="">
-                                          <div>
-                                            <input
-                                              style={{
-                                                fontSize: "0",
-                                                opacity: "0",
-                                              }}
-                                              className="w-[0%]"
-                                              type="checkbox"
-                                              id="selectAllfromquesbank"
-                                              checked={
-                                                selectedOptionsQuestionFromQuesBank.length ===
-                                                3
-                                              }
-                                              onChange={
-                                                handleSelectAllQuesFromQuesBank
-                                              }
-                                            />
-                                            <label
-                                              className=" text-base font-semibold bg-[#E8E8E8] rounded-lg border p-2"
-                                              htmlFor="selectAllfromquesbank"
-                                            >
-                                              Select All
-                                            </label>
-                                          </div>
-                                        </div>
-                                      )}
-                                      {allSelectFromQuesBank && (
-                                        <div className="flex  p-2">
-                                          <label
-                                            onClick={
-                                              handleAllSelectFromQuesBank
-                                            }
-                                            className=" text-base font-semibold bg-[#E8E8E8] rounded-lg border p-2"
-                                            htmlFor="DeSelect All"
-                                          >
-                                            Deselect All
-                                          </label>
-                                        </div>
-                                      )}
-                                      {allSelectFromQuesBank && (
-                                        <div className="flex  p-2">
-                                          <label
-                                            className=" text-base font-semibold bg-[#FFE9E9] rounded-lg border p-2"
-                                            htmlFor="Delete Selected"
-                                          >
-                                            Delete Selected
-                                          </label>
-                                        </div>
-                                      )}
-                                    </div>
-                                  </div>
-
-                                  <div className="">
-                                    <div className=" mt-2">
-                                      <table className="w-full">
-                                        <thead className="bg-[#FFFDEA]  ">
-                                          <tr className="text-[#3E4DAC] text-base font-bold">
-                                            <th className="py-5">
-                                              Question No
-                                            </th>
-                                            <th>Question Name</th>
-                                            <th>Question Type</th>
-                                            <th>Marks</th>
-                                            <th>Preview</th>
-                                          </tr>
-                                        </thead>
-                                        <tbody className="">
-                                          <tr className="bg-[#F2FFFA] ">
-                                            <td className="flex justify-center py-5 ">
-                                              {allSelectFromQuesBank && (
-                                                <input
-                                                  className="me-3"
-                                                  type="checkbox"
-                                                  id="1"
-                                                  name="option"
-                                                  value="1"
-                                                  checked={selectedOptionsQuestionFromQuesBank.includes(
-                                                    "1"
-                                                  )}
-                                                  onChange={
-                                                    handleOptionChangeQuestionFromQuesBank
-                                                  }
-                                                />
-                                              )}
-
-                                              <p>1</p>
-                                            </td>
-                                            <td className="text-center">
-                                              Question Name
-                                            </td>
-                                            <td className="text-center">
-                                              Question Type
-                                            </td>
-                                            <td className="text-center">
-                                              Marks
-                                            </td>
-                                            <td className="flex items-center justify-center">
-                                              <img src={Vector} alt="Vector" />
-                                            </td>
-                                          </tr>
-                                          <tr className="">
-                                            <td className="flex justify-center py-5">
-                                              {allSelectFromQuesBank && (
-                                                <input
-                                                  className="me-3"
-                                                  type="checkbox"
-                                                  id="2"
-                                                  name="option"
-                                                  value="2"
-                                                  checked={selectedOptionsQuestionFromQuesBank.includes(
-                                                    "2"
-                                                  )}
-                                                  onChange={
-                                                    handleOptionChangeQuestionFromQuesBank
-                                                  }
-                                                />
-                                              )}
-
-                                              <p>2</p>
-                                            </td>
-                                            <td className="text-center">
-                                              Question Name
-                                            </td>
-                                            <td className="text-center">
-                                              Question Type
-                                            </td>
-                                            <td className="text-center">
-                                              Marks
-                                            </td>
-                                            <td className="flex items-center justify-center">
-                                              <img src={Vector} />
-                                            </td>
-                                          </tr>
-                                          <tr className=" bg-[#F2FFFA]">
-                                            <td className="flex justify-center py-5">
-                                              {allSelectFromQuesBank && (
-                                                <input
-                                                  className="me-3"
-                                                  type="checkbox"
-                                                  id="3"
-                                                  name="option"
-                                                  value="3"
-                                                  checked={selectedOptionsQuestionFromQuesBank.includes(
-                                                    "3"
-                                                  )}
-                                                  onChange={
-                                                    handleOptionChangeQuestionFromQuesBank
-                                                  }
-                                                />
-                                              )}
-
-                                              <p>3</p>
-                                            </td>
-                                            <td className="text-center">
-                                              Question Name
-                                            </td>
-                                            <td className="text-center">
-                                              Question Type
-                                            </td>
-                                            <td className="text-center">
-                                              Marks
-                                            </td>
-                                            <td className="flex items-center justify-center">
-                                              <img src={Vector} alt="Vector" />
-                                            </td>
-                                          </tr>
-                                        </tbody>
-                                      </table>
-                                    </div>
-                                  </div>
-
-                                  <div className="flex justify-center mt-10">
-                                    <p
-                                      autoFocus
-                                      onclick={handleAddSelQues}
-                                      className="px-10 py-2 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
-                                    >
-                                      Add selected questions to quiz
+                            }
+                            width={800}
+                            setOpen={setOpenAddFromQuesBank}
+                            open={openAddFromQuesBank}
+                          >
+                            <div className=" w-full text-black ">
+                              <div className="flex justify-between items-center mb-10">
+                                <div className="  flex items-center">
+                                  <div className="flex items-center gap-4">
+                                    <p className="text-lg font-semibold">
+                                      Select Batch
                                     </p>
                                   </div>
+
+                                  <div className=" flex gap-2  ms-6 border rounded-md  h-[40px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]  ">
+                                    <select
+                                      required
+                                      className="w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold focus:outline-0"
+                                      name="courseCategory"
+                                      // id="option"
+                                      onChange={(e) => {
+                                        const selectedBatch = batchesData?.find(
+                                          (item) => item?._id === e.target.value
+                                        );
+                                        setSelectedBatchForAddingQuestion(
+                                          selectedBatch
+                                        );
+                                        if (quizData?.questions) {
+                                          const findBatch =
+                                            quizData?.questions?.find(
+                                              (item) =>
+                                                item?.batchId ===
+                                                selectedBatch?._id
+                                            );
+                                          if (findBatch) {
+                                            console.log("batch question found");
+                                            setSelectedOptionsQuestionFromQuesBank(
+                                              quizData?.questions?.questions
+                                            );
+                                          } else {
+                                            console.log(
+                                              "batch question not found"
+                                            );
+                                            quizData.questions.push({
+                                              batchId: selectedBatch?._id,
+                                              batchName:
+                                                selectedBatch?.batchName,
+                                              questions: [],
+                                            });
+                                          }
+                                        } else {
+                                          quizData.questions = [];
+                                          quizData.questions.push({
+                                            batchId: selectedBatch?._id,
+                                            batchName: selectedBatch?.batchName,
+                                            questions: [],
+                                          });
+                                        }
+                                      }}
+                                    >
+                                      <option className="hidden">
+                                        Select Batch
+                                      </option>
+                                      {batchesData?.map((option, index) => {
+                                        if (
+                                          selectedBatches?.find(
+                                            (item) =>
+                                              item?.batchId === option?._id
+                                          )
+                                        )
+                                          return (
+                                            <option
+                                              className=""
+                                              value={option?._id}
+                                            >
+                                              {option?.batchName}
+                                            </option>
+                                          );
+                                      })}
+                                    </select>
+                                  </div>
                                 </div>
-                              </Typography>
-                            </DialogContent>
-                          </BootstrapDialogAddFromQuesBank>
+
+                                <div className="flex ">
+                                  {!allSelectFromQuesBank && (
+                                    <div className="">
+                                      <div>
+                                        <input
+                                          style={{
+                                            fontSize: "0",
+                                            opacity: "0",
+                                          }}
+                                          className="w-[0%]"
+                                          type="checkbox"
+                                          id="selectAllfromquesbank"
+                                          checked={
+                                            selectedOptionsQuestionFromQuesBank?.length ===
+                                            questionBankQuestions?.length
+                                          }
+                                          onChange={
+                                            handleSelectAllQuesFromQuesBank
+                                          }
+                                        />
+                                        <label
+                                          className=" text-base font-semibold bg-[#E8E8E8] rounded-lg border p-2"
+                                          htmlFor="selectAllfromquesbank"
+                                        >
+                                          Select All
+                                        </label>
+                                      </div>
+                                    </div>
+                                  )}
+                                  {allSelectFromQuesBank && (
+                                    <div className="flex  p-2">
+                                      <label
+                                        onClick={handleAllSelectFromQuesBank}
+                                        className=" text-base font-semibold bg-[#E8E8E8] rounded-lg border p-2"
+                                        htmlFor="DeSelect All"
+                                      >
+                                        Deselect All
+                                      </label>
+                                    </div>
+                                  )}
+                                  {allSelectFromQuesBank && (
+                                    <div className="flex  p-2">
+                                      <label
+                                        className=" text-base font-semibold bg-[#FFE9E9] rounded-lg border p-2"
+                                        htmlFor="Delete Selected"
+                                      >
+                                        Delete Selected
+                                      </label>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+
+                              <div className="">
+                                <div className=" mt-2 border rounded-sm">
+                                  <div className="overflow-x-auto">
+                                    <table className="w-full table-auto">
+                                      <thead className="bg-[#FFFDEA] text-[#3E4DAC] text-base font-bold">
+                                        <tr>
+                                          <th className="py-3 px-2 whitespace-nowrap text-center">
+                                            Question No
+                                          </th>
+                                          <th className="px-2 whitespace-nowrap text-center">
+                                            Question Name
+                                          </th>
+                                          <th className="px-2 whitespace-nowrap text-center">
+                                            Question Type
+                                          </th>
+                                          <th className="px-2 whitespace-nowrap text-center">
+                                            Marks
+                                          </th>
+                                          <th className="px-2 whitespace-nowrap text-center">
+                                            Preview
+                                          </th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        {questionBankQuestions?.map(
+                                          (question, index) => (
+                                            <tr
+                                              key={index}
+                                              className={`${
+                                                index % 2 === 0
+                                                  ? "bg-[#F2FFFA]"
+                                                  : ""
+                                              }`}
+                                            >
+                                              <td className="py-5 text-center">
+                                                <input
+                                                  type="checkbox"
+                                                  id={`question-${question?._id}`}
+                                                  name={`question-${question?._id}`}
+                                                  value={`${question?._id}`}
+                                                  checked={selectedOptionsQuestionFromQuesBank?.includes(
+                                                    `${question?._id}`
+                                                  )}
+                                                  onChange={
+                                                    handleOptionChangeQuestionFromQuesBank
+                                                  }
+                                                />
+                                                <label
+                                                  htmlFor={`question-${
+                                                    index + 1
+                                                  }`}
+                                                  className="ml-2"
+                                                >
+                                                  {index + 1}
+                                                </label>
+                                              </td>
+                                              <td className="text-center">
+                                                {question?.questionName}
+                                              </td>
+                                              <td className="text-center">
+                                                {question.questionType}
+                                              </td>
+                                              <td className="text-center">
+                                                {question.defaultMarks}
+                                              </td>
+                                              <td className="text-center">
+                                                <img
+                                                  className="mx-auto"
+                                                  src={Vector}
+                                                  alt="Preview"
+                                                />
+                                              </td>
+                                            </tr>
+                                          )
+                                        )}
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="flex justify-center mt-10">
+                                <button
+                                  onClick={() => {
+                                    console.log("add");
+                                    handleAddSelQues();
+                                  }}
+                                  className="px-10 py-2 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
+                                >
+                                  Add selected questions to quiz
+                                </button>
+                              </div>
+                            </div>
+                          </DialogLayoutForFromControl>
                         </div>
                       </div>
                     )}
@@ -942,7 +1262,13 @@ const ManageQuestion = () => {
           )}
           {addQues && (
             <>
-              <div>
+              {questionType === "Multiple choice" && (
+                <AddingEditingMultiChoQues
+                  addQues={addQues}
+                  setAddQues={setAddQues}
+                />
+              )}
+              {/* <div>
                 <div className="flex justify-between items-center mb-10">
                   <p className=" text-[26px] font-bold ">
                     Adding/Editing Calculation Question{" "}
@@ -956,7 +1282,7 @@ const ManageQuestion = () => {
                   </div>
                 </div>
                 <AddingEditingCalQues />
-              </div>
+              </div> */}
             </>
           )}
         </div>
