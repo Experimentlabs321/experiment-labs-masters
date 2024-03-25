@@ -208,45 +208,40 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 //   },
 // ];
 
-let questions = [
-  {
-    id: 1,
-    questionText: "<p>question 2</p>",
-    options: [
-      {
-        answerFormula: "<p>1</p>",
-        feedback: "<p>1</p>",
-        answer: "wrong",
-      },
-      {
-        answerFormula: "<p>2</p>",
-        feedback: "<p>2</p>",
-        answer: "correct",
-      },
-    ],
-    // options: [
-    //   "A. Run last plugin",
-    //   "B. Create component",
-    //   "C. Share a file",
-    //   "D. Frame selection",
-    // ],
-    explanations: [
-      "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
-      "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
-      "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
-      "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
-    ],
-    correctAnswer: "C. Share a file",
-    defaultMarks: 1,
-  },
-];
+// let questions = [
+//   {
+//     id: 1,
+//     questionText: "<p>question 2</p>",
+//     options: [
+//       {
+//         answerFormula: "<p>1</p>",
+//         feedback: "<p>1</p>",
+//         answer: "wrong",
+//       },
+//       {
+//         answerFormula: "<p>2</p>",
+//         feedback: "<p>2</p>",
+//         answer: "correct",
+//       },
+//     ],
+//     explanations: [
+//       "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
+//       "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
+//       "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
+//       "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
+//     ],
+//     correctAnswer: "C. Share a file",
+//     defaultMarks: 1,
+//   },
+// ];
 
 const QuizTask = ({ taskData, count, setCount, chapter }) => {
+  const { userInfo } = useContext(AuthContext);
   const [open, setOpen] = React.useState(false);
   const [congratulationOpen, setCongratulationOpen] = useState(false);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [showExplanation, setShowExplanation] = useState(false);
-  const [quizQuestions, setQuizQuestions] = useState([]);
+  const [questions, setQuizQuestions] = useState([]);
 
   console.log(taskData);
 
@@ -268,6 +263,21 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
   const [score, setScore] = useState(0);
   const [point, setPoint] = useState(0);
   const [answered, setAnswered] = useState(0);
+  const [givenAnswers, setGivenAnswers] = useState([]);
+  const [participationData, setParticipationData] = useState({});
+
+  useEffect(() => {
+    if (taskData?.participants) {
+      const findUser = taskData?.participants?.find(
+        (item) => item?.participant?.email === userInfo?.email
+      );
+      if (findUser) {
+        setGivenAnswers(findUser?.questions);
+        setParticipationData(findUser);
+      }
+    }
+  }, [taskData, userInfo]);
+  console.log(participationData);
 
   const handleOptionChange = (option) => {
     setSelectedOption(option?.answerFormula);
@@ -287,12 +297,16 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
         questions[currentQuestion]?.givenAnswer?.answer === "wrong"
       )
         setScore(score + 1);
-      setPoint(point + question?.defaultMarks);
+      setPoint(point + +question?.defaultMarks);
     }
     if (option) {
       if (!questions[currentQuestion]?.givenAnswer) setAnswered(answered + 1);
       questions[currentQuestion] = {
         ...questions[currentQuestion],
+        givenAnswer: option,
+      };
+      givenAnswers[currentQuestion] = {
+        questionId: question?._id,
         givenAnswer: option,
       };
     }
@@ -320,12 +334,37 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
     setCurrentQuestion(i);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     localStorage.setItem("questionWithSelectedAns", JSON.stringify(questions));
     setAnswered(0);
     setCurrentQuestion(0);
     // setScore(0);
     setCongratulationOpen(true);
+    const sendData = {
+      participantChapter: {
+        email: userInfo?.email,
+        participantId: userInfo?._id,
+        status: "Attempted",
+        completionDateTime: new Date(),
+      },
+      participantTask: {
+        participant: {
+          email: userInfo?.email,
+          participantId: userInfo?._id,
+          status: "Attempted",
+          completionDateTime: new Date(),
+        },
+        questions: givenAnswers,
+        earnedPoint: point,
+        correctlyAnswered: score,
+      },
+    };
+    const submitCompletion = await axios.post(
+      `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/Quiz/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`,
+      sendData
+    );
+
+    console.log(submitCompletion, givenAnswers);
   };
 
   const question = questions[currentQuestion];
@@ -337,7 +376,6 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
 
   console.log(JSON.parse(submittedQuestions));
 
-  const { userInfo } = useContext(AuthContext);
   if (userInfo.role !== "admin") {
     window.addEventListener("contextmenu", (e) => {
       e.preventDefault();
@@ -410,45 +448,49 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
               onClick={handleClickOpen}
               className={`bg-[#3E4DAC] text-white w-[150px] h-[50px] text-[16px] font-[600] text-center rounded-[8px] z-[1] shadow-[0px_4px_0px_0px_#CA5F98] lg:shadow-[0px_8px_0px_0px_#CA5F98]`}
             >
-              Start Quiz
+              {participationData?.participant ? "Reattempt" : "Start Quiz"}
             </button>
           </div>
         </div>
-        <hr className="my-[65px]" />
-        <div className=" flex items-center justify-between">
-          <div className=" flex flex-col justify-between h-full gap-[20px]">
-            <h1 className="text-[20px] font-[500]">Results</h1>
-            <p className="text-[18px] font-[400] text-[#6B6B6B]">
-              To Pass:{" "}
-              <span className="text-[#3E4DAC]">
-                {taskData?.gradeToPass}% or more
-              </span>
-            </p>
-          </div>
-          <div className="w-[161px] flex-col justify-start items-center gap-[22.96px] inline-flex">
-            <h1 className="text-zinc-800 text-lg font-semibold">
-              Your Points Earned
-            </h1>
-            <h1 className="text-amber-700 text-[26px] font-semibold">
-              40 Points
-            </h1>
-          </div>
-          <div className="w-32 flex-col justify-start items-center gap-[22.96px] inline-flex">
-            <h1 className="text-zinc-800 text-lg font-semibold">
-              Your Quiz Rank
-            </h1>
-            <h1 className="text-[#2F97B7] text-3xl font-semibold">2/20</h1>
-          </div>
+        {participationData?.participant && (
+          <>
+            <hr className="my-[65px]" />
+            <div className=" flex items-center justify-between">
+              <div className=" flex flex-col justify-between h-full gap-[20px]">
+                <h1 className="text-[20px] font-[500]">Results</h1>
+                <p className="text-[18px] font-[400] text-[#6B6B6B]">
+                  To Pass:{" "}
+                  <span className="text-[#3E4DAC]">
+                    {taskData?.gradeToPass}% or more
+                  </span>
+                </p>
+              </div>
+              <div className="w-[161px] flex-col justify-start items-center gap-[22.96px] inline-flex">
+                <h1 className="text-zinc-800 text-lg font-semibold">
+                  Your Points Earned
+                </h1>
+                <h1 className="text-amber-700 text-[26px] font-semibold">
+                  {participationData?.earnedPoint} Points
+                </h1>
+              </div>
+              {/* <div className="w-32 flex-col justify-start items-center gap-[22.96px] inline-flex">
+                <h1 className="text-zinc-800 text-lg font-semibold">
+                  Your Quiz Rank
+                </h1>
+                <h1 className="text-[#2F97B7] text-3xl font-semibold">2/20</h1>
+              </div> */}
 
-          <div>
-            <button
-              onClick={() => setReviewOpen(true)}
-              className={`bg-[#FFDB70] text-black px-4 h-[50px] text-[16px] font-[600] text-center rounded-[8px] z-[1] shadow-[0px_4px_0px_0px_#F08323] lg:shadow-[0px_8px_0px_0px_#F08323]`}
-            >
-              Review Submission
-            </button>
-          </div>
-        </div>
+              <div>
+                <button
+                  onClick={() => setReviewOpen(true)}
+                  className={`bg-[#FFDB70] text-black px-4 h-[50px] text-[16px] font-[600] text-center rounded-[8px] z-[1] shadow-[0px_4px_0px_0px_#F08323] lg:shadow-[0px_8px_0px_0px_#F08323]`}
+                >
+                  Review Submission
+                </button>
+              </div>
+            </div>
+          </>
+        )}
       </div>
       {/* Review submission dialog start */}
       <Dialog
@@ -469,8 +511,10 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
               <CloseIcon />
             </IconButton>
             <div className="text-center text-[21px] font-[600] w-full py-[20px] ">
-              <h1 className="text-white">Figma</h1>
-              <p className="text-[#8595FF]">Quiz - 48 Total points</p>
+              <h1 className="text-white">{taskData?.quizName}</h1>
+              <p className="text-[#8595FF]">
+                Quiz - {taskData?.points} Total points
+              </p>
             </div>
           </Toolbar>
         </AppBar>
@@ -478,7 +522,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
           <div className=" max-w-[1262px] pt-[80px] mx-auto flex justify-between">
             <div className="w-[625px]">
               <h1 className="text-[#FF557A] text-center h-[50px] text-[22px] font-[700] ">
-                Question {submittedQuestion?.id}
+                Question {currentQuestion + 1}
               </h1>
               <div className="bg-[#FFFCDE] rounded-[8px] w-full px-[20px] py-[30px] relative">
                 {showExplanation ? (
@@ -497,7 +541,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
                       />
                     </svg>
                     <h1 className=" text-white text-[16px] font-[500] absolute top-[6px] left-0 w-[108px] text-center ">
-                      {submittedQuestion?.point} points
+                      {question?.defaultMarks} points
                     </h1>
                   </>
                 ) : (
@@ -516,16 +560,19 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
                       />
                     </svg>
                     <h1 className=" text-white text-[16px] font-[500] absolute top-[6px] right-0 w-[108px] text-center ">
-                      {submittedQuestion?.point} points
+                      {question?.defaultMarks} points
                     </h1>
                   </>
                 )}
 
-                <p className=" text-[18px] font-[700] pt-4 ">
-                  {submittedQuestion?.question}
-                </p>
+                <p
+                  className=" text-[18px] font-[700] pt-4 "
+                  dangerouslySetInnerHTML={{
+                    __html: question?.questionText,
+                  }}
+                ></p>
                 <form id="myForm" className="mt-[45px]">
-                  {!submittedQuestion?.options && (
+                  {/* {!submittedQuestion?.options && (
                     <>
                       {!showExplanation ? (
                         <div>
@@ -559,53 +606,83 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
                         </div>
                       )}
                     </>
-                  )}
-                  {submittedQuestion?.options &&
-                    submittedQuestion?.options?.map((option, index) => (
+                  )} */}
+                  {question?.options &&
+                    question?.options?.map((option, index) => (
                       <div key={index}>
                         <label className="flex items-center mb-[15px] text-[#3E4DAC] text-[15px] font-[600] ">
                           <input
                             className="form-radio mr-[15px] h-6 w-6  border rounded-full border-gray-400"
                             type="radio"
                             value={option}
-                            checked={submittedQuestion?.givenAnswer === option}
+                            checked={
+                              givenAnswers?.find(
+                                (item) => item?.questionId === question?._id
+                              )?.givenAnswer?.answerFormula ===
+                              option?.answerFormula
+                            }
                           />
-                          <p
-                            className={`flex items-center ${
-                              !showExplanation && "justify-between"
-                            }  w-full`}
-                          >
-                            {option}{" "}
-                            {showExplanation ? (
-                              <>
-                                {submittedQuestion?.explanations && (
-                                  <p className=" ml-[5px] text-[#FF557A] ">
-                                    ( {submittedQuestion?.explanations[index]} )
-                                  </p>
-                                )}
-                              </>
-                            ) : (
-                              <p>
-                                {submittedQuestion?.givenAnswer === option &&
-                                  option ===
-                                    submittedQuestion?.correctAnswer && (
-                                    <p className="text-[#17A914]">✅ Correct</p>
-                                  )}
-                                {submittedQuestion?.givenAnswer === option &&
-                                  option !==
-                                    submittedQuestion?.correctAnswer && (
-                                    <p className="text-[#EA1E1E]">
-                                      ❌ Incorrect
+                          <div className="flex items-center justify-between w-full">
+                            <p
+                              dangerouslySetInnerHTML={{
+                                __html: option?.answerFormula,
+                              }}
+                            ></p>
+                            <p
+                              className={`flex items-center ${
+                                !showExplanation && "justify-between"
+                              }  `}
+                            >
+                              {/* {option}{" "} */}
+                              {showExplanation ? (
+                                <>
+                                  {/* {question?.explanations && (
+                                    <p className=" ml-[5px] text-[#FF557A] ">
+                                      ( {submittedQuestion?.explanations[index]} )
                                     </p>
+                                  )} */}
+                                  {option?.feedback && (
+                                    <p
+                                      className=" ml-[5px] text-[#FF557A] "
+                                      dangerouslySetInnerHTML={{
+                                        __html: option?.feedback,
+                                      }}
+                                    ></p>
                                   )}
-                                {submittedQuestion?.givenAnswer !== option &&
-                                  option ===
-                                    submittedQuestion?.correctAnswer && (
-                                    <p className="text-[#17A914]">✅ Correct</p>
-                                  )}
-                              </p>
-                            )}
-                          </p>
+                                </>
+                              ) : (
+                                <p>
+                                  {givenAnswers?.find(
+                                    (item) => item?.questionId === question?._id
+                                  )?.givenAnswer?.answerFormula ===
+                                    option?.answerFormula &&
+                                    option?.answer === "correct" && (
+                                      <p className="text-[#17A914]">
+                                        ✅ Correct
+                                      </p>
+                                    )}
+                                  {givenAnswers?.find(
+                                    (item) => item?.questionId === question?._id
+                                  )?.givenAnswer?.answerFormula ===
+                                    option?.answerFormula &&
+                                    option?.answer !== "correct" && (
+                                      <p className="text-[#EA1E1E]">
+                                        ❌ Incorrect
+                                      </p>
+                                    )}
+                                  {givenAnswers?.find(
+                                    (item) => item?.questionId === question?._id
+                                  )?.givenAnswer?.answerFormula !==
+                                    option?.answerFormula &&
+                                    option?.answer === "correct" && (
+                                      <p className="text-[#17A914]">
+                                        ✅ Correct
+                                      </p>
+                                    )}
+                                </p>
+                              )}
+                            </p>
+                          </div>
                         </label>
                       </div>
                     ))}
@@ -932,8 +1009,10 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
               <CloseIcon />
             </IconButton>
             <div className="text-center text-[21px] font-[600] w-full py-[20px] ">
-              <h1 className="text-white">Figma</h1>
-              <p className="text-[#8595FF]">Quiz - 48 Total points</p>
+              <h1 className="text-white">{taskData?.quizName}</h1>
+              <p className="text-[#8595FF]">
+                Quiz - {taskData?.points} Total points
+              </p>
             </div>
           </Toolbar>
         </AppBar>
@@ -959,7 +1038,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
                 </p>
               </div>
               <div className="w-[453.97px] h-[122.47px] bg-yellow-50 rounded-[9.21px] flex items-center justify-between py-[30px] px-[40px] mt-[45px] bg-[#FFFCE0]">
-                <div>
+                <div className="mx-auto">
                   <div className=" flex-col justify-start items-center  inline-flex">
                     <h1 className="text-zinc-800 text-[16.90px] font-semibold">
                       Your Points Earned
@@ -969,7 +1048,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
                     </h1>
                   </div>
                 </div>
-                <div className="bg-[#D6D6D6] w-[1px] h-[56.56px]"></div>
+                {/* <div className="bg-[#D6D6D6] w-[1px] h-[56.56px]"></div>
                 <div>
                   <div className=" flex-col justify-start items-center inline-flex">
                     <h1 className="text-zinc-800 text-[16.90px] font-semibold">
@@ -979,7 +1058,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
                       2/20
                     </h1>
                   </div>
-                </div>
+                </div> */}
               </div>
               <button
                 onClick={handleNextQuestion}
