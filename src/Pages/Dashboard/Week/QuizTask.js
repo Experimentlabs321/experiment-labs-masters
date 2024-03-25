@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Dialog from "@mui/material/Dialog";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -9,20 +9,227 @@ import CongratulationsLeft from "../../../assets/Dashboard/CongratulationsLeft.p
 import CongratulationsRight from "../../../assets/Dashboard/CongratulationsRight.png";
 import CongratulationsBatch from "../../../assets/Dashboard/CongratulationsBatch.png";
 import { AuthContext } from "../../../contexts/AuthProvider";
+import axios from "axios";
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
+// let questions = [
+//   {
+//     id: 1,
+//     question: "In Figma, What is the use Opt + Cmd + K / Ctrl + Alt + K ?",
+//     options: [
+//       "A. Run last plugin",
+//       "B. Create component",
+//       "C. Share a file",
+//       "D. Frame selection",
+//     ],
+//     explanations: [
+//       "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
+//       "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
+//       "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
+//       "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
+//     ],
+//     correctAnswer: "C. Share a file",
+//     point: 1,
+//   },
+//   {
+//     id: 2,
+//     question: 'Which planet is known as the "Red Planet"?',
+//     options: ["Venus", "Mars", "Jupiter", "Mercury"],
+//     correctAnswer: "Mars",
+//     point: 1,
+//     explanations: [
+//       "Venus is known as the 'Morning Star', not the 'Red Planet'.",
+//       "Correct! Mars is known as the 'Red Planet'.",
+//       "Jupiter is the largest planet in our solar system, not the 'Red Planet'.",
+//       "Mercury is the smallest planet in our solar system, not the 'Red Planet'.",
+//     ],
+//   },
+//   {
+//     id: 3,
+//     question: "What is the chemical symbol for water?",
+//     options: ["H2O", "CO2", "O2", "NaCl"],
+//     correctAnswer: "H2O",
+//     point: 1,
+//     explanations: [
+//       "H2O is the chemical symbol for water.",
+//       "CO2 is the chemical symbol for carbon dioxide.",
+//       "O2 is the chemical symbol for oxygen.",
+//       "NaCl is the chemical symbol for sodium chloride (salt).",
+//     ],
+//   },
+//   {
+//     id: 4,
+//     question: "What is the largest mammal on Earth?",
+//     options: ["Elephant", "Blue Whale", "Giraffe", "Hippopotamus"],
+//     correctAnswer: "Blue Whale",
+//     point: 1,
+//     explanations: [
+//       "Elephants are large mammals, but they are not the largest.",
+//       "Correct! Blue Whales are the largest mammals on Earth.",
+//       "Giraffes are tall mammals, but they are not the largest.",
+//       "Hippopotamuses are large mammals, but they are not the largest.",
+//     ],
+//   },
+//   {
+//     id: 5,
+//     question: "Which scientist developed the theory of relativity?",
+//     options: [
+//       "Isaac Newton",
+//       "Albert Einstein",
+//       "Galileo Galilei",
+//       "Marie Curie",
+//     ],
+//     correctAnswer: "Albert Einstein",
+//     point: 1,
+//     explanations: [
+//       "Isaac Newton is known for his laws of motion and universal gravitation, not the theory of relativity.",
+//       "Correct! Albert Einstein developed the theory of relativity.",
+//       "Galileo Galilei made significant contributions to astronomy and physics, but he did not develop the theory of relativity.",
+//       "Marie Curie was a pioneering physicist and chemist, but she did not develop the theory of relativity.",
+//     ],
+//   },
+//   {
+//     id: 6,
+//     question: "What is the capital of Japan?",
+//     options: ["Beijing", "Seoul", "Tokyo", "Bangkok"],
+//     correctAnswer: "Tokyo",
+//     point: 1,
+//     explanations: [
+//       "Beijing is the capital of China, not Japan.",
+//       "Seoul is the capital of South Korea, not Japan.",
+//       "Correct! Tokyo is the capital of Japan.",
+//       "Bangkok is the capital of Thailand, not Japan.",
+//     ],
+//   },
+//   {
+//     id: 7,
+//     question: "What is the chemical symbol for gold?",
+//     options: ["Au", "Ag", "Fe", "Cu"],
+//     correctAnswer: "Au",
+//     point: 1,
+//     explanations: [
+//       "Correct! Au is the chemical symbol for gold.",
+//       "Ag is the chemical symbol for silver, not gold.",
+//       "Fe is the chemical symbol for iron, not gold.",
+//       "Cu is the chemical symbol for copper, not gold.",
+//     ],
+//   },
+//   {
+//     id: 8,
+//     question: 'Which planet is known as the "Red Planet"?',
+//     options: ["Venus", "Mars", "Jupiter", "Mercury"],
+//     correctAnswer: "Mars",
+//     point: 1,
+//     explanations: [
+//       "Venus is known as the 'Morning Star', not the 'Red Planet'.",
+//       "Correct! Mars is known as the 'Red Planet'.",
+//       "Jupiter is the largest planet in our solar system, not the 'Red Planet'.",
+//       "Mercury is the smallest planet in our solar system, not the 'Red Planet'.",
+//     ],
+//   },
+//   {
+//     id: 9,
+//     question: "What is the chemical symbol for water?",
+//     options: ["H2O", "CO2", "O2", "NaCl"],
+//     correctAnswer: "H2O",
+//     point: 1,
+//     explanations: [
+//       "H2O is the chemical symbol for water.",
+//       "CO2 is the chemical symbol for carbon dioxide.",
+//       "O2 is the chemical symbol for oxygen.",
+//       "NaCl is the chemical symbol for sodium chloride (salt).",
+//     ],
+//   },
+//   {
+//     id: 10,
+//     question: "What is the largest mammal on Earth?",
+//     options: ["Elephant", "Blue Whale", "Giraffe", "Hippopotamus"],
+//     correctAnswer: "Blue Whale",
+//     point: 1,
+//     explanations: [
+//       "Elephants are large mammals, but they are not the largest.",
+//       "Correct! Blue Whales are the largest mammals on Earth.",
+//       "Giraffes are tall mammals, but they are not the largest.",
+//       "Hippopotamuses are large mammals, but they are not the largest.",
+//     ],
+//   },
+//   {
+//     id: 11,
+//     question: "Which scientist developed the theory of relativity?",
+//     options: [
+//       "Isaac Newton",
+//       "Albert Einstein",
+//       "Galileo Galilei",
+//       "Marie Curie",
+//     ],
+//     correctAnswer: "Albert Einstein",
+//     point: 1,
+//     explanations: [
+//       "Isaac Newton is known for his laws of motion and universal gravitation, not the theory of relativity.",
+//       "Correct! Albert Einstein developed the theory of relativity.",
+//       "Galileo Galilei made significant contributions to astronomy and physics, but he did not develop the theory of relativity.",
+//       "Marie Curie was a pioneering physicist and chemist, but she did not develop the theory of relativity.",
+//     ],
+//   },
+//   {
+//     id: 12,
+//     question: "What is the capital of Japan?",
+//     options: ["Beijing", "Seoul", "Tokyo", "Bangkok"],
+//     correctAnswer: "Tokyo",
+//     point: 1,
+//     explanations: [
+//       "Beijing is the capital of China, not Japan.",
+//       "Seoul is the capital of South Korea, not Japan.",
+//       "Correct! Tokyo is the capital of Japan.",
+//       "Bangkok is the capital of Thailand, not Japan.",
+//     ],
+//   },
+//   {
+//     id: 13,
+//     question: "What is the chemical symbol for gold?",
+//     options: ["Au", "Ag", "Fe", "Cu"],
+//     correctAnswer: "Au",
+//     point: 1,
+//     explanations: [
+//       "Correct! Au is the chemical symbol for gold.",
+//       "Ag is the chemical symbol for silver, not gold.",
+//       "Fe is the chemical symbol for iron, not gold.",
+//       "Cu is the chemical symbol for copper, not gold.",
+//     ],
+//   },
+//   {
+//     id: 14,
+//     question: "What is the capital of France?",
+//     correctAnswer: "Paris",
+//     point: 2,
+//     explanations: "Correct! Paris is the capital of France.",
+//   },
+// ];
+
 let questions = [
   {
     id: 1,
-    question: "In Figma, What is the use Opt + Cmd + K / Ctrl + Alt + K ?",
+    questionText: "<p>question 2</p>",
     options: [
-      "A. Run last plugin",
-      "B. Create component",
-      "C. Share a file",
-      "D. Frame selection",
+      {
+        answerFormula: "<p>1</p>",
+        feedback: "<p>1</p>",
+        answer: "wrong",
+      },
+      {
+        answerFormula: "<p>2</p>",
+        feedback: "<p>2</p>",
+        answer: "correct",
+      },
     ],
+    // options: [
+    //   "A. Run last plugin",
+    //   "B. Create component",
+    //   "C. Share a file",
+    //   "D. Frame selection",
+    // ],
     explanations: [
       "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
       "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
@@ -30,188 +237,18 @@ let questions = [
       "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
     ],
     correctAnswer: "C. Share a file",
-    point: 1,
-  },
-  {
-    id: 2,
-    question: 'Which planet is known as the "Red Planet"?',
-    options: ["Venus", "Mars", "Jupiter", "Mercury"],
-    correctAnswer: "Mars",
-    point: 1,
-    explanations: [
-      "Venus is known as the 'Morning Star', not the 'Red Planet'.",
-      "Correct! Mars is known as the 'Red Planet'.",
-      "Jupiter is the largest planet in our solar system, not the 'Red Planet'.",
-      "Mercury is the smallest planet in our solar system, not the 'Red Planet'.",
-    ],
-  },
-  {
-    id: 3,
-    question: "What is the chemical symbol for water?",
-    options: ["H2O", "CO2", "O2", "NaCl"],
-    correctAnswer: "H2O",
-    point: 1,
-    explanations: [
-      "H2O is the chemical symbol for water.",
-      "CO2 is the chemical symbol for carbon dioxide.",
-      "O2 is the chemical symbol for oxygen.",
-      "NaCl is the chemical symbol for sodium chloride (salt).",
-    ],
-  },
-  {
-    id: 4,
-    question: "What is the largest mammal on Earth?",
-    options: ["Elephant", "Blue Whale", "Giraffe", "Hippopotamus"],
-    correctAnswer: "Blue Whale",
-    point: 1,
-    explanations: [
-      "Elephants are large mammals, but they are not the largest.",
-      "Correct! Blue Whales are the largest mammals on Earth.",
-      "Giraffes are tall mammals, but they are not the largest.",
-      "Hippopotamuses are large mammals, but they are not the largest.",
-    ],
-  },
-  {
-    id: 5,
-    question: "Which scientist developed the theory of relativity?",
-    options: [
-      "Isaac Newton",
-      "Albert Einstein",
-      "Galileo Galilei",
-      "Marie Curie",
-    ],
-    correctAnswer: "Albert Einstein",
-    point: 1,
-    explanations: [
-      "Isaac Newton is known for his laws of motion and universal gravitation, not the theory of relativity.",
-      "Correct! Albert Einstein developed the theory of relativity.",
-      "Galileo Galilei made significant contributions to astronomy and physics, but he did not develop the theory of relativity.",
-      "Marie Curie was a pioneering physicist and chemist, but she did not develop the theory of relativity.",
-    ],
-  },
-  {
-    id: 6,
-    question: "What is the capital of Japan?",
-    options: ["Beijing", "Seoul", "Tokyo", "Bangkok"],
-    correctAnswer: "Tokyo",
-    point: 1,
-    explanations: [
-      "Beijing is the capital of China, not Japan.",
-      "Seoul is the capital of South Korea, not Japan.",
-      "Correct! Tokyo is the capital of Japan.",
-      "Bangkok is the capital of Thailand, not Japan.",
-    ],
-  },
-  {
-    id: 7,
-    question: "What is the chemical symbol for gold?",
-    options: ["Au", "Ag", "Fe", "Cu"],
-    correctAnswer: "Au",
-    point: 1,
-    explanations: [
-      "Correct! Au is the chemical symbol for gold.",
-      "Ag is the chemical symbol for silver, not gold.",
-      "Fe is the chemical symbol for iron, not gold.",
-      "Cu is the chemical symbol for copper, not gold.",
-    ],
-  },
-  {
-    id: 8,
-    question: 'Which planet is known as the "Red Planet"?',
-    options: ["Venus", "Mars", "Jupiter", "Mercury"],
-    correctAnswer: "Mars",
-    point: 1,
-    explanations: [
-      "Venus is known as the 'Morning Star', not the 'Red Planet'.",
-      "Correct! Mars is known as the 'Red Planet'.",
-      "Jupiter is the largest planet in our solar system, not the 'Red Planet'.",
-      "Mercury is the smallest planet in our solar system, not the 'Red Planet'.",
-    ],
-  },
-  {
-    id: 9,
-    question: "What is the chemical symbol for water?",
-    options: ["H2O", "CO2", "O2", "NaCl"],
-    correctAnswer: "H2O",
-    point: 1,
-    explanations: [
-      "H2O is the chemical symbol for water.",
-      "CO2 is the chemical symbol for carbon dioxide.",
-      "O2 is the chemical symbol for oxygen.",
-      "NaCl is the chemical symbol for sodium chloride (salt).",
-    ],
-  },
-  {
-    id: 10,
-    question: "What is the largest mammal on Earth?",
-    options: ["Elephant", "Blue Whale", "Giraffe", "Hippopotamus"],
-    correctAnswer: "Blue Whale",
-    point: 1,
-    explanations: [
-      "Elephants are large mammals, but they are not the largest.",
-      "Correct! Blue Whales are the largest mammals on Earth.",
-      "Giraffes are tall mammals, but they are not the largest.",
-      "Hippopotamuses are large mammals, but they are not the largest.",
-    ],
-  },
-  {
-    id: 11,
-    question: "Which scientist developed the theory of relativity?",
-    options: [
-      "Isaac Newton",
-      "Albert Einstein",
-      "Galileo Galilei",
-      "Marie Curie",
-    ],
-    correctAnswer: "Albert Einstein",
-    point: 1,
-    explanations: [
-      "Isaac Newton is known for his laws of motion and universal gravitation, not the theory of relativity.",
-      "Correct! Albert Einstein developed the theory of relativity.",
-      "Galileo Galilei made significant contributions to astronomy and physics, but he did not develop the theory of relativity.",
-      "Marie Curie was a pioneering physicist and chemist, but she did not develop the theory of relativity.",
-    ],
-  },
-  {
-    id: 12,
-    question: "What is the capital of Japan?",
-    options: ["Beijing", "Seoul", "Tokyo", "Bangkok"],
-    correctAnswer: "Tokyo",
-    point: 1,
-    explanations: [
-      "Beijing is the capital of China, not Japan.",
-      "Seoul is the capital of South Korea, not Japan.",
-      "Correct! Tokyo is the capital of Japan.",
-      "Bangkok is the capital of Thailand, not Japan.",
-    ],
-  },
-  {
-    id: 13,
-    question: "What is the chemical symbol for gold?",
-    options: ["Au", "Ag", "Fe", "Cu"],
-    correctAnswer: "Au",
-    point: 1,
-    explanations: [
-      "Correct! Au is the chemical symbol for gold.",
-      "Ag is the chemical symbol for silver, not gold.",
-      "Fe is the chemical symbol for iron, not gold.",
-      "Cu is the chemical symbol for copper, not gold.",
-    ],
-  },
-  {
-    id: 14,
-    question: "What is the capital of France?",
-    correctAnswer: "Paris",
-    point: 2,
-    explanations: "Correct! Paris is the capital of France.",
+    defaultMarks: 1,
   },
 ];
 
-const QuizTask = () => {
+const QuizTask = ({ taskData, count, setCount, chapter }) => {
   const [open, setOpen] = React.useState(false);
   const [congratulationOpen, setCongratulationOpen] = useState(false);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [showExplanation, setShowExplanation] = useState(false);
+  const [quizQuestions, setQuizQuestions] = useState([]);
+
+  console.log(taskData);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -232,22 +269,31 @@ const QuizTask = () => {
   const [point, setPoint] = useState(0);
   const [answered, setAnswered] = useState(0);
 
-  const handleOptionChange = (e) => {
-    setSelectedOption(e.target.value);
-    if (e.target.value === questions[currentQuestion].correctAnswer) {
+  const handleOptionChange = (option) => {
+    setSelectedOption(option?.answerFormula);
+    console.log(option);
+    // if (e.target.value === questions[currentQuestion].correctAnswer) {
+    //   if (
+    //     !question[currentQuestion]?.givenAnswer ||
+    //     question[currentQuestion]?.givenAnswer !==
+    //       questions[currentQuestion].correctAnswer
+    //   )
+    //     setScore(score + 1);
+    //   setPoint(point + question?.point);
+    // }
+    if (option?.answer === "correct") {
       if (
-        !question[currentQuestion]?.givenAnswer ||
-        question[currentQuestion]?.givenAnswer !==
-          questions[currentQuestion].correctAnswer
+        !questions[currentQuestion]?.givenAnswer ||
+        questions[currentQuestion]?.givenAnswer?.answer === "wrong"
       )
         setScore(score + 1);
-      setPoint(point + question?.point);
+      setPoint(point + question?.defaultMarks);
     }
-    if (e.target.value) {
+    if (option) {
       if (!questions[currentQuestion]?.givenAnswer) setAnswered(answered + 1);
       questions[currentQuestion] = {
         ...questions[currentQuestion],
-        givenAnswer: e.target.value,
+        givenAnswer: option,
       };
     }
   };
@@ -288,13 +334,34 @@ const QuizTask = () => {
 
   if (submittedQuestions)
     submittedQuestion = JSON.parse(submittedQuestions)[currentQuestion];
-  console.log(submittedQuestions);
-  const {userInfo} = useContext(AuthContext);
-  if(userInfo.role !== 'admin'){
+
+  console.log(JSON.parse(submittedQuestions));
+
+  const { userInfo } = useContext(AuthContext);
+  if (userInfo.role !== "admin") {
     window.addEventListener("contextmenu", (e) => {
       e.preventDefault();
     });
-  };
+  }
+
+  useEffect(() => {
+    const findCourse = userInfo?.courses?.find(
+      (item) =>
+        item?.courseId === chapter?.courseId &&
+        taskData?.questions?.find((i) => i?.batchId === item?.batchId)
+    );
+    if (findCourse) {
+      axios
+        .get(
+          `http://localhost:5000/api/v1/questionBank/quizId/${taskData?._id}/batchId/${findCourse?.batchId}`
+        )
+        .then((response) => {
+          if (response?.data) setQuizQuestions(response?.data);
+          console.log(response?.data);
+        });
+    }
+  }, [chapter, taskData, userInfo]);
+
   return (
     <div>
       <div className="flex flex-col items-center justify-center">
@@ -322,17 +389,20 @@ const QuizTask = () => {
             fill="#4D2609"
           />
         </svg>
-        <h1 className=" text-[20px] font-[600] mt-[-44px] text-white ">
-          48 Points
+        <h1 className=" text-[20px] font-sans font-[600] mt-[-44px] text-white ">
+          {taskData?.points} Points
         </h1>
       </div>
       <div className="px-4 pb-20">
-        <h1 className="text-[30px] font-[600] mt-[70px] ">Quiz Name</h1>
+        <h1 className="text-[30px] font-[600] mt-[70px] ">
+          {taskData?.quizName}
+        </h1>
         <div className="mt-[95px] flex items-center justify-between">
           <div className="">
             <h1 className="text-[20px] font-[500]">Submit your Quiz</h1>
             <p className="text-[18px] font-[400] text-[#6B6B6B]">
-              Attempts: <span className="text-[#3E4DAC]">10</span>
+              Attempts:{" "}
+              <span className="text-[#3E4DAC]">{taskData?.quizAttempts}</span>
             </p>
           </div>
           <div>
@@ -349,7 +419,10 @@ const QuizTask = () => {
           <div className=" flex flex-col justify-between h-full gap-[20px]">
             <h1 className="text-[20px] font-[500]">Results</h1>
             <p className="text-[18px] font-[400] text-[#6B6B6B]">
-              To Pass: <span className="text-[#3E4DAC]">75% or more</span>
+              To Pass:{" "}
+              <span className="text-[#3E4DAC]">
+                {taskData?.gradeToPass}% or more
+              </span>
             </p>
           </div>
           <div className="w-[161px] flex-col justify-start items-center gap-[22.96px] inline-flex">
@@ -665,8 +738,10 @@ const QuizTask = () => {
               <CloseIcon />
             </IconButton>
             <div className="text-center text-[21px] font-[600] w-full py-[20px] ">
-              <h1 className="text-white">Figma</h1>
-              <p className="text-[#8595FF]">Quiz - 48 Total points</p>
+              <h1 className="text-white">{taskData?.quizName}</h1>
+              <p className="text-[#8595FF]">
+                Quiz - {taskData?.points} Total points
+              </p>
             </div>
           </Toolbar>
         </AppBar>
@@ -674,7 +749,7 @@ const QuizTask = () => {
           <div className=" max-w-[1262px] pt-[80px] mx-auto flex justify-between">
             <div className="w-[625px]">
               <h1 className="text-[#FF557A] text-center h-[50px] text-[22px] font-[700] ">
-                Question {question.id}
+                Question {currentQuestion + 1}
               </h1>
               <div className="bg-[#FFFCDE] rounded-[8px] w-full px-[20px] py-[30px] relative">
                 <svg
@@ -691,11 +766,14 @@ const QuizTask = () => {
                   />
                 </svg>
                 <h1 className=" text-white text-[16px] font-[500] absolute top-[6px] right-0 w-[108px] text-center ">
-                  {question?.point} points
+                  {question?.defaultMarks} points
                 </h1>
-                <p className=" text-[18px] font-[700] pt-4 ">
-                  {question?.question}
-                </p>
+                <p
+                  className=" text-[18px] font-[700] pt-4 "
+                  dangerouslySetInnerHTML={{
+                    __html: question?.questionText,
+                  }}
+                ></p>
                 <form id="myForm" className="mt-[45px]">
                   {!question?.options && (
                     <input
@@ -715,20 +793,25 @@ const QuizTask = () => {
                             className="form-radio mr-[15px] h-6 w-6  border rounded-full border-gray-400"
                             // className="w-[22px]"
                             type="radio"
-                            value={option}
+                            value={option?.answerFormula}
                             // checked={
                             //   selectedOption === option ||
                             //   question?.givenAnswer === option
                             // }
                             checked={
                               selectedOption
-                                ? selectedOption === option
+                                ? selectedOption === option?.answerFormula
                                 : question?.givenAnswer === option
                             }
                             // checked={question?.givenAnswer === option}
-                            onChange={handleOptionChange}
+                            onChange={(e) => handleOptionChange(option)}
                           />
-                          {option}
+                          {/* {option} */}
+                          <p
+                            dangerouslySetInnerHTML={{
+                              __html: option?.answerFormula,
+                            }}
+                          ></p>
                         </label>
                       </div>
                     ))}
