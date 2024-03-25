@@ -208,45 +208,39 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 //   },
 // ];
 
-let questions = [
-  {
-    id: 1,
-    questionText: "<p>question 2</p>",
-    options: [
-      {
-        answerFormula: "<p>1</p>",
-        feedback: "<p>1</p>",
-        answer: "wrong",
-      },
-      {
-        answerFormula: "<p>2</p>",
-        feedback: "<p>2</p>",
-        answer: "correct",
-      },
-    ],
-    // options: [
-    //   "A. Run last plugin",
-    //   "B. Create component",
-    //   "C. Share a file",
-    //   "D. Frame selection",
-    // ],
-    explanations: [
-      "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
-      "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
-      "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
-      "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
-    ],
-    correctAnswer: "C. Share a file",
-    defaultMarks: 1,
-  },
-];
+// let questions = [
+//   {
+//     id: 1,
+//     questionText: "<p>question 2</p>",
+//     options: [
+//       {
+//         answerFormula: "<p>1</p>",
+//         feedback: "<p>1</p>",
+//         answer: "wrong",
+//       },
+//       {
+//         answerFormula: "<p>2</p>",
+//         feedback: "<p>2</p>",
+//         answer: "correct",
+//       },
+//     ],
+//     explanations: [
+//       "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
+//       "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
+//       "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
+//       "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
+//     ],
+//     correctAnswer: "C. Share a file",
+//     defaultMarks: 1,
+//   },
+// ];
 
 const QuizTask = ({ taskData, count, setCount, chapter }) => {
   const [open, setOpen] = React.useState(false);
   const [congratulationOpen, setCongratulationOpen] = useState(false);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [showExplanation, setShowExplanation] = useState(false);
-  const [quizQuestions, setQuizQuestions] = useState([]);
+  const [questions, setQuizQuestions] = useState([]);
 
   console.log(taskData);
 
@@ -268,6 +262,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
   const [score, setScore] = useState(0);
   const [point, setPoint] = useState(0);
   const [answered, setAnswered] = useState(0);
+  const [givenAnswers, setGivenAnswers] = useState([]);
 
   const handleOptionChange = (option) => {
     setSelectedOption(option?.answerFormula);
@@ -295,6 +290,10 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
         ...questions[currentQuestion],
         givenAnswer: option,
       };
+      givenAnswers[currentQuestion] = {
+        questionId: question?._id,
+        givenAnswer: option,
+      };
     }
   };
 
@@ -320,12 +319,35 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
     setCurrentQuestion(i);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     localStorage.setItem("questionWithSelectedAns", JSON.stringify(questions));
     setAnswered(0);
     setCurrentQuestion(0);
     // setScore(0);
     setCongratulationOpen(true);
+    const sendData = {
+      participantChapter: {
+        email: userInfo?.email,
+        participantId: userInfo?._id,
+        status: "Attampted",
+        completionDateTime: new Date(),
+      },
+      participantTask: {
+        participant: {
+          email: userInfo?.email,
+          participantId: userInfo?._id,
+          status: "Attampted",
+          completionDateTime: new Date(),
+        },
+        questions: givenAnswers,
+      },
+    };
+    const submitCompletion = await axios.post(
+      `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/Quiz/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`,
+      sendData
+    );
+
+    console.log(submitCompletion, givenAnswers);
   };
 
   const question = questions[currentQuestion];
@@ -469,8 +491,10 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
               <CloseIcon />
             </IconButton>
             <div className="text-center text-[21px] font-[600] w-full py-[20px] ">
-              <h1 className="text-white">Figma</h1>
-              <p className="text-[#8595FF]">Quiz - 48 Total points</p>
+              <h1 className="text-white">{taskData?.quizName}</h1>
+              <p className="text-[#8595FF]">
+                Quiz - {taskData?.points} Total points
+              </p>
             </div>
           </Toolbar>
         </AppBar>
@@ -478,7 +502,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
           <div className=" max-w-[1262px] pt-[80px] mx-auto flex justify-between">
             <div className="w-[625px]">
               <h1 className="text-[#FF557A] text-center h-[50px] text-[22px] font-[700] ">
-                Question {submittedQuestion?.id}
+                Question {currentQuestion + 1}
               </h1>
               <div className="bg-[#FFFCDE] rounded-[8px] w-full px-[20px] py-[30px] relative">
                 {showExplanation ? (
@@ -497,7 +521,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
                       />
                     </svg>
                     <h1 className=" text-white text-[16px] font-[500] absolute top-[6px] left-0 w-[108px] text-center ">
-                      {submittedQuestion?.point} points
+                      {question?.defaultMarks} points
                     </h1>
                   </>
                 ) : (
@@ -516,16 +540,19 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
                       />
                     </svg>
                     <h1 className=" text-white text-[16px] font-[500] absolute top-[6px] right-0 w-[108px] text-center ">
-                      {submittedQuestion?.point} points
+                      {question?.defaultMarks} points
                     </h1>
                   </>
                 )}
 
-                <p className=" text-[18px] font-[700] pt-4 ">
-                  {submittedQuestion?.question}
-                </p>
+                <p
+                  className=" text-[18px] font-[700] pt-4 "
+                  dangerouslySetInnerHTML={{
+                    __html: question?.questionText,
+                  }}
+                ></p>
                 <form id="myForm" className="mt-[45px]">
-                  {!submittedQuestion?.options && (
+                  {/* {!submittedQuestion?.options && (
                     <>
                       {!showExplanation ? (
                         <div>
@@ -559,34 +586,49 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
                         </div>
                       )}
                     </>
-                  )}
-                  {submittedQuestion?.options &&
-                    submittedQuestion?.options?.map((option, index) => (
+                  )} */}
+                  {question?.options &&
+                    question?.options?.map((option, index) => (
                       <div key={index}>
                         <label className="flex items-center mb-[15px] text-[#3E4DAC] text-[15px] font-[600] ">
                           <input
                             className="form-radio mr-[15px] h-6 w-6  border rounded-full border-gray-400"
                             type="radio"
                             value={option}
-                            checked={submittedQuestion?.givenAnswer === option}
+                            checked={
+                              givenAnswers[index]?.givenAnswer === option
+                            }
                           />
+                          <p
+                            dangerouslySetInnerHTML={{
+                              __html: option?.answerFormula,
+                            }}
+                          ></p>
                           <p
                             className={`flex items-center ${
                               !showExplanation && "justify-between"
                             }  w-full`}
                           >
-                            {option}{" "}
+                            {/* {option}{" "} */}
                             {showExplanation ? (
                               <>
-                                {submittedQuestion?.explanations && (
-                                  <p className=" ml-[5px] text-[#FF557A] ">
-                                    ( {submittedQuestion?.explanations[index]} )
-                                  </p>
+                                {/* {question?.explanations && (
+                                    <p className=" ml-[5px] text-[#FF557A] ">
+                                      ( {submittedQuestion?.explanations[index]} )
+                                    </p>
+                                  )} */}
+                                {option?.feedback && (
+                                  <p
+                                    className=" ml-[5px] text-[#FF557A] "
+                                    dangerouslySetInnerHTML={{
+                                      __html: option?.feedback,
+                                    }}
+                                  ></p>
                                 )}
                               </>
                             ) : (
                               <p>
-                                {submittedQuestion?.givenAnswer === option &&
+                                {/* {submittedQuestion?.givenAnswer === option &&
                                   option ===
                                     submittedQuestion?.correctAnswer && (
                                     <p className="text-[#17A914]">✅ Correct</p>
@@ -602,7 +644,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
                                   option ===
                                     submittedQuestion?.correctAnswer && (
                                     <p className="text-[#17A914]">✅ Correct</p>
-                                  )}
+                                  )} */}
                               </p>
                             )}
                           </p>
