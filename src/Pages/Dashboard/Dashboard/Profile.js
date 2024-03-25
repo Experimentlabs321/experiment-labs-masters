@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 import WeekChapData from "./OffersComponent/WeekChapData";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import Loading from "../../Shared/Loading/Loading";
 const Profile = () => {
   const { email } = useParams();
   const [profileInfo, setProfileInfo] = useState({});
@@ -50,67 +51,79 @@ const Profile = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-  useEffect(() => {
+
+  const fetchProfile = async () => {
     axios
       .get(`${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${email}`)
       .then((user) => {
         setProfileInfo(user?.data);
       })
       .catch((error) => console.error(error));
+  }
+
+  useEffect(() => {
+    fetchProfile();
   }, [email]);
   console.log("profile ", profileInfo);
   // console.log(profileInfo.name);
+
+  const fetchCourseDetails = async () => {
+    const courses = profileInfo?.courses || [];
+
+    const courseDetailsPromises = courses.map(async (course) => {
+      const courseId = course.courseId;
+      const batchId = course.batchId;
+
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${courseId}`
+        );
+        const batch = await axios.get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/batches/batchId/${batchId}`
+        );
+        return { ...response?.data, course, batch: batch?.data[0] };
+      } catch (error) {
+        console.error(
+          `Error fetching course details for courseId: ${courseId}`,
+          error
+        );
+        return null;
+      }
+    });
+
+    const courseDetails = await Promise.all(courseDetailsPromises);
+    setCourseData(courseDetails.filter(Boolean)); // Remove null values
+  };
+
   useEffect(() => {
-    const fetchCourseDetails = async () => {
-      const courses = profileInfo?.courses || [];
-
-      const courseDetailsPromises = courses.map(async (course) => {
-        const courseId = course.courseId;
-
-        try {
-          const response = await axios.get(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${courseId}`
-          );
-          return response?.data;
-        } catch (error) {
-          console.error(
-            `Error fetching course details for courseId: ${courseId}`,
-            error
-          );
-          return null;
-        }
-      });
-
-      const courseDetails = await Promise.all(courseDetailsPromises);
-      setCourseData(courseDetails.filter(Boolean)); // Remove null values
-    };
-
     fetchCourseDetails();
   }, [profileInfo]);
   console.log("course  ", courseData);
+
+
+  const fetchWeekDetails = async () => {
+    const courses = profileInfo?.courses || [];
+    const courseDetailsPromises = courses.map(async (course) => {
+      const courseId = course.courseId;
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/weeks/courseId/${courseId}`
+        );
+        return response?.data;
+      } catch (error) {
+        console.error(
+          `Error fetching course details for courseId: ${courseId}`,
+          error
+        );
+        return null;
+      }
+    });
+
+    const courseDetails = await Promise.all(courseDetailsPromises);
+    setWeekData(courseDetails.filter(Boolean)); // Remove null values
+  };
+
   useEffect(() => {
-    const fetchWeekDetails = async () => {
-      const courses = profileInfo?.courses || [];
-      const courseDetailsPromises = courses.map(async (course) => {
-        const courseId = course.courseId;
-        try {
-          const response = await axios.get(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/weeks/courseId/${courseId}`
-          );
-          return response?.data;
-        } catch (error) {
-          console.error(
-            `Error fetching course details for courseId: ${courseId}`,
-            error
-          );
-          return null;
-        }
-      });
-
-      const courseDetails = await Promise.all(courseDetailsPromises);
-      setWeekData(courseDetails.filter(Boolean)); // Remove null values
-    };
-
     fetchWeekDetails();
   }, [profileInfo]);
   // useEffect(() => {
@@ -195,6 +208,46 @@ const Profile = () => {
       });
     }
   };
+
+  const handleRefund = async (course) => {
+    console.log("Course", course);
+    if (!course?.receiptId) {
+      return Swal.fire({
+        icon: "error",
+        title: "This Course is not Refundable",
+      });
+    };
+
+    Swal.fire({
+      title: "Are you sure?",
+      text: `If this course is part of a bundle then all course in the bundle will be removed from ${profileInfo?.name}!`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Refund!"
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        Loading();
+        const response = await axios.post(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/users/refund`,
+          // `http://localhost:5000/api/v1/users/refund`,
+          {
+            receiptId: course?.receiptId
+          }
+        );
+        await fetchProfile();
+        await fetchCourseDetails();
+        await fetchWeekDetails();
+        Swal.fire({
+          title: "Refunded!",
+          text: "Refund Successful!",
+          icon: "success"
+        });
+        Loading().close();
+      }
+    });
+  }
 
   return (
     <div>
@@ -302,6 +355,8 @@ const Profile = () => {
                 </th>
                 <th className="w-1/5 py-3 px-6 border-b text-left">Start Date</th>
                 <th className="w-1/5 py-3 px-6 border-b text-left">End Date</th>
+                <th className="w-1/5 py-3 px-6 border-b text-left">Batch Name</th>
+                <th className="w-1/5 py-3 px-6 border-b text-left">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -357,10 +412,30 @@ const Profile = () => {
                 );
               })} */}
               {courseData.map((data, index) => {
-                const startDate = new Date(data?.courseStartingDate);
+                // const startDate = new Date(data?.courseStartingDate);
                 const endDate = new Date(data?.courseEndingDate);
                 const isExpanded = !!expandedRows[data._id];
                 const courseWeekData = weekData.find((weekArray) => weekArray[0]?.courseId === data._id);
+                const { course, batch } = data;
+
+                const currentDate = new Date();
+                const specificDate = new Date(batch?.batchStartDate); // Example: January 1, 2023
+
+                // Calculate the difference in milliseconds
+                const timeDifference = currentDate - specificDate;
+
+                // Convert milliseconds to days
+                const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+                const courseDuration = +(data?.expirationDay || 0)
+                const expired = daysDifference > courseDuration;
+
+                const expirationDate = new Date(specificDate.getTime() + courseDuration * 24 * 60 * 60 * 1000);
+
+                // Format the expiration date back to a string if necessary
+                // This example returns the date as YYYY-MM-DD
+                const displayExpiration = expirationDate.toISOString().split('T')[0];
+
+                console.log("My Console ==============>", data, expired);
                 return (
                   <React.Fragment key={index}> {/* Correct placement of key prop */}
                     <tr
@@ -377,14 +452,20 @@ const Profile = () => {
                         {data?.organization?.organizationName || "Not Available"}
                       </td>
                       <td className="py-4 px-6 border-b text-left">
-                        {startDate.toLocaleDateString() || "Not Available"}
+                        {batch?.batchStartDate || "Not Available"}
                       </td>
                       <td className="py-4 px-6 border-b text-left">
-                        {endDate.toLocaleDateString() || "Not Available"}
+                        {displayExpiration || "Not Available"}
+                      </td>
+                      <td className="py-4 px-6 border-b text-left">
+                        {batch.batchName || "Not Available"}
+                      </td>
+                      <td className="py-4 px-6 border-b text-left flex flex-col gap-2">
+                        <button onClick={() => handleRefund(course)} disabled={expired} className="bg-blue text-white font-bold px-2 py-1 rounded-full hover:bg-opacity-60 disabled:bg-red-400">{expired ? "Expired" : "Refund"}</button>
                       </td>
                     </tr>
                     <tr className="bg-sky-600 text-white cursor-pointer" onClick={() => toggleCourseDetails(data._id)}>
-                      <td colSpan="5" className="py-2 px-6 border-b text-center">
+                      <td colSpan="7" className="py-2 px-6 border-b text-center">
                         <div className="flex justify-center items-center gap-2 w-full">
                           <span>Progress Details: {data?.courseFullName || "Not Available"}</span>
                           {isExpanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
@@ -399,7 +480,7 @@ const Profile = () => {
                           <th className="py-2 px-5 border-b text-left">Task</th>
                           <th className="py-2 px-5 border-b text-left">Completion Status</th>
                           <th className="py-2 px-5 border-b text-left">Deadline for completion</th>
-                          <th className="py-2 px-5 border-b text-left">WA/Email Nudge</th>
+                          <th className="py-2 px-5 border-b text-left" colSpan={2}>WA/Email Nudge</th>
                         </tr>
                         {courseWeekData?.map((weekDetail, index) => (
                           <WeekChapData userId={profileInfo?._id} weekData={weekDetail} serial={index} key={index} />
