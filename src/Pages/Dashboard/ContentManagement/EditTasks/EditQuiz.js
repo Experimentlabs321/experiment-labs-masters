@@ -118,8 +118,8 @@ const EditQuiz = () => {
         `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/quizes/taskId/${quizData?._id}`,
         updatedQuizObject
       );
-
-      if (newQuiz?.data?.acknowledged) {
+       console.log(newQuiz)
+      if (newQuiz?.data?.updateResult?.acknowledged) {
         toast.success("Quiz Updated Successfully");
         e.target.reset();
       }
@@ -390,6 +390,7 @@ const EditQuiz = () => {
                           className=" flex  border  rounded-lg h-[40px] w-[20%] px-2 text-[#535353] "
                         >
                           <input
+                          defaultValue={quizData ? quizData?.gradeToPass : ""}
                             className="w-[100%] bg-[#F6F7FF]"
                             type="text"
                             name="gradeToPass"

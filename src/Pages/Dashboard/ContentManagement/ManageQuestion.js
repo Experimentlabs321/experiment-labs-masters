@@ -7,7 +7,7 @@ import bxseditalt from "../../../assets/ContentManagement/bxseditalt.svg";
 import Vector from "../../../assets/ContentManagement/Vector.svg";
 import trash from "../../../assets/ContentManagement/trash.svg";
 import back from "../../../assets/ContentManagement/back.svg";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -26,6 +26,7 @@ import AddingEditingMultiChoQues from "./AddingEditingMultiChoQues";
 import axios from "axios";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import toast from "react-hot-toast";
+import Loading from "../../Shared/Loading/Loading";
 
 const ManageQuestion = ({
   batchesData,
@@ -44,6 +45,7 @@ const ManageQuestion = ({
   const [allSelect, setAllSelect] = useState(false);
   const [move, setMove] = useState(false);
   const [selectedOptionsQuestion, setSelectedOptionsQuestion] = useState([]);
+  const dropdownRef = useRef(null);
 
   const handleOptionChangeQuestion = (event) => {
     const optionValue = event.target.value;
@@ -76,6 +78,9 @@ const ManageQuestion = ({
     setAllSelect(false);
     setSelectedOptionsQuestion([]);
   };
+
+
+
 
   // popup add from ques bank
 
@@ -224,7 +229,22 @@ const ManageQuestion = ({
   const handleCloseAddFromQuesBank = () => {
     setOpenAddFromQuesBank(false);
   };
+  useEffect(() => {
+    // Function to close dropdown when clicked outside
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpenEvaluationCourseSelection(false);
+      }
+    };
 
+    // Adding event listener when component mounts
+    document.addEventListener('mousedown', handleClickOutside);
+
+    // Cleaning up event listener when component unmounts
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
   //
   const [isOpenEvaluationCourseSelection, setIsOpenEvaluationCourseSelection] =
     useState(false);
@@ -234,6 +254,7 @@ const ManageQuestion = ({
   };
 
   //
+
   const [addQues, setAddQues] = useState(false);
 
   //
@@ -257,7 +278,7 @@ const ManageQuestion = ({
       // Log the updated quizObject (you can remove this in production)
       console.log(updatedQuizObject);
       await delete updatedQuizObject?._id;
-
+      Loading();
       const newTask = await axios.put(
         `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/quizes/taskId/${quizData?._id}`,
         updatedQuizObject
@@ -266,6 +287,8 @@ const ManageQuestion = ({
 
       if (newTask?.data?.result?.acknowledged) {
         toast.success("Question Added Successfully!");
+        Loading().close()
+        setOpenAddFromQuesBank(false);
       }
     } else {
       console.error(`Batch with batchId ${batchId} not found.`);
@@ -303,6 +326,15 @@ const ManageQuestion = ({
   }, [userInfo?.organizationId]);
 
   console.log(questionBankQuestions);
+  const [expandedIndex, setExpandedIndex] = useState(null);
+
+  const handleToggleRow = (index) => {
+    if (expandedIndex === index) {
+      setExpandedIndex(null); // Close the currently expanded row
+    } else {
+      setExpandedIndex(index); // Expand the clicked row
+    }
+  }
 
   return (
     <div>
@@ -394,10 +426,10 @@ const ManageQuestion = ({
                 </div>
 
                 {!allSelect && (
-                  <div className=" ">
+                  <div ref={dropdownRef} className=" ">
                     <div
                       onClick={toggleDropdownCourseSelection}
-                      className="custom-dropdown flex justify-between items-center gap-2  h-[40px]  px-2 text-base text-[#fff] bg-[#3E4DAC] font-bold"
+                      className="custom-dropdown flex justify-between items-center gap-2 cursor-pointer h-[40px]  px-2 text-base text-[#fff] bg-[#3E4DAC] font-bold"
                       style={{
                         borderRadius: "8px",
                         border: "1px solid #B7B7B7",
@@ -412,15 +444,14 @@ const ManageQuestion = ({
                       <div className="select-option">
                         <img src={chevronright} alt="chevronRight" />
                         <i
-                          className={`dropdown-arrow ${
-                            isOpenEvaluationCourseSelection ? "open" : ""
-                          }`}
+                          className={`dropdown-arrow ${isOpenEvaluationCourseSelection ? "open" : ""
+                            }`}
                         ></i>
                       </div>
                     </div>
                     {isOpenEvaluationCourseSelection && (
                       <div
-                        className="dropdown-menu bg-[black] text-[#fff] mt-1 flex gap-3 flex-col p-3"
+                        className="dropdown-menu bg-[black] absolute text-[#fff] mt-1 flex gap-3 flex-col p-3"
                         style={{
                           borderRadius: "8px",
                           border: "1px solid #B7B7B7",
@@ -945,7 +976,7 @@ const ManageQuestion = ({
                                   </div>
                                 </div>
 
-                                <div className="flex ">
+                                {/*   <div className="flex ">
                                   {!allSelectFromQuesBank && (
                                     <div className="">
                                       <div>
@@ -995,7 +1026,7 @@ const ManageQuestion = ({
                                       </label>
                                     </div>
                                   )}
-                                </div>
+                                </div> */}
                               </div>
 
                               <div className="">
@@ -1022,7 +1053,53 @@ const ManageQuestion = ({
                                         </tr>
                                       </thead>
                                       <tbody>
-                                        {questionBankQuestions?.map(
+                                        {questionBankQuestions?.map((question, index) => (
+                                          <React.Fragment key={index}>
+                                            <tr
+                                              className={`${index % 2 === 0 ? "bg-[#F2FFFA]" : ""}`}
+                                             
+                                            >
+                                              <td className="py-5 text-center">
+                                                <input
+                                                  type="checkbox"
+                                                  id={`question-${question?._id}`}
+                                                  name={`question-${question?._id}`}
+                                                  value={`${question?._id}`}
+                                                  checked={selectedOptionsQuestionFromQuesBank?.includes(`${question?._id}`)}
+                                                  onChange={handleOptionChangeQuestionFromQuesBank}
+                                                />
+                                                <label htmlFor={`question-${index + 1}`} className="ml-2">{index + 1}</label>
+                                              </td>
+                                              <td className="text-center">{question?.questionName}</td>
+                                              <td className="text-center">{question.questionType}</td>
+                                              <td className="text-center">{question.defaultMarks}</td>
+                                              <td className="text-center">
+                                                <img  onClick={() => handleToggleRow(index)} className="mx-auto cursor-pointer" src={Vector} alt="Preview" />
+                                              </td>
+                                            </tr>
+                                            {expandedIndex === index && (
+                                              <tr className="border ">
+                                                <td colSpan="5" className="p-5">
+                                                  <p className="text-lg font-medium mb-2">{question?.questionName}</p>
+                                                  <div className="grid grid-cols-2">
+                                                  {
+                                                    question?.options?.map((option)=><>
+                                                      <p> Answer Formula : {option?.answerFormula}</p>
+                                                      <p> Answer : {option?.answer}</p>
+                                                      <p> Feedback : {option?.feedback}</p>
+                                                      </>
+                                                    )
+                                                  }
+
+                                                  </div>
+                                                  {/* Content to display when row is expanded */}
+                                                  {/* You can add more details here */}
+                                                </td>
+                                              </tr>
+                                            )}
+                                          </React.Fragment>
+                                        ))}
+                                        {/*  {questionBankQuestions?.map(
                                           (question, index) => (
                                             <tr
                                               key={index}
@@ -1072,7 +1149,7 @@ const ManageQuestion = ({
                                               </td>
                                             </tr>
                                           )
-                                        )}
+                                        )} */}
                                       </tbody>
                                     </table>
                                   </div>
@@ -1266,6 +1343,7 @@ const ManageQuestion = ({
                 <AddingEditingMultiChoQues
                   addQues={addQues}
                   setAddQues={setAddQues}
+                  setOpenNewQuesType={setOpenNewQuesType}
                 />
               )}
               {/* <div>
