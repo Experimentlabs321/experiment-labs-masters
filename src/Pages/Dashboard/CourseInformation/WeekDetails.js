@@ -449,10 +449,11 @@ const WeekDetails = ({
                           )} */}
               </div>
               <div
-                className={`${openTopics?.find((item) => item === chapter?._id)
+                className={`${
+                  openTopics?.find((item) => item === chapter?._id)
                     ? ""
                     : "hidden"
-                  } sub-items`}
+                } sub-items`}
               >
                 {Role === "admin" &&
                   chapter?.tasks?.map((task, taskIndex) => (
@@ -843,7 +844,7 @@ const WeekDetails = ({
                             {courseData?.enableDrip && (
                               <div className="">
                                 {isPreviousTaskCompleted &&
-                                  isPrevChapterCompleted ? (
+                                isPrevChapterCompleted ? (
                                   <Link
                                     onClick={() => {
                                       localStorage.setItem(
@@ -888,7 +889,7 @@ const WeekDetails = ({
                               <div className="">
                                 {(isPreviousTaskCompleted &&
                                   isPrevChapterCompleted) ||
-                                  !task?.taskDrip ? (
+                                !task?.taskDrip ? (
                                   <Link
                                     onClick={() => {
                                       localStorage.setItem(
@@ -939,16 +940,38 @@ const WeekDetails = ({
                                         (item) =>
                                           item?.participantId === userInfo?._id
                                       )?.status === "Completed" ? (
-                                        <img src={Completed} alt="Completed" />
+                                        <div className="w-full flex items-center justify-start gap-6">
+                                          {" "}
+                                          <img
+                                            src={Completed}
+                                            alt="Completed"
+                                          />
+                                        </div>
                                       ) : (
-                                        <img
-                                          src={InProgress}
-                                          alt="InProgress"
-                                        />
+                                        <div className="w-full flex items-center justify-start gap-6">
+                                          <img
+                                            src={InProgress}
+                                            alt="InProgress"
+                                          />
+                                        </div>
                                       )}
                                     </>
                                   ) : (
-                                    <img src={Pending} alt="Pending" />
+                                    <div className="w-full flex flex-col gap-2">
+                                      <img src={Pending} alt="Pending" />
+                                      {!(
+                                        isPreviousTaskCompleted &&
+                                        isPrevChapterCompleted
+                                      ) &&
+                                        (courseData?.enableDrip ||
+                                          task?.taskDrip) && (
+                                          <img
+                                            className="w-[35px]"
+                                            src={lock}
+                                            alt="Lock"
+                                          />
+                                        )}
+                                    </div>
                                   )}
                                 </>
                               )}

@@ -9,8 +9,8 @@ import { DownloadTableExcel } from "react-export-table-to-excel";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import inrIcon from "../../../assets/Dashboard/inrIcon.png";
-import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
 
 const SalesAndRevenue = () => {
   const { userInfo } = useContext(AuthContext);
@@ -257,15 +257,15 @@ const SalesAndRevenue = () => {
     setCurrentPage(page);
   };
 
-  console.log(currentTasks);
+  console.log(courses);
 
   return (
     <div>
       <Layout>
         <div className="p-4">
           <h1 className="text-3xl font-bold">Sales & Revenue</h1>
-          {
-            totalRevenue ? <div className="my-5 flex gap-5 flex-wrap">
+          {totalRevenue ? (
+            <div className="my-5 flex gap-5 flex-wrap">
               <Link
                 to=""
                 className="w-fit min-w-[200px] justify-center items-stretch  bg-[#8064F0] text-white shadow-md border flex flex-col px-2 rounded-md py-4"
@@ -310,12 +310,15 @@ const SalesAndRevenue = () => {
                   {paidStudents?.length}
                 </h1>
               </Link>
-            </div> :
-              <div className="flex justify-center items-center"> <Box sx={{ display: 'flex' }}>
+            </div>
+          ) : (
+            <div className="flex justify-center items-center">
+              {" "}
+              <Box sx={{ display: "flex" }}>
                 <CircularProgress />
-              </Box></div>
-          }
-
+              </Box>
+            </div>
+          )}
 
           <div className="mb-5 flex gap-5 items-center">
             <label className="font-bold">Select Filter:</label>
@@ -426,9 +429,10 @@ const SalesAndRevenue = () => {
                             return (
                               <div
                                 onClick={() => handleBatches(batch, index)}
-                                className={`px-2 py-1 border-2 rounded-full cursor-pointer ${selectedBatches?.includes(batch._id) &&
+                                className={`px-2 py-1 border-2 rounded-full cursor-pointer ${
+                                  selectedBatches?.includes(batch._id) &&
                                   "bg-[#39249957]"
-                                  }`}
+                                }`}
                                 key={batchIndex}
                               >
                                 {batch.batchName}
@@ -667,6 +671,7 @@ const SalesAndRevenue = () => {
                     const batchData = courseData?.batches?.find(
                       (item) => item?._id === student?.batchId
                     );
+                    console.log(student);
 
                     return (
                       <tr
