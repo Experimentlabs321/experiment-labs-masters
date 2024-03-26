@@ -219,7 +219,7 @@ const Profile = () => {
     };
 
     Swal.fire({
-      title: "Are you sure?",
+      title: `Are you sure you want Refund ${course?.paidAmount}₹ ?`,
       text: `If this course is part of a bundle then all course in the bundle will be removed from ${profileInfo?.name}!`,
       icon: "warning",
       showCancelButton: true,
@@ -236,15 +236,15 @@ const Profile = () => {
             receiptId: course?.receiptId
           }
         );
-        await fetchProfile();
-        await fetchCourseDetails();
-        await fetchWeekDetails();
+        fetchProfile();
+        fetchCourseDetails();
+        fetchWeekDetails();
+        Loading().close();
         Swal.fire({
           title: "Refunded!",
           text: "Refund Successful!",
           icon: "success"
         });
-        Loading().close();
       }
     });
   }
