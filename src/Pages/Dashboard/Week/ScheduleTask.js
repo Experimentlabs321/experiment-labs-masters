@@ -71,6 +71,7 @@ const matchInputWithBusySlots = (inputDate, inputTime, busyTimeSlots) => {
 
 const ScheduleTask = ({ taskData, week }) => {
   const adminMail = taskData?.usersession?.user?.email;
+  const adminName = taskData?.usersession?.user?.user_metadata?.name;
   const meetingLength = taskData?.meetingDuration;
   console.log("Meeting duration : ", Number(meetingLength));
   // console.log(adminMail);
@@ -586,6 +587,9 @@ console.log(userInfo)
                     start_time: eventStartTime,
                     end_time:eventEndTime,
                     meeting_link: event?.hangoutLink,
+                    learner_name : adminName,
+                    learner_email : adminMail,
+                    meeting_date : date
                    /*  subject: `Event request`,
                     message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
                       }`, */
@@ -603,6 +607,9 @@ console.log(userInfo)
                     start_time: eventStartTime,
                     end_time:eventEndTime,
                     meeting_link: event?.hangoutLink,
+                    learner_name : userInfo?.name,
+                    learner_email : userInfo?.email,
+                    meeting_date : date
                    /*  subject: `Event request`,
                     message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
                       }`, */
