@@ -16,8 +16,8 @@ import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
 import { Helmet } from "react-helmet";
 import NavbarSkeletonLoader from "./NavbarSkeletonLoader";
 import ForgotPassword from "./ForgotPassword";
-import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
 
 const Payment = () => {
   const {
@@ -228,7 +228,7 @@ const Payment = () => {
       key_secret: organizationData?.paymentInstance?.key_secret,
       currency: "INR",
       name: organizationData?.organizationName,
-      description: `Purchase ${course?.courseName}`,
+      description: `Purchased ${course?.courseFullName}`,
       image: organizationData?.org_logo,
       order_id: order?.id,
       prefill: {
@@ -328,7 +328,7 @@ const Payment = () => {
           saveUser(email);
         });
       }
-      setLoginOpen(false)
+      setLoginOpen(false);
     } catch (error) {
       // Handle any other errors that may occur during the Axios request
       console.error("Error during Axios request:", error);
@@ -378,7 +378,7 @@ const Payment = () => {
         } else {
           saveUser(email);
         }
-        setLoginOpen(false)
+        setLoginOpen(false);
       })
       .catch((error) => {
         console.error(error);
@@ -419,7 +419,7 @@ const Payment = () => {
               }
             );
           }
-          setRegisterOpen(false)
+          setRegisterOpen(false);
         })
         .catch((error) => {
           console.error(error);
@@ -467,7 +467,7 @@ const Payment = () => {
           } else {
             saveUser(email);
           }
-          setRegisterOpen(false)
+          setRegisterOpen(false);
         })
         .catch((error) => {
           console.error(error);
@@ -525,16 +525,14 @@ const Payment = () => {
                 </div>
               </div>
               <div className="max-w-[350px] min-w-[350px]">
-                {!batchesData[0] ?
-                  <div
-                    className='flex justify-center items-center h-[400px]'
-                  >
-                    <Box sx={{ display: 'flex' }}>
+                {!batchesData[0] ? (
+                  <div className="flex justify-center items-center h-[400px]">
+                    <Box sx={{ display: "flex" }}>
                       <CircularProgress size={25} />
                     </Box>
                     {/* No batch added yet! */}
                   </div>
-                  :
+                ) : (
                   <div className="mt-3">
                     <h1 className=" text-black text-base font-[500] ">
                       {isBatchPayment === true
@@ -546,7 +544,7 @@ const Payment = () => {
                         <div
                           className={`px-4 py-4 text-base font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
                         >
-                         {/*  <Box sx={{ display: 'flex' }}>
+                          {/*  <Box sx={{ display: 'flex' }}>
                             <CircularProgress size={15} />
                           </Box> */}
                           {/* No batch added yet! */}
@@ -568,10 +566,11 @@ const Payment = () => {
                           {batchesData?.map((item, index) => (
                             <option
                               key={index}
-                              className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 m-1 ${selectedBatch?._id === item?._id
-                                ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
-                                : "text-[#949494]"
-                                }`}
+                              className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 m-1 ${
+                                selectedBatch?._id === item?._id
+                                  ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
+                                  : "text-[#949494]"
+                              }`}
                               value={index}
                               // onClick={() => handleSelectCourse(item)}
                               onMouseDown={() => setSelectedBatch(item)}
@@ -583,7 +582,7 @@ const Payment = () => {
                       )}
                     </div>
                   </div>
-                }
+                )}
 
                 {selectedBatch?._id && (
                   <>
@@ -721,8 +720,8 @@ const Payment = () => {
                                   ₹
                                   {selectedBatch?.price
                                     ? Math.round(
-                                      +selectedBatch?.price - +couponDiscount
-                                    )
+                                        +selectedBatch?.price - +couponDiscount
+                                      )
                                     : "N/A"}
                                 </td>
                               </tr>
@@ -740,8 +739,8 @@ const Payment = () => {
                             ₹
                             {selectedBatch?.price
                               ? Math.round(
-                                +selectedBatch?.price - +couponDiscount
-                              )
+                                  +selectedBatch?.price - +couponDiscount
+                                )
                               : "N/A"}
                           </h4>
                         </div>
