@@ -62,6 +62,20 @@ const SalesAndRevenue = () => {
         .catch((error) => console.error(error));
   }, [selectedCourse]);
 
+  // useEffect(() => {
+  //   if (userInfo.organizationId)
+  //     axios
+  //       .get(
+  //         `${process.env.REACT_APP_SERVER_API}/api/v1/bundles/organizationId/${userInfo.organizationId}`
+  //       )
+  //       .then((response) => {
+  //         setShowCourses(response?.data);
+  //       })
+  //       .catch((error) => {
+  //         console.error(error);
+  //       });
+  // }, [userInfo.organizationId]);
+
   useEffect(() => {
     axios
       .get(
@@ -538,12 +552,18 @@ const SalesAndRevenue = () => {
                       student?.paidAt
                     )?.toLocaleDateString();
 
-                    const courseData = courses?.find(
-                      (item) => item?._id === student?.courseId
-                    );
-                    const batchData = courseData?.batches?.find(
-                      (item) => item?._id === student?.batchId
-                    );
+                    let courseData, batchData;
+                    let courseName, batchName;
+
+                    if (student?.courses?.length === 1) {
+                      courseData = courses?.find(
+                        (item) => item?._id === student?.courses[0]?.courseId
+                      );
+                      batchData = courseData?.batches?.find(
+                        (item) => item?._id === student?.courses[0]?.batchId
+                      );
+                    } else {
+                    }
 
                     return (
                       <tr
@@ -682,7 +702,7 @@ const SalesAndRevenue = () => {
                       >
                         <td className="py-4 px-6 border-b text-left whitespace-nowrap">
                           <p to={`/profile/${student?.payer?.email}`}>
-                            {student?.payer?.name}
+                            {student?.payer?.name} some
                           </p>
                         </td>
                         <td className="py-4 px-6 border-b text-left whitespace-nowrap">
