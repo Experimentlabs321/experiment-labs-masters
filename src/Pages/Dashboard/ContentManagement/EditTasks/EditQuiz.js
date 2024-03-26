@@ -25,6 +25,7 @@ const EditQuiz = () => {
   const [course, setCourse] = useState({});
   const [batchesData, setBatchesData] = useState([]);
   const [selectedBatches, setSelectedBatches] = useState([]);
+  const [taskDrip, setTaskDrip] = useState(false);
 
   useEffect(() => {
     axios
@@ -35,12 +36,20 @@ const EditQuiz = () => {
         setQuizData(response?.data);
         setQuizDescription(response?.data?.quizDescription);
         setSelectedBatches(response?.data?.batches);
+        setTaskDrip(response?.data?.taskDrip);
         // setSkillParameterData(response?.data?.skillParameterData);
         // setEarningParameterData(response?.data?.earningParameterData);
-        // setTaskDrip(response?.data?.taskDrip);
         // setEnableDownload(response?.data?.enableDownload);
       });
   }, [id]);
+
+  useEffect(() => {
+    if (selectedTab === "Quiz General Information")
+      setQuizDescription(quizData?.quizDescription);
+    else setQuizDescription("");
+    setSelectedBatches(quizData?.batches);
+    setTaskDrip(quizData?.taskDrip || false);
+  }, [quizData, selectedTab]);
 
   useEffect(() => {
     axios
@@ -118,15 +127,15 @@ const EditQuiz = () => {
         `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/quizes/taskId/${quizData?._id}`,
         updatedQuizObject
       );
-
-      if (newQuiz?.data?.acknowledged) {
+      console.log(newQuiz);
+      if (newQuiz?.data?.updateResult?.acknowledged) {
         toast.success("Quiz Updated Successfully");
         e.target.reset();
       }
     }
   };
 
-  console.log(quizData);
+  console.log(quizDescription);
 
   return (
     <div>
@@ -135,7 +144,7 @@ const EditQuiz = () => {
           <div className="text-[#3E4DAC] text-[26px] font-bold  py-[35px] ps-[40px]">
             <p>Manage Quiz in Topic 1</p>
           </div>
-          <div className="px-10 flex  justify-between pb-3 text-lg">
+          <div className="px-10 flex items-center gap-10 pb-3 text-lg">
             <button
               onClick={() => handleTabClick("Quiz General Information")}
               style={{
@@ -161,7 +170,7 @@ const EditQuiz = () => {
             >
               Questions
             </button>
-            <button
+            {/* <button
               onClick={() => handleTabClick("Question Bank")}
               style={{
                 fontWeight: selectedTab === "Question Bank" ? "bold" : "normal",
@@ -193,7 +202,7 @@ const EditQuiz = () => {
               }}
             >
               Evaluation Parameter
-            </button>
+            </button> */}
           </div>
         </>
 
@@ -390,6 +399,7 @@ const EditQuiz = () => {
                           className=" flex  border  rounded-lg h-[40px] w-[20%] px-2 text-[#535353] "
                         >
                           <input
+                            defaultValue={quizData ? quizData?.gradeToPass : ""}
                             className="w-[100%] bg-[#F6F7FF]"
                             type="text"
                             name="gradeToPass"
@@ -526,6 +536,63 @@ const EditQuiz = () => {
                     })}
                   </ul>
                 </div>
+              </div>
+
+              <div className=" space-y-3 mb-8">
+                <fieldset>
+                  <div className="flex items-center gap-4 mb-5">
+                    <p className="h-2 w-2 bg-black rounded-full"></p>
+                    <p className="font-bold text-lg me-[36px]">Enable Drip</p>
+                    <img src={required} alt="" />
+                  </div>
+                  <div className="ms-6 flex items-center space-x-4">
+                    <div className="flex items-center">
+                      <input
+                        type="radio"
+                        id="radioYes"
+                        name="radioOption"
+                        checked={taskDrip === true}
+                        onChange={() => setTaskDrip(true)}
+                        disabled={course?.enableDrip}
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
+                      />
+                      <label
+                        htmlFor="radioYes"
+                        className={`ml-2 text-sm font-medium ${
+                          course?.enableDrip ? "text-gray-400" : "text-gray-900"
+                        }`}
+                      >
+                        Yes
+                      </label>
+                    </div>
+
+                    <div className="flex items-center">
+                      <input
+                        type="radio"
+                        id="radioNo"
+                        name="radioOption"
+                        checked={taskDrip === false}
+                        onChange={() => setTaskDrip(false)}
+                        disabled={course?.enableDrip}
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
+                      />
+                      <label
+                        htmlFor="radioNo"
+                        className={`ml-2 text-sm font-medium ${
+                          course?.enableDrip ? "text-gray-400" : "text-gray-900"
+                        }`}
+                      >
+                        No
+                      </label>
+                    </div>
+                  </div>
+                </fieldset>
+
+                {course?.enableDrip && (
+                  <p className="text-sm text-red-500">
+                    Course Drip Must Be Turned Off to add Task Drip.
+                  </p>
+                )}
               </div>
 
               <div className="flex items-center justify-center mt-20 mb-10">

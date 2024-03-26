@@ -7,7 +7,7 @@ import bxseditalt from "../../../assets/ContentManagement/bxseditalt.svg";
 import Vector from "../../../assets/ContentManagement/Vector.svg";
 import trash from "../../../assets/ContentManagement/trash.svg";
 import back from "../../../assets/ContentManagement/back.svg";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -26,6 +26,8 @@ import AddingEditingMultiChoQues from "./AddingEditingMultiChoQues";
 import axios from "axios";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import toast from "react-hot-toast";
+import Loading from "../../Shared/Loading/Loading";
+import Swal from "sweetalert2";
 
 const ManageQuestion = ({
   batchesData,
@@ -44,6 +46,7 @@ const ManageQuestion = ({
   const [allSelect, setAllSelect] = useState(false);
   const [move, setMove] = useState(false);
   const [selectedOptionsQuestion, setSelectedOptionsQuestion] = useState([]);
+  const dropdownRef = useRef(null);
 
   const handleOptionChangeQuestion = (event) => {
     const optionValue = event.target.value;
@@ -224,7 +227,22 @@ const ManageQuestion = ({
   const handleCloseAddFromQuesBank = () => {
     setOpenAddFromQuesBank(false);
   };
+  useEffect(() => {
+    // Function to close dropdown when clicked outside
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpenEvaluationCourseSelection(false);
+      }
+    };
 
+    // Adding event listener when component mounts
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // Cleaning up event listener when component unmounts
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   //
   const [isOpenEvaluationCourseSelection, setIsOpenEvaluationCourseSelection] =
     useState(false);
@@ -234,6 +252,7 @@ const ManageQuestion = ({
   };
 
   //
+
   const [addQues, setAddQues] = useState(false);
 
   //
@@ -257,7 +276,7 @@ const ManageQuestion = ({
       // Log the updated quizObject (you can remove this in production)
       console.log(updatedQuizObject);
       await delete updatedQuizObject?._id;
-
+      Loading();
       const newTask = await axios.put(
         `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/quizes/taskId/${quizData?._id}`,
         updatedQuizObject
@@ -266,9 +285,13 @@ const ManageQuestion = ({
 
       if (newTask?.data?.result?.acknowledged) {
         toast.success("Question Added Successfully!");
+        Loading().close();
+        setOpenAddFromQuesBank(false);
       }
+      // setAddQues(false);
     } else {
       console.error(`Batch with batchId ${batchId} not found.`);
+      toast.error("Please select batch!");
     }
   };
 
@@ -278,7 +301,8 @@ const ManageQuestion = ({
       selectedBatchForAddingQuestion?._id,
       selectedOptionsQuestionFromQuesBank
     );
-    setAddQues(false);
+    setSelectedBatchForAddingQuestion({});
+    setSelectedOptionsQuestionFromQuesBank([]);
   };
 
   const { id } = useParams();
@@ -290,6 +314,21 @@ const ManageQuestion = ({
   const [questionBankQuestions, setQuestionBankQuestions] = useState([]);
   const [selectedBatchForAddingQuestion, setSelectedBatchForAddingQuestion] =
     useState({});
+  const [selectedBatchForShowingQuestion, setSelectedBatchForShowingQuestion] =
+    useState({});
+  const [questionsForSelectedBatch, setQuestionsForSelectedBatch] = useState(
+    []
+  );
+
+  useEffect(() => {
+    if (quizData?.questions[0]) {
+      const findBatch = batchesData?.find(
+        (item) => item?._id === quizData?.questions[0]?.batchId
+      );
+      setSelectedBatchForShowingQuestion(findBatch);
+      setQuestionsForSelectedBatch(quizData?.questions[0]?.questions);
+    }
+  }, [quizData, batchesData]);
 
   useEffect(() => {
     if (userInfo?.organizationId)
@@ -303,10 +342,22 @@ const ManageQuestion = ({
   }, [userInfo?.organizationId]);
 
   console.log(questionBankQuestions);
+  const [expandedIndex, setExpandedIndex] = useState(null);
+
+  const handleToggleRow = (index) => {
+    if (expandedIndex === index) {
+      setExpandedIndex(null); // Close the currently expanded row
+    } else {
+      setExpandedIndex(index); // Expand the clicked row
+    }
+  };
+
+  console.log(selectedBatchForShowingQuestion, questionsForSelectedBatch);
 
   return (
     <div>
-      {/* <Layout>
+      <>
+        {/* <Layout>
         <div className="text-[#3E4DAC] text-[26px] font-bold  py-[35px] ps-[40px]">
           <p>Manage Quiz in Topic 1</p>
         </div>
@@ -373,6 +424,7 @@ const ManageQuestion = ({
             Evaluation Parameter
           </Link>
         </div> */}
+      </>
 
       {selectedTab === "Questions" && !showQuestionForm && (
         <div className="mx-10 my-20">
@@ -394,10 +446,10 @@ const ManageQuestion = ({
                 </div>
 
                 {!allSelect && (
-                  <div className=" ">
+                  <div ref={dropdownRef} className=" ">
                     <div
                       onClick={toggleDropdownCourseSelection}
-                      className="custom-dropdown flex justify-between items-center gap-2  h-[40px]  px-2 text-base text-[#fff] bg-[#3E4DAC] font-bold"
+                      className="custom-dropdown flex justify-between items-center gap-2 cursor-pointer h-[40px]  px-2 text-base text-[#fff] bg-[#3E4DAC] font-bold"
                       style={{
                         borderRadius: "8px",
                         border: "1px solid #B7B7B7",
@@ -420,7 +472,7 @@ const ManageQuestion = ({
                     </div>
                     {isOpenEvaluationCourseSelection && (
                       <div
-                        className="dropdown-menu bg-[black] text-[#fff] mt-1 flex gap-3 flex-col p-3"
+                        className="dropdown-menu bg-[black] absolute text-[#fff] mt-1 flex gap-3 flex-col p-3"
                         style={{
                           borderRadius: "8px",
                           border: "1px solid #B7B7B7",
@@ -445,7 +497,7 @@ const ManageQuestion = ({
                               <form className=" mx-10 text-black w-full">
                                 <div className="flex gap-10">
                                   <div className="">
-                                    <div className=" ">
+                                    {/* <div className=" ">
                                       <input
                                         type="radio"
                                         id="Calculated"
@@ -548,7 +600,7 @@ const ManageQuestion = ({
                                       >
                                         Calculated Multichoice
                                       </label>
-                                    </div>
+                                    </div> */}
                                     <div className="mt-6">
                                       <input
                                         type="radio"
@@ -566,7 +618,7 @@ const ManageQuestion = ({
                                         Multiple choice
                                       </label>
                                     </div>
-                                    <div className="mt-6">
+                                    {/* <div className="mt-6">
                                       <input
                                         type="radio"
                                         id="Short answer"
@@ -616,7 +668,7 @@ const ManageQuestion = ({
                                       >
                                         Select missing words
                                       </label>
-                                    </div>
+                                    </div> */}
                                   </div>
                                 </div>
 
@@ -641,214 +693,6 @@ const ManageQuestion = ({
                                 </div>
                               </form>
                             </DialogLayoutForFromControl>
-                            {/* <BootstrapDialogNewQues
-                              onClose={handleCloseNewQuesType}
-                              aria-labelledby="customized-dialog-title"
-                              open={openNewQuesType}
-                            >
-                              <BootstrapDialogTitleNewQuesType
-                                id="customized-dialog-title"
-                                onClose={handleCloseNewQuesType}
-                              >
-                                <p className="text-[22px] font-bold text-[#3E4DAC]">
-                                  Question Type
-                                </p>
-                              </BootstrapDialogTitleNewQuesType>
-                              <DialogContent dividers>
-                                <Typography gutterBottom>
-                                  <form className=" mx-10">
-                                    <div className="flex gap-10">
-                                      <div className="">
-                                        <div className=" ">
-                                          <input
-                                            type="radio"
-                                            id="Calculated"
-                                            name="fav_language"
-                                            value="Calculated"
-                                            onChange={(e) =>
-                                              setQuestionType(e.target.value)
-                                            }
-                                          />
-                                          <label
-                                            className="ms-6 text-sm font-semibold"
-                                            for="Calculated"
-                                          >
-                                            Calculated
-                                          </label>
-                                        </div>
-                                        <div className="mt-6">
-                                          <input
-                                            type="radio"
-                                            id="Matching"
-                                            name="fav_language"
-                                            value="Matching"
-                                            onChange={(e) =>
-                                              setQuestionType(e.target.value)
-                                            }
-                                          />
-                                          <label
-                                            className="ms-6 text-sm font-semibold"
-                                            for="Matching"
-                                          >
-                                            Matching
-                                          </label>
-                                        </div>
-                                        <div className="mt-6">
-                                          <input
-                                            type="radio"
-                                            id="Numerical"
-                                            name="fav_language"
-                                            value="Numerical"
-                                            onChange={(e) =>
-                                              setQuestionType(e.target.value)
-                                            }
-                                          />
-                                          <label
-                                            className="ms-6 text-sm font-semibold"
-                                            for="Numerical"
-                                          >
-                                            Numerical
-                                          </label>
-                                        </div>
-                                        <div className="mt-6">
-                                          <input
-                                            type="radio"
-                                            id="Essay"
-                                            name="fav_language"
-                                            value="Essay"
-                                            onChange={(e) =>
-                                              setQuestionType(e.target.value)
-                                            }
-                                          />
-                                          <label
-                                            className="ms-6 text-sm font-semibold"
-                                            for="Essay"
-                                          >
-                                            Essay
-                                          </label>
-                                        </div>
-                                        <div className="mt-6">
-                                          <input
-                                            type="radio"
-                                            id="Drag and drop into text"
-                                            name="fav_language"
-                                            value="Drag and drop into text"
-                                            onChange={(e) =>
-                                              setQuestionType(e.target.value)
-                                            }
-                                          />
-                                          <label
-                                            className="ms-6 text-sm font-semibold"
-                                            for="Drag and drop into text"
-                                          >
-                                            Drag and drop into text
-                                          </label>
-                                        </div>
-                                      </div>
-                                      <div className="">
-                                        <div className="">
-                                          <input
-                                            type="radio"
-                                            id="Calculated Multichoice"
-                                            name="fav_language"
-                                            value="Calculated Multichoice"
-                                            onChange={(e) =>
-                                              setQuestionType(e.target.value)
-                                            }
-                                          />
-                                          <label
-                                            className="ms-6 text-sm font-semibold"
-                                            for="Calculated Multichoice"
-                                          >
-                                            Calculated Multichoice
-                                          </label>
-                                        </div>
-                                        <div className="mt-6">
-                                          <input
-                                            type="radio"
-                                            id="Multiple choice"
-                                            name="fav_language"
-                                            value="Multiple choice"
-                                            onChange={(e) =>
-                                              setQuestionType(e.target.value)
-                                            }
-                                          />
-                                          <label
-                                            className="ms-6 text-sm font-semibold"
-                                            for="Multiple choice"
-                                          >
-                                            Multiple choice
-                                          </label>
-                                        </div>
-                                        <div className="mt-6">
-                                          <input
-                                            type="radio"
-                                            id="Short answer"
-                                            name="fav_language"
-                                            value="Short answer"
-                                            onChange={(e) =>
-                                              setQuestionType(e.target.value)
-                                            }
-                                          />
-                                          <label
-                                            className="ms-6 text-sm font-semibold"
-                                            for="Short answer"
-                                          >
-                                            Short answer
-                                          </label>
-                                        </div>
-                                        <div className="mt-6">
-                                          <input
-                                            type="radio"
-                                            id="True/False"
-                                            name="fav_language"
-                                            value="True/False"
-                                            onChange={(e) =>
-                                              setQuestionType(e.target.value)
-                                            }
-                                          />
-                                          <label
-                                            className="ms-6 text-sm font-semibold"
-                                            for="True/False"
-                                          >
-                                            True/False
-                                          </label>
-                                        </div>
-                                        <div className="mt-6">
-                                          <input
-                                            type="radio"
-                                            id="Select missing words"
-                                            name="fav_language"
-                                            value="Select missing words"
-                                            onChange={(e) =>
-                                              setQuestionType(e.target.value)
-                                            }
-                                          />
-                                          <label
-                                            className="ms-6 text-sm font-semibold"
-                                            for="True/False"
-                                          >
-                                            Select missing words
-                                          </label>
-                                        </div>
-                                      </div>
-                                    </div>
-
-                                    <div className="flex justify-center mt-10">
-                                      <button
-                                        onClick={(e) => {
-                                          e.preventDefault();
-                                          console.log(questionType);
-                                        }}
-                                        className="px-10 py-2 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
-                                      >
-                                        Add
-                                      </button>
-                                    </div>
-                                  </form>
-                                </Typography>
-                              </DialogContent>
-                            </BootstrapDialogNewQues> */}
                           </div>
                         </div>
 
@@ -880,8 +724,12 @@ const ManageQuestion = ({
                                     <select
                                       required
                                       className="w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold focus:outline-0"
-                                      name="courseCategory"
-                                      // id="option"
+                                      name="selectBatch"
+                                      id="selectBatch"
+                                      // defaultValue={
+                                      //   selectedBatchForAddingQuestion?.batchName
+                                      // }
+                                      value={"Select Batch"}
                                       onChange={(e) => {
                                         const selectedBatch = batchesData?.find(
                                           (item) => item?._id === e.target.value
@@ -899,7 +747,7 @@ const ManageQuestion = ({
                                           if (findBatch) {
                                             console.log("batch question found");
                                             setSelectedOptionsQuestionFromQuesBank(
-                                              quizData?.questions?.questions
+                                              findBatch?.questions
                                             );
                                           } else {
                                             console.log(
@@ -911,6 +759,9 @@ const ManageQuestion = ({
                                                 selectedBatch?.batchName,
                                               questions: [],
                                             });
+                                            setSelectedOptionsQuestionFromQuesBank(
+                                              []
+                                            );
                                           }
                                         } else {
                                           quizData.questions = [];
@@ -923,7 +774,9 @@ const ManageQuestion = ({
                                       }}
                                     >
                                       <option className="hidden">
-                                        Select Batch
+                                        {selectedBatchForAddingQuestion?.batchName
+                                          ? selectedBatchForAddingQuestion?.batchName
+                                          : "Select Batch"}
                                       </option>
                                       {batchesData?.map((option, index) => {
                                         if (
@@ -945,7 +798,7 @@ const ManageQuestion = ({
                                   </div>
                                 </div>
 
-                                <div className="flex ">
+                                {/*   <div className="flex ">
                                   {!allSelectFromQuesBank && (
                                     <div className="">
                                       <div>
@@ -995,7 +848,7 @@ const ManageQuestion = ({
                                       </label>
                                     </div>
                                   )}
-                                </div>
+                                </div> */}
                               </div>
 
                               <div className="">
@@ -1023,6 +876,100 @@ const ManageQuestion = ({
                                       </thead>
                                       <tbody>
                                         {questionBankQuestions?.map(
+                                          (question, index) => (
+                                            <React.Fragment key={index}>
+                                              <tr
+                                                className={`${
+                                                  index % 2 === 0
+                                                    ? "bg-[#F2FFFA]"
+                                                    : ""
+                                                }`}
+                                              >
+                                                <td className="py-5 text-center">
+                                                  <input
+                                                    type="checkbox"
+                                                    id={`question-${question?._id}`}
+                                                    name={`question-${question?._id}`}
+                                                    value={`${question?._id}`}
+                                                    checked={selectedOptionsQuestionFromQuesBank?.includes(
+                                                      `${question?._id}`
+                                                    )}
+                                                    onChange={
+                                                      handleOptionChangeQuestionFromQuesBank
+                                                    }
+                                                  />
+                                                  <label
+                                                    htmlFor={`question-${
+                                                      index + 1
+                                                    }`}
+                                                    className="ml-2"
+                                                  >
+                                                    {index + 1}
+                                                  </label>
+                                                </td>
+                                                <td className="text-center">
+                                                  {question?.questionName}
+                                                </td>
+                                                <td className="text-center">
+                                                  {question.questionType}
+                                                </td>
+                                                <td className="text-center">
+                                                  {question.defaultMarks}
+                                                </td>
+                                                <td className="text-center">
+                                                  <img
+                                                    onClick={() =>
+                                                      handleToggleRow(index)
+                                                    }
+                                                    className="mx-auto cursor-pointer"
+                                                    src={Vector}
+                                                    alt="Preview"
+                                                  />
+                                                </td>
+                                              </tr>
+                                              {expandedIndex === index && (
+                                                <tr className="border ">
+                                                  <td
+                                                    colSpan="5"
+                                                    className="p-5"
+                                                  >
+                                                    <p className="text-lg font-medium mb-2">
+                                                      {question?.questionName}
+                                                    </p>
+                                                    <div className="grid grid-cols-2">
+                                                      {question?.options?.map(
+                                                        (option) => (
+                                                          <>
+                                                            <p>
+                                                              {" "}
+                                                              Answer Formula :{" "}
+                                                              {
+                                                                option?.answerFormula
+                                                              }
+                                                            </p>
+                                                            <p>
+                                                              {" "}
+                                                              Answer :{" "}
+                                                              {option?.answer}
+                                                            </p>
+                                                            <p>
+                                                              {" "}
+                                                              Feedback :{" "}
+                                                              {option?.feedback}
+                                                            </p>
+                                                          </>
+                                                        )
+                                                      )}
+                                                    </div>
+                                                    {/* Content to display when row is expanded */}
+                                                    {/* You can add more details here */}
+                                                  </td>
+                                                </tr>
+                                              )}
+                                            </React.Fragment>
+                                          )
+                                        )}
+                                        {/*  {questionBankQuestions?.map(
                                           (question, index) => (
                                             <tr
                                               key={index}
@@ -1072,7 +1019,7 @@ const ManageQuestion = ({
                                               </td>
                                             </tr>
                                           )
-                                        )}
+                                        )} */}
                                       </tbody>
                                     </table>
                                   </div>
@@ -1099,7 +1046,7 @@ const ManageQuestion = ({
                 )}
               </div>
 
-              <div className="flex justify-between mt-20 mb-10">
+              {/* <div className="flex justify-between mt-20 mb-10">
                 <div className="flex ">
                   {!allSelect && (
                     <div className="flex  p-2">
@@ -1141,6 +1088,68 @@ const ManageQuestion = ({
                     </div>
                   )}
                 </div>
+              </div> */}
+
+              <div className=" my-10 flex items-center">
+                <div className="flex items-center gap-4">
+                  <p className="text-lg font-semibold">Select Batch</p>
+                </div>
+
+                <div className=" flex gap-2  ms-6 border rounded-md  h-[40px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]  ">
+                  <select
+                    required
+                    className="w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold focus:outline-0"
+                    name="selectBatchForShowingQuestion"
+                    id="selectBatchForShowingQuestion"
+                    // defaultValue={
+                    //   selectedBatchForAddingQuestion?.batchName
+                    // }
+                    value={"Select Batch"}
+                    onChange={(e) => {
+                      const selectedBatch = batchesData?.find(
+                        (item) => item?._id === e.target.value
+                      );
+                      setSelectedBatchForShowingQuestion(selectedBatch);
+                      if (quizData?.questions) {
+                        const findBatch = quizData?.questions?.find(
+                          (item) => item?.batchId === selectedBatch?._id
+                        );
+                        if (findBatch) {
+                          console.log("batch question found");
+                          setQuestionsForSelectedBatch(findBatch?.questions);
+                        } else {
+                          console.log("batch question not found");
+                          setQuestionsForSelectedBatch([]);
+                        }
+                      } else {
+                        quizData.questions = [];
+                        quizData.questions.push({
+                          batchId: selectedBatch?._id,
+                          batchName: selectedBatch?.batchName,
+                          questions: [],
+                        });
+                      }
+                    }}
+                  >
+                    <option className="hidden">
+                      {selectedBatchForShowingQuestion?.batchName
+                        ? selectedBatchForShowingQuestion?.batchName
+                        : "Select Batch"}
+                    </option>
+                    {batchesData?.map((option, index) => {
+                      if (
+                        selectedBatches?.find(
+                          (item) => item?.batchId === option?._id
+                        )
+                      )
+                        return (
+                          <option className="" value={option?._id}>
+                            {option?.batchName}
+                          </option>
+                        );
+                    })}
+                  </select>
+                </div>
               </div>
 
               <div className="flex justify-between text-lg font-medium mb-10">
@@ -1153,9 +1162,9 @@ const ManageQuestion = ({
                 <div className="flex items-center gap-2">
                   <p>
                     Total Marks/Points :{" "}
-                    <span className="text-[#3E4DAC]">100</span>
+                    <span className="text-[#3E4DAC]">{quizData?.points}</span>
                   </p>
-                  <img src={bxseditalt} alt="bxseditalt" />
+                  {/* <img src={bxseditalt} alt="bxseditalt" /> */}
                 </div>
               </div>
 
@@ -1168,12 +1177,60 @@ const ManageQuestion = ({
                         <th>Question Name</th>
                         <th>Question Type</th>
                         <th>Marks</th>
-                        <th>Edit</th>
-                        <th>Delete</th>
+                        {/* <th>Edit</th>
+                        <th>Delete</th> */}
                       </tr>
                     </thead>
                     <tbody className="">
-                      <tr className="bg-[#F2FFFA] ">
+                      {questionBankQuestions?.map((question, index) => {
+                        if (
+                          questionsForSelectedBatch?.includes(question?._id)
+                        ) {
+                          console.log(question);
+                          return (
+                            <tr
+                              className={`${
+                                index % 2 === 0 ? "bg-[#F2FFFA]" : ""
+                              }`}
+                            >
+                              <td className="flex justify-center py-5 ">
+                                {allSelect && (
+                                  <input
+                                    className="me-3"
+                                    type="checkbox"
+                                    id="1"
+                                    name="option"
+                                    value="1"
+                                    checked={selectedOptionsQuestion.includes(
+                                      "1"
+                                    )}
+                                    onChange={handleOptionChangeQuestion}
+                                  />
+                                )}
+
+                                <p>{index + 1}</p>
+                              </td>
+                              <td className="text-center">
+                                {question?.questionName}
+                              </td>
+                              <td className="text-center">
+                                {question?.questionType}
+                              </td>
+                              <td className="text-center">
+                                {question?.defaultMarks}
+                              </td>
+                              {/* <td className="flex items-center justify-center">
+                                <img src={bxseditalt} alt="bxseditalt" />
+                              </td>
+
+                              <td className="">
+                                <img src={trash} alt="trash" />
+                              </td> */}
+                            </tr>
+                          );
+                        }
+                      })}
+                      {/* <tr className="bg-[#F2FFFA] ">
                         <td className="flex justify-center py-5 ">
                           {allSelect && (
                             <input
@@ -1253,7 +1310,7 @@ const ManageQuestion = ({
                         <td className="">
                           <img src={trash} alt="trash" />
                         </td>
-                      </tr>
+                      </tr> */}
                     </tbody>
                   </table>
                 </div>
@@ -1266,6 +1323,7 @@ const ManageQuestion = ({
                 <AddingEditingMultiChoQues
                   addQues={addQues}
                   setAddQues={setAddQues}
+                  setOpenNewQuesType={setOpenNewQuesType}
                 />
               )}
               {/* <div>

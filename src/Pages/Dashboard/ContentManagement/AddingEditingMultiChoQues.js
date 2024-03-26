@@ -11,7 +11,7 @@ import toast from "react-hot-toast";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import TextEditor from "../../Shared/TextEditor/TextEditor";
 
-const AddingEditingMultiChoQues = ({ addQues, setAddQues }) => {
+const AddingEditingMultiChoQues = ({ addQues, setAddQues,setOpenNewQuesType }) => {
   const [selectedTab, setSelectedTab] = useState("addingEditingMultiChoQues");
   const { userInfo } = useContext(AuthContext);
 
@@ -94,7 +94,7 @@ const AddingEditingMultiChoQues = ({ addQues, setAddQues }) => {
     const questionName = form.questionName?.value;
 
     const defaultMarks = form.defaultMarks?.value;
-    const category = form.category?.value;
+   // const category = form.category?.value;
     const questionStatus = form.questionStatus?.value;
 
     const addQuestion = {
@@ -103,7 +103,7 @@ const AddingEditingMultiChoQues = ({ addQues, setAddQues }) => {
       defaultMarks,
       shuffleTheChoices: isShuffleChecked,
       oneOrMultipleOption: selectedOneOrMultipleOption,
-      category,
+      //category,
       generalFeedback,
       questionStatus,
       options,
@@ -120,6 +120,11 @@ const AddingEditingMultiChoQues = ({ addQues, setAddQues }) => {
     console.log(newQuestion, addQuestion);
   };
 
+  const backButtonHandle = ()=>{
+    setOpenNewQuesType(false);
+    setAddQues(false);
+  }
+
   return (
     <div>
       {/* <Layout> */}
@@ -129,7 +134,7 @@ const AddingEditingMultiChoQues = ({ addQues, setAddQues }) => {
             Adding/Editing Multiple choice Question{" "}
           </p>
           <button
-            onClick={() => setAddQues(false)}
+            onClick={backButtonHandle}
             className="bg-[#3E4DAC] flex  px-4 py-2 rounded-lg text-[#fff]"
           >
             <img src={back} alt="back" />
@@ -265,7 +270,7 @@ const AddingEditingMultiChoQues = ({ addQues, setAddQues }) => {
               </div>
 
               <div>
-                <div className="">
+               {/*  <div className="">
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
                     <p className="font-bold text-lg me-[36px]">Category</p>
@@ -328,10 +333,10 @@ const AddingEditingMultiChoQues = ({ addQues, setAddQues }) => {
                       </div>
                     )}
                   </div>
-                </div>
+                </div> */}
 
-                <div className="mt-20">
-                  <div className="mt-20">
+                <div className="">
+                  <div className="">
                     <div className="flex items-center gap-4">
                       <p className="h-2 w-2 bg-black rounded-full"></p>
                       <p className="font-bold text-lg me-[36px]">
