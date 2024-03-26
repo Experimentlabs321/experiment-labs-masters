@@ -236,9 +236,9 @@ const Profile = () => {
             receiptId: course?.receiptId
           }
         );
-        fetchProfile();
-        fetchCourseDetails();
-        fetchWeekDetails();
+        await fetchProfile();
+        await fetchCourseDetails();
+        await fetchWeekDetails();
         Loading().close();
         Swal.fire({
           title: "Refunded!",
@@ -412,28 +412,31 @@ const Profile = () => {
                 );
               })} */}
               {courseData.map((data, index) => {
-                // const startDate = new Date(data?.courseStartingDate);
-                const endDate = new Date(data?.courseEndingDate);
+
+                // const endDate = new Date(data?.courseEndingDate);
                 const isExpanded = !!expandedRows[data._id];
                 const courseWeekData = weekData.find((weekArray) => weekArray[0]?.courseId === data._id);
                 const { course, batch } = data;
+                const startDate = new Date(course?.enrollDate);
 
                 const currentDate = new Date();
-                const specificDate = new Date(batch?.batchStartDate); // Example: January 1, 2023
 
                 // Calculate the difference in milliseconds
-                const timeDifference = currentDate - specificDate;
+                const timeDifference = currentDate - startDate;
 
                 // Convert milliseconds to days
                 const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-                const courseDuration = +(data?.expirationDay || 0)
+                const courseDuration = +(data?.expirationDay || "0")
                 const expired = daysDifference > courseDuration;
 
-                const expirationDate = new Date(specificDate.getTime() + courseDuration * 24 * 60 * 60 * 1000);
+                let displayExpiration = "";
+                if (courseDuration !== 0) {
+                  const expirationDate = new Date(startDate.getTime() + courseDuration * 24 * 60 * 60 * 1000);
 
-                // Format the expiration date back to a string if necessary
-                // This example returns the date as YYYY-MM-DD
-                const displayExpiration = expirationDate.toISOString().split('T')[0];
+                  // Format the expiration date back to a string if necessary
+                  // This example returns the date as YYYY-MM-DD
+                  displayExpiration = expirationDate.toISOString().split('T')[0];
+                }
 
                 console.log("My Console ==============>", data, expired);
                 return (
@@ -452,10 +455,10 @@ const Profile = () => {
                         {data?.organization?.organizationName || "Not Available"}
                       </td>
                       <td className="py-4 px-6 border-b text-left">
-                        {batch?.batchStartDate || "Not Available"}
+                        {course?.enrollDate.slice(0, 10) || "Not Available"}
                       </td>
                       <td className="py-4 px-6 border-b text-left">
-                        {displayExpiration || "Not Available"}
+                        {displayExpiration || "No Expiration"}
                       </td>
                       <td className="py-4 px-6 border-b text-left">
                         {batch.batchName || "Not Available"}
