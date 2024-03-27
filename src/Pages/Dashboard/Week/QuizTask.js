@@ -391,7 +391,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
     if (findCourse) {
       axios
         .get(
-          `http://localhost:5000/api/v1/questionBank/quizId/${taskData?._id}/batchId/${findCourse?.batchId}`
+          `${process.env.REACT_APP_SERVER_API}/api/v1/questionBank/quizId/${taskData?._id}/batchId/${findCourse?.batchId}`
         )
         .then((response) => {
           if (response?.data) setQuizQuestions(response?.data);

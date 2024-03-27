@@ -11,7 +11,11 @@ import toast from "react-hot-toast";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import TextEditor from "../../Shared/TextEditor/TextEditor";
 
-const AddingEditingMultiChoQues = ({ addQues, setAddQues,setOpenNewQuesType }) => {
+const AddingEditingMultiChoQues = ({
+  addQues,
+  setAddQues,
+  setOpenNewQuesType,
+}) => {
   const [selectedTab, setSelectedTab] = useState("addingEditingMultiChoQues");
   const { userInfo } = useContext(AuthContext);
 
@@ -94,7 +98,7 @@ const AddingEditingMultiChoQues = ({ addQues, setAddQues,setOpenNewQuesType }) =
     const questionName = form.questionName?.value;
 
     const defaultMarks = form.defaultMarks?.value;
-   // const category = form.category?.value;
+    // const category = form.category?.value;
     const questionStatus = form.questionStatus?.value;
 
     const addQuestion = {
@@ -113,17 +117,17 @@ const AddingEditingMultiChoQues = ({ addQues, setAddQues,setOpenNewQuesType }) =
     };
 
     const newQuestion = await axios.post(
-      `http://localhost:5000/api/v1/questionBank/addQuestion`,
+      `${process.env.REACT_APP_SERVER_API}/api/v1/questionBank/addQuestion`,
       addQuestion
     );
 
     console.log(newQuestion, addQuestion);
   };
 
-  const backButtonHandle = ()=>{
+  const backButtonHandle = () => {
     setOpenNewQuesType(false);
     setAddQues(false);
-  }
+  };
 
   return (
     <div>
@@ -270,7 +274,7 @@ const AddingEditingMultiChoQues = ({ addQues, setAddQues,setOpenNewQuesType }) =
               </div>
 
               <div>
-               {/*  <div className="">
+                {/*  <div className="">
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
                     <p className="font-bold text-lg me-[36px]">Category</p>
