@@ -571,9 +571,8 @@ const ManageQuestion = ({
                       <div className="select-option">
                         <img src={chevronright} alt="chevronRight" />
                         <i
-                          className={`dropdown-arrow ${
-                            isOpenEvaluationCourseSelection ? "open" : ""
-                          }`}
+                          className={`dropdown-arrow ${isOpenEvaluationCourseSelection ? "open" : ""
+                            }`}
                         ></i>
                       </div>
                     </div>
@@ -986,11 +985,10 @@ const ManageQuestion = ({
                                           (question, index) => (
                                             <React.Fragment key={index}>
                                               <tr
-                                                className={`${
-                                                  index % 2 === 0
+                                                className={`${index % 2 === 0
                                                     ? "bg-[#F2FFFA]"
                                                     : ""
-                                                }`}
+                                                  }`}
                                               >
                                                 <td className="py-5 text-center">
                                                   <input
@@ -1002,7 +1000,7 @@ const ManageQuestion = ({
                                                       selectedOptionsQuestionFromQuesBank?.find(
                                                         (item) =>
                                                           item?.questionId ===
-                                                            question?._id &&
+                                                          question?._id &&
                                                           item?.batches?.find(
                                                             (b) =>
                                                               b ===
@@ -1016,9 +1014,8 @@ const ManageQuestion = ({
                                                     }
                                                   />
                                                   <label
-                                                    htmlFor={`question-${
-                                                      index + 1
-                                                    }`}
+                                                    htmlFor={`question-${index + 1
+                                                      }`}
                                                     className="ml-2"
                                                   >
                                                     {index + 1}
@@ -1191,11 +1188,31 @@ const ManageQuestion = ({
                 </div>
               </div> */}
 
-              <div className=" my-10 flex items-center">
+              <div className=" mt-10 flex items-center">
                 <div className="flex items-center gap-4">
-                  <p className="text-lg font-semibold">Select Batch</p>
+                  <p className="text-lg font-semibold">Select Batch :</p>
                 </div>
 
+                
+
+                {/*   <div className=" flex gap-2  ms-6 border rounded-md  h-[40px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]  ">
+                  <select
+                    
+                    className="w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold focus:outline-0"
+                    name="selectBatchForShowingQuestion"
+                    id="selectBatchForShowingQuestion"
+                  
+                  
+                  
+                  >
+                    <option className="hidden">
+                      
+                    </option>
+                 
+                  </select>
+                </div> */}
+              </div>
+              <div className="my-5">
                 <ul className="ms-6 flex gap-4 flex-wrap ">
                   {batchesData?.map((option, index) => {
                     if (
@@ -1230,61 +1247,6 @@ const ManageQuestion = ({
                   })}
                 </ul>
 
-                <div className=" flex gap-2  ms-6 border rounded-md  h-[40px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]  ">
-                  <select
-                    required
-                    className="w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold focus:outline-0"
-                    name="selectBatchForShowingQuestion"
-                    id="selectBatchForShowingQuestion"
-                    // defaultValue={
-                    //   selectedBatchForAddingQuestion?.batchName
-                    // }
-                    value={"Select Batch"}
-                    onChange={(e) => {
-                      const selectedBatch = batchesData?.find(
-                        (item) => item?._id === e.target.value
-                      );
-                      setSelectedBatchForShowingQuestion(selectedBatch);
-                      if (quizData?.questions) {
-                        const findBatch = quizData?.questions?.find(
-                          (item) => item?.batchId === selectedBatch?._id
-                        );
-                        if (findBatch) {
-                          console.log("batch question found");
-                          setQuestionsForSelectedBatch(findBatch?.questions);
-                        } else {
-                          console.log("batch question not found");
-                          setQuestionsForSelectedBatch([]);
-                        }
-                      } else {
-                        quizData.questions = [];
-                        quizData.questions.push({
-                          batchId: selectedBatch?._id,
-                          batchName: selectedBatch?.batchName,
-                          questions: [],
-                        });
-                      }
-                    }}
-                  >
-                    <option className="hidden">
-                      {selectedBatchForShowingQuestion?.batchName
-                        ? selectedBatchForShowingQuestion?.batchName
-                        : "Select Batch"}
-                    </option>
-                    {batchesData?.map((option, index) => {
-                      if (
-                        selectedBatches?.find(
-                          (item) => item?.batchId === option?._id
-                        )
-                      )
-                        return (
-                          <option className="" value={option?._id}>
-                            {option?.batchName}
-                          </option>
-                        );
-                    })}
-                  </select>
-                </div>
               </div>
 
               <div className="flex justify-between text-lg font-medium mb-10">
