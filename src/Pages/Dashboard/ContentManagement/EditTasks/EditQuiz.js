@@ -79,7 +79,7 @@ const EditQuiz = () => {
         `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${chapter?.courseId}`
       )
       .then((response) => {
-        setBatchesData(response?.data);
+        if (!batchesData[0]) setBatchesData(response?.data);
       })
       .catch((error) => console.error(error));
   }, [chapter]);
