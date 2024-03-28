@@ -18,6 +18,7 @@ const SalesAndRevenue = () => {
   const [students, setStudents] = useState();
   const [selectedFilter, setSelectedFilter] = useState("Last 30 Days");
   const [totalStudents, setTotalStudents] = useState();
+  const [bundles, setBundles] = useState();
   const [totalEnrolledStudents, setTotalEnrolledStudents] = useState();
   const [totalRevenue, setTotalRevenue] = useState();
   const [paidStudents, setPaidStudents] = useState();
@@ -63,6 +64,20 @@ const SalesAndRevenue = () => {
   }, [selectedCourse]);
 
   useEffect(() => {
+    if (userInfo.organizationId)
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/bundles/organizationId/${userInfo.organizationId}`
+        )
+        .then((response) => {
+          setBundles(response?.data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+  }, [userInfo.organizationId]);
+
+  useEffect(() => {
     axios
       .get(
         `${process.env.REACT_APP_SERVER_API}/api/v1/stats/organizationId/${userInfo?.organizationId}`
@@ -77,7 +92,7 @@ const SalesAndRevenue = () => {
       });
   }, [userInfo]);
 
-  // console.log(overViewCount);
+  console.log(filteredStudents);
 
   useEffect(() => {
     axios
@@ -257,7 +272,7 @@ const SalesAndRevenue = () => {
     setCurrentPage(page);
   };
 
-  console.log(courses);
+  console.log(bundles);
 
   return (
     <div>
@@ -429,10 +444,9 @@ const SalesAndRevenue = () => {
                             return (
                               <div
                                 onClick={() => handleBatches(batch, index)}
-                                className={`px-2 py-1 border-2 rounded-full cursor-pointer ${
-                                  selectedBatches?.includes(batch._id) &&
+                                className={`px-2 py-1 border-2 rounded-full cursor-pointer ${selectedBatches?.includes(batch._id) &&
                                   "bg-[#39249957]"
-                                }`}
+                                  }`}
                                 key={batchIndex}
                               >
                                 {batch.batchName}
@@ -538,12 +552,18 @@ const SalesAndRevenue = () => {
                       student?.paidAt
                     )?.toLocaleDateString();
 
-                    const courseData = courses?.find(
-                      (item) => item?._id === student?.courseId
-                    );
-                    const batchData = courseData?.batches?.find(
-                      (item) => item?._id === student?.batchId
-                    );
+                    let courseData, batchData;
+                    let courseName, batchName;
+
+                    if (student?.courses?.length === 1) {
+                      courseData = courses?.find(
+                        (item) => item?._id === student?.courses[0]?.courseId
+                      );
+                      batchData = courseData?.batches?.find(
+                        (item) => item?._id === student?.courses[0]?.batchId
+                      );
+                    } else {
+                    }
 
                     return (
                       <tr
@@ -664,15 +684,29 @@ const SalesAndRevenue = () => {
                     const formattedDate = new Date(
                       student?.paidAt
                     )?.toLocaleDateString();
-
+                    let courseOrBundleName = "";
                     const courseData = courses?.find(
                       (item) => item?._id === student?.courseId
                     );
                     const batchData = courseData?.batches?.find(
                       (item) => item?._id === student?.batchId
                     );
+                    const bundlesData = bundles?.find(
+                      (item) => item?._id === student?.bundleId
+                    );
                     console.log(student);
+                    console.log(bundlesData?.bundleFullName, courseData?.courseFullName);
+                    if(courseData?.courseFullName){
+                      console.log(courseData?.courseFullName)
+                      courseOrBundleName= courseData.courseFullName;
+                    }
+                    else {
+                      courseOrBundleName= bundles?.find(
+                        (item) => item?._id === student?.bundleId
+                      )?.bundleFullName;
 
+                      console.log(courseOrBundleName)
+                    }
                     return (
                       <tr
                         key={student?._id}
@@ -682,7 +716,7 @@ const SalesAndRevenue = () => {
                       >
                         <td className="py-4 px-6 border-b text-left whitespace-nowrap">
                           <p to={`/profile/${student?.payer?.email}`}>
-                            {student?.payer?.name}
+                            {student?.payer?.name} some
                           </p>
                         </td>
                         <td className="py-4 px-6 border-b text-left whitespace-nowrap">
@@ -701,8 +735,10 @@ const SalesAndRevenue = () => {
                           </p>
                         </td>
                         <td className="py-4 px-6 border-b text-left whitespace-nowrap">
-                          <p to={`/profile/${student?.email}`}>
-                            {courseData?.courseFullName}
+                          <p >
+                            {/* {courseData?.courseFullName} */}
+                            {courseOrBundleName}
+
                           </p>
                         </td>
                         <td className="py-4 px-6 border-b text-left whitespace-nowrap">

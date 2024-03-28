@@ -489,14 +489,14 @@ const SalesAndRevenueChart = ({
 
         // Filter paid students for the current course
         let paidStudentsForCourse = paidStudents.filter(
-          (student) => student.courseId === course._id
+          (student) => student?.courses[0]?.courseId === course._id
         );
 
         if (course?.selectedBatches && course?.selectedBatches[0]) {
           console.log("in");
           paidStudentsForCourse = paidStudentsForCourse.filter((student) =>
             course?.selectedBatches?.find(
-              (batch) => batch?._id === student?.batchId
+              (batch) => batch?._id === student?.courses[0]?.batchId
             )
           );
         }

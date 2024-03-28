@@ -10,8 +10,16 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import TextEditor from "../../Shared/TextEditor/TextEditor";
+import Loading from "../../Shared/Loading/Loading";
 
-const AddingEditingMultiChoQues = ({ addQues, setAddQues,setOpenNewQuesType }) => {
+const AddingEditingMultiChoQues = ({
+  addQues,
+  setAddQues,
+  setOpenNewQuesType,
+  selectedBatchesForShowingQuestion,
+  quizData,
+  setQuizData,
+}) => {
   const [selectedTab, setSelectedTab] = useState("addingEditingMultiChoQues");
   const { userInfo } = useContext(AuthContext);
 
@@ -88,13 +96,14 @@ const AddingEditingMultiChoQues = ({ addQues, setAddQues,setOpenNewQuesType }) =
 
   /// handle Submit
   const handleSubmit = async (event) => {
+    Loading();
     event.preventDefault();
     const form = event.target;
 
     const questionName = form.questionName?.value;
 
     const defaultMarks = form.defaultMarks?.value;
-   // const category = form.category?.value;
+    // const category = form.category?.value;
     const questionStatus = form.questionStatus?.value;
 
     const addQuestion = {
@@ -113,17 +122,39 @@ const AddingEditingMultiChoQues = ({ addQues, setAddQues,setOpenNewQuesType }) =
     };
 
     const newQuestion = await axios.post(
-      `http://localhost:5000/api/v1/questionBank/addQuestion`,
+      `${process.env.REACT_APP_SERVER_API}/api/v1/questionBank/addQuestion`,
       addQuestion
     );
 
+    if (newQuestion?.status === 200) {
+      const updatedQuizObject = { ...quizData };
+      updatedQuizObject.questions.push({
+        questionId: newQuestion?.data?.insertedId,
+      });
+      setQuizData(updatedQuizObject);
+      await delete updatedQuizObject?._id;
+      Loading();
+      const newTask = await axios.put(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/quizes/taskId/${quizData?._id}`,
+        updatedQuizObject
+      );
+
+      if (newTask?.data?.result?.acknowledged) {
+        toast.success("Question Added Successfully!");
+        Loading().close();
+        // setOpenAddFromQuesBank(false);
+      }
+    }
+
     console.log(newQuestion, addQuestion);
+    backButtonHandle();
+    Loading().close();
   };
 
-  const backButtonHandle = ()=>{
+  const backButtonHandle = () => {
     setOpenNewQuesType(false);
     setAddQues(false);
-  }
+  };
 
   return (
     <div>
@@ -270,7 +301,7 @@ const AddingEditingMultiChoQues = ({ addQues, setAddQues,setOpenNewQuesType }) =
               </div>
 
               <div>
-               {/*  <div className="">
+                {/*  <div className="">
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
                     <p className="font-bold text-lg me-[36px]">Category</p>

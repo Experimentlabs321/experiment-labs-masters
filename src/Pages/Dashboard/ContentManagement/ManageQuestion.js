@@ -87,29 +87,7 @@ const ManageQuestion = ({
   const [
     selectedOptionsQuestionFromQuesBank,
     setSelectedOptionsQuestionFromQuesBank,
-  ] = useState([]);
-
-  const handleOptionChangeQuestionFromQuesBank = (event) => {
-    const optionValue = event.target.value;
-    const isChecked = event.target.checked;
-
-    if (isChecked) {
-      if (selectedOptionsQuestionFromQuesBank)
-        setSelectedOptionsQuestionFromQuesBank([
-          ...selectedOptionsQuestionFromQuesBank,
-          optionValue,
-        ]);
-      else setSelectedOptionsQuestionFromQuesBank([optionValue]);
-      setMove(true);
-    } else {
-      setSelectedOptionsQuestionFromQuesBank(
-        selectedOptionsQuestionFromQuesBank.filter(
-          (option) => option !== optionValue
-        )
-      );
-      setMove(false);
-    }
-  };
+  ] = useState(quizData?.questions);
 
   const handleSelectAllQuesFromQuesBank = (event) => {
     const isChecked = event.target.checked;
@@ -260,39 +238,21 @@ const ManageQuestion = ({
   const updateQuestionsForBatch = async (batchId, newQuestions) => {
     // Create a copy of the quizObject
     const updatedQuizObject = { ...quizData };
-
-    // Find the index of the batch with the given batchId
-    const batchIndex = updatedQuizObject.questions.findIndex(
-      (batch) => batch.batchId === batchId
+    updatedQuizObject.questions = newQuestions;
+    setQuizData(updatedQuizObject);
+    await delete updatedQuizObject?._id;
+    Loading();
+    const newTask = await axios.put(
+      `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/quizes/taskId/${quizData?._id}`,
+      updatedQuizObject
     );
 
-    // If the batch is found, update its questions array
-    if (batchIndex !== -1) {
-      updatedQuizObject.questions[batchIndex].questions = newQuestions;
-
-      // Update the state with the modified object
-      await setQuizData(updatedQuizObject);
-
-      // Log the updated quizObject (you can remove this in production)
-      console.log(updatedQuizObject);
-      await delete updatedQuizObject?._id;
-      Loading();
-      const newTask = await axios.put(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/quizes/taskId/${quizData?._id}`,
-        updatedQuizObject
-      );
-      console.log(newTask);
-
-      if (newTask?.data?.result?.acknowledged) {
-        toast.success("Question Added Successfully!");
-        Loading().close();
-        setOpenAddFromQuesBank(false);
-      }
-      // setAddQues(false);
-    } else {
-      console.error(`Batch with batchId ${batchId} not found.`);
-      toast.error("Please select batch!");
+    if (newTask?.data?.result?.acknowledged) {
+      toast.success("Question Added Successfully!");
+      Loading().close();
+      setOpenAddFromQuesBank(false);
     }
+    console.log(updatedQuizObject);
   };
 
   const handleAddSelQues = () => {
@@ -302,7 +262,6 @@ const ManageQuestion = ({
       selectedOptionsQuestionFromQuesBank
     );
     setSelectedBatchForAddingQuestion({});
-    setSelectedOptionsQuestionFromQuesBank([]);
   };
 
   const { id } = useParams();
@@ -314,11 +273,131 @@ const ManageQuestion = ({
   const [questionBankQuestions, setQuestionBankQuestions] = useState([]);
   const [selectedBatchForAddingQuestion, setSelectedBatchForAddingQuestion] =
     useState({});
+  const [
+    selectedBatchesForAddingQuestion,
+    setSelectedBatchesForAddingQuestion,
+  ] = useState([]);
   const [selectedBatchForShowingQuestion, setSelectedBatchForShowingQuestion] =
     useState({});
   const [questionsForSelectedBatch, setQuestionsForSelectedBatch] = useState(
     []
   );
+  const [
+    selectedBatchesForShowingQuestion,
+    setSelectedBatchesForShowingQuestion,
+  ] = useState([]);
+  const [questionsForSelectedBatches, setQuestionsForSelectedBatches] =
+    useState([]);
+  const [quizQuestions, setQuizQuestions] = useState([]);
+  const [count, setCount] = useState(0);
+
+  const handleOptionChangeQuestionFromQuesBank = (event) => {
+    const optionValue = event.target.value;
+    const isChecked = event.target.checked;
+    if (!selectedBatchForAddingQuestion?._id) {
+      toast.error("Please select a batch!");
+      return;
+    }
+    if (isChecked) {
+      if (selectedOptionsQuestionFromQuesBank[0]) {
+        const questionIndex = selectedOptionsQuestionFromQuesBank.findIndex(
+          (question) => question.questionId === optionValue
+        );
+        if (questionIndex !== -1) {
+          const updatedQuestions = [...selectedOptionsQuestionFromQuesBank];
+          updatedQuestions[questionIndex].batches.push(
+            selectedBatchForAddingQuestion?._id
+          );
+          setSelectedOptionsQuestionFromQuesBank(updatedQuestions);
+        } else {
+          setSelectedOptionsQuestionFromQuesBank([
+            ...selectedOptionsQuestionFromQuesBank,
+            {
+              questionId: optionValue,
+              batches: [selectedBatchForAddingQuestion?._id],
+            },
+          ]);
+        }
+      } else
+        setSelectedOptionsQuestionFromQuesBank([
+          {
+            questionId: optionValue,
+            batches: [selectedBatchForAddingQuestion?._id],
+          },
+        ]);
+      setMove(true);
+    } else {
+      const questionIndex = selectedOptionsQuestionFromQuesBank.findIndex(
+        (question) => question.questionId === optionValue
+      );
+      const updateQuestion = {
+        ...selectedOptionsQuestionFromQuesBank[questionIndex],
+      };
+      updateQuestion.batches = updateQuestion?.batches?.filter(
+        (item) => item !== selectedBatchForAddingQuestion?._id
+      );
+      selectedOptionsQuestionFromQuesBank[questionIndex] = updateQuestion;
+      setCount(count + 1);
+      if (updateQuestion?.batches?.length === 0) {
+        setSelectedOptionsQuestionFromQuesBank(
+          selectedOptionsQuestionFromQuesBank.filter(
+            (option) => option?.questionId !== optionValue
+          )
+        );
+      }
+      setMove(false);
+    }
+  };
+
+  useEffect(() => {
+    filterQuestionsForSelectedBatches();
+  }, [selectedBatchesForShowingQuestion]);
+
+  const filterQuestionsForSelectedBatches = () => {
+    console.log(selectedBatchesForShowingQuestion);
+    const filteredQuestions = quizData.questions.filter((batch) =>
+      selectedBatches.includes(batch.batchId)
+    ).questions;
+    setQuestionsForSelectedBatches(filteredQuestions);
+    console.log(filteredQuestions);
+  };
+
+  const handleOptionChangeBatch = (event, optionValue) => {
+    // const optionValue = event.target.value;
+    const isChecked = event.target.checked;
+
+    if (isChecked) {
+      setSelectedBatchesForShowingQuestion([
+        ...selectedBatchesForShowingQuestion,
+        optionValue?._id,
+      ]);
+      // if (quizData?.questions) {
+      //   const findBatch = quizData?.questions?.find(
+      //     (item) => item?.batchId === optionValue?._id
+      //   );
+      //   if (findBatch) {
+      //     console.log("batch question found");
+      //     setQuestionsForSelectedBatches(findBatch?.questions);
+      //   } else {
+      //     console.log("batch question not found");
+      //     setQuestionsForSelectedBatches([]);
+      //   }
+      // } else {
+      //   quizData.questions = [];
+      //   quizData.questions.push({
+      //     batchId: optionValue?._id,
+      //     batchName: optionValue?.batchName,
+      //     questions: [],
+      //   });
+      // }
+    } else {
+      setSelectedBatchesForShowingQuestion(
+        selectedBatchesForShowingQuestion.filter(
+          (option) => option !== optionValue?._id
+        )
+      );
+    }
+  };
 
   useEffect(() => {
     if (quizData?.questions[0]) {
@@ -334,12 +413,12 @@ const ManageQuestion = ({
     if (userInfo?.organizationId)
       axios
         .get(
-          `http://localhost:5000/api/v1/questionBank/organizationId/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVER_API}/api/v1/questionBank/organizationId/${userInfo?.organizationId}`
         )
         .then((response) => {
           if (response?.data) setQuestionBankQuestions(response?.data);
         });
-  }, [userInfo?.organizationId]);
+  }, [userInfo?.organizationId, addQues]);
 
   console.log(questionBankQuestions);
   const [expandedIndex, setExpandedIndex] = useState(null);
@@ -352,7 +431,37 @@ const ManageQuestion = ({
     }
   };
 
-  console.log(selectedBatchForShowingQuestion, questionsForSelectedBatch);
+  useEffect(() => {
+    let updatedShowQuestion = [];
+    selectedOptionsQuestionFromQuesBank.forEach((item) => {
+      const question = questionBankQuestions?.find(
+        (q) => q?._id === item?.questionId
+      );
+      if (question) {
+        if (selectedBatchesForShowingQuestion[0]) {
+          const matchesBatch = item?.batches?.some((batchId) =>
+            selectedBatchesForShowingQuestion?.some(
+              (batch) => batch === batchId
+            )
+          );
+
+          // If the question matches any selected batch, add it to the updatedShowQuestion array
+          if (matchesBatch) {
+            updatedShowQuestion.push(question);
+          }
+        } else {
+          updatedShowQuestion.push(question);
+        }
+      }
+    });
+    setQuizQuestions(updatedShowQuestion);
+  }, [
+    selectedBatchesForShowingQuestion,
+    selectedOptionsQuestionFromQuesBank,
+    questionBankQuestions,
+  ]);
+
+  console.log(selectedBatchesForShowingQuestion);
 
   return (
     <div>
@@ -673,13 +782,6 @@ const ManageQuestion = ({
                                 </div>
 
                                 <div className="flex justify-center mt-10">
-                                  {/* <Link
-                                        to="/addingEditingCalQues"
-                                        className="px-10 py-2 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
-                                      >
-                                        {" "}
-                                        Add{" "}
-                                      </Link> */}
                                   <button
                                     onClick={(e) => {
                                       e.preventDefault();
@@ -719,16 +821,12 @@ const ManageQuestion = ({
                                       Select Batch
                                     </p>
                                   </div>
-
                                   <div className=" flex gap-2  ms-6 border rounded-md  h-[40px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]  ">
                                     <select
                                       required
                                       className="w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold focus:outline-0"
                                       name="selectBatch"
                                       id="selectBatch"
-                                      // defaultValue={
-                                      //   selectedBatchForAddingQuestion?.batchName
-                                      // }
                                       value={"Select Batch"}
                                       onChange={(e) => {
                                         const selectedBatch = batchesData?.find(
@@ -737,40 +835,6 @@ const ManageQuestion = ({
                                         setSelectedBatchForAddingQuestion(
                                           selectedBatch
                                         );
-                                        if (quizData?.questions) {
-                                          const findBatch =
-                                            quizData?.questions?.find(
-                                              (item) =>
-                                                item?.batchId ===
-                                                selectedBatch?._id
-                                            );
-                                          if (findBatch) {
-                                            console.log("batch question found");
-                                            setSelectedOptionsQuestionFromQuesBank(
-                                              findBatch?.questions
-                                            );
-                                          } else {
-                                            console.log(
-                                              "batch question not found"
-                                            );
-                                            quizData.questions.push({
-                                              batchId: selectedBatch?._id,
-                                              batchName:
-                                                selectedBatch?.batchName,
-                                              questions: [],
-                                            });
-                                            setSelectedOptionsQuestionFromQuesBank(
-                                              []
-                                            );
-                                          }
-                                        } else {
-                                          quizData.questions = [];
-                                          quizData.questions.push({
-                                            batchId: selectedBatch?._id,
-                                            batchName: selectedBatch?.batchName,
-                                            questions: [],
-                                          });
-                                        }
                                       }}
                                     >
                                       <option className="hidden">
@@ -797,8 +861,8 @@ const ManageQuestion = ({
                                     </select>
                                   </div>
                                 </div>
-
-                                {/*   <div className="flex ">
+                                <>
+                                  {/*   <div className="flex ">
                                   {!allSelectFromQuesBank && (
                                     <div className="">
                                       <div>
@@ -849,6 +913,7 @@ const ManageQuestion = ({
                                     </div>
                                   )}
                                 </div> */}
+                                </>
                               </div>
 
                               <div className="">
@@ -891,9 +956,19 @@ const ManageQuestion = ({
                                                     id={`question-${question?._id}`}
                                                     name={`question-${question?._id}`}
                                                     value={`${question?._id}`}
-                                                    checked={selectedOptionsQuestionFromQuesBank?.includes(
-                                                      `${question?._id}`
-                                                    )}
+                                                    checked={
+                                                      selectedOptionsQuestionFromQuesBank?.find(
+                                                        (item) =>
+                                                          item?.questionId ===
+                                                            question?._id &&
+                                                          item?.batches?.find(
+                                                            (b) =>
+                                                              b ===
+                                                              selectedBatchForAddingQuestion?._id
+                                                          )
+                                                      )?.questionId ===
+                                                      question?._id
+                                                    }
                                                     onChange={
                                                       handleOptionChangeQuestionFromQuesBank
                                                     }
@@ -929,97 +1004,81 @@ const ManageQuestion = ({
                                               </tr>
                                               {expandedIndex === index && (
                                                 <tr className="border ">
-                                                  <td
-                                                    colSpan="5"
-                                                    className="p-5"
-                                                  >
-                                                    <p className="text-lg font-medium mb-2">
-                                                      {question?.questionName}
-                                                    </p>
-                                                    <div className="grid grid-cols-2">
-                                                      {question?.options?.map(
-                                                        (option) => (
-                                                          <>
-                                                            <p>
-                                                              {" "}
-                                                              Answer Formula :{" "}
-                                                              {
-                                                                option?.answerFormula
-                                                              }
-                                                            </p>
-                                                            <p>
-                                                              {" "}
-                                                              Answer :{" "}
-                                                              {option?.answer}
-                                                            </p>
-                                                            <p>
-                                                              {" "}
-                                                              Feedback :{" "}
-                                                              {option?.feedback}
-                                                            </p>
-                                                          </>
-                                                        )
-                                                      )}
+                                                  <td colSpan="5">
+                                                    <div className="bg-[#FFFCDE] rounded-[8px] w-full px-[20px] py-[30px] relative">
+                                                      <svg
+                                                        className="absolute top-0 right-0"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        width="108"
+                                                        height="38"
+                                                        viewBox="0 0 108 38"
+                                                        fill="none"
+                                                      >
+                                                        <path
+                                                          d="M98.97 37.4233L9.65459 37.4233C3.30196 37.4233 -1.01009 30.9655 1.42462 25.098L2.5147 22.4709C3.50542 20.0833 3.41044 17.3832 2.2544 15.0711L1.16635 12.895C-1.79591 6.9705 2.51221 -0.000183105 9.13601 -0.000183105L98.97 -0.000183105C103.891 -0.000183105 107.88 3.98912 107.88 8.91017V28.513C107.88 33.434 103.891 37.4233 98.97 37.4233Z"
+                                                          fill="#4D2609"
+                                                        />
+                                                      </svg>
+                                                      <h1 className=" text-white text-[16px] font-[500] absolute top-[6px] right-0 w-[108px] text-center ">
+                                                        {question?.defaultMarks}{" "}
+                                                        points
+                                                      </h1>
+                                                      <p
+                                                        className=" text-[18px] font-[700] pt-4 "
+                                                        dangerouslySetInnerHTML={{
+                                                          __html:
+                                                            question?.questionText,
+                                                        }}
+                                                      ></p>
+                                                      <form
+                                                        id="myForm"
+                                                        className="mt-[45px]"
+                                                      >
+                                                        {!question?.options && (
+                                                          <input
+                                                            defaultValue={
+                                                              question?.givenAnswer
+                                                            }
+                                                            // onChange={(e) => setSelectedOption(e.target.value)}
+                                                            // onChange={
+                                                            //   handleOptionChange
+                                                            // }
+                                                            className="w-[435px] p-[24px] text-[20px] font-[500] rounded-[8px] border-[#323232] border-2 bg-transparent "
+                                                            placeholder="Write Here"
+                                                            type="text"
+                                                          />
+                                                        )}
+                                                        {question?.options &&
+                                                          question?.options?.map(
+                                                            (option, index) => (
+                                                              <div key={index}>
+                                                                <label className="flex items-center mb-[15px] text-[#3E4DAC] text-[15px] font-[600] ">
+                                                                  <input
+                                                                    className="form-radio mr-[15px] h-6 w-6  border rounded-full border-gray-400"
+                                                                    // className="w-[22px]"
+                                                                    type="radio"
+                                                                    value={
+                                                                      option?.answerFormula
+                                                                    }
+                                                                  />
+                                                                  <p
+                                                                    dangerouslySetInnerHTML={{
+                                                                      __html:
+                                                                        option?.answerFormula,
+                                                                    }}
+                                                                  ></p>
+                                                                </label>
+                                                              </div>
+                                                            )
+                                                          )}
+                                                      </form>
                                                     </div>
-                                                    {/* Content to display when row is expanded */}
-                                                    {/* You can add more details here */}
                                                   </td>
                                                 </tr>
                                               )}
                                             </React.Fragment>
                                           )
                                         )}
-                                        {/*  {questionBankQuestions?.map(
-                                          (question, index) => (
-                                            <tr
-                                              key={index}
-                                              className={`${
-                                                index % 2 === 0
-                                                  ? "bg-[#F2FFFA]"
-                                                  : ""
-                                              }`}
-                                            >
-                                              <td className="py-5 text-center">
-                                                <input
-                                                  type="checkbox"
-                                                  id={`question-${question?._id}`}
-                                                  name={`question-${question?._id}`}
-                                                  value={`${question?._id}`}
-                                                  checked={selectedOptionsQuestionFromQuesBank?.includes(
-                                                    `${question?._id}`
-                                                  )}
-                                                  onChange={
-                                                    handleOptionChangeQuestionFromQuesBank
-                                                  }
-                                                />
-                                                <label
-                                                  htmlFor={`question-${
-                                                    index + 1
-                                                  }`}
-                                                  className="ml-2"
-                                                >
-                                                  {index + 1}
-                                                </label>
-                                              </td>
-                                              <td className="text-center">
-                                                {question?.questionName}
-                                              </td>
-                                              <td className="text-center">
-                                                {question.questionType}
-                                              </td>
-                                              <td className="text-center">
-                                                {question.defaultMarks}
-                                              </td>
-                                              <td className="text-center">
-                                                <img
-                                                  className="mx-auto"
-                                                  src={Vector}
-                                                  alt="Preview"
-                                                />
-                                              </td>
-                                            </tr>
-                                          )
-                                        )} */}
                                       </tbody>
                                     </table>
                                   </div>
@@ -1090,73 +1149,55 @@ const ManageQuestion = ({
                 </div>
               </div> */}
 
-              <div className=" my-10 flex items-center">
+              <div className=" mt-10 flex items-center">
                 <div className="flex items-center gap-4">
-                  <p className="text-lg font-semibold">Select Batch</p>
+                  <p className="text-lg font-semibold">Select Batch :</p>
                 </div>
-
-                <div className=" flex gap-2  ms-6 border rounded-md  h-[40px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]  ">
-                  <select
-                    required
-                    className="w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold focus:outline-0"
-                    name="selectBatchForShowingQuestion"
-                    id="selectBatchForShowingQuestion"
-                    // defaultValue={
-                    //   selectedBatchForAddingQuestion?.batchName
-                    // }
-                    value={"Select Batch"}
-                    onChange={(e) => {
-                      const selectedBatch = batchesData?.find(
-                        (item) => item?._id === e.target.value
-                      );
-                      setSelectedBatchForShowingQuestion(selectedBatch);
-                      if (quizData?.questions) {
-                        const findBatch = quizData?.questions?.find(
-                          (item) => item?.batchId === selectedBatch?._id
-                        );
-                        if (findBatch) {
-                          console.log("batch question found");
-                          setQuestionsForSelectedBatch(findBatch?.questions);
-                        } else {
-                          console.log("batch question not found");
-                          setQuestionsForSelectedBatch([]);
-                        }
-                      } else {
-                        quizData.questions = [];
-                        quizData.questions.push({
-                          batchId: selectedBatch?._id,
-                          batchName: selectedBatch?.batchName,
-                          questions: [],
-                        });
-                      }
-                    }}
-                  >
-                    <option className="hidden">
-                      {selectedBatchForShowingQuestion?.batchName
-                        ? selectedBatchForShowingQuestion?.batchName
-                        : "Select Batch"}
-                    </option>
-                    {batchesData?.map((option, index) => {
-                      if (
-                        selectedBatches?.find(
-                          (item) => item?.batchId === option?._id
-                        )
+              </div>
+              <div className="my-5">
+                <ul className="ms-6 flex gap-4 flex-wrap ">
+                  {batchesData?.map((option, index) => {
+                    if (
+                      selectedBatches?.find(
+                        (item) => item?.batchId === option?._id
                       )
-                        return (
-                          <option className="" value={option?._id}>
-                            {option?.batchName}
-                          </option>
-                        );
-                    })}
-                  </select>
-                </div>
+                    )
+                      return (
+                        <>
+                          <li className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] ">
+                            <input
+                              type="checkbox"
+                              id="student"
+                              name={option?.batchName}
+                              value={option?.batchName}
+                              checked={selectedBatchesForShowingQuestion?.find(
+                                (item) => item === option?._id
+                              )}
+                              onChange={(e) =>
+                                handleOptionChangeBatch(e, option)
+                              }
+                              className=" mb-1"
+                            />
+                            <div className="flex mb-1 items-center">
+                              <label className="ms-4" htmlFor={option?._id}>
+                                {option?.batchName}
+                              </label>
+                            </div>
+                          </li>
+                        </>
+                      );
+                  })}
+                </ul>
               </div>
 
               <div className="flex justify-between text-lg font-medium mb-10">
                 <div className="flex gap-2 items-center">
                   <p>
                     {" "}
-                    Total Questions : <span className="text-[#3E4DAC]">3</span>
+                    Total Questions :{" "}
+                    <span className="text-[#3E4DAC]">
+                      {quizQuestions?.length}
+                    </span>
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -1182,135 +1223,43 @@ const ManageQuestion = ({
                       </tr>
                     </thead>
                     <tbody className="">
-                      {questionBankQuestions?.map((question, index) => {
-                        if (
-                          questionsForSelectedBatch?.includes(question?._id)
-                        ) {
-                          console.log(question);
-                          return (
-                            <tr
-                              className={`${
-                                index % 2 === 0 ? "bg-[#F2FFFA]" : ""
-                              }`}
-                            >
-                              <td className="flex justify-center py-5 ">
-                                {allSelect && (
-                                  <input
-                                    className="me-3"
-                                    type="checkbox"
-                                    id="1"
-                                    name="option"
-                                    value="1"
-                                    checked={selectedOptionsQuestion.includes(
-                                      "1"
-                                    )}
-                                    onChange={handleOptionChangeQuestion}
-                                  />
-                                )}
+                      {quizQuestions?.map((question, index) => (
+                        <tr
+                          className={`${index % 2 === 0 ? "bg-[#F2FFFA]" : ""}`}
+                        >
+                          <td className="flex justify-center py-5 ">
+                            {allSelect && (
+                              <input
+                                className="me-3"
+                                type="checkbox"
+                                id="1"
+                                name="option"
+                                value="1"
+                                checked={selectedOptionsQuestion.includes("1")}
+                                onChange={handleOptionChangeQuestion}
+                              />
+                            )}
 
-                                <p>{index + 1}</p>
-                              </td>
-                              <td className="text-center">
-                                {question?.questionName}
-                              </td>
-                              <td className="text-center">
-                                {question?.questionType}
-                              </td>
-                              <td className="text-center">
-                                {question?.defaultMarks}
-                              </td>
-                              {/* <td className="flex items-center justify-center">
+                            <p>{index + 1}</p>
+                          </td>
+                          <td className="text-center">
+                            {question?.questionName}
+                          </td>
+                          <td className="text-center">
+                            {question?.questionType}
+                          </td>
+                          <td className="text-center">
+                            {question?.defaultMarks}
+                          </td>
+                          {/* <td className="flex items-center justify-center">
                                 <img src={bxseditalt} alt="bxseditalt" />
                               </td>
 
                               <td className="">
                                 <img src={trash} alt="trash" />
                               </td> */}
-                            </tr>
-                          );
-                        }
-                      })}
-                      {/* <tr className="bg-[#F2FFFA] ">
-                        <td className="flex justify-center py-5 ">
-                          {allSelect && (
-                            <input
-                              className="me-3"
-                              type="checkbox"
-                              id="1"
-                              name="option"
-                              value="1"
-                              checked={selectedOptionsQuestion.includes("1")}
-                              onChange={handleOptionChangeQuestion}
-                            />
-                          )}
-
-                          <p>1</p>
-                        </td>
-                        <td className="text-center">Question Name</td>
-                        <td className="text-center">Question Type</td>
-                        <td className="text-center">Marks</td>
-                        <td className="flex items-center justify-center">
-                          <img src={bxseditalt} alt="bxseditalt" />
-                        </td>
-
-                        <td className="">
-                          <img src={trash} alt="trash" />
-                        </td>
-                      </tr>
-                      <tr className="">
-                        <td className="flex justify-center py-5">
-                          {allSelect && (
-                            <input
-                              className="me-3"
-                              type="checkbox"
-                              id="2"
-                              name="option"
-                              value="2"
-                              checked={selectedOptionsQuestion.includes("2")}
-                              onChange={handleOptionChangeQuestion}
-                            />
-                          )}
-
-                          <p>2</p>
-                        </td>
-                        <td className="text-center">Question Name</td>
-                        <td className="text-center">Question Type</td>
-                        <td className="text-center">Marks</td>
-                        <td className="flex items-center justify-center">
-                          <img src={bxseditalt} alt="bxseditalt" />
-                        </td>
-
-                        <td className="">
-                          <img src={trash} />
-                        </td>
-                      </tr>
-                      <tr className=" bg-[#F2FFFA]">
-                        <td className="flex justify-center py-5">
-                          {allSelect && (
-                            <input
-                              className="me-3"
-                              type="checkbox"
-                              id="3"
-                              name="option"
-                              value="3"
-                              checked={selectedOptionsQuestion.includes("3")}
-                              onChange={handleOptionChangeQuestion}
-                            />
-                          )}
-
-                          <p>3</p>
-                        </td>
-                        <td className="text-center">Question Name</td>
-                        <td className="text-center">Question Type</td>
-                        <td className="text-center">Marks</td>
-                        <td className="flex items-center justify-center">
-                          <img src={bxseditalt} alt="bxseditalt" />
-                        </td>
-
-                        <td className="">
-                          <img src={trash} alt="trash" />
-                        </td>
-                      </tr> */}
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>
@@ -1324,23 +1273,13 @@ const ManageQuestion = ({
                   addQues={addQues}
                   setAddQues={setAddQues}
                   setOpenNewQuesType={setOpenNewQuesType}
+                  selectedBatchesForShowingQuestion={
+                    selectedBatchesForShowingQuestion
+                  }
+                  quizData={quizData}
+                  setQuizData={setQuizData}
                 />
               )}
-              {/* <div>
-                <div className="flex justify-between items-center mb-10">
-                  <p className=" text-[26px] font-bold ">
-                    Adding/Editing Calculation Question{" "}
-                  </p>
-                  <div
-                    onClick={() => setAddQues(false)}
-                    className="bg-[#3E4DAC] flex  px-4 py-2 rounded-lg text-[#fff]"
-                  >
-                    <img src={back} />
-                    <p className="">Back</p>
-                  </div>
-                </div>
-                <AddingEditingCalQues />
-              </div> */}
             </>
           )}
         </div>
