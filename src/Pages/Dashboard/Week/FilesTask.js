@@ -208,92 +208,94 @@ const FilesTask = ({ taskData, count, setCount }) => {
           </button>
         )}
 
-        {!iframeLoaded && (
-          <div className=" flex align-items-center my-5 py-5 w-full">
-            <CircularProgress className="w-full mx-auto" />
-          </div>
-        )}
+        {taskData?.additionalFiles && (
+          <>
+            {" "}
+            {!iframeLoaded && (
+              <div className=" flex align-items-center my-5 py-5 w-full">
+                <CircularProgress className="w-full mx-auto" />
+              </div>
+            )}
+            {additionalFile && (
+              <div
+                key={taskData?._id}
+                className="min-h-[72vh] mb-[60px]"
+                style={{ display: iframeLoaded ? "block" : "none" }}
+              >
+                <div className="container mx-auto relative">
+                  {isOverlayVisible && (
+                    <div
+                      className="fixed top-0 left-0 w-full h-full z-[9999] bg-transparent"
+                      onClick={handleCompletion}
+                    ></div>
+                  )}
 
-        {additionalFile && (
-          <div
-            key={taskData?._id}
-            className="min-h-[72vh] mb-[60px]"
-            style={{ display: iframeLoaded ? "block" : "none" }}
-          >
-            <div className="container mx-auto relative">
-              {isOverlayVisible && (
-                <div
-                  className="fixed top-0 left-0 w-full h-full z-[9999] bg-transparent"
-                  onClick={handleCompletion}
-                ></div>
-              )}
+                  <>
+                    {additionalFile &&
+                      (taskData?.additionalFiles.endsWith(".png") ||
+                      taskData?.additionalFiles.endsWith(".jpg") ||
+                      taskData?.additionalFiles.endsWith(".jpeg") ||
+                      taskData?.additionalFiles.endsWith(".gif") ||
+                      taskData?.additionalFiles.endsWith(".bmp") ? (
+                        <div className="">
+                          <img
+                            src={taskData?.additionalFiles}
+                            alt="Img"
+                            onLoad={() => {
+                              console.log("iframe loaded");
+                              setIframeLoaded(true);
+                            }}
+                            className="w-[90%] mx-auto h-[68vh] border-[10px] border-b-50 rounded-lg border-[#292929]"
+                          />
+                        </div>
+                      ) : taskData?.additionalFiles.endsWith(".mp4") ||
+                        taskData?.additionalFiles.endsWith(".mov") ||
+                        taskData?.additionalFiles.endsWith(".wmv") ||
+                        taskData?.additionalFiles.endsWith(".flv") ||
+                        taskData?.additionalFiles.endsWith(".avi") ||
+                        taskData?.additionalFiles.endsWith(".avchd") ||
+                        taskData?.additionalFiles.endsWith(".webm") ||
+                        taskData?.additionalFiles.endsWith(".mkv") ? (
+                        <div className="">
+                          <video
+                            key={taskData?._id}
+                            className="mx-auto rounded-lg border-[#292929]"
+                            width="90%"
+                            height="80vh"
+                            onLoadedData={() => {
+                              console.log("iframe loaded");
+                              setIframeLoaded(true);
+                            }}
+                            controls
+                            controlsList="nodownload"
+                            disablePictureInPicture
+                          >
+                            <source
+                              src={taskData?.additionalFiles}
+                              type="video/mp4"
+                            />
+                          </video>
+                        </div>
+                      ) : (
+                        <>
+                          <iframe
+                            id={taskData?._id}
+                            key={taskData?._id}
+                            src={additionalFile && additionalFile}
+                            onLoad={() => {
+                              console.log("iframe loaded");
+                              setIframeLoaded(true);
+                            }}
+                            title="Your Document"
+                            className="h-[68vh] mx-auto border-x-30 mt-40 border-[10px] border-b-50 rounded-lg border-[#292929]"
+                            width="90%"
+                            height="80vh"
+                          ></iframe>
+                        </>
+                      ))}
+                  </>
 
-              <>
-                {additionalFile &&
-                  (taskData?.additionalFiles.endsWith(".png") ||
-                  taskData?.additionalFiles.endsWith(".jpg") ||
-                  taskData?.additionalFiles.endsWith(".jpeg") ||
-                  taskData?.additionalFiles.endsWith(".gif") ||
-                  taskData?.additionalFiles.endsWith(".bmp") ? (
-                    <div className="">
-                      <img
-                        src={taskData?.additionalFiles}
-                        alt="Img"
-                        onLoad={() => {
-                          console.log("iframe loaded");
-                          setIframeLoaded(true);
-                        }}
-                        className="w-[90%] mx-auto h-[68vh] border-[10px] border-b-50 rounded-lg border-[#292929]"
-                      />
-                    </div>
-                  ) : taskData?.additionalFiles.endsWith(".mp4") ||
-                    taskData?.additionalFiles.endsWith(".mov") ||
-                    taskData?.additionalFiles.endsWith(".wmv") ||
-                    taskData?.additionalFiles.endsWith(".flv") ||
-                    taskData?.additionalFiles.endsWith(".avi") ||
-                    taskData?.additionalFiles.endsWith(".avchd") ||
-                    taskData?.additionalFiles.endsWith(".webm") ||
-                    taskData?.additionalFiles.endsWith(".mkv") ? (
-                    <div className="">
-                      <video
-                        key={taskData?._id}
-                        className="mx-auto rounded-lg border-[#292929]"
-                        width="90%"
-                        height="80vh"
-                        onLoadedData={() => {
-                          console.log("iframe loaded");
-                          setIframeLoaded(true);
-                        }}
-                        controls
-                        controlsList="nodownload"
-                        disablePictureInPicture
-                      >
-                        <source
-                          src={taskData?.additionalFiles}
-                          type="video/mp4"
-                        />
-                      </video>
-                    </div>
-                  ) : (
-                    <>
-                      <iframe
-                        id={taskData?._id}
-                        key={taskData?._id}
-                        src={additionalFile && additionalFile}
-                        onLoad={() => {
-                          console.log("iframe loaded");
-                          setIframeLoaded(true);
-                        }}
-                        title="Your Document"
-                        className="h-[68vh] mx-auto border-x-30 mt-40 border-[10px] border-b-50 rounded-lg border-[#292929]"
-                        width="90%"
-                        height="80vh"
-                      ></iframe>
-                    </>
-                  ))}
-              </>
-
-              {/* <iframe
+                  {/* <iframe
             id="document"
             // key={additionalFile}
             key={taskData?._id || additionalFile}
@@ -306,36 +308,40 @@ const FilesTask = ({ taskData, count, setCount }) => {
             width="90%"
             height="80vh"
           ></iframe> */}
-            </div>
-            {taskData?.enableDownload && (
-              <div className="flex justify-end me-20 my-10">
-                <button
-                  className="bg-blue text-white p-3 rounded-lg text-xl"
-                  onClick={cancelTokenSource ? null : handleDownload}
-                  disabled={cancelTokenSource !== null}
-                >
-                  {cancelTokenSource
-                    ? `Downloading... ${downloadProgress}%`
-                    : "Download"}
-                </button>
-                {cancelTokenSource && (
-                  <button
-                    className="bg-red-400 text-white p-3 rounded-lg text-xl ml-4"
-                    onClick={() => {
-                      cancelTokenSource.cancel("Download cancelled by user");
-                    }}
-                  >
-                    Cancel
-                  </button>
-                )}
-                {/*  {downloadProgress > 0 && (
+                </div>
+                {taskData?.enableDownload && (
+                  <div className="flex justify-end me-20 my-10">
+                    <button
+                      className="bg-blue text-white p-3 rounded-lg text-xl"
+                      onClick={cancelTokenSource ? null : handleDownload}
+                      disabled={cancelTokenSource !== null}
+                    >
+                      {cancelTokenSource
+                        ? `Downloading... ${downloadProgress}%`
+                        : "Download"}
+                    </button>
+                    {cancelTokenSource && (
+                      <button
+                        className="bg-red-400 text-white p-3 rounded-lg text-xl ml-4"
+                        onClick={() => {
+                          cancelTokenSource.cancel(
+                            "Download cancelled by user"
+                          );
+                        }}
+                      >
+                        Cancel
+                      </button>
+                    )}
+                    {/*  {downloadProgress > 0 && (
                 <div className="ml-4 flex items-center">
                   <p>{downloadProgress}%</p>
                 </div>
               )} */}
+                  </div>
+                )}
               </div>
             )}
-          </div>
+          </>
         )}
         {openQuiz && (
           <Quiz
@@ -348,7 +354,7 @@ const FilesTask = ({ taskData, count, setCount }) => {
         )}
         <div className="px-4 py-20 textEditor">
           <div
-            dangerouslySetInnerHTML={{ __html: taskData?.readingMaterial }}
+            dangerouslySetInnerHTML={{ __html: taskData?.fileDescription }}
           />
         </div>
       </div>
