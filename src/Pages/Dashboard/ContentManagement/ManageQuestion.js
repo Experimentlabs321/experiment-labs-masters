@@ -289,6 +289,7 @@ const ManageQuestion = ({
   const [questionsForSelectedBatches, setQuestionsForSelectedBatches] =
     useState([]);
   const [quizQuestions, setQuizQuestions] = useState([]);
+  const [count, setCount] = useState(0);
 
   const handleOptionChangeQuestionFromQuesBank = (event) => {
     const optionValue = event.target.value;
@@ -336,6 +337,7 @@ const ManageQuestion = ({
         (item) => item !== selectedBatchForAddingQuestion?._id
       );
       selectedOptionsQuestionFromQuesBank[questionIndex] = updateQuestion;
+      setCount(count + 1);
       if (updateQuestion?.batches?.length === 0) {
         setSelectedOptionsQuestionFromQuesBank(
           selectedOptionsQuestionFromQuesBank.filter(
@@ -367,31 +369,31 @@ const ManageQuestion = ({
     if (isChecked) {
       setSelectedBatchesForShowingQuestion([
         ...selectedBatchesForShowingQuestion,
-        { batchName: optionValue?.batchName, batchId: optionValue?._id },
+        optionValue?._id,
       ]);
-      if (quizData?.questions) {
-        const findBatch = quizData?.questions?.find(
-          (item) => item?.batchId === optionValue?._id
-        );
-        if (findBatch) {
-          console.log("batch question found");
-          setQuestionsForSelectedBatches(findBatch?.questions);
-        } else {
-          console.log("batch question not found");
-          setQuestionsForSelectedBatches([]);
-        }
-      } else {
-        quizData.questions = [];
-        quizData.questions.push({
-          batchId: optionValue?._id,
-          batchName: optionValue?.batchName,
-          questions: [],
-        });
-      }
+      // if (quizData?.questions) {
+      //   const findBatch = quizData?.questions?.find(
+      //     (item) => item?.batchId === optionValue?._id
+      //   );
+      //   if (findBatch) {
+      //     console.log("batch question found");
+      //     setQuestionsForSelectedBatches(findBatch?.questions);
+      //   } else {
+      //     console.log("batch question not found");
+      //     setQuestionsForSelectedBatches([]);
+      //   }
+      // } else {
+      //   quizData.questions = [];
+      //   quizData.questions.push({
+      //     batchId: optionValue?._id,
+      //     batchName: optionValue?.batchName,
+      //     questions: [],
+      //   });
+      // }
     } else {
       setSelectedBatchesForShowingQuestion(
         selectedBatchesForShowingQuestion.filter(
-          (option) => option?.batchId !== optionValue?._id
+          (option) => option !== optionValue?._id
         )
       );
     }
@@ -416,7 +418,7 @@ const ManageQuestion = ({
         .then((response) => {
           if (response?.data) setQuestionBankQuestions(response?.data);
         });
-  }, [userInfo?.organizationId]);
+  }, [userInfo?.organizationId, addQues]);
 
   console.log(questionBankQuestions);
   const [expandedIndex, setExpandedIndex] = useState(null);
@@ -439,7 +441,7 @@ const ManageQuestion = ({
         if (selectedBatchesForShowingQuestion[0]) {
           const matchesBatch = item?.batches?.some((batchId) =>
             selectedBatchesForShowingQuestion?.some(
-              (batch) => batch?.batchId === batchId
+              (batch) => batch === batchId
             )
           );
 
@@ -459,7 +461,7 @@ const ManageQuestion = ({
     questionBankQuestions,
   ]);
 
-  console.log(quizQuestions);
+  console.log(selectedBatchesForShowingQuestion);
 
   return (
     <div>
@@ -571,8 +573,9 @@ const ManageQuestion = ({
                       <div className="select-option">
                         <img src={chevronright} alt="chevronRight" />
                         <i
-                          className={`dropdown-arrow ${isOpenEvaluationCourseSelection ? "open" : ""
-                            }`}
+                          className={`dropdown-arrow ${
+                            isOpenEvaluationCourseSelection ? "open" : ""
+                          }`}
                         ></i>
                       </div>
                     </div>
@@ -779,13 +782,6 @@ const ManageQuestion = ({
                                 </div>
 
                                 <div className="flex justify-center mt-10">
-                                  {/* <Link
-                                        to="/addingEditingCalQues"
-                                        className="px-10 py-2 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
-                                      >
-                                        {" "}
-                                        Add{" "}
-                                      </Link> */}
                                   <button
                                     onClick={(e) => {
                                       e.preventDefault();
@@ -831,9 +827,6 @@ const ManageQuestion = ({
                                       className="w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold focus:outline-0"
                                       name="selectBatch"
                                       id="selectBatch"
-                                      // defaultValue={
-                                      //   selectedBatchForAddingQuestion?.batchName
-                                      // }
                                       value={"Select Batch"}
                                       onChange={(e) => {
                                         const selectedBatch = batchesData?.find(
@@ -842,40 +835,6 @@ const ManageQuestion = ({
                                         setSelectedBatchForAddingQuestion(
                                           selectedBatch
                                         );
-                                        // if (quizData?.questions) {
-                                        //   const findBatch =
-                                        //     quizData?.questions?.find(
-                                        //       (item) =>
-                                        //         item?.batchId ===
-                                        //         selectedBatch?._id
-                                        //     );
-                                        //   if (findBatch) {
-                                        //     console.log("batch question found");
-                                        //     setSelectedOptionsQuestionFromQuesBank(
-                                        //       findBatch?.questions
-                                        //     );
-                                        //   } else {
-                                        //     console.log(
-                                        //       "batch question not found"
-                                        //     );
-                                        //     quizData.questions.push({
-                                        //       batchId: selectedBatch?._id,
-                                        //       batchName:
-                                        //         selectedBatch?.batchName,
-                                        //       questions: [],
-                                        //     });
-                                        //     setSelectedOptionsQuestionFromQuesBank(
-                                        //       []
-                                        //     );
-                                        //   }
-                                        // } else {
-                                        //   quizData.questions = [];
-                                        //   quizData.questions.push({
-                                        //     batchId: selectedBatch?._id,
-                                        //     batchName: selectedBatch?.batchName,
-                                        //     questions: [],
-                                        //   });
-                                        // }
                                       }}
                                     >
                                       <option className="hidden">
@@ -985,10 +944,11 @@ const ManageQuestion = ({
                                           (question, index) => (
                                             <React.Fragment key={index}>
                                               <tr
-                                                className={`${index % 2 === 0
+                                                className={`${
+                                                  index % 2 === 0
                                                     ? "bg-[#F2FFFA]"
                                                     : ""
-                                                  }`}
+                                                }`}
                                               >
                                                 <td className="py-5 text-center">
                                                   <input
@@ -1000,7 +960,7 @@ const ManageQuestion = ({
                                                       selectedOptionsQuestionFromQuesBank?.find(
                                                         (item) =>
                                                           item?.questionId ===
-                                                          question?._id &&
+                                                            question?._id &&
                                                           item?.batches?.find(
                                                             (b) =>
                                                               b ===
@@ -1014,8 +974,9 @@ const ManageQuestion = ({
                                                     }
                                                   />
                                                   <label
-                                                    htmlFor={`question-${index + 1
-                                                      }`}
+                                                    htmlFor={`question-${
+                                                      index + 1
+                                                    }`}
                                                     className="ml-2"
                                                   >
                                                     {index + 1}
@@ -1192,25 +1153,6 @@ const ManageQuestion = ({
                 <div className="flex items-center gap-4">
                   <p className="text-lg font-semibold">Select Batch :</p>
                 </div>
-
-                
-
-                {/*   <div className=" flex gap-2  ms-6 border rounded-md  h-[40px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]  ">
-                  <select
-                    
-                    className="w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold focus:outline-0"
-                    name="selectBatchForShowingQuestion"
-                    id="selectBatchForShowingQuestion"
-                  
-                  
-                  
-                  >
-                    <option className="hidden">
-                      
-                    </option>
-                 
-                  </select>
-                </div> */}
               </div>
               <div className="my-5">
                 <ul className="ms-6 flex gap-4 flex-wrap ">
@@ -1229,7 +1171,7 @@ const ManageQuestion = ({
                               name={option?.batchName}
                               value={option?.batchName}
                               checked={selectedBatchesForShowingQuestion?.find(
-                                (item) => item?.batchName === option?.batchName
+                                (item) => item === option?._id
                               )}
                               onChange={(e) =>
                                 handleOptionChangeBatch(e, option)
@@ -1246,7 +1188,6 @@ const ManageQuestion = ({
                       );
                   })}
                 </ul>
-
               </div>
 
               <div className="flex justify-between text-lg font-medium mb-10">
@@ -1332,23 +1273,13 @@ const ManageQuestion = ({
                   addQues={addQues}
                   setAddQues={setAddQues}
                   setOpenNewQuesType={setOpenNewQuesType}
+                  selectedBatchesForShowingQuestion={
+                    selectedBatchesForShowingQuestion
+                  }
+                  quizData={quizData}
+                  setQuizData={setQuizData}
                 />
               )}
-              {/* <div>
-                <div className="flex justify-between items-center mb-10">
-                  <p className=" text-[26px] font-bold ">
-                    Adding/Editing Calculation Question{" "}
-                  </p>
-                  <div
-                    onClick={() => setAddQues(false)}
-                    className="bg-[#3E4DAC] flex  px-4 py-2 rounded-lg text-[#fff]"
-                  >
-                    <img src={back} />
-                    <p className="">Back</p>
-                  </div>
-                </div>
-                <AddingEditingCalQues />
-              </div> */}
             </>
           )}
         </div>

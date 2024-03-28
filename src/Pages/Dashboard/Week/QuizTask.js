@@ -10,6 +10,7 @@ import CongratulationsRight from "../../../assets/Dashboard/CongratulationsRight
 import CongratulationsBatch from "../../../assets/Dashboard/CongratulationsBatch.png";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
+import Loading from "../../Shared/Loading/Loading";
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -242,11 +243,22 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
   const [reviewOpen, setReviewOpen] = useState(false);
   const [showExplanation, setShowExplanation] = useState(false);
   const [questions, setQuizQuestions] = useState([]);
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [selectedOption, setSelectedOption] = useState("");
+  const [score, setScore] = useState(0);
+  const [point, setPoint] = useState(0);
+  const [answered, setAnswered] = useState(0);
+  const [givenAnswers, setGivenAnswers] = useState([]);
+  const [participationData, setParticipationData] = useState({});
 
   console.log(taskData);
 
   const handleClickOpen = () => {
     setOpen(true);
+    setPoint(0);
+    setCurrentQuestion(0);
+    setAnswered(0);
+    setScore(0);
   };
 
   const handleClose = () => {
@@ -257,14 +269,6 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
     setAnswered(0);
     setScore(0);
   };
-
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [selectedOption, setSelectedOption] = useState("");
-  const [score, setScore] = useState(0);
-  const [point, setPoint] = useState(0);
-  const [answered, setAnswered] = useState(0);
-  const [givenAnswers, setGivenAnswers] = useState([]);
-  const [participationData, setParticipationData] = useState({});
 
   useEffect(() => {
     if (taskData?.participants) {
@@ -335,36 +339,74 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
   };
 
   const handleSubmit = async () => {
+    Loading();
+    setOpen(false);
     localStorage.setItem("questionWithSelectedAns", JSON.stringify(questions));
     setAnswered(0);
     setCurrentQuestion(0);
     // setScore(0);
-    setCongratulationOpen(true);
-    const sendData = {
-      participantChapter: {
-        email: userInfo?.email,
-        participantId: userInfo?._id,
-        status: "Attempted",
-        completionDateTime: new Date(),
-      },
-      participantTask: {
-        participant: {
+    if ((+taskData?.points * +taskData?.gradeToPass) / 100 > point) {
+      const sendData = {
+        participantChapter: {
           email: userInfo?.email,
           participantId: userInfo?._id,
-          status: "Attempted",
+          status: "In Progress",
           completionDateTime: new Date(),
         },
-        questions: givenAnswers,
-        earnedPoint: point,
-        correctlyAnswered: score,
-      },
-    };
-    const submitCompletion = await axios.post(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/Quiz/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`,
-      sendData
-    );
-
-    console.log(submitCompletion, givenAnswers);
+        participantTask: {
+          participant: {
+            email: userInfo?.email,
+            participantId: userInfo?._id,
+            status: "In Progress",
+            completionDateTime: new Date(),
+          },
+          questions: givenAnswers,
+          earnedPoint: point,
+          correctlyAnswered: score,
+          attempted: participationData?.attempted
+            ? +participationData?.attempted + 1
+            : 1,
+        },
+      };
+      setParticipationData(sendData?.participantTask);
+      const submitCompletion = await axios.post(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/Quiz/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`,
+        sendData
+      );
+      setCount(count + 1);
+      setCongratulationOpen(true);
+    } else {
+      const sendData = {
+        participantChapter: {
+          email: userInfo?.email,
+          participantId: userInfo?._id,
+          status: "Completed",
+          completionDateTime: new Date(),
+        },
+        participantTask: {
+          participant: {
+            email: userInfo?.email,
+            participantId: userInfo?._id,
+            status: "Completed",
+            completionDateTime: new Date(),
+          },
+          questions: givenAnswers,
+          earnedPoint: point,
+          correctlyAnswered: score,
+          attempted: participationData?.attempted
+            ? +participationData?.attempted + 1
+            : 1,
+        },
+      };
+      setParticipationData(sendData?.participantTask);
+      const submitCompletion = await axios.post(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/Quiz/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`,
+        sendData
+      );
+      setCount(count + 1);
+      setCongratulationOpen(true);
+    }
+    Loading().close();
   };
 
   const question = questions[currentQuestion];
@@ -384,21 +426,20 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
 
   useEffect(() => {
     const findCourse = userInfo?.courses?.find(
-      (item) =>
-        item?.courseId === chapter?.courseId &&
-        taskData?.questions?.find((i) => i?.batchId === item?.batchId)
+      (item) => item?.courseId === chapter?.courseId
     );
-    if (findCourse) {
+    console.log(findCourse);
+    if (findCourse?.batchId) {
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/questionBank/quizId/${taskData?._id}/batchId/${findCourse?.batchId}`
+          `http://localhost:5000/api/v1/questionBank/quizId/${taskData?._id}/batchId/${findCourse?.batchId}`
         )
         .then((response) => {
           if (response?.data) setQuizQuestions(response?.data);
           console.log(response?.data);
         });
     }
-  }, [chapter, taskData, userInfo]);
+  }, [chapter, taskData, userInfo, participationData]);
 
   return (
     <div>
@@ -461,6 +502,10 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
                 <p className="text-[18px] font-[400] text-[#6B6B6B]">
                   To Pass:{" "}
                   <span className="text-[#3E4DAC]">
+                    {/* {(((+taskData?.points * +taskData?.gradeToPass) / 100 -
+                      participationData?.earnedPoint) *
+                      100) /
+                      ((+taskData?.points * +taskData?.gradeToPass) / 100)} */}
                     {taskData?.gradeToPass}% or more
                   </span>
                 </p>
@@ -1061,7 +1106,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
                 </div> */}
               </div>
               <button
-                onClick={handleNextQuestion}
+                onClick={() => setReviewOpen(true)}
                 className={`bg-[#FFDB70] text-black px-[21px] py-[14px] text-[16px] font-[700] text-center rounded-[8px] z-[1] shadow-[0px_4px_0px_0px_#F08323] lg:shadow-[0px_7px_0px_0px_#F08323] flex items-center gap-[7px] mt-[50px] mb-[20px]`}
               >
                 Review Submission
