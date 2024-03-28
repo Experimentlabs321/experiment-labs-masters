@@ -264,10 +264,11 @@ const ManageLiveClasses = () => {
       console.log("Meeting created: ==================>", response.data.meeting);
       const meetingData = response.data.meeting;
       manageClass = { ...manageClass, meetingData: meetingData };
+      const { clientID, clientSecret, redirectURI, ...newManageClass } = manageClass;
       const newClass = await axios.post(
         `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/classes`,
         // `http://localhost:5000/api/v1/tasks/taskType/classes`,
-        manageClass
+        newManageClass
       );
 
       console.log("New Class ====================>", newClass);
@@ -281,10 +282,10 @@ const ManageLiveClasses = () => {
       console.error("Error creating meeting:", error);
       Loading().close();
     }
-    
+
   };
 
-  
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -379,9 +380,9 @@ const ManageLiveClasses = () => {
       }
     );
     console.log(newNotification);
-    
-    
-    
+
+
+
   };
 
   console.log(mentors);
