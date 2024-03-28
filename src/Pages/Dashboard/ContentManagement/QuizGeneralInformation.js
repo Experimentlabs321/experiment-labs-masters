@@ -6,6 +6,7 @@ import TextEditor from "../../Shared/TextEditor/TextEditor";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { AuthContext } from "../../../contexts/AuthProvider";
+import Loading from "../../Shared/Loading/Loading";
 
 const QuizGeneralInformation = () => {
   const [selectedTab, setSelectedTab] = useState("Quiz General Information");
@@ -76,14 +77,15 @@ const QuizGeneralInformation = () => {
   }, [chapter]);
 
   useEffect(() => {
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${chapter?.courseId}`
-      )
-      .then((response) => {
-        setBatchesData(response?.data);
-      })
-      .catch((error) => console.error(error));
+    if (chapter?.courseId)
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${chapter?.courseId}`
+        )
+        .then((response) => {
+          setBatchesData(response?.data);
+        })
+        .catch((error) => console.error(error));
   }, [chapter]);
 
   useEffect(() => {
@@ -110,6 +112,7 @@ const QuizGeneralInformation = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    Loading();
     const formData = {
       taskName: e.target.quizName.value,
       quizName: e.target.quizName.value,
@@ -120,6 +123,8 @@ const QuizGeneralInformation = () => {
       isMarksTotalPoints: e.target.isMarksTotalPoints.value,
       marks: e.target.marks.value,
       totalPoints: e.target.totalPoints.value,
+      gradeToPass: e.target.gradeToPass.value,
+      gradeToPassValueIn: e.target.gradeToPassValueIn.value,
       skillParameterData: [],
       earningParameterData: [],
       chapterId: id,
@@ -139,6 +144,7 @@ const QuizGeneralInformation = () => {
       console.log(newQuiz);
 
       if (newQuiz?.data?.result?.acknowledged) {
+        Loading().close();
         console.log(newQuiz);
         localStorage.setItem("chapter", chapter?.chapterName);
         localStorage.setItem(
@@ -156,6 +162,7 @@ const QuizGeneralInformation = () => {
           `/editTask/${newQuiz?.data?.result?.insertedId}?taskType=Quiz`
         );
       }
+      Loading().close();
 
       console.log(formData);
     }
@@ -440,6 +447,7 @@ const QuizGeneralInformation = () => {
                           className="w-[100%] bg-[#F6F7FF]"
                           type="text"
                           name="gradeToPass"
+                          id="gradeToPass"
                         />
                       </div>
                       <div
@@ -452,8 +460,8 @@ const QuizGeneralInformation = () => {
                         <select
                           required
                           className=" border-0 focus:outline-0 bg-[#F6F7FF]"
-                          name="option"
-                          id="option"
+                          name="gradeToPassValueIn"
+                          id="gradeToPassValueIn"
                         >
                           <option className="" value="Percentage">
                             Percentage
@@ -630,14 +638,14 @@ const QuizGeneralInformation = () => {
               <input
                 type="submit"
                 value="Save"
-                className="px-[30px] py-3 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
-              />
-              <input
-                type="submit"
                 onClick={() => setSubmitPermission(true)}
+                className="px-[30px] cursor-pointer py-3 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
+              />
+              {/* <input
+                type="submit"
                 value="Save & Display"
                 className="px-[30px] py-3 bg-[#FF557A] text-[#fff] text-xl font-bold rounded-lg ms-20"
-              />
+              /> */}
             </div>
           </form>
         </div>
