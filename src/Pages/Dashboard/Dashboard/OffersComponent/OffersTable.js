@@ -5,8 +5,10 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import DialogLayoutForFromControl from "../../Shared/DialogLayoutForFromControl";
 import { AuthContext } from "../../../../contexts/AuthProvider";
+import BatchInfoTable from "./BatchInfoTable";
+import BundleInfoTable from "./BundleInfoTable";
 
-const OffersTable = ({ offerData, setOfferData, getAllOffers }) => {
+const OffersTable = ({ offerData, setOfferData, getAllOffers, isLoading }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredOffers, setFilteredOffers] = useState(offerData);
   const [updateOpen, setUpdateOpen] = useState(false);
@@ -23,6 +25,8 @@ const OffersTable = ({ offerData, setOfferData, getAllOffers }) => {
   const [createdAt, setCreatedAt] = useState("");
   const [createdBy, setCreatedBy] = useState("");
   const [id, setId] = useState("");
+  const [batches, setBatches] = useState([]);
+  const [bundles, setBundles] = useState([]);
 
   // State for validation errors
   const [errors, setErrors] = useState({});
@@ -53,6 +57,8 @@ const OffersTable = ({ offerData, setOfferData, getAllOffers }) => {
     setCreatedBy(offer?.createdBy);
     setId(offer?._id);
     setUpdateOpen(true);
+    setBatches(offer?.batchesInfo);
+    setBundles(offer?.bundlesInfo)
   };
 
   const handleDeleteOffer = async (id) => {
@@ -204,46 +210,83 @@ const OffersTable = ({ offerData, setOfferData, getAllOffers }) => {
           </thead>
           <tbody>
             {/* Add your data rows here */}
-            {filteredOffers?.map((offer, index) => (
-              <tr key={index} className="border-b">
-                <td className="py-2 px-4 text-left font-sans">
-                  {new Date(offer.createdAt).toLocaleString()}
-                </td>
-                <td className="py-2 px-4 text-left">{offer?.code}</td>
-                <td className="py-2 px-4 text-left">
-                  <div className="flex flex-col gap-1 text-xs">
-                    <span>Discount: {offer?.discountPercent}%</span>
-                    <span>Max Discount: {offer?.maxDiscountValue}</span>
-                    <span>Min Cart: {offer?.minCourseValue}</span>
-                  </div>
-                </td>
-                <td className="py-2 px-4 text-left">{offer?.validTill}</td>
-                <td className="py-2 px-4 text-left">
-                  {new Date(offer?.validTill) >= new Date() && !offer?.disabled
-                    ? "Yes"
-                    : "No"}
-                </td>
-                <td className="py-2 px-4 text-left">{offer?.usedCount || 0}</td>
-                <td className="py-2 px-4 text-left">
-                  <div>
-                    <span onClick={() => handleInputs(offer)}>
-                      <EditIcon
-                        sx={{
-                          ":hover": { color: "yellow" },
-                        }}
-                      />
-                    </span>
-                    <span onClick={() => handleDeleteOffer(offer._id)}>
-                      <DeleteIcon
-                        sx={{
-                          ":hover": { color: "red" },
-                        }}
-                      />
-                    </span>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {
+              isLoading ?
+                <>
+                  {Array.from({ length: 5 }, (_, index) => (
+                    <tr key={index} className="border-b animate-pulse">
+                      <td className="py-2 px-4 text-left">
+                        <div className="h-4 bg-gray-300 rounded"></div>
+                      </td>
+                      <td className="py-2 px-4 text-left">
+                        <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+                      </td>
+                      <td className="py-2 px-4 text-left">
+                        <div className="flex flex-col gap-1 text-xs">
+                          <div className="h-2 bg-gray-300 rounded w-1/2"></div>
+                          <div className="h-2 bg-gray-300 rounded w-2/3"></div>
+                          <div className="h-2 bg-gray-300 rounded w-1/2"></div>
+                        </div>
+                      </td>
+                      <td className="py-2 px-4 text-left">
+                        <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+                      </td>
+                      <td className="py-2 px-4 text-left">
+                        <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+                      </td>
+                      <td className="py-2 px-4 text-left">
+                        <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+                      </td>
+                      <td className="py-2 px-4 text-left">
+                        <div className="flex gap-2">
+                          <div className="h-4 bg-gray-300 rounded w-6"></div>
+                          <div className="h-4 bg-gray-300 rounded w-6"></div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </>
+                : filteredOffers?.map((offer, index) => (
+                  <tr key={index} className="border-b">
+                    <td className="py-2 px-4 text-left font-sans">
+                      {new Date(offer.createdAt).toLocaleString()}
+                    </td>
+                    <td className="py-2 px-4 text-left">{offer?.code}</td>
+                    <td className="py-2 px-4 text-left">
+                      <div className="flex flex-col gap-1 text-xs">
+                        <span>Discount: {offer?.discountPercent}%</span>
+                        <span>Max Discount: {offer?.maxDiscountValue}</span>
+                        <span>Min Cart: {offer?.minCourseValue}</span>
+                      </div>
+                    </td>
+                    <td className="py-2 px-4 text-left">{offer?.validTill}</td>
+                    <td className="py-2 px-4 text-left">
+                      {new Date(offer?.validTill) >= new Date() && !offer?.disabled
+                        ? "Yes"
+                        : "No"}
+                    </td>
+                    <td className="py-2 px-4 text-left">{offer?.usedCount || 0}</td>
+                    <td className="py-2 px-4 text-left">
+                      <div>
+                        <span onClick={() => handleInputs(offer)}>
+                          <EditIcon
+                            sx={{
+                              ":hover": { color: "yellow" },
+                            }}
+                          />
+                        </span>
+                        <span onClick={() => handleDeleteOffer(offer._id)}>
+                          <DeleteIcon
+                            sx={{
+                              ":hover": { color: "red" },
+                            }}
+                          />
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+            }
             {/* Add more rows as needed */}
           </tbody>
         </table>
@@ -325,6 +368,22 @@ const OffersTable = ({ offerData, setOfferData, getAllOffers }) => {
             </p>
           </div>
 
+          {
+            batches?.length > 0 &&
+            <div className="mb-6 mt-8">
+              <BatchInfoTable batches={batches} />
+            </div>
+          }
+
+          {
+            bundles?.length > 0 &&
+            <div className="mb-6 mt-8">
+              <BundleInfoTable bundles={bundles}/>
+            </div>
+          }
+
+
+
           <div className="mb-4">
             <label
               htmlFor="discountPercent"
@@ -337,9 +396,8 @@ const OffersTable = ({ offerData, setOfferData, getAllOffers }) => {
               id="discountPercent"
               value={discountPercent}
               onChange={(e) => setDiscountPercent(e.target.value)}
-              className={`mt-1 p-2 border ${
-                errors.discountPercent ? "border-red-500" : "border-gray-300"
-              } rounded-md w-full`}
+              className={`mt-1 p-2 border ${errors.discountPercent ? "border-red-500" : "border-gray-300"
+                } rounded-md w-full`}
             />
             {errors.discountPercent && (
               <p className="text-red-500 text-sm">{errors.discountPercent}</p>
@@ -359,9 +417,8 @@ const OffersTable = ({ offerData, setOfferData, getAllOffers }) => {
               id="maxDiscountValue"
               value={maxDiscountValue}
               onChange={(e) => setMaxDiscountValue(e.target.value)}
-              className={`mt-1 p-2 border ${
-                errors.maxDiscountValue ? "border-red-500" : "border-gray-300"
-              } rounded-md w-full`}
+              className={`mt-1 p-2 border ${errors.maxDiscountValue ? "border-red-500" : "border-gray-300"
+                } rounded-md w-full`}
             />
             {errors.maxDiscountValue && (
               <p className="text-red-500 text-sm">{errors.maxDiscountValue}</p>
@@ -381,9 +438,8 @@ const OffersTable = ({ offerData, setOfferData, getAllOffers }) => {
               id="minCourseValue"
               value={minCourseValue}
               onChange={(e) => setMinCourseValue(e.target.value)}
-              className={`mt-1 p-2 border ${
-                errors.minCourseValue ? "border-red-500" : "border-gray-300"
-              } rounded-md w-full`}
+              className={`mt-1 p-2 border ${errors.minCourseValue ? "border-red-500" : "border-gray-300"
+                } rounded-md w-full`}
             />
             {errors.minCourseValue && (
               <p className="text-red-500 text-sm">{errors.minCourseValue}</p>
@@ -403,9 +459,8 @@ const OffersTable = ({ offerData, setOfferData, getAllOffers }) => {
               id="validTill"
               value={validTill}
               onChange={(e) => setValidTill(e.target.value)}
-              className={`mt-1 p-2 border ${
-                errors.validTill ? "border-red-500" : "border-gray-300"
-              } rounded-md w-full`}
+              className={`mt-1 p-2 border ${errors.validTill ? "border-red-500" : "border-gray-300"
+                } rounded-md w-full`}
               placeholder="yyyy-mm-dd"
               min={new Date().toISOString().split("T")[0]}
             />
@@ -427,9 +482,8 @@ const OffersTable = ({ offerData, setOfferData, getAllOffers }) => {
               id="maxUseCount"
               value={maxUseCount}
               onChange={(e) => setMaxUseCount(e.target.value)}
-              className={`mt-1 p-2 border ${
-                errors.maxUseCount ? "border-red-500" : "border-gray-300"
-              } rounded-md w-full`}
+              className={`mt-1 p-2 border ${errors.maxUseCount ? "border-red-500" : "border-gray-300"
+                } rounded-md w-full`}
             />
             {errors.maxUseCount && (
               <p className="text-red-500 text-sm">{errors.maxUseCount}</p>
