@@ -120,6 +120,8 @@ const EditQuiz = () => {
     updatedQuizObject.totalPoints = e.target.totalPoints.value;
     updatedQuizObject.gradeToPass = e.target.gradeToPass.value;
     updatedQuizObject.gradeToPassValueIn = e.target.gradeToPassValueIn.value;
+    updatedQuizObject.batches = selectedBatches;
+    updatedQuizObject.quizDescription = quizDescription;
 
     await setQuizData(updatedQuizObject);
     console.log(updatedQuizObject);
@@ -134,7 +136,7 @@ const EditQuiz = () => {
       if (newQuiz?.data?.updateResult?.acknowledged) {
         Loading().close();
         toast.success("Quiz Updated Successfully");
-        e.target.reset();
+        // e.target.reset();
       }
     }
     Loading().close();
