@@ -111,28 +111,9 @@ const Submission = ({ taskData }) => {
       submissionDateTime: new Date(),
     };
     console.log(user?.email , "shihab77023@gmail.com", userInfo?.organizationId);
-    const sendMail = await axios.post(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
-      // `http://localhost:5000/api/v1/sendMail`,
-      {
-        //from: user?.email,
-        // to: `naman.j@experimentlabs.in,gaurav@experimentlabs.in`,
-        to: course?.creator?.email,
-        templateType: "emailAction",
-        templateName: "assignmentSubmission",
-        organizationId: userInfo?.organizationId,
-        user_name: userInfo?.name,
-        task_name:taskData?.taskName,
-        // learner_name: "",
-        // course_name: "",
-        // site_name: "",
-        // site_email: ""
-        /* subject: `Submission of ${taskData?.taskName}`,
-        message: `${userInfo?.name} has submitted assignment of the task ${taskData?.taskName}. Please review the submission.`, */
-      }
-    );
+ 
 
-    console.log(fileUrl);
+    console.log(manageAssignment);
 
     if (manageAssignment && fileUrl) {
       console.log(manageAssignment);
@@ -140,6 +121,7 @@ const Submission = ({ taskData }) => {
         `${process.env.REACT_APP_BACKEND_API}/submitAssignment`,
         manageAssignment
       );
+      console.log(newAssignment);
 
       const sendData = {
         participantChapter: {
@@ -180,6 +162,28 @@ const Submission = ({ taskData }) => {
             redirectLink: `/mentorAssignments`,
           }
         );
+        const sendMail = await axios.post(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+          // `http://localhost:5000/api/v1/sendMail`,
+          {
+            //from: user?.email,
+            // to: `naman.j@experimentlabs.in,gaurav@experimentlabs.in`,
+             to: course?.creator?.email,
+          
+            templateType: "emailAction",
+            templateName: "assignmentSubmission",
+            organizationId: userInfo?.organizationId,
+            user_name: userInfo?.name,
+            task_name:taskData?.taskName,
+            // learner_name: "",
+            // course_name: "",
+            // site_name: "",
+            // site_email: ""
+            /* subject: `Submission of ${taskData?.taskName}`,
+            message: `${userInfo?.name} has submitted assignment of the task ${taskData?.taskName}. Please review the submission.`, */
+          }
+        );
+
         console.log(newNotification);
         toast.success("Assignment Submitted Successfully");
         checkSubmit();

@@ -67,12 +67,14 @@ const AssignmentEvaluation2 = () => {
   //console.log(mainAssignments.skillParameterData)
   //file upload
   const [selectedFile, setSelectedFile] = useState(null);
-  console.log(assignment?.submitter?.name);
+  //console.log(assignment?.submitter?.name);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setSelectedFile(file);
   };
+  
+  console.log(selectedFile)
   const handleTabClick = (tab) => {
     setSelectedTab(tab);
   };
@@ -106,6 +108,8 @@ const AssignmentEvaluation2 = () => {
       )
       .then((response) => {
         setAssignment(response?.data);
+        setSelectedFile(response?.data?.submitter?.result?.attachFile)
+        
         // console.log(response?.data.taskName)
       })
       .catch((error) => console.error(error));
@@ -830,7 +834,7 @@ const AssignmentEvaluation2 = () => {
                       cols="50"
                       placeholder="Write feedback"
                       name="feedback"
-                      defaultValue={assignment?.submitter?.result?.feedback}
+                      defaultValue={assignment?.submitter?.result?.feedback ? assignment?.submitter?.result?.feedback : assignment?.submitter?.result?.status}
                     />
                   </div>
                   <div className="mb-10">
@@ -848,6 +852,7 @@ const AssignmentEvaluation2 = () => {
                         <input
                           className="w-full h-full flex items-center text-[#3E4DAC] text-base font-semibold mt-4"
                           type="file"
+
                         />
                         <p className="w-[105px] h-full bg-[#FFDB70] text-[] text-base font-semibold flex gap-2 justify-center items-center">
                           Browse
@@ -936,7 +941,7 @@ const AssignmentEvaluation2 = () => {
                       cols="50"
                       placeholder="Write feedback"
                       name="feedback"
-                      defaultValue={assignment?.submitter?.result?.feedback}
+                      defaultValue={assignment?.submitter?.result?.feedback ? assignment?.submitter?.result?.feedback : assignment?.submitter?.result?.status}
                     />
                   </div>
                   <div className="mb-10">
