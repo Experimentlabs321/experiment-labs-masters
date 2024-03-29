@@ -15,226 +15,226 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-// let questions = [
-//   {
-//     id: 1,
-//     question: "In Figma, What is the use Opt + Cmd + K / Ctrl + Alt + K ?",
-//     options: [
-//       "A. Run last plugin",
-//       "B. Create component",
-//       "C. Share a file",
-//       "D. Frame selection",
-//     ],
-//     explanations: [
-//       "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
-//       "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
-//       "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
-//       "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
-//     ],
-//     correctAnswer: "C. Share a file",
-//     point: 1,
-//   },
-//   {
-//     id: 2,
-//     question: 'Which planet is known as the "Red Planet"?',
-//     options: ["Venus", "Mars", "Jupiter", "Mercury"],
-//     correctAnswer: "Mars",
-//     point: 1,
-//     explanations: [
-//       "Venus is known as the 'Morning Star', not the 'Red Planet'.",
-//       "Correct! Mars is known as the 'Red Planet'.",
-//       "Jupiter is the largest planet in our solar system, not the 'Red Planet'.",
-//       "Mercury is the smallest planet in our solar system, not the 'Red Planet'.",
-//     ],
-//   },
-//   {
-//     id: 3,
-//     question: "What is the chemical symbol for water?",
-//     options: ["H2O", "CO2", "O2", "NaCl"],
-//     correctAnswer: "H2O",
-//     point: 1,
-//     explanations: [
-//       "H2O is the chemical symbol for water.",
-//       "CO2 is the chemical symbol for carbon dioxide.",
-//       "O2 is the chemical symbol for oxygen.",
-//       "NaCl is the chemical symbol for sodium chloride (salt).",
-//     ],
-//   },
-//   {
-//     id: 4,
-//     question: "What is the largest mammal on Earth?",
-//     options: ["Elephant", "Blue Whale", "Giraffe", "Hippopotamus"],
-//     correctAnswer: "Blue Whale",
-//     point: 1,
-//     explanations: [
-//       "Elephants are large mammals, but they are not the largest.",
-//       "Correct! Blue Whales are the largest mammals on Earth.",
-//       "Giraffes are tall mammals, but they are not the largest.",
-//       "Hippopotamuses are large mammals, but they are not the largest.",
-//     ],
-//   },
-//   {
-//     id: 5,
-//     question: "Which scientist developed the theory of relativity?",
-//     options: [
-//       "Isaac Newton",
-//       "Albert Einstein",
-//       "Galileo Galilei",
-//       "Marie Curie",
-//     ],
-//     correctAnswer: "Albert Einstein",
-//     point: 1,
-//     explanations: [
-//       "Isaac Newton is known for his laws of motion and universal gravitation, not the theory of relativity.",
-//       "Correct! Albert Einstein developed the theory of relativity.",
-//       "Galileo Galilei made significant contributions to astronomy and physics, but he did not develop the theory of relativity.",
-//       "Marie Curie was a pioneering physicist and chemist, but she did not develop the theory of relativity.",
-//     ],
-//   },
-//   {
-//     id: 6,
-//     question: "What is the capital of Japan?",
-//     options: ["Beijing", "Seoul", "Tokyo", "Bangkok"],
-//     correctAnswer: "Tokyo",
-//     point: 1,
-//     explanations: [
-//       "Beijing is the capital of China, not Japan.",
-//       "Seoul is the capital of South Korea, not Japan.",
-//       "Correct! Tokyo is the capital of Japan.",
-//       "Bangkok is the capital of Thailand, not Japan.",
-//     ],
-//   },
-//   {
-//     id: 7,
-//     question: "What is the chemical symbol for gold?",
-//     options: ["Au", "Ag", "Fe", "Cu"],
-//     correctAnswer: "Au",
-//     point: 1,
-//     explanations: [
-//       "Correct! Au is the chemical symbol for gold.",
-//       "Ag is the chemical symbol for silver, not gold.",
-//       "Fe is the chemical symbol for iron, not gold.",
-//       "Cu is the chemical symbol for copper, not gold.",
-//     ],
-//   },
-//   {
-//     id: 8,
-//     question: 'Which planet is known as the "Red Planet"?',
-//     options: ["Venus", "Mars", "Jupiter", "Mercury"],
-//     correctAnswer: "Mars",
-//     point: 1,
-//     explanations: [
-//       "Venus is known as the 'Morning Star', not the 'Red Planet'.",
-//       "Correct! Mars is known as the 'Red Planet'.",
-//       "Jupiter is the largest planet in our solar system, not the 'Red Planet'.",
-//       "Mercury is the smallest planet in our solar system, not the 'Red Planet'.",
-//     ],
-//   },
-//   {
-//     id: 9,
-//     question: "What is the chemical symbol for water?",
-//     options: ["H2O", "CO2", "O2", "NaCl"],
-//     correctAnswer: "H2O",
-//     point: 1,
-//     explanations: [
-//       "H2O is the chemical symbol for water.",
-//       "CO2 is the chemical symbol for carbon dioxide.",
-//       "O2 is the chemical symbol for oxygen.",
-//       "NaCl is the chemical symbol for sodium chloride (salt).",
-//     ],
-//   },
-//   {
-//     id: 10,
-//     question: "What is the largest mammal on Earth?",
-//     options: ["Elephant", "Blue Whale", "Giraffe", "Hippopotamus"],
-//     correctAnswer: "Blue Whale",
-//     point: 1,
-//     explanations: [
-//       "Elephants are large mammals, but they are not the largest.",
-//       "Correct! Blue Whales are the largest mammals on Earth.",
-//       "Giraffes are tall mammals, but they are not the largest.",
-//       "Hippopotamuses are large mammals, but they are not the largest.",
-//     ],
-//   },
-//   {
-//     id: 11,
-//     question: "Which scientist developed the theory of relativity?",
-//     options: [
-//       "Isaac Newton",
-//       "Albert Einstein",
-//       "Galileo Galilei",
-//       "Marie Curie",
-//     ],
-//     correctAnswer: "Albert Einstein",
-//     point: 1,
-//     explanations: [
-//       "Isaac Newton is known for his laws of motion and universal gravitation, not the theory of relativity.",
-//       "Correct! Albert Einstein developed the theory of relativity.",
-//       "Galileo Galilei made significant contributions to astronomy and physics, but he did not develop the theory of relativity.",
-//       "Marie Curie was a pioneering physicist and chemist, but she did not develop the theory of relativity.",
-//     ],
-//   },
-//   {
-//     id: 12,
-//     question: "What is the capital of Japan?",
-//     options: ["Beijing", "Seoul", "Tokyo", "Bangkok"],
-//     correctAnswer: "Tokyo",
-//     point: 1,
-//     explanations: [
-//       "Beijing is the capital of China, not Japan.",
-//       "Seoul is the capital of South Korea, not Japan.",
-//       "Correct! Tokyo is the capital of Japan.",
-//       "Bangkok is the capital of Thailand, not Japan.",
-//     ],
-//   },
-//   {
-//     id: 13,
-//     question: "What is the chemical symbol for gold?",
-//     options: ["Au", "Ag", "Fe", "Cu"],
-//     correctAnswer: "Au",
-//     point: 1,
-//     explanations: [
-//       "Correct! Au is the chemical symbol for gold.",
-//       "Ag is the chemical symbol for silver, not gold.",
-//       "Fe is the chemical symbol for iron, not gold.",
-//       "Cu is the chemical symbol for copper, not gold.",
-//     ],
-//   },
-//   {
-//     id: 14,
-//     question: "What is the capital of France?",
-//     correctAnswer: "Paris",
-//     point: 2,
-//     explanations: "Correct! Paris is the capital of France.",
-//   },
-// ];
+/* let questions = [
+  {
+    id: 1,
+    question: "In Figma, What is the use Opt + Cmd + K / Ctrl + Alt + K ?",
+    options: [
+      "A. Run last plugin",
+      "B. Create component",
+      "C. Share a file",
+      "D. Frame selection",
+    ],
+    explanations: [
+      "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
+      "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
+      "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
+      "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
+    ],
+    correctAnswer: "C. Share a file",
+    point: 1,
+  },
+  {
+    id: 2,
+    question: 'Which planet is known as the "Red Planet"?',
+    options: ["Venus", "Mars", "Jupiter", "Mercury"],
+    correctAnswer: "Mars",
+    point: 1,
+    explanations: [
+      "Venus is known as the 'Morning Star', not the 'Red Planet'.",
+      "Correct! Mars is known as the 'Red Planet'.",
+      "Jupiter is the largest planet in our solar system, not the 'Red Planet'.",
+      "Mercury is the smallest planet in our solar system, not the 'Red Planet'.",
+    ],
+  },
+  {
+    id: 3,
+    question: "What is the chemical symbol for water?",
+    options: ["H2O", "CO2", "O2", "NaCl"],
+    correctAnswer: "H2O",
+    point: 1,
+    explanations: [
+      "H2O is the chemical symbol for water.",
+      "CO2 is the chemical symbol for carbon dioxide.",
+      "O2 is the chemical symbol for oxygen.",
+      "NaCl is the chemical symbol for sodium chloride (salt).",
+    ],
+  },
+  {
+    id: 4,
+    question: "What is the largest mammal on Earth?",
+    options: ["Elephant", "Blue Whale", "Giraffe", "Hippopotamus"],
+    correctAnswer: "Blue Whale",
+    point: 1,
+    explanations: [
+      "Elephants are large mammals, but they are not the largest.",
+      "Correct! Blue Whales are the largest mammals on Earth.",
+      "Giraffes are tall mammals, but they are not the largest.",
+      "Hippopotamuses are large mammals, but they are not the largest.",
+    ],
+  },
+  {
+    id: 5,
+    question: "Which scientist developed the theory of relativity?",
+    options: [
+      "Isaac Newton",
+      "Albert Einstein",
+      "Galileo Galilei",
+      "Marie Curie",
+    ],
+    correctAnswer: "Albert Einstein",
+    point: 1,
+    explanations: [
+      "Isaac Newton is known for his laws of motion and universal gravitation, not the theory of relativity.",
+      "Correct! Albert Einstein developed the theory of relativity.",
+      "Galileo Galilei made significant contributions to astronomy and physics, but he did not develop the theory of relativity.",
+      "Marie Curie was a pioneering physicist and chemist, but she did not develop the theory of relativity.",
+    ],
+  },
+  {
+    id: 6,
+    question: "What is the capital of Japan?",
+    options: ["Beijing", "Seoul", "Tokyo", "Bangkok"],
+    correctAnswer: "Tokyo",
+    point: 1,
+    explanations: [
+      "Beijing is the capital of China, not Japan.",
+      "Seoul is the capital of South Korea, not Japan.",
+      "Correct! Tokyo is the capital of Japan.",
+      "Bangkok is the capital of Thailand, not Japan.",
+    ],
+  },
+  {
+    id: 7,
+    question: "What is the chemical symbol for gold?",
+    options: ["Au", "Ag", "Fe", "Cu"],
+    correctAnswer: "Au",
+    point: 1,
+    explanations: [
+      "Correct! Au is the chemical symbol for gold.",
+      "Ag is the chemical symbol for silver, not gold.",
+      "Fe is the chemical symbol for iron, not gold.",
+      "Cu is the chemical symbol for copper, not gold.",
+    ],
+  },
+  {
+    id: 8,
+    question: 'Which planet is known as the "Red Planet"?',
+    options: ["Venus", "Mars", "Jupiter", "Mercury"],
+    correctAnswer: "Mars",
+    point: 1,
+    explanations: [
+      "Venus is known as the 'Morning Star', not the 'Red Planet'.",
+      "Correct! Mars is known as the 'Red Planet'.",
+      "Jupiter is the largest planet in our solar system, not the 'Red Planet'.",
+      "Mercury is the smallest planet in our solar system, not the 'Red Planet'.",
+    ],
+  },
+  {
+    id: 9,
+    question: "What is the chemical symbol for water?",
+    options: ["H2O", "CO2", "O2", "NaCl"],
+    correctAnswer: "H2O",
+    point: 1,
+    explanations: [
+      "H2O is the chemical symbol for water.",
+      "CO2 is the chemical symbol for carbon dioxide.",
+      "O2 is the chemical symbol for oxygen.",
+      "NaCl is the chemical symbol for sodium chloride (salt).",
+    ],
+  },
+  {
+    id: 10,
+    question: "What is the largest mammal on Earth?",
+    options: ["Elephant", "Blue Whale", "Giraffe", "Hippopotamus"],
+    correctAnswer: "Blue Whale",
+    point: 1,
+    explanations: [
+      "Elephants are large mammals, but they are not the largest.",
+      "Correct! Blue Whales are the largest mammals on Earth.",
+      "Giraffes are tall mammals, but they are not the largest.",
+      "Hippopotamuses are large mammals, but they are not the largest.",
+    ],
+  },
+  {
+    id: 11,
+    question: "Which scientist developed the theory of relativity?",
+    options: [
+      "Isaac Newton",
+      "Albert Einstein",
+      "Galileo Galilei",
+      "Marie Curie",
+    ],
+    correctAnswer: "Albert Einstein",
+    point: 1,
+    explanations: [
+      "Isaac Newton is known for his laws of motion and universal gravitation, not the theory of relativity.",
+      "Correct! Albert Einstein developed the theory of relativity.",
+      "Galileo Galilei made significant contributions to astronomy and physics, but he did not develop the theory of relativity.",
+      "Marie Curie was a pioneering physicist and chemist, but she did not develop the theory of relativity.",
+    ],
+  },
+  {
+    id: 12,
+    question: "What is the capital of Japan?",
+    options: ["Beijing", "Seoul", "Tokyo", "Bangkok"],
+    correctAnswer: "Tokyo",
+    point: 1,
+    explanations: [
+      "Beijing is the capital of China, not Japan.",
+      "Seoul is the capital of South Korea, not Japan.",
+      "Correct! Tokyo is the capital of Japan.",
+      "Bangkok is the capital of Thailand, not Japan.",
+    ],
+  },
+  {
+    id: 13,
+    question: "What is the chemical symbol for gold?",
+    options: ["Au", "Ag", "Fe", "Cu"],
+    correctAnswer: "Au",
+    point: 1,
+    explanations: [
+      "Correct! Au is the chemical symbol for gold.",
+      "Ag is the chemical symbol for silver, not gold.",
+      "Fe is the chemical symbol for iron, not gold.",
+      "Cu is the chemical symbol for copper, not gold.",
+    ],
+  },
+  {
+    id: 14,
+    question: "What is the capital of France?",
+    correctAnswer: "Paris",
+    point: 2,
+    explanations: "Correct! Paris is the capital of France.",
+  },
+];
 
-// let questions = [
-//   {
-//     id: 1,
-//     questionText: "<p>question 2</p>",
-//     options: [
-//       {
-//         answerFormula: "<p>1</p>",
-//         feedback: "<p>1</p>",
-//         answer: "wrong",
-//       },
-//       {
-//         answerFormula: "<p>2</p>",
-//         feedback: "<p>2</p>",
-//         answer: "correct",
-//       },
-//     ],
-//     explanations: [
-//       "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
-//       "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
-//       "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
-//       "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
-//     ],
-//     correctAnswer: "C. Share a file",
-//     defaultMarks: 1,
-//   },
-// ];
+let questions = [
+  {
+    id: 1,
+    questionText: "<p>question 2</p>",
+    options: [
+      {
+        answerFormula: "<p>1</p>",
+        feedback: "<p>1</p>",
+        answer: "wrong",
+      },
+      {
+        answerFormula: "<p>2</p>",
+        feedback: "<p>2</p>",
+        answer: "correct",
+      },
+    ],
+    explanations: [
+      "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
+      "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
+      "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
+      "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
+    ],
+    correctAnswer: "C. Share a file",
+    defaultMarks: 1,
+  },
+]; */
 
 const QuizTask = ({ taskData, count, setCount, chapter }) => {
   const { userInfo } = useContext(AuthContext);
@@ -432,7 +432,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
     if (findCourse?.batchId) {
       axios
         .get(
-          `http://localhost:5000/api/v1/questionBank/quizId/${taskData?._id}/batchId/${findCourse?.batchId}`
+          `${process.env.REACT_APP_SERVER_API}/api/v1/questionBank/quizId/${taskData?._id}/batchId/${findCourse?.batchId}`
         )
         .then((response) => {
           if (response?.data) setQuizQuestions(response?.data);
@@ -1088,8 +1088,8 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
                     <h1 className="text-zinc-800 text-[16.90px] font-semibold">
                       Your Points Earned
                     </h1>
-                    <h1 className="text-rose-400 text-[25.52px] font-semibold">
-                      {point} Points
+                    <h1 className="text-rose-400 font-sans text-[25.52px] font-semibold">
+                      {point} points out of {taskData?.points} points
                     </h1>
                   </div>
                 </div>

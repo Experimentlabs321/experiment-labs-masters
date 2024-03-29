@@ -9,6 +9,7 @@ import QuizResult from "../QuizResult";
 import QuizEvaluationParameter from "../QuizEvaluationParameter";
 import ManageQuestionBank from "../ManageQuestionBank";
 import ManageQuestion from "../ManageQuestion";
+import Loading from "../../../Shared/Loading/Loading";
 
 const EditQuiz = () => {
   const [selectedTab, setSelectedTab] = useState("Quiz General Information");
@@ -74,14 +75,15 @@ const EditQuiz = () => {
   }, [chapter]);
 
   useEffect(() => {
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${chapter?.courseId}`
-      )
-      .then((response) => {
-        if (!batchesData[0]) setBatchesData(response?.data);
-      })
-      .catch((error) => console.error(error));
+    if (chapter?.courseId)
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${chapter?.courseId}`
+        )
+        .then((response) => {
+          setBatchesData(response?.data);
+        })
+        .catch((error) => console.error(error));
   }, [chapter]);
 
   const handleOptionChangeBatch = (event, optionValue) => {
@@ -104,6 +106,7 @@ const EditQuiz = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    Loading();
     const updatedQuizObject = { ...quizData };
     updatedQuizObject.taskName = e.target.quizName.value;
     updatedQuizObject.quizName = e.target.quizName.value;
@@ -117,6 +120,8 @@ const EditQuiz = () => {
     updatedQuizObject.totalPoints = e.target.totalPoints.value;
     updatedQuizObject.gradeToPass = e.target.gradeToPass.value;
     updatedQuizObject.gradeToPassValueIn = e.target.gradeToPassValueIn.value;
+    updatedQuizObject.batches = selectedBatches;
+    updatedQuizObject.quizDescription = quizDescription;
 
     await setQuizData(updatedQuizObject);
     console.log(updatedQuizObject);
@@ -129,10 +134,12 @@ const EditQuiz = () => {
       );
       console.log(newQuiz);
       if (newQuiz?.data?.updateResult?.acknowledged) {
+        Loading().close();
         toast.success("Quiz Updated Successfully");
-        e.target.reset();
+        // e.target.reset();
       }
     }
+    Loading().close();
   };
 
   console.log(quizDescription);
@@ -399,7 +406,7 @@ const EditQuiz = () => {
                           className=" flex  border  rounded-lg h-[40px] w-[20%] px-2 text-[#535353] "
                         >
                           <input
-                            defaultValue={quizData ? quizData?.gradeToPass : ""}
+                            defaultValue={quizData?.gradeToPass}
                             className="w-[100%] bg-[#F6F7FF]"
                             type="text"
                             name="gradeToPass"

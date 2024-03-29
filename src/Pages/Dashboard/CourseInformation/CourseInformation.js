@@ -93,7 +93,7 @@ const CourseInformation = () => {
       name: "Quiz",
       icon: QuizTaskIcon,
       theme: "#E010BF",
-      // route: `/quizGeneralInfo/${chapterData?._id}`,
+      route: `/manageQuiz/${chapterData?._id}`,
     },
     {
       name: "Live Test",
@@ -699,15 +699,12 @@ const CourseInformation = () => {
                             <div
                               style={{ background: taskType?.theme }}
                               className={`  ${
-                                (taskType?.name === "Quiz" ||
-                                  taskType?.name === "Live Test") &&
-                                "opacity-40"
+                                taskType?.name === "Live Test" && "opacity-40"
                               } flex items-center rounded-[12px] justify-center p-[18px]`}
                             >
                               <img src={taskType?.icon} alt="icon" />
                             </div>
-                            {(taskType?.name === "Quiz" ||
-                              taskType?.name === "Live Test") && (
+                            {taskType?.name === "Live Test" && (
                               <img
                                 className="absolute w-7 top-[45%] left-[37%]"
                                 src={lock}

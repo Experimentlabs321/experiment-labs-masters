@@ -28,6 +28,7 @@ import { AuthContext } from "../../../contexts/AuthProvider";
 import toast from "react-hot-toast";
 import Loading from "../../Shared/Loading/Loading";
 import Swal from "sweetalert2";
+import EditMultiChoQues from "./EditMultiChoQues";
 
 const ManageQuestion = ({
   batchesData,
@@ -232,6 +233,8 @@ const ManageQuestion = ({
   //
 
   const [addQues, setAddQues] = useState(false);
+  const [editQues, setEditQues] = useState(false);
+  const [editingQueInfo, setEditingQueInfo] = useState({});
 
   //
 
@@ -253,6 +256,7 @@ const ManageQuestion = ({
       setOpenAddFromQuesBank(false);
     }
     console.log(updatedQuizObject);
+    Loading().close();
   };
 
   const handleAddSelQues = () => {
@@ -290,6 +294,7 @@ const ManageQuestion = ({
     useState([]);
   const [quizQuestions, setQuizQuestions] = useState([]);
   const [count, setCount] = useState(0);
+  const [totalAddedPoints, setTotalAddedPoints] = useState(0);
 
   const handleOptionChangeQuestionFromQuesBank = (event) => {
     const optionValue = event.target.value;
@@ -433,6 +438,7 @@ const ManageQuestion = ({
 
   useEffect(() => {
     let updatedShowQuestion = [];
+    let totalMarks = 0;
     selectedOptionsQuestionFromQuesBank.forEach((item) => {
       const question = questionBankQuestions?.find(
         (q) => q?._id === item?.questionId
@@ -448,6 +454,9 @@ const ManageQuestion = ({
           // If the question matches any selected batch, add it to the updatedShowQuestion array
           if (matchesBatch) {
             updatedShowQuestion.push(question);
+            if (selectedBatchesForShowingQuestion?.length === 1) {
+              totalMarks = +question?.defaultMarks + totalMarks;
+            }
           }
         } else {
           updatedShowQuestion.push(question);
@@ -455,6 +464,7 @@ const ManageQuestion = ({
       }
     });
     setQuizQuestions(updatedShowQuestion);
+    setTotalAddedPoints(totalMarks);
   }, [
     selectedBatchesForShowingQuestion,
     selectedOptionsQuestionFromQuesBank,
@@ -537,7 +547,7 @@ const ManageQuestion = ({
 
       {selectedTab === "Questions" && !showQuestionForm && (
         <div className="mx-10 my-20">
-          {!addQues && (
+          {!addQues && !editQues && (
             <div>
               <div className="flex justify-between">
                 <div className=" flex items-center">
@@ -1200,10 +1210,26 @@ const ManageQuestion = ({
                     </span>
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-6">
                   <p>
                     Total Marks/Points :{" "}
-                    <span className="text-[#3E4DAC]">{quizData?.points}</span>
+                    <span className={` text-[#3E4DAC]`}>
+                      {quizData?.points}
+                    </span>
+                  </p>
+                  <p>
+                    Total Added Marks/Points :{" "}
+                    <span
+                      className={`${
+                        totalAddedPoints !== +quizData?.points
+                          ? "text-red-600 "
+                          : " text-green"
+                      } text-[#3E4DAC]`}
+                    >
+                      {selectedBatchesForShowingQuestion?.length !== 1
+                        ? "NAN"
+                        : totalAddedPoints}
+                    </span>
                   </p>
                   {/* <img src={bxseditalt} alt="bxseditalt" /> */}
                 </div>
@@ -1211,15 +1237,15 @@ const ManageQuestion = ({
 
               <div className="">
                 <div className="w-[100%] mt-2">
-                  <table className="w-full">
+                  <table className="w-full border">
                     <thead className="bg-[#FFFDEA]  ">
                       <tr className="text-[#3E4DAC] text-base font-bold">
                         <th className="py-5">Question No</th>
                         <th>Question Name</th>
                         <th>Question Type</th>
                         <th>Marks</th>
-                        {/* <th>Edit</th>
-                        <th>Delete</th> */}
+                        {/* <th>Edit</th> */}
+                        {/* <th>Delete</th> */}
                       </tr>
                     </thead>
                     <tbody className="">
@@ -1252,10 +1278,18 @@ const ManageQuestion = ({
                             {question?.defaultMarks}
                           </td>
                           {/* <td className="flex items-center justify-center">
-                                <img src={bxseditalt} alt="bxseditalt" />
-                              </td>
+                            <img
+                              className=" cursor-pointer"
+                              onClick={() => {
+                                setEditQues(true);
+                                setEditingQueInfo(question);
+                              }}
+                              src={bxseditalt}
+                              alt="bxseditalt"
+                            />
+                          </td> */}
 
-                              <td className="">
+                          {/* <td className="">
                                 <img src={trash} alt="trash" />
                               </td> */}
                         </tr>
@@ -1282,6 +1316,25 @@ const ManageQuestion = ({
               )}
             </>
           )}
+          {editQues && editingQueInfo?._id && (
+            <>
+              {editingQueInfo?.questionType === "Multiple choice" && (
+                <EditMultiChoQues
+                  editQues={editQues}
+                  setEditQues={setEditQues}
+                  editingQueInfo={editingQueInfo}
+                  setEditingQueInfo={setEditingQueInfo}
+                  setOpenNewQuesType={setOpenNewQuesType}
+                  selectedBatchesForShowingQuestion={
+                    selectedBatchesForShowingQuestion
+                  }
+                  quizData={quizData}
+                  setQuizData={setQuizData}
+                />
+              )}
+            </>
+          )}
+          {}
         </div>
       )}
       {/* </Layout> */}
