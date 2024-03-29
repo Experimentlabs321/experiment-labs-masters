@@ -1244,7 +1244,7 @@ const ManageQuestion = ({
                         <th>Question Name</th>
                         <th>Question Type</th>
                         <th>Marks</th>
-                        <th>Edit</th>
+                        {/* <th>Edit</th> */}
                         {/* <th>Delete</th> */}
                       </tr>
                     </thead>
@@ -1277,7 +1277,7 @@ const ManageQuestion = ({
                           <td className="text-center">
                             {question?.defaultMarks}
                           </td>
-                          <td className="flex items-center justify-center">
+                          {/* <td className="flex items-center justify-center">
                             <img
                               className=" cursor-pointer"
                               onClick={() => {
@@ -1287,7 +1287,7 @@ const ManageQuestion = ({
                               src={bxseditalt}
                               alt="bxseditalt"
                             />
-                          </td>
+                          </td> */}
 
                           {/* <td className="">
                                 <img src={trash} alt="trash" />
