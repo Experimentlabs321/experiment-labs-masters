@@ -78,7 +78,7 @@ const AdminCalendarSchedule = () => {
   const supabase = useSupabaseClient();
   const { isLoading } = useSessionContext();
   const [previousLocation, setPreviousLocation] = useState(null);
-
+  const [adminCalendarInfo, setAdminCalendarInfo] = useState({});
   // Save current location before redirecting to Google sign-in
   useEffect(() => {
     setPreviousLocation(window.location.pathname);
@@ -109,6 +109,7 @@ const AdminCalendarSchedule = () => {
 
       .catch((error) => console.error(error));
   }, [id, userInfo, userInfo?.email]);
+  console.log(userInfo?.email);
   useEffect(() => {
     if (chapter?.courseId)
       axios
@@ -119,6 +120,16 @@ const AdminCalendarSchedule = () => {
           setCourse(response?.data);
         });
   }, [chapter]);
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/calenderInfo/getCalendarInfoByEmail/email/${userInfo?.email}`)
+      .then((response) => {
+        setAdminCalendarInfo(response?.data);
+      })
+
+      .catch((error) => console.error(error));
+  }, [id, userInfo, userInfo?.email]);
+  console.log(adminCalendarInfo);
   const handleOptionChangeBatch = (event, optionValue) => {
     // const optionValue = event.target.value;
     const isChecked = event.target.checked;
@@ -155,21 +166,6 @@ const AdminCalendarSchedule = () => {
       );
     }
   };
-  const handleOptionChangeHoliday = (day) => {
-    const isSelected = selectedHoliday.includes(day.day);
-
-    if (isSelected) {
-      // If the day is already selected, remove it from the array
-      const updatedSelection = selectedHoliday.filter(
-        (selectedDay) => selectedDay !== day.day
-      );
-      setSelectedHoliday(updatedSelection);
-    } else {
-      // If the day is not selected, add it to the array
-      setSelectedHoliday((prevSelection) => [...prevSelection, day.day]);
-    }
-  };
-  console.log(selectedHoliday);
   const getCurrentDate = () => {
     const today = new Date();
     const year = today.getFullYear();
@@ -199,21 +195,25 @@ const AdminCalendarSchedule = () => {
     const currentDate = getCurrentDate();
     const form = event.target;
     const scheduleName = form.scheduleName?.value;
-    const dateRange = form.dateRange?.value;
-    const minimumTime = form.minimumTime?.value;
-    const maximumTime = form.maximumTime?.value;
-    const meetingDuration = form.meetingDuration?.value;
+    const dateRange = adminCalendarInfo?.dateRange;
+    const minimumTime = adminCalendarInfo?.minimumTime;
+    const maximumTime = adminCalendarInfo?.maximumTime;
+    const meetingDuration = adminCalendarInfo?.meetingDuration;
+    const offDays = adminCalendarInfo?.offDays;
+    const meetingType = adminCalendarInfo?.meetingType;
+    console.log(adminCalendarInfo)
     const manageSchedule = {
       scheduleName,
       taskName: scheduleName,
       chapterId: chapter?._id,
       courseId: chapter?.courseId,
       batches: selectedBatches,
-      offDays: selectedHoliday,
-      dateRange: dateRange,
+      offDays: offDays,
+      dateRange : dateRange,
       maximumTime,
       minimumTime,
-      meetingDuration: meetingDuration,
+      meetingDuration : meetingDuration,
+      meetingType : meetingType,
       usersession: global,
       events: calendarEvents,
       taskDrip,
@@ -473,30 +473,6 @@ const AdminCalendarSchedule = () => {
     }
   }
 
-  const days = [
-    {
-      day: "Saturday",
-    },
-    {
-      day: "Sunday",
-    },
-    {
-      day: "Monday",
-    },
-    {
-      day: "Tuesday",
-    },
-    {
-      day: "Wednesday",
-    },
-
-    {
-      day: "Thursday",
-    },
-    {
-      day: "Friday",
-    },
-  ];
   return (
     <div>
       <Layout>
@@ -666,7 +642,7 @@ const AdminCalendarSchedule = () => {
                       />
                     </div>
 
-                    <div className="">
+                    {/* <div className="">
                       <div className="flex items-center gap-4">
                         <p className="h-2 w-2 bg-black rounded-full"></p>
                         <p className="font-bold text-lg me-[36px]">
@@ -764,7 +740,7 @@ const AdminCalendarSchedule = () => {
                           </li>
                         ))}
                       </ul>
-                    </div>
+                    </div> */}
                   </div>
 
                   <div className="my-5">

@@ -24,6 +24,7 @@ import { gapi } from "gapi-script";
 import DashboardPrimaryButton from "../Shared/DashboardPrimaryButton";
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import googlemeet from "../../../assets/icons/googlemeet.png";
+import zoom from "../../../assets/icons/zoom-240.png";
 let matching = false;
 const matchInputWithBusySlots = (inputDate, inputTime, busyTimeSlots) => {
 
@@ -84,13 +85,17 @@ const ScheduleTask = ({ taskData, week }) => {
   const supabase = useSupabaseClient();
   console.log("Task data ", taskData)
   const { user, userInfo } = useContext(AuthContext);
+  const [ismeetingType, setIsMeetingType] = useState(true);
+  const [meetingType, setMeetingType] = useState(null);
+  const [zoomInfo,setZoomInfo] = useState({});
   if (userInfo.role !== 'admin') {
     window.addEventListener("contextmenu", (e) => {
       e.preventDefault();
     });
+
   };
 
-console.log(userInfo)
+  console.log(userInfo)
   const navigate = useNavigate();
   const [date, setDate] = useState(""); // State for the date
   const [time, setTime] = useState(""); // State for the time
@@ -107,6 +112,8 @@ console.log(userInfo)
   useEffect(() => {
     // Assuming taskData is already available when the component mounts
     if (taskData) {
+      setMeetingType(taskData?.meetingType);
+      console.log(taskData?.meetingType);
       const currentDate = getCurrentDate();
       const maxDateOffset = parseInt(taskData?.dateRange, 10) || 0;
       const maxDateObject = new Date(currentDate);
@@ -499,6 +506,7 @@ console.log(userInfo)
       });
     }
     else {
+
       console.log('select date', date)
       console.log('select time', time)
       if (date && time) {
@@ -515,6 +523,7 @@ console.log(userInfo)
         const eventEndTime = formatDateTimeWithTimeZones(endDateTimeUTC);
         console.log("event s ", eventStartTime)
         console.log("event e ", eventEndTime)
+        console.log("difference ", timeDifferenceInMilliseconds)
         // // Use these formatted strings in your communication
         // console.log(`Event Start: ${formattedStartTime}`); // For logging or display
         // console.log(`Event End: ${formattedEndTime}`);
@@ -528,162 +537,198 @@ console.log(userInfo)
           return;
         }
         const refreshToken = process.env.REACT_APP_refreshToken;
-        fetch("https://oauth2.googleapis.com/token", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          body: `grant_type=refresh_token&refresh_token=${refreshToken}&client_id=${process.env.REACT_APP_google_clientId}&client_secret=${process.env.REACT_APP_google_clientSecret}`,
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            var event = {
-              summary: `${userInfo?.name} Doubt Clearing Session`,
-              location: "",
-              start: {
-                dateTime: selectedTimeDatee,
-                timeZone: "UTC",
-              },
-              end: {
-                dateTime: endDateTimeUTC,
-                timeZone: "UTC",
-              },
-              attendees: [
-                { email: "naman.j@experimentlabs.in" },
-                { email: user?.email },
-                { email: adminMail },
-              ],
-              reminders: {
-                useDefault: true,
-              },
-              conferenceDataVersion: 1,
-              conferenceData: {
-                createRequest: {
-                  conferenceSolutionKey: {
-                    type: "hangoutsMeet",
-                  },
-                  requestId: `meeting-${Date.now()}`,
+        if (meetingType === 'Meet') {
+          fetch("https://oauth2.googleapis.com/token", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: `grant_type=refresh_token&refresh_token=${refreshToken}&client_id=${process.env.REACT_APP_google_clientId}&client_secret=${process.env.REACT_APP_google_clientSecret}`,
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              var event = {
+                summary: `${userInfo?.name} Doubt Clearing Session`,
+                location: "",
+                start: {
+                  dateTime: selectedTimeDatee,
+                  timeZone: "UTC",
                 },
-              },
-            };
-            console.log(data)
-            const newAccessToken = data.access_token;
-            function initiate() {
-              const sendData = async (event) => {
-                const response = await axios.post(
-                  `${process.env.REACT_APP_BACKEND_API}/events`,
-                  event
-                );
-                const sendMail = await axios.post(
-                  `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
-                  {
-                  //  from: `${userInfo?.email}`,
-                //    to: `${user?.email},${adminMail}`,
-                    to: `${user?.email}`,
-                    templateType: "emailAction",
-                    templateName:"sheduleTask",
-                    organizationId: userInfo?.organizationId,
-                    start_time: eventStartTime,
-                    end_time:eventEndTime,
-                    meeting_link: event?.hangoutLink,
-                   /*  subject: `Event request`,
-                    message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
-                      }`, */
-                  }
-                );
-                const sendMailAdmin = await axios.post(
-                  `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
-                  {
-                  //  from: `${userInfo?.email}`,
-                //    to: `${user?.email},${adminMail}`,
-                    to: `${adminMail}`,
-                    templateType: "emailAction",
-                    templateName:"sheduleTask",
-                    organizationId: userInfo?.organizationId,
-                    start_time: eventStartTime,
-                    end_time:eventEndTime,
-                    meeting_link: event?.hangoutLink,
-                   /*  subject: `Event request`,
-                    message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
-                      }`, */
-                  }
-                );
-                console.log("send ", sendMail)
-                console.log("Admin Mail ", adminMail)
-
-                console.log('res ', response)
-                if (sendMail?.data?.success && response?.data?.acknowledged) {
-                  Loading().close();
-                  const newEvent = await axios.post(
-                    `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/addEvent`,
+                end: {
+                  dateTime: endDateTimeUTC,
+                  timeZone: "UTC",
+                },
+                attendees: [
+                  { email: "naman.j@experimentlabs.in" },
+                  { email: user?.email },
+                  { email: adminMail },
+                ],
+                reminders: {
+                  useDefault: true,
+                },
+                conferenceDataVersion: 1,
+                conferenceData: {
+                  createRequest: {
+                    conferenceSolutionKey: {
+                      type: "hangoutsMeet",
+                    },
+                    requestId: `meeting-${Date.now()}`,
+                  },
+                },
+              };
+              console.log(data)
+              const newAccessToken = data.access_token;
+              function initiate() {
+                const sendData = async (event) => {
+                  const response = await axios.post(
+                    `${process.env.REACT_APP_BACKEND_API}/events`,
                     event
                   );
-                  // console.log("new event created ", newEvent);
-                  await Swal.fire({
-                    icon: "success",
-                    title: "Request Sent!",
-                    text: "Your meeting is confirmed. Please go to the Dashboard to access the meeting link",
-                  });
-                  
-                  navigate('/courseAccess');
-                }
-              };
-              gapi.client
-                .request({
-                  path: `https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events?conferenceDataVersion=1`,
-                  method: "POST",
-                  body: event,
-                  headers: {
-                    "Content-type": "application/json",
-                    Authorization: `Bearer ${newAccessToken}`,
-                  },
-                })
-                .then(
-                  (response) => {
-                    console.log(response)
-                    var event = {
-                      title: `${userInfo?.name} <> Experiment Labs <> Doubt clearing <> ${response?.result?.hangoutLink}`,
-                      start: {
-                        dateTime: selectedTimeDatee,
-                        timeZone: "UTC",
-                      },
-                      end: {
-                        dateTime: endDateTimeUTC,
-                        timeZone: "UTC",
-                      },
-                      organization: {
-                        organizationId: userInfo?.organizationId,
-                        organizationName: userInfo?.organizationName,
-                      },
-                      attendees: [
-                        { email: "naman.j@experimentlabs.in" },
-                        // { email: "gaurav@experimentlabs.in" },
-                        { email: user?.email },
-                        // { email: "alrafi4@gmail.com" },
-                        {
-                          email: adminMail
-                        },
-                      ],
-                      weekData: currentWeek,
-                      hangoutLink: response?.result?.hangoutLink,
-                      requester: user?.email,
-                    };
-                    sendData(event);
-                    return [true, response];
-                  },
-                  function (err) {
-                    console.log(err);
-                    return [false, err];
+                  const sendMail = await axios.post(
+                    `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                    {
+                      //  from: `${userInfo?.email}`,
+                      //    to: `${user?.email},${adminMail}`,
+                      to: `${user?.email}`,
+                      templateType: "emailAction",
+                      templateName: "sheduleTask",
+                      organizationId: userInfo?.organizationId,
+                      start_time: eventStartTime,
+                      end_time: eventEndTime,
+                      meeting_link: event?.hangoutLink,
+                      /*  subject: `Event request`,
+                       message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
+                         }`, */
+                    }
+                  );
+                  const sendMailAdmin = await axios.post(
+                    `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                    {
+                      //  from: `${userInfo?.email}`,
+                      //    to: `${user?.email},${adminMail}`,
+                      to: `${adminMail}`,
+                      templateType: "emailAction",
+                      templateName: "sheduleTask",
+                      organizationId: userInfo?.organizationId,
+                      start_time: eventStartTime,
+                      end_time: eventEndTime,
+                      meeting_link: event?.hangoutLink,
+                      /*  subject: `Event request`,
+                       message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
+                         }`, */
+                    }
+                  );
+                  console.log("send ", sendMail)
+                  console.log("Admin Mail ", adminMail)
+
+                  console.log('res ', response)
+                  if (sendMail?.data?.success && response?.data?.acknowledged) {
+                    Loading().close();
+                    const newEvent = await axios.post(
+                      `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/addEvent`,
+                      event
+                    );
+                    // console.log("new event created ", newEvent);
+                    await Swal.fire({
+                      icon: "success",
+                      title: "Request Sent!",
+                      html: "Your meeting is confirmed.<br><br>Please go to the Dashboard to access the meeting link.",
+                    });
+
+                    navigate('/courseAccess');
                   }
-                );
-            }
-            gapi.load("client", initiate);
-            // navigate(-1)
-          })
-          .catch((error) => {
-            Loading().close();
-            console.error("Token refresh error:", error);
-          });
+                };
+                gapi.client
+                  .request({
+                    path: `https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events?conferenceDataVersion=1`,
+                    method: "POST",
+                    body: event,
+                    headers: {
+                      "Content-type": "application/json",
+                      Authorization: `Bearer ${newAccessToken}`,
+                    },
+                  })
+                  .then(
+                    (response) => {
+                      console.log(response)
+                      var event = {
+                        title: `${userInfo?.name} <> Experiment Labs <> Doubt clearing <> ${response?.result?.hangoutLink}`,
+                        start: {
+                          dateTime: selectedTimeDatee,
+                          timeZone: "UTC",
+                        },
+                        end: {
+                          dateTime: endDateTimeUTC,
+                          timeZone: "UTC",
+                        },
+                        organization: {
+                          organizationId: userInfo?.organizationId,
+                          organizationName: userInfo?.organizationName,
+                        },
+                        attendees: [
+                          { email: "naman.j@experimentlabs.in" },
+                          // { email: "gaurav@experimentlabs.in" },
+                          { email: user?.email },
+                          // { email: "alrafi4@gmail.com" },
+                          {
+                            email: adminMail
+                          },
+                        ],
+                        weekData: currentWeek,
+                        hangoutLink: response?.result?.hangoutLink,
+                        requester: user?.email,
+                      };
+                      sendData(event);
+                      return [true, response];
+                    },
+                    function (err) {
+                      console.log(err);
+                      return [false, err];
+                    }
+                  );
+              }
+              gapi.load("client", initiate);
+              // navigate(-1)
+            })
+            .catch((error) => {
+              Loading().close();
+              console.error("Token refresh error:", error);
+            });
+        }
+        else if (meetingType === 'Zoom') {
+          const inputDateTime = new Date(`${selectedDate}T${time}`);
+          // Manual formatting to "yyyy-MM-ddTHH:mm:ss"
+          const formattedDateTime = [
+            inputDateTime.getFullYear(),
+            ('0' + (inputDateTime.getMonth() + 1)).slice(-2),
+            ('0' + inputDateTime.getDate()).slice(-2)
+          ].join('-') + 'T' + [
+            ('0' + inputDateTime.getHours()).slice(-2),
+            ('0' + inputDateTime.getMinutes()).slice(-2),
+            ('0' + inputDateTime.getSeconds()).slice(-2)
+          ].join(':');
+          console.log('Formatted for Zoom (local time):', formattedDateTime);
+          const zoomSchedule = {
+            stdudentMail : userInfo?.email,
+            adminMail : adminMail,
+            startTime : formattedDateTime,
+            duration : meetingLength,
+          };
+          const newZoomSchedule = await axios.post(
+            `${process.env.REACT_APP_SERVER_API}/api/v1/events/request`,
+            zoomSchedule
+          );
+          if(newZoomSchedule?.data?.acknowledged){
+            await Swal.fire({
+              icon: "success",
+              title: "Request Sent!",
+              html: "Your zoom request is sent.<br><br>Please wait for admin to approve it.",
+            });
+            navigate('/courseAccess');
+          }
+          console.log(newZoomSchedule);
+          Loading().close();
+        }
       } else {
         Loading().close();
         Swal.fire({
@@ -694,6 +739,7 @@ console.log(userInfo)
       }
     }
   };
+
   const getCurrentDate = () => {
     const today = new Date();
     const year = today.getFullYear();
@@ -776,10 +822,15 @@ console.log(userInfo)
 
           {/* Add any additional content or components specific to user requester events */}
         </div>
-      ) : (
+      )
+      //  : userInfo?.role === 'admin' && meetingType === "Zoom" ? <div>
+      //   Jakanaka
+      // </div>
+       : 
+       (
         <div className="w-[250px] lg:w-[355px] min-w-[250px] lg:min-w-min h-[370px] lg:h-[515px]">
           <h1 className="text-[18px] lg:text-[25px] font-[700] text-center pb-[25px]">
-            Request slots
+            Request {meetingType} slot
           </h1>
           <div
             style={{

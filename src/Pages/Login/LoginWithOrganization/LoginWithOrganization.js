@@ -93,8 +93,12 @@ const LoginWithOrganization = () => {
 
       // Assuming your server returns a specific status code for device limit reached
       if (userDevice.status === 200) {
-        await signIn(email, password).then(() => {
+        await signIn(email, password).then((userCredential) => {
+          console.log("UID:", userCredential.user.uid);
+          console.log(email);
           saveUser(email);
+        }).catch((error) => {
+          console.error("Sign-in error:", error);
         });
       } else {
         Swal.fire({

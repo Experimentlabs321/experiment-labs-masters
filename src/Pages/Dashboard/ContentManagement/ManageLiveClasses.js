@@ -351,7 +351,6 @@ const ManageLiveClasses = () => {
         },
       ],
     };
-
     localStorage.setItem("manageClass", JSON.stringify(manageClass));
     // console.log(JSON.parse(localStorage.getItem('manageClass')));
     await connectZoom();
