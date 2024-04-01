@@ -242,7 +242,6 @@ const ManageQuestion = ({
     // Create a copy of the quizObject
     const updatedQuizObject = { ...quizData };
     updatedQuizObject.questions = newQuestions;
-    setQuizData(updatedQuizObject);
     await delete updatedQuizObject?._id;
     Loading();
     const newTask = await axios.put(
@@ -251,7 +250,8 @@ const ManageQuestion = ({
     );
 
     if (newTask?.data?.result?.acknowledged) {
-      toast.success("Question Added Successfully!");
+      toast.success("Question Updated Successfully!");
+      setQuizData({ _id: quizData?._id, ...updatedQuizObject });
       Loading().close();
       setOpenAddFromQuesBank(false);
     }
@@ -304,7 +304,10 @@ const ManageQuestion = ({
       return;
     }
     if (isChecked) {
-      if (selectedOptionsQuestionFromQuesBank[0]) {
+      if (
+        selectedOptionsQuestionFromQuesBank &&
+        selectedOptionsQuestionFromQuesBank[0]
+      ) {
         const questionIndex = selectedOptionsQuestionFromQuesBank.findIndex(
           (question) => question.questionId === optionValue
         );
@@ -360,9 +363,9 @@ const ManageQuestion = ({
 
   const filterQuestionsForSelectedBatches = () => {
     console.log(selectedBatchesForShowingQuestion);
-    const filteredQuestions = quizData.questions.filter((batch) =>
+    const filteredQuestions = quizData?.questions?.filter((batch) =>
       selectedBatches.includes(batch.batchId)
-    ).questions;
+    )?.questions;
     setQuestionsForSelectedBatches(filteredQuestions);
     console.log(filteredQuestions);
   };
@@ -405,7 +408,7 @@ const ManageQuestion = ({
   };
 
   useEffect(() => {
-    if (quizData?.questions[0]) {
+    if (quizData?.questions && quizData?.questions[0]) {
       const findBatch = batchesData?.find(
         (item) => item?._id === quizData?.questions[0]?.batchId
       );
@@ -439,7 +442,7 @@ const ManageQuestion = ({
   useEffect(() => {
     let updatedShowQuestion = [];
     let totalMarks = 0;
-    selectedOptionsQuestionFromQuesBank.forEach((item) => {
+    selectedOptionsQuestionFromQuesBank?.forEach((item) => {
       const question = questionBankQuestions?.find(
         (q) => q?._id === item?.questionId
       );
@@ -471,7 +474,89 @@ const ManageQuestion = ({
     questionBankQuestions,
   ]);
 
-  console.log(selectedBatchesForShowingQuestion);
+  const handleDeleteQuestion = async (id) => {
+    const { value: accept } = await Swal.fire({
+      title: "Delete Question",
+      html: `
+        <div style="text-align: center;">
+          <i class="fas fa-exclamation-triangle fa-3x" style="color: red;"></i>
+        </div>
+        <br>
+       
+        <div>
+          <p>You won't be able to revert this!</p>
+        </div>
+        <br>
+        <div>
+          <input type="checkbox" id="terms" name="terms" value="accepted">
+          <label for="terms" style="color: red;">Please be cautious, the question will remove from the quiz!</label>
+        </div>
+      
+      `,
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+      icon: "warning", // Add warning icon
+      preConfirm: () => {
+        if (!document.getElementById("terms").checked) {
+          Swal.showValidationMessage(
+            "You need to agree with the terms and conditions"
+          );
+        }
+      },
+    });
+
+    if (accept) {
+      // Proceed with deletion
+      Loading();
+
+      const updatedQuestions = quizData?.questions?.filter(
+        (item) => item?.questionId !== id
+      );
+      const updatedQuizObject = { ...quizData };
+      updatedQuizObject.questions = updatedQuestions;
+      console.log(updatedQuestions, id);
+      await delete updatedQuizObject?._id;
+      const newQuiz = await axios.put(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/quizes/taskId/${quizData?._id}`,
+        updatedQuizObject
+      );
+      console.log(newQuiz);
+      if (newQuiz?.data?.updateResult?.acknowledged) {
+        setQuizQuestions(quizQuestions?.filter((item) => item?._id !== id));
+        Loading().close();
+        toast.success("Quiz Updated Successfully");
+        // e.target.reset();
+      }
+
+      // await axios
+      //   .delete(`http://localhost:5000/api/v1/questionBank/questionId/${id}`)
+      //   .then((result) => {
+      //     console.log(result);
+      //     if (result?.status === 200) {
+      //       Swal.fire({
+      //         title: "Deleted!",
+      //         text: "Question has been deleted.",
+      //         icon: "success",
+      //       });
+      //       const remainingQuestion = quizQuestions.filter(
+      //         (item) => item._id !== id
+      //       );
+      //       setQuizQuestions(remainingQuestion);
+      //     } else {
+      //       toast.error("Oops...! Something went wrong.");
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     toast.error("Oops...! Something went wrong.");
+      //     console.error(error);
+      //     Loading().close();
+      //   });
+    }
+  };
+
+  console.log(quizData);
 
   return (
     <div>
@@ -1212,12 +1297,6 @@ const ManageQuestion = ({
                 </div>
                 <div className="flex items-center gap-6">
                   <p>
-                    Total Marks/Points :{" "}
-                    <span className={` text-[#3E4DAC]`}>
-                      {quizData?.points}
-                    </span>
-                  </p>
-                  <p>
                     Total Added Marks/Points :{" "}
                     <span
                       className={`${
@@ -1229,7 +1308,8 @@ const ManageQuestion = ({
                       {selectedBatchesForShowingQuestion?.length !== 1
                         ? "NAN"
                         : totalAddedPoints}
-                    </span>
+                    </span>{" "}
+                    out of {quizData?.points}
                   </p>
                   {/* <img src={bxseditalt} alt="bxseditalt" /> */}
                 </div>
@@ -1244,8 +1324,8 @@ const ManageQuestion = ({
                         <th>Question Name</th>
                         <th>Question Type</th>
                         <th>Marks</th>
-                        {/* <th>Edit</th> */}
-                        {/* <th>Delete</th> */}
+                        <th>Edit</th>
+                        <th>Delete</th>
                       </tr>
                     </thead>
                     <tbody className="">
@@ -1277,9 +1357,9 @@ const ManageQuestion = ({
                           <td className="text-center">
                             {question?.defaultMarks}
                           </td>
-                          {/* <td className="flex items-center justify-center">
+                          <td className="">
                             <img
-                              className=" cursor-pointer"
+                              className=" cursor-pointer mx-auto"
                               onClick={() => {
                                 setEditQues(true);
                                 setEditingQueInfo(question);
@@ -1287,11 +1367,18 @@ const ManageQuestion = ({
                               src={bxseditalt}
                               alt="bxseditalt"
                             />
-                          </td> */}
+                          </td>
 
-                          {/* <td className="">
-                                <img src={trash} alt="trash" />
-                              </td> */}
+                          <td className="">
+                            <img
+                              className=" cursor-pointer mx-auto"
+                              onClick={() => {
+                                handleDeleteQuestion(question?._id);
+                              }}
+                              src={trash}
+                              alt="trash"
+                            />
+                          </td>
                         </tr>
                       ))}
                     </tbody>
