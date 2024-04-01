@@ -391,7 +391,7 @@ const Payment = () => {
     const data = {
       name,
       phone,
-      email,
+      email: email?.toLowerCase(),
       organizationId: organizationData?._id,
       organizationName: organizationData?.organizationName,
       role: "user",

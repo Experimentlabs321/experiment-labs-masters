@@ -51,10 +51,12 @@ const AuthProvider = ({ children }) => {
     setLoading(true);
 
     try {
-      const userDevice = axios.put(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/users/removeDevice/${userInfo?.email}`,
-        { device: userAgent }
-      );
+      if (userInfo?.email) {
+        const userDevice = axios.put(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/users/removeDevice/${userInfo?.email}`,
+          { device: userAgent }
+        );
+      }
     } catch (error) {
       console.error("Error removing device:", error);
     }

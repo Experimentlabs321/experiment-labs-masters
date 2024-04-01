@@ -36,8 +36,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const Navbar = (props) => {
-
-  const { userInfo } = useContext(AuthContext)
+  const { userInfo } = useContext(AuthContext);
   const [state, setState] = React.useState(false);
   const [role, setRole] = useState(false);
 
@@ -236,17 +235,13 @@ const Navbar = (props) => {
     const Role = localStorage.getItem("role");
     if (Role === "admin") {
       navigate("/userManagement");
-    }
-    else if (Role === "execution mentor") {
+    } else if (Role === "execution mentor") {
       navigate("/executionMentorDashboard");
-    }
-    else if (Role === "unpaid student") {
+    } else if (Role === "unpaid student") {
       navigate("/unpaidStudentDashboard");
-    }
-    else if (Role === "expert mentor") {
+    } else if (Role === "expert mentor") {
       navigate("/expertMentorDashboard");
-    }
-    else {
+    } else {
       navigate("/dashboard");
     }
   };
@@ -274,31 +269,24 @@ const Navbar = (props) => {
     const name = form.name.value;
     const email = form.email.value;
     const password = form.password.value;
-    console.log(email, name, password)
+    console.log(email, name, password);
 
     createUser(email, password)
-
-
-      .then(result => {
+      .then((result) => {
         const user = result?.user;
         console.log(user);
 
-        alert('Register successfull')
+        alert("Register successfull");
         setOpen2(false);
 
         updateUserProfile({
           displayName: name,
-        })
+        });
         saveUser(email);
         form.reset();
-
       })
-      .catch(err => console.error(err));
-
-
-  }
-
-
+      .catch((err) => console.error(err));
+  };
 
   /*  const registerUser = (e) => {
      console.log(e)
@@ -327,8 +315,8 @@ const Navbar = (props) => {
   const loginUser = (email, password, location, history) => {
     saveUser(email);
     signIn(email, password)
-      .then((userCredential) => { })
-      .catch((error) => { });
+      .then((userCredential) => {})
+      .catch((error) => {});
   };
 
   const handleOnChange = (e) => {
@@ -350,17 +338,17 @@ const Navbar = (props) => {
         setNewLogin(true);
         setOpen1(false);
         saveUser(email);
-
-
       });
     } catch (error) {
       console.log(error);
-      toast.error("password or email error")
+      toast.error("password or email error");
     }
   };
   const saveUser = async (email) => {
     const users = { email };
-    fetch(`https://experiment-labs-master-server-rakibul58.vercel.app/users?email=${email}`)
+    fetch(
+      `https://experiment-labs-master-server-rakibul58.vercel.app/users?email=${email}`
+    )
       .then((res) => res.json())
       .then((data) => {
         console.log("aaaaaaaaa", data);
@@ -386,22 +374,15 @@ const Navbar = (props) => {
     const Role = localStorage.getItem("role");
     if (Role === "admin") {
       navigate("/userManagement");
-    }
-    else if (Role === "execution mentor") {
+    } else if (Role === "execution mentor") {
       navigate("/executionMentorDashboard");
-    }
-    else if (Role === "unpaid student") {
+    } else if (Role === "unpaid student") {
       navigate("/unpaidStudentDashboard");
-    }
-    else if (Role === "expert mentor") {
+    } else if (Role === "expert mentor") {
       navigate("/expertMentorDashboard");
-    }
-    else {
+    } else {
       navigate("/dashboard");
     }
-
-
-
   };
 
   // useEffect(() => {
@@ -468,16 +449,13 @@ const Navbar = (props) => {
 
     console.log("Gone Here ===============>", data);
 
-    fetch(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/users/interactions`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }
-    )
+    fetch(`${process.env.REACT_APP_SERVER_API}/api/v1/users/interactions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
       .then(async (res) => {
         console.log("Submit ===============>", res);
         const sendMail = await axios.post(
@@ -503,14 +481,12 @@ const Navbar = (props) => {
             text: "Thanks For your response!",
           });
         }
-        handleFormClose()
+        handleFormClose();
       })
       .catch((error) => {
         // Errors are reported there
         console.log(error);
       });
-
-
 
     // const templateParams = {
     //   from_name: name,
@@ -587,7 +563,7 @@ const Navbar = (props) => {
     >
       <Link>Know More</Link>
     </Button>,
-    !user ? (
+    !user?.email ? (
       <Button
         onClick={handleClickOpen}
         sx={{
@@ -671,7 +647,7 @@ const Navbar = (props) => {
     // <Button sx={{ color: '#fff', bgcolor: '#121212' }} size='medium' variant="text" startIcon={<TwitterIcon />}>
     //     Twitter
     // </Button>,
-    !user ? (
+    !user?.email ? (
       <Button
         onClick={handleClickOpen}
         sx={{
@@ -731,27 +707,23 @@ const Navbar = (props) => {
       <Link>Know More</Link>
     </Button>,
 
-
     <>
-      {
-        userInfo && (
-          <Button
-            onClick={() => handleLogout()}
-            sx={{
-              bgcolor: "#FF557A",
-              borderRadius: "22.5px",
-              ":hover": { bgcolor: "#94A4FF" },
-              color: "white",
-              width: "100%",
-            }}
-            className="my-2 block border-b border-gray-100 py-1 font-semibold text-gray-500 hover:text-black md:mx-2"
-          >
-            Logout
-          </Button>
-        )
-      }
-
-    </>
+      {userInfo && (
+        <Button
+          onClick={() => handleLogout()}
+          sx={{
+            bgcolor: "#FF557A",
+            borderRadius: "22.5px",
+            ":hover": { bgcolor: "#94A4FF" },
+            color: "white",
+            width: "100%",
+          }}
+          className="my-2 block border-b border-gray-100 py-1 font-semibold text-gray-500 hover:text-black md:mx-2"
+        >
+          Logout
+        </Button>
+      )}
+    </>,
   ];
 
   const drawer = (

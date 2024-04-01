@@ -150,7 +150,7 @@ const Aside = ({
           const [movedChapter] = updatedChapters.splice(oldIndex, 1);
           updatedChapters.splice(newIndex, 0, movedChapter);
           console.log(prevChapters, updatedChapters);
-          prevChapters.forEach(async (chapter, index) => {
+          prevChapters?.forEach(async (chapter, index) => {
             console.log(chapter, updatedChapters[index]);
             const updatedChapter = { ...updatedChapters[index] };
             updatedChapter._id = chapter?._id;
@@ -163,7 +163,7 @@ const Aside = ({
       },
     });
 
-    chapters.forEach((chapter, chapterIndex) => {
+    chapters?.forEach((chapter, chapterIndex) => {
       const chapterContainer = containerElement.children[chapterIndex];
       const tasksContainer = chapterContainer.querySelector(".sub-items");
 
