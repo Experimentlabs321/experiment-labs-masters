@@ -34,7 +34,7 @@ function App() {
   const orgLogo = localStorage.getItem("organizationLogo");
   const pWASplashscreenLogo = localStorage.getItem("pWASplashscreenLogo");
   const pWALogo = localStorage.getItem("pWALogo");
-  const [orgDetails, setOrgDetails] = useState({});
+/*   const [orgDetails, setOrgDetails] = useState({});
 
   const rootUrl = window.location.href;
 
@@ -67,7 +67,7 @@ function App() {
       console.log(error);
     }
   }, [rootUrl]);
-
+ */
 
 
   useEffect(() => {
@@ -194,7 +194,7 @@ function App() {
       console.error(error.message);
     }
   }
-  console.log(orgDetails);
+  //console.log(orgDetails);
   return (
     <div className="max-w-[1920px] mx-auto">
       <DynamicFavicon />
