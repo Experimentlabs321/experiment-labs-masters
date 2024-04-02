@@ -13,6 +13,7 @@ import {
 } from "@supabase/auth-helpers-react";
 import DynamicFavicon from "./DynamicFavicon";
 import AWS from "aws-sdk";
+import Loading from "./Pages/Shared/Loading/Loading";
 
 AWS.config.update({
   accessKeyId: process.env.REACT_APP_accessKeyId,
@@ -38,6 +39,7 @@ function App() {
   const rootUrl = window.location.href;
 
   useEffect(() => {
+    Loading();
     try {
       if (rootUrl) {
         axios
@@ -50,12 +52,23 @@ function App() {
           .then((response) => {
             console.log(response);
             setOrgDetails(response?.data?.organization);
+            
+            if (window.location.href === response?.data?.organization?.orgDefaultUrl && response?.data?.organization?.orgRootUrl !== response?.data?.organization?.orgDefaultUrl) {
+              window.location.href = response?.data?.organization?.orgRootUrl;
+              Loading().close();
+              return;
+            }
+           
+
           });
       }
     } catch (error) {
+      Loading().close();
       console.log(error);
     }
   }, [rootUrl]);
+
+
 
   useEffect(() => {
     if (localStorage.getItem("role") === "admin") {
