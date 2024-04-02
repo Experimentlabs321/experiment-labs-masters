@@ -26,11 +26,20 @@ const Home = () => {
   //     window.scrollTo({ top: featurePosition - headerHeight, behavior: 'smooth' });
   // };
   const [orgDetails, setOrgDetails] = useState({});
+  const [loading, setLoading] = useState(true);
 
   const rootUrl = window.location.href;
+  useEffect(() => {
+   // Show loading indicator
+    const timer = setTimeout(() => {
+      setLoading(false); // Close loading indicator after 5 seconds
+    }, 4000);
+
+    return () => clearTimeout(timer); // Cleanup function
+  }, []);
 
   useEffect(() => {
-    Loading();
+  //  Loading();
     try {
       if (rootUrl) {
         axios
@@ -46,7 +55,7 @@ const Home = () => {
             
             if (window.location.href === response?.data?.organization?.orgDefaultUrl && response?.data?.organization?.orgRootUrl !== response?.data?.organization?.orgDefaultUrl) {
               window.location.href = response?.data?.organization?.orgRootUrl;
-              Loading().close();
+          //    Loading().close();
               return;
             }
            
@@ -54,7 +63,7 @@ const Home = () => {
           });
       }
     } catch (error) {
-      Loading().close();
+     // Loading().close();
       console.log(error);
     }
   }, [rootUrl]);
@@ -80,26 +89,30 @@ const Home = () => {
     ReactGA.send({ hitType: "pageview", page: "/", title: "Home" });
   }, []);
 
-  return (
-    <div style={{ width: "100%" }} className="bg-dark text-white">
-      <MyHelmet>
-        Experiment Labs | Career Counselling | Sell Online courses
-      </MyHelmet>
-      <div className="mt-[3rem]">
-        <Hero />
-      </div>
-      <div>
-        <Feature />
-      </div>
-      <TakeTest />
-      <AllCourses />
-      {/* <AiTutor/> */}
-      <MeetTheMaster />
-      <CEOChallenge />
-      <LifeAtUnion />
-      <Campus />
-      {/* <ExperienceUnion/> */}
+  return (<>
+  {
+    loading ? <></> : <div style={{ width: "100%" }} className="bg-dark text-white">
+    <MyHelmet>
+      Experiment Labs | Career Counselling | Sell Online courses
+    </MyHelmet>
+    <div className="mt-[3rem]">
+      <Hero />
     </div>
+    <div>
+      <Feature />
+    </div>
+    <TakeTest />
+    <AllCourses />
+    {/* <AiTutor/> */}
+    <MeetTheMaster />
+    <CEOChallenge />
+    <LifeAtUnion />
+    <Campus />
+    {/* <ExperienceUnion/> */}
+  </div>
+  }
+  </>
+    
   );
 };
 
