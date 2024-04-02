@@ -29,6 +29,8 @@ import toast from "react-hot-toast";
 import Loading from "../../Shared/Loading/Loading";
 import Swal from "sweetalert2";
 import EditMultiChoQues from "./EditMultiChoQues";
+import MenuIcon from "@mui/icons-material/Menu";
+import Sortable from "sortablejs";
 
 const ManageQuestion = ({
   batchesData,
@@ -555,6 +557,67 @@ const ManageQuestion = ({
       //   });
     }
   };
+
+  const containerRef = useRef(null);
+  let sortable;
+
+  useEffect(() => {
+    if (containerRef.current) {
+      Sortable.create(containerRef.current, {
+        animation: 150,
+        handle: ".sortable-handle",
+        onEnd: async (event) => {
+          const { oldIndex, newIndex } = event;
+          console.log(
+            quizQuestions[event.oldIndex],
+            quizQuestions[event.newIndex]
+          );
+          console.log(
+            `Moved from index ${event.oldIndex} to ${event.newIndex}`
+          );
+          Loading();
+          // Update the chapters state based on the rearrangement
+          setQuizQuestions((prevQuestions) => {
+            // Clone the previous chapters array to avoid mutation
+            const updatedQuestions = [...prevQuestions];
+            const quizQue = [...quizData?.questions];
+            const prevQuizQue = [...quizData?.questions];
+            // Rearrange the chapters
+            const [movedQuestion] = updatedQuestions.splice(oldIndex, 1);
+            const [movedQue] = quizQue.splice(newIndex, 1);
+            updatedQuestions.splice(newIndex, 0, movedQuestion);
+            quizQue.splice(oldIndex, 0, movedQue);
+            return updatedQuestions;
+          });
+          // setQuizData(async (prevQuiz) => {
+          const quizId = quizData?._id;
+          const previousQuiz = { ...quizData };
+          const quizQue = [...previousQuiz?.questions];
+          // Rearrange the chapters
+          const [movedQue] = quizQue?.splice(oldIndex, 1);
+          quizQue.splice(newIndex, 0, movedQue);
+          previousQuiz.questions = quizQue;
+          delete previousQuiz?._id;
+          const newQuiz = await axios.put(
+            `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/quizes/taskId/${quizId}`,
+            previousQuiz
+          );
+          console.log(newQuiz);
+          if (newQuiz?.data?.updateResult?.acknowledged) {
+            Loading().close();
+            toast.success("Quiz Updated Successfully");
+            // e.target.reset();
+          }
+          previousQuiz._id = quizId;
+
+          console.log(previousQuiz);
+          //   return previousQuiz;
+          // });
+          // setCount(count + 1);
+        },
+      });
+    }
+  }, [quizQuestions]);
 
   console.log(quizData);
 
@@ -1328,13 +1391,22 @@ const ManageQuestion = ({
                         <th>Delete</th>
                       </tr>
                     </thead>
-                    <tbody className="">
+                    <tbody ref={containerRef} className="">
                       {quizQuestions?.map((question, index) => (
                         <tr
-                          className={`${index % 2 === 0 ? "bg-[#F2FFFA]" : ""}`}
+                          key={question?._id}
+                          className={`${
+                            index % 2 === 0 ? "bg-[#F2FFFA]" : ""
+                          } sortable-chapter`}
                         >
-                          <td className="flex justify-center py-5 ">
-                            {allSelect && (
+                          <td
+                            className={`flex items-center ps-4 gap-5 py-5 ${
+                              selectedBatchesForShowingQuestion?.length === 0
+                                ? "sortable-handle cursor-move justify-start"
+                                : "justify-center"
+                            } `}
+                          >
+                            {/* {allSelect && (
                               <input
                                 className="me-3"
                                 type="checkbox"
@@ -1344,7 +1416,9 @@ const ManageQuestion = ({
                                 checked={selectedOptionsQuestion.includes("1")}
                                 onChange={handleOptionChangeQuestion}
                               />
-                            )}
+                            )} */}
+                            {selectedBatchesForShowingQuestion?.length ===
+                              0 && <MenuIcon />}
 
                             <p>{index + 1}</p>
                           </td>
