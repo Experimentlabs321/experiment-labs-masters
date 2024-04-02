@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Layout from "../Layout";
 import arrowDown from "../../../assets/SkillsManagement/arrow.svg";
 import arrowright from "../../../assets/SkillsManagement/arrowright.svg";
@@ -12,6 +12,7 @@ import { AuthContext } from "../../../contexts/AuthProvider";
 import TextEditor from "../../Shared/TextEditor/TextEditor";
 import Loading from "../../Shared/Loading/Loading";
 import MultiChoQuesOption from "./MultiChoQuesOption";
+import JoditEditor from "jodit-react";
 
 const EditMultiChoQues = ({
   editQues,
@@ -91,11 +92,13 @@ const EditMultiChoQues = ({
 
   console.log(user);
 
+  const editor = useRef(null);
+
   useEffect(() => {
     if (editingQueInfo?.questionType === "Multiple choice") {
       setQuestionText(editingQueInfo?.questionText);
       setGeneralFeedback(editingQueInfo?.generalFeedback);
-      setOptions(editingQueInfo?.options);
+      setOptions([...editingQueInfo?.options]);
     } else {
       setQuestionText("");
       setGeneralFeedback("");
@@ -130,29 +133,31 @@ const EditMultiChoQues = ({
       questionType: "Multiple choice",
     };
 
-    const newQuestion = await axios.post(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/questionBank/addQuestion`,
+    const newQuestion = await axios.put(
+      `${process.env.REACT_APP_SERVER_API}/api/v1/questionBank/questionId/${editingQueInfo?._id}`,
       addQuestion
     );
 
     if (newQuestion?.status === 200) {
-      const updatedQuizObject = { ...quizData };
-      updatedQuizObject.questions.push({
-        questionId: newQuestion?.data?.insertedId,
-      });
-      setQuizData(updatedQuizObject);
-      await delete updatedQuizObject?._id;
-      Loading();
-      const newTask = await axios.put(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/quizes/taskId/${quizData?._id}`,
-        updatedQuizObject
-      );
+      // const updatedQuizObject = { ...quizData };
+      // updatedQuizObject.questions.push({
+      //   questionId: newQuestion?.data?.insertedId,
+      // });
+      // setQuizData(updatedQuizObject);
+      // await delete updatedQuizObject?._id;
+      // Loading();
+      toast.success("Question Updated Successfully!");
+      // const newTask = await axios.put(
+      //   `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/quizes/taskId/${quizData?._id}`,
+      //   updatedQuizObject
+      // );
 
-      if (newTask?.data?.result?.acknowledged) {
-        toast.success("Question Added Successfully!");
-        Loading().close();
-        // setOpenAddFromQuesBank(false);
-      }
+      // if (newTask?.data?.result?.acknowledged) {
+      //   toast.success("Question Added Successfully!");
+      //   Loading().close();
+      //   // setOpenAddFromQuesBank(false);
+      // }
+      Loading().close();
     }
 
     console.log(newQuestion, addQuestion);
@@ -462,8 +467,8 @@ const EditMultiChoQues = ({
 
           <div className=" flex items-center justify-between">
             <div
-              className="select-option flex items-center gap-[40px] "
-              onClick={toggleDropdownCourseFormat}
+              className="select-option cursor-pointer flex items-center gap-[40px] "
+              onClick={() => setIsOpenCourseFormat(!isOpenCourseFormat)}
             >
               <h1 className=" h-[60px] w-[60px] bg-[#E1E6FF] rounded-full flex justify-center items-center text-[25px]">
                 2
@@ -496,110 +501,124 @@ const EditMultiChoQues = ({
                 {/* Render div elements based on the divCount state */}
 
                 {options[0] &&
-                  options?.map((answer, index) => (
-                    <div key={`${index}${editingQueInfo?._id}`}>
-                      <div className="dropdown-menu mt-[71px] mb-[45px] flex justify-between  bg-[#F7F7F7] p-5 rounded-lg">
-                        {/* Content of the div */}
-                        <div className="">
-                          <div className="">
-                            <div className="flex items-center gap-4">
-                              <p className="h-2 w-2 bg-black rounded-full"></p>
-                              <p className="font-bold text-lg">
-                                Choice {index + 1}
-                              </p>
-                              <img src={required} alt="required" />
-                            </div>
-                            {/* Text editor for answerFormula */}
-                            {answer?.answerFormula && (
+                  options?.map((answer, index) => {
+                    let answerFormula = answer?.answerFormula || "";
+                    console.log(answerFormula);
+                    return (
+                      <div key={`${index}${editingQueInfo?._id}`}>
+                        <div className="dropdown-menu mt-[71px] mb-[45px] flex gap-10 justify-between  bg-[#F7F7F7] p-5 rounded-lg">
+                          {/* Content of the div */}
+                          <div className=" basis-1/2">
+                            <div className="">
+                              <div className="flex items-center gap-4">
+                                <p className="h-2 w-2 bg-black rounded-full"></p>
+                                <p className="font-bold text-lg">
+                                  Choice {index + 1}
+                                </p>
+                                <img src={required} alt="required" />
+                              </div>
+                              {/* Text editor for answerFormula */}
                               <div className="mt-10">
                                 <div
+                                  // ref={editor}
                                   key={`answerFormula${index}${editingQueInfo?._id}`}
                                   className="bg-white text-black textEditor"
                                 >
                                   {/* Pass props to the TextEditor component */}
-                                  <TextEditor
-                                    value={
-                                      answer?.answerFormula
-                                        ? answer?.answerFormula
-                                        : ""
-                                    }
-                                    setValue={(value) =>
+                                  {/* <TextEditor
+                                      value={answerFormula}
+                                      setValue={(value) =>
+                                        handleInputChange(
+                                          index,
+                                          value,
+                                          "answerFormula"
+                                        )
+                                      }
+                                    /> */}
+
+                                  <div className="textEditor">
+                                    <JoditEditor
+                                      value={answer?.answerFormula}
+                                      ref={editor}
+                                      onChange={(content) => {
+                                        handleInputChange(
+                                          index,
+                                          content,
+                                          "answerFormula"
+                                        );
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="mt-20 ">
+                              <div className="flex items-center gap-4">
+                                <p className="h-2 w-2 bg-black rounded-full"></p>
+                                <p className="font-semibold text-[#000000]  py-2">
+                                  Answer
+                                </p>
+                                <img src={required} alt="required" />
+                              </div>
+                              <div className=" items-center flex gap-2  mt-2 ms-6  w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 ">
+                                <div className="flex gap-2">
+                                  <input
+                                    type="radio"
+                                    id={`wrong${index}`}
+                                    name={`answer${index}`}
+                                    value="wrong"
+                                    checked={answer.answer === "wrong"}
+                                    onChange={(e) =>
                                       handleInputChange(
                                         index,
-                                        value,
-                                        "answerFormula"
+                                        e.target.value,
+                                        "answer"
                                       )
                                     }
                                   />
+                                  <label htmlFor={`wrong${index}`}>
+                                    {" "}
+                                    Wrong
+                                  </label>
+                                </div>
+                                <div className="flex gap-2 ms-[55px]">
+                                  <input
+                                    type="radio"
+                                    id={`correct${index}`}
+                                    name={`answer${index}`}
+                                    value="correct"
+                                    checked={answer.answer === "correct"}
+                                    onChange={(e) =>
+                                      handleInputChange(
+                                        index,
+                                        e.target.value,
+                                        "answer"
+                                      )
+                                    }
+                                  />
+                                  <label htmlFor={`correct${index}`}>
+                                    Correct
+                                  </label>
                                 </div>
                               </div>
-                            )}
-                          </div>
-                          <div className="mt-20 ">
-                            <div className="flex items-center gap-4">
-                              <p className="h-2 w-2 bg-black rounded-full"></p>
-                              <p className="font-semibold text-[#000000]  py-2">
-                                Answer
-                              </p>
-                              <img src={required} alt="required" />
-                            </div>
-                            <div className=" items-center flex gap-2  mt-2 ms-6  w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 ">
-                              <div className="flex gap-2">
-                                <input
-                                  type="radio"
-                                  id={`wrong${index}`}
-                                  name={`answer${index}`}
-                                  value="wrong"
-                                  checked={answer.answer === "wrong"}
-                                  onChange={(e) =>
-                                    handleInputChange(
-                                      index,
-                                      e.target.value,
-                                      "answer"
-                                    )
-                                  }
-                                />
-                                <label htmlFor={`wrong${index}`}> Wrong</label>
-                              </div>
-                              <div className="flex gap-2 ms-[55px]">
-                                <input
-                                  type="radio"
-                                  id={`correct${index}`}
-                                  name={`answer${index}`}
-                                  value="correct"
-                                  checked={answer.answer === "correct"}
-                                  onChange={(e) =>
-                                    handleInputChange(
-                                      index,
-                                      e.target.value,
-                                      "answer"
-                                    )
-                                  }
-                                />
-                                <label htmlFor={`correct${index}`}>
-                                  Correct
-                                </label>
-                              </div>
                             </div>
                           </div>
-                        </div>
-                        <div className="">
-                          <div className="">
-                            <div className="flex items-center gap-4">
-                              <p className="h-2 w-2 bg-black rounded-full"></p>
-                              <p className="font-bold text-lg me-[36px]">
-                                Feedback
-                              </p>
-                            </div>
-                            {/* Text editor for feedback */}
-                            {answer?.feedback && (
+                          <div className=" basis-1/2">
+                            <div className="">
+                              <div className="flex items-center gap-4">
+                                <p className="h-2 w-2 bg-black rounded-full"></p>
+                                <p className="font-bold text-lg me-[36px]">
+                                  Feedback
+                                </p>
+                              </div>
+                              {/* Text editor for feedback */}
                               <div className=" mt-10">
                                 <div
                                   key={`feedback${index}${editingQueInfo?._id}`}
                                   className="bg-white text-black textEditor"
                                 >
                                   {/* Pass props to the TextEditor component */}
-                                  <TextEditor
+                                  {/* <TextEditor
                                     value={answer?.feedback}
                                     setValue={(value) =>
                                       handleInputChange(
@@ -608,15 +627,28 @@ const EditMultiChoQues = ({
                                         "feedback"
                                       )
                                     }
-                                  />
+                                  /> */}
+                                  <div className="textEditor">
+                                    <JoditEditor
+                                      value={answer?.feedback}
+                                      ref={editor}
+                                      onChange={(content) => {
+                                        handleInputChange(
+                                          index,
+                                          content,
+                                          "feedback"
+                                        );
+                                      }}
+                                    />
+                                  </div>
                                 </div>
                               </div>
-                            )}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 <div className="w-full flex justify-center items-center my-10">
                   <button
                     onClick={addMoreDiv}
@@ -783,8 +815,8 @@ const EditMultiChoQues = ({
           <div className="flex items-center justify-center mt-20 mb-10">
             <input
               type="submit"
-              value="save"
-              className="px-[30px] py-3 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
+              value="Save"
+              className="px-[30px] cursor-pointer py-3 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
             />
             {/* <input
               type="submit"
