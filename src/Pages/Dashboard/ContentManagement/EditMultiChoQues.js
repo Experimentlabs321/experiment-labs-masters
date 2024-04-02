@@ -99,6 +99,7 @@ const EditMultiChoQues = ({
       setQuestionText(editingQueInfo?.questionText);
       setGeneralFeedback(editingQueInfo?.generalFeedback);
       setOptions([...editingQueInfo?.options]);
+      setSelectedOneOrMultipleOption(editingQueInfo?.oneOrMultipleOption);
     } else {
       setQuestionText("");
       setGeneralFeedback("");
@@ -269,13 +270,13 @@ const EditMultiChoQues = ({
                   />
                 </div>
 
-                {/* <div className="mt-20">
+                <div className="mt-20">
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
                     <p className="font-bold text-lg">
                       One Or Multiple Answers ?
                     </p>
-                    <div className="text-sm font-semibold flex items-center">
+                    {/* <div className="text-sm font-semibold flex items-center">
                       <input
                         type="checkbox"
                         id="shuffleCheckbox"
@@ -288,7 +289,7 @@ const EditMultiChoQues = ({
                         {" "}
                         Shuffle the choices ?
                       </label>
-                    </div>
+                    </div> */}
                   </div>
 
                   <div className="items-center flex gap-2 mt-2 ms-6 w-[90%x] h-[50px] ps-2 text-[#535353] focus:outline-0">
@@ -315,7 +316,7 @@ const EditMultiChoQues = ({
                       <label htmlFor="Multiple"> Multiple</label>
                     </div>
                   </div>
-                </div> */}
+                </div>
               </div>
 
               <div className=" basis-1/2">
