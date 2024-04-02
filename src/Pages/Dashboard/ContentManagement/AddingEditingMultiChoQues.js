@@ -57,7 +57,7 @@ const AddingEditingMultiChoQues = ({
     Array.from({ length: 2 }, () => ({
       answerFormula: "",
       feedback: "",
-      answer: "",
+      answer: "wrong",
     }))
   ); // Initialize with 2 sets of empty answers
 
@@ -67,7 +67,7 @@ const AddingEditingMultiChoQues = ({
     setDivCount((prevCount) => prevCount + 1); // Increment the count by 1
     setOptions((prevOptions) => [
       ...prevOptions,
-      { answerFormula: "", feedback: "", answer: "" },
+      { answerFormula: "", feedback: "", answer: "wrong" },
     ]); // Add a new object to the Options array
   };
 
@@ -251,13 +251,13 @@ const AddingEditingMultiChoQues = ({
                   />
                 </div>
 
-                {/* <div className="mt-20">
+                <div className="mt-20">
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
                     <p className="font-bold text-lg">
-                      One Or Multiple Answers ?
+                      One Or Multiple Answers?
                     </p>
-                    <div className="text-sm font-semibold flex items-center">
+                    {/* <div className="text-sm font-semibold flex items-center">
                       <input
                         type="checkbox"
                         id="shuffleCheckbox"
@@ -270,7 +270,7 @@ const AddingEditingMultiChoQues = ({
                         {" "}
                         Shuffle the choices ?
                       </label>
-                    </div>
+                    </div> */}
                   </div>
 
                   <div className="items-center flex gap-2 mt-2 ms-6 w-[90%x] h-[50px] ps-2 text-[#535353] focus:outline-0">
@@ -297,7 +297,7 @@ const AddingEditingMultiChoQues = ({
                       <label htmlFor="Multiple"> Multiple</label>
                     </div>
                   </div>
-                </div> */}
+                </div>
               </div>
 
               <div>
@@ -449,7 +449,7 @@ const AddingEditingMultiChoQues = ({
 
           <div className=" flex items-center justify-between">
             <div
-              className="select-option flex items-center gap-[40px] "
+              className="select-option flex items-center gap-[40px] cursor-pointer "
               onClick={toggleDropdownCourseFormat}
             >
               <h1 className=" h-[60px] w-[60px] bg-[#E1E6FF] rounded-full flex justify-center items-center text-[25px]">
@@ -745,8 +745,8 @@ const AddingEditingMultiChoQues = ({
           <div className="flex items-center justify-center mt-20 mb-10">
             <input
               type="submit"
-              value="save"
-              className="px-[30px] py-3 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
+              value="Save"
+              className="px-[30px] py-3 cursor-pointer bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
             />
             {/* <input
               type="submit"

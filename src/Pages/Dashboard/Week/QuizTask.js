@@ -245,6 +245,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
   const [questions, setQuizQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedOption, setSelectedOption] = useState("");
+  const [selectedOptions, setSelectedOptions] = useState([]);
   const [score, setScore] = useState(0);
   const [point, setPoint] = useState(0);
   const [answered, setAnswered] = useState(0);
@@ -314,6 +315,47 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
         givenAnswer: option,
       };
     }
+  };
+
+  const handleMultipleOptionChange = (e, option) => {
+    const isChecked = e.target.checked;
+
+    if (isChecked) {
+      setSelectedOptions([selectedOptions, ...option?.answerFormula]);
+    } else {
+      setSelectedOptions(
+        selectedOptions.filter((item) => item !== option?.answerFormula)
+      );
+    }
+    console.log(option);
+    // if (e.target.value === questions[currentQuestion].correctAnswer) {
+    //   if (
+    //     !question[currentQuestion]?.givenAnswer ||
+    //     question[currentQuestion]?.givenAnswer !==
+    //       questions[currentQuestion].correctAnswer
+    //   )
+    //     setScore(score + 1);
+    //   setPoint(point + question?.point);
+    // }
+    // if (option?.answer === "correct") {
+    //   if (
+    //     !questions[currentQuestion]?.givenAnswer ||
+    //     questions[currentQuestion]?.givenAnswer?.answer === "wrong"
+    //   )
+    //     setScore(score + 1);
+    //   setPoint(point + +question?.defaultMarks);
+    // }
+    // if (option) {
+    //   if (!questions[currentQuestion]?.givenAnswer) setAnswered(answered + 1);
+    //   questions[currentQuestion] = {
+    //     ...questions[currentQuestion],
+    //     givenAnswer: option,
+    //   };
+    //   givenAnswers[currentQuestion] = {
+    //     questionId: question?._id,
+    //     givenAnswer: option,
+    //   };
+    // }
   };
 
   const handleNextQuestion = () => {
@@ -425,19 +467,23 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
   }
 
   useEffect(() => {
-    const findCourse = userInfo?.courses?.find(
-      (item) => item?.courseId === chapter?.courseId
-    );
-    console.log(findCourse);
-    if (findCourse?.batchId) {
-      axios
-        .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/questionBank/quizId/${taskData?._id}/batchId/${findCourse?.batchId}`
-        )
-        .then((response) => {
-          if (response?.data) setQuizQuestions(response?.data);
-          console.log(response?.data);
-        });
+    try {
+      const findCourse = userInfo?.courses?.find(
+        (item) => item?.courseId === chapter?.courseId
+      );
+      console.log(findCourse);
+      if (findCourse?.batchId && taskData?.questions?.length > 0) {
+        axios
+          .get(
+            `${process.env.REACT_APP_SERVER_API}/api/v1/questionBank/quizId/${taskData?._id}/batchId/${findCourse?.batchId}`
+          )
+          .then((response) => {
+            if (response?.data) setQuizQuestions(response?.data);
+            console.log(response?.data);
+          });
+      }
+    } catch (error) {
+      console.error(error);
     }
   }, [chapter, taskData, userInfo, participationData]);
 
@@ -890,54 +936,61 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
                 <h1 className=" text-white text-[16px] font-[500] absolute top-[6px] right-0 w-[108px] text-center ">
                   {question?.defaultMarks} points
                 </h1>
-                <p
-                  className=" text-[18px] font-[700] pt-4 "
-                  dangerouslySetInnerHTML={{
-                    __html: question?.questionText,
-                  }}
-                ></p>
-                <form id="myForm" className="mt-[45px]">
-                  {!question?.options && (
-                    <input
-                      defaultValue={question?.givenAnswer}
-                      // onChange={(e) => setSelectedOption(e.target.value)}
-                      onChange={handleOptionChange}
-                      className="w-[435px] p-[24px] text-[20px] font-[500] rounded-[8px] border-[#323232] border-2 bg-transparent "
-                      placeholder="Write Here"
-                      type="text"
-                    />
-                  )}
-                  {question?.options &&
-                    question?.options?.map((option, index) => (
-                      <div key={index}>
-                        <label className="flex items-center mb-[15px] text-[#3E4DAC] text-[15px] font-[600] ">
-                          <input
-                            className="form-radio mr-[15px] h-6 w-6  border rounded-full border-gray-400"
-                            // className="w-[22px]"
-                            type="radio"
-                            value={option?.answerFormula}
-                            // checked={
-                            //   selectedOption === option ||
-                            //   question?.givenAnswer === option
-                            // }
-                            checked={
-                              selectedOption
-                                ? selectedOption === option?.answerFormula
-                                : question?.givenAnswer === option
-                            }
-                            // checked={question?.givenAnswer === option}
-                            onChange={(e) => handleOptionChange(option)}
-                          />
-                          {/* {option} */}
-                          <p
-                            dangerouslySetInnerHTML={{
-                              __html: option?.answerFormula,
-                            }}
-                          ></p>
-                        </label>
-                      </div>
-                    ))}
-                </form>
+                {question?.questionType === "Multiple choice" && (
+                  <>
+                    <p
+                      className=" text-[18px] font-[700] pt-4 "
+                      dangerouslySetInnerHTML={{
+                        __html: question?.questionText,
+                      }}
+                    ></p>
+                    <form id="myForm" className="mt-[45px]">
+                      {!question?.options && (
+                        <input
+                          defaultValue={question?.givenAnswer}
+                          // onChange={(e) => setSelectedOption(e.target.value)}
+                          onChange={handleOptionChange}
+                          className="w-[435px] p-[24px] text-[20px] font-[500] rounded-[8px] border-[#323232] border-2 bg-transparent "
+                          placeholder="Write Here"
+                          type="text"
+                        />
+                      )}
+                      {question?.options &&
+                        question?.options?.map((option, index) => (
+                          <div key={index}>
+                            <label className="flex items-center mb-[15px] text-[#3E4DAC] text-[15px] font-[600] ">
+                              <input
+                                className="form-radio mr-[15px] h-6 w-6  border rounded-full border-gray-400"
+                                type="radio"
+                                value={option?.answerFormula}
+                                checked={
+                                  question?.oneOrMultipleOption !== "multiple"
+                                    ? selectedOption
+                                      ? selectedOption === option?.answerFormula
+                                      : question?.givenAnswer === option
+                                    : selectedOptions.find(
+                                        (item) => item === option?.answerFormula
+                                      )
+                                }
+                                onChange={(e) => {
+                                  if (
+                                    question?.oneOrMultipleOption !== "multiple"
+                                  )
+                                    handleOptionChange(option);
+                                  else handleMultipleOptionChange(e, option);
+                                }}
+                              />
+                              <p
+                                dangerouslySetInnerHTML={{
+                                  __html: option?.answerFormula,
+                                }}
+                              ></p>
+                            </label>
+                          </div>
+                        ))}
+                    </form>
+                  </>
+                )}
                 <div className="flex items-center justify-between mt-[40px]">
                   <div>
                     <button
