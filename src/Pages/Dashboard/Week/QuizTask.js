@@ -15,227 +15,6 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-/* let questions = [
-  {
-    id: 1,
-    question: "In Figma, What is the use Opt + Cmd + K / Ctrl + Alt + K ?",
-    options: [
-      "A. Run last plugin",
-      "B. Create component",
-      "C. Share a file",
-      "D. Frame selection",
-    ],
-    explanations: [
-      "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
-      "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
-      "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
-      "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
-    ],
-    correctAnswer: "C. Share a file",
-    point: 1,
-  },
-  {
-    id: 2,
-    question: 'Which planet is known as the "Red Planet"?',
-    options: ["Venus", "Mars", "Jupiter", "Mercury"],
-    correctAnswer: "Mars",
-    point: 1,
-    explanations: [
-      "Venus is known as the 'Morning Star', not the 'Red Planet'.",
-      "Correct! Mars is known as the 'Red Planet'.",
-      "Jupiter is the largest planet in our solar system, not the 'Red Planet'.",
-      "Mercury is the smallest planet in our solar system, not the 'Red Planet'.",
-    ],
-  },
-  {
-    id: 3,
-    question: "What is the chemical symbol for water?",
-    options: ["H2O", "CO2", "O2", "NaCl"],
-    correctAnswer: "H2O",
-    point: 1,
-    explanations: [
-      "H2O is the chemical symbol for water.",
-      "CO2 is the chemical symbol for carbon dioxide.",
-      "O2 is the chemical symbol for oxygen.",
-      "NaCl is the chemical symbol for sodium chloride (salt).",
-    ],
-  },
-  {
-    id: 4,
-    question: "What is the largest mammal on Earth?",
-    options: ["Elephant", "Blue Whale", "Giraffe", "Hippopotamus"],
-    correctAnswer: "Blue Whale",
-    point: 1,
-    explanations: [
-      "Elephants are large mammals, but they are not the largest.",
-      "Correct! Blue Whales are the largest mammals on Earth.",
-      "Giraffes are tall mammals, but they are not the largest.",
-      "Hippopotamuses are large mammals, but they are not the largest.",
-    ],
-  },
-  {
-    id: 5,
-    question: "Which scientist developed the theory of relativity?",
-    options: [
-      "Isaac Newton",
-      "Albert Einstein",
-      "Galileo Galilei",
-      "Marie Curie",
-    ],
-    correctAnswer: "Albert Einstein",
-    point: 1,
-    explanations: [
-      "Isaac Newton is known for his laws of motion and universal gravitation, not the theory of relativity.",
-      "Correct! Albert Einstein developed the theory of relativity.",
-      "Galileo Galilei made significant contributions to astronomy and physics, but he did not develop the theory of relativity.",
-      "Marie Curie was a pioneering physicist and chemist, but she did not develop the theory of relativity.",
-    ],
-  },
-  {
-    id: 6,
-    question: "What is the capital of Japan?",
-    options: ["Beijing", "Seoul", "Tokyo", "Bangkok"],
-    correctAnswer: "Tokyo",
-    point: 1,
-    explanations: [
-      "Beijing is the capital of China, not Japan.",
-      "Seoul is the capital of South Korea, not Japan.",
-      "Correct! Tokyo is the capital of Japan.",
-      "Bangkok is the capital of Thailand, not Japan.",
-    ],
-  },
-  {
-    id: 7,
-    question: "What is the chemical symbol for gold?",
-    options: ["Au", "Ag", "Fe", "Cu"],
-    correctAnswer: "Au",
-    point: 1,
-    explanations: [
-      "Correct! Au is the chemical symbol for gold.",
-      "Ag is the chemical symbol for silver, not gold.",
-      "Fe is the chemical symbol for iron, not gold.",
-      "Cu is the chemical symbol for copper, not gold.",
-    ],
-  },
-  {
-    id: 8,
-    question: 'Which planet is known as the "Red Planet"?',
-    options: ["Venus", "Mars", "Jupiter", "Mercury"],
-    correctAnswer: "Mars",
-    point: 1,
-    explanations: [
-      "Venus is known as the 'Morning Star', not the 'Red Planet'.",
-      "Correct! Mars is known as the 'Red Planet'.",
-      "Jupiter is the largest planet in our solar system, not the 'Red Planet'.",
-      "Mercury is the smallest planet in our solar system, not the 'Red Planet'.",
-    ],
-  },
-  {
-    id: 9,
-    question: "What is the chemical symbol for water?",
-    options: ["H2O", "CO2", "O2", "NaCl"],
-    correctAnswer: "H2O",
-    point: 1,
-    explanations: [
-      "H2O is the chemical symbol for water.",
-      "CO2 is the chemical symbol for carbon dioxide.",
-      "O2 is the chemical symbol for oxygen.",
-      "NaCl is the chemical symbol for sodium chloride (salt).",
-    ],
-  },
-  {
-    id: 10,
-    question: "What is the largest mammal on Earth?",
-    options: ["Elephant", "Blue Whale", "Giraffe", "Hippopotamus"],
-    correctAnswer: "Blue Whale",
-    point: 1,
-    explanations: [
-      "Elephants are large mammals, but they are not the largest.",
-      "Correct! Blue Whales are the largest mammals on Earth.",
-      "Giraffes are tall mammals, but they are not the largest.",
-      "Hippopotamuses are large mammals, but they are not the largest.",
-    ],
-  },
-  {
-    id: 11,
-    question: "Which scientist developed the theory of relativity?",
-    options: [
-      "Isaac Newton",
-      "Albert Einstein",
-      "Galileo Galilei",
-      "Marie Curie",
-    ],
-    correctAnswer: "Albert Einstein",
-    point: 1,
-    explanations: [
-      "Isaac Newton is known for his laws of motion and universal gravitation, not the theory of relativity.",
-      "Correct! Albert Einstein developed the theory of relativity.",
-      "Galileo Galilei made significant contributions to astronomy and physics, but he did not develop the theory of relativity.",
-      "Marie Curie was a pioneering physicist and chemist, but she did not develop the theory of relativity.",
-    ],
-  },
-  {
-    id: 12,
-    question: "What is the capital of Japan?",
-    options: ["Beijing", "Seoul", "Tokyo", "Bangkok"],
-    correctAnswer: "Tokyo",
-    point: 1,
-    explanations: [
-      "Beijing is the capital of China, not Japan.",
-      "Seoul is the capital of South Korea, not Japan.",
-      "Correct! Tokyo is the capital of Japan.",
-      "Bangkok is the capital of Thailand, not Japan.",
-    ],
-  },
-  {
-    id: 13,
-    question: "What is the chemical symbol for gold?",
-    options: ["Au", "Ag", "Fe", "Cu"],
-    correctAnswer: "Au",
-    point: 1,
-    explanations: [
-      "Correct! Au is the chemical symbol for gold.",
-      "Ag is the chemical symbol for silver, not gold.",
-      "Fe is the chemical symbol for iron, not gold.",
-      "Cu is the chemical symbol for copper, not gold.",
-    ],
-  },
-  {
-    id: 14,
-    question: "What is the capital of France?",
-    correctAnswer: "Paris",
-    point: 2,
-    explanations: "Correct! Paris is the capital of France.",
-  },
-];
-
-let questions = [
-  {
-    id: 1,
-    questionText: "<p>question 2</p>",
-    options: [
-      {
-        answerFormula: "<p>1</p>",
-        feedback: "<p>1</p>",
-        answer: "wrong",
-      },
-      {
-        answerFormula: "<p>2</p>",
-        feedback: "<p>2</p>",
-        answer: "correct",
-      },
-    ],
-    explanations: [
-      "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
-      "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
-      "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
-      "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
-    ],
-    correctAnswer: "C. Share a file",
-    defaultMarks: 1,
-  },
-]; */
-
 const QuizTask = ({ taskData, count, setCount, chapter }) => {
   const { userInfo } = useContext(AuthContext);
   const [open, setOpen] = React.useState(false);
@@ -317,26 +96,62 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
     }
   };
 
-  const handleMultipleOptionChange = (e, option) => {
+  /* const handleMultipleOptionChange = (e, option) => {
     const isChecked = e.target.checked;
 
     if (isChecked) {
       setSelectedOptions([selectedOptions, ...option?.answerFormula]);
+      if (option) {
+        if (!questions[currentQuestion]?.givenAnswer) {
+          setAnswered(answered + 1);
+          questions[currentQuestion] = {
+            ...questions[currentQuestion],
+            givenAnswer: [option],
+          };
+          givenAnswers[currentQuestion] = {
+            questionId: question?._id,
+            givenAnswer: [option],
+          };
+        } else {
+          questions[currentQuestion] = {
+            ...questions[currentQuestion],
+            givenAnswer: [...questions[currentQuestion]?.givenAnswer, option],
+          };
+          givenAnswers[currentQuestion] = {
+            questionId: question?._id,
+            givenAnswer: [
+              ...givenAnswers[currentQuestion]?.givenAnswer,
+              option,
+            ],
+          };
+        }
+        // questions[currentQuestion] = {
+        //   ...questions[currentQuestion],
+        //   givenAnswer: option,
+        // };
+        // givenAnswers[currentQuestion] = {
+        //   questionId: question?._id,
+        //   givenAnswer: option,
+        // };
+      }
     } else {
       setSelectedOptions(
-        selectedOptions.filter((item) => item !== option?.answerFormula)
+        selectedOptions?.filter((item) => item !== option?.answerFormula)
       );
+      questions[currentQuestion] = {
+        ...questions[currentQuestion],
+        givenAnswer: questions[currentQuestion]?.givenAnswer?.filter(
+          (item) => item !== option
+        ),
+      };
+      givenAnswers[currentQuestion] = {
+        questionId: question?._id,
+        givenAnswer: givenAnswers[currentQuestion]?.givenAnswer?.filter(
+          (item) => item !== option
+        ),
+      };
     }
     console.log(option);
-    // if (e.target.value === questions[currentQuestion].correctAnswer) {
-    //   if (
-    //     !question[currentQuestion]?.givenAnswer ||
-    //     question[currentQuestion]?.givenAnswer !==
-    //       questions[currentQuestion].correctAnswer
-    //   )
-    //     setScore(score + 1);
-    //   setPoint(point + question?.point);
-    // }
     // if (option?.answer === "correct") {
     //   if (
     //     !questions[currentQuestion]?.givenAnswer ||
@@ -345,17 +160,104 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
     //     setScore(score + 1);
     //   setPoint(point + +question?.defaultMarks);
     // }
-    // if (option) {
-    //   if (!questions[currentQuestion]?.givenAnswer) setAnswered(answered + 1);
-    //   questions[currentQuestion] = {
-    //     ...questions[currentQuestion],
-    //     givenAnswer: option,
-    //   };
-    //   givenAnswers[currentQuestion] = {
-    //     questionId: question?._id,
-    //     givenAnswer: option,
-    //   };
-    // }
+  }; */
+
+  const handleMultipleOptionChange = (e, option) => {
+    const isChecked = e.target.checked;
+
+    if (isChecked) {
+      // Add the selected option to the array of selected options
+      setSelectedOptions([...selectedOptions, option?.answerFormula]);
+
+      // If this is the first answer selected for the current question, increment 'answered' count
+      if (!questions[currentQuestion]?.givenAnswer) {
+        setAnswered(answered + 1);
+      }
+
+      // Update given answers with the selected answer
+      questions[currentQuestion] = {
+        ...questions[currentQuestion],
+        givenAnswer: [
+          ...(questions[currentQuestion]?.givenAnswer || []),
+          option,
+        ],
+      };
+      givenAnswers[currentQuestion] = {
+        questionId: question?._id,
+        givenAnswer: [
+          ...(givenAnswers[currentQuestion]?.givenAnswer || []),
+          option,
+        ],
+      };
+
+      // Calculate score and points
+      const isCorrectAnswer = option?.answer === "correct";
+      const totalCorrectAnswers = questions[currentQuestion]?.options?.filter(
+        (opt) => opt.answer === "correct"
+      )?.length;
+      const partialPoints = +question?.defaultMarks / totalCorrectAnswers;
+
+      if (isCorrectAnswer) {
+        // Increment score for each correct answer
+        setScore(score + 1);
+      }
+
+      const selectedCorrectAnswers = selectedOptions.filter(
+        (opt) =>
+          questions[currentQuestion]?.options?.find(
+            (o) => o.answerFormula === opt
+          )?.answer === "correct"
+      )?.length;
+
+      if (selectedCorrectAnswers === totalCorrectAnswers) {
+        // If the user selects all correct answers, assign full points
+        setPoint(+question?.defaultMarks);
+      } else {
+        // Calculate partial points if the user selects only some of the correct answers
+        const totalPoints = selectedCorrectAnswers * partialPoints;
+        setPoint(totalPoints);
+      }
+    } else {
+      // Remove the unchecked answer from the array of selected options
+      setSelectedOptions(
+        selectedOptions.filter((item) => item !== option?.answerFormula)
+      );
+
+      // Remove the unchecked answer from given answers
+      questions[currentQuestion] = {
+        ...questions[currentQuestion],
+        givenAnswer: questions[currentQuestion]?.givenAnswer?.filter(
+          (item) => item !== option
+        ),
+      };
+      givenAnswers[currentQuestion] = {
+        questionId: question?._id,
+        givenAnswer: givenAnswers[currentQuestion]?.givenAnswer?.filter(
+          (item) => item !== option
+        ),
+      };
+
+      // Decrement score if the unchecked option was a correct answer
+      if (option?.answer === "correct") {
+        setScore(score - 1);
+      }
+
+      // Recalculate points based on remaining selected correct answers
+      const selectedCorrectAnswers = selectedOptions.filter(
+        (opt) =>
+          questions[currentQuestion]?.options?.find(
+            (o) => o.answerFormula === opt
+          )?.answer === "correct"
+      )?.length;
+
+      const totalCorrectAnswers = questions[currentQuestion]?.options?.filter(
+        (opt) => opt.answer === "correct"
+      )?.length;
+
+      const partialPoints = +question?.defaultMarks / totalCorrectAnswers;
+      const totalPoints = selectedCorrectAnswers * partialPoints;
+      setPoint(totalPoints);
+    }
   };
 
   const handleNextQuestion = () => {
@@ -369,6 +271,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
     const myForm = document.getElementById("myForm");
     myForm.reset();
     setSelectedOption("");
+    setSelectedOptions([]);
     setCurrentQuestion(currentQuestion - 1);
   };
 
@@ -377,6 +280,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
     myForm.reset();
     console.log(questions);
     setSelectedOption("");
+    setSelectedOptions([]);
     setCurrentQuestion(i);
   };
 
@@ -959,8 +863,8 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
                         question?.options?.map((option, index) => (
                           <div key={index}>
                             <label className="flex items-center mb-[15px] text-[#3E4DAC] text-[15px] font-[600] ">
-                              <input
-                                className="form-radio mr-[15px] h-6 w-6  border rounded-full border-gray-400"
+                              {/* <input
+                                className="form-radio mr-[15px] h-6 w-6 border rounded-full border-gray-400"
                                 type="radio"
                                 value={option?.answerFormula}
                                 checked={
@@ -979,7 +883,37 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
                                     handleOptionChange(option);
                                   else handleMultipleOptionChange(e, option);
                                 }}
+                              /> */}
+                              <input
+                                type={
+                                  question?.oneOrMultipleOption !== "multiple"
+                                    ? "radio"
+                                    : "checkbox"
+                                }
+                                className=" mr-[15px] h-6 w-6 border rounded-full border-blue"
+                                value={option?.answerFormula}
+                                checked={
+                                  question?.oneOrMultipleOption !== "multiple"
+                                    ? selectedOption
+                                      ? selectedOption === option?.answerFormula
+                                      : question?.givenAnswer === option
+                                    : selectedOptions?.length > 0
+                                    ? selectedOptions?.find(
+                                        (item) => item === option?.answerFormula
+                                      )
+                                    : question?.givenAnswer?.find(
+                                        (item) => item === option
+                                      )
+                                }
+                                onChange={(e) => {
+                                  if (
+                                    question?.oneOrMultipleOption !== "multiple"
+                                  )
+                                    handleOptionChange(option);
+                                  else handleMultipleOptionChange(e, option);
+                                }}
                               />
+
                               <p
                                 dangerouslySetInnerHTML={{
                                   __html: option?.answerFormula,
