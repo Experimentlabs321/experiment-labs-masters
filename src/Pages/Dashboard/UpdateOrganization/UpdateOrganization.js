@@ -135,6 +135,7 @@ const UpdateOrganization = () => {
       pWASplashscreenLogo: pWASplashscreenLogo,
       titlesColor: titlesColor,
       orgRootUrl: form.orgRootUrl?.value,
+      orgDefaultUrl: form.orgDefaultUrl?.value,
       paymentNavbarColor: paymentNavbarColor,
       paymentNavbarAccessDashboardButtonColor:
         paymentNavbarAccessDashboardButtonColor,
@@ -580,6 +581,18 @@ const UpdateOrganization = () => {
                     type="text"
                     defaultValue={orgData?.orgRootUrl}
                     name="orgRootUrl"
+                    className="border rounded-md max-w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]"
+                  />
+                </div>
+                <div className="flex flex-col mt-5 basis-1/2">
+                  <label className="font-bold text-lg">
+                  {itemDetails?.organizationDefaultUrl ? itemDetails?.organizationDefaultUrl :"Organization Default Url"}
+                    
+                  </label>
+                  <input
+                    type="text"
+                    defaultValue={orgData?.orgDefaultUrl}
+                    name="orgDefaultUrl"
                     className="border rounded-md max-w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]"
                   />
                 </div>
