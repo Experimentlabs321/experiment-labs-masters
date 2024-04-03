@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../Layout";
 import OffersTop from "./OffersComponent/OffersTop";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { red } from "@mui/material/colors";
@@ -10,6 +10,7 @@ import WeekChapData from "./OffersComponent/WeekChapData";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Loading from "../../Shared/Loading/Loading";
+
 const Profile = () => {
   const { email } = useParams();
   const [profileInfo, setProfileInfo] = useState({});
@@ -173,6 +174,8 @@ const Profile = () => {
   console.log("week  ", weekData);
   // console.log("chapter  ", chapterData);
   // console.log("chapterssss  ", chapters);
+
+  const navigate = useNavigate();
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -229,22 +232,41 @@ const Profile = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         Loading();
-        const response = await axios.post(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/users/refund`,
-          // `http://localhost:5000/api/v1/users/refund`,
-          {
-            receiptId: course?.receiptId
+        try {
+          const response = await axios.post(
+            `${process.env.REACT_APP_SERVER_API}/api/v1/users/refund`,
+            // `http://localhost:5000/api/v1/users/refund`,
+            {
+              receiptId: course?.receiptId
+            }
+
+          );
+          navigate(-1);
+          Loading().close();
+          if (response?.data?.success) {
+            Swal.fire({
+              title: "Refunded!",
+              text: `${response?.data?.message}`,
+              icon: "success"
+            });
           }
-        );
-        await fetchProfile();
-        await fetchCourseDetails();
-        await fetchWeekDetails();
-        Loading().close();
-        Swal.fire({
-          title: "Refunded!",
-          text: "Refund Successful!",
-          icon: "success"
-        });
+          else {
+            Swal.fire({
+              title: "Error!",
+              text: `${response?.data?.message}`,
+              icon: "error"
+            });
+          }
+        } catch (error) {
+          Swal.fire({
+            title: "Error!",
+            text: `${error?.message}`,
+            icon: "error"
+          });
+          Loading().close();
+        }
+        // console.log(response);
+
       }
     });
   }
