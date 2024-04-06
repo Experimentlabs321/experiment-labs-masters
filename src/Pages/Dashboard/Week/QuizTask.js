@@ -39,6 +39,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
     setCurrentQuestion(0);
     setAnswered(0);
     setScore(0);
+    setGivenAnswers([]);
   };
 
   const handleClose = () => {
@@ -48,6 +49,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
     setCurrentQuestion(0);
     setAnswered(0);
     setScore(0);
+    setGivenAnswers([]);
   };
 
   useEffect(() => {
@@ -56,12 +58,11 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
         (item) => item?.participant?.email === userInfo?.email
       );
       if (findUser) {
-        setGivenAnswers(findUser?.questions);
+        // setGivenAnswers(findUser?.questions);
         setParticipationData(findUser);
       }
     }
   }, [taskData, userInfo]);
-  console.log(participationData);
 
   const handleOptionChange = (option) => {
     setSelectedOption(option?.answerFormula);
@@ -199,29 +200,91 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
 
       if (isCorrectAnswer) {
         // Increment score for each correct answer
-        setScore(score + 1);
-      }
 
-      const selectedCorrectAnswers = selectedOptions.filter(
-        (opt) =>
-          questions[currentQuestion]?.options?.find(
-            (o) => o.answerFormula === opt
-          )?.answer === "correct"
-      )?.length;
+        const selectedCorrectAnswers = [
+          ...selectedOptions,
+          option?.answerFormula,
+        ].filter(
+          (opt) =>
+            questions[currentQuestion]?.options?.find(
+              (o) => o.answerFormula === opt
+            )?.answer === "correct"
+        )?.length;
 
-      if (selectedCorrectAnswers === totalCorrectAnswers) {
-        // If the user selects all correct answers, assign full points
-        setPoint(+question?.defaultMarks);
+        const prevCorrectAnswers = selectedOptions?.filter(
+          (opt) =>
+            questions[currentQuestion]?.options?.find(
+              (o) => o.answerFormula === opt
+            )?.answer === "correct"
+        )?.length;
+
+        console.log(
+          selectedCorrectAnswers,
+          totalCorrectAnswers,
+          prevCorrectAnswers
+        );
+
+        if (selectedOptions?.length + 1 <= totalCorrectAnswers) {
+          if (selectedCorrectAnswers === totalCorrectAnswers) {
+            // If the user selects all correct answers, assign full points
+            setScore(score + 1);
+            setPoint(
+              point +
+                +question?.defaultMarks -
+                prevCorrectAnswers * partialPoints
+            );
+          } else {
+            // Calculate partial points if the user selects only some of the correct answers
+            const totalPoints = selectedCorrectAnswers * partialPoints;
+            setPoint(point + totalPoints - prevCorrectAnswers * partialPoints);
+          }
+        } else {
+          if (selectedOptions?.length + 1 === totalCorrectAnswers + 1) {
+            setPoint(point - prevCorrectAnswers * partialPoints);
+          }
+          // if (
+          //   prevCorrectAnswers === totalCorrectAnswers &&
+          //   selectedOptions?.length <= totalCorrectAnswers
+          // ) {
+          //   // If the user selects all correct answers, assign full points
+          //   setScore(score - 1);
+          //   setPoint(
+          //     point - +question?.defaultMarks
+          //   );
+          // } else {
+          //   // Calculate partial points if the user selects only some of the correct answers
+          //   const totalPoints = selectedCorrectAnswers * partialPoints;
+          //   setPoint(point + totalPoints - prevCorrectAnswers * partialPoints);
+          // }
+        }
       } else {
-        // Calculate partial points if the user selects only some of the correct answers
-        const totalPoints = selectedCorrectAnswers * partialPoints;
-        setPoint(totalPoints);
+        const prevCorrectAnswers = selectedOptions?.filter(
+          (opt) =>
+            questions[currentQuestion]?.options?.find(
+              (o) => o.answerFormula === opt
+            )?.answer === "correct"
+        )?.length;
+        if (
+          prevCorrectAnswers === totalCorrectAnswers &&
+          selectedOptions?.length === totalCorrectAnswers
+        ) {
+          setScore(score - 1);
+          setPoint(point - +question?.defaultMarks);
+        }
+        if (
+          // selectedOptions?.length + 1 > totalCorrectAnswers &&
+          selectedOptions?.length === totalCorrectAnswers
+        ) {
+          setPoint(point - prevCorrectAnswers * partialPoints);
+        }
       }
     } else {
       // Remove the unchecked answer from the array of selected options
-      setSelectedOptions(
-        selectedOptions.filter((item) => item !== option?.answerFormula)
+      const presentSelectedOptions = selectedOptions?.filter(
+        (item) => item !== option?.answerFormula
       );
+      const prevSelectedOptions = selectedOptions;
+      setSelectedOptions(presentSelectedOptions);
 
       // Remove the unchecked answer from given answers
       questions[currentQuestion] = {
@@ -239,49 +302,170 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
 
       // Decrement score if the unchecked option was a correct answer
       if (option?.answer === "correct") {
-        setScore(score - 1);
+        const totalCorrectAnswers = questions[currentQuestion]?.options?.filter(
+          (opt) => opt.answer === "correct"
+        )?.length;
+        const partialPoints = +question?.defaultMarks / totalCorrectAnswers;
+        const selectedCorrectAnswers = presentSelectedOptions.filter(
+          (opt) =>
+            questions[currentQuestion]?.options?.find(
+              (o) => o.answerFormula === opt
+            )?.answer === "correct"
+        )?.length;
+        const prevCorrectAnswers = prevSelectedOptions.filter(
+          (opt) =>
+            questions[currentQuestion]?.options?.find(
+              (o) => o.answerFormula === opt
+            )?.answer === "correct"
+        )?.length;
+
+        if (presentSelectedOptions?.length <= totalCorrectAnswers) {
+          if (
+            prevCorrectAnswers === totalCorrectAnswers &&
+            prevSelectedOptions?.length === totalCorrectAnswers
+          ) {
+            setScore(score - 1);
+            setPoint(point - partialPoints);
+          } else {
+            setPoint(point + partialPoints * selectedCorrectAnswers);
+          }
+        }
+      } else {
+        const totalCorrectAnswers = questions[currentQuestion]?.options?.filter(
+          (opt) => opt.answer === "correct"
+        )?.length;
+        const partialPoints = +question?.defaultMarks / totalCorrectAnswers;
+        const selectedCorrectAnswers = presentSelectedOptions.filter(
+          (opt) =>
+            questions[currentQuestion]?.options?.find(
+              (o) => o.answerFormula === opt
+            )?.answer === "correct"
+        )?.length;
+        if (presentSelectedOptions?.length <= totalCorrectAnswers) {
+          if (selectedCorrectAnswers === totalCorrectAnswers) {
+            // If the user selects all correct answers, assign full points
+            setScore(score + 1);
+            setPoint(point + +question?.defaultMarks);
+          } else {
+            // Calculate partial points if the user selects only some of the correct answers
+            if (presentSelectedOptions?.length === totalCorrectAnswers) {
+              const totalPoints = selectedCorrectAnswers * partialPoints;
+              setPoint(point + totalPoints);
+            }
+          }
+        }
       }
 
       // Recalculate points based on remaining selected correct answers
-      const selectedCorrectAnswers = selectedOptions.filter(
-        (opt) =>
-          questions[currentQuestion]?.options?.find(
-            (o) => o.answerFormula === opt
-          )?.answer === "correct"
-      )?.length;
+      // const selectedCorrectAnswers = selectedOptions.filter(
+      //   (opt) =>
+      //     questions[currentQuestion]?.options?.find(
+      //       (o) => o.answerFormula === opt
+      //     )?.answer === "correct"
+      // )?.length;
 
-      const totalCorrectAnswers = questions[currentQuestion]?.options?.filter(
-        (opt) => opt.answer === "correct"
-      )?.length;
+      // const totalCorrectAnswers = questions[currentQuestion]?.options?.filter(
+      //   (opt) => opt.answer === "correct"
+      // )?.length;
 
-      const partialPoints = +question?.defaultMarks / totalCorrectAnswers;
-      const totalPoints = selectedCorrectAnswers * partialPoints;
-      setPoint(totalPoints);
+      // const partialPoints = +question?.defaultMarks / totalCorrectAnswers;
+      // const totalPoints = selectedCorrectAnswers * partialPoints;
+      // setPoint(totalPoints);
     }
   };
+  console.log("point ==>", point, "score ==>", score);
 
   const handleNextQuestion = () => {
     const myForm = document.getElementById("myForm");
     myForm.reset();
-    setSelectedOption("");
     setCurrentQuestion(currentQuestion + 1);
+    setSelectedOption("");
+    setSelectedOptions([]);
+    if (questions[currentQuestion + 1]?.questionType === "Multiple choice") {
+      const findGivenAns = givenAnswers?.find(
+        (item) => item?.questionId === questions[currentQuestion + 1]?._id
+      );
+      console.log(findGivenAns);
+      if (questions[currentQuestion + 1]?.oneOrMultipleOption === "one") {
+        if (findGivenAns)
+          setSelectedOption(findGivenAns?.givenAnswer?.answerFormula);
+      } else {
+        if (findGivenAns) {
+          let selectedAns = [];
+          findGivenAns?.givenAnswer?.forEach((element) => {
+            selectedAns.push(element?.answerFormula);
+          });
+          setSelectedOptions(selectedAns);
+        }
+      }
+    }
   };
 
   const handleBackQuestion = () => {
     const myForm = document.getElementById("myForm");
     myForm.reset();
+    setCurrentQuestion(currentQuestion - 1);
     setSelectedOption("");
     setSelectedOptions([]);
-    setCurrentQuestion(currentQuestion - 1);
+    if (questions[currentQuestion - 1]?.questionType === "Multiple choice") {
+      const findGivenAns = givenAnswers?.find(
+        (item) => item?.questionId === questions[currentQuestion - 1]?._id
+      );
+      console.log(findGivenAns);
+      if (questions[currentQuestion - 1]?.oneOrMultipleOption === "one") {
+        if (findGivenAns)
+          setSelectedOption(findGivenAns?.givenAnswer?.answerFormula);
+      } else {
+        if (findGivenAns) {
+          let selectedAns = [];
+          findGivenAns?.givenAnswer?.forEach((element) => {
+            selectedAns.push(element?.answerFormula);
+          });
+          setSelectedOptions(selectedAns);
+        }
+      }
+    }
   };
 
   const handleJumpQuestion = (i) => {
     const myForm = document.getElementById("myForm");
     myForm.reset();
     console.log(questions);
+    setCurrentQuestion(i);
     setSelectedOption("");
     setSelectedOptions([]);
-    setCurrentQuestion(i);
+    // if (questions[i]?.questionType === "Multiple choice") {
+    //   if (questions[i]?.oneOrMultipleOption === "one") {
+    //     if (questions[i]?.givenAnswer)
+    //       setSelectedOption(questions[i]?.givenAnswer?.answerFormula);
+    //   } else {
+    //     if (questions[i]?.givenAnswer) {
+    //       let selectedAns = [];
+    //       questions[i]?.givenAnswer?.forEach((element) => {
+    //         selectedAns.push(element?.answerFormula);
+    //       });
+    //       setSelectedOptions(selectedAns);
+    //     }
+    //   }
+    // }
+    if (questions[i]?.questionType === "Multiple choice") {
+      const findGivenAns = givenAnswers?.find(
+        (item) => item?.questionId === questions[i]?._id
+      );
+      console.log(findGivenAns);
+      if (questions[i]?.oneOrMultipleOption === "one") {
+        if (findGivenAns)
+          setSelectedOption(findGivenAns?.givenAnswer?.answerFormula);
+      } else {
+        if (findGivenAns) {
+          let selectedAns = [];
+          findGivenAns?.givenAnswer?.forEach((element) => {
+            selectedAns.push(element?.answerFormula);
+          });
+          setSelectedOptions(selectedAns);
+        }
+      }
+    }
   };
 
   const handleSubmit = async () => {
@@ -362,8 +546,6 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
   if (submittedQuestions)
     submittedQuestion = JSON.parse(submittedQuestions)[currentQuestion];
 
-  console.log(JSON.parse(submittedQuestions));
-
   if (userInfo.role !== "admin") {
     window.addEventListener("contextmenu", (e) => {
       e.preventDefault();
@@ -380,6 +562,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
         axios
           .get(
             `${process.env.REACT_APP_SERVER_API}/api/v1/questionBank/quizId/${taskData?._id}/batchId/${findCourse?.batchId}`
+            // `http://localhost:5000/api/v1/questionBank/quizId/${taskData?._id}/batchId/${findCourse?.batchId}`
           )
           .then((response) => {
             if (response?.data) setQuizQuestions(response?.data);
@@ -390,6 +573,28 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
       console.error(error);
     }
   }, [chapter, taskData, userInfo, participationData]);
+
+  console.log(givenAnswers, questions[currentQuestion]);
+
+  const checkMultipleOptionAnswer = async (queId, option) => {
+    const ansOfQue = await givenAnswers?.find(
+      (item) => item?.questionId === queId
+    );
+
+    const findOpt = await ansOfQue?.givenAnswer?.find(
+      (item) => item?.answerFormula === option?.answerFormula
+    );
+
+    console.log(findOpt);
+
+    // if (findOpt) return true;
+    // else
+    return findOpt;
+
+    // ?.givenAnswer?.find(
+    //   (opt) => opt?.answerFormula !== option?.answerFormula
+    // );
+  };
 
   return (
     <div>
@@ -477,7 +682,38 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
 
               <div>
                 <button
-                  onClick={() => setReviewOpen(true)}
+                  onClick={() => {
+                    setReviewOpen(true);
+                    setGivenAnswers(participationData?.questions);
+
+                    if (
+                      questions[currentQuestion]?.questionType ===
+                      "Multiple choice"
+                    ) {
+                      const findGivenAns = participationData?.questions?.find(
+                        (item) =>
+                          item?.questionId === questions[currentQuestion]?._id
+                      );
+                      console.log(findGivenAns);
+                      if (
+                        questions[currentQuestion]?.oneOrMultipleOption ===
+                        "one"
+                      ) {
+                        if (findGivenAns)
+                          setSelectedOption(
+                            findGivenAns?.givenAnswer?.answerFormula
+                          );
+                      } else {
+                        if (findGivenAns) {
+                          let selectedAns = [];
+                          findGivenAns?.givenAnswer?.forEach((element) => {
+                            selectedAns.push(element?.answerFormula);
+                          });
+                          setSelectedOptions(selectedAns);
+                        }
+                      }
+                    }
+                  }}
                   className={`bg-[#FFDB70] text-black px-4 h-[50px] text-[16px] font-[600] text-center rounded-[8px] z-[1] shadow-[0px_4px_0px_0px_#F08323] lg:shadow-[0px_8px_0px_0px_#F08323]`}
                 >
                   Review Submission
@@ -607,16 +843,48 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
                       <div key={index}>
                         <label className="flex items-center mb-[15px] text-[#3E4DAC] text-[15px] font-[600] ">
                           <input
-                            className="form-radio mr-[15px] h-6 w-6  border rounded-full border-gray-400"
+                            disabled
+                            type={
+                              question?.oneOrMultipleOption !== "multiple"
+                                ? "radio"
+                                : "checkbox"
+                            }
+                            className=" mr-[15px] h-6 w-6 border rounded-full border-blue"
+                            value={option?.answerFormula}
+                            checked={
+                              question?.oneOrMultipleOption !== "multiple"
+                                ? selectedOption === option?.answerFormula
+                                : selectedOptions?.find(
+                                    (item) => item === option?.answerFormula
+                                  )
+                            }
+                            // onChange={(e) => {
+                            //   if (question?.oneOrMultipleOption !== "multiple")
+                            //     handleOptionChange(option);
+                            //   else handleMultipleOptionChange(e, option);
+                            // }}
+                          />
+                          {/* <input
+                            // className="form-radio mr-[15px] h-6 w-6  border rounded-full border-gray-400"
                             type="radio"
+                            // type={
+                            //   question?.oneOrMultipleOption !== "multiple"
+                            //     ? "radio"
+                            //     : "checkbox"
+                            // }
+                            className=" mr-[15px] h-6 w-6 border rounded-full border-blue"
                             value={option}
                             checked={
-                              givenAnswers?.find(
-                                (item) => item?.questionId === question?._id
-                              )?.givenAnswer?.answerFormula ===
-                              option?.answerFormula
+                              question?.oneOrMultipleOption !== "multiple"
+                                ? givenAnswers?.find(
+                                    (item) => item?.questionId === question?._id
+                                  )?.givenAnswer?.answerFormula ===
+                                  option?.answerFormula
+                                : selectedOptions?.find(
+                                    (item) => item === option?.answerFormula
+                                  )
                             }
-                          />
+                          /> */}
                           <div className="flex items-center justify-between w-full">
                             <p
                               dangerouslySetInnerHTML={{
@@ -628,14 +896,8 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
                                 !showExplanation && "justify-between"
                               }  `}
                             >
-                              {/* {option}{" "} */}
                               {showExplanation ? (
                                 <>
-                                  {/* {question?.explanations && (
-                                    <p className=" ml-[5px] text-[#FF557A] ">
-                                      ( {submittedQuestion?.explanations[index]} )
-                                    </p>
-                                  )} */}
                                   {option?.feedback && (
                                     <p
                                       className=" ml-[5px] text-[#FF557A] "
@@ -654,6 +916,17 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
                                     option?.answer === "correct" && (
                                       <p className="text-[#17A914]">
                                         ✅ Correct
+                                      </p>
+                                    )}
+
+                                  {question?.oneOrMultipleOption ===
+                                    "multiple" &&
+                                    selectedOptions?.find(
+                                      (item) => item === option?.answerFormula
+                                    ) &&
+                                    option?.answer !== "correct" && (
+                                      <p className="text-[#EA1E1E]">
+                                        ❌ Incorrect
                                       </p>
                                     )}
                                   {givenAnswers?.find(
@@ -1093,7 +1366,37 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
                 </div> */}
               </div>
               <button
-                onClick={() => setReviewOpen(true)}
+                onClick={() => {
+                  setReviewOpen(true);
+                  setGivenAnswers(participationData?.questions);
+
+                  if (
+                    questions[currentQuestion]?.questionType ===
+                    "Multiple choice"
+                  ) {
+                    const findGivenAns = participationData?.questions?.find(
+                      (item) =>
+                        item?.questionId === questions[currentQuestion]?._id
+                    );
+                    console.log(findGivenAns);
+                    if (
+                      questions[currentQuestion]?.oneOrMultipleOption === "one"
+                    ) {
+                      if (findGivenAns)
+                        setSelectedOption(
+                          findGivenAns?.givenAnswer?.answerFormula
+                        );
+                    } else {
+                      if (findGivenAns) {
+                        let selectedAns = [];
+                        findGivenAns?.givenAnswer?.forEach((element) => {
+                          selectedAns.push(element?.answerFormula);
+                        });
+                        setSelectedOptions(selectedAns);
+                      }
+                    }
+                  }
+                }}
                 className={`bg-[#FFDB70] text-black px-[21px] py-[14px] text-[16px] font-[700] text-center rounded-[8px] z-[1] shadow-[0px_4px_0px_0px_#F08323] lg:shadow-[0px_7px_0px_0px_#F08323] flex items-center gap-[7px] mt-[50px] mb-[20px]`}
               >
                 Review Submission

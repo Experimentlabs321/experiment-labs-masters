@@ -8,6 +8,7 @@ import { AuthContext } from "../../../contexts/AuthProvider";
 import Swal from "sweetalert2";
 import uploadFileToS3 from "../../UploadComponent/s3Uploader";
 import PhoneInput from "react-phone-number-input";
+import Loading from "../../Shared/Loading/Loading";
 
 const AddStudent = () => {
   const { user, userInfo } = useContext(AuthContext);
@@ -25,6 +26,8 @@ const AddStudent = () => {
   const rootUrl = window.location.origin;
   const [loading, setLoading] = useState(false);
   const [itemDetails, setItemDetails] = useState();
+  const [organizationData, setOrganizationData] = useState([]);
+  const [studentStatus, setStudentStatus] = useState("Prepaid");
   useEffect(() => {
     if (userInfo) {
       setLoading(true);
@@ -33,16 +36,26 @@ const AddStudent = () => {
           `${process.env.REACT_APP_SERVER_API}/api/v1/language/getMyLearnersSubDetailsByOrganizationAndName/addLearners/organizationsId/${userInfo?.organizationId}`
         )
         .then((response) => {
-
-          console.log(response)
+          console.log(response);
           setItemDetails(response?.data);
-
         })
         .finally(() => {
           setLoading(false);
         });
     }
     setLoading(false);
+  }, [userInfo]);
+
+  useEffect(() => {
+    if (userInfo?.organizationId)
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
+        )
+        .then((response) => {
+          setOrganizationData(response?.data);
+        })
+        .catch((error) => console.error(error));
   }, [userInfo]);
   //console.log(itemDetails)
 
@@ -121,68 +134,148 @@ const AddStudent = () => {
 
   const handleAddStudent = async (event) => {
     event.preventDefault();
-    const form = event?.target;
-    console.log("Selected School:", schoolInfo?.schoolName);
-    const userData = {
-      name: form.name.value,
-      email: form.email.value,
-      phone: phone,
-      organizationId: userInfo?.organizationId,
-      organizationName: userInfo?.organizationName,
-      role: "user",
-      profileImg: studentProfileImg,
-    };
-    console.log(userData);
-    console.log(form.studentStatus.value);
-    if (form.studentStatus.value === "Paid") {
-      const sendMail = await axios.post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
-        {
-          from: `${user?.email}`,
-          // to: `${form.email.value},naman.j@experimentlabs.in`,
-          to: `${form.email.value}`,
-          subject: `Course purchase link`,
-          message: `To purchase the ${selectedCourse?.courseFullName} course please goto the following link ${rootUrl}/payment/${selectedCourse?._id}?batch=${selectedBatch?._id}`,
-        }
-      );
+    Loading();
+    try {
+      const form = event?.target;
+      console.log("Selected School:", schoolInfo?.schoolName);
+      const userData = {
+        name: form.name.value,
+        email: form.email.value,
+        phone: phone,
+        organizationId: userInfo?.organizationId,
+        organizationName: userInfo?.organizationName,
+        role: "user",
+        profileImg: studentProfileImg,
+      };
+      console.log(userData);
+      console.log(form.studentStatus.value);
+      if (form.studentStatus.value === "Paid") {
+        const newData = {
+          from: organizationData?.emailIntegration?.email,
+          to: userData?.email,
+          templateType: "emailAction",
+          organizationId: organizationData?._id,
+          templateName: "learnerCreated",
+          learner_name: userData?.name,
+          course_name: selectedCourse?.courseFullName,
+          site_url: `${rootUrl}/payment/${selectedCourse?._id}?batch=${selectedBatch?._id}`,
+        };
 
-      const newUser = await axios.post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/users/addStudent`,
-        {
-          userData,
+        const updateOrg = await axios.post(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+          // `http://localhost:5000/api/v1/sendMail`,
+          newData
+        );
+        if (updateOrg) {
+          Swal.fire({
+            title: "New user created successfully!",
+            icon: "success",
+          });
+          // navigate("/schoolDashboard/myStudents");
+        } else {
+          Loading().close();
         }
-      );
+        // const sendMail = await axios.post(
+        //   `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+        //   {
+        //     from: `${user?.email}`,
+        //     // to: `${form.email.value},naman.j@experimentlabs.in`,
+        //     to: `${form.email.value}`,
+        //     subject: `Course purchase link`,
+        //     message: `To purchase the ${selectedCourse?.courseFullName} course please goto the following link ${rootUrl}/payment/${selectedCourse?._id}?batch=${selectedBatch?._id}`,
+        //   }
+        // );
 
-      if (newUser) {
-        Swal.fire({
-          title: "New User created successfully!",
-          icon: "success",
-        });
-        // navigate("/schoolDashboard/myStudents");
+        // const newUser = await axios.post(
+        //   `${process.env.REACT_APP_SERVER_API}/api/v1/users/addStudent`,
+        //   {
+        //     userData,
+        //   }
+        // );
+
+        // console.log(newUser);
+
+        // if (newUser) {
+        //   Swal.fire({
+        //     title: "New User created successfully!",
+        //     icon: "success",
+        //   });
+        //   // navigate("/schoolDashboard/myStudents");
+        // }
+        setStudentStatus("Prepaid");
+        form.reset();
+      } else {
+        const newUser = await axios.post(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/users/addOrUpdateUserWithCourse`,
+          // `http://localhost:5000/api/v1/users/addOrUpdateUserWithCourse`,
+          {
+            user: userData,
+            courseId: selectedCourse?._id,
+            batchId: selectedBatch?._id,
+          }
+        );
+
+        console.log(newUser);
+
+        if (newUser) {
+          const enrollData = {
+            courses: [
+              {
+                courseId: selectedCourse?._id,
+                batchId: selectedBatch?._id,
+              },
+            ], // Array of objects, each containing courseId and batchId
+            coupon: "",
+            couponId: "",
+            discountAmount: "",
+            email: userData?.email,
+            organizationId: userInfo?.organizationId,
+            organizationName: userInfo?.organizationName,
+            originalPrice: form.originalPrice.value,
+            paidAmount: form.paidAmount.value,
+            userId: newUser?.data?.insertedUser
+              ? newUser?.data?.insertedUser?.insertedId
+              : newUser?.data?.existingUser?._id,
+          };
+          console.log("EnrollData ============>", enrollData);
+          const res = await axios.post(
+            // `http://localhost:5000/api/v1/users/unpaidUsers/enroll`,
+            `${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/enroll`,
+            enrollData
+          );
+          if (res.data.success) {
+            const newData = {
+              from: organizationData?.emailIntegration?.email,
+              to: userData?.email,
+              templateType: "emailAction",
+              organizationId: organizationData?._id,
+              templateName: "courseWelcome",
+              learner_name: userData?.name,
+              course_name: selectedCourse?.courseFullName,
+              site_name: organizationData?.organizationName,
+              site_email: organizationData?.email,
+            };
+
+            const updateOrg = await axios.post(
+              `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+              // `http://localhost:5000/api/v1/sendMail`,
+              newData
+            );
+            Swal.fire({
+              title: "New user created successfully!",
+              icon: "success",
+            });
+          }
+          // navigate("/schoolDashboard/myStudents");
+        }
+        form.reset();
       }
-      form.reset();
-    } else {
-      const newUser = await axios.post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/users/addOrUpdateUserWithCourse`,
-        {
-          user: userData,
-          courseId: selectedCourse?._id,
-          batchId: selectedBatch?._id,
-        }
-      );
-
-      if (newUser) {
-        Swal.fire({
-          title: "New User created successfully!",
-          icon: "success",
-        });
-        // navigate("/schoolDashboard/myStudents");
-      }
-      form.reset();
+    } catch (error) {
+      Loading().close();
     }
   };
 
-  console.log(selectedBatch);
+  console.log(selectedCourse);
 
   return (
     <div>
@@ -197,15 +290,14 @@ const AddStudent = () => {
             />
           </button>
           <p className=" text-left text-[20px] text-[#3F3F3F] font-medium tracking-wider">
-          {itemDetails?.addStudent ? itemDetails?.addStudent : "Add Student"}
-            
+            {itemDetails?.addStudent ? itemDetails?.addStudent : "Add Student"}
           </p>
         </div>
         {addBulkUpload && (
           <div className="w-full overflow-hidden">
             <BulkUpload
-            itemDetails={itemDetails}
-            //  schoolInfo={schoolInfo}
+              itemDetails={itemDetails}
+              //  schoolInfo={schoolInfo}
             />
           </div>
         )}
@@ -216,21 +308,25 @@ const AddStudent = () => {
                 onClick={() => setAddBulkUpload(true)}
                 className="flex gap-2 py-1 px-7 text-white bg-[#3E4DAC] items-center rounded-3xl"
               >
-                {itemDetails?.bulkUpload ? itemDetails?.bulkUpload : "Bulk Upload"}
-                
+                {itemDetails?.bulkUpload
+                  ? itemDetails?.bulkUpload
+                  : "Bulk Upload"}
               </button>
             </div>
             <div className="mt-3">
               <h1 className=" text-[#737373] text-[24px] font-[500] mb-2 ">
-              {itemDetails?.selectCourse ? itemDetails?.selectCourse : "Select Course"}
-                
+                {itemDetails?.selectCourse
+                  ? itemDetails?.selectCourse
+                  : "Select Course"}
               </h1>
               <div className="flex flex-wrap">
                 {!courses[0] && (
                   <div
                     className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
                   >
-                    {itemDetails?.noCourseAddedYet ? itemDetails?.noCourseAddedYet : "No course added yet"}
+                    {itemDetails?.noCourseAddedYet
+                      ? itemDetails?.noCourseAddedYet
+                      : "No course added yet"}
                     !
                   </div>
                 )}
@@ -253,15 +349,18 @@ const AddStudent = () => {
             {selectedCourse?._id && (
               <div className="mt-3">
                 <h1 className=" text-[#737373] text-[24px] font-[500] mb-2 ">
-                {itemDetails?.selectBatch ? itemDetails?.selectBatch : "Select Batch"}
-                  
+                  {itemDetails?.selectBatch
+                    ? itemDetails?.selectBatch
+                    : "Select Batch"}
                 </h1>
                 <div className="flex flex-wrap">
                   {!batchesData[0] && (
                     <div
                       className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
                     >
-                      {itemDetails?.noBatchAddedYet ? itemDetails?.noBatchAddedYet : "No batch added yet"}
+                      {itemDetails?.noBatchAddedYet
+                        ? itemDetails?.noBatchAddedYet
+                        : "No batch added yet"}
                       !
                     </div>
                   )}
@@ -338,8 +437,9 @@ const AddStudent = () => {
                 <div className="flex justify-between my-4">
                   <div className="flex flex-col gap-2  w-[40%]">
                     <label htmlFor="name" className="text-[17px] font-medium">
-                    {itemDetails?.studentName ? itemDetails?.studentName : "Student Name"}
-                      
+                      {itemDetails?.studentName
+                        ? itemDetails?.studentName
+                        : "Student Name"}
                     </label>
                     <input
                       required
@@ -352,8 +452,9 @@ const AddStudent = () => {
                   </div>
                   <div className="flex flex-col gap-2  w-[40%]">
                     <label htmlFor="email" className="text-[17px] font-medium">
-                    {itemDetails?.studentEmail ? itemDetails?.studentEmail : "Student Email"}
-                      
+                      {itemDetails?.studentEmail
+                        ? itemDetails?.studentEmail
+                        : "Student Email"}
                     </label>
                     <input
                       required
@@ -368,15 +469,20 @@ const AddStudent = () => {
                 <div className="flex justify-between my-4">
                   <div className="flex flex-col gap-2  w-[40%]">
                     <label htmlFor="phone" className="text-[17px] font-medium">
-                    {itemDetails?.studentPhoneNumber ? itemDetails?.studentPhoneNumber : "Student Phone Number"}
-                      
+                      {itemDetails?.studentPhoneNumber
+                        ? itemDetails?.studentPhoneNumber
+                        : "Student Phone Number"}
                     </label>
                     <PhoneInput
                       style={{ backgroundColor: "#EEF0FF" }}
                       international="true"
                       className="bg-[#EEF0FF] px-[10px] py-1 rounded-md shadow"
                       defaultCountry="IN"
-                      placeholder={itemDetails?.enterPhoneNumber ? itemDetails?.enterPhoneNumber : "Enter phone number"}
+                      placeholder={
+                        itemDetails?.enterPhoneNumber
+                          ? itemDetails?.enterPhoneNumber
+                          : "Enter phone number"
+                      }
                       value={phone}
                       onChange={setPhone}
                     />
@@ -391,27 +497,66 @@ const AddStudent = () => {
                   </div>
                   <div className="flex flex-col gap-2  w-[40%]">
                     <label htmlFor="email" className="text-[17px] font-medium">
-                    {itemDetails?.studentStatus ? itemDetails?.studentStatus : "Student Status"}
-                      
+                      {itemDetails?.studentStatus
+                        ? itemDetails?.studentStatus
+                        : "Student Status"}
                     </label>
                     <select
                       required
+                      onChange={(e) => setStudentStatus(e.target.value)}
                       name="studentStatus"
                       id="studentStatus"
                       className="bg-[#EEF0FF] px-[10px] py-1 rounded-md shadow"
                     >
-                      <option value={"Free"}>{itemDetails?.free ? itemDetails?.free : "Free"}</option>
-                      <option value={"Paid"}>{itemDetails?.paid ? itemDetails?.paid : "Paid"}</option>
+                      <option value={"Prepaid"}>
+                        {/* {itemDetails?.free ? itemDetails?.free : "Free"} */}
+                        Prepaid
+                      </option>
+                      <option value={"Paid"}>
+                        {/* {itemDetails?.paid ? itemDetails?.paid : "Paid"} */}
+                        Paid
+                      </option>
                     </select>
                   </div>
                 </div>
+                {studentStatus === "Prepaid" && (
+                  <div className="flex justify-between my-4">
+                    <div className="flex flex-col gap-2  w-[40%]">
+                      <label htmlFor="name" className="text-[17px] font-medium">
+                        Paid Amount
+                      </label>
+                      <input
+                        required
+                        placeholder="Paid Amount"
+                        type="number"
+                        name="paidAmount"
+                        id="paidAmount"
+                        className="bg-[#EEF0FF] px-[10px] py-1 rounded-md shadow"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2  w-[40%]">
+                      <label htmlFor="name" className="text-[17px] font-medium">
+                        Original Price
+                      </label>
+                      <input
+                        required
+                        placeholder="Original Price"
+                        type="number"
+                        name="originalPrice"
+                        id="originalPrice"
+                        className="bg-[#EEF0FF] px-[10px] py-1 rounded-md shadow"
+                      />
+                    </div>
+                  </div>
+                )}
                 <div className="grid justify-center mt-10">
                   <button
                     type="submit"
                     className="flex gap-2 py-3 px-7 text-white bg-[#3E4DAC] items-center rounded-3xl"
                   >
-                    {itemDetails?.addStudent ? itemDetails?.addStudent : "Add Student"}
-                    
+                    {itemDetails?.addStudent
+                      ? itemDetails?.addStudent
+                      : "Add Student"}
                   </button>
                 </div>
               </form>
