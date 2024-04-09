@@ -2,22 +2,27 @@ import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthProvider";
-import { GoogleAuthProvider, getAuth, sendPasswordResetEmail } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  getAuth,
+  sendPasswordResetEmail,
+} from "firebase/auth";
 import toast from "react-hot-toast";
 import GoogleLogo from "../../../assets/icons/googleIcon.png";
 import Swal from "sweetalert2";
 import Loading from "../../Shared/Loading/Loading";
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { Dialog, useMediaQuery, useTheme } from "@mui/material";
 import app from "../../../firebase/firebase.config";
 
-
 const LoginWithOrganization = () => {
   const { id } = useParams();
-  const { signIn, providerLogin, logOut } = useContext(AuthContext);
+  const { user, userInfo, signIn, providerLogin, logOut } =
+    useContext(AuthContext);
   const navigate = useNavigate();
   const [orgData, setOrgData] = useState({});
+  const [redirectUser, setRedirectUser] = useState(true);
   // const orgLogo = localStorage.getItem("organizationLogo")
   const loginPageOrgLogo = localStorage.getItem("loginPageOrgLogo");
   const loginSidebarImage = localStorage.getItem("loginSidebarImage");
@@ -30,7 +35,6 @@ const LoginWithOrganization = () => {
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -45,7 +49,7 @@ const LoginWithOrganization = () => {
     const email = e.target.email.value;
     sendPasswordResetEmail(auth, email)
       .then(() => {
-        toast.success('A Password Reset Link has been sent to your email.')
+        toast.success("A Password Reset Link has been sent to your email.");
         e.target.reset();
       })
       .catch((error) => {
@@ -62,7 +66,14 @@ const LoginWithOrganization = () => {
       })
       .catch((error) => console.error(error));
   }, [id]);
-  console.log(orgData);
+  useEffect(() => {
+    if (user?.email && redirectUser) {
+      if (userInfo?.email && redirectUser) {
+        if (userInfo?.role === "admin") navigate("/adminDashboardHome");
+        else navigate("/dashboard");
+      }
+    }
+  }, [user, userInfo]);
   const handleLoginSubmit = async (e) => {
     Loading();
     e.preventDefault();
@@ -89,17 +100,21 @@ const LoginWithOrganization = () => {
         }
       );
 
-      console.log(userDevice.status);
+      console.log(userDevice);
 
       // Assuming your server returns a specific status code for device limit reached
-      if (userDevice.status === 200) {
-        await signIn(email, password).then((userCredential) => {
-          console.log("UID:", userCredential.user.uid);
-          console.log(email);
-          saveUser(email);
-        }).catch((error) => {
-          console.error("Sign-in error:", error);
-        });
+      if (userDevice?.status === 200) {
+        try {
+          await signIn(email, password).then(() => {
+            saveUser(email);
+          });
+        } catch (error) {
+          Swal.fire({
+            icon: "error",
+            title: "Wrong Email or Password",
+            text: "Please enter correct email and password.",
+          });
+        }
       } else {
         Swal.fire({
           icon: "error",
@@ -110,26 +125,36 @@ const LoginWithOrganization = () => {
     } catch (error) {
       Loading().close();
       // Handle any other errors that may occur during the Axios request
-      console.error("Error during Axios request:", error);
+      console.log(error?.response?.status);
 
+      if (error?.response?.status === 400) {
+        Swal.fire({
+          icon: "error",
+          title: "Device limit crossed.",
+          text: "Please logout from one of your devices and try again.",
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Wrong Email or Password",
+          text: "Please enter correct email and password.",
+        });
+      }
       // Optionally show a generic error message to the user
-      Swal.fire({
-        icon: "error",
-        title: "Wrong Email or Password",
-        text: "Please enter correct email and password.",
-      });
     }
   };
 
   const saveUser = async (email) => {
-    fetch(`${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${email}`)
-      .then((res) => res.json())
-      .then((data) => {
-        Loading().close();
-        localStorage.setItem("role", data?.role);
-        if (data?.role === "admin") navigate("/adminDashboardHome");
-        else navigate("/dashboard");
-      });
+    try {
+      fetch(`${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${email}`)
+        .then((res) => res.json())
+        .then((data) => {
+          Loading().close();
+          localStorage.setItem("role", data?.role);
+          if (data?.role === "admin") navigate("/adminDashboardHome");
+          else navigate("/dashboard");
+        });
+    } catch (error) {}
   };
 
   const handleLogout = () => {
@@ -146,6 +171,7 @@ const LoginWithOrganization = () => {
     const googleProvider = new GoogleAuthProvider();
     providerLogin(googleProvider)
       .then(async (result) => {
+        setRedirectUser(false);
         const email = result?.user?.email;
         const userDetails = await axios.get(
           `${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${email}`
@@ -154,17 +180,60 @@ const LoginWithOrganization = () => {
           toast.error("Your Are Not Registered User");
           return handleLogout();
         } else {
-          saveUser(email);
+          try {
+            const userAgent = window.navigator.userAgent;
+            const userDevice = await axios.put(
+              `${process.env.REACT_APP_SERVER_API}/api/v1/users/addDevice/${email}`,
+              {
+                device: userAgent,
+              }
+            );
+
+            console.log(userDevice);
+
+            // Assuming your server returns a specific status code for device limit reached
+            if (userDevice?.status === 200) {
+              try {
+                saveUser(email);
+              } catch (error) {
+                Swal.fire({
+                  icon: "error",
+                  title: "Wrong Email or Password",
+                  text: "Please enter correct email and password.",
+                });
+              }
+            } else {
+              toast.error("Device limit crossed.");
+              return handleLogout();
+            }
+          } catch (error) {
+            // Handle any other errors that may occur during the Axios request
+            console.log(error?.response?.status);
+
+            if (error?.response?.status === 400) {
+              // Swal.fire({
+              //   icon: "error",
+              //   title: "Device limit crossed.",
+              //   text: "Please logout from one of your devices and try again.",
+              // });
+              toast.error("Device limit crossed.");
+            } else {
+              toast.error("Your Are Not Registered User");
+              Loading().close();
+            }
+            return handleLogout();
+            // Optionally show a generic error message to the user
+          }
+          // saveUser(email);
         }
       })
       .catch((error) => {
         console.error(error);
+        return handleLogout();
       });
 
-    Loading().close();
+    // Loading().close();
   };
-
-
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -201,12 +270,13 @@ const LoginWithOrganization = () => {
             </div>
             {/* <p className="font-medium mt-3">© 2023 Experiment Labs</p> */}
             <a
-              href={`${orgRootUrl
-                ? orgRootUrl
-                : orgData?.orgRootUrl
+              href={`${
+                orgRootUrl
+                  ? orgRootUrl
+                  : orgData?.orgRootUrl
                   ? orgData?.orgRootUrl
                   : "/"
-                }`}
+              }`}
             >
               <img
                 className="w-[100px] mx-auto mt-4"
@@ -224,12 +294,13 @@ const LoginWithOrganization = () => {
             <div className="flex lg:hidden justify-center items-center w-full py-4">
               <div className="flex items-center justify-center space-x-3">
                 <a
-                  href={`${orgRootUrl
-                    ? orgRootUrl
-                    : orgData?.orgRootUrl
+                  href={`${
+                    orgRootUrl
+                      ? orgRootUrl
+                      : orgData?.orgRootUrl
                       ? orgData?.orgRootUrl
                       : "/"
-                    }`}
+                  }`}
                 >
                   <img
                     className="w-[100px]"
@@ -293,7 +364,11 @@ const LoginWithOrganization = () => {
                         onClick={togglePasswordVisibility}
                         className="absolute inset-y-0 right-0 px-4 py-3"
                       >
-                        {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                        {showPassword ? (
+                          <VisibilityIcon />
+                        ) : (
+                          <VisibilityOffIcon />
+                        )}
                       </button>
                     </div>
                   </div>
@@ -310,20 +385,18 @@ const LoginWithOrganization = () => {
                   type="button"
                   className="flex items-center justify-center w-full p-3 space-x-4 border rounded-xl hover:transition-all hover:delay-200 hover:ease-out hover:bg-slate-200 bg-[#9c9d9e4e] text-black mb-[25px]"
                 >
-                  <img
-                    className="w-[20px] h-[20px]"
-                    src={GoogleLogo}
-                    alt=""
-                  />
+                  <img className="w-[20px] h-[20px]" src={GoogleLogo} alt="" />
                   <p className="text-[20px]">Continue with Google</p>
                 </button>
                 <div className="text-center">
-                  <button onClick={() => {
-
-                    handleClickOpen();
-                  }} 
-               
-                  className="text-blue hover:border-b mb-[1px] border-blue">Forgot password?</button>
+                  <button
+                    onClick={() => {
+                      handleClickOpen();
+                    }}
+                    className="text-blue hover:border-b mb-[1px] border-blue"
+                  >
+                    Forgot password?
+                  </button>
                 </div>
                 <div className="flex justify-center">
                   <p className="font-medium text-lg">
@@ -339,7 +412,6 @@ const LoginWithOrganization = () => {
                 <p className="text-center text-error">
                   {/* <small>error</small> */}
                 </p>
-
 
                 {/* <div
                   style={{ marginTop: 0 }}
@@ -397,17 +469,22 @@ const LoginWithOrganization = () => {
                   >
                     x
                   </span>
-                  <h1 className="text-blue text-[27px] font-semibold p-8 "
-                  
-                  >Forgot Password?</h1>
+                  <h1 className="text-blue text-[27px] font-semibold p-8 ">
+                    Forgot Password?
+                  </h1>
                   <p className="border-b"></p>
                   {/* <p className="text-blue text-[16px] mb-[45px] border-b">
 
                     Please enter your email address.
                   </p> */}
-                  <form onSubmit={(e) => handleResetPassword(e)} className="flex flex-col gap-2 w-full p-8 ">
-                 
-                    <label className="text-[18px] mb-[9px] text-[#000]" htmlFor="email">
+                  <form
+                    onSubmit={(e) => handleResetPassword(e)}
+                    className="flex flex-col gap-2 w-full p-8 "
+                  >
+                    <label
+                      className="text-[18px] mb-[9px] text-[#000]"
+                      htmlFor="email"
+                    >
                       Enter Your Email
                     </label>
                     <input
@@ -428,11 +505,8 @@ const LoginWithOrganization = () => {
                       Reset
                     </button>
                   </form>
-
                 </div>
               </div>
-
-
             </Dialog>
 
             {/* <!-- Footer --> */}

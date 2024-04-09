@@ -391,7 +391,7 @@ const Payment = () => {
     const data = {
       name,
       phone,
-      email,
+      email: email?.toLowerCase(),
       organizationId: organizationData?._id,
       organizationName: organizationData?.organizationName,
       role: "user",
@@ -416,6 +416,7 @@ const Payment = () => {
                 templateType: "emailAction",
                 templateName: "learnerSignUp",
                 organizationId: organizationData?._id,
+                learner_name : name,
               }
             );
           }
@@ -461,6 +462,7 @@ const Payment = () => {
                   templateType: "emailAction",
                   templateName: "learnerSignUp",
                   organizationId: organizationData?._id,
+                  learner_name : newName,
                 }
               );
             }

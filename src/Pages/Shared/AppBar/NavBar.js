@@ -32,8 +32,8 @@ import ReactGA from "react-ga4";
 import toast from "react-hot-toast";
 import axios from "axios";
 import Swal from "sweetalert2";
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import app from "../../../firebase/firebase.config";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -47,12 +47,10 @@ const NavBar = (props) => {
   const [showPassword, setShowPassword] = useState(false);
   const [open3, setOpen3] = useState(false);
 
-
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
   const auth = getAuth(app);
-
 
   const handleClickOpen3 = () => {
     setOpen3(true);
@@ -67,7 +65,7 @@ const NavBar = (props) => {
     const email = e.target.email.value;
     sendPasswordResetEmail(auth, email)
       .then(() => {
-        toast.success('A Password Reset Link has been sent to your email.')
+        toast.success("A Password Reset Link has been sent to your email.");
         e.target.reset();
       })
       .catch((error) => {
@@ -510,16 +508,13 @@ const NavBar = (props) => {
 
     console.log("Gone Here ===============>", data);
 
-    fetch(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/users/interactions`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }
-    )
+    fetch(`${process.env.REACT_APP_SERVER_API}/api/v1/users/interactions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
       .then(async (res) => {
         console.log("Submit ===============>", res);
         const sendMail = await axios.post(
@@ -624,7 +619,7 @@ const NavBar = (props) => {
     >
       <Link>Know More</Link>
     </Button>,
-    !user ? (
+    !user?.email ? (
       <Button
         onClick={handleClickOpen}
         sx={{
@@ -708,7 +703,7 @@ const NavBar = (props) => {
     // <Button sx={{ color: '#fff', bgcolor: '#121212' }} size='medium' variant="text" startIcon={<TwitterIcon />}>
     //     Twitter
     // </Button>,
-    !user ? (
+    !user?.email ? (
       <Button
         onClick={handleClickOpen}
         sx={{
@@ -1099,10 +1094,14 @@ const NavBar = (props) => {
               </button>
             </form>
             <div className="text-center my-2">
-              <button onClick={() => {
-
-                handleClickOpen3();
-              }} className="text-[#FF557A]">Forgotten password?</button>
+              <button
+                onClick={() => {
+                  handleClickOpen3();
+                }}
+                className="text-[#FF557A]"
+              >
+                Forgotten password?
+              </button>
             </div>
             <p>
               Don't have an account?{" "}
@@ -1328,10 +1327,12 @@ const NavBar = (props) => {
             </span>
             <h1 className="text-[#FF557A] text-[27px]">Forgotten Password</h1>
             <p className="text-[#FF557A] text-[16px] mb-[45px]">
-
               Please enter your email address.
             </p>
-            <form onSubmit={(e) => handleResetPassword(e)} className="flex flex-col gap-2">
+            <form
+              onSubmit={(e) => handleResetPassword(e)}
+              className="flex flex-col gap-2"
+            >
               <label className="text-[18px] mb-[9px]" htmlFor="email">
                 Enter Your Email
               </label>
@@ -1353,11 +1354,8 @@ const NavBar = (props) => {
                 Reset
               </button>
             </form>
-
           </div>
         </div>
-
-
       </Dialog>
     </Box>
   );

@@ -187,7 +187,7 @@ const Navbar = (props) => {
     window !== undefined ? () => window().document.body : undefined;
 
   const navItems = [
-    !user ? (
+    !user?.email ? (
       <Button
         onClick={() => setLoginOpen(true)}
         sx={{

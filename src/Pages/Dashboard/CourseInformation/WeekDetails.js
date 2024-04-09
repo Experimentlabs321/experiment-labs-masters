@@ -48,7 +48,7 @@ const WeekDetails = ({
   const [toggleButton, setToggleButton] = useState(false);
   const { user, userInfo } = useContext(AuthContext);
   const [clickedChapter, setClickedChapter] = useState({});
-  const [openTopics, setOpenTopics] = useState([chapters[0]?._id]);
+  const [openTopics, setOpenTopics] = useState([]);
 
   const containerRef = useRef(null);
   let sortable;
@@ -73,8 +73,16 @@ const WeekDetails = ({
   };
 
   useEffect(() => {
-    setOpenTopics([chapters[0]?._id]);
+    setOpenTopics([]);
+  }, [currentWeek]);
+
+  useEffect(() => {
+    if (openTopics?.length === 0) {
+      if (chapters && chapters[0]) setOpenTopics([chapters[0]?._id]);
+    }
   }, [chapters]);
+
+  console.log(openTopics);
 
   useEffect(() => {
     const containerElement = containerRef.current;
@@ -103,7 +111,7 @@ const WeekDetails = ({
           const [movedChapter] = updatedChapters.splice(oldIndex, 1);
           updatedChapters.splice(newIndex, 0, movedChapter);
           console.log(prevChapters, updatedChapters);
-          prevChapters.forEach(async (chapter, index) => {
+          prevChapters?.forEach(async (chapter, index) => {
             console.log(chapter, updatedChapters[index]);
             const updatedChapter = { ...updatedChapters[index] };
             updatedChapter._id = chapter?._id;
@@ -116,7 +124,7 @@ const WeekDetails = ({
       },
     });
 
-    chapters.forEach((chapter, chapterIndex) => {
+    chapters?.forEach((chapter, chapterIndex) => {
       const chapterContainer = containerElement.children[chapterIndex];
       const tasksContainer = chapterContainer.querySelector(".sub-items");
 

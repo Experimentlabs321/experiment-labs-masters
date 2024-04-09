@@ -156,6 +156,23 @@ const BundlePayment = () => {
           title: "Course Added Successfully",
           icon: "success",
         });
+        const newData = {
+          from: organizationData?.emailIntegration?.email,
+          to: data?.email,
+          templateType: "emailAction",
+          organizationId: organizationData?._id,
+          templateName: "courseWelcome",
+          learner_name: data?.name,
+          course_name: course?.bundleFullName,
+          site_name: organizationData?.organizationName,
+          site_email: organizationData?.email,
+        };
+
+        const updateOrg = await axios.post(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+          // `http://localhost:5000/api/v1/sendMail`,
+          newData
+        );
         navigate("/courseAccess");
       }
       Loading().close();
@@ -227,6 +244,22 @@ const BundlePayment = () => {
             title: "Course Added Successfully",
             icon: "success",
           });
+          const newData = {
+            to: data?.email,
+            templateType: "emailAction",
+            templateName: "courseWelcome",
+            organizationId: organizationData?._id,
+            learner_name: data?.name,
+            course_name: course?.bundleFullName,
+            site_name: organizationData?.organizationName,
+            site_email: organizationData?.email,
+          };
+
+          const updateOrg = await axios.post(
+            `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+            // `http://localhost:5000/api/v1/sendMail`,
+            newData
+          );
           navigate("/courseAccess");
         }
       },
@@ -332,7 +365,7 @@ const BundlePayment = () => {
     const data = {
       name,
       phone,
-      email,
+      email: email?.toLowerCase(),
       organizationId: organizationData?._id,
       organizationName: organizationData?.organizationName,
       role: "user",
@@ -350,6 +383,16 @@ const BundlePayment = () => {
           );
           if (res.data.acknowledged) {
             saveUser(result?.user?.email);
+            const sendMail = await axios.post(
+              `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+              {
+                to: email,
+                templateType: "emailAction",
+                templateName: "learnerSignUp",
+                organizationId: organizationData?._id,
+                learner_name : name,
+              }
+            );
           }
           setRegisterOpen(false);
         })
@@ -386,6 +429,16 @@ const BundlePayment = () => {
             );
             if (res.data.acknowledged) {
               saveUser(googleMail);
+              const sendMail = await axios.post(
+                `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                {
+                  to: googleMail,
+                  templateType: "emailAction",
+                  templateName: "learnerSignUp",
+                  organizationId: organizationData?._id,
+                  learner_name : newName,
+                }
+              );
             }
           } else {
             saveUser(email);
