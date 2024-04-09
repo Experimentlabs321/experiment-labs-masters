@@ -274,6 +274,31 @@ const SalesAndRevenue = () => {
 
   console.log(bundles);
 
+  const handleCourseOrBundleName = (std) => {
+    let courseOrBundleName = "";
+    const courseData = courses?.find(
+      (item) => item?._id === std?.courses[0]?.courseId
+    );
+    const batchData = courseData?.batches?.find(
+      (item) => item?._id === std?.batchId
+    );
+    const bundlesData = bundles?.find((item) => item?._id === std?.bundleId);
+    console.log(std);
+    console.log(bundlesData?.bundleFullName, courseData?.courseFullName);
+    if (!std?.bundleId) {
+      console.log(courseData?.courseFullName);
+      courseOrBundleName = courseData.courseFullName;
+    } else {
+      // courseOrBundleName = bundles?.find(
+      //   (item) => item?._id === std?.bundleId
+      // )?.bundleFullName;
+
+      courseOrBundleName = bundlesData?.bundleFullName;
+    }
+    console.log(courseData, bundlesData);
+    return courseOrBundleName || "";
+  };
+
   return (
     <div>
       <Layout>
@@ -444,9 +469,10 @@ const SalesAndRevenue = () => {
                             return (
                               <div
                                 onClick={() => handleBatches(batch, index)}
-                                className={`px-2 py-1 border-2 rounded-full cursor-pointer ${selectedBatches?.includes(batch._id) &&
+                                className={`px-2 py-1 border-2 rounded-full cursor-pointer ${
+                                  selectedBatches?.includes(batch._id) &&
                                   "bg-[#39249957]"
-                                  }`}
+                                }`}
                                 key={batchIndex}
                               >
                                 {batch.batchName}
@@ -553,7 +579,6 @@ const SalesAndRevenue = () => {
                     )?.toLocaleDateString();
 
                     let courseData, batchData;
-                    let courseName, batchName;
 
                     if (student?.courses?.length === 1) {
                       courseData = courses?.find(
@@ -594,7 +619,8 @@ const SalesAndRevenue = () => {
                         </td>
                         <td className="py-4 px-6 border-b text-left whitespace-nowrap">
                           <p to={`/profile/${student?.email}`}>
-                            {courseData?.courseFullName}
+                            {handleCourseOrBundleName(student)}
+                            {/* {courseData?.courseFullName} */}
                           </p>
                         </td>
                         <td className="py-4 px-6 border-b text-left whitespace-nowrap">
@@ -684,28 +710,16 @@ const SalesAndRevenue = () => {
                     const formattedDate = new Date(
                       student?.paidAt
                     )?.toLocaleDateString();
-                    let courseOrBundleName = "";
-                    const courseData = courses?.find(
-                      (item) => item?._id === student?.courseId
-                    );
-                    const batchData = courseData?.batches?.find(
-                      (item) => item?._id === student?.batchId
-                    );
-                    const bundlesData = bundles?.find(
-                      (item) => item?._id === student?.bundleId
-                    );
-                    console.log(student);
-                    console.log(bundlesData?.bundleFullName, courseData?.courseFullName);
-                    if(courseData?.courseFullName){
-                      console.log(courseData?.courseFullName)
-                      courseOrBundleName= courseData.courseFullName;
-                    }
-                    else {
-                      courseOrBundleName= bundles?.find(
-                        (item) => item?._id === student?.bundleId
-                      )?.bundleFullName;
+                    let courseData, batchData;
 
-                      console.log(courseOrBundleName)
+                    if (student?.courses?.length === 1) {
+                      courseData = courses?.find(
+                        (item) => item?._id === student?.courses[0]?.courseId
+                      );
+                      batchData = courseData?.batches?.find(
+                        (item) => item?._id === student?.courses[0]?.batchId
+                      );
+                    } else {
                     }
                     return (
                       <tr
@@ -735,10 +749,9 @@ const SalesAndRevenue = () => {
                           </p>
                         </td>
                         <td className="py-4 px-6 border-b text-left whitespace-nowrap">
-                          <p >
+                          <p>
                             {/* {courseData?.courseFullName} */}
-                            {courseOrBundleName}
-
+                            {handleCourseOrBundleName(student)}
                           </p>
                         </td>
                         <td className="py-4 px-6 border-b text-left whitespace-nowrap">

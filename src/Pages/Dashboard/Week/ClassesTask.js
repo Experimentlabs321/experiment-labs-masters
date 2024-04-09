@@ -32,7 +32,7 @@ const ClassesTask = ({ taskData }) => {
   console.log(id)
   const [isOpen, setIsOpen] = useState(false);
   const { userInfo, user } = useContext(AuthContext);
-  if(userInfo.role !== 'admin'){
+  if (userInfo.role !== 'admin') {
     window.addEventListener("contextmenu", (e) => {
       e.preventDefault();
     });
@@ -42,7 +42,7 @@ const ClassesTask = ({ taskData }) => {
   const [feedbackGiven, setFeedbackGiven] = useState();
   const options = ["Category name"];
   //feedback//
- 
+
 
   ////
   const toggleOptions = () => {
@@ -54,20 +54,40 @@ const ClassesTask = ({ taskData }) => {
     setIsOpen(false);
   };
 
+
+
+  const [minutes, setMinutes] = useState(15);
+
   const providedDateTimeString = taskData?.courseStartingDateTime;
-  const providedDateTime = new Date(providedDateTimeString); // Parse the provided date string
-
-  const currentDateTime = new Date(); // Get the current date and time
-
+  const providedDateTime = new Date(providedDateTimeString);
   // Calculate the time difference in milliseconds
-  const timeDifferenceInMilliseconds = providedDateTime - currentDateTime;
 
-  // Convert the time difference to minutes and seconds
-  const timeDifferenceInSeconds = timeDifferenceInMilliseconds / 1000; // Convert to seconds
-  const minutes = Math.floor(timeDifferenceInSeconds / 60); // Calculate minutes
-  const seconds = Math.floor(timeDifferenceInSeconds % 60); // Calculate remaining seconds
+  useState(() => {
+    const currentDateTime = new Date();
+    const timeDifferenceInMilliseconds = providedDateTime - currentDateTime;
+    const timeDifferenceInSeconds = timeDifferenceInMilliseconds / 1000;
+    const newMinutes = Math.floor(timeDifferenceInSeconds / 60);
+    setMinutes(newMinutes);
+  }, []);
 
-  console.log(minutes, -1 * taskData?.duration);
+  useEffect(() => {
+    // Function that you want to run every 30 seconds
+    const intervalFunction = () => {
+      console.log('This will run every 30 seconds!', new Date(), minutes);
+      // Add your repeating logic here
+      const currentDateTime = new Date();
+      const timeDifferenceInMilliseconds = providedDateTime - currentDateTime;
+      const timeDifferenceInSeconds = timeDifferenceInMilliseconds / 1000;
+      const newMinutes = Math.floor(timeDifferenceInSeconds / 60);
+      setMinutes(newMinutes);
+    };
+
+    // Set up the interval and keep its ID so it can be cleared later
+    const intervalId = setInterval(intervalFunction, 30000);
+    return () => clearInterval(intervalId);
+  }, []);
+
+  // console.log(minutes, -1 * taskData?.duration);
 
 
   const [openTask, setOpenTask] = useState(
@@ -216,11 +236,11 @@ const ClassesTask = ({ taskData }) => {
           />
         </svg>
         <FeedbackPopup
-         taskData = {taskData}
-        
+          taskData={taskData}
+
         />
 
-      
+
       </div>
     </div>
   );
