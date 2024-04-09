@@ -275,8 +275,9 @@ const Dashboard = () => {
     axios
       .get(`${process.env.REACT_APP_SERVER_API}/api/v1/events/email/${userInfo?.email}`)
       .then((response) => {
+        console.log(response?.data);
         const filteredEvents = response?.data.filter(event => {
-          const eventStartDate = new Date(event.start.dateTime).getTime();
+          const eventStartDate = new Date(event?.start?.dateTime).getTime();
           const currentDate = new Date(getCurrentDate()).getTime();
           return eventStartDate >= currentDate;
         });
