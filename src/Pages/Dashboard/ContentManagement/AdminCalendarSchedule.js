@@ -84,11 +84,11 @@ const AdminCalendarSchedule = () => {
     setPreviousLocation(window.location.pathname);
   }, []);
 
-  // useEffect(() => {
-  //   if (calendarfetch === true) {
-  //     googleSignIn();
-  //   }
-  // }, [calendarfetch])
+  useEffect(() => {
+    if (calendarfetch === true) {
+      googleSignIn();
+    }
+  }, [calendarfetch])
   useEffect(() => {
     axios
       .get(
@@ -261,7 +261,7 @@ const AdminCalendarSchedule = () => {
       fetchPrimaryCalendarInfo();
     } else {
       // Attempt to sign in if no valid session exists
-      // googleSignIn();
+      googleSignIn();
     }
   }, []);
   if (isLoading) {

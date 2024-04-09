@@ -76,11 +76,11 @@ const ExecutionMentorSchedule = () => {
     setPreviousLocation(window.location.pathname);
   }, []);
 
-  // useEffect(() => {
-  //   if (calendarfetch === true) {
-  //     googleSignIn();
-  //   }
-  // }, [calendarfetch])
+  useEffect(() => {
+    if (calendarfetch === true) {
+      googleSignIn();
+    }
+  }, [calendarfetch])
   useEffect(() => {
     axios
       .get(
@@ -290,7 +290,7 @@ const ExecutionMentorSchedule = () => {
       fetchPrimaryCalendarInfo();
     } else {
       // Attempt to sign in if no valid session exists
-      // googleSignIn();
+      googleSignIn();
     }
   }, []);
   if (isLoading) {
