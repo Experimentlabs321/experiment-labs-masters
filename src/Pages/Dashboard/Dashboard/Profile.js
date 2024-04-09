@@ -455,7 +455,7 @@ const Profile = () => {
                         {data?.organization?.organizationName || "Not Available"}
                       </td>
                       <td className="py-4 px-6 border-b text-left">
-                        {course?.enrollDate.slice(0, 10) || "Not Available"}
+                        {course?.enrollDate?.slice(0, 10) || "Not Available"}
                       </td>
                       <td className="py-4 px-6 border-b text-left">
                         {displayExpiration || "No Expiration"}

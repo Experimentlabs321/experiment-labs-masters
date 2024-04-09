@@ -390,6 +390,7 @@ const BundlePayment = () => {
                 templateType: "emailAction",
                 templateName: "learnerSignUp",
                 organizationId: organizationData?._id,
+                learner_name : name,
               }
             );
           }
@@ -435,6 +436,7 @@ const BundlePayment = () => {
                   templateType: "emailAction",
                   templateName: "learnerSignUp",
                   organizationId: organizationData?._id,
+                  learner_name : newName,
                 }
               );
             }
