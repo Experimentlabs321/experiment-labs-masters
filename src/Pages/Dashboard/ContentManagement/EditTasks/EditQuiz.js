@@ -9,6 +9,7 @@ import QuizResult from "../QuizResult";
 import QuizEvaluationParameter from "../QuizEvaluationParameter";
 import ManageQuestionBank from "../ManageQuestionBank";
 import ManageQuestion from "../ManageQuestion";
+import Loading from "../../../Shared/Loading/Loading";
 
 const EditQuiz = () => {
   const [selectedTab, setSelectedTab] = useState("Quiz General Information");
@@ -21,6 +22,11 @@ const EditQuiz = () => {
   const [quizDescription, setQuizDescription] = useState("");
   const [submitPermission, setSubmitPermission] = useState(false);
   const [quizData, setQuizData] = useState({});
+  const [chapter, setChapter] = useState({});
+  const [course, setCourse] = useState({});
+  const [batchesData, setBatchesData] = useState([]);
+  const [selectedBatches, setSelectedBatches] = useState([]);
+  const [taskDrip, setTaskDrip] = useState(false);
 
   useEffect(() => {
     axios
@@ -30,116 +36,182 @@ const EditQuiz = () => {
       .then((response) => {
         setQuizData(response?.data);
         setQuizDescription(response?.data?.quizDescription);
-        // setSelectedBatches(response?.data?.batches);
+        setSelectedBatches(response?.data?.batches);
+        setTaskDrip(response?.data?.taskDrip);
         // setSkillParameterData(response?.data?.skillParameterData);
         // setEarningParameterData(response?.data?.earningParameterData);
-        // setTaskDrip(response?.data?.taskDrip);
         // setEnableDownload(response?.data?.enableDownload);
       });
   }, [id]);
+
+  useEffect(() => {
+    if (selectedTab === "Quiz General Information")
+      setQuizDescription(quizData?.quizDescription);
+    else setQuizDescription("");
+    setSelectedBatches(quizData?.batches);
+    setTaskDrip(quizData?.taskDrip || false);
+  }, [quizData, selectedTab]);
+
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_BACKEND_API}/chapter/${quizData?.chapterId}`
+      )
+      .then((response) => {
+        setChapter(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [quizData]);
+
+  useEffect(() => {
+    if (chapter?.courseId)
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${chapter?.courseId}`
+        )
+        .then((response) => {
+          setCourse(response?.data);
+        });
+  }, [chapter]);
+
+  useEffect(() => {
+    if (chapter?.courseId)
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${chapter?.courseId}`
+        )
+        .then((response) => {
+          setBatchesData(response?.data);
+        })
+        .catch((error) => console.error(error));
+  }, [chapter]);
+
+  const handleOptionChangeBatch = (event, optionValue) => {
+    // const optionValue = event.target.value;
+    const isChecked = event.target.checked;
+
+    if (isChecked) {
+      setSelectedBatches([
+        ...selectedBatches,
+        { batchName: optionValue?.batchName, batchId: optionValue?._id },
+      ]);
+    } else {
+      setSelectedBatches(
+        selectedBatches.filter((option) => option?.batchId !== optionValue?._id)
+      );
+    }
+  };
 
   console.log(quizData);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = {
-      taskName: e.target.quizName.value,
-      quizName: e.target.quizName.value,
-      quizDescription: quizDescription,
-      quizAttempts: e.target.quizAttempts.value,
-      shuffleWithInQuestions: e.target.shuffleWithInQuestions.value,
-      points: e.target.points.value,
-      isMarksTotalPoints: e.target.isMarksTotalPoints.value,
-      marks: e.target.marks.value,
-      totalPoints: e.target.totalPoints.value,
-      skillParameterData: [],
-      earningParameterData: [],
-      chapterId: quizData?.chapterId,
-      questions: [],
-    };
+    Loading();
+    const updatedQuizObject = { ...quizData };
+    updatedQuizObject.taskName = e.target.quizName.value;
+    updatedQuizObject.quizName = e.target.quizName.value;
+    updatedQuizObject.quizDescription = quizDescription;
+    updatedQuizObject.quizAttempts = e.target.quizAttempts.value;
+    updatedQuizObject.shuffleWithInQuestions =
+      e.target.shuffleWithInQuestions.value;
+    updatedQuizObject.points = e.target.points.value;
+    updatedQuizObject.isMarksTotalPoints = e.target.isMarksTotalPoints.value;
+    updatedQuizObject.marks = e.target.marks.value;
+    updatedQuizObject.totalPoints = e.target.totalPoints.value;
+    updatedQuizObject.gradeToPass = e.target.gradeToPass.value;
+    updatedQuizObject.gradeToPassValueIn = e.target.gradeToPassValueIn.value;
+    updatedQuizObject.batches = selectedBatches;
+    updatedQuizObject.quizDescription = quizDescription;
 
-    setQuizData(formData);
+    await setQuizData(updatedQuizObject);
+    console.log(updatedQuizObject);
 
     if (submitPermission) {
-      const newAssignment = await axios.post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/quizes`,
-        formData
+      await delete updatedQuizObject?._id;
+      const newQuiz = await axios.put(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/quizes/taskId/${quizData?._id}`,
+        updatedQuizObject
       );
-
-      if (newAssignment?.data?.acknowledged) {
-        console.log(newAssignment);
-        toast.success("Quiz added Successfully");
-        e.target.reset();
+      console.log(newQuiz);
+      if (newQuiz?.data?.updateResult?.acknowledged) {
+        Loading().close();
+        toast.success("Quiz Updated Successfully");
+        // e.target.reset();
       }
-
-      console.log(formData);
     }
+    Loading().close();
   };
+
+  console.log(quizDescription);
 
   return (
     <div>
       <Layout>
-        <div className="text-[#3E4DAC] text-[26px] font-bold  py-[35px] ps-[40px]">
-          <p>Manage Quiz in Topic 1</p>
-        </div>
-        <div className="px-10 flex  justify-between pb-3 text-lg">
-          <button
-            onClick={() => handleTabClick("Quiz General Information")}
-            style={{
-              fontWeight:
-                selectedTab === "Quiz General Information" ? "bold" : "normal",
-              borderBottom:
-                selectedTab === "Quiz General Information"
-                  ? "2px solid black"
-                  : "none",
-            }}
-          >
-            Quiz General Information
-          </button>
-          <button
-            onClick={() => handleTabClick("Questions")}
-            style={{
-              fontWeight: selectedTab === "Questions" ? "bold" : "normal",
-              borderBottom:
-                selectedTab === "Questions" ? "2px solid black" : "none",
-            }}
-          >
-            Questions
-          </button>
-          <button
-            onClick={() => handleTabClick("Question Bank")}
-            style={{
-              fontWeight: selectedTab === "Question Bank" ? "bold" : "normal",
-              borderBottom:
-                selectedTab === "Question Bank" ? "2px solid black" : "none",
-            }}
-          >
-            Question Bank
-          </button>
-          <button
-            onClick={() => handleTabClick("Results")}
-            style={{
-              fontWeight: selectedTab === "Results" ? "bold" : "normal",
-              borderBottom:
-                selectedTab === "Results" ? "2px solid black" : "none",
-            }}
-          >
-            Results
-          </button>
-          <button
-            onClick={() => handleTabClick("Evaluation Parameter")}
-            style={{
-              fontWeight:
-                selectedTab === "Evaluation Parameter" ? "bold" : "normal",
-              borderBottom:
-                selectedTab === "Evaluation Parameter"
-                  ? "2px solid black"
-                  : "none",
-            }}
-          >
-            Evaluation Parameter
-          </button>
-        </div>
+        <>
+          <div className="text-[#3E4DAC] text-[26px] font-bold  py-[35px] ps-[40px]">
+            <p>Manage Quiz in Topic 1</p>
+          </div>
+          <div className="px-10 flex items-center gap-10 pb-3 text-lg">
+            <button
+              onClick={() => handleTabClick("Quiz General Information")}
+              style={{
+                fontWeight:
+                  selectedTab === "Quiz General Information"
+                    ? "bold"
+                    : "normal",
+                borderBottom:
+                  selectedTab === "Quiz General Information"
+                    ? "2px solid black"
+                    : "none",
+              }}
+            >
+              Quiz General Information
+            </button>
+            <button
+              onClick={() => handleTabClick("Questions")}
+              style={{
+                fontWeight: selectedTab === "Questions" ? "bold" : "normal",
+                borderBottom:
+                  selectedTab === "Questions" ? "2px solid black" : "none",
+              }}
+            >
+              Questions
+            </button>
+            {/* <button
+              onClick={() => handleTabClick("Question Bank")}
+              style={{
+                fontWeight: selectedTab === "Question Bank" ? "bold" : "normal",
+                borderBottom:
+                  selectedTab === "Question Bank" ? "2px solid black" : "none",
+              }}
+            >
+              Question Bank
+            </button>
+            <button
+              onClick={() => handleTabClick("Results")}
+              style={{
+                fontWeight: selectedTab === "Results" ? "bold" : "normal",
+                borderBottom:
+                  selectedTab === "Results" ? "2px solid black" : "none",
+              }}
+            >
+              Results
+            </button>
+            <button
+              onClick={() => handleTabClick("Evaluation Parameter")}
+              style={{
+                fontWeight:
+                  selectedTab === "Evaluation Parameter" ? "bold" : "normal",
+                borderBottom:
+                  selectedTab === "Evaluation Parameter"
+                    ? "2px solid black"
+                    : "none",
+              }}
+            >
+              Evaluation Parameter
+            </button> */}
+          </div>
+        </>
 
         {selectedTab === "Quiz General Information" && (
           <div className="mx-10 my-20">
@@ -199,8 +271,8 @@ const EditQuiz = () => {
                           <select
                             required
                             className="w-full border-0 focus:outline-0 bg-[#F6F7FF] text-black"
-                            name="quizAttempts"
-                            id="quizAttempts"
+                            name="gradeMethod"
+                            id="gradeMethod"
                           >
                             <option className="text-black" value="Student">
                               Highest Grade
@@ -306,14 +378,14 @@ const EditQuiz = () => {
                           <option className="" value="Unlimited">
                             Unlimited
                           </option>
-                          <option className="" value="Parent">
-                            Parent
+                          <option className="" value="3">
+                            3
                           </option>
-                          <option className="" value="Counselor">
-                            Counselor
+                          <option className="" value="5">
+                            5
                           </option>
-                          <option className="" value="Others">
-                            Others
+                          <option className="" value="10">
+                            10
                           </option>
                         </select>
                       </div>
@@ -334,9 +406,11 @@ const EditQuiz = () => {
                           className=" flex  border  rounded-lg h-[40px] w-[20%] px-2 text-[#535353] "
                         >
                           <input
+                            defaultValue={quizData?.gradeToPass}
                             className="w-[100%] bg-[#F6F7FF]"
                             type="text"
                             name="gradeToPass"
+                            id="gradeToPass"
                           />
                         </div>
                         <div
@@ -349,8 +423,8 @@ const EditQuiz = () => {
                           <select
                             required
                             className=" border-0 focus:outline-0 bg-[#F6F7FF]"
-                            name="option"
-                            id="option"
+                            name="gradeToPassValueIn"
+                            id="gradeToPassValueIn"
                           >
                             <option className="" value="Percentage">
                               Percentage
@@ -430,18 +504,117 @@ const EditQuiz = () => {
                 </div>
               </div>
 
+              <div className="py-[35px] ">
+                <div>
+                  <div className="flex items-center gap-4">
+                    <p className="h-2 w-2 bg-black rounded-full"></p>
+                    <p className="font-bold text-lg me-[36px]">Select Batch</p>
+                    <img src={required} alt="required" />
+                  </div>
+                  <ul className="ms-6 flex gap-4 flex-wrap ">
+                    {batchesData?.map((option, index) => {
+                      return (
+                        <>
+                          <li className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] ">
+                            <input
+                              type="checkbox"
+                              id="student"
+                              name={option?.batchName}
+                              value={option?.batchName}
+                              checked={selectedBatches.find(
+                                (item) => item?.batchName === option?.batchName
+                              )}
+                              onChange={(e) =>
+                                handleOptionChangeBatch(e, option)
+                              }
+                              className=" mb-1"
+                            />
+                            <div className="flex mb-1 items-center">
+                              <label
+                                className="ms-4"
+                                htmlFor={option?.batchName}
+                              >
+                                {option?.batchName}
+                              </label>
+                            </div>
+                          </li>
+                        </>
+                      );
+                    })}
+                  </ul>
+                </div>
+              </div>
+
+              <div className=" space-y-3 mb-8">
+                <fieldset>
+                  <div className="flex items-center gap-4 mb-5">
+                    <p className="h-2 w-2 bg-black rounded-full"></p>
+                    <p className="font-bold text-lg me-[36px]">Enable Drip</p>
+                    <img src={required} alt="" />
+                  </div>
+                  <div className="ms-6 flex items-center space-x-4">
+                    <div className="flex items-center">
+                      <input
+                        type="radio"
+                        id="radioYes"
+                        name="radioOption"
+                        checked={taskDrip === true}
+                        onChange={() => setTaskDrip(true)}
+                        disabled={course?.enableDrip}
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
+                      />
+                      <label
+                        htmlFor="radioYes"
+                        className={`ml-2 text-sm font-medium ${
+                          course?.enableDrip ? "text-gray-400" : "text-gray-900"
+                        }`}
+                      >
+                        Yes
+                      </label>
+                    </div>
+
+                    <div className="flex items-center">
+                      <input
+                        type="radio"
+                        id="radioNo"
+                        name="radioOption"
+                        checked={taskDrip === false}
+                        onChange={() => setTaskDrip(false)}
+                        disabled={course?.enableDrip}
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
+                      />
+                      <label
+                        htmlFor="radioNo"
+                        className={`ml-2 text-sm font-medium ${
+                          course?.enableDrip ? "text-gray-400" : "text-gray-900"
+                        }`}
+                      >
+                        No
+                      </label>
+                    </div>
+                  </div>
+                </fieldset>
+
+                {course?.enableDrip && (
+                  <p className="text-sm text-red-500">
+                    Course Drip Must Be Turned Off to add Task Drip.
+                  </p>
+                )}
+              </div>
+
               <div className="flex items-center justify-center mt-20 mb-10">
                 <input
                   type="submit"
+                  onClick={() => setSubmitPermission(true)}
                   value="Save"
-                  className="px-[30px] py-3 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
+                  className="px-[30px] cursor-pointer py-3 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
                 />
-                <input
+                {/* <input
                   type="submit"
                   onClick={() => setSubmitPermission(true)}
                   value="Save & Display"
                   className="px-[30px] py-3 bg-[#FF557A] text-[#fff] text-xl font-bold rounded-lg ms-20"
-                />
+                /> */}
               </div>
             </form>
           </div>
@@ -449,7 +622,14 @@ const EditQuiz = () => {
         {selectedTab === "Results" && <QuizResult />}
         {selectedTab === "Evaluation Parameter" && <QuizEvaluationParameter />}
         {selectedTab === "Question Bank" && <ManageQuestionBank />}
-        {selectedTab === "Questions" && <ManageQuestion />}
+        {selectedTab === "Questions" && (
+          <ManageQuestion
+            quizData={quizData}
+            setQuizData={setQuizData}
+            batchesData={batchesData}
+            selectedBatches={selectedBatches}
+          />
+        )}
       </Layout>
     </div>
   );

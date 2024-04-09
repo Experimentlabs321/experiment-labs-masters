@@ -9,6 +9,8 @@ import { DownloadTableExcel } from "react-export-table-to-excel";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import inrIcon from "../../../assets/Dashboard/inrIcon.png";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
 
 const SalesAndRevenue = () => {
   const { userInfo } = useContext(AuthContext);
@@ -16,6 +18,7 @@ const SalesAndRevenue = () => {
   const [students, setStudents] = useState();
   const [selectedFilter, setSelectedFilter] = useState("Last 30 Days");
   const [totalStudents, setTotalStudents] = useState();
+  const [bundles, setBundles] = useState();
   const [totalEnrolledStudents, setTotalEnrolledStudents] = useState();
   const [totalRevenue, setTotalRevenue] = useState();
   const [paidStudents, setPaidStudents] = useState();
@@ -61,6 +64,20 @@ const SalesAndRevenue = () => {
   }, [selectedCourse]);
 
   useEffect(() => {
+    if (userInfo.organizationId)
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/bundles/organizationId/${userInfo.organizationId}`
+        )
+        .then((response) => {
+          setBundles(response?.data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+  }, [userInfo.organizationId]);
+
+  useEffect(() => {
     axios
       .get(
         `${process.env.REACT_APP_SERVER_API}/api/v1/stats/organizationId/${userInfo?.organizationId}`
@@ -75,7 +92,7 @@ const SalesAndRevenue = () => {
       });
   }, [userInfo]);
 
-  // console.log(overViewCount);
+  console.log(filteredStudents);
 
   useEffect(() => {
     axios
@@ -255,60 +272,68 @@ const SalesAndRevenue = () => {
     setCurrentPage(page);
   };
 
-  console.log(courses);
+  console.log(bundles);
 
   return (
     <div>
       <Layout>
         <div className="p-4">
           <h1 className="text-3xl font-bold">Sales & Revenue</h1>
-
-          <div className="my-5 flex gap-5 flex-wrap">
-            <Link
-              to=""
-              className="w-fit min-w-[200px] justify-center items-stretch  bg-[#8064F0] text-white shadow-md border flex flex-col px-2 rounded-md py-4"
-            >
-              <h1 className=" text-sm font-medium tracking-widest">
-                Total Revenue
-              </h1>
-              <h1 className=" font-sans text-3xl font-bold tracking-[1px] whitespace-nowrap mt-3 flex items-center">
-                &#8377;{totalRevenue ? totalRevenue : "0"}
-              </h1>
-            </Link>
-            <Link
-              to=""
-              className="w-fit min-w-[200px] justify-center items-stretch bg-[#0A98EA] text-white shadow-md border flex flex-col px-2 rounded-md py-4"
-            >
-              <h1 className=" text-sm font-medium tracking-widest">
-                Total Refunds
-              </h1>
-              <h1 className=" font-sans text-3xl font-bold tracking-[1px] whitespace-nowrap mt-3 flex items-center">
-                &#8377;0
-              </h1>
-            </Link>
-            <Link
-              to=""
-              className="w-fit min-w-[200px] justify-center items-stretch bg-[#5c0aea] text-white shadow-md border flex flex-col px-2 rounded-md py-4"
-            >
-              <h1 className=" text-sm font-medium tracking-widest">
-                Total Courses
-              </h1>
-              <h1 className=" font-sans text-3xl font-bold tracking-[1px] whitespace-nowrap mt-3 flex items-center">
-                {courses?.length}
-              </h1>
-            </Link>
-            <Link
-              to=""
-              className="w-fit min-w-[200px] justify-center items-stretch bg-[#6278FF] text-white shadow-md border flex flex-col px-2 rounded-md py-4"
-            >
-              <h1 className=" text-sm font-medium tracking-widest">
-                Enrolled Students
-              </h1>
-              <h1 className=" font-sans text-3xl font-bold tracking-[1px] whitespace-nowrap mt-3 flex items-center">
-                {paidStudents?.length}
-              </h1>
-            </Link>
-          </div>
+          {totalRevenue ? (
+            <div className="my-5 flex gap-5 flex-wrap">
+              <Link
+                to=""
+                className="w-fit min-w-[200px] justify-center items-stretch  bg-[#8064F0] text-white shadow-md border flex flex-col px-2 rounded-md py-4"
+              >
+                <h1 className=" text-sm font-medium tracking-widest">
+                  Total Revenue
+                </h1>
+                <h1 className=" font-sans text-3xl font-bold tracking-[1px] whitespace-nowrap mt-3 flex items-center">
+                  &#8377;{totalRevenue ? totalRevenue : "0"}
+                </h1>
+              </Link>
+              <Link
+                to=""
+                className="w-fit min-w-[200px] justify-center items-stretch bg-[#0A98EA] text-white shadow-md border flex flex-col px-2 rounded-md py-4"
+              >
+                <h1 className=" text-sm font-medium tracking-widest">
+                  Total Refunds
+                </h1>
+                <h1 className=" font-sans text-3xl font-bold tracking-[1px] whitespace-nowrap mt-3 flex items-center">
+                  &#8377;0
+                </h1>
+              </Link>
+              <Link
+                to=""
+                className="w-fit min-w-[200px] justify-center items-stretch bg-[#5c0aea] text-white shadow-md border flex flex-col px-2 rounded-md py-4"
+              >
+                <h1 className=" text-sm font-medium tracking-widest">
+                  Total Courses
+                </h1>
+                <h1 className=" font-sans text-3xl font-bold tracking-[1px] whitespace-nowrap mt-3 flex items-center">
+                  {courses?.length}
+                </h1>
+              </Link>
+              <Link
+                to=""
+                className="w-fit min-w-[200px] justify-center items-stretch bg-[#6278FF] text-white shadow-md border flex flex-col px-2 rounded-md py-4"
+              >
+                <h1 className=" text-sm font-medium tracking-widest">
+                  Enrolled Students
+                </h1>
+                <h1 className=" font-sans text-3xl font-bold tracking-[1px] whitespace-nowrap mt-3 flex items-center">
+                  {paidStudents?.length}
+                </h1>
+              </Link>
+            </div>
+          ) : (
+            <div className="flex justify-center items-center">
+              {" "}
+              <Box sx={{ display: "flex" }}>
+                <CircularProgress />
+              </Box>
+            </div>
+          )}
 
           <div className="mb-5 flex gap-5 items-center">
             <label className="font-bold">Select Filter:</label>
@@ -419,10 +444,9 @@ const SalesAndRevenue = () => {
                             return (
                               <div
                                 onClick={() => handleBatches(batch, index)}
-                                className={`px-2 py-1 border-2 rounded-full cursor-pointer ${
-                                  selectedBatches?.includes(batch._id) &&
+                                className={`px-2 py-1 border-2 rounded-full cursor-pointer ${selectedBatches?.includes(batch._id) &&
                                   "bg-[#39249957]"
-                                }`}
+                                  }`}
                                 key={batchIndex}
                               >
                                 {batch.batchName}
@@ -528,12 +552,18 @@ const SalesAndRevenue = () => {
                       student?.paidAt
                     )?.toLocaleDateString();
 
-                    const courseData = courses?.find(
-                      (item) => item?._id === student?.courseId
-                    );
-                    const batchData = courseData?.batches?.find(
-                      (item) => item?._id === student?.batchId
-                    );
+                    let courseData, batchData;
+                    let courseName, batchName;
+
+                    if (student?.courses?.length === 1) {
+                      courseData = courses?.find(
+                        (item) => item?._id === student?.courses[0]?.courseId
+                      );
+                      batchData = courseData?.batches?.find(
+                        (item) => item?._id === student?.courses[0]?.batchId
+                      );
+                    } else {
+                    }
 
                     return (
                       <tr
@@ -654,14 +684,29 @@ const SalesAndRevenue = () => {
                     const formattedDate = new Date(
                       student?.paidAt
                     )?.toLocaleDateString();
-
+                    let courseOrBundleName = "";
                     const courseData = courses?.find(
                       (item) => item?._id === student?.courseId
                     );
                     const batchData = courseData?.batches?.find(
                       (item) => item?._id === student?.batchId
                     );
+                    const bundlesData = bundles?.find(
+                      (item) => item?._id === student?.bundleId
+                    );
+                    console.log(student);
+                    console.log(bundlesData?.bundleFullName, courseData?.courseFullName);
+                    if(courseData?.courseFullName){
+                      console.log(courseData?.courseFullName)
+                      courseOrBundleName= courseData.courseFullName;
+                    }
+                    else {
+                      courseOrBundleName= bundles?.find(
+                        (item) => item?._id === student?.bundleId
+                      )?.bundleFullName;
 
+                      console.log(courseOrBundleName)
+                    }
                     return (
                       <tr
                         key={student?._id}
@@ -671,7 +716,7 @@ const SalesAndRevenue = () => {
                       >
                         <td className="py-4 px-6 border-b text-left whitespace-nowrap">
                           <p to={`/profile/${student?.payer?.email}`}>
-                            {student?.payer?.name}
+                            {student?.payer?.name} some
                           </p>
                         </td>
                         <td className="py-4 px-6 border-b text-left whitespace-nowrap">
@@ -690,8 +735,10 @@ const SalesAndRevenue = () => {
                           </p>
                         </td>
                         <td className="py-4 px-6 border-b text-left whitespace-nowrap">
-                          <p to={`/profile/${student?.email}`}>
-                            {courseData?.courseFullName}
+                          <p >
+                            {/* {courseData?.courseFullName} */}
+                            {courseOrBundleName}
+
                           </p>
                         </td>
                         <td className="py-4 px-6 border-b text-left whitespace-nowrap">

@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { AuthContext } from "../../../contexts/AuthProvider";
+import TextEditor from "../../Shared/TextEditor/TextEditor";
 
 
 
@@ -25,7 +26,9 @@ const AddingEditingEssayQues = () => {
     ///
     const [isOpenGeneralCourseInfo, setIsOpenGeneralCourseInfo] = useState(true);
     const [isOpenCourseFormat, setIsOpenCourseFormat] = useState(false);
-    
+    const [generalFeedback, setGeneralFeedback] = useState("");
+    const [questionText, setQuestionText] = useState("");
+
 
     const toggleDropdownCourseSelection = () => {
         setIsOpenGeneralCourseInfo(!isOpenGeneralCourseInfo);
@@ -33,7 +36,7 @@ const AddingEditingEssayQues = () => {
     const toggleDropdownCourseFormat = () => {
         setIsOpenCourseFormat(!isOpenCourseFormat);
     };
-    
+
 
     // add course category
     const [isOpenAddCourseCategory, setIsOpenAddCourseCategory] = useState(false);
@@ -48,82 +51,40 @@ const AddingEditingEssayQues = () => {
 
     const { user } = useContext(AuthContext);
 
-    console.log(user)
+    // console.log(user)
 
     /// handle Submit
     const handleSubmit = async (event) => {
         event.preventDefault();
         const form = event.target;
 
-        const questionNumber = form.questionNumber?.value;
-        const questionTitle = form.questionTitle?.value;
-        const courseStartingDate = form.courseStartingDate?.value;
-        //  const courseStartingTime = form.courseStartingTime?.value;
-        const courseEndingDate = form.courseEndingDate?.value;
-        //  const courseEndingTime = form.courseEndingTime?.value;
+        const questionName = form.questionName?.value;
         const defaultMarks = form.defaultMarks?.value;
-        const courseCategory = +form.courseCategory?.value;
-        const questionStatus = +form.questionStatus?.value;
-        const generalFeedback = form.generalFeedback?.value;
-        const courseFormat = form.courseFormat?.value;
-        const gradesFormat = form.gradesFormat?.value;
-        const groups = form.groups?.value;
-        const showactivitydates = +form.showactivitydates?.value;
-        const numberOfWeeks = +form.numberofWeeks?.value;
-        // const weekChapterName = form.weekChapterName?.value;
-        const showactivityreports = +form.showactivityreports?.value;
-        const enableCompletionTracking = +form.enableCompletionTracking?.value;
-        // const certificateGeneration = form.certificateGeneration?.value;
-        const showactivitycompletionconditions =
-            +form.showactivitycompletionconditions?.value;
-        //  const showGradebooktostudents = form.showGradebooktostudents.value;
-        // const newCourseStartingDate = Math.floor(
-        //   new Date(courseStartingDate).getTime() / 1000
-        // );
-        // const newCourseEndingDate = Math.floor(
-        //   new Date(courseEndingDate).getTime() / 1000
-        // );
+        const questionStatus = form.questionStatus?.value;
+        const category = form.category?.value;
+        const responseFormat = form.responseFormat?.value;
+        const inputBoxSize = form.inputBoxSize?.value;
+        const minimumWordLimit = form.minimumWordLimit?.value;
+        const maximumWordLimit = form.maximumWordLimit?.value;
+        
+
 
         const addCourse = {
-            questionNumber,
-            questionTitle,
-            courseStartingDate,
-            //  courseStartingTime,
-            courseEndingDate,
-            // courseEndingTime,
+
+            questionName,
             defaultMarks,
-            courseCategory,
-            courseThumbnail: '',
             questionStatus,
+            category,
             generalFeedback,
-            courseFormat,
-            gradesFormat,
-            groups,
-            showactivitydates,
-            numberOfWeeks,
-            // weekChapterName: formData,
-            showactivityreports,
-            enableCompletionTracking,
-            // certificateGeneration,
-            showactivitycompletionconditions,
-            //showGradebooktostudents,
-            // newCourseEndingDate,
-            // newCourseStartingDate,
-            creator: {
-                name: user?.displayName,
-                email: user?.email,
-                photoURL: user?.photoURL
-            }
+            questionText,
+            responseFormat,
+            inputBoxSize,
+            minimumWordLimit,
+            maximumWordLimit
+
         };
 
-        const course = await axios.post(`${process.env.REACT_APP_BACKEND_API}/courses`, addCourse);
-
-        if (course?.data?.acknowledged) {
-            toast.success("Course added Successfully");
-            form.reset();
-        }
-
-        console.log("Add Course----->", addCourse);
+        console.log(addCourse)
 
     };
 
@@ -131,11 +92,11 @@ const AddingEditingEssayQues = () => {
         <div>
             <Layout>
 
-                <div className='text-[#3E4DAC] text-[26px] font-bold  py-[35px] ps-[40px]'>
+                {/* <div className='text-[#3E4DAC] text-[26px] font-bold  py-[35px] ps-[40px]'>
                     <p>Manage Live Test in Topic 1</p>
 
-                </div>
-                <div className='px-10 flex  justify-between pb-3 text-lg'>
+                </div> */}
+                {/*  <div className='px-10 flex  justify-between pb-3 text-lg'>
                     <Link to='/quizGeneralinfo'
                         onClick={() => handleTabClick('Quiz General Information')}
                         style={{
@@ -181,13 +142,13 @@ const AddingEditingEssayQues = () => {
                     >
                         Evaluation Parameter
                     </Link>
-                </div>
+                </div> */}
 
                 <div className="mx-10 mt-10">
                     <div className="flex justify-between items-center mb-10">
                         <p className=" text-[26px] font-bold ">Adding/Editing Essay Question </p>
                         <Link to='/manageQuestion' className='bg-[#3E4DAC] flex  px-4 py-2 rounded-lg text-[#fff]'>
-                            <img src={back} alt="back"/>
+                            <img src={back} alt="back" />
                             <p className="">Back</p>
                         </Link>
 
@@ -195,18 +156,19 @@ const AddingEditingEssayQues = () => {
 
                     <form onSubmit={handleSubmit} className="">
                         <div
-                            className="select-option flex items-center gap-[40px]"
+                            className="select-option flex items-center gap-[40px] cursor-pointer"
                             onClick={toggleDropdownCourseSelection}
+
                         >
                             <h1 className=" h-[60px] w-[60px] bg-[#E1E6FF] rounded-full flex justify-center items-center text-[25px]">
                                 1
                             </h1>
                             <p className="text-[25px] font-bold">General</p>
                             {!isOpenGeneralCourseInfo && (
-                                <img className="w-6" src={arrowright} alt="arrowRight"/>
+                                <img className="w-6" src={arrowright} alt="arrowRight" />
                             )}
 
-                            {isOpenGeneralCourseInfo && <img src={arrowDown} alt="arrowDown"/>}
+                            {isOpenGeneralCourseInfo && <img src={arrowDown} alt="arrowDown" />}
 
                             <i
                                 className={`dropdown-arrow ${isOpenGeneralCourseInfo ? "open" : ""
@@ -214,28 +176,28 @@ const AddingEditingEssayQues = () => {
                             ></i>
                         </div>
                         {isOpenGeneralCourseInfo && (
-                            <div className="dropdown-menu mt-[71px] mb-[45px] flex justify-between me-10">
+                            <div className="dropdown-menu mt-[71px] mb-[45px] flex justify-between gap-5 me-10">
                                 <div>
                                     <div className="">
                                         <div className="flex items-center gap-4">
                                             <p className="h-2 w-2 bg-black rounded-full"></p>
                                             <p className="font-bold text-lg me-[36px]">
                                                 {" "}
-                                                Question Number
+                                                Question Name
                                             </p>
                                             <img src={required} alt="required" />
                                         </div>
 
                                         <input
                                             required
-                                            className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                                            name="questionNumber"
+                                            className="mt-6 ms-6 border rounded-md w-[95%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                                            name="questionName"
                                             type="text"
-                                            placeholder="Eg. Entrepreneurship Lab"
+                                            placeholder="Question Name"
                                         />
                                     </div>
 
-                                    <div className="mt-20">
+                                    {/*   <div className="mt-20">
                                         <div className="flex items-center gap-4">
                                             <p className="h-2 w-2 bg-black rounded-full"></p>
                                             <p className="font-bold text-lg me-[36px]">
@@ -250,9 +212,9 @@ const AddingEditingEssayQues = () => {
                                             className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                                             name="questionTitle"
                                             type="text"
-                                            placeholder="Eg. Entrepreneurship Lab"
+                                            placeholder="Question Title"
                                         />
-                                    </div>
+                                    </div> */}
 
 
                                     <div className="mt-20">
@@ -265,13 +227,56 @@ const AddingEditingEssayQues = () => {
                                         </div>
 
                                         <input
-                                            className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                                            className="mt-6 ms-6 border rounded-md w-[80%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                                             name="defaultMarks"
-                                            type="text"
-                                            placeholder="Eg. 2"
+                                            type="number"
+                                            defaultValue={1}
+                                            placeholder="number"
                                         />
                                     </div>
+                                    <div className="mt-20">
+                                        <div className="flex items-center gap-4">
+                                            <p className="h-2 w-2 bg-black rounded-full"></p>
+                                            <p className="font-bold text-lg me-[36px]">
+                                                Question Status
+                                            </p>
+                                        </div>
 
+                                        <div className=" items-center flex gap-2  mt-2 ms-6  w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 ">
+                                            <div className="flex gap-2">
+                                                <input
+                                                    type="radio"
+                                                    id="Ready"
+                                                    name="questionStatus"
+                                                    value="ready"
+                                                />
+                                                <label> Ready</label>
+                                            </div>
+                                            <div className="flex gap-2 ms-[55px]">
+                                                <input
+                                                    type="radio"
+                                                    id="Draft"
+                                                    name="questionStatus"
+                                                    value="draft"
+                                                />
+                                                <label>Draft</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="mt-20">
+                                        <div className="flex items-center gap-4">
+                                            <p className="h-2 w-2 bg-black rounded-full"></p>
+                                            <p className="font-bold text-lg me-[36px]">
+                                            Question text
+                                            </p>
+                                        </div>
+
+                                        <div className="w-[95%] mt-10">
+                                            <div className="bg-white text-black textEditor">
+                                                <TextEditor value={questionText} setValue={setQuestionText} />
+                                            </div>
+                                        </div>
+                                    </div>
 
                                 </div>
 
@@ -292,7 +297,7 @@ const AddingEditingEssayQues = () => {
                                                 name="category"
                                             // id="option"
                                             >
-                                                <option className="" value="1">
+                                                <option className="" value="Web Development">
                                                     Web Development
                                                 </option>
                                                 <option value="Parent"></option>
@@ -343,64 +348,19 @@ const AddingEditingEssayQues = () => {
                                         </div>
                                     </div>
 
-
-
-
-
-
-
                                     <div className="mt-20">
-
-
-                                        <div className="mt-20">
-                                            <div className="flex items-center gap-4">
-                                                <p className="h-2 w-2 bg-black rounded-full"></p>
-                                                <p className="font-bold text-lg me-[36px]">
-                                                    General Feedback
-                                                </p>
-                                            </div>
-
-                                            <input
-                                                className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                                                name="generalFeedback"
-                                                type="text"
-                                                placeholder="Eg. 02283847"
-                                            ></input>
+                                        <div className="flex items-center gap-4">
+                                            <p className="h-2 w-2 bg-black rounded-full"></p>
+                                            <p className="font-bold text-lg me-[36px]">
+                                                General Feedback
+                                            </p>
                                         </div>
 
-                                        <div className="mt-20">
-                                            <div className="flex items-center gap-4">
-                                                <p className="h-2 w-2 bg-black rounded-full"></p>
-                                                <p className="font-bold text-lg me-[36px]">
-                                                    Question Status
-                                                </p>
-                                            </div>
-
-                                            <div className=" items-center flex gap-2  mt-2 ms-6  w-[319px] h-[50px] ps-2 text-[#535353] focus:outline-0 ">
-                                                <div className="">
-                                                    <input
-                                                        type="radio"
-                                                        id="Ready"
-                                                        name="questionStatus"
-                                                        value="1"
-                                                    />
-                                                    <lebel> Ready</lebel>
-                                                </div>
-                                                <div className=" ms-[55px]">
-                                                    <input
-                                                        type="radio"
-                                                        id="Draft"
-                                                        name="questionStatus"
-                                                        value="0"
-                                                    />
-                                                    <lebel> Draft</lebel>
-                                                </div>
+                                        <div className="w-[95%] mt-10">
+                                            <div className="bg-white text-black textEditor">
+                                                <TextEditor value={generalFeedback} setValue={setGeneralFeedback} />
                                             </div>
                                         </div>
-
-
-
-
                                     </div>
                                 </div>
                             </div>
@@ -408,7 +368,7 @@ const AddingEditingEssayQues = () => {
 
                         <div className=" flex items-center justify-between">
                             <div
-                                className="select-option flex items-center gap-[40px] "
+                                className="select-option flex items-center gap-[40px] cursor-pointer"
                                 onClick={toggleDropdownCourseFormat}
                             >
                                 <h1 className=" h-[60px] w-[60px] bg-[#E1E6FF] rounded-full flex justify-center items-center text-[25px]">
@@ -416,22 +376,17 @@ const AddingEditingEssayQues = () => {
                                 </h1>
                                 <p className="text-[25px] font-bold">Response Options</p>
                                 {!isOpenCourseFormat && (
-                                    <img className="w-6" src={arrowright} alt="arrowright"/>
+                                    <img className="w-6" src={arrowright} alt="arrowright" />
                                 )}
 
-                                {isOpenCourseFormat && <img src={arrowDown} alt="arrowDown"/>}
+                                {isOpenCourseFormat && <img src={arrowDown} alt="arrowDown" />}
 
                                 <i
                                     className={`dropdown-arrow ${isOpenCourseFormat ? "open" : ""}`}
                                 ></i>
                             </div>
 
-
-
-
                         </div>
-
-
 
                         {isOpenCourseFormat && (
                             <div>
@@ -456,14 +411,14 @@ const AddingEditingEssayQues = () => {
                                                 <select
                                                     required
                                                     className="w-full text-base font-semibold border-0 focus:outline-0 bg-[#F6F7FF] text-[#3E4DAC]"
-                                                    name="gradeAllocation"
+                                                    name="responseFormat"
                                                     id="option"
                                                 >
 
-                                                    <option className="" value="Html Editor">Html Editor</option>
-                                                    <option value="Parent"></option>
-                                                    <option value="Counselor"></option>
-                                                    <option value="Others"></option>
+                                                    <option className="" value="Html editor">Html editor</option>
+                                                    <option value="Html editor with file picker">Html editor with file picker</option>
+                                                    <option value="Plain text">Plain text</option>
+                                                    <option value="Others">No online text</option>
                                                 </select>
 
                                             </div>
@@ -474,7 +429,6 @@ const AddingEditingEssayQues = () => {
                                             <div className='flex items-center gap-4'>
                                                 <p className='h-2 w-2 bg-black rounded-full'></p>
                                                 <p className='font-semibold text-[#000000]  py-2'>Input box Size</p>
-
 
                                             </div>
                                             <div
@@ -487,14 +441,19 @@ const AddingEditingEssayQues = () => {
                                                 <select
                                                     required
                                                     className="w-full text-base font-semibold border-0 focus:outline-0 bg-[#F6F7FF] text-[#3E4DAC]"
-                                                    name="gradeAllocation"
+                                                    name="inputBoxSize"
                                                     id="option"
                                                 >
 
-                                                    <option className="" value="Html Editor">10 lines</option>
-                                                    <option value="Parent"></option>
-                                                    <option value="Counselor"></option>
-                                                    <option value="Others"></option>
+                                                    <option value="2 lines">2 lines</option>
+                                                    <option value="3 lines">3 lines</option>
+                                                    <option value="5 lines">5 lines</option>
+                                                    <option value="10 lines">10 lines</option>
+                                                    <option value="15 lines">15 lines</option>
+                                                    <option value="20 lines">20 lines</option>
+                                                    <option value="25 lines">25 lines</option>
+                                                    <option value="30 lines">30 lines</option>
+                                                   
                                                 </select>
 
                                             </div>
@@ -506,7 +465,7 @@ const AddingEditingEssayQues = () => {
 
                                     <div className=" ">
 
-                                        <div className=''>
+                                      {/*   <div className=''>
                                             <div className='flex items-center gap-4'>
                                                 <p className='h-2 w-2 bg-black rounded-full'></p>
                                                 <p className='font-semibold text-[#000000]  py-2'>Requires Text</p>
@@ -535,9 +494,9 @@ const AddingEditingEssayQues = () => {
 
                                             </div>
 
-                                        </div>
+                                        </div> */}
 
-                                        <div className="mt-20">
+                                        <div className="">
                                             <div className="flex items-center gap-4">
                                                 <p className="h-2 w-2 bg-black rounded-full"></p>
                                                 <p className="font-bold text-lg me-[36px]">
@@ -548,9 +507,9 @@ const AddingEditingEssayQues = () => {
 
                                             <input
                                                 className="mt-6 ms-6 border rounded-md w-[60%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                                                name="minimumwordlimit"
-                                                type="text"
-                                                placeholder="Eg. 2"
+                                                name="minimumWordLimit"
+                                                type="number"
+                                                placeholder="number"
                                             />
                                         </div>
 
@@ -558,16 +517,16 @@ const AddingEditingEssayQues = () => {
                                             <div className="flex items-center gap-4">
                                                 <p className="h-2 w-2 bg-black rounded-full"></p>
                                                 <p className="font-bold text-lg me-[36px]">
-                                                Maximum word limit
+                                                    Maximum word limit
                                                 </p>
 
                                             </div>
 
                                             <input
                                                 className="mt-6 ms-6 border rounded-md w-[60%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                                                name="maximumwordlimit"
-                                                type="text"
-                                                placeholder="Eg. 2"
+                                                name="maximumWordLimit"
+                                                type="number"
+                                                placeholder="number"
                                             />
                                         </div>
 

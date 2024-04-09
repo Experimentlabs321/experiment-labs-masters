@@ -27,6 +27,7 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
   const [bundleDropdown, setBundleDropdown] = useState(false);
   const [selectedBundles, setSelectedBundles] = useState([]);
   const [bundleIds, setBundleIds] = useState([]);
+  
 
   // State for validation errors
   const [errors, setErrors] = useState({});

@@ -61,17 +61,21 @@ const Announcements = () => {
 
   const handleMarkAsRemove = async (announcement) => {
     Loading();
-    const markAsRemove = await axios.put(
-      `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/announcements/makeAsRemove/announcementId/${announcement?._id}`,
-      {
-        userEmail: user?.email,
-      }
-    );
 
-    if (markAsRemove) {
-      await handleMarkAsRead(announcement);
-      await fetchAnnouncements();
-    }
+    try {
+      const markAsRemove = await axios.put(
+        `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/announcements/makeAsRemove/announcementId/${announcement?._id}`,
+        {
+          userEmail: user?.email,
+          userRole: userInfo?.role,
+        }
+      );
+
+      if (markAsRemove) {
+        if (userInfo?.role !== "admin") await handleMarkAsRead(announcement);
+        await fetchAnnouncements();
+      }
+    } catch (error) {}
     Loading().close();
   };
 

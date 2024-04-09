@@ -298,6 +298,7 @@ const TaskDetails = () => {
                       )}
                       {openTask?.taskType === "Quiz" && (
                         <QuizTask
+                          chapter={chapter}
                           taskData={taskData}
                           count={count}
                           setCount={setCount}

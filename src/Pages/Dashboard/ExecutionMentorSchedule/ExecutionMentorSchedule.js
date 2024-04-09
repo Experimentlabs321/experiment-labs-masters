@@ -69,17 +69,18 @@ const ExecutionMentorSchedule = () => {
   const { isLoading } = useSessionContext();
   const [previousLocation, setPreviousLocation] = useState(null);
   const [adminCalendarInfo, setAdminCalendarInfo] = useState({});
+  const [meetingTypee, setMeetingTypee] = useState(adminCalendarInfo?.meetingType || '');
   console.log(calendarEvents);
   // Save current location before redirecting to Google sign-in
   useEffect(() => {
     setPreviousLocation(window.location.pathname);
   }, []);
 
-  useEffect(() => {
-    if (calendarfetch === true) {
-      googleSignIn();
-    }
-  }, [calendarfetch])
+  // useEffect(() => {
+  //   if (calendarfetch === true) {
+  //     googleSignIn();
+  //   }
+  // }, [calendarfetch])
   useEffect(() => {
     axios
       .get(
@@ -255,7 +256,7 @@ const ExecutionMentorSchedule = () => {
       maximumTime,
       minimumTime,
       meetingDuration: meetingDuration,
-      meetingType : meetingType,
+      meetingType: meetingType,
       events: calendarEvents,
       adminMail: userInfo?.email,
     };
@@ -289,7 +290,7 @@ const ExecutionMentorSchedule = () => {
       fetchPrimaryCalendarInfo();
     } else {
       // Attempt to sign in if no valid session exists
-      googleSignIn();
+      // googleSignIn();
     }
   }, []);
   if (isLoading) {
@@ -681,7 +682,7 @@ const ExecutionMentorSchedule = () => {
 
             </div> */}
             <div>
-              {session ? (
+              {session && session.user ? (
                 <>
                   <div className="my-6 px-5">
                     <h2>My Calendar Events</h2>
@@ -829,12 +830,19 @@ const ExecutionMentorSchedule = () => {
                           required
                           className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1]"
                           name="meetingType"
-                          defaultValue={adminCalendarInfo?.meetingType} // Ensure you have a default or initial value for meetingType in your adminCalendarInfo state or props
+                          defaultValue={adminCalendarInfo?.meetingType} 
+                          onChange={(e) => setMeetingTypee(e.target.value)}
                         >
-                          <option disabled selected value="">Select a Meeting Type</option> {/* Optional: add a disabled option as placeholder */}
+                          <option disabled selected value="">Select a Meeting Type</option>
                           <option value="Zoom">Zoom</option>
                           <option value="Meet">Google Meet</option>
                         </select>
+                    
+                        {meetingTypee === 'Zoom' && (
+                          <div className="text-red-500 text-center mt-4">
+                            <p>Zoom Recordings will expire in 30 days.</p>
+                          </div>
+                        )}
                       </div>
                     </div>
                     <div className="flex items-center gap-10 justify-center mt-20 mb-10">

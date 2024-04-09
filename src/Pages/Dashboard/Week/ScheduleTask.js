@@ -1,59 +1,57 @@
 import { AuthContext } from "../../../contexts/AuthProvider";
 import React, { useContext, useEffect, useState } from "react";
-import AdjustIcon from '@mui/icons-material/Adjust';
-import { Link, useNavigate, useParams } from "react-router-dom";
-import AccessAlarmOutlinedIcon from '@mui/icons-material/AccessAlarmOutlined';
+import { Link, useNavigate } from "react-router-dom";
+import AccessAlarmOutlinedIcon from "@mui/icons-material/AccessAlarmOutlined";
 import axios from "axios";
-import Modal from "react-modal";
+
+import moment from 'moment';
 import {
   useSession,
   useSupabaseClient,
   useSessionContext,
 } from "@supabase/auth-helpers-react";
 import Loading from "../../Shared/Loading/Loading";
-import DateTimePicker from "react-datetime-picker";
-import FullCalendar from '@fullcalendar/react';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import interactionPlugin from "@fullcalendar/interaction";
-import { red } from '@mui/material/colors';
-import 'react-datetime-picker/dist/DateTimePicker.css';
-import 'react-calendar/dist/Calendar.css';
+import { CircularProgress } from "@mui/material";
+import { red } from "@mui/material/colors";
+import "react-datetime-picker/dist/DateTimePicker.css";
+import "react-calendar/dist/Calendar.css";
 import RightArrowWhite from "../../../assets/Dashboard/RightArrowWhite.png";
 import Swal from "sweetalert2";
 import { gapi } from "gapi-script";
 import DashboardPrimaryButton from "../Shared/DashboardPrimaryButton";
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import googlemeet from "../../../assets/icons/googlemeet.png";
 import zoom from "../../../assets/icons/zoom-240.png";
+
 let matching = false;
 const matchInputWithBusySlots = (inputDate, inputTime, busyTimeSlots) => {
-
   let flag = 0;
-  console.log("input", inputDate, inputTime)
+  console.log("input", inputDate, inputTime);
   const inputDateTime = new Date(`${inputDate}T${inputTime}`);
-  console.log('Input DateTime:', inputDateTime);
+  console.log("Input DateTime:", inputDateTime);
 
   // Extract date and time separately
   const inputDateString = inputDateTime.toDateString();
   const inputTimeString = inputDateTime.toTimeString();
 
-
-
   const isMatch = busyTimeSlots?.some((busySlot) => {
     const busyStartDateTimeString = busySlot.start.dateTime;
     const busyEndDateTimeString = busySlot.end.dateTime;
     // console.log("busystart",busyStartDateTimeString);
-    const busyStartDateString = busyStartDateTimeString.substring(0, 16).replace(',', '');
-    const dateParts = busyStartDateString.split(' ');
-    const busyStartDateStringFormatted = `${dateParts[0]} ${dateParts[2][0].toUpperCase() + dateParts[2].substring(1)} ${dateParts[1]} ${dateParts[3]}`;
-    console.log('Input Date:', inputDateString);
+    const busyStartDateString = busyStartDateTimeString
+      .substring(0, 16)
+      .replace(",", "");
+    const dateParts = busyStartDateString.split(" ");
+    const busyStartDateStringFormatted = `${dateParts[0]} ${dateParts[2][0].toUpperCase() + dateParts[2].substring(1)
+      } ${dateParts[1]} ${dateParts[3]}`;
+    console.log("Input Date:", inputDateString);
     //  console.log('Busy Date:', busyStartDateStringFormatted);
     if (inputDateString === busyStartDateStringFormatted) {
       flag = 1;
     }
-    const busyStartTime = busyStartDateTimeString.split(' ')[4];
+    const busyStartTime = busyStartDateTimeString.split(" ")[4];
     // console.log('busy start: ', busyStartTime);
-    const busyEndTime = busyEndDateTimeString.split(' ')[4];
+    const busyEndTime = busyEndDateTimeString.split(" ")[4];
 
     //console.log(flag);
     return (
@@ -71,7 +69,9 @@ const matchInputWithBusySlots = (inputDate, inputTime, busyTimeSlots) => {
 };
 
 const ScheduleTask = ({ taskData, week }) => {
+  const taskId = taskData?._id;
   const adminMail = taskData?.usersession?.user?.email;
+  const adminName = taskData?.usersession?.user?.user_metadata?.name;
   const meetingLength = taskData?.meetingDuration;
   console.log("Meeting duration : ", Number(meetingLength));
   // console.log(adminMail);
@@ -83,18 +83,24 @@ const ScheduleTask = ({ taskData, week }) => {
   const session = useSession();
   const [selectedDate, setSelectedDate] = useState("");
   const supabase = useSupabaseClient();
-  console.log("Task data ", taskData)
+  console.log("Task data ", taskData);
   const { user, userInfo } = useContext(AuthContext);
   const [ismeetingType, setIsMeetingType] = useState(true);
   const [meetingType, setMeetingType] = useState(null);
-  const [zoomInfo,setZoomInfo] = useState({});
+  const [zoomInfo, setZoomInfo] = useState([]);
+  const [eventId, setEventId] = useState(null);
+  const [eventDBid, setEventDBid] = useState(null);
   if (userInfo.role !== 'admin') {
     window.addEventListener("contextmenu", (e) => {
       e.preventDefault();
     });
 
   };
-
+  const handleReschedule = (eventId, eventDBid) => {
+    setEventDBid(eventDBid)
+    setEventId(eventId);
+    setIsReschedule(true);
+  }
   console.log(userInfo)
   const navigate = useNavigate();
   const [date, setDate] = useState(""); // State for the date
@@ -108,6 +114,8 @@ const ScheduleTask = ({ taskData, week }) => {
   const [startTime, setStartTime] = useState();
   const [currentWeek, setCurrentWeek] = useState(null);
   const calendarID = process.env.REACT_APP_calendarID;
+  const [userZoomInfo, setUserZoomInfo] = useState({});
+  const [isReschedule, setIsReschedule] = useState(false);
 
   useEffect(() => {
     // Assuming taskData is already available when the component mounts
@@ -118,73 +126,118 @@ const ScheduleTask = ({ taskData, week }) => {
       const maxDateOffset = parseInt(taskData?.dateRange, 10) || 0;
       const maxDateObject = new Date(currentDate);
       maxDateObject.setDate(maxDateObject.getDate() + maxDateOffset);
-      const initialMaxDateString = maxDateObject.toISOString().split('T')[0];
+      const initialMaxDateString = maxDateObject.toISOString().split("T")[0];
 
       // Set initial maxDateString when the component mounts
       setMaxDateString(initialMaxDateString);
 
       // Set the min and max attributes for the date input after the DOM is loaded
-      const dateInput = document.getElementById('date');
+      const dateInput = document.getElementById("date");
       if (dateInput) {
         dateInput.min = getCurrentDate();
         dateInput.max = initialMaxDateString;
       }
     }
   }, [taskData]);
+  useEffect(() => {
+    const fetchZoomInfos = async () => {
+      if (taskData?.events?.length > 0) {
+        try {
+          // Initialize an array to hold the combined data for each event
+          let combinedZoomInfos = [];
 
+          // Loop through each event
+          for (const event of taskData.events) {
+            try {
+              const response = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/v1/events/recording/organizationId/${event?.organization?.organizationId}`, {
+                meetingId: event?.id,
+              });
+
+              // Combine the response data with the requester info
+              const combinedData = {
+                ...response.data,
+                requester: event?.requester,
+              };
+
+              // Accumulate the combined data
+              combinedZoomInfos.push(combinedData);
+            } catch (error) {
+              console.error("Error fetching Zoom info for event ID:", event?.id, error);
+            }
+          }
+
+          // Update the state with the accumulated data
+          setZoomInfo(combinedZoomInfos);
+          setIsLoading(false);
+        } catch (error) {
+          console.error("Error in fetching Zoom infos:", error);
+          setIsLoading(false);
+        }
+      }
+    };
+
+    if (userInfo?.role === 'admin') {
+      fetchZoomInfos();
+    }
+  }, [taskData, userInfo?.role]);
+
+  console.log(zoomInfo);
   const handleDateChange = (event) => {
     const selectedDate = event.target.value;
 
     // Replace this with your date string
-    const options = { weekday: 'long', timeZone: 'UTC' }; // Set the timeZone option
+    const options = { weekday: "long", timeZone: "UTC" }; // Set the timeZone option
 
-    const selectedDay = new Date(selectedDate).toLocaleDateString('en-US', options);
+    const selectedDay = new Date(selectedDate).toLocaleDateString(
+      "en-US",
+      options
+    );
 
     // Check if the selected day is an off-day
     if (taskData?.offDays?.includes(selectedDay)) {
       alert(`You cannot select ${selectedDay} as it is an off-day.`);
       // Clear the selected date
-      document.getElementById('date').value = "";
+      document.getElementById("date").value = "";
       setDate(null);
-      setMaxDateString("");  // Reset maxDateString state
-      setSelectedDate("");   // Add this line to set the selected date to an empty string
+      setMaxDateString(""); // Reset maxDateString state
+      setSelectedDate(""); // Add this line to set the selected date to an empty string
       return;
     }
 
     // Check if the selected date is within the valid date range
-    const currentDate = getCurrentDate();  // Assuming you have the getCurrentDate function
+    const currentDate = getCurrentDate(); // Assuming you have the getCurrentDate function
     const maxDateOffset = parseInt(taskData?.dateRange, 10) || 0;
-    const maxDateObject = new Date(currentDate);  // Use currentDate as the starting point
+    const maxDateObject = new Date(currentDate); // Use currentDate as the starting point
     maxDateObject.setDate(maxDateObject.getDate() + maxDateOffset);
 
     if (new Date(selectedDate) > maxDateObject) {
       alert(`You cannot select a date beyond the allowed range.`);
       // Clear the selected date
-      document.getElementById('date').value = "";
+      document.getElementById("date").value = "";
       setDate(null);
-      setMaxDateString("");  // Reset maxDateString state
-      setSelectedDate("");   // Add this line to set the selected date to an empty string
+      setMaxDateString(""); // Reset maxDateString state
+      setSelectedDate(""); // Add this line to set the selected date to an empty string
       return;
     }
 
     setDate(selectedDate);
-    const maxDateString = maxDateObject.toISOString().split('T')[0];
-    document.getElementById('date').min = getCurrentDate();
-    document.getElementById('date').max = maxDateString;
+    const maxDateString = maxDateObject.toISOString().split("T")[0];
+    document.getElementById("date").min = getCurrentDate();
+    document.getElementById("date").max = maxDateString;
     setMaxDateString(maxDateString);
     setSelectedDate(selectedDate); // Set the selected date
     matchInputWithBusySlots(selectedDate, time, busyTimeSlots);
   };
   const convert12HourTo24Hour = (time12h) => {
-    const [time, modifier] = time12h.split(' ');
+    const [time, modifier] = time12h.split(" ");
 
-    let [hours, minutes] = time.split(':');
+    let [hours, minutes] = time.split(":");
 
-    if (hours === '12') {
-      hours = '00';
+    if (hours === "12") {
+      hours = "00";
     }
 
-    if (modifier === 'PM') {
+    if (modifier === "PM") {
       hours = parseInt(hours, 10) + 12;
     }
 
@@ -211,7 +264,13 @@ const ScheduleTask = ({ taskData, week }) => {
     // Rest of your code...
   };
 
-  const handleTimeSelection = (selectedTime, selectedDate, minTime, maxTime) => {
+  const handleTimeSelection = (
+    selectedTime,
+    selectedDate,
+    minTime,
+    maxTime
+  ) => {
+    console.log(selectedTime, selectedDate, minTime, maxTime);
     const selectedT = new Date(`${selectedDate}T${selectedTime}`);
     setselectedTimeDate(selectedT);
     const minTimeDate = new Date(`${selectedDate}T${minTime}`);
@@ -219,13 +278,13 @@ const ScheduleTask = ({ taskData, week }) => {
     console.log(selectedT);
     console.log(minTimeDate, maxTimeDate);
     if (selectedT < minTimeDate || selectedT > maxTimeDate) {
-      console.log('entered')
+      console.log("entered");
       setCheckTime(true);
       setTimeRangeError(true);
       // Reset the time to the initial state or do nothing
-      document.getElementById('time').value = minTime;
+      document.getElementById("time").value = minTime;
     } else {
-      console.log('adssssssentered')
+      console.log("adssssssentered");
       setTimeRangeError(false);
       setCheckTime(false);
       setTime(selectedTime);
@@ -235,79 +294,40 @@ const ScheduleTask = ({ taskData, week }) => {
   };
 
 
-  //  const handleBTimeChange = (event) => {
-
-  //     const selectedTime = event.target.value;
-
-  //     console.log(selectedTime)
-  //     const minTime = taskData?.minimumTime;
-  //     const maxTime = taskData?.maximumTime;
-  //     setMaxTime(maxTime)
-  //     setMinTime(minTime)
-  //     const selectedTimeDate = new Date(`2000-01-01T${selectedTime}`);
-  //     const minTimeDate = new Date(`2000-01-01T${minTime}`);
-  //     const maxTimeDate = new Date(`2000-01-01T${maxTime}`);
-
-  //     if (selectedTimeDate < minTimeDate || selectedTimeDate > maxTimeDate) {
-  //       setCheckTime(true)
-  //       setTimeRangeError(true)
-  //       //alert(`Please choose a time between ${minTime} and ${maxTime}.`);
-  //       // Reset the time to the initial state or do nothing
-  //       document.getElementById('time').value = minTime;
-  //       //  setTime(null);
-  //     } else {
-  //       setTimeRangeError(false)
-  //       setCheckTime(false)
-  //       setTime(selectedTime);
-  //       console.log("handletimechange", selectedTime);
-  //       matchInputWithBusySlots(date, selectedTime, busyTimeSlots);
-  //     }
-  //   };
-
-
-
-
-
-
-  console.log("input time ", time)
+  console.log("input time ", time);
 
   useEffect(() => {
-    // if (localStorage.getItem("role") === "admin") {
-    //   if (!session?.provider_token) {
-    //     // If there's no session, sign in again
-    //     googleSignIn();
-    //   }
-    // }
-    const busyTimeSlots = taskData?.events?.map((event) => {
-      // Use the correct property for date and time based on the event structure
-      const startDateTime = event.start?.dateTime || event.start;
 
-      // Ensure that startDateTime is defined before proceeding
-      if (!startDateTime) {
-        return null; // Skip events without a valid startDateTime
-      }
+    const busyTimeSlots = taskData?.events
+      ?.map((event) => {
+        // Use the correct property for date and time based on the event structure
+        const startDateTime = event.start?.dateTime || event.start;
 
-      const endDateTime = event.end?.dateTime || event.end;
+        // Ensure that startDateTime is defined before proceeding
+        if (!startDateTime) {
+          return null; // Skip events without a valid startDateTime
+        }
 
-      const startDate = new Date(startDateTime);
-      const startTime = startDate.toUTCString();
+        const endDateTime = event.end?.dateTime || event.end;
 
-      const endDate = new Date(endDateTime);
-      const endTime = endDate.toUTCString();
+        const startDate = new Date(startDateTime);
+        const startTime = startDate.toUTCString();
 
+        const endDate = new Date(endDateTime);
+        const endTime = endDate.toUTCString();
 
-
-      return {
-        start: {
-          dateTime: startTime,
-          // time: startTimeString,
-        },
-        end: {
-          dateTime: endTime,
-          // time: endTimeString,
-        },
-      };
-    }).filter(Boolean);
+        return {
+          start: {
+            dateTime: startTime,
+            // time: startTimeString,
+          },
+          end: {
+            dateTime: endTime,
+            // time: endTimeString,
+          },
+        };
+      })
+      .filter(Boolean);
 
     // console.log("Busy Time Slots:", busyTimeSlots); // Log the busy time slots
 
@@ -316,30 +336,33 @@ const ScheduleTask = ({ taskData, week }) => {
 
     //console.log("All Time Slots:", allTimeSlots); // Log all time slots
 
-    const filteredTimeSlots = filterBusyTimeSlots(allTimeSlots, busyTimeSlots, reservedEvent);
+    const filteredTimeSlots = filterBusyTimeSlots(
+      allTimeSlots,
+      busyTimeSlots,
+      reservedEvent
+    );
 
     //  console.log("Filtered Time Slots:", filteredTimeSlots); // Log the filtered time slots
 
     setBusyTimeSlots(busyTimeSlots);
-
   }, [taskData, matching]);
   const googleSignIn = async () => {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+        provider: "google",
         options: {
-          scopes: 'https://www.googleapis.com/auth/calendar',
+          scopes: "https://www.googleapis.com/auth/calendar",
           persistSession: true,
         },
       });
 
       if (error) {
-        console.error('Error during Google Sign-In:', error.message);
-        alert('Error logging in to Google provider with Supabase');
+        console.error("Error during Google Sign-In:", error.message);
+        alert("Error logging in to Google provider with Supabase");
       }
     } catch (error) {
-      console.error('Unexpected error during Google Sign-In:', error.message);
-      alert('Unexpected error. Please try again.');
+      console.error("Unexpected error during Google Sign-In:", error.message);
+      alert("Unexpected error. Please try again.");
     }
   };
   useEffect(() => {
@@ -352,6 +375,24 @@ const ScheduleTask = ({ taskData, week }) => {
     setUserRequesterEvents(userRequesterEvents);
     console.log("my events ", userRequesterEvents);
   }, [taskData, user]);
+  console.log("my events ", userRequesterEvents);
+
+  useEffect(() => {
+    axios.post(
+      `${process.env.REACT_APP_SERVER_API}/api/v1/events/recording/organizationId/${userInfo?.organizationId}`,
+      {
+        meetingId: userRequesterEvents[0]?.id,
+      }
+    )
+      .then((response) => {
+        setUserZoomInfo(response?.data);
+      })
+      .catch((error) => {
+        console.error(error);
+
+      });
+  }, [userRequesterEvents, userInfo?.organizationId]);
+  console.log(userZoomInfo?.recording_files)
   const generateAllTimeSlots = (start, end) => {
     const timeSlots = [];
     let currentTime = new Date(start);
@@ -361,6 +402,7 @@ const ScheduleTask = ({ taskData, week }) => {
     }
     return timeSlots;
   };
+  useEffect(() => { }, [userRequesterEvents])
   // Function to filter out busy time slots
   const filterBusyTimeSlots = (allTimeSlots, busyTimeSlots, reservedEvent) => {
     return allTimeSlots.filter((timeSlot) => {
@@ -372,7 +414,11 @@ const ScheduleTask = ({ taskData, week }) => {
       }
 
       // Check if the time slot matches the reserved event's time slot
-      if (reservedEvent && timeSlot >= reservedEvent.start && timeSlot < reservedEvent.end) {
+      if (
+        reservedEvent &&
+        timeSlot >= reservedEvent.start &&
+        timeSlot < reservedEvent.end
+      ) {
         return false; // Remove reserved time slot
       }
 
@@ -412,22 +458,25 @@ const ScheduleTask = ({ taskData, week }) => {
       return "Invalid Date";
     }
 
-    const formatInTimeZone = (dateTime, timeZone, label) => (
-      `${dateTime.toLocaleString('en-US', {
+    const formatInTimeZone = (dateTime, timeZone, label) =>
+      `${dateTime.toLocaleString("en-US", {
         timeZone,
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: '2-digit',
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
         hour12: true,
-      })} (${label})`
-    );
+      })} (${label})`;
 
     const formattedUTC = formatInTimeZone(utcDateTime, "UTC", "UTC");
     const formattedIndia = formatInTimeZone(utcDateTime, "Asia/Kolkata", "IST");
     const formattedKorea = formatInTimeZone(utcDateTime, "Asia/Seoul", "KST");
-    const formattedBangladesh = formatInTimeZone(utcDateTime, "Asia/Dhaka", "BDT");
+    const formattedBangladesh = formatInTimeZone(
+      utcDateTime,
+      "Asia/Dhaka",
+      "BDT"
+    );
 
     return `UTC: ${formattedUTC}, India: ${formattedIndia}, Korea: ${formattedKorea}, Bangladesh: ${formattedBangladesh}`;
   }
@@ -439,17 +488,16 @@ const ScheduleTask = ({ taskData, week }) => {
       return ["Invalid Date"];
     }
 
-    const formatInTimeZone = (dateTime, timeZone, label) => (
-      `${dateTime.toLocaleString('en-US', {
+    const formatInTimeZone = (dateTime, timeZone, label) =>
+      `${dateTime.toLocaleString("en-US", {
         timeZone,
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: '2-digit',
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
         hour12: true,
-      })} (${label})`
-    );
+      })} (${label})`;
 
     return [
       // formatInTimeZone(utcDateTime, "UTC", "UTC"),
@@ -463,40 +511,44 @@ const ScheduleTask = ({ taskData, week }) => {
     // Convert dateTime to UTC for universal understanding
     const utcTime = dateTime.toISOString();
     // Format the date and time in a user-friendly way, in UTC
-    const formattedUtcTime = new Date(utcTime).toLocaleString('en-US', {
-      timeZone: "UTC",
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
-    }) + ' (UTC)';
+    const formattedUtcTime =
+      new Date(utcTime).toLocaleString("en-US", {
+        timeZone: "UTC",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      }) + " (UTC)";
 
     // Add a few major time zones for reference if you wish
-    const dhakaTime = new Date(utcTime).toLocaleString('en-US', {
-      timeZone: "Asia/Dhaka",
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
-    }) + ' (BDT)'; // Bangladesh Time
+    const dhakaTime =
+      new Date(utcTime).toLocaleString("en-US", {
+        timeZone: "Asia/Dhaka",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      }) + " (BDT)"; // Bangladesh Time
 
-    const kolkataTime = new Date(utcTime).toLocaleString('en-US', {
-      timeZone: "Asia/Kolkata",
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
-    }) + ' (IST)'; // Indian Standard Time
+    const kolkataTime =
+      new Date(utcTime).toLocaleString("en-US", {
+        timeZone: "Asia/Kolkata",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      }) + " (IST)"; // Indian Standard Time
 
-    const seoulTime = new Date(utcTime).toLocaleString('en-US', {
-      timeZone: "Asia/Seoul",
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
-    }) + ' (KST)'; // Korea Standard Time
+    const seoulTime =
+      new Date(utcTime).toLocaleString("en-US", {
+        timeZone: "Asia/Seoul",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      }) + " (KST)"; // Korea Standard Time
     return `India-time: ${kolkataTime}`;
   };
-  console.log(adminMail)
+  console.log(adminMail);
   const addEvent = async () => {
     if (checkTime) {
       Swal.fire({
@@ -515,10 +567,13 @@ const ScheduleTask = ({ taskData, week }) => {
         const selectedTimeDatee = new Date(`${date}T${time}`); // Keep the Z for UTC
         console.log("selected time date", selectedTimeDatee);
         const endDateTimeUTC = new Date(selectedTimeDatee);
-        endDateTimeUTC.setUTCMinutes(endDateTimeUTC.getUTCMinutes() + Number(meetingLength));
+        endDateTimeUTC.setUTCMinutes(
+          endDateTimeUTC.getUTCMinutes() + Number(meetingLength)
+        );
         console.log("end time", endDateTimeUTC);
         const currentDateTime = new Date();
-        const timeDifferenceInMilliseconds = selectedTimeDatee.getTime() - currentDateTime.getTime();
+        const timeDifferenceInMilliseconds =
+          selectedTimeDatee.getTime() - currentDateTime.getTime();
         const eventStartTime = formatDateTimeWithTimeZones(selectedTimeDatee);
         const eventEndTime = formatDateTimeWithTimeZones(endDateTimeUTC);
         console.log("event s ", eventStartTime)
@@ -559,7 +614,7 @@ const ScheduleTask = ({ taskData, week }) => {
                   timeZone: "UTC",
                 },
                 attendees: [
-                  { email: "naman.j@experimentlabs.in" },
+                  // { email: "naman.j@experimentlabs.in" },
                   { email: user?.email },
                   { email: adminMail },
                 ],
@@ -578,116 +633,279 @@ const ScheduleTask = ({ taskData, week }) => {
               };
               console.log(data)
               const newAccessToken = data.access_token;
-              function initiate() {
-                const sendData = async (event) => {
-                  const response = await axios.post(
-                    `${process.env.REACT_APP_BACKEND_API}/events`,
-                    event
-                  );
-                  const sendMail = await axios.post(
-                    `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
-                    {
-                      //  from: `${userInfo?.email}`,
-                      //    to: `${user?.email},${adminMail}`,
-                      to: `${user?.email}`,
-                      templateType: "emailAction",
-                      templateName: "sheduleTask",
-                      organizationId: userInfo?.organizationId,
-                      start_time: eventStartTime,
-                      end_time: eventEndTime,
-                      meeting_link: event?.hangoutLink,
-                      /*  subject: `Event request`,
-                       message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
-                         }`, */
-                    }
-                  );
-                  const sendMailAdmin = await axios.post(
-                    `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
-                    {
-                      //  from: `${userInfo?.email}`,
-                      //    to: `${user?.email},${adminMail}`,
-                      to: `${adminMail}`,
-                      templateType: "emailAction",
-                      templateName: "sheduleTask",
-                      organizationId: userInfo?.organizationId,
-                      start_time: eventStartTime,
-                      end_time: eventEndTime,
-                      meeting_link: event?.hangoutLink,
-                      /*  subject: `Event request`,
-                       message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
-                         }`, */
-                    }
-                  );
-                  console.log("send ", sendMail)
-                  console.log("Admin Mail ", adminMail)
+              if (isReschedule && eventId) {
+                const updatedEvent = {
+                  start: {
+                    dateTime: selectedTimeDatee.toISOString(),
+                    timeZone: 'UTC',
+                  },
+                  end: {
+                    dateTime: endDateTimeUTC.toISOString(),
+                    timeZone: 'UTC',
+                  },
+                  // Add other event properties as needed
+                };
+                fetch(`https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events/${eventId}`, {
+                  method: 'PATCH', // Method to update the event
+                  headers: {
+                    'Authorization': `Bearer ${newAccessToken}`,
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify(updatedEvent)
+                })
+                  .then(response => response.json()) // Convert the response to JSON
+                  .then(async data => {
+                    console.log('Event updated:', data);
+                    var rescheduledEvent = {
+                      title: `${userInfo?.name} <> Experiment Labs <> Doubt clearing <> `,
+                      start: {
+                        dateTime: selectedTimeDatee,
+                        timeZone: "UTC",
+                      },
+                      end: {
+                        dateTime: endDateTimeUTC,
+                        timeZone: "UTC",
+                      },
+                      organization: {
+                        organizationId: userInfo?.organizationId,
+                        organizationName: userInfo?.organizationName,
+                      },
+                      attendees: [
+                        // { email: "naman.j@experimentlabs.in" },
+                        // { email: "gaurav@experimentlabs.in" },
+                        { email: user?.email },
+                        // { email: "alrafi4@gmail.com" },
+                        {
+                          email: adminMail,
+                        },
+                      ],
+                      // Assuming "weekData" is something specific to your application and not part of the standard Calendar API response
+                      weekData: currentWeek,
+                      hangoutLink: data.hangoutLink, // Access directly from data
+                      requester: user?.email,
+                      eventId: eventId, // Access directly from data
+                    };
+                    console.log(rescheduledEvent);
+                    console.log(eventDBid);
+                    const updateResponse = await axios.put(
+                      `${process.env.REACT_APP_SERVER_API}/api/v1/events/${eventDBid}`,
+                      rescheduledEvent
+                    );
+                    // const updateResponse = await axios.put(
+                    //   `${process.env.REACT_APP_SERVER_API}/api/v1/events/${eventDBid}`,
+                    //   {
+                    //     "title": "Tanvir Sohan <> Experiment Labs <> Doubt clearing <> ",
+                    //     "start": {
+                    //       "dateTime": "2024-04-09T07:00:00.000Z",
+                    //       "timeZone": "UTC"
+                    //     },
+                    //     "end": {
+                    //       "dateTime": "2024-04-09T08:00:00.000Z",
+                    //       "timeZone": "UTC"
+                    //     },
+                    //     "organization": {
+                    //       "organizationId": "64cbbd756f0ef101bc957231",
+                    //       "organizationName": "Shihab International"
+                    //     },
+                    //     "attendees": [
+                    //       {
+                    //         "email": "so2han67@gmail.com"
+                    //       },
+                    //       {
+                    //         "email": "team32programming@gmail.com"
+                    //       }
+                    //     ],
+                    //     "weekData": null,
+                    //     "hangoutLink": "https://meet.google.com/rgf-dvvc-bxh",
+                    //     "requester": "so2han67@gmail.com",
+                    //     "eventId": "0kh2gidugamp50s33mpm0cto24"
+                    //   }
+                    // );
+                    const sendMail = await axios.post(
+                      `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                      {
+                        //  from: `${userInfo?.email}`,
+                        //    to: `${user?.email},${adminMail}`,
+                        to: `${user?.email}`,
+                        templateType: "emailAction",
+                        templateName: "sheduleTask",
+                        organizationId: userInfo?.organizationId,
+                        start_time: eventStartTime,
+                        end_time: eventEndTime,
+                        meeting_link: rescheduledEvent?.hangoutLink,
+                        learner_name: adminName,
+                        learner_email: adminMail,
+                        meeting_date: date,
+                        /*  subject: `Event request`,
+                        message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
+                          }`, */
+                      }
+                    );
+                    const sendMailAdmin = await axios.post(
+                      `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                      {
+                        //  from: `${userInfo?.email}`,
+                        //    to: `${user?.email},${adminMail}`,
+                        to: `${adminMail}`,
+                        templateType: "emailAction",
+                        templateName: "sheduleTask",
+                        organizationId: userInfo?.organizationId,
+                        start_time: eventStartTime,
+                        end_time: eventEndTime,
+                        meeting_link: rescheduledEvent?.hangoutLink,
+                        learner_name: userInfo?.name,
+                        learner_email: userInfo?.email,
+                        meeting_date: date,
+                        /*  subject: `Event request`,
+                        message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
+                          }`, */
+                      }
+                    );
+                    console.log("send ", sendMail);
+                    console.log("Admin Mail ", sendMailAdmin);
 
-                  console.log('res ', response)
-                  if (sendMail?.data?.success && response?.data?.acknowledged) {
-                    Loading().close();
-                    const newEvent = await axios.post(
-                      `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/addEvent`,
+                    console.log("res ", updateResponse?.data);
+                    if (sendMail?.data?.success && sendMailAdmin?.data?.success && updateResponse?.data?.acknowledged) {
+                      Loading().close();
+                      const newRescheduleEvent = await axios.put(
+                        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/updateEvent`,
+                        { ...rescheduledEvent, eventDBid: eventDBid }
+                      );
+                      // console.log("new event created ", newEvent);
+                      await Swal.fire({
+                        icon: 'success',
+                        title: 'Event Rescheduled!',
+                        text: 'The event has been successfully rescheduled.'
+                      });
+
+                      navigate("/courseAccess");
+                    }
+                    // Other UI updates or state resets after successful rescheduling
+                  })
+                  .catch(error => {
+                    console.error('Error updating event:', error);
+                    // Handle error
+                  });
+              }
+              else {
+                function initiate() {
+                  const sendData = async (event) => {
+                    const response = await axios.post(
+                      `${process.env.REACT_APP_SERVER_API}/api/v1/events`,
                       event
                     );
-                    // console.log("new event created ", newEvent);
-                    await Swal.fire({
-                      icon: "success",
-                      title: "Request Sent!",
-                      html: "Your meeting is confirmed.<br><br>Please go to the Dashboard to access the meeting link.",
-                    });
+                    const sendMail = await axios.post(
+                      `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                      {
+                        //  from: `${userInfo?.email}`,
+                        //    to: `${user?.email},${adminMail}`,
+                        to: `${user?.email}`,
+                        templateType: "emailAction",
+                        templateName: "sheduleTask",
+                        organizationId: userInfo?.organizationId,
+                        start_time: eventStartTime,
+                        end_time: eventEndTime,
+                        meeting_link: event?.hangoutLink,
+                        learner_name: adminName,
+                        learner_email: adminMail,
+                        meeting_date: date,
+                        /*  subject: `Event request`,
+                        message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
+                          }`, */
+                      }
+                    );
+                    const sendMailAdmin = await axios.post(
+                      `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                      {
+                        //  from: `${userInfo?.email}`,
+                        //    to: `${user?.email},${adminMail}`,
+                        to: `${adminMail}`,
+                        templateType: "emailAction",
+                        templateName: "sheduleTask",
+                        organizationId: userInfo?.organizationId,
+                        start_time: eventStartTime,
+                        end_time: eventEndTime,
+                        meeting_link: event?.hangoutLink,
+                        learner_name: userInfo?.name,
+                        learner_email: userInfo?.email,
+                        meeting_date: date,
+                        /*  subject: `Event request`,
+                        message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
+                          }`, */
+                      }
+                    );
+                    console.log("send ", sendMail);
+                    console.log("Admin Mail ", adminMail);
 
-                    navigate('/courseAccess');
-                  }
-                };
-                gapi.client
-                  .request({
-                    path: `https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events?conferenceDataVersion=1`,
-                    method: "POST",
-                    body: event,
-                    headers: {
-                      "Content-type": "application/json",
-                      Authorization: `Bearer ${newAccessToken}`,
-                    },
-                  })
-                  .then(
-                    (response) => {
-                      console.log(response)
-                      var event = {
-                        title: `${userInfo?.name} <> Experiment Labs <> Doubt clearing <> ${response?.result?.hangoutLink}`,
-                        start: {
-                          dateTime: selectedTimeDatee,
-                          timeZone: "UTC",
-                        },
-                        end: {
-                          dateTime: endDateTimeUTC,
-                          timeZone: "UTC",
-                        },
-                        organization: {
-                          organizationId: userInfo?.organizationId,
-                          organizationName: userInfo?.organizationName,
-                        },
-                        attendees: [
-                          { email: "naman.j@experimentlabs.in" },
-                          // { email: "gaurav@experimentlabs.in" },
-                          { email: user?.email },
-                          // { email: "alrafi4@gmail.com" },
-                          {
-                            email: adminMail
-                          },
-                        ],
-                        weekData: currentWeek,
-                        hangoutLink: response?.result?.hangoutLink,
-                        requester: user?.email,
-                      };
-                      sendData(event);
-                      return [true, response];
-                    },
-                    function (err) {
-                      console.log(err);
-                      return [false, err];
+                    console.log("res ", response);
+                    if (sendMail?.data?.success && response?.data?.acknowledged) {
+                      Loading().close();
+                      const newEvent = await axios.post(
+                        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/addEvent`,
+                        { ...event, eventDBid: response?.data?.insertedId }
+                      );
+                      // console.log("new event created ", newEvent);
+                      await Swal.fire({
+                        icon: "success",
+                        title: "Request Sent!",
+                        text: "Your meeting is confirmed. Please go to the Dashboard to access the meeting link",
+                      });
+
+                      navigate("/courseAccess");
                     }
-                  );
+                  };
+                  gapi.client
+                    .request({
+                      path: `https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events?conferenceDataVersion=1`,
+                      method: "POST",
+                      body: event,
+                      headers: {
+                        "Content-type": "application/json",
+                        Authorization: `Bearer ${newAccessToken}`,
+                      },
+                    })
+                    .then(
+                      (response) => {
+                        console.log(response);
+                        var event = {
+                          title: `${userInfo?.name} <> Experiment Labs <> Doubt clearing <> `,
+                          start: {
+                            dateTime: selectedTimeDatee,
+                            timeZone: "UTC",
+                          },
+                          end: {
+                            dateTime: endDateTimeUTC,
+                            timeZone: "UTC",
+                          },
+                          organization: {
+                            organizationId: userInfo?.organizationId,
+                            organizationName: userInfo?.organizationName,
+                          },
+                          attendees: [
+                            // { email: "naman.j@experimentlabs.in" },
+                            // { email: "gaurav@experimentlabs.in" },
+                            { email: user?.email },
+                            // { email: "alrafi4@gmail.com" },
+                            {
+                              email: adminMail,
+                            },
+                          ],
+                          weekData: currentWeek,
+                          hangoutLink: response?.result?.hangoutLink,
+                          requester: user?.email,
+                          eventId: response?.result?.id,
+                        };
+                        sendData(event);
+                        return [true, response];
+                      },
+                      function (err) {
+                        console.log(err);
+                        return [false, err];
+                      }
+                    );
+                }
+                gapi.load("client", initiate);
               }
-              gapi.load("client", initiate);
               // navigate(-1)
             })
             .catch((error) => {
@@ -709,24 +927,137 @@ const ScheduleTask = ({ taskData, week }) => {
           ].join(':');
           console.log('Formatted for Zoom (local time):', formattedDateTime);
           const zoomSchedule = {
-            stdudentMail : userInfo?.email,
-            adminMail : adminMail,
-            startTime : formattedDateTime,
-            duration : meetingLength,
+            start_time: formattedDateTime,
+            duration: meetingLength,
           };
           const newZoomSchedule = await axios.post(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/events/request`,
+            `${process.env.REACT_APP_SERVER_API}/api/v1/events/meeting/organizationId/${userInfo?.organizationId}`,
             zoomSchedule
           );
-          if(newZoomSchedule?.data?.acknowledged){
-            await Swal.fire({
-              icon: "success",
-              title: "Request Sent!",
-              html: "Your zoom request is sent.<br><br>Please wait for admin to approve it.",
-            });
-            navigate('/courseAccess');
+          if (newZoomSchedule?.data?.uuid) {
+            console.log("zoom schedule ", newZoomSchedule?.data);
+            const utcTimeStr = newZoomSchedule?.data?.start_time;
+            const timezoneStr = newZoomSchedule?.data?.timezone;
+            const meetingLength = newZoomSchedule?.data?.duration; // Assuming this is in minutes
+            const adminUrl = newZoomSchedule?.data?.start_url;
+            const studentUrl = newZoomSchedule?.data?.join_url;
+            const startDate = new Date(utcTimeStr);
+
+            // Convert start date to local time in the specified timezone
+            const options = {
+              timeZone: timezoneStr,
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit'
+            };
+            const meetingStart = startDate.toLocaleString(undefined, options);
+
+            // Calculate end date by adding the duration to the start date
+            const endDate = new Date(startDate.getTime() + meetingLength * 60000); // 60000 ms in a minute
+
+            // Convert end date to local time in the specified timezone
+            const meetingEnd = endDate.toLocaleString(undefined, options);
+            console.log('meeting start date: ', meetingStart)
+            console.log('meeting end date: ', meetingEnd)
+
+            try {
+              const postData = {
+                ...newZoomSchedule?.data,
+                requester: user?.email,
+                organization: {
+                  organizationId: userInfo?.organizationId,
+                  organizationName: userInfo?.organizationName,
+                },
+                meetingType: 'Zoom',
+                taskId: taskId,
+              };
+              const response = await axios.post(
+                `${process.env.REACT_APP_BACKEND_API}/events`,
+                postData
+              );
+              const sendMail = await axios.post(
+                `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                {
+                  //  from: `${userInfo?.email}`,
+                  //    to: `${user?.email},${adminMail}`,
+                  to: `${user?.email}`,
+                  templateType: "emailAction",
+                  templateName: "sheduleTask",
+                  organizationId: userInfo?.organizationId,
+                  start_time: meetingStart,
+                  end_time: meetingEnd,
+                  meeting_link: studentUrl,
+                  learner_name: adminName,
+                  learner_email: adminMail,
+                  meeting_date: '',
+                  /*  subject: `Event request`,
+                  message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
+                    }`, */
+                }
+              );
+              const sendMailAdmin = await axios.post(
+                `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                {
+                  //  from: `${userInfo?.email}`,
+                  //    to: `${user?.email},${adminMail}`,
+                  to: `${adminMail}`,
+                  templateType: "emailAction",
+                  templateName: "sheduleTask",
+                  organizationId: userInfo?.organizationId,
+                  start_time: meetingStart,
+                  end_time: meetingEnd,
+                  meeting_link: adminUrl,
+                  learner_name: adminName,
+                  learner_email: adminMail,
+                  meeting_date: '',
+                  /*  subject: `Event request`,
+                  message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
+                    }`, */
+                }
+              );
+              console.log("send ", sendMail);
+              console.log("Admin Mail ", adminMail);
+
+              console.log("res ", response);
+              if (sendMail?.data?.success && response?.data?.acknowledged) {
+                Loading().close();
+                const newEvent = await axios.post(
+                  `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/addEvent`,
+                  postData
+                );
+                // console.log("new event created ", newEvent);
+                await Swal.fire({
+                  icon: "success",
+                  title: "Request Sent!",
+                  text: "Your meeting is confirmed. Please go to the Dashboard to access the zoom link",
+                });
+
+                navigate("/courseAccess");
+              }
+            } catch (error) {
+              console.error("An error occurred:", error);
+              // Handle the error appropriately, perhaps show an error message to the user
+              Loading().close();
+              // Optional: Error alert
+              await Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Something went wrong! Please try again.",
+              });
+            }
           }
-          console.log(newZoomSchedule);
+          // if(newZoomSchedule?.data?.acknowledged){
+          //   await Swal.fire({
+          //     icon: "success",
+          //     title: "Request Sent!",
+          //     html: "Your zoom request is sent.<br><br>Please wait for admin to approve it.",
+          //   });
+          //   navigate('/courseAccess');
+          // }
+          // console.log(newZoomSchedule);
           Loading().close();
         }
       } else {
@@ -739,27 +1070,67 @@ const ScheduleTask = ({ taskData, week }) => {
       }
     }
   };
+  const formatTimeForZoom = (event, type) => {
+    const utcTimeStr = event?.start_time;
+    const timezoneStr = event?.timezone;
+    const meetingLength = event?.duration; // Assuming this is in minutes
+    const startDate = new Date(utcTimeStr);
+    const meetingStartTime = new Date(utcTimeStr);
+    const currentDateTime = new Date();
+    const meetingEndTime = new Date(meetingStartTime.getTime() + meetingLength * 60000);
 
+    // Convert start date to local time in the specified timezone
+    const options = {
+      timeZone: timezoneStr,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    };
+    const meetingStart = startDate.toLocaleString(undefined, options);
+    console.log(meetingStart);
+    // Calculate end date by adding the duration to the start date
+    const endDate = new Date(startDate.getTime() + meetingLength * 60000); // 60000 ms in a minute
+
+    // Convert end date to local time in the specified timezone
+    const meetingEnd = endDate.toLocaleString(undefined, options);
+    if (currentDateTime > meetingEndTime && type === 'start') {
+      return 'The meeting has already happened.'
+    } else if (currentDateTime < meetingEndTime && type === 'start') {
+      return meetingStart;
+    }
+    else if (currentDateTime > meetingEndTime && type === 'end') {
+      return "";
+    }
+    else if (currentDateTime < meetingEndTime && type === 'end') {
+      return meetingEnd;
+    }
+  }
   const getCurrentDate = () => {
     const today = new Date();
     const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
-
+  // const reqmail = taskData?.events?.some(
+  //   (event) => console.log(event)
+  // );
+  console.log(taskData);
   const isUserRequester = taskData?.events?.some(
     (event) => event.requester === user?.email
   );
   console.log("is there my event", isUserRequester);
   const formatTime = (dateTime) => {
     const options = {
-      hour: 'numeric',
-      minute: 'numeric',
+      hour: "numeric",
+      minute: "numeric",
       hour12: true, // Set to false if you want 24-hour format
     };
 
-    return dateTime.toLocaleTimeString('en-US', options);
+    return dateTime.toLocaleTimeString("en-US", options);
   };
 
   const generateTimeOptions = () => {
@@ -772,105 +1143,225 @@ const ScheduleTask = ({ taskData, week }) => {
       const endTime = new Date(`2000-01-01T${maxTime}`);
 
       while (currentTime <= endTime) {
-        const timeString = currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        options.push(<option key={timeString} value={timeString}>{timeString}</option>);
+        const timeString = currentTime.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        options.push(
+          <option key={timeString} value={timeString}>
+            {timeString}
+          </option>
+        );
         currentTime.setMinutes(currentTime.getMinutes() + 30);
       }
     }
 
     return options;
   };
+  const formatExpirationDate = (startDate) => {
+    return moment(startDate).add(30, 'days').format('DD-MM-YYYY'); // Changed to 'DD-MM-YYYY' format
+  };
 
+  console.log(eventId);
+  console.log(eventDBid)
   return (
     <div className="flex justify-center my-5">
-      {userRequesterEvents?.length > 0 ? (
-        // Render content specific to events where the user is the requester
-        <div className="grid grid-cols-1 my-5 justify-items-center gap-5 items-center">
-          {/* <p>You are the requester in the following events:</p> */}
-          {userRequesterEvents?.map((event, index) => (
-
-            <div key={index} className=" shadow-lg outline-double outline-offset-2 outline-2 outline-emerald-500  w-[380px] rounded p-2 ">
-              <p className="flex gap-1 items-center text-sm"><FiberManualRecordIcon sx={{ color: red[400] }} ></FiberManualRecordIcon>Meeting with {event?.organization?.organizationName}</p>
-              <div className="flex items-center gap-2">
-
-                <div className="mt-3 mb-1 ">
-                  <p className="font-medium text-sm flex justify-between mt-2 gap-2">
-                    <div className="flex justify-between gap-2"><AccessAlarmOutlinedIcon fontSize="small" /><span className="font-semibold text-[14px]">Starts </span></div>
-                    <ul className="text-sm">
-                      {formatUtcDateTimeStringToListItems(event.start.dateTime).map((item, index) => (
-                        <li key={index}>{item}</li>
-                      ))}
-                    </ul>
-                  </p>
-                  <p className="font-medium text-sm flex justify-between mt-2 gap-2">
-                    <div className="flex justify-between  gap-2"><AccessAlarmOutlinedIcon fontSize="small" /><span className="font-semibold text-[14px]">Ends </span></div>
-                    <ul className="text-sm">
-                      {formatUtcDateTimeStringToListItems(event.end.dateTime).map((item, index) => (
-                        <li key={index}>{item}</li>
-                      ))}
-                    </ul>
-                  </p>
-                </div>
+      {userInfo?.role === "admin" && zoomInfo?.length > 0 ?
+        <>
+          <div className="overflow-x-auto mt-10 relative">
+            {isLoading && (
+              <div className="absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center">
+                <CircularProgress />
               </div>
-              <div className="w-11/12 mx-auto mt-3 text-white bg-sky-600  rounded-md">
-                <Link to={event?.hangoutLink} className="flex gap-2 items-center justify-center py-[6px]">
-                  <img src={googlemeet} className="w-[21px] h-[21px]" alt="googlemeet"></img><p>Go to Meet Link</p>
-                </Link>
-              </div>
-            </div>
-          ))}
-
-          {/* Add any additional content or components specific to user requester events */}
-        </div>
-      )
-      //  : userInfo?.role === 'admin' && meetingType === "Zoom" ? <div>
-      //   Jakanaka
-      // </div>
-       : 
-       (
-        <div className="w-[250px] lg:w-[355px] min-w-[250px] lg:min-w-min h-[370px] lg:h-[515px]">
-          <h1 className="text-[18px] lg:text-[25px] font-[700] text-center pb-[25px]">
-            Request {meetingType} slot
-          </h1>
-          <div
-            style={{
-              filter: "drop-shadow(3.75217px 3.75217px 0px #000000)",
-            }}
-            className="bg-[#0E2749] w-full h-[400px] rounded-[14px] py-[15px] px-[15px] mb-10 lg:p-[30px] flex flex-col justify-between items-center gap-5"
-          >
-
-            <div className="w-full relative">
-              <p className="text-[#C0C0C0] text-[18px] font-[600] pb-[18px]">
-                Date
-              </p>
-              <div className="relative inline-flex w-full">
-                <input
-                  required
-                  onChange={handleDateChange}
-                  className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
-                  name="date"
-                  id="date"
-                  type="date"
-                  min={getCurrentDate()}
-                  max={maxDateString}
-                />
-              </div>
-              <p className="text-[#C0C0C0] text-[18px] font-[600] py-[18px]">
-                Time
-              </p>
-              <div className="relative inline-flex w-full">
-                <select
-                  required
-                  onChange={handleTimeChange}
-                  className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
-                  name="time"
-                  id="time"
-                  defaultValue={taskData?.minimumTime}
+            )}
+            <table className={`min-w-full leading-normal ${isLoading ? 'opacity-50' : ''}`}>
+              <thead>
+                <tr>
+                  <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                    Student Email
+                  </th>
+                  <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                    Recording Link
+                  </th>
+                  <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                    Recording Expiration Date
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {zoomInfo?.map((info, index) => (
+                  <tr key={index}>
+                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                      {info?.requester}
+                    </td>
+                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                      <a href={info.recording_files[0]?.play_url} target="_blank" rel="noopener noreferrer">Click to see</a>
+                    </td>
+                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                      {formatExpirationDate(info?.start_time)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+        :
+        <>
+          {userRequesterEvents?.length > 0 && isReschedule === false ? (
+            // Render content specific to events where the user is the requester
+            <div className="grid grid-cols-1 my-5 justify-items-center gap-5 items-center">
+              {/* <p>You are the requester in the following events:</p> */}
+              {userRequesterEvents?.map((event, index) => (
+                <div
+                  key={index}
+                  className=" shadow-lg outline-double outline-offset-2 outline-2 outline-emerald-500  w-[320px] rounded p-2 "
                 >
-                  {generateTimeOptions()}
-                </select>
-              </div>
-              {/* <div className="relative inline-flex w-full">
+                  <p className="flex gap-1 items-center text-sm">
+                    <FiberManualRecordIcon
+                      sx={{ color: red[400] }}
+                    ></FiberManualRecordIcon>
+                    Meeting with {event?.organization?.organizationName}
+                  </p>
+                  {event?.meetingType === 'Zoom' ?
+                    <div className="flex items-center gap-2">
+                      <div className="mt-3 mb-1 ">
+                        <p className="font-medium text-sm flex justify-between mt-2 gap-2">
+                          <div className="flex justify-between gap-2">
+                            <AccessAlarmOutlinedIcon fontSize="small" />
+                            <span className="font-semibold text-[14px]">Starts </span>
+                          </div>
+                          <ul className="text-sm">
+
+                            <li key={index}>{formatTimeForZoom(event, event?.start_time ? 'start' : '')}</li>
+
+                          </ul>
+                        </p>
+                        <p className="font-medium text-sm flex justify-between mt-2 gap-2">
+                          <div className="flex justify-between  gap-2">
+                            <AccessAlarmOutlinedIcon fontSize="small" />
+                            <span className="font-semibold text-[14px]">Ends </span>
+                          </div>
+                          <ul className="text-sm">
+
+                            <li key={index}>{formatTimeForZoom(event, event?.end_time ? '' : 'end')}</li>
+
+                          </ul>
+                        </p>
+                      </div>
+                    </div>
+                    :
+                    <div className="flex items-center gap-2">
+                      <div className="mt-3 mb-1 ">
+                        <p className="font-medium text-sm flex justify-between mt-2 gap-2">
+                          <div className="flex justify-between gap-2">
+                            <AccessAlarmOutlinedIcon fontSize="small" />
+                            <span className="font-semibold text-[14px]">Starts </span>
+                          </div>
+                          <ul className="text-sm">
+                            {formatUtcDateTimeStringToListItems(
+                              event?.start?.dateTime
+                            )?.map((item, index) => (
+                              <li key={index}>{item}</li>
+                            ))}
+                          </ul>
+                        </p>
+                        <p className="font-medium text-sm flex justify-between mt-2 gap-2">
+                          <div className="flex justify-between  gap-2">
+                            <AccessAlarmOutlinedIcon fontSize="small" />
+                            <span className="font-semibold text-[14px]">Ends </span>
+                          </div>
+                          <ul className="text-sm">
+                            {formatUtcDateTimeStringToListItems(
+                              event?.end?.dateTime
+                            )?.map((item, index) => (
+                              <li key={index}>{item}</li>
+                            ))}
+                          </ul>
+                        </p>
+                      </div>
+                    </div>}
+                  <div className="grid gap-2 align-middle items-center">
+                    <div className="w-10/12 mx-auto mt-3 text-white bg-sky-500  rounded-md">
+                      <Link
+                        to={event?.meetingType === 'Zoom' ? userInfo?.role === 'admin' ? event?.start_url : event?.join_url : event?.hangoutLink}
+                        className="flex gap-2 items-center justify-center py-[6px]"
+                      >
+                        <img
+                          src={event?.meetingType === 'Zoom' ? zoom : googlemeet}
+                          className="w-[21px] h-[21px]"
+                          alt="googlemeet or zoom"
+                        ></img>
+                        <p>Go to {event?.meetingType === 'Zoom' ? 'zoom' : 'meet'} Link</p>
+                      </Link>
+                    </div>
+                    {event?.meetingType !== 'Zoom' ? <p className="mt-1 text-center">Or</p> : <></>}
+                    {event?.meetingType !== 'Zoom' ?
+                      <div className="w-10/12 mx-auto mt-1 text-center text-white bg-orange-400  rounded-md">
+                        <button onClick={() => handleReschedule(event?.eventId, event?.eventDBid)} className="w-10/12 rounded-md  text-center  py-[6px]">Reschedule</button>
+                      </div> : <></>}
+
+                  </div>
+                </div>
+              ))}
+              {userZoomInfo?.uuid && userZoomInfo?.recording_files ? <div className="mt-16">
+
+                <div className="mx-auto flex justify-center ">
+                  <a className="bg-teal-500 text-white py-2 px-4 rounded-lg" target="_blank" rel="noreferrer" href={userZoomInfo?.recording_files[0]?.play_url}>See Zoom Recording</a>
+                </div>
+                <div className="text-red-500 text-center mt-5">
+                  <p>Zoom Recordings will expire in 30 days.</p>
+                </div>
+              </div> : <>
+              </>}
+              {/* Add any additional content or components specific to user requester events */}
+            </div>
+          )
+            :
+            (
+              <div className="w-[250px] lg:w-[355px] min-w-[250px] lg:min-w-min h-[370px] lg:h-[515px]">
+                <h1 className="text-[18px] lg:text-[25px] font-[700] text-center pb-[25px]">
+                  Request {meetingType} slot
+                </h1>
+                <div
+                  style={{
+                    filter: "drop-shadow(3.75217px 3.75217px 0px #000000)",
+                  }}
+                  className="bg-[#0E2749] w-full h-[400px] rounded-[14px] py-[15px] px-[15px] mb-10 lg:p-[30px] flex flex-col justify-between items-center gap-5"
+                >
+                  <div className="w-full relative">
+                    <p className="text-[#C0C0C0] text-[18px] font-[600] pb-[18px]">
+                      Date
+                    </p>
+                    <div className="relative inline-flex w-full">
+                      <input
+                        required
+                        onChange={handleDateChange}
+                        className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
+                        name="date"
+                        id="date"
+                        type="date"
+                        min={getCurrentDate()}
+                        max={maxDateString}
+                      />
+                    </div>
+                    <p className="text-[#C0C0C0] text-[18px] font-[600] py-[18px]">
+                      Time
+                    </p>
+                    <div className="relative inline-flex w-full">
+                      <select
+                        required
+                        onChange={handleTimeChange}
+                        className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
+                        name="time"
+                        id="time"
+                      // defaultValue={taskData?.minimumTime}
+                      >
+                        <option className="hidden">Select Time</option>
+                        {generateTimeOptions()}
+                      </select>
+                    </div>
+                    {/* <div className="relative inline-flex w-full">
                 <input
                   required
                   onChange={handleBTimeChange}
@@ -883,58 +1374,69 @@ const ScheduleTask = ({ taskData, week }) => {
                   defaultValue={taskData?.minimumTime} // Set the default value to 9:00 AM
                 />
               </div> */}
-            </div>
-            {reservedEvent ? (
-              <a
-                href={reservedEvent?.hangoutLink}
-                target="_blank"
-                rel="noreferrer"
-                style={{ boxShadow: "0px 6.32482px 0px #CA5F98" }}
-                className="bg-[#0F3934] w-full py-[15px] px-[23px] rounded-[13px] text-[12px] lg:text-[18px] font-[700] z-[1]"
-              >
-                <p className="flex items-center justify-center text-white">
-                  Join Meeting{" "}
-                  <img
-                    className="pl-1 w-[21px] lg:w-[32px]"
-                    src={RightArrowWhite}
-                    alt="RightArrowBlack"
-                  />
-                </p>
-              </a>
-            ) : (
-              <>
-                {matching || timeRangeError ? <>
-                  {timeRangeError ? <p className="text-white">Please choose a time between {minTime} and {maxTime}.</p>
-                    :
-                    <p className="text-white">Admin is Busy at that time</p>
-
-                  }
-
-
-                </> : <DashboardPrimaryButton
-                  bgColor="#3E4DAC"
-                  shadow="0px 6.32482px 0px #CA5F98"
-                  width="full"
-                  onClick={addEvent}
-                  disabled={!selectedTimeSlot || isTimeSlotBusy(selectedTimeSlot) || isTimeSlotReserved(selectedTimeSlot)}
-                >
-                  <p className="flex items-center justify-center text-white">
-                    Request Event{" "}
-                    <img
-                      className="pl-1 w-[21px] lg:w-[32px]"
-                      src={RightArrowWhite}
-                      alt="RightArrowBlack"
-                    />
-                  </p>
-                </DashboardPrimaryButton>}
-              </>
+                  </div>
+                  {reservedEvent ? (
+                    <a
+                      href={reservedEvent?.hangoutLink}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ boxShadow: "0px 6.32482px 0px #CA5F98" }}
+                      className="bg-[#0F3934] w-full py-[15px] px-[23px] rounded-[13px] text-[12px] lg:text-[18px] font-[700] z-[1]"
+                    >
+                      <p className="flex items-center justify-center text-white">
+                        Join Meeting{" "}
+                        <img
+                          className="pl-1 w-[21px] lg:w-[32px]"
+                          src={RightArrowWhite}
+                          alt="RightArrowBlack"
+                        />
+                      </p>
+                    </a>
+                  ) : (
+                    <>
+                      {matching || timeRangeError ? (
+                        <>
+                          {timeRangeError ? (
+                            <p className="text-white">
+                              Please choose a time between {minTime} and {maxTime}.
+                            </p>
+                          ) : (
+                            <p className="text-white">Admin is Busy at that time</p>
+                          )}
+                        </>
+                      ) : (
+                        <DashboardPrimaryButton
+                          bgColor="#3E4DAC"
+                          shadow="0px 6.32482px 0px #CA5F98"
+                          width="full"
+                          onClick={addEvent}
+                          disabled={
+                            !selectedTimeSlot ||
+                            isTimeSlotBusy(selectedTimeSlot) ||
+                            isTimeSlotReserved(selectedTimeSlot)
+                          }
+                        >
+                          <p className="flex items-center justify-center text-white">
+                            Request Event{" "}
+                            <img
+                              className="pl-1 w-[21px] lg:w-[32px]"
+                              src={RightArrowWhite}
+                              alt="RightArrowBlack"
+                            />
+                          </p>
+                        </DashboardPrimaryButton>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
             )}
-
-          </div>
-        </div>)}
+        </>}
 
     </div>
   );
 };
 
 export default ScheduleTask;
+
+

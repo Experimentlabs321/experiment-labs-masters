@@ -64,6 +64,7 @@ const ReviewSubmission = (taskData) => {
   const review = submittedResult?.submitter?.result?.review;
 
   console.log(submittedResult?.submitter?.result?.attachFile);
+  console.log(submittedResult);
   const colorData = [
     { progressBarColor: "#F0E823" },
     { progressBarColor: "#23F050" },
@@ -504,7 +505,7 @@ const ReviewSubmission = (taskData) => {
                     </button>
                     {cancelTokenSource && (
                       <button
-                        className="bg-red text-white p-3 rounded-lg text-xl ml-4"
+                        className="border p-3 rounded-lg text-xl ml-4"
                         onClick={() => {
                           cancelTokenSource.cancel(
                             "Download cancelled by user"

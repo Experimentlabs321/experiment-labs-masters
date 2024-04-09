@@ -6,6 +6,7 @@ import TextEditor from "../../Shared/TextEditor/TextEditor";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { AuthContext } from "../../../contexts/AuthProvider";
+import Loading from "../../Shared/Loading/Loading";
 
 const QuizGeneralInformation = () => {
   const [selectedTab, setSelectedTab] = useState("Quiz General Information");
@@ -76,14 +77,15 @@ const QuizGeneralInformation = () => {
   }, [chapter]);
 
   useEffect(() => {
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${chapter?.courseId}`
-      )
-      .then((response) => {
-        setBatchesData(response?.data);
-      })
-      .catch((error) => console.error(error));
+    if (chapter?.courseId)
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${chapter?.courseId}`
+        )
+        .then((response) => {
+          setBatchesData(response?.data);
+        })
+        .catch((error) => console.error(error));
   }, [chapter]);
 
   useEffect(() => {
@@ -110,6 +112,7 @@ const QuizGeneralInformation = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    Loading();
     const formData = {
       taskName: e.target.quizName.value,
       quizName: e.target.quizName.value,
@@ -120,10 +123,14 @@ const QuizGeneralInformation = () => {
       isMarksTotalPoints: e.target.isMarksTotalPoints.value,
       marks: e.target.marks.value,
       totalPoints: e.target.totalPoints.value,
+      gradeToPass: e.target.gradeToPass.value,
+      gradeToPassValueIn: e.target.gradeToPassValueIn.value,
       skillParameterData: [],
       earningParameterData: [],
       chapterId: id,
       questions: [],
+      batches: selectedBatches,
+      taskDrip: taskDrip,
     };
 
     setQuizData(formData);
@@ -137,6 +144,7 @@ const QuizGeneralInformation = () => {
       console.log(newQuiz);
 
       if (newQuiz?.data?.result?.acknowledged) {
+        Loading().close();
         console.log(newQuiz);
         localStorage.setItem("chapter", chapter?.chapterName);
         localStorage.setItem(
@@ -150,10 +158,29 @@ const QuizGeneralInformation = () => {
         localStorage.setItem("courseId", JSON.stringify(courseData?._id));
         toast.success("Quiz added Successfully");
         e.target.reset();
-        navigate(`/editTask/${currentWeek?._id}`);
+        navigate(
+          `/editTask/${newQuiz?.data?.result?.insertedId}?taskType=Quiz`
+        );
       }
+      Loading().close();
 
       console.log(formData);
+    }
+  };
+
+  const handleOptionChangeBatch = (event, optionValue) => {
+    // const optionValue = event.target.value;
+    const isChecked = event.target.checked;
+
+    if (isChecked) {
+      setSelectedBatches([
+        ...selectedBatches,
+        { batchName: optionValue?.batchName, batchId: optionValue?._id },
+      ]);
+    } else {
+      setSelectedBatches(
+        selectedBatches.filter((option) => option?.batchId !== optionValue?._id)
+      );
     }
   };
 
@@ -420,6 +447,7 @@ const QuizGeneralInformation = () => {
                           className="w-[100%] bg-[#F6F7FF]"
                           type="text"
                           name="gradeToPass"
+                          id="gradeToPass"
                         />
                       </div>
                       <div
@@ -432,8 +460,8 @@ const QuizGeneralInformation = () => {
                         <select
                           required
                           className=" border-0 focus:outline-0 bg-[#F6F7FF]"
-                          name="option"
-                          id="option"
+                          name="gradeToPassValueIn"
+                          id="gradeToPassValueIn"
                         >
                           <option className="" value="Percentage">
                             Percentage
@@ -513,18 +541,111 @@ const QuizGeneralInformation = () => {
               </div>
             </div>
 
+            <div className="py-[35px] ">
+              <div>
+                <div className="flex items-center gap-4">
+                  <p className="h-2 w-2 bg-black rounded-full"></p>
+                  <p className="font-bold text-lg me-[36px]">Select Batch</p>
+                  <img src={required} alt="required" />
+                </div>
+                <ul className="ms-6 flex gap-4 flex-wrap ">
+                  {batchesData?.map((option, index) => {
+                    return (
+                      <>
+                        <li className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] ">
+                          <input
+                            type="checkbox"
+                            id="student"
+                            name={option?.batchName}
+                            value={option?.batchName}
+                            checked={selectedBatches.find(
+                              (item) => item?.batchName === option?.batchName
+                            )}
+                            onChange={(e) => handleOptionChangeBatch(e, option)}
+                            className=" mb-1"
+                          />
+                          <div className="flex mb-1 items-center">
+                            <label className="ms-4" htmlFor={option?.batchName}>
+                              {option?.batchName}
+                            </label>
+                          </div>
+                        </li>
+                      </>
+                    );
+                  })}
+                </ul>
+              </div>
+            </div>
+
+            <div className=" space-y-3 mb-8">
+              <fieldset>
+                <div className="flex items-center gap-4 mb-5">
+                  <p className="h-2 w-2 bg-black rounded-full"></p>
+                  <p className="font-bold text-lg me-[36px]">Enable Drip</p>
+                  <img src={required} alt="" />
+                </div>
+                <div className="ms-6 flex items-center space-x-4">
+                  <div className="flex items-center">
+                    <input
+                      type="radio"
+                      id="radioYes"
+                      name="radioOption"
+                      checked={taskDrip === true}
+                      onChange={() => setTaskDrip(true)}
+                      disabled={course?.enableDrip}
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
+                    />
+                    <label
+                      htmlFor="radioYes"
+                      className={`ml-2 text-sm font-medium ${
+                        course?.enableDrip ? "text-gray-400" : "text-gray-900"
+                      }`}
+                    >
+                      Yes
+                    </label>
+                  </div>
+
+                  <div className="flex items-center">
+                    <input
+                      type="radio"
+                      id="radioNo"
+                      name="radioOption"
+                      checked={taskDrip === false}
+                      onChange={() => setTaskDrip(false)}
+                      disabled={course?.enableDrip}
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
+                    />
+                    <label
+                      htmlFor="radioNo"
+                      className={`ml-2 text-sm font-medium ${
+                        course?.enableDrip ? "text-gray-400" : "text-gray-900"
+                      }`}
+                    >
+                      No
+                    </label>
+                  </div>
+                </div>
+              </fieldset>
+
+              {course?.enableDrip && (
+                <p className="text-sm text-red-500">
+                  Course Drip Must Be Turned Off to add Task Drip.
+                </p>
+              )}
+            </div>
+
             <div className="flex items-center justify-center mt-20 mb-10">
               <input
                 type="submit"
                 value="Save"
-                className="px-[30px] py-3 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
-              />
-              <input
-                type="submit"
                 onClick={() => setSubmitPermission(true)}
+                className="px-[30px] cursor-pointer py-3 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
+              />
+              {/* <input
+                type="submit"
                 value="Save & Display"
                 className="px-[30px] py-3 bg-[#FF557A] text-[#fff] text-xl font-bold rounded-lg ms-20"
-              />
+              /> */}
             </div>
           </form>
         </div>

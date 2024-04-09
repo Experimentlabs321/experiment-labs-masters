@@ -5,19 +5,25 @@ import arrowright from "../../../assets/SkillsManagement/arrowright.svg";
 import required from "../../../assets/ContentManagement/required.png";
 import back from "../../../assets/ContentManagement/back.svg";
 import { Link } from "react-router-dom";
+import Level from "../Dashboard/Level";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { AuthContext } from "../../../contexts/AuthProvider";
+import TextEditor from "../../Shared/TextEditor/TextEditor";
 
-const AddingEditingCalQues = () => {
-  const [selectedTab, setSelectedTab] = useState("addingEditingCalQues");
+const AddingEditingCalQues = ({ addQues, setAddQues, setOpenNewQuesType }) => {
 
-  const handleTabClick = (tab) => {
-    setSelectedTab(tab);
-  };
+  const { userInfo } = useContext(AuthContext);
+
   ///
   const [isOpenGeneralCourseInfo, setIsOpenGeneralCourseInfo] = useState(true);
   const [isOpenCourseFormat, setIsOpenCourseFormat] = useState(false);
+
+
+  const [questionText, setQuestionText] = useState("");
+  const [generalFeedback, setGeneralFeedback] = useState("");
+
+
 
   const toggleDropdownCourseSelection = () => {
     setIsOpenGeneralCourseInfo(!isOpenGeneralCourseInfo);
@@ -26,6 +32,33 @@ const AddingEditingCalQues = () => {
     setIsOpenCourseFormat(!isOpenCourseFormat);
   };
 
+  /* const [divCount, setDivCount] = useState(1); 
+    const [options, setOptions] = useState([{ answerFormula: '', feedback: '', answer: '' }]);  */
+  const [divCount, setDivCount] = useState(2); // Initialize with 2 div elements
+  const [answers, setAnswers] = useState(
+    Array.from({ length: 2 }, () => ({
+      answerFormula: "",
+      feedback: "",
+      tolerance: "",
+    }))
+  ); // Initialize with 2 sets of empty answers
+
+  // Function to add more div elements
+  const addMoreDiv = (e) => {
+    e.preventDefault();
+    setDivCount((prevCount) => prevCount + 1); // Increment the count by 1
+    setAnswers((prevAnswers) => [
+      ...prevAnswers,
+      { answerFormula: "", feedback: "", tolerance: "" },
+    ]); // Add a new object to the Answers array
+  };
+
+  // Function to handle input changes in each div
+  const handleInputChange = (index, value, name) => {
+    const newAnswers = [...answers];
+    newAnswers[index][name] = value;
+    setAnswers(newAnswers);
+  };
   // add course category
   const [isOpenAddCourseCategory, setIsOpenAddCourseCategory] = useState(false);
 
@@ -37,6 +70,8 @@ const AddingEditingCalQues = () => {
     setIsOpenAddCourseCategory(false);
   };
 
+  console.log(answers);
+
   const { user } = useContext(AuthContext);
 
   console.log(user);
@@ -46,164 +81,54 @@ const AddingEditingCalQues = () => {
     event.preventDefault();
     const form = event.target;
 
-    const questionNumber = form.questionNumber?.value;
-    const questionTitle = form.questionTitle?.value;
-    const courseStartingDate = form.courseStartingDate?.value;
-    //  const courseStartingTime = form.courseStartingTime?.value;
-    const courseEndingDate = form.courseEndingDate?.value;
-    //  const courseEndingTime = form.courseEndingTime?.value;
+    const questionName = form.questionName?.value;
+
     const defaultMarks = form.defaultMarks?.value;
-    const courseCategory = +form.courseCategory?.value;
-    const questionStatus = +form.questionStatus?.value;
-    const generalFeedback = form.generalFeedback?.value;
-    const courseFormat = form.courseFormat?.value;
-    const gradesFormat = form.gradesFormat?.value;
-    const groups = form.groups?.value;
-    const showactivitydates = +form.showactivitydates?.value;
-    const numberOfWeeks = +form.numberofWeeks?.value;
-    // const weekChapterName = form.weekChapterName?.value;
-    const showactivityreports = +form.showactivityreports?.value;
-    const enableCompletionTracking = +form.enableCompletionTracking?.value;
+    // const category = form.category?.value;
+    const questionStatus = form.questionStatus?.value;
 
-    // const newCourseStartingDate = Math.floor(
-    //   new Date(courseStartingDate).getTime() / 1000
-    // );
-    // const newCourseEndingDate = Math.floor(
-    //   new Date(courseEndingDate).getTime() / 1000
-    // );
-
-    const addCourse = {
-      questionNumber,
-      questionTitle,
-      courseStartingDate,
-      //  courseStartingTime,
-      courseEndingDate,
-      // courseEndingTime,
+    const addQuestion = {
+      questionName,
+      questionText,
       defaultMarks,
-      courseCategory,
-      courseThumbnail: "",
-      questionStatus,
-      generalFeedback,
-      courseFormat,
-      gradesFormat,
-      groups,
-      showactivitydates,
-      numberOfWeeks,
-      // weekChapterName: formData,
-      showactivityreports,
-      enableCompletionTracking,
-      // certificateGeneration,
 
-      //showGradebooktostudents,
-      // newCourseEndingDate,
-      // newCourseStartingDate,
-      creator: {
-        name: user?.displayName,
-        email: user?.email,
-        photoURL: user?.photoURL,
-      },
+      //category,
+      generalFeedback,
+      questionStatus,
+      answers,
+      organizationId: userInfo?.organizationId,
+      questionCreator: userInfo?.email,
+      questionType: "Calculation",
     };
 
-    const course = await axios.post(
-      `${process.env.REACT_APP_BACKEND_API}/courses`,
-      addCourse
-    );
+    /*   const newQuestion = await axios.post(
+        `http://localhost:5000/api/v1/questionBank/addQuestion`,
+        addQuestion
+      ); */
 
-    if (course?.data?.acknowledged) {
-      toast.success("Course added Successfully");
-      form.reset();
-    }
-
-    console.log("Add Course----->", addCourse);
+    console.log(addQuestion);
   };
+
+  const backButtonHandle = () => {
+    setOpenNewQuesType(false);
+    setAddQues(false);
+  }
 
   return (
     <div>
       <Layout>
-        <div className="text-[#3E4DAC] text-[26px] font-bold  py-[35px] ps-[40px]">
-          <p>Manage Live Test in Topic 1</p>
-        </div>
-        <div className="px-10 flex  justify-between pb-3 text-lg">
-          <Link
-            to="/quizGeneralinfo"
-            onClick={() => handleTabClick("Quiz General Information")}
-            style={{
-              fontWeight:
-                selectedTab === "Quiz General Information" ? "bold" : "normal",
-              borderBottom:
-                selectedTab === "Quiz General Information"
-                  ? "2px solid black"
-                  : "none",
-            }}
-          >
-            Quiz General Information
-          </Link>
-          <Link
-            to="/manageQuestion"
-            onClick={() => handleTabClick("Questions")}
-            style={{
-              fontWeight:
-                selectedTab === "Questions" || "addingEditingCalQues"
-                  ? "bold"
-                  : "normal",
-              borderBottom:
-                selectedTab === "Questions" || "addingEditingCalQues"
-                  ? "2px solid black"
-                  : "none",
-            }}
-          >
-            Questions
-          </Link>
-          <Link
-            to="/manageQuestionBank"
-            onClick={() => handleTabClick("Question Bank")}
-            style={{
-              fontWeight: selectedTab === "Question Bank" ? "bold" : "normal",
-              borderBottom:
-                selectedTab === "Question Bank" ? "2px solid black" : "none",
-            }}
-          >
-            Question Bank
-          </Link>
-          <Link
-            to="/quizResult"
-            onClick={() => handleTabClick("Results")}
-            style={{
-              fontWeight: selectedTab === "Results" ? "bold" : "normal",
-              borderBottom:
-                selectedTab === "Results" ? "2px solid black" : "none",
-            }}
-          >
-            Results
-          </Link>
-          <Link
-            to="/quizEvaluationParameter"
-            onClick={() => handleTabClick("Evaluation Parameter")}
-            style={{
-              fontWeight:
-                selectedTab === "Evaluation Parameter" ? "bold" : "normal",
-              borderBottom:
-                selectedTab === "Evaluation Parameter"
-                  ? "2px solid black"
-                  : "none",
-            }}
-          >
-            Evaluation Parameter
-          </Link>
-        </div>
-
-        <div className="mx-10 mt-10">
+        <div className="p-2">
           <div className="flex justify-between items-center mb-10">
             <p className=" text-[26px] font-bold ">
               Adding/Editing Calculation Question{" "}
             </p>
-            <Link
-              to="/manageQuestion"
+            <button
+              onClick={backButtonHandle}
               className="bg-[#3E4DAC] flex  px-4 py-2 rounded-lg text-[#fff]"
             >
               <img src={back} alt="back" />
-              <p className="">Back</p>
-            </Link>
+              {/* <p className="">Back</p> */}
+            </button>
           </div>
 
           <form onSubmit={handleSubmit} className="">
@@ -216,36 +141,33 @@ const AddingEditingCalQues = () => {
               </h1>
               <p className="text-[25px] font-bold">General</p>
               {!isOpenGeneralCourseInfo && (
-                <img className="w-6" src={arrowright} alt="arrowRight" />
+                <img className="w-6 cursor-pointer" src={arrowright} alt="arrowRight" />
               )}
 
-              {isOpenGeneralCourseInfo && (
-                <img src={arrowDown} alt="arrowDown" />
-              )}
+              {isOpenGeneralCourseInfo && <img className="cursor-pointer" src={arrowDown} alt="arrowDown" />}
 
               <i
-                className={`dropdown-arrow ${
-                  isOpenGeneralCourseInfo ? "open" : ""
-                }`}
+                className={`dropdown-arrow ${isOpenGeneralCourseInfo ? "open" : ""
+                  }`}
               ></i>
             </div>
             {isOpenGeneralCourseInfo && (
-              <div className="dropdown-menu mt-[71px] mb-[45px] flex justify-between me-10">
+              <div className="dropdown-menu mt-[71px] mb-[45px] flex justify-between">
                 <div>
                   <div className="">
                     <div className="flex items-center gap-4">
                       <p className="h-2 w-2 bg-black rounded-full"></p>
                       <p className="font-bold text-lg me-[36px]">
                         {" "}
-                        Question Number
+                        Question Name
                       </p>
                       <img src={required} alt="required" />
                     </div>
 
                     <input
                       required
-                      className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                      name="questionNumber"
+                      className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                      name="questionName"
                       type="text"
                       placeholder="Eg. Entrepreneurship Lab"
                     />
@@ -256,106 +178,107 @@ const AddingEditingCalQues = () => {
                       <p className="h-2 w-2 bg-black rounded-full"></p>
                       <p className="font-bold text-lg me-[36px]">
                         {" "}
-                        Question Title
+                        Question Text
                       </p>
                       <img src={required} alt="required" />
                     </div>
 
-                    <input
-                      required
-                      className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                      name="questionTitle"
-                      type="text"
-                      placeholder="Eg. Entrepreneurship Lab"
-                    />
+                    <div className=" mt-10">
+                      <div className="bg-white text-black textEditor">
+                        <TextEditor
+                          value={questionText}
+                          setValue={setQuestionText}
+                        />
+                      </div>
+                    </div>
                   </div>
 
                   <div className="mt-20">
                     <div className="flex items-center gap-4">
                       <p className="h-2 w-2 bg-black rounded-full"></p>
-                      <p className="font-bold text-lg me-[36px]">
-                        Default Marks
-                      </p>
+                      <p className="font-bold text-lg me-[36px]">Default Marks</p>
                       <img src={required} alt="required" />
                     </div>
 
                     <input
-                      className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                      className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                       name="defaultMarks"
                       type="text"
                       placeholder="Eg. 2"
                     />
                   </div>
+
+
                 </div>
 
                 <div>
-                  <div className="">
-                    <div className="flex items-center gap-4">
-                      <p className="h-2 w-2 bg-black rounded-full"></p>
-                      <p className="font-bold text-lg me-[36px]">Category</p>
-                      <img src={required} alt="required" />
-                    </div>
-
-                    <div className=" flex gap-2  mt-6 ms-6 border rounded-md w-[381px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]  ">
-                      <select
-                        required
-                        className="w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold focus:outline-0"
-                        name="category"
-                        // id="option"
-                      >
-                        <option className="" value="1">
-                          Web Development
-                        </option>
-                        <option value="Parent"></option>
-                        <option value="Counselor"></option>
-                        <option value="Others"></option>
-                      </select>
-                      <div
-                        onClick={openModalAddCourseCategory}
-                        className="w-[96px] bg-[#FFDB70] text-[] text-base font-semibold flex gap-2 justify-center items-center"
-                      >
-                        <p className="text-2xl">+</p>
-                        <div>
-                          <p className="w-full">Add</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div>
-                      {isOpenAddCourseCategory && (
-                        <div className="modal-overla w-[438px] h-[325px] rounded-md mt-3 bg-[#fff] border">
-                          <div className="modal-content">
-                            <div className="border-b flex justify-between items-center pt-6 px-10 pb-5 text-[#3E4DAC] text-xl font-bold">
-                              <p>Add Course Category</p>
-                              <p
-                                onClick={closeModalAddCourseCategory}
-                                className=" flex justify-center items-center rounded-full w-6 h-6 bg-[#A1A1A1] font-bold text-[#000000]"
-                              >
-                                x
-                              </p>
-                            </div>
-                            <div className="mt-6 mx-10">
-                              <div className="flex items-center gap-4">
-                                <p className="font-bold text-lg me-[36px]">
-                                  {" "}
-                                  Course Category Name
-                                </p>
-                              </div>
-
-                              <input
-                                className="mt-6 border rounded-md w-[358px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                                name="courseCategory"
-                                type="text"
-                                placeholder="Eg. Entrepreneurship Lab"
-                              ></input>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
+                  {/*  <div className="">
+                  <div className="flex items-center gap-4">
+                    <p className="h-2 w-2 bg-black rounded-full"></p>
+                    <p className="font-bold text-lg me-[36px]">Category</p>
+                    <img src={required} alt="required" />
                   </div>
 
-                  <div className="mt-20">
-                    <div className="mt-20">
+                  <div className=" flex gap-2  mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]  ">
+                    <select
+                      required
+                      className="w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold focus:outline-0"
+                      name="category"
+                      // id="option"
+                    >
+                      <option className="" value="Web Development">
+                        Web Development
+                      </option>
+                      <option value="Parent"></option>
+                      <option value="Counselor"></option>
+                      <option value="Others"></option>
+                    </select>
+                    <div
+                      onClick={openModalAddCourseCategory}
+                      className="w-[96px] bg-[#FFDB70] text-[] text-base font-semibold flex gap-2 justify-center items-center"
+                    >
+                      <p className="text-2xl">+</p>
+                      <div>
+                        <p className="w-full">Add</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    {isOpenAddCourseCategory && (
+                      <div className="modal-overla w-[438px] h-[325px] rounded-md mt-3 bg-[#fff] border">
+                        <div className="modal-content">
+                          <div className="border-b flex justify-between items-center pt-6 px-10 pb-5 text-[#3E4DAC] text-xl font-bold">
+                            <p>Add Course Category</p>
+                            <p
+                              onClick={closeModalAddCourseCategory}
+                              className=" flex justify-center items-center rounded-full w-6 h-6 bg-[#A1A1A1] font-bold text-[#000000]"
+                            >
+                              x
+                            </p>
+                          </div>
+                          <div className="mt-6 mx-10">
+                            <div className="flex items-center gap-4">
+                              <p className="font-bold text-lg me-[36px]">
+                                {" "}
+                                Course Category Name
+                              </p>
+                            </div>
+
+                            <input
+                              className="mt-6 border rounded-md w-[358px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                              name="courseCategory"
+                              type="text"
+                              placeholder="Eg. Entrepreneurship Lab"
+                            ></input>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div> */}
+
+                  <div className="">
+                    <div className="">
                       <div className="flex items-center gap-4">
                         <p className="h-2 w-2 bg-black rounded-full"></p>
                         <p className="font-bold text-lg me-[36px]">
@@ -363,43 +286,45 @@ const AddingEditingCalQues = () => {
                         </p>
                       </div>
 
-                      <input
-                        className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                        name="generalFeedback"
-                        type="text"
-                        placeholder="Eg. 02283847"
-                      ></input>
+                      <div className=" mt-10">
+                        <div className="bg-white text-black textEditor">
+                          <TextEditor
+                            value={generalFeedback}
+                            setValue={setGeneralFeedback}
+                          />
+                        </div>
+                      </div>
                     </div>
 
                     <div className="mt-20">
                       <div className="flex items-center gap-4">
                         <p className="h-2 w-2 bg-black rounded-full"></p>
-                        <p className="font-bold text-lg me-[36px]">
-                          Question Status
-                        </p>
+                        <p className="font-bold text-lg ">Question Status</p>
                       </div>
 
-                      <div className=" items-center flex gap-2  mt-2 ms-6  w-[319px] h-[50px] ps-2 text-[#535353] focus:outline-0 ">
-                        <div className="">
+                      <div className=" items-center flex gap-2  mt-2 ms-6  w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 ">
+                        <div className="flex gap-2">
                           <input
                             type="radio"
                             id="Ready"
                             name="questionStatus"
-                            value="1"
+                            value="ready"
                           />
-                          <lebel> Ready</lebel>
+                          <label> Ready</label>
                         </div>
-                        <div className=" ms-[55px]">
+                        <div className="flex gap-2 ms-[55px]">
                           <input
                             type="radio"
                             id="Draft"
                             name="questionStatus"
-                            value="0"
+                            value="draft"
                           />
-                          <lebel> Draft</lebel>
+                          <label>Draft</label>
                         </div>
                       </div>
                     </div>
+
+
                   </div>
                 </div>
               </div>
@@ -415,99 +340,271 @@ const AddingEditingCalQues = () => {
                 </h1>
                 <p className="text-[25px] font-bold">Answers Options</p>
                 {!isOpenCourseFormat && (
-                  <img className="w-6" src={arrowright} alt="arrowRight" />
+                  <img className="w-6 cursor-pointer" src={arrowright} alt="arrowRight" />
                 )}
 
-                {isOpenCourseFormat && <img src={arrowDown} alt="arrowDown" />}
+                {isOpenCourseFormat && <img className="cursor-pointer" src={arrowDown} alt="arrowDown" />}
 
                 <i
-                  className={`dropdown-arrow ${
-                    isOpenCourseFormat ? "open" : ""
-                  }`}
+                  className={`dropdown-arrow ${isOpenCourseFormat ? "open" : ""}`}
                 ></i>
               </div>
 
-              <div className="flex justify-between items-center mb-10 mt-10">
-                <Link
-                  to="/manageQuestion"
-                  className="bg-[#3E4DAC] flex  px-4 py-2 rounded-lg text-[#fff]"
-                >
-                  <p className="">Add More Answer Blank</p>
-                </Link>
-              </div>
+              {/*   <div className="flex justify-between items-center mb-10 mt-10">
+
+                                <Link to='/manageQuestion' className='bg-[#3E4DAC] flex text-base font-bold  px-4 py-2 rounded-lg text-[#fff]'>
+
+                                    <p className="">Add More Answer Blank</p>
+                                </Link>
+
+                            </div> */}
             </div>
 
             {isOpenCourseFormat && (
-              <div className="dropdown-menu mt-[71px] mb-[45px] flex justify-between me-10 bg-[#F7F7F7] p-5 rounded-lg">
-                <div className="">
-                  <div className="">
-                    <div className="flex items-center gap-4">
-                      <p className="h-2 w-2 bg-black rounded-full"></p>
-                      <p className="font-bold text-lg me-[36px]">
-                        Answer 1 Formula
-                      </p>
-                      <img src={required} alt="required" />
-                    </div>
-
-                    <input
-                      className="mt-6 ms-6 border rounded-md  h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                      name="answer1Formula"
-                      type="text"
-                      placeholder="Eg. 02283847"
-                    />
-                  </div>
-                  <div className="mt-20 ">
-                    <div className="flex items-center gap-4">
-                      <p className="h-2 w-2 bg-black rounded-full"></p>
-                      <p className="font-semibold text-[#000000]  py-2">
-                        Grade Allocation
-                      </p>
-                      <img src={required} alt="required" />
-                    </div>
+              <div>
+                <div>
+                  {/* Render div elements based on the divCount state */}
+                  {answers.map((answer, index) => (
                     <div
-                      style={{
-                        border: "1.085px solid #CECECE",
-                        background: "#F6F7FF",
-                      }}
-                      className=" flex  border  rounded-lg h-[40px] w-[40%] px-2 text-[#535353] ms-5"
+                      key={index}
+                      className="dropdown-menu mt-[71px] mb-[45px] flex justify-between  bg-[#F7F7F7] p-5 rounded-lg"
                     >
-                      <select
-                        required
-                        className="w-full border-0 focus:outline-0 bg-[#F6F7FF] text-[#3E4DAC]"
-                        name="gradeAllocation"
-                        id="option"
-                      >
-                        <option className="" value="Student">
-                          100%
-                        </option>
-                        <option value="Parent"></option>
-                        <option value="Counselor"></option>
-                        <option value="Others"></option>
-                      </select>
+                      {/* Content of the div */}
+                      <div className="">
+                        <div className="">
+                          <div className="flex items-center gap-4">
+                            <p className="h-2 w-2 bg-black rounded-full"></p>
+                            <p className="font-bold text-lg">
+                              Answer {index + 1} formula
+
+                            </p>
+                            <img src={required} alt="required" />
+                          </div>
+                          {/* Text editor for answerFormula */}
+                          <div className="mt-10">
+                            <div className="bg-white text-black textEditor">
+                              {/* Pass props to the TextEditor component */}
+                              <TextEditor
+                                value={answer.answerFormula}
+                                setValue={(value) =>
+                                  handleInputChange(index, value, "answerFormula")
+                                }
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="mt-20 ">
+                          <div className="flex items-center gap-4">
+                            <p className="h-2 w-2 bg-black rounded-full"></p>
+                            <p className="font-semibold text-[#000000]  py-2">
+                              Tolerance ±
+                            </p>
+
+                          </div>
+                          <input
+
+                            className="mt-6 ms-6 border rounded-md w-[50%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                            type="number"
+                            name={`tolerance${index}`}
+                            onChange={(e) =>
+                              handleInputChange(
+                                index,
+                                e.target.value,
+                                "tolerance"
+                              )
+                            }
+                            placeholder=""
+                          />
+
+                        </div>
+
+
+                      </div>
+                      <div className="">
+                        <div className="">
+                          <div className="flex items-center gap-4">
+                            <p className="h-2 w-2 bg-black rounded-full"></p>
+                            <p className="font-bold text-lg me-[36px]">
+                              Feedback
+                            </p>
+                          </div>
+                          {/* Text editor for feedback */}
+                          <div className=" mt-10">
+                            <div className="bg-white text-black textEditor">
+                              {/* Pass props to the TextEditor component */}
+                              <TextEditor
+                                value={answer.feedback}
+                                setValue={(value) =>
+                                  handleInputChange(index, value, "feedback")
+                                }
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <p className="mt-2">
-                      {" "}
-                      <span className="text-[#3E4DAC]">None</span> or Multiples
-                      of <span className="text-[#3E4DAC]"> 5-100%</span>
-                    </p>
+                  ))}
+                  <div className="w-full flex justify-center items-center my-10">
+                    <button
+                      onClick={addMoreDiv}
+                      className="bg-[#3E4DAC] flex text-base font-bold  px-4 py-2 rounded-lg text-[#fff]"
+                    >
+                      <p className="">Add More Option</p>
+                    </button>
                   </div>
+                  {/* <button onClick={addMoreDiv}>Add More</button> */}
+                  {/* Displaying answers array for debugging purposes */}
+                  {/* <pre>{JSON.stringify(answers, null, 2)}</pre> */}
                 </div>
 
-                <div className="me-10">
-                  <div className="">
-                    <div className="flex items-center gap-4">
-                      <p className="h-2 w-2 bg-black rounded-full"></p>
-                      <p className="font-bold text-lg me-[36px]">Feedback</p>
-                    </div>
+                {/*   <div className="dropdown-menu mt-[71px] mb-[45px] flex justify-between me-10 bg-[#F7F7F7] p-5 rounded-lg">
+                                    <div className="">
 
-                    <input
-                      className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                      name="feedback"
-                      type="text"
-                      placeholder="Eg. 02283847"
-                    ></input>
-                  </div>
-                </div>
+                                        <div className="">
+                                            <div className="flex items-center gap-4">
+                                                <p className="h-2 w-2 bg-black rounded-full"></p>
+                                                <p className="font-bold text-lg me-[36px]">
+                                                    Choice 1
+                                                </p>
+                                                <img src={required} alt="required" />
+                                            </div>
+
+                                            <input
+                                                className="mt-6 ms-6 border rounded-md  h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                                                name="answer1Formula"
+                                                type="text"
+                                                placeholder="Eg. 02283847"
+                                            />
+                                        </div>
+                                        <div className='mt-20 '>
+                                            <div className='flex items-center gap-4'>
+                                                <p className='h-2 w-2 bg-black rounded-full'></p>
+                                                <p className='font-semibold text-[#000000]  py-2'>Grade Allocation</p>
+                                                <img src={required} alt="required" />
+
+                                            </div>
+                                            <div
+                                                style={{
+                                                    border: "1.085px solid #CECECE",
+                                                    background: "#F6F7FF"
+                                                }}
+                                                className=" flex  border  rounded-lg h-[40px] w-[40%] px-2 text-[#535353] ms-5">
+
+                                                <select
+                                                    required
+                                                    className="w-full border-0 focus:outline-0 bg-[#F6F7FF] text-[#3E4DAC]"
+                                                    name="gradeAllocation"
+                                                    id="option"
+                                                >
+
+                                                    <option className="" value="Student">100%</option>
+                                                    <option value="None">None</option>
+                                                    <option value="Counselor"></option>
+                                                    <option value="Others"></option>
+                                                </select>
+
+                                            </div>
+                                            <p className="mt-2"> <span className="text-[#3E4DAC]">None</span> or Multiples of <span className="text-[#3E4DAC]"> 5-100%</span></p>
+                                        </div>
+
+
+
+                                    </div>
+
+                                    <div className=" me-10">
+                                        <div className="">
+                                            <div className="flex items-center gap-4">
+                                                <p className="h-2 w-2 bg-black rounded-full"></p>
+                                                <p className="font-bold text-lg me-[36px]">
+                                                    Feedback
+                                                </p>
+
+                                            </div>
+
+                                            <input
+                                                className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                                                name="feedback"
+                                                type="text"
+                                                placeholder="Eg. 02283847"
+                                            ></input>
+                                        </div>
+                                    </div>
+                                </div> */}
+
+                {/* <div className="dropdown-menu mt-[71px] mb-[45px] flex justify-between me-10 bg-[#F7F7F7] p-5 rounded-lg">
+                                    <div className="">
+
+                                        <div className="">
+                                            <div className="flex items-center gap-4">
+                                                <p className="h-2 w-2 bg-black rounded-full"></p>
+                                                <p className="font-bold text-lg me-[36px]">
+                                                    Choice 2
+                                                </p>
+                                                <img src={required} alt="required" />
+                                            </div>
+
+                                            <input
+                                                className="mt-6 ms-6 border rounded-md  h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                                                name="answer1Formula"
+                                                type="text"
+                                                placeholder="Eg. 02283847"
+                                            />
+                                        </div>
+                                        <div className='mt-20 '>
+                                            <div className='flex items-center gap-4'>
+                                                <p className='h-2 w-2 bg-black rounded-full'></p>
+                                                <p className='font-semibold text-[#000000]  py-2'>Grade Allocation</p>
+                                                <img src={required} alt="required" />
+
+                                            </div>
+                                            <div
+                                                style={{
+                                                    border: "1.085px solid #CECECE",
+                                                    background: "#F6F7FF"
+                                                }}
+                                                className=" flex  border  rounded-lg h-[40px] w-[40%] px-2 text-[#535353] ms-5">
+
+                                                <select
+                                                    required
+                                                    className="w-full border-0 focus:outline-0 bg-[#F6F7FF] text-[#3E4DAC]"
+                                                    name="gradeAllocation"
+                                                    id="option"
+                                                >
+
+                                                    <option className="" value="Student">100%</option>
+                                                    <option value="None">None</option>
+                                                    <option value="Counselor"></option>
+                                                    <option value="Others"></option>
+                                                </select>
+
+                                            </div>
+                                            <p className="mt-2"> <span className="text-[#3E4DAC]">None</span> or Multiples of <span className="text-[#3E4DAC]"> 5-100%</span></p>
+                                        </div>
+
+
+
+                                    </div>
+
+                                    <div className=" me-10">
+                                        <div className="">
+                                            <div className="flex items-center gap-4">
+                                                <p className="h-2 w-2 bg-black rounded-full"></p>
+                                                <p className="font-bold text-lg me-[36px]">
+                                                    Feedback
+                                                </p>
+
+                                            </div>
+
+                                            <input
+                                                className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                                                name="feedback"
+                                                type="text"
+                                                placeholder="Eg. 02283847"
+                                            ></input>
+                                        </div>
+                                    </div>
+                                </div> */}
               </div>
             )}
 

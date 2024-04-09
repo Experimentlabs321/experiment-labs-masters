@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Dialog from "@mui/material/Dialog";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -9,11 +9,13 @@ import CongratulationsLeft from "../../../assets/Dashboard/CongratulationsLeft.p
 import CongratulationsRight from "../../../assets/Dashboard/CongratulationsRight.png";
 import CongratulationsBatch from "../../../assets/Dashboard/CongratulationsBatch.png";
 import { AuthContext } from "../../../contexts/AuthProvider";
+import axios from "axios";
+import Loading from "../../Shared/Loading/Loading";
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-let questions = [
+/* let questions = [
   {
     id: 1,
     question: "In Figma, What is the use Opt + Cmd + K / Ctrl + Alt + K ?",
@@ -207,14 +209,56 @@ let questions = [
   },
 ];
 
-const QuizTask = () => {
+let questions = [
+  {
+    id: 1,
+    questionText: "<p>question 2</p>",
+    options: [
+      {
+        answerFormula: "<p>1</p>",
+        feedback: "<p>1</p>",
+        answer: "wrong",
+      },
+      {
+        answerFormula: "<p>2</p>",
+        feedback: "<p>2</p>",
+        answer: "correct",
+      },
+    ],
+    explanations: [
+      "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
+      "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
+      "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
+      "It is runed by Ctrl + Alt + P/ Opt + Cmd + P",
+    ],
+    correctAnswer: "C. Share a file",
+    defaultMarks: 1,
+  },
+]; */
+
+const QuizTask = ({ taskData, count, setCount, chapter }) => {
+  const { userInfo } = useContext(AuthContext);
   const [open, setOpen] = React.useState(false);
   const [congratulationOpen, setCongratulationOpen] = useState(false);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [showExplanation, setShowExplanation] = useState(false);
+  const [questions, setQuizQuestions] = useState([]);
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [selectedOption, setSelectedOption] = useState("");
+  const [score, setScore] = useState(0);
+  const [point, setPoint] = useState(0);
+  const [answered, setAnswered] = useState(0);
+  const [givenAnswers, setGivenAnswers] = useState([]);
+  const [participationData, setParticipationData] = useState({});
+
+  console.log(taskData);
 
   const handleClickOpen = () => {
     setOpen(true);
+    setPoint(0);
+    setCurrentQuestion(0);
+    setAnswered(0);
+    setScore(0);
   };
 
   const handleClose = () => {
@@ -226,28 +270,48 @@ const QuizTask = () => {
     setScore(0);
   };
 
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [selectedOption, setSelectedOption] = useState("");
-  const [score, setScore] = useState(0);
-  const [point, setPoint] = useState(0);
-  const [answered, setAnswered] = useState(0);
+  useEffect(() => {
+    if (taskData?.participants) {
+      const findUser = taskData?.participants?.find(
+        (item) => item?.participant?.email === userInfo?.email
+      );
+      if (findUser) {
+        setGivenAnswers(findUser?.questions);
+        setParticipationData(findUser);
+      }
+    }
+  }, [taskData, userInfo]);
+  console.log(participationData);
 
-  const handleOptionChange = (e) => {
-    setSelectedOption(e.target.value);
-    if (e.target.value === questions[currentQuestion].correctAnswer) {
+  const handleOptionChange = (option) => {
+    setSelectedOption(option?.answerFormula);
+    console.log(option);
+    // if (e.target.value === questions[currentQuestion].correctAnswer) {
+    //   if (
+    //     !question[currentQuestion]?.givenAnswer ||
+    //     question[currentQuestion]?.givenAnswer !==
+    //       questions[currentQuestion].correctAnswer
+    //   )
+    //     setScore(score + 1);
+    //   setPoint(point + question?.point);
+    // }
+    if (option?.answer === "correct") {
       if (
-        !question[currentQuestion]?.givenAnswer ||
-        question[currentQuestion]?.givenAnswer !==
-          questions[currentQuestion].correctAnswer
+        !questions[currentQuestion]?.givenAnswer ||
+        questions[currentQuestion]?.givenAnswer?.answer === "wrong"
       )
         setScore(score + 1);
-      setPoint(point + question?.point);
+      setPoint(point + +question?.defaultMarks);
     }
-    if (e.target.value) {
+    if (option) {
       if (!questions[currentQuestion]?.givenAnswer) setAnswered(answered + 1);
       questions[currentQuestion] = {
         ...questions[currentQuestion],
-        givenAnswer: e.target.value,
+        givenAnswer: option,
+      };
+      givenAnswers[currentQuestion] = {
+        questionId: question?._id,
+        givenAnswer: option,
       };
     }
   };
@@ -274,12 +338,75 @@ const QuizTask = () => {
     setCurrentQuestion(i);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    Loading();
+    setOpen(false);
     localStorage.setItem("questionWithSelectedAns", JSON.stringify(questions));
     setAnswered(0);
     setCurrentQuestion(0);
     // setScore(0);
-    setCongratulationOpen(true);
+    if ((+taskData?.points * +taskData?.gradeToPass) / 100 > point) {
+      const sendData = {
+        participantChapter: {
+          email: userInfo?.email,
+          participantId: userInfo?._id,
+          status: "In Progress",
+          completionDateTime: new Date(),
+        },
+        participantTask: {
+          participant: {
+            email: userInfo?.email,
+            participantId: userInfo?._id,
+            status: "In Progress",
+            completionDateTime: new Date(),
+          },
+          questions: givenAnswers,
+          earnedPoint: point,
+          correctlyAnswered: score,
+          attempted: participationData?.attempted
+            ? +participationData?.attempted + 1
+            : 1,
+        },
+      };
+      setParticipationData(sendData?.participantTask);
+      const submitCompletion = await axios.post(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/Quiz/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`,
+        sendData
+      );
+      setCount(count + 1);
+      setCongratulationOpen(true);
+    } else {
+      const sendData = {
+        participantChapter: {
+          email: userInfo?.email,
+          participantId: userInfo?._id,
+          status: "Completed",
+          completionDateTime: new Date(),
+        },
+        participantTask: {
+          participant: {
+            email: userInfo?.email,
+            participantId: userInfo?._id,
+            status: "Completed",
+            completionDateTime: new Date(),
+          },
+          questions: givenAnswers,
+          earnedPoint: point,
+          correctlyAnswered: score,
+          attempted: participationData?.attempted
+            ? +participationData?.attempted + 1
+            : 1,
+        },
+      };
+      setParticipationData(sendData?.participantTask);
+      const submitCompletion = await axios.post(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/Quiz/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`,
+        sendData
+      );
+      setCount(count + 1);
+      setCongratulationOpen(true);
+    }
+    Loading().close();
   };
 
   const question = questions[currentQuestion];
@@ -288,13 +415,32 @@ const QuizTask = () => {
 
   if (submittedQuestions)
     submittedQuestion = JSON.parse(submittedQuestions)[currentQuestion];
-  console.log(submittedQuestions);
-  const {userInfo} = useContext(AuthContext);
-  if(userInfo.role !== 'admin'){
+
+  console.log(JSON.parse(submittedQuestions));
+
+  if (userInfo.role !== "admin") {
     window.addEventListener("contextmenu", (e) => {
       e.preventDefault();
     });
-  };
+  }
+
+  useEffect(() => {
+    const findCourse = userInfo?.courses?.find(
+      (item) => item?.courseId === chapter?.courseId
+    );
+    console.log(findCourse);
+    if (findCourse?.batchId) {
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/questionBank/quizId/${taskData?._id}/batchId/${findCourse?.batchId}`
+        )
+        .then((response) => {
+          if (response?.data) setQuizQuestions(response?.data);
+          console.log(response?.data);
+        });
+    }
+  }, [chapter, taskData, userInfo, participationData]);
+
   return (
     <div>
       <div className="flex flex-col items-center justify-center">
@@ -322,17 +468,20 @@ const QuizTask = () => {
             fill="#4D2609"
           />
         </svg>
-        <h1 className=" text-[20px] font-[600] mt-[-44px] text-white ">
-          48 Points
+        <h1 className=" text-[20px] font-sans font-[600] mt-[-44px] text-white ">
+          {taskData?.points} Points
         </h1>
       </div>
       <div className="px-4 pb-20">
-        <h1 className="text-[30px] font-[600] mt-[70px] ">Quiz Name</h1>
+        <h1 className="text-[30px] font-[600] mt-[70px] ">
+          {taskData?.quizName}
+        </h1>
         <div className="mt-[95px] flex items-center justify-between">
           <div className="">
             <h1 className="text-[20px] font-[500]">Submit your Quiz</h1>
             <p className="text-[18px] font-[400] text-[#6B6B6B]">
-              Attempts: <span className="text-[#3E4DAC]">10</span>
+              Attempts:{" "}
+              <span className="text-[#3E4DAC]">{taskData?.quizAttempts}</span>
             </p>
           </div>
           <div>
@@ -340,42 +489,53 @@ const QuizTask = () => {
               onClick={handleClickOpen}
               className={`bg-[#3E4DAC] text-white w-[150px] h-[50px] text-[16px] font-[600] text-center rounded-[8px] z-[1] shadow-[0px_4px_0px_0px_#CA5F98] lg:shadow-[0px_8px_0px_0px_#CA5F98]`}
             >
-              Start Quiz
+              {participationData?.participant ? "Reattempt" : "Start Quiz"}
             </button>
           </div>
         </div>
-        <hr className="my-[65px]" />
-        <div className=" flex items-center justify-between">
-          <div className=" flex flex-col justify-between h-full gap-[20px]">
-            <h1 className="text-[20px] font-[500]">Results</h1>
-            <p className="text-[18px] font-[400] text-[#6B6B6B]">
-              To Pass: <span className="text-[#3E4DAC]">75% or more</span>
-            </p>
-          </div>
-          <div className="w-[161px] flex-col justify-start items-center gap-[22.96px] inline-flex">
-            <h1 className="text-zinc-800 text-lg font-semibold">
-              Your Points Earned
-            </h1>
-            <h1 className="text-amber-700 text-[26px] font-semibold">
-              40 Points
-            </h1>
-          </div>
-          <div className="w-32 flex-col justify-start items-center gap-[22.96px] inline-flex">
-            <h1 className="text-zinc-800 text-lg font-semibold">
-              Your Quiz Rank
-            </h1>
-            <h1 className="text-[#2F97B7] text-3xl font-semibold">2/20</h1>
-          </div>
+        {participationData?.participant && (
+          <>
+            <hr className="my-[65px]" />
+            <div className=" flex items-center justify-between">
+              <div className=" flex flex-col justify-between h-full gap-[20px]">
+                <h1 className="text-[20px] font-[500]">Results</h1>
+                <p className="text-[18px] font-[400] text-[#6B6B6B]">
+                  To Pass:{" "}
+                  <span className="text-[#3E4DAC]">
+                    {/* {(((+taskData?.points * +taskData?.gradeToPass) / 100 -
+                      participationData?.earnedPoint) *
+                      100) /
+                      ((+taskData?.points * +taskData?.gradeToPass) / 100)} */}
+                    {taskData?.gradeToPass}% or more
+                  </span>
+                </p>
+              </div>
+              <div className="w-[161px] flex-col justify-start items-center gap-[22.96px] inline-flex">
+                <h1 className="text-zinc-800 text-lg font-semibold">
+                  Your Points Earned
+                </h1>
+                <h1 className="text-amber-700 text-[26px] font-semibold">
+                  {participationData?.earnedPoint} Points
+                </h1>
+              </div>
+              {/* <div className="w-32 flex-col justify-start items-center gap-[22.96px] inline-flex">
+                <h1 className="text-zinc-800 text-lg font-semibold">
+                  Your Quiz Rank
+                </h1>
+                <h1 className="text-[#2F97B7] text-3xl font-semibold">2/20</h1>
+              </div> */}
 
-          <div>
-            <button
-              onClick={() => setReviewOpen(true)}
-              className={`bg-[#FFDB70] text-black px-4 h-[50px] text-[16px] font-[600] text-center rounded-[8px] z-[1] shadow-[0px_4px_0px_0px_#F08323] lg:shadow-[0px_8px_0px_0px_#F08323]`}
-            >
-              Review Submission
-            </button>
-          </div>
-        </div>
+              <div>
+                <button
+                  onClick={() => setReviewOpen(true)}
+                  className={`bg-[#FFDB70] text-black px-4 h-[50px] text-[16px] font-[600] text-center rounded-[8px] z-[1] shadow-[0px_4px_0px_0px_#F08323] lg:shadow-[0px_8px_0px_0px_#F08323]`}
+                >
+                  Review Submission
+                </button>
+              </div>
+            </div>
+          </>
+        )}
       </div>
       {/* Review submission dialog start */}
       <Dialog
@@ -396,8 +556,10 @@ const QuizTask = () => {
               <CloseIcon />
             </IconButton>
             <div className="text-center text-[21px] font-[600] w-full py-[20px] ">
-              <h1 className="text-white">Figma</h1>
-              <p className="text-[#8595FF]">Quiz - 48 Total points</p>
+              <h1 className="text-white">{taskData?.quizName}</h1>
+              <p className="text-[#8595FF]">
+                Quiz - {taskData?.points} Total points
+              </p>
             </div>
           </Toolbar>
         </AppBar>
@@ -405,7 +567,7 @@ const QuizTask = () => {
           <div className=" max-w-[1262px] pt-[80px] mx-auto flex justify-between">
             <div className="w-[625px]">
               <h1 className="text-[#FF557A] text-center h-[50px] text-[22px] font-[700] ">
-                Question {submittedQuestion?.id}
+                Question {currentQuestion + 1}
               </h1>
               <div className="bg-[#FFFCDE] rounded-[8px] w-full px-[20px] py-[30px] relative">
                 {showExplanation ? (
@@ -424,7 +586,7 @@ const QuizTask = () => {
                       />
                     </svg>
                     <h1 className=" text-white text-[16px] font-[500] absolute top-[6px] left-0 w-[108px] text-center ">
-                      {submittedQuestion?.point} points
+                      {question?.defaultMarks} points
                     </h1>
                   </>
                 ) : (
@@ -443,16 +605,19 @@ const QuizTask = () => {
                       />
                     </svg>
                     <h1 className=" text-white text-[16px] font-[500] absolute top-[6px] right-0 w-[108px] text-center ">
-                      {submittedQuestion?.point} points
+                      {question?.defaultMarks} points
                     </h1>
                   </>
                 )}
 
-                <p className=" text-[18px] font-[700] pt-4 ">
-                  {submittedQuestion?.question}
-                </p>
+                <p
+                  className=" text-[18px] font-[700] pt-4 "
+                  dangerouslySetInnerHTML={{
+                    __html: question?.questionText,
+                  }}
+                ></p>
                 <form id="myForm" className="mt-[45px]">
-                  {!submittedQuestion?.options && (
+                  {/* {!submittedQuestion?.options && (
                     <>
                       {!showExplanation ? (
                         <div>
@@ -486,53 +651,83 @@ const QuizTask = () => {
                         </div>
                       )}
                     </>
-                  )}
-                  {submittedQuestion?.options &&
-                    submittedQuestion?.options?.map((option, index) => (
+                  )} */}
+                  {question?.options &&
+                    question?.options?.map((option, index) => (
                       <div key={index}>
                         <label className="flex items-center mb-[15px] text-[#3E4DAC] text-[15px] font-[600] ">
                           <input
                             className="form-radio mr-[15px] h-6 w-6  border rounded-full border-gray-400"
                             type="radio"
                             value={option}
-                            checked={submittedQuestion?.givenAnswer === option}
+                            checked={
+                              givenAnswers?.find(
+                                (item) => item?.questionId === question?._id
+                              )?.givenAnswer?.answerFormula ===
+                              option?.answerFormula
+                            }
                           />
-                          <p
-                            className={`flex items-center ${
-                              !showExplanation && "justify-between"
-                            }  w-full`}
-                          >
-                            {option}{" "}
-                            {showExplanation ? (
-                              <>
-                                {submittedQuestion?.explanations && (
-                                  <p className=" ml-[5px] text-[#FF557A] ">
-                                    ( {submittedQuestion?.explanations[index]} )
-                                  </p>
-                                )}
-                              </>
-                            ) : (
-                              <p>
-                                {submittedQuestion?.givenAnswer === option &&
-                                  option ===
-                                    submittedQuestion?.correctAnswer && (
-                                    <p className="text-[#17A914]">✅ Correct</p>
-                                  )}
-                                {submittedQuestion?.givenAnswer === option &&
-                                  option !==
-                                    submittedQuestion?.correctAnswer && (
-                                    <p className="text-[#EA1E1E]">
-                                      ❌ Incorrect
+                          <div className="flex items-center justify-between w-full">
+                            <p
+                              dangerouslySetInnerHTML={{
+                                __html: option?.answerFormula,
+                              }}
+                            ></p>
+                            <p
+                              className={`flex items-center ${
+                                !showExplanation && "justify-between"
+                              }  `}
+                            >
+                              {/* {option}{" "} */}
+                              {showExplanation ? (
+                                <>
+                                  {/* {question?.explanations && (
+                                    <p className=" ml-[5px] text-[#FF557A] ">
+                                      ( {submittedQuestion?.explanations[index]} )
                                     </p>
+                                  )} */}
+                                  {option?.feedback && (
+                                    <p
+                                      className=" ml-[5px] text-[#FF557A] "
+                                      dangerouslySetInnerHTML={{
+                                        __html: option?.feedback,
+                                      }}
+                                    ></p>
                                   )}
-                                {submittedQuestion?.givenAnswer !== option &&
-                                  option ===
-                                    submittedQuestion?.correctAnswer && (
-                                    <p className="text-[#17A914]">✅ Correct</p>
-                                  )}
-                              </p>
-                            )}
-                          </p>
+                                </>
+                              ) : (
+                                <p>
+                                  {givenAnswers?.find(
+                                    (item) => item?.questionId === question?._id
+                                  )?.givenAnswer?.answerFormula ===
+                                    option?.answerFormula &&
+                                    option?.answer === "correct" && (
+                                      <p className="text-[#17A914]">
+                                        ✅ Correct
+                                      </p>
+                                    )}
+                                  {givenAnswers?.find(
+                                    (item) => item?.questionId === question?._id
+                                  )?.givenAnswer?.answerFormula ===
+                                    option?.answerFormula &&
+                                    option?.answer !== "correct" && (
+                                      <p className="text-[#EA1E1E]">
+                                        ❌ Incorrect
+                                      </p>
+                                    )}
+                                  {givenAnswers?.find(
+                                    (item) => item?.questionId === question?._id
+                                  )?.givenAnswer?.answerFormula !==
+                                    option?.answerFormula &&
+                                    option?.answer === "correct" && (
+                                      <p className="text-[#17A914]">
+                                        ✅ Correct
+                                      </p>
+                                    )}
+                                </p>
+                              )}
+                            </p>
+                          </div>
                         </label>
                       </div>
                     ))}
@@ -665,8 +860,10 @@ const QuizTask = () => {
               <CloseIcon />
             </IconButton>
             <div className="text-center text-[21px] font-[600] w-full py-[20px] ">
-              <h1 className="text-white">Figma</h1>
-              <p className="text-[#8595FF]">Quiz - 48 Total points</p>
+              <h1 className="text-white">{taskData?.quizName}</h1>
+              <p className="text-[#8595FF]">
+                Quiz - {taskData?.points} Total points
+              </p>
             </div>
           </Toolbar>
         </AppBar>
@@ -674,7 +871,7 @@ const QuizTask = () => {
           <div className=" max-w-[1262px] pt-[80px] mx-auto flex justify-between">
             <div className="w-[625px]">
               <h1 className="text-[#FF557A] text-center h-[50px] text-[22px] font-[700] ">
-                Question {question.id}
+                Question {currentQuestion + 1}
               </h1>
               <div className="bg-[#FFFCDE] rounded-[8px] w-full px-[20px] py-[30px] relative">
                 <svg
@@ -691,11 +888,14 @@ const QuizTask = () => {
                   />
                 </svg>
                 <h1 className=" text-white text-[16px] font-[500] absolute top-[6px] right-0 w-[108px] text-center ">
-                  {question?.point} points
+                  {question?.defaultMarks} points
                 </h1>
-                <p className=" text-[18px] font-[700] pt-4 ">
-                  {question?.question}
-                </p>
+                <p
+                  className=" text-[18px] font-[700] pt-4 "
+                  dangerouslySetInnerHTML={{
+                    __html: question?.questionText,
+                  }}
+                ></p>
                 <form id="myForm" className="mt-[45px]">
                   {!question?.options && (
                     <input
@@ -715,20 +915,25 @@ const QuizTask = () => {
                             className="form-radio mr-[15px] h-6 w-6  border rounded-full border-gray-400"
                             // className="w-[22px]"
                             type="radio"
-                            value={option}
+                            value={option?.answerFormula}
                             // checked={
                             //   selectedOption === option ||
                             //   question?.givenAnswer === option
                             // }
                             checked={
                               selectedOption
-                                ? selectedOption === option
+                                ? selectedOption === option?.answerFormula
                                 : question?.givenAnswer === option
                             }
                             // checked={question?.givenAnswer === option}
-                            onChange={handleOptionChange}
+                            onChange={(e) => handleOptionChange(option)}
                           />
-                          {option}
+                          {/* {option} */}
+                          <p
+                            dangerouslySetInnerHTML={{
+                              __html: option?.answerFormula,
+                            }}
+                          ></p>
                         </label>
                       </div>
                     ))}
@@ -849,8 +1054,10 @@ const QuizTask = () => {
               <CloseIcon />
             </IconButton>
             <div className="text-center text-[21px] font-[600] w-full py-[20px] ">
-              <h1 className="text-white">Figma</h1>
-              <p className="text-[#8595FF]">Quiz - 48 Total points</p>
+              <h1 className="text-white">{taskData?.quizName}</h1>
+              <p className="text-[#8595FF]">
+                Quiz - {taskData?.points} Total points
+              </p>
             </div>
           </Toolbar>
         </AppBar>
@@ -876,17 +1083,17 @@ const QuizTask = () => {
                 </p>
               </div>
               <div className="w-[453.97px] h-[122.47px] bg-yellow-50 rounded-[9.21px] flex items-center justify-between py-[30px] px-[40px] mt-[45px] bg-[#FFFCE0]">
-                <div>
+                <div className="mx-auto">
                   <div className=" flex-col justify-start items-center  inline-flex">
                     <h1 className="text-zinc-800 text-[16.90px] font-semibold">
                       Your Points Earned
                     </h1>
-                    <h1 className="text-rose-400 text-[25.52px] font-semibold">
-                      {point} Points
+                    <h1 className="text-rose-400 font-sans text-[25.52px] font-semibold">
+                      {point} points out of {taskData?.points} points
                     </h1>
                   </div>
                 </div>
-                <div className="bg-[#D6D6D6] w-[1px] h-[56.56px]"></div>
+                {/* <div className="bg-[#D6D6D6] w-[1px] h-[56.56px]"></div>
                 <div>
                   <div className=" flex-col justify-start items-center inline-flex">
                     <h1 className="text-zinc-800 text-[16.90px] font-semibold">
@@ -896,10 +1103,10 @@ const QuizTask = () => {
                       2/20
                     </h1>
                   </div>
-                </div>
+                </div> */}
               </div>
               <button
-                onClick={handleNextQuestion}
+                onClick={() => setReviewOpen(true)}
                 className={`bg-[#FFDB70] text-black px-[21px] py-[14px] text-[16px] font-[700] text-center rounded-[8px] z-[1] shadow-[0px_4px_0px_0px_#F08323] lg:shadow-[0px_7px_0px_0px_#F08323] flex items-center gap-[7px] mt-[50px] mb-[20px]`}
               >
                 Review Submission

@@ -183,7 +183,7 @@ const BundlePayment = () => {
       key_secret: organizationData?.paymentInstance?.key_secret,
       currency: "INR",
       name: organizationData?.organizationName,
-      description: `Purchase ${course?.bundleFullName}`,
+      description: `Purchased ${course?.bundleFullName}`,
       image: organizationData?.org_logo,
       order_id: order?.id,
       prefill: {
@@ -203,6 +203,7 @@ const BundlePayment = () => {
         // response.courseId = course?._id;
         // response.batchId = selectedBatch?._id;
         response.courses = course?.courses;
+        response.bundleId = course?._id;
         response.email = data?.email;
         response.userId = data?._id;
         response.paidAmount = Math.round(+order?.amount / 100);
@@ -268,7 +269,7 @@ const BundlePayment = () => {
           saveUser(email);
         });
       }
-      setLoginOpen(false)
+      setLoginOpen(false);
     } catch (error) {
       // Handle any other errors that may occur during the Axios request
       console.error("Error during Axios request:", error);
@@ -318,7 +319,7 @@ const BundlePayment = () => {
         } else {
           saveUser(email);
         }
-        setLoginOpen(false)
+        setLoginOpen(false);
       })
       .catch((error) => {
         console.error(error);
@@ -350,7 +351,7 @@ const BundlePayment = () => {
           if (res.data.acknowledged) {
             saveUser(result?.user?.email);
           }
-          setRegisterOpen(false)
+          setRegisterOpen(false);
         })
         .catch((error) => {
           console.error(error);
@@ -389,7 +390,7 @@ const BundlePayment = () => {
           } else {
             saveUser(email);
           }
-          setRegisterOpen(false)
+          setRegisterOpen(false);
         })
         .catch((error) => {
           console.error(error);
