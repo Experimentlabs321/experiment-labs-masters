@@ -125,6 +125,7 @@ const LoginWithOrganization = () => {
               templateType: "emailAction",
               templateName: "learnerSignUp",
               organizationId: id,
+              learner_name : name,
             }
           );
           navigate(`/login/${id}`);
@@ -176,6 +177,7 @@ const LoginWithOrganization = () => {
                   templateType: "emailAction",
                   templateName: "learnerSignUp",
                   organizationId: id,
+                  learner_name : newName,
                 }
               );
               navigate(`/login/${id}`);
