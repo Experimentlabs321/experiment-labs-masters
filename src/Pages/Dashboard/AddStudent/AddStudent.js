@@ -231,8 +231,8 @@ const AddStudent = () => {
             email: userData?.email,
             organizationId: userInfo?.organizationId,
             organizationName: userInfo?.organizationName,
-            originalPrice: form.originalPrice.value,
-            paidAmount: form.paidAmount.value,
+            originalPrice: +form.originalPrice.value,
+            paidAmount: +form.paidAmount.value,
             userId: newUser?.data?.insertedUser
               ? newUser?.data?.insertedUser?.insertedId
               : newUser?.data?.existingUser?._id,
