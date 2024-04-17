@@ -89,6 +89,7 @@ const ScheduleTask = ({ taskData, week }) => {
   const [meetingType, setMeetingType] = useState(null);
   const [zoomInfo, setZoomInfo] = useState([]);
   const [eventId, setEventId] = useState(null);
+  const [zoomeventId, setZoomEventId] = useState('');
   const [eventDBid, setEventDBid] = useState(null);
   if (userInfo.role !== 'admin') {
     window.addEventListener("contextmenu", (e) => {
@@ -96,7 +97,12 @@ const ScheduleTask = ({ taskData, week }) => {
     });
 
   };
-  const handleReschedule = (eventId, eventDBid) => {
+  const handleRescheduleMeet = (eventId, eventDBid) => {
+    setEventDBid(eventDBid)
+    setEventId(eventId);
+    setIsReschedule(true);
+  }
+  const handleRescheduleZoom = (eventId, eventDBid) => {
     setEventDBid(eventDBid)
     setEventId(eventId);
     setIsReschedule(true);
@@ -506,7 +512,10 @@ const ScheduleTask = ({ taskData, week }) => {
       // formatInTimeZone(utcDateTime, "Asia/Dhaka", "Bangladesh-time"),
     ];
   }
-
+  const sendCalendarEvent = (res)=>{
+    console.log(res);
+    setZoomEventId(res?.result?.id);
+  }
   const formatDateTimeWithTimeZones = (dateTime) => {
     // Convert dateTime to UTC for universal understanding
     const utcTime = dateTime.toISOString();
@@ -914,151 +923,403 @@ const ScheduleTask = ({ taskData, week }) => {
             });
         }
         else if (meetingType === 'Zoom') {
-          const inputDateTime = new Date(`${selectedDate}T${time}`);
-          // Manual formatting to "yyyy-MM-ddTHH:mm:ss"
-          const formattedDateTime = [
-            inputDateTime.getFullYear(),
-            ('0' + (inputDateTime.getMonth() + 1)).slice(-2),
-            ('0' + inputDateTime.getDate()).slice(-2)
-          ].join('-') + 'T' + [
-            ('0' + inputDateTime.getHours()).slice(-2),
-            ('0' + inputDateTime.getMinutes()).slice(-2),
-            ('0' + inputDateTime.getSeconds()).slice(-2)
-          ].join(':');
-          console.log('Formatted for Zoom (local time):', formattedDateTime);
-          const zoomSchedule = {
-            start_time: formattedDateTime,
-            duration: meetingLength,
-          };
-          const newZoomSchedule = await axios.post(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/events/meeting/organizationId/${userInfo?.organizationId}`,
-            zoomSchedule
-          );
-          if (newZoomSchedule?.data?.uuid) {
-            console.log("zoom schedule ", newZoomSchedule?.data);
-            const utcTimeStr = newZoomSchedule?.data?.start_time;
-            const timezoneStr = newZoomSchedule?.data?.timezone;
-            const meetingLength = newZoomSchedule?.data?.duration; // Assuming this is in minutes
-            const adminUrl = newZoomSchedule?.data?.start_url;
-            const studentUrl = newZoomSchedule?.data?.join_url;
-            const startDate = new Date(utcTimeStr);
-
-            // Convert start date to local time in the specified timezone
-            const options = {
-              timeZone: timezoneStr,
-              year: 'numeric',
-              month: '2-digit',
-              day: '2-digit',
-              hour: '2-digit',
-              minute: '2-digit',
-              second: '2-digit'
-            };
-            const meetingStart = startDate.toLocaleString(undefined, options);
-
-            // Calculate end date by adding the duration to the start date
-            const endDate = new Date(startDate.getTime() + meetingLength * 60000); // 60000 ms in a minute
-
-            // Convert end date to local time in the specified timezone
-            const meetingEnd = endDate.toLocaleString(undefined, options);
-            console.log('meeting start date: ', meetingStart)
-            console.log('meeting end date: ', meetingEnd)
-
-            try {
-              const postData = {
-                ...newZoomSchedule?.data,
-                requester: user?.email,
-                organization: {
-                  organizationId: userInfo?.organizationId,
-                  organizationName: userInfo?.organizationName,
-                },
-                meetingType: 'Zoom',
-                taskId: taskId,
+          try {
+            const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+              },
+              body: `grant_type=refresh_token&refresh_token=${refreshToken}&client_id=${process.env.REACT_APP_google_clientId}&client_secret=${process.env.REACT_APP_google_clientSecret}`,
+            });
+            const tokenData = await tokenResponse.json();
+            const newAccessToken = tokenData.access_token;
+            if (isReschedule && eventDBid) {
+              const inputDateTime = new Date(`${selectedDate}T${time}`);
+              // Manual formatting to "yyyy-MM-ddTHH:mm:ss"
+              const formattedDateTime = [
+                inputDateTime.getFullYear(),
+                ('0' + (inputDateTime.getMonth() + 1)).slice(-2),
+                ('0' + inputDateTime.getDate()).slice(-2)
+              ].join('-') + 'T' + [
+                ('0' + inputDateTime.getHours()).slice(-2),
+                ('0' + inputDateTime.getMinutes()).slice(-2),
+                ('0' + inputDateTime.getSeconds()).slice(-2)
+              ].join(':');
+              console.log('Formatted for Zoom (local time):', formattedDateTime);
+              const zoomSchedule = {
+                start_time: formattedDateTime,
+                duration: meetingLength,
               };
-              const response = await axios.post(
-                `${process.env.REACT_APP_BACKEND_API}/events`,
-                postData
+              const newZoomSchedule = await axios.post(
+                `${process.env.REACT_APP_SERVER_API}/api/v1/events/meeting/organizationId/${userInfo?.organizationId}`,
+                zoomSchedule
               );
-              const sendMail = await axios.post(
-                `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
-                {
-                  //  from: `${userInfo?.email}`,
-                  //    to: `${user?.email},${adminMail}`,
-                  to: `${user?.email}`,
-                  templateType: "emailAction",
-                  templateName: "sheduleTask",
-                  organizationId: userInfo?.organizationId,
-                  start_time: meetingStart,
-                  end_time: meetingEnd,
-                  meeting_link: studentUrl,
-                  learner_name: adminName,
-                  learner_email: adminMail,
-                  meeting_date: '',
-                  /*  subject: `Event request`,
-                  message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
-                    }`, */
-                }
-              );
-              const sendMailAdmin = await axios.post(
-                `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
-                {
-                  //  from: `${userInfo?.email}`,
-                  //    to: `${user?.email},${adminMail}`,
-                  to: `${adminMail}`,
-                  templateType: "emailAction",
-                  templateName: "sheduleTask",
-                  organizationId: userInfo?.organizationId,
-                  start_time: meetingStart,
-                  end_time: meetingEnd,
-                  meeting_link: adminUrl,
-                  learner_name: adminName,
-                  learner_email: adminMail,
-                  meeting_date: '',
-                  /*  subject: `Event request`,
-                  message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
-                    }`, */
-                }
-              );
-              console.log("send ", sendMail);
-              console.log("Admin Mail ", adminMail);
+              if (newZoomSchedule?.data?.uuid) {
+                console.log("zoom schedule ", newZoomSchedule?.data);
+                const utcTimeStr = newZoomSchedule?.data?.start_time;
+                const timezoneStr = newZoomSchedule?.data?.timezone;
+                const meetingLength = newZoomSchedule?.data?.duration; // Assuming this is in minutes
+                const adminUrl = newZoomSchedule?.data?.start_url;
+                const studentUrl = newZoomSchedule?.data?.join_url;
+                const startDate = new Date(utcTimeStr);
 
-              console.log("res ", response);
-              if (sendMail?.data?.success && response?.data?.acknowledged) {
-                Loading().close();
-                const newEvent = await axios.post(
-                  `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/addEvent`,
-                  postData
-                );
-                // console.log("new event created ", newEvent);
-                await Swal.fire({
-                  icon: "success",
-                  title: "Request Sent!",
-                  text: "Your meeting is confirmed. Please go to the Dashboard to access the zoom link",
-                });
+                // Convert start date to local time in the specified timezone
+                const options = {
+                  timeZone: timezoneStr,
+                  year: 'numeric',
+                  month: '2-digit',
+                  day: '2-digit',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  second: '2-digit'
+                };
+                const meetingStart = startDate.toLocaleString(undefined, options);
 
-                navigate("/courseAccess");
+                // Calculate end date by adding the duration to the start date
+                const endDate = new Date(startDate.getTime() + meetingLength * 60000); // 60000 ms in a minute
+
+                // Convert end date to local time in the specified timezone
+                const meetingEnd = endDate.toLocaleString(undefined, options);
+                console.log('meeting start date: ', meetingStart)
+                console.log('meeting end date: ', meetingEnd)
+                const format = 'MM/DD/YYYY, hh:mm:ss A'; // This is the format based on your output
+                const meetingStartDate = moment(meetingStart, format).toDate(); // Use moment.js to parse the string
+                const meetingEndDate = moment(meetingEnd, format).toDate();
+                try {
+                  const postData = {
+                    ...newZoomSchedule?.data,
+                    requester: user?.email,
+                    organization: {
+                      organizationId: userInfo?.organizationId,
+                      organizationName: userInfo?.organizationName,
+                    },
+                    meetingType: 'Zoom',
+                    taskId: taskId,
+                  };
+                  const updateResponse = await axios.put(
+                    `${process.env.REACT_APP_SERVER_API}/api/v1/events/${eventDBid}`,
+                    postData
+                  );
+                  const sendMail = await axios.post(
+                    `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                    {
+                      //  from: `${userInfo?.email}`,
+                      //    to: `${user?.email},${adminMail}`,
+                      to: `${user?.email}`,
+                      templateType: "emailAction",
+                      templateName: "sheduleTask",
+                      organizationId: userInfo?.organizationId,
+                      start_time: meetingStart,
+                      end_time: meetingEnd,
+                      meeting_link: studentUrl,
+                      learner_name: adminName,
+                      learner_email: adminMail,
+                      meeting_date: '',
+                      /*  subject: `Event request`,
+                      message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
+                        }`, */
+                    }
+                  );
+                  const sendMailAdmin = await axios.post(
+                    `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                    {
+                      //  from: `${userInfo?.email}`,
+                      //    to: `${user?.email},${adminMail}`,
+                      to: `${adminMail}`,
+                      templateType: "emailAction",
+                      templateName: "sheduleTask",
+                      organizationId: userInfo?.organizationId,
+                      start_time: meetingStart,
+                      end_time: meetingEnd,
+                      meeting_link: adminUrl,
+                      learner_name: adminName,
+                      learner_email: adminMail,
+                      meeting_date: '',
+                      /*  subject: `Event request`,
+                      message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
+                        }`, */
+                    }
+                  );
+                  console.log("send ", sendMail);
+                  console.log("Admin Mail ", adminMail);
+
+                  console.log("res ", updateResponse);
+                  if (sendMail?.data?.success && updateResponse?.data?.acknowledged) {
+                    const updatedEvent = {
+                      summary: `${userInfo?.name} Doubt Clearing Session`,
+                      description: `Join Zoom Meeting: ${adminUrl}\nStart the Meeting: ${studentUrl}`,
+                      location: newZoomSchedule.join_url,  // Zoom meeting link as location
+                      start: {
+                        dateTime: meetingStartDate.toISOString(),  // Convert to ISO string for Google Calendar
+                        timeZone: "Asia/Kolkata"  // Explicitly setting time zone
+                      },
+                      end: {
+                        dateTime: meetingEndDate.toISOString(),  // Calculate end time based on duration
+                        timeZone: "Asia/Kolkata"  // Explicitly setting time zone
+                      },
+                      attendees: [
+                        { email: user.email },  // User's email
+                        { email: adminMail },   // Admin's email
+                      ],
+                      reminders: {
+                        useDefault: true
+                      }
+                    };
+                    fetch(`https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events/${eventId}`, {
+                      method: 'PATCH', // Method to update the event
+                      headers: {
+                        'Authorization': `Bearer ${newAccessToken}`,
+                        'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify(updatedEvent)
+                    })
+                      .then(response => response.json()) // Convert the response to JSON
+                      .then(async data => {
+                        console.log('Event updated:', data);
+
+                        // Other UI updates or state resets after successful rescheduling
+                      })
+                      .catch(error => {
+                        console.error('Error updating event:', error);
+                        // Handle error
+                      });
+                    const newRescheduleEvent = await axios.put(
+                      `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/updateEvent`,
+                      { ...postData, eventDBid: eventDBid }
+                    );
+                    Loading().close();
+                    // console.log("new event created ", newEvent);
+                    await Swal.fire({
+                      icon: "success",
+                      title: "Request Sent!",
+                      text: "Your meeting is rescheduled. Please check your email to access the zoom link",
+                    });
+
+                    navigate("/courseAccess");
+                  }
+                } catch (error) {
+                  console.error("An error occurred:", error);
+                  // Handle the error appropriately, perhaps show an error message to the user
+                  Loading().close();
+                  // Optional: Error alert
+                  await Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Something went wrong! Please try again.",
+                  });
+                }
               }
-            } catch (error) {
-              console.error("An error occurred:", error);
-              // Handle the error appropriately, perhaps show an error message to the user
+              // if(newZoomSchedule?.data?.acknowledged){
+              //   await Swal.fire({
+              //     icon: "success",
+              //     title: "Request Sent!",
+              //     html: "Your zoom request is sent.<br><br>Please wait for admin to approve it.",
+              //   });
+              //   navigate('/courseAccess');
+              // }
+              // console.log(newZoomSchedule);
               Loading().close();
-              // Optional: Error alert
-              await Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: "Something went wrong! Please try again.",
-              });
+            }
+            else {
+              const inputDateTime = new Date(`${selectedDate}T${time}`);
+              // Manual formatting to "yyyy-MM-ddTHH:mm:ss"
+              const formattedDateTime = [
+                inputDateTime.getFullYear(),
+                ('0' + (inputDateTime.getMonth() + 1)).slice(-2),
+                ('0' + inputDateTime.getDate()).slice(-2)
+              ].join('-') + 'T' + [
+                ('0' + inputDateTime.getHours()).slice(-2),
+                ('0' + inputDateTime.getMinutes()).slice(-2),
+                ('0' + inputDateTime.getSeconds()).slice(-2)
+              ].join(':');
+              console.log('Formatted for Zoom (local time):', formattedDateTime);
+              const zoomSchedule = {
+                start_time: formattedDateTime,
+                duration: meetingLength,
+              };
+              const newZoomSchedule = await axios.post(
+                `${process.env.REACT_APP_SERVER_API}/api/v1/events/meeting/organizationId/${userInfo?.organizationId}`,
+                zoomSchedule
+              );
+              if (newZoomSchedule?.data?.uuid) {
+                console.log("zoom schedule ", newZoomSchedule?.data);
+                const utcTimeStr = newZoomSchedule?.data?.start_time;
+                const timezoneStr = newZoomSchedule?.data?.timezone;
+                const meetingLength = newZoomSchedule?.data?.duration; // Assuming this is in minutes
+                const adminUrl = newZoomSchedule?.data?.start_url;
+                const studentUrl = newZoomSchedule?.data?.join_url;
+                const startDate = new Date(utcTimeStr);
+
+                // Convert start date to local time in the specified timezone
+                const options = {
+                  timeZone: timezoneStr,
+                  year: 'numeric',
+                  month: '2-digit',
+                  day: '2-digit',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  second: '2-digit'
+                };
+                const meetingStart = startDate.toLocaleString(undefined, options);
+
+                // Calculate end date by adding the duration to the start date
+                const endDate = new Date(startDate.getTime() + meetingLength * 60000); // 60000 ms in a minute
+
+                // Convert end date to local time in the specified timezone
+                const meetingEnd = endDate.toLocaleString(undefined, options);
+                console.log('meeting start date: ', meetingStart)
+                console.log('meeting end date: ', meetingEnd)
+                const format = 'MM/DD/YYYY, hh:mm:ss A'; // This is the format based on your output
+                const meetingStartDate = moment(meetingStart, format).toDate(); // Use moment.js to parse the string
+                const meetingEndDate = moment(meetingEnd, format).toDate();
+
+                try {
+                  const postData = {
+                    ...newZoomSchedule?.data,
+                    requester: user?.email,
+                    organization: {
+                      organizationId: userInfo?.organizationId,
+                      organizationName: userInfo?.organizationName,
+                    },
+                    meetingType: 'Zoom',
+                    taskId: taskId,
+                  };
+                  const response = await axios.post(
+                    `${process.env.REACT_APP_BACKEND_API}/events`,
+                    postData
+                  );
+                  const sendMail = await axios.post(
+                    `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                    {
+                      //  from: `${userInfo?.email}`,
+                      //    to: `${user?.email},${adminMail}`,
+                      to: `${user?.email}`,
+                      templateType: "emailAction",
+                      templateName: "sheduleTask",
+                      organizationId: userInfo?.organizationId,
+                      start_time: meetingStart,
+                      end_time: meetingEnd,
+                      meeting_link: studentUrl,
+                      learner_name: adminName,
+                      learner_email: adminMail,
+                      meeting_date: '',
+                      /*  subject: `Event request`,
+                      message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
+                        }`, */
+                    }
+                  );
+                  const sendMailAdmin = await axios.post(
+                    `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                    {
+                      //  from: `${userInfo?.email}`,
+                      //    to: `${user?.email},${adminMail}`,
+                      to: `${adminMail}`,
+                      templateType: "emailAction",
+                      templateName: "sheduleTask",
+                      organizationId: userInfo?.organizationId,
+                      start_time: meetingStart,
+                      end_time: meetingEnd,
+                      meeting_link: adminUrl,
+                      learner_name: adminName,
+                      learner_email: adminMail,
+                      meeting_date: '',
+                      /*  subject: `Event request`,
+                      message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
+                        }`, */
+                    }
+                  );
+                  console.log("send ", sendMail);
+                  console.log("Admin Mail ", adminMail);
+
+                  console.log("res ", response);
+                  if (sendMail?.data?.success && response?.data?.acknowledged) {
+                    async function initiate() {
+                      var event = {
+                        summary: `${userInfo?.name} Doubt Clearing Session`,
+                        description: `Join Zoom Meeting: ${adminUrl}\nStart the Meeting: ${studentUrl}`,
+                        location: newZoomSchedule.join_url,
+                        start: {
+                          dateTime: meetingStartDate.toISOString(),
+                          timeZone: "Asia/Kolkata"
+                        },
+                        end: {
+                          dateTime: meetingEndDate.toISOString(),
+                          timeZone: "Asia/Kolkata"
+                        },
+                        attendees: [
+                          { email: user.email },
+                          { email: adminMail },
+                        ],
+                        reminders: {
+                          useDefault: true
+                        }
+                      };
+
+                      try {
+                        const response = await gapi.client.request({
+                          path: `https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events?conferenceDataVersion=1`,
+                          method: "POST",
+                          body: JSON.stringify(event),
+                          headers: {
+                            "Content-type": "application/json",
+                            Authorization: `Bearer ${newAccessToken}`,
+                          },
+                        });
+                        console.log("Google Calendar event created successfully:", response);
+                        var event = {
+                          ...response
+                        } // Get the event ID from the response
+                        sendCalendarEvent(event);
+                      } catch (error) {
+                        console.error("Failed to create Google Calendar event:", error);
+                      }
+                    }
+
+                    // Prepare the Google Calendar event data
+
+                    gapi.load("client", initiate);
+                    const newEvent = await axios.post(
+                      `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/addEvent`,
+                      { ...postData, eventDBid: response?.data?.insertedId, eventId: zoomeventId }
+                    );
+                    Loading().close();
+                    // console.log("new event created ", newEvent);
+                    await Swal.fire({
+                      icon: "success",
+                      title: "Request Sent!",
+                      text: "Your meeting is confirmed. Please check your email to access the zoom link",
+                    });
+
+                    navigate("/courseAccess");
+                  }
+                } catch (error) {
+                  console.error("An error occurred:", error);
+                  // Handle the error appropriately, perhaps show an error message to the user
+                  Loading().close();
+                  // Optional: Error alert
+                  await Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Something went wrong! Please try again.",
+                  });
+                }
+              }
+              // if(newZoomSchedule?.data?.acknowledged){
+              //   await Swal.fire({
+              //     icon: "success",
+              //     title: "Request Sent!",
+              //     html: "Your zoom request is sent.<br><br>Please wait for admin to approve it.",
+              //   });
+              //   navigate('/courseAccess');
+              // }
+              // console.log(newZoomSchedule);
+              Loading().close();
             }
           }
-          // if(newZoomSchedule?.data?.acknowledged){
-          //   await Swal.fire({
-          //     icon: "success",
-          //     title: "Request Sent!",
-          //     html: "Your zoom request is sent.<br><br>Please wait for admin to approve it.",
-          //   });
-          //   navigate('/courseAccess');
-          // }
-          // console.log(newZoomSchedule);
-          Loading().close();
+          catch (error) {
+            console.error("Error processing Zoom or Calendar integration: ", error);
+            // Handle errors appropriately in your UI
+          }
         }
       } else {
         Loading().close();
@@ -1295,11 +1556,13 @@ const ScheduleTask = ({ taskData, week }) => {
                         <p>Go to {event?.meetingType === 'Zoom' ? 'zoom' : 'meet'} Link</p>
                       </Link>
                     </div>
-                    {event?.meetingType !== 'Zoom' ? <p className="mt-1 text-center">Or</p> : <></>}
+                    {event?.meetingType !== 'Zoom' ? <p className="mt-1 text-center">Or</p> : <p className="mt-1 text-center">Or</p>}
                     {event?.meetingType !== 'Zoom' ?
                       <div className="w-10/12 mx-auto mt-1 text-center text-white bg-orange-400  rounded-md">
-                        <button onClick={() => handleReschedule(event?.eventId, event?.eventDBid)} className="w-10/12 rounded-md  text-center  py-[6px]">Reschedule</button>
-                      </div> : <></>}
+                        <button onClick={() => handleRescheduleMeet(event?.eventId, event?.eventDBid)} className="w-10/12 rounded-md  text-center  py-[6px]">Reschedule Meet</button>
+                      </div> : <div className="w-10/12 mx-auto mt-1 text-center text-white bg-orange-400  rounded-md">
+                        <button onClick={() => handleRescheduleZoom(event?.eventId, event?.eventDBid)} className="w-10/12 rounded-md  text-center  py-[6px]">Reschedule Zoom</button>
+                      </div>}
 
                   </div>
                 </div>

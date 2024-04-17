@@ -161,7 +161,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     setCurrentWeek(null);
-    weeks.forEach((singleData) => {
+    weeks?.forEach((singleData) => {
       const weekStartDate = new Date(singleData?.weekStartDate);
       const weekEndDate = new Date(singleData?.weekEndDate);
       const currentDateTime = new Date();
@@ -272,21 +272,26 @@ const Dashboard = () => {
       });
   }, [userInfo]);
   useEffect(() => {
+    if (!userInfo?.email) {
+      return;
+    }
     axios
-      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/events/email/${userInfo?.email}`)
+      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/events/email/${userInfo.email}`)
       .then((response) => {
         console.log(response?.data);
+        const currentDate = new Date(getCurrentDate()).getTime();
         const filteredEvents = response?.data.filter(event => {
-          const eventStartDate = new Date(event?.start?.dateTime).getTime();
-          const currentDate = new Date(getCurrentDate()).getTime();
+          // Check for both date structures
+          const eventStartDate = new Date(event.start?.dateTime || event.start_time).getTime();
           return eventStartDate >= currentDate;
         });
         setUserRequesterEvents(filteredEvents);
-        setIsLoading(false)
       })
       .catch((error) => {
-        console.error(error)
-        setIsLoading(false)
+        console.error(error);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, [userInfo]);
   console.log(userRequesterEvents);
@@ -297,6 +302,11 @@ const Dashboard = () => {
     const day = String(today.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   };
+  function getCurrentDatee() {
+    // This function should return the current date in the format required by your comparison.
+    // Make sure this returns a date string or a timestamp that can be directly compared.
+    return new Date().toISOString();
+  }
   function formatUtcDateTimeStringToListItems(dateTimeString) {
     const utcDateTime = new Date(dateTimeString);
 
@@ -432,7 +442,6 @@ const Dashboard = () => {
                     <div className="grid grid-cols-1 my-5 justify-items-center gap-5 items-center">
                       {/* <p>You are the requester in the following events:</p> */}
                       {userRequesterEvents?.map((event, index) => (
-
                         <div key={index} className=" shadow-lg outline-double outline-offset-2 outline-2 outline-emerald-500  w-[80%] rounded p-2 ">
                           <p className="flex gap-1 items-center text-sm"><FiberManualRecordIcon sx={{ color: red[400] }} ></FiberManualRecordIcon>Meeting with {event?.organization?.organizationName}</p>
                           <div className="flex items-center gap-2">
@@ -442,7 +451,7 @@ const Dashboard = () => {
                                 <div className="flex justify-between gap-2"><AccessAlarmOutlinedIcon fontSize="small" />
                                   <span className="font-semibold text-[14px]">Starts </span></div>
                                 <ul className="text-[13px]">
-                                  {formatUtcDateTimeStringToListItems(event.start.dateTime).map((item, index) => (
+                                  {formatUtcDateTimeStringToListItems(event?.start?.dateTime)?.map((item, index) => (
                                     <li key={index}>{item}</li>
                                   ))}
                                 </ul>
@@ -451,7 +460,7 @@ const Dashboard = () => {
                                 <div className="flex  justify-between gap-2"><AccessAlarmOutlinedIcon fontSize="small" />
                                   <span className="font-semibold text-[14px]">Ends </span></div>
                                 <ul className="text-[13px]">
-                                  {formatUtcDateTimeStringToListItems(event.end.dateTime).map((item, index) => (
+                                  {formatUtcDateTimeStringToListItems(event?.end?.dateTime)?.map((item, index) => (
                                     <li key={index}>{item}</li>
                                   ))}
                                 </ul>
