@@ -20,6 +20,7 @@ const AddStudent = () => {
   const [dragActive, setDragActive] = useState(false);
   const [courses, setCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState({});
+  const [selectedBundle, setSelectedBundle] = useState({});
   const [batchesData, setBatchesData] = useState([]);
   const [selectedBatch, setSelectedBatch] = useState({});
   const [phone, setPhone] = useState("");
@@ -28,6 +29,8 @@ const AddStudent = () => {
   const [itemDetails, setItemDetails] = useState();
   const [organizationData, setOrganizationData] = useState([]);
   const [studentStatus, setStudentStatus] = useState("Prepaid");
+  const [mode, setMode] = useState("course");
+  const [bundles, setBundles] = useState([]);
   useEffect(() => {
     if (userInfo) {
       setLoading(true);
@@ -68,7 +71,19 @@ const AddStudent = () => {
         setCourses(response?.data);
       })
       .catch((error) => console.error(error));
+
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/bundles/organizationId/${userInfo.organizationId}`
+      )
+      .then((response) => {
+        setBundles(response?.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }, [userInfo]);
+  console.log(bundles);
 
   useEffect(() => {
     if (selectedCourse?._id)
@@ -150,123 +165,185 @@ const AddStudent = () => {
       console.log(userData);
       console.log(form.studentStatus.value);
       if (form.studentStatus.value === "Paid") {
-        const newData = {
-          from: organizationData?.emailIntegration?.email,
-          to: userData?.email,
-          templateType: "emailAction",
-          organizationId: organizationData?._id,
-          templateName: "learnerCreated",
-          learner_name: userData?.name,
-          course_name: selectedCourse?.courseFullName,
-          site_url: `${rootUrl}/payment/${selectedCourse?._id}?batch=${selectedBatch?._id}`,
-        };
-
-        const updateOrg = await axios.post(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
-          // `http://localhost:5000/api/v1/sendMail`,
-          newData
-        );
-        if (updateOrg) {
-          Swal.fire({
-            title: "New user created successfully!",
-            icon: "success",
-          });
-          // navigate("/schoolDashboard/myStudents");
-        } else {
-          Loading().close();
-        }
-        // const sendMail = await axios.post(
-        //   `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
-        //   {
-        //     from: `${user?.email}`,
-        //     // to: `${form.email.value},naman.j@experimentlabs.in`,
-        //     to: `${form.email.value}`,
-        //     subject: `Course purchase link`,
-        //     message: `To purchase the ${selectedCourse?.courseFullName} course please goto the following link ${rootUrl}/payment/${selectedCourse?._id}?batch=${selectedBatch?._id}`,
-        //   }
-        // );
-
-        // const newUser = await axios.post(
-        //   `${process.env.REACT_APP_SERVER_API}/api/v1/users/addStudent`,
-        //   {
-        //     userData,
-        //   }
-        // );
-
-        // console.log(newUser);
-
-        // if (newUser) {
-        //   Swal.fire({
-        //     title: "New User created successfully!",
-        //     icon: "success",
-        //   });
-        //   // navigate("/schoolDashboard/myStudents");
-        // }
-        setStudentStatus("Prepaid");
-        form.reset();
-      } else {
-        const newUser = await axios.post(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/users/addOrUpdateUserWithCourse`,
-          // `http://localhost:5000/api/v1/users/addOrUpdateUserWithCourse`,
-          {
-            user: userData,
-            courseId: selectedCourse?._id,
-            batchId: selectedBatch?._id,
-          }
-        );
-
-        console.log(newUser);
-
-        if (newUser) {
-          const enrollData = {
-            courses: [
-              {
-                courseId: selectedCourse?._id,
-                batchId: selectedBatch?._id,
-              },
-            ], // Array of objects, each containing courseId and batchId
-            coupon: "",
-            couponId: "",
-            discountAmount: "",
-            email: userData?.email,
-            organizationId: userInfo?.organizationId,
-            organizationName: userInfo?.organizationName,
-            originalPrice: form.originalPrice.value,
-            paidAmount: form.paidAmount.value,
-            userId: newUser?.data?.insertedUser
-              ? newUser?.data?.insertedUser?.insertedId
-              : newUser?.data?.existingUser?._id,
+        if (mode === "course") {
+          const newData = {
+            from: organizationData?.emailIntegration?.email,
+            to: userData?.email,
+            templateType: "emailAction",
+            organizationId: organizationData?._id,
+            templateName: "learnerCreated",
+            learner_name: userData?.name,
+            course_name: selectedCourse?.courseFullName,
+            site_url: `${rootUrl}/payment/${selectedCourse?._id}?batch=${selectedBatch?._id}`,
           };
-          console.log("EnrollData ============>", enrollData);
-          const res = await axios.post(
-            // `http://localhost:5000/api/v1/users/unpaidUsers/enroll`,
-            `${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/enroll`,
-            enrollData
-          );
-          if (res.data.success) {
-            const newData = {
-              from: organizationData?.emailIntegration?.email,
-              to: userData?.email,
-              templateType: "emailAction",
-              organizationId: organizationData?._id,
-              templateName: "courseWelcome",
-              learner_name: userData?.name,
-              course_name: selectedCourse?.courseFullName,
-              site_name: organizationData?.organizationName,
-              site_email: organizationData?.email,
-            };
 
-            const updateOrg = await axios.post(
-              `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
-              // `http://localhost:5000/api/v1/sendMail`,
-              newData
-            );
+          const updateOrg = await axios.post(
+            `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+            // `http://localhost:5000/api/v1/sendMail`,
+            newData
+          );
+          if (updateOrg) {
             Swal.fire({
               title: "New user created successfully!",
               icon: "success",
             });
+            // navigate("/schoolDashboard/myStudents");
+          } else {
+            Loading().close();
           }
-          // navigate("/schoolDashboard/myStudents");
+        } else {
+          const newData = {
+            from: organizationData?.emailIntegration?.email,
+            to: userData?.email,
+            templateType: "emailAction",
+            organizationId: organizationData?._id,
+            templateName: "learnerCreated",
+            learner_name: userData?.name,
+            course_name: selectedBundle?.bundleFullName,
+            site_url: `${rootUrl}/bundle/payment/${selectedBundle?._id}`,
+          };
+
+          const updateOrg = await axios.post(
+            `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+            // `http://localhost:5000/api/v1/sendMail`,
+            newData
+          );
+          if (updateOrg) {
+            Swal.fire({
+              title: "New user created successfully!",
+              icon: "success",
+            });
+            // navigate("/schoolDashboard/myStudents");
+          } else {
+            Loading().close();
+          }
+        }
+        setStudentStatus("Prepaid");
+        form.reset();
+      } else {
+        if (mode === "course") {
+          const newUser = await axios.post(
+            `${process.env.REACT_APP_SERVER_API}/api/v1/users/addOrUpdateUserWithCourse`,
+            // `http://localhost:5000/api/v1/users/addOrUpdateUserWithCourse`,
+            {
+              user: userData,
+              courseId: selectedCourse?._id,
+              batchId: selectedBatch?._id,
+            }
+          );
+
+          console.log(newUser);
+
+          if (newUser) {
+            const enrollData = {
+              courses: [
+                {
+                  courseId: selectedCourse?._id,
+                  batchId: selectedBatch?._id,
+                },
+              ], // Array of objects, each containing courseId and batchId
+              coupon: "",
+              couponId: "",
+              discountAmount: "",
+              email: userData?.email,
+              organizationId: userInfo?.organizationId,
+              organizationName: userInfo?.organizationName,
+              originalPrice: +form.originalPrice.value,
+              paidAmount: +form.paidAmount.value,
+              userId: newUser?.data?.insertedUser
+                ? newUser?.data?.insertedUser?.insertedId
+                : newUser?.data?.existingUser?._id,
+            };
+            console.log("EnrollData ============>", enrollData);
+            const res = await axios.post(
+              // `http://localhost:5000/api/v1/users/unpaidUsers/enroll`,
+              `${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/enroll`,
+              enrollData
+            );
+            if (res.data.success) {
+              const newData = {
+                from: organizationData?.emailIntegration?.email,
+                to: userData?.email,
+                templateType: "emailAction",
+                organizationId: organizationData?._id,
+                templateName: "courseWelcome",
+                learner_name: userData?.name,
+                course_name: selectedCourse?.courseFullName,
+                site_name: organizationData?.organizationName,
+                site_email: organizationData?.email,
+              };
+
+              const updateOrg = await axios.post(
+                `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                // `http://localhost:5000/api/v1/sendMail`,
+                newData
+              );
+              Swal.fire({
+                title: "New user created successfully!",
+                icon: "success",
+              });
+            }
+            // navigate("/schoolDashboard/myStudents");
+          }
+        } else {
+          const newUser = await axios.post(
+            `${process.env.REACT_APP_SERVER_API}/api/v1/users/addOrUpdateUserWithBundle`,
+            // `http://localhost:5000/api/v1/users/addOrUpdateUserWithBundle`,
+            {
+              user: userData,
+              bundleId: selectedBundle?._id,
+              courses: selectedBundle?.courses,
+            }
+          );
+
+          console.log(newUser);
+
+          if (newUser) {
+            const enrollData = {
+              courses: selectedBundle?.courses, // Array of objects, each containing courseId and batchId
+              bundleId: selectedBundle?._id,
+              coupon: "",
+              couponId: "",
+              discountAmount: "",
+              email: userData?.email,
+              organizationId: userInfo?.organizationId,
+              organizationName: userInfo?.organizationName,
+              originalPrice: +form.originalPrice.value,
+              paidAmount: +form.paidAmount.value,
+              userId: newUser?.data?.insertedUser
+                ? newUser?.data?.insertedUser?.insertedId
+                : newUser?.data?.existingUser?._id,
+            };
+            console.log("EnrollData ============>", enrollData);
+            const res = await axios.post(
+              // `http://localhost:5000/api/v1/users/unpaidUsers/enroll`,
+              `${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/enroll`,
+              enrollData
+            );
+            if (res.data.success) {
+              const newData = {
+                to: userData?.email,
+                templateType: "emailAction",
+                templateName: "courseWelcome",
+                organizationId: organizationData?._id,
+                learner_name: userData?.name,
+                course_name: selectedBundle?.bundleFullName,
+                site_name: organizationData?.organizationName,
+                site_email: organizationData?.email,
+              };
+
+              const updateOrg = await axios.post(
+                `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                // `http://localhost:5000/api/v1/sendMail`,
+                newData
+              );
+              Swal.fire({
+                title: "New user created successfully!",
+                icon: "success",
+              });
+            }
+            // navigate("/schoolDashboard/myStudents");
+          }
         }
         form.reset();
       }
@@ -314,72 +391,144 @@ const AddStudent = () => {
               </button>
             </div>
             <div className="mt-3">
-              <h1 className=" text-[#737373] text-[24px] font-[500] mb-2 ">
+              <div className="mb-4">
+                <button
+                  onClick={() => {
+                    setMode("course");
+                    setSelectedCourse({});
+                    setSelectedBatch({});
+                    setSelectedBundle({});
+                  }}
+                  className={`px-5 border-sky-500 w-[50%] text-[24px] font-[500]  ${
+                    mode === "course"
+                      ? "pt-2 pb-1 border-t-2 border-r-2 rounded-tr-md text-sky-500 font-semibold"
+                      : "pb-2 pt-1 border-b-2 border-r-2 rounded-br-md text-[#737373]"
+                  }`}
+                >
+                  Select Course
+                </button>
+                <button
+                  onClick={() => {
+                    setMode("bundle");
+                    setSelectedCourse({});
+                    setSelectedBatch({});
+                    setSelectedBundle({});
+                  }}
+                  className={`px-5 border-sky-500 w-[50%] ml-[-2px] text-[24px] font-[500]  ${
+                    mode === "bundle"
+                      ? "pb-1 pt-2 border-t-2 border-l-2 rounded-tl-md text-sky-500 font-semibold"
+                      : "pt-1 pb-2 border-b-2 border-l-2 rounded-bl-md text-[#737373]"
+                  }`}
+                >
+                  Select Bundle
+                </button>
+              </div>
+              {/* <h1 className=" text-[#737373] text-[24px] font-[500] mb-2 ">
                 {itemDetails?.selectCourse
                   ? itemDetails?.selectCourse
                   : "Select Course"}
-              </h1>
-              <div className="flex flex-wrap">
-                {!courses[0] && (
-                  <div
-                    className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
-                  >
-                    {itemDetails?.noCourseAddedYet
-                      ? itemDetails?.noCourseAddedYet
-                      : "No course added yet"}
-                    !
-                  </div>
-                )}
-                {courses?.map((item, index) => (
-                  <button
-                    key={index}
-                    className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 m-1 ${
-                      selectedCourse?._id === item?._id
-                        ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
-                        : "text-[#949494]"
-                    }`}
-                    // onClick={() => handleSelectCourse(item)}
-                    onClick={() => setSelectedCourse(item)}
-                  >
-                    {item?.courseFullName}
-                  </button>
-                ))}
-              </div>
+              </h1> */}
             </div>
-            {selectedCourse?._id && (
-              <div className="mt-3">
-                <h1 className=" text-[#737373] text-[24px] font-[500] mb-2 ">
-                  {itemDetails?.selectBatch
-                    ? itemDetails?.selectBatch
-                    : "Select Batch"}
-                </h1>
+            {mode === "bundle" && (
+              <>
                 <div className="flex flex-wrap">
-                  {!batchesData[0] && (
+                  {!bundles[0] && (
                     <div
                       className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
                     >
-                      {itemDetails?.noBatchAddedYet
-                        ? itemDetails?.noBatchAddedYet
-                        : "No batch added yet"}
+                      {itemDetails?.noCourseAddedYet
+                        ? itemDetails?.noCourseAddedYet
+                        : "No bundle added yet"}
                       !
                     </div>
                   )}
-                  {batchesData?.map((item, index) => (
+                  {bundles?.map((item, index) => (
                     <button
                       key={index}
                       className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 m-1 ${
-                        selectedBatch?._id === item?._id
+                        selectedBundle?._id === item?._id
                           ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
                           : "text-[#949494]"
                       }`}
                       // onClick={() => handleSelectCourse(item)}
-                      onClick={() => setSelectedBatch(item)}
+                      onClick={() => {
+                        setSelectedBundle(item);
+                        setSelectedBatch({});
+                      }}
                     >
-                      {item?.batchName}
+                      {item?.bundleFullName}
                     </button>
                   ))}
                 </div>
-              </div>
+              </>
+            )}
+            {mode === "course" && (
+              <>
+                <div className="flex flex-wrap">
+                  {!courses[0] && (
+                    <div
+                      className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
+                    >
+                      {itemDetails?.noCourseAddedYet
+                        ? itemDetails?.noCourseAddedYet
+                        : "No course added yet"}
+                      !
+                    </div>
+                  )}
+                  {courses?.map((item, index) => (
+                    <button
+                      key={index}
+                      className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 m-1 ${
+                        selectedCourse?._id === item?._id
+                          ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
+                          : "text-[#949494]"
+                      }`}
+                      // onClick={() => handleSelectCourse(item)}
+                      onClick={() => {
+                        setSelectedCourse(item);
+                        setSelectedBatch({});
+                      }}
+                    >
+                      {item?.courseFullName}
+                    </button>
+                  ))}
+                </div>
+                {selectedCourse?._id && (
+                  <div className="mt-3">
+                    <h1 className=" text-[#737373] text-[24px] font-[500] mb-2 ">
+                      {itemDetails?.selectBatch
+                        ? itemDetails?.selectBatch
+                        : "Select Batch"}
+                    </h1>
+                    <div className="flex flex-wrap">
+                      {!batchesData[0] && (
+                        <div
+                          className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
+                        >
+                          {itemDetails?.noBatchAddedYet
+                            ? itemDetails?.noBatchAddedYet
+                            : "No batch added yet"}
+                          !
+                        </div>
+                      )}
+                      {batchesData?.map((item, index) => (
+                        <button
+                          key={index}
+                          className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 m-1 ${
+                            selectedBatch?._id === item?._id
+                              ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
+                              : "text-[#949494]"
+                          }`}
+                          // onClick={() => handleSelectCourse(item)}
+                          onClick={() => setSelectedBatch(item)}
+                        >
+                          {item?.batchName}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
             )}
             <div className="my-4">
               <form onSubmit={handleAddStudent} autoComplete="on">
@@ -544,6 +693,15 @@ const AddStudent = () => {
                         type="number"
                         name="originalPrice"
                         id="originalPrice"
+                        value={
+                          mode === "course"
+                            ? selectedBatch?.price
+                              ? selectedBatch?.price
+                              : 0
+                            : selectedBundle?.price
+                            ? selectedBundle?.price
+                            : 0
+                        }
                         className="bg-[#EEF0FF] px-[10px] py-1 rounded-md shadow"
                       />
                     </div>

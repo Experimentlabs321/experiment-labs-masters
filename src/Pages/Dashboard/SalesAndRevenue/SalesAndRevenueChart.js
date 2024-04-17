@@ -69,8 +69,8 @@ const SalesAndRevenueChart = ({
       let totalRevenueSum = 0;
       paidStudents?.forEach((student) => {
         const studentDate = new Date(student?.paidAt);
-        const studentRevenue = student?.paidAmount || 0;
-        const studentDiscount = student?.discountAmount || 0;
+        const studentRevenue = +student?.paidAmount || 0;
+        const studentDiscount = +student?.discountAmount || 0;
 
         if (studentDate >= startDate && studentDate <= endDate) {
           const index = days?.findIndex(
@@ -120,8 +120,8 @@ const SalesAndRevenueChart = ({
 
       paidStudents?.forEach((student) => {
         const studentDate = new Date(student.paidAt);
-        const studentRevenue = student.paidAmount || 0;
-        const studentDiscount = student.discountAmount || 0;
+        const studentRevenue = +student.paidAmount || 0;
+        const studentDiscount = +student.discountAmount || 0;
 
         if (studentDate >= startDate && studentDate <= endDate) {
           const index = days?.findIndex(
@@ -175,8 +175,8 @@ const SalesAndRevenueChart = ({
 
       paidStudents?.forEach((student) => {
         const studentDate = new Date(student.paidAt);
-        const studentRevenue = student.paidAmount || 0;
-        const studentDiscount = student.discountAmount || 0;
+        const studentRevenue = +student.paidAmount || 0;
+        const studentDiscount = +student.discountAmount || 0;
 
         for (let i = 0; i < monthsStartDate.length; i++) {
           const startDate = monthsStartDate[i];
@@ -240,8 +240,8 @@ const SalesAndRevenueChart = ({
 
       paidStudents?.forEach((student) => {
         const studentDate = new Date(student.paidAt);
-        const studentRevenue = student.paidAmount || 0;
-        const studentDiscount = student.discountAmount || 0;
+        const studentRevenue = +student.paidAmount || 0;
+        const studentDiscount = +student.discountAmount || 0;
 
         for (let i = 0; i < monthsStartDate.length; i++) {
           const startDate = monthsStartDate[i];
@@ -303,8 +303,8 @@ const SalesAndRevenueChart = ({
 
       paidStudents?.forEach((student) => {
         const studentDate = new Date(student.paidAt);
-        const studentRevenue = student.paidAmount || 0;
-        const studentDiscount = student.discountAmount || 0;
+        const studentRevenue = +student.paidAmount || 0;
+        const studentDiscount = +student.discountAmount || 0;
 
         if (studentDate >= startDate && studentDate <= endDate) {
           const index = days.findIndex(
@@ -603,8 +603,8 @@ const SalesAndRevenueChart = ({
       );
 
       paidStudentsForDay.forEach((student) => {
-        dayRevenue += student.paidAmount || 0;
-        dayDiscount += student.discountAmount || 0;
+        dayRevenue += +student.paidAmount || 0;
+        dayDiscount += +student.discountAmount || 0;
       });
 
       courseRevenueData.push(dayRevenue);
@@ -644,8 +644,8 @@ const SalesAndRevenueChart = ({
       paidStudentsForCourse.forEach((student) => {
         const studentDate = new Date(student.paidAt);
         if (studentDate >= startDate && studentDate <= endDate) {
-          monthRevenue += student.paidAmount || 0;
-          monthDiscount += student.discountAmount || 0;
+          monthRevenue += +student.paidAmount || 0;
+          monthDiscount += +student.discountAmount || 0;
         }
       });
 
@@ -664,8 +664,8 @@ const SalesAndRevenueChart = ({
     let overallDiscount = 0;
 
     paidStudentsForCourse.forEach((student) => {
-      overallRevenue += student.paidAmount || 0;
-      overallDiscount += student.discountAmount || 0;
+      overallRevenue += +student.paidAmount || 0;
+      overallDiscount += +student.discountAmount || 0;
     });
 
     courseRevenueData.push(overallRevenue);
@@ -696,8 +696,8 @@ const SalesAndRevenueChart = ({
       );
 
       paidStudentsForDay.forEach((student) => {
-        dayRevenue += student.paidAmount || 0;
-        dayDiscount += student.discountAmount || 0;
+        dayRevenue += +student.paidAmount || 0;
+        dayDiscount += +student.discountAmount || 0;
       });
 
       courseRevenueData.push(dayRevenue);
