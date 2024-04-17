@@ -241,7 +241,7 @@ const BundlePayment = () => {
         if (res.data.success) {
           setUserInfo(res.data.userData);
           Swal.fire({
-            title: "Course Added Successfully",
+            title: "Courses Added Successfully",
             icon: "success",
           });
           const newData = {
@@ -390,7 +390,7 @@ const BundlePayment = () => {
                 templateType: "emailAction",
                 templateName: "learnerSignUp",
                 organizationId: organizationData?._id,
-                learner_name : name,
+                learner_name: name,
               }
             );
           }
@@ -436,7 +436,7 @@ const BundlePayment = () => {
                   templateType: "emailAction",
                   templateName: "learnerSignUp",
                   organizationId: organizationData?._id,
-                  learner_name : newName,
+                  learner_name: newName,
                 }
               );
             }
