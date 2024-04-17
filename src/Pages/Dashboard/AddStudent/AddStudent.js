@@ -393,7 +393,12 @@ const AddStudent = () => {
             <div className="mt-3">
               <div className="mb-4">
                 <button
-                  onClick={() => setMode("course")}
+                  onClick={() => {
+                    setMode("course");
+                    setSelectedCourse({});
+                    setSelectedBatch({});
+                    setSelectedBundle({});
+                  }}
                   className={`px-5 border-sky-500 w-[50%] text-[24px] font-[500]  ${
                     mode === "course"
                       ? "pt-2 pb-1 border-t-2 border-r-2 rounded-tr-md text-sky-500 font-semibold"
@@ -403,7 +408,12 @@ const AddStudent = () => {
                   Select Course
                 </button>
                 <button
-                  onClick={() => setMode("bundle")}
+                  onClick={() => {
+                    setMode("bundle");
+                    setSelectedCourse({});
+                    setSelectedBatch({});
+                    setSelectedBundle({});
+                  }}
                   className={`px-5 border-sky-500 w-[50%] ml-[-2px] text-[24px] font-[500]  ${
                     mode === "bundle"
                       ? "pb-1 pt-2 border-t-2 border-l-2 rounded-tl-md text-sky-500 font-semibold"
@@ -441,7 +451,10 @@ const AddStudent = () => {
                           : "text-[#949494]"
                       }`}
                       // onClick={() => handleSelectCourse(item)}
-                      onClick={() => setSelectedBundle(item)}
+                      onClick={() => {
+                        setSelectedBundle(item);
+                        setSelectedBatch({});
+                      }}
                     >
                       {item?.bundleFullName}
                     </button>
@@ -471,7 +484,10 @@ const AddStudent = () => {
                           : "text-[#949494]"
                       }`}
                       // onClick={() => handleSelectCourse(item)}
-                      onClick={() => setSelectedCourse(item)}
+                      onClick={() => {
+                        setSelectedCourse(item);
+                        setSelectedBatch({});
+                      }}
                     >
                       {item?.courseFullName}
                     </button>
@@ -677,6 +693,15 @@ const AddStudent = () => {
                         type="number"
                         name="originalPrice"
                         id="originalPrice"
+                        value={
+                          mode === "course"
+                            ? selectedBatch?.price
+                              ? selectedBatch?.price
+                              : 0
+                            : selectedBundle?.price
+                            ? selectedBundle?.price
+                            : 0
+                        }
                         className="bg-[#EEF0FF] px-[10px] py-1 rounded-md shadow"
                       />
                     </div>
