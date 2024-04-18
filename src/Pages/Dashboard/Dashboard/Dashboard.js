@@ -24,6 +24,7 @@ import Challenges from "../../../assets/Dashboard/Challenges.png";
 import DashboardCourses from "./DashboardCourses";
 import { CircularProgress } from "@mui/material";
 import { Link } from "react-router-dom";
+import zoom from "../../../assets/icons/zoom-240.png";
 const Dashboard = () => {
   const data = [
     {
@@ -125,7 +126,7 @@ const Dashboard = () => {
       )
       .then((response) => {
         setCourses(response?.data);
-        
+
         if (localStorage.getItem("course")) {
           const findCourse = response?.data?.find(
             (item) => item?.courseFullName === localStorage.getItem("course")
@@ -133,10 +134,14 @@ const Dashboard = () => {
           if (findCourse) {
             setSelectedCourse(findCourse);
             setIsLoading(false)
-          } else {setSelectedCourse(response?.data[0]);
-            setIsLoading(false)}
-        } else {setSelectedCourse(response?.data[0]);
-          setIsLoading(false)}
+          } else {
+            setSelectedCourse(response?.data[0]);
+            setIsLoading(false)
+          }
+        } else {
+          setSelectedCourse(response?.data[0]);
+          setIsLoading(false)
+        }
       })
       .catch((error) => {
         console.error(error)
@@ -334,6 +339,45 @@ const Dashboard = () => {
       // formatInTimeZone(utcDateTime, "Asia/Dhaka", "Bangladesh-time"),
     ];
   }
+
+  const formatTimeForZoom = (event, type) => {
+    const utcTimeStr = event?.start_time;
+    const timezoneStr = event?.timezone;
+    const meetingLength = event?.duration; // Assuming this is in minutes
+    const startDate = new Date(utcTimeStr);
+    const meetingStartTime = new Date(utcTimeStr);
+    const currentDateTime = new Date();
+    const meetingEndTime = new Date(meetingStartTime.getTime() + meetingLength * 60000);
+
+    // Convert start date to local time in the specified timezone
+    const options = {
+      timeZone: timezoneStr,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    };
+    const meetingStart = startDate.toLocaleString(undefined, options);
+    console.log(meetingStart);
+    // Calculate end date by adding the duration to the start date
+    const endDate = new Date(startDate.getTime() + meetingLength * 60000); // 60000 ms in a minute
+
+    // Convert end date to local time in the specified timezone
+    const meetingEnd = endDate.toLocaleString(undefined, options);
+    if (currentDateTime > meetingEndTime && type === 'start') {
+      return 'The meeting has already happened.'
+    } else if (currentDateTime < meetingEndTime && type === 'start') {
+      return meetingStart;
+    }
+    else if (currentDateTime > meetingEndTime && type === 'end') {
+      return "";
+    }
+    else if (currentDateTime < meetingEndTime && type === 'end') {
+      return meetingEnd;
+    }
+  }
   return (
     <div>
       <Layout>
@@ -448,28 +492,53 @@ const Dashboard = () => {
 
                             <div className="mt-3 mb-1 ">
                               <p className="font-medium text-sm flex justify-between  gap-2 my-1">
-                                <div className="flex justify-between gap-2"><AccessAlarmOutlinedIcon fontSize="small" />
+                                <div className="flex justify-between gap-2">
+                                  <AccessAlarmOutlinedIcon fontSize="small" />
                                   <span className="font-semibold text-[14px]">Starts </span></div>
                                 <ul className="text-[13px]">
-                                  {formatUtcDateTimeStringToListItems(event?.start?.dateTime)?.map((item, index) => (
-                                    <li key={index}>{item}</li>
-                                  ))}
+
+                                  {
+                                    event?.meetingType === 'Zoom' ?
+                                      <li key={index}>{formatTimeForZoom(event, event?.start_time ? 'start' : '')}</li>
+                                      :
+                                      formatUtcDateTimeStringToListItems(event?.start?.dateTime)?.map((item, index) => (
+                                        <li key={index}>{item}</li>
+                                      ))
+
+                                  }
                                 </ul>
                               </p>
                               <p className="font-medium text-sm flex  justify-between gap-2 mt-2">
                                 <div className="flex  justify-between gap-2"><AccessAlarmOutlinedIcon fontSize="small" />
                                   <span className="font-semibold text-[14px]">Ends </span></div>
                                 <ul className="text-[13px]">
-                                  {formatUtcDateTimeStringToListItems(event?.end?.dateTime)?.map((item, index) => (
-                                    <li key={index}>{item}</li>
-                                  ))}
+                                  {
+                                    event?.meetingType === 'Zoom' ?
+                                      <li key={index}>{formatTimeForZoom(event, event?.end_time ? '' : 'end')}</li>
+                                      :
+                                      formatUtcDateTimeStringToListItems(event?.end?.dateTime)?.map((item, index) => (
+                                        <li key={index}>{item}</li>
+                                      ))
+
+                                  }
                                 </ul>
                               </p>
                             </div>
                           </div>
                           <div className="w-11/12 mx-auto mt-3 text-white bg-sky-600  rounded-md">
-                            <Link to={event?.hangoutLink} className="flex gap-2 items-center justify-center py-[6px]">
+                            {/* <Link to={event?.hangoutLink} className="flex gap-2 items-center justify-center py-[6px]">
                               <img src={googlemeet} className="w-[21px] h-[21px]" alt="googlemeet"></img><p>Go to Meet Link</p>
+                            </Link> */}
+                            <Link
+                              to={event?.meetingType === 'Zoom' ? userInfo?.role === 'admin' ? event?.start_url : event?.join_url : event?.hangoutLink}
+                              className="flex gap-2 items-center justify-center py-[6px]"
+                            >
+                              <img
+                                src={event?.meetingType === 'Zoom' ? zoom : googlemeet}
+                                className="w-[21px] h-[21px]"
+                                alt="googlemeet or zoom"
+                              ></img>
+                              <p>Go to {event?.meetingType === 'Zoom' ? 'zoom' : 'meet'} Link</p>
                             </Link>
                           </div>
                         </div>
@@ -592,7 +661,7 @@ const Dashboard = () => {
             )}
           </div>
         </div>
-       
+
       </Layout>
     </div>
   );
