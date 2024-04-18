@@ -1085,7 +1085,7 @@ const ScheduleTask = ({ taskData, week }) => {
                       });
                     const newRescheduleEvent = await axios.put(
                       `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/updateEvent`,
-                      { ...postData, eventDBid: eventDBid }
+                      { ...postData, eventDBid: eventDBid, eventId: eventId}
                     );
                     Loading().close();
                     // console.log("new event created ", newEvent);
