@@ -512,7 +512,7 @@ const ScheduleTask = ({ taskData, week }) => {
       // formatInTimeZone(utcDateTime, "Asia/Dhaka", "Bangladesh-time"),
     ];
   }
-  const sendCalendarEvent = (res)=>{
+  const sendCalendarEvent = (res) => {
     console.log(res);
     setZoomEventId(res?.result?.id);
   }
@@ -1256,7 +1256,7 @@ const ScheduleTask = ({ taskData, week }) => {
                       };
 
                       try {
-                        const response = await gapi.client.request({
+                        const responseData = await gapi.client.request({
                           path: `https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events?conferenceDataVersion=1`,
                           method: "POST",
                           body: JSON.stringify(event),
@@ -1266,10 +1266,15 @@ const ScheduleTask = ({ taskData, week }) => {
                           },
                         });
                         console.log("Google Calendar event created successfully:", response);
-                        var event = {
-                          ...response
-                        } // Get the event ID from the response
-                        sendCalendarEvent(event);
+                        // var event = {
+                        //   ...response
+                        // } // Get the event ID from the response
+                        // sendCalendarEvent(event);
+
+                        const newEvent = await axios.post(
+                          `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/addEvent`,
+                          { ...postData, eventDBid: response?.data?.insertedId, eventId: responseData.result.id }
+                        );
                       } catch (error) {
                         console.error("Failed to create Google Calendar event:", error);
                       }
@@ -1278,10 +1283,7 @@ const ScheduleTask = ({ taskData, week }) => {
                     // Prepare the Google Calendar event data
 
                     gapi.load("client", initiate);
-                    const newEvent = await axios.post(
-                      `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/addEvent`,
-                      { ...postData, eventDBid: response?.data?.insertedId, eventId: zoomeventId }
-                    );
+
                     Loading().close();
                     // console.log("new event created ", newEvent);
                     await Swal.fire({
