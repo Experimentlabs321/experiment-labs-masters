@@ -24,6 +24,7 @@ import Challenges from "../../../assets/Dashboard/Challenges.png";
 import DashboardCourses from "./DashboardCourses";
 import { CircularProgress } from "@mui/material";
 import { Link } from "react-router-dom";
+import zoom from "../../../assets/icons/zoom-240.png";
 const Dashboard = () => {
   const data = [
     {
@@ -125,7 +126,7 @@ const Dashboard = () => {
       )
       .then((response) => {
         setCourses(response?.data);
-        
+
         if (localStorage.getItem("course")) {
           const findCourse = response?.data?.find(
             (item) => item?.courseFullName === localStorage.getItem("course")
@@ -133,10 +134,14 @@ const Dashboard = () => {
           if (findCourse) {
             setSelectedCourse(findCourse);
             setIsLoading(false)
-          } else {setSelectedCourse(response?.data[0]);
-            setIsLoading(false)}
-        } else {setSelectedCourse(response?.data[0]);
-          setIsLoading(false)}
+          } else {
+            setSelectedCourse(response?.data[0]);
+            setIsLoading(false)
+          }
+        } else {
+          setSelectedCourse(response?.data[0]);
+          setIsLoading(false)
+        }
       })
       .catch((error) => {
         console.error(error)
@@ -161,7 +166,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     setCurrentWeek(null);
-    weeks.forEach((singleData) => {
+    weeks?.forEach((singleData) => {
       const weekStartDate = new Date(singleData?.weekStartDate);
       const weekEndDate = new Date(singleData?.weekEndDate);
       const currentDateTime = new Date();
@@ -272,21 +277,26 @@ const Dashboard = () => {
       });
   }, [userInfo]);
   useEffect(() => {
+    if (!userInfo?.email) {
+      return;
+    }
     axios
-      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/events/email/${userInfo?.email}`)
+      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/events/email/${userInfo.email}`)
       .then((response) => {
         console.log(response?.data);
+        const currentDate = new Date(getCurrentDate()).getTime();
         const filteredEvents = response?.data.filter(event => {
-          const eventStartDate = new Date(event?.start?.dateTime).getTime();
-          const currentDate = new Date(getCurrentDate()).getTime();
+          // Check for both date structures
+          const eventStartDate = new Date(event.start?.dateTime || event.start_time).getTime();
           return eventStartDate >= currentDate;
         });
         setUserRequesterEvents(filteredEvents);
-        setIsLoading(false)
       })
       .catch((error) => {
-        console.error(error)
-        setIsLoading(false)
+        console.error(error);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, [userInfo]);
   console.log(userRequesterEvents);
@@ -297,6 +307,11 @@ const Dashboard = () => {
     const day = String(today.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   };
+  function getCurrentDatee() {
+    // This function should return the current date in the format required by your comparison.
+    // Make sure this returns a date string or a timestamp that can be directly compared.
+    return new Date().toISOString();
+  }
   function formatUtcDateTimeStringToListItems(dateTimeString) {
     const utcDateTime = new Date(dateTimeString);
 
@@ -323,6 +338,45 @@ const Dashboard = () => {
       // formatInTimeZone(utcDateTime, "Asia/Seoul", "Korea-time"),
       // formatInTimeZone(utcDateTime, "Asia/Dhaka", "Bangladesh-time"),
     ];
+  }
+
+  const formatTimeForZoom = (event, type) => {
+    const utcTimeStr = event?.start_time;
+    const timezoneStr = event?.timezone;
+    const meetingLength = event?.duration; // Assuming this is in minutes
+    const startDate = new Date(utcTimeStr);
+    const meetingStartTime = new Date(utcTimeStr);
+    const currentDateTime = new Date();
+    const meetingEndTime = new Date(meetingStartTime.getTime() + meetingLength * 60000);
+
+    // Convert start date to local time in the specified timezone
+    const options = {
+      timeZone: timezoneStr,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    };
+    const meetingStart = startDate.toLocaleString(undefined, options);
+    console.log(meetingStart);
+    // Calculate end date by adding the duration to the start date
+    const endDate = new Date(startDate.getTime() + meetingLength * 60000); // 60000 ms in a minute
+
+    // Convert end date to local time in the specified timezone
+    const meetingEnd = endDate.toLocaleString(undefined, options);
+    if (currentDateTime > meetingEndTime && type === 'start') {
+      return 'The meeting has already happened.'
+    } else if (currentDateTime < meetingEndTime && type === 'start') {
+      return meetingStart;
+    }
+    else if (currentDateTime > meetingEndTime && type === 'end') {
+      return "";
+    }
+    else if (currentDateTime < meetingEndTime && type === 'end') {
+      return meetingEnd;
+    }
   }
   return (
     <div>
@@ -432,35 +486,59 @@ const Dashboard = () => {
                     <div className="grid grid-cols-1 my-5 justify-items-center gap-5 items-center">
                       {/* <p>You are the requester in the following events:</p> */}
                       {userRequesterEvents?.map((event, index) => (
-
                         <div key={index} className=" shadow-lg outline-double outline-offset-2 outline-2 outline-emerald-500  w-[80%] rounded p-2 ">
                           <p className="flex gap-1 items-center text-sm"><FiberManualRecordIcon sx={{ color: red[400] }} ></FiberManualRecordIcon>Meeting with {event?.organization?.organizationName}</p>
                           <div className="flex items-center gap-2">
 
                             <div className="mt-3 mb-1 ">
                               <p className="font-medium text-sm flex justify-between  gap-2 my-1">
-                                <div className="flex justify-between gap-2"><AccessAlarmOutlinedIcon fontSize="small" />
+                                <div className="flex justify-between gap-2">
+                                  <AccessAlarmOutlinedIcon fontSize="small" />
                                   <span className="font-semibold text-[14px]">Starts </span></div>
                                 <ul className="text-[13px]">
-                                  {formatUtcDateTimeStringToListItems(event.start.dateTime).map((item, index) => (
-                                    <li key={index}>{item}</li>
-                                  ))}
+
+                                  {
+                                    event?.meetingType === 'Zoom' ?
+                                      <li key={index}>{formatTimeForZoom(event, event?.start_time ? 'start' : '')}</li>
+                                      :
+                                      formatUtcDateTimeStringToListItems(event?.start?.dateTime)?.map((item, index) => (
+                                        <li key={index}>{item}</li>
+                                      ))
+
+                                  }
                                 </ul>
                               </p>
                               <p className="font-medium text-sm flex  justify-between gap-2 mt-2">
                                 <div className="flex  justify-between gap-2"><AccessAlarmOutlinedIcon fontSize="small" />
                                   <span className="font-semibold text-[14px]">Ends </span></div>
                                 <ul className="text-[13px]">
-                                  {formatUtcDateTimeStringToListItems(event.end.dateTime).map((item, index) => (
-                                    <li key={index}>{item}</li>
-                                  ))}
+                                  {
+                                    event?.meetingType === 'Zoom' ?
+                                      <li key={index}>{formatTimeForZoom(event, event?.end_time ? '' : 'end')}</li>
+                                      :
+                                      formatUtcDateTimeStringToListItems(event?.end?.dateTime)?.map((item, index) => (
+                                        <li key={index}>{item}</li>
+                                      ))
+
+                                  }
                                 </ul>
                               </p>
                             </div>
                           </div>
                           <div className="w-11/12 mx-auto mt-3 text-white bg-sky-600  rounded-md">
-                            <Link to={event?.hangoutLink} className="flex gap-2 items-center justify-center py-[6px]">
+                            {/* <Link to={event?.hangoutLink} className="flex gap-2 items-center justify-center py-[6px]">
                               <img src={googlemeet} className="w-[21px] h-[21px]" alt="googlemeet"></img><p>Go to Meet Link</p>
+                            </Link> */}
+                            <Link
+                              to={event?.meetingType === 'Zoom' ? userInfo?.role === 'admin' ? event?.start_url : event?.join_url : event?.hangoutLink}
+                              className="flex gap-2 items-center justify-center py-[6px]"
+                            >
+                              <img
+                                src={event?.meetingType === 'Zoom' ? zoom : googlemeet}
+                                className="w-[21px] h-[21px]"
+                                alt="googlemeet or zoom"
+                              ></img>
+                              <p>Go to {event?.meetingType === 'Zoom' ? 'zoom' : 'meet'} Link</p>
                             </Link>
                           </div>
                         </div>
@@ -583,7 +661,7 @@ const Dashboard = () => {
             )}
           </div>
         </div>
-       
+
       </Layout>
     </div>
   );
