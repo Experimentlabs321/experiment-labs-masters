@@ -78,7 +78,7 @@ const AboutSkillsExpertise = () => {
 
         >
             <div className='w-[100%]'>
-                <p className="flex items-center text-3xl font-semibold gap-2 ps-[80px] pt-[80px]"><Link to='/mentorName' ><ArrowBackIcon /></Link> <span><img src={icon} alt="icon" /></span>Experiment Labs
+                <p className="flex items-center text-3xl font-semibold gap-2 ps-10 pt-10"><Link to='/mentorName' ><ArrowBackIcon /></Link> <span><img src={icon} alt="icon" /></span>Experiment Labs
                 </p>
 
                 <p className=' text-center text-4xl font-extrabold mt-20 '>Tell us about your <br/> Skills/Expertise ! </p>
@@ -247,10 +247,10 @@ const AboutSkillsExpertise = () => {
                 </p>
 
                 <div className='flex justify-center pt-[100px]'>
-                    <img src={image10} alt='image' />
+                    <img className='w-[60%]' src={image10} alt='imag' />
                 </div>
 
-                <div className='flex justify-end'>
+                <div className='flex justify-end absolute bottom-0 left-0 w-full'>
                     <Link to='/mentorSignUp'
                         style={{
                             borderRadius: "10px",

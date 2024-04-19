@@ -27,7 +27,7 @@ const OrganizationServices = () => {
 
         >
             <div className='w-[100%]'>
-                <p className="flex items-center text-3xl font-semibold gap-2 ps-[80px] pt-[80px]"><Link to='/organizationName' ><ArrowBackIcon /></Link> <span><img src={icon} alt="icon" /></span>Experiment Labs
+                <p className="flex items-center text-3xl font-semibold gap-2 ps-10 pt-10"><Link to='/organizationName' ><ArrowBackIcon /></Link> <span><img src={icon} alt="icon" /></span>Experiment Labs
                 </p>
 
                 <p className=' text-center text-4xl font-extrabold mt-20 '>What services can we <br /> support you with ? </p>
@@ -95,10 +95,10 @@ const OrganizationServices = () => {
                 </p>
 
                 <div className='flex justify-center pt-[100px]'>
-                    <img src={image11} alt='image' />
+                    <img className='w-[60%]' src={image11} alt='imag' />
                 </div>
 
-                <div className='flex justify-end'>
+                <div className='flex justify-end absolute bottom-0 left-0 w-full mb-10'>
                     <Link to='/organizationSignup'
                         style={{
                             borderRadius: "10px",
