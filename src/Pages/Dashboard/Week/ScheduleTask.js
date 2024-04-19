@@ -775,11 +775,12 @@ const ScheduleTask = ({ taskData, week }) => {
 
                     console.log("res ", updateResponse?.data);
                     if (sendMail?.data?.success && sendMailAdmin?.data?.success && updateResponse?.data?.acknowledged) {
-                      Loading().close();
+                      
                       const newRescheduleEvent = await axios.put(
                         `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/updateEvent`,
                         { ...rescheduledEvent, eventDBid: eventDBid }
                       );
+                      Loading().close();
                       // console.log("new event created ", newEvent);
                       await Swal.fire({
                         icon: 'success',

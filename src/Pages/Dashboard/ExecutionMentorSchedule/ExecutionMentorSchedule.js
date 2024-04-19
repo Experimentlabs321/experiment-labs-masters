@@ -2,7 +2,8 @@ import React, { useContext, useEffect, useState } from "react";
 import Layout from "../Layout";
 import AssignmentUpNev from "../ExecutionMentorAssignments/AssignmentUpNev";
 
-import meetIcon from "../../../assets/Dashboard/meetIcon.png"
+import meetIcon from "../../../assets/Dashboard/meetIcon.png";
+import zoom from "../../../assets/icons/zoom-240.png";
 
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
@@ -409,7 +410,21 @@ const ExecutionMentorSchedule = () => {
     const formattedStartDate = new Intl.DateTimeFormat('en-US', options).format(new Date(eventInfo?.event?.start));
     const formattedEndDate = new Intl.DateTimeFormat('en-US', options).format(new Date(eventInfo?.event?.end));
     const meetlink = eventInfo?.event?.extendedProps?.link;
+    const description = eventInfo?.event?.extendedProps?.description;
+    let zoomMeetingUrl = ""; // Initialize zoomMeetingUrl variable to store the URL
 
+    if (description && description.includes("Start the Meeting:")) {
+      const startMeetingText = "Start the Meeting:";
+      const parts = description.split(startMeetingText);
+      if (parts.length > 1) {
+        zoomMeetingUrl = parts[1].trim(); // Store the URL from the description
+        // console.log("URL for 'Start the Meeting':", zoomMeetingUrl);
+      } else {
+        console.log("No URL found after 'Start the Meeting:'.");
+      }
+    } else {
+      console.log("Description is not available or does not contain 'Start the Meeting:'.");
+    }
     // console.log(formattedStartDate);
     // console.log(formattedEndDate);
 
@@ -437,9 +452,20 @@ const ExecutionMentorSchedule = () => {
             </span>{" "}
             Google Meet
           </a>
-        ) : (
-          <p>No Meeting Link Available</p>
-        )}
+        ) : zoomMeetingUrl ?
+          <a
+            target="_blank"
+            href={zoomMeetingUrl}
+            rel="noreferrer"
+            className="flex items-center"
+          >
+            <span>
+              <img src={zoom} className="w-[26px] mr-1" alt="icon" />
+            </span>{" "}
+            Zoom
+          </a> : (
+            <p>No Meeting Link Available</p>
+          )}
       </div>
     );
   }
@@ -702,6 +728,7 @@ const ExecutionMentorSchedule = () => {
                         start: event?.start.dateTime,
                         end: event?.end.dateTime,
                         link: event?.hangoutLink,
+                        description: event?.description
                       }))}
                       dateClick={(info) => handleDateClick(info.date)}
                       eventTimeFormat={{
@@ -830,14 +857,14 @@ const ExecutionMentorSchedule = () => {
                           required
                           className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1]"
                           name="meetingType"
-                          defaultValue={adminCalendarInfo?.meetingType} 
+                          defaultValue={adminCalendarInfo?.meetingType}
                           onChange={(e) => setMeetingTypee(e.target.value)}
                         >
                           <option disabled selected value="">Select a Meeting Type</option>
                           <option value="Zoom">Zoom</option>
                           <option value="Meet">Google Meet</option>
                         </select>
-                    
+
                         {meetingTypee === 'Zoom' && (
                           <div className="text-red-500 text-center mt-4">
                             <p>Zoom Recordings will expire in 30 days.</p>

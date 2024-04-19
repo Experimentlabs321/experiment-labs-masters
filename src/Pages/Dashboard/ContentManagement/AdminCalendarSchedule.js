@@ -20,6 +20,7 @@ import toast from "react-hot-toast";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import required from "../../../assets/ContentManagement/required.png";
 import meetIcon from "../../../assets/Dashboard/meetIcon.png";
+import zoom from "../../../assets/icons/zoom-240.png";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -368,7 +369,7 @@ const AdminCalendarSchedule = () => {
     }
   }
   function renderEventContent(eventInfo) {
-    console.log(calendarEvents);
+    // console.log(eventInfo);
 
     const options = {
       timeZone: eventInfo?.event?.start?.timeZone,
@@ -380,9 +381,23 @@ const AdminCalendarSchedule = () => {
     const formattedStartDate = new Intl.DateTimeFormat('en-US', options).format(new Date(eventInfo?.event?.start));
     const formattedEndDate = new Intl.DateTimeFormat('en-US', options).format(new Date(eventInfo?.event?.end));
     const meetlink = eventInfo?.event?.extendedProps?.link;
+    const description = eventInfo?.event?.extendedProps?.description;
+    let zoomMeetingUrl = ""; // Initialize zoomMeetingUrl variable to store the URL
 
-    console.log(formattedStartDate);
-    console.log(formattedEndDate);
+    if (description && description.includes("Start the Meeting:")) {
+      const startMeetingText = "Start the Meeting:";
+      const parts = description.split(startMeetingText);
+      if (parts.length > 1) {
+        zoomMeetingUrl = parts[1].trim(); // Store the URL from the description
+        // console.log("URL for 'Start the Meeting':", zoomMeetingUrl);
+      } else {
+        console.log("No URL found after 'Start the Meeting:'.");
+      }
+    } else {
+      console.log("Description is not available or does not contain 'Start the Meeting:'.");
+    }
+    // console.log(formattedStartDate);
+    // console.log(formattedEndDate);
 
     return (
       <div
@@ -408,9 +423,20 @@ const AdminCalendarSchedule = () => {
             </span>{" "}
             Google Meet
           </a>
-        ) : (
-          <p>No Meeting Link Available</p>
-        )}
+        ) : zoomMeetingUrl ?
+          <a
+            target="_blank"
+            href={zoomMeetingUrl}
+            rel="noreferrer"
+            className="flex items-center"
+          >
+            <span>
+              <img src={zoom} className="w-[26px] mr-1" alt="icon" />
+            </span>{" "}
+            Zoom
+          </a> : (
+            <p>No Meeting Link Available</p>
+          )}
       </div>
     );
   }
@@ -608,6 +634,7 @@ const AdminCalendarSchedule = () => {
                       start: event?.start.dateTime,
                       end: event?.end.dateTime,
                       link: event?.hangoutLink,
+                      description: event?.description
                     }))}
                     dateClick={(info) => handleDateClick(info.date)}
                     eventTimeFormat={{
