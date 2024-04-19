@@ -369,6 +369,7 @@ const AdminCalendarSchedule = () => {
   }
   function renderEventContent(eventInfo) {
     console.log(calendarEvents);
+    console.log(eventInfo);
 
     const options = {
       timeZone: eventInfo?.event?.start?.timeZone,
