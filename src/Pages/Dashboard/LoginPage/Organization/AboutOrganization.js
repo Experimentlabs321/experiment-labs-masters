@@ -47,13 +47,13 @@ const AboutOrganization = () => {
 
         >
             <div className='w-[100%]'>
-                <p className="flex items-center text-3xl font-semibold gap-2 ps-[80px] pt-[80px]"><Link to='/organizationName' ><ArrowBackIcon /></Link> <span><img src={icon} alt="icon" /></span>Experiment Labs
+                <p className="flex items-center text-3xl font-semibold gap-2 ps-10 pt-10"><Link to='/organizationName' ><ArrowBackIcon /></Link> <span><img src={icon} alt="icon" /></span>Experiment Labs
                 </p>
 
-                <p className=' text-center text-4xl font-extrabold mt-20 '>Tell us about your <br /> Organization ! </p>
-                <p className=' text-xl font-semibold mt-[35px] text-center text-[#8F8F8FCC] '>Select the categories to define your organization/product. </p>
-                <div className=' overflow-auto h-[500px] mt-[50px]'>
-                    <div className='grid grid-cols-3 mx-[100px] gap-[35px] '>
+                <p className=' text-center text-4xl font-extrabold mt-10 '>Tell us about your <br /> Organization ! </p>
+                <p className=' text-xl font-semibold mt-[25px] text-center text-[#8F8F8FCC] '>Select the categories to define your organization/product. </p>
+                <div className=' overflow-auto h-[500px] mt-[30px]'>
+                    <div className='grid grid-cols-3 mx-[100px] gap-[25px] '>
 
                         <div className={`flex justify-center items-center h-[60px] text-lg font-semibold ${selected1 ? 'bg-[#065AD8] text-white' : 'border-[#8F8F8F] bg-[#fff] text-[#676767]'} rounded-[36px] cursor-pointer`}
                             onClick={toggleSelection1}
@@ -216,10 +216,10 @@ const AboutOrganization = () => {
                 </p>
 
                 <div className='flex justify-center pt-[100px]'>
-                    <img src={image10} alt='image' />
+                    <img className='w-[60%]' src={image10} alt='imag' />
                 </div>
 
-                <div className='flex justify-end'>
+                <div className='flex justify-end absolute bottom-0 left-0 w-full'>
                     <Link to='/organizationServices'
                         style={{
                             borderRadius: "10px",
