@@ -25,47 +25,48 @@ import zoom from "../../../assets/icons/zoom-240.png";
 
 let matching = false;
 const matchInputWithBusySlots = (inputDate, inputTime, busyTimeSlots) => {
-  let flag = 0;
-  console.log("input", inputDate, inputTime);
+  console.log("Busy Time Slots:", busyTimeSlots);
   const inputDateTime = new Date(`${inputDate}T${inputTime}`);
   console.log("Input DateTime:", inputDateTime);
 
-  // Extract date and time separately
-  const inputDateString = inputDateTime.toDateString();
-  const inputTimeString = inputDateTime.toTimeString();
+  // Format input date and time to match the busyTimeSlots format
+  const options = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true
+  };
+  const inputDateTimeString = inputDateTime.toLocaleString('en-US', options);
+
+  // Extract date and time separately from formatted string
+  const [inputDateString, inputTimeString] = inputDateTimeString.split(', ');
+
+  console.log("Formatted Input DateTime:", inputDateTimeString);
+  console.log("Input Date:", inputDateString);
+  console.log("Input Time:", inputTimeString);
 
   const isMatch = busyTimeSlots?.some((busySlot) => {
     const busyStartDateTimeString = busySlot.start.dateTime;
     const busyEndDateTimeString = busySlot.end.dateTime;
-    // console.log("busystart",busyStartDateTimeString);
-    const busyStartDateString = busyStartDateTimeString
-      .substring(0, 16)
-      .replace(",", "");
-    const dateParts = busyStartDateString.split(" ");
-    const busyStartDateStringFormatted = `${dateParts[0]} ${dateParts[2][0].toUpperCase() + dateParts[2].substring(1)
-      } ${dateParts[1]} ${dateParts[3]}`;
-    console.log("Input Date:", inputDateString);
-    //  console.log('Busy Date:', busyStartDateStringFormatted);
-    if (inputDateString === busyStartDateStringFormatted) {
-      flag = 1;
-    }
-    const busyStartTime = busyStartDateTimeString.split(" ")[4];
-    // console.log('busy start: ', busyStartTime);
-    const busyEndTime = busyEndDateTimeString.split(" ")[4];
 
-    //console.log(flag);
-    return (
-      flag === 1 &&
-      inputTimeString >= busyStartTime &&
-      inputTimeString <= busyEndTime
-    );
+    const [busyStartDate, busyStartTime] = busyStartDateTimeString.split(', ');
+    const [_, busyEndTime] = busyEndDateTimeString.split(', ');
+
+    console.log("Checking Busy Start:", busyStartDateTimeString);
+    console.log("Checking Busy End:", busyEndDateTimeString);
+
+    // Check if the input date matches the busy date and if input time falls within the busy time range
+    if (inputDateString === busyStartDate && inputTimeString >= busyStartTime && inputTimeString <= busyEndTime) {
+      return true; // Match found, input time is within a busy slot
+    }
+    return false; // No match found
   });
 
-  if (isMatch) {
-    matching = true;
-  } else {
-    matching = false;
-  }
+  matching = isMatch; // Update the global variable based on the match result
+  console.log("Matching:", matching);
 };
 
 const ScheduleTask = ({ taskData, week }) => {
@@ -303,56 +304,49 @@ const ScheduleTask = ({ taskData, week }) => {
 
   console.log("input time ", time);
 
-  useEffect(() => {
+useEffect(() => {
+  const busyTimeSlots = taskData?.events?.map((event) => {
+    // Check if start and end are directly available or nested under different properties
+    const startDateTime = event.start?.dateTime || event.start_time;
+    const endDateTime = event.end?.dateTime || event.end_time || (() => {
+      // If end time is not directly available, calculate it based on duration and start time
+      const duration = event.duration; // Duration in minutes
+      if (startDateTime && duration) {
+        const endDate = new Date(new Date(startDateTime).getTime() + duration * 60000);
+        return endDate.toISOString();
+      }
+      return null;
+    })();
 
-    const busyTimeSlots = taskData?.events
-      ?.map((event) => {
-        // Use the correct property for date and time based on the event structure
-        const startDateTime = event.start?.dateTime || event.start;
+    if (!startDateTime || !endDateTime) {
+      return null;  // Skip events without a valid start or end dateTime
+    }
 
-        // Ensure that startDateTime is defined before proceeding
-        if (!startDateTime) {
-          return null; // Skip events without a valid startDateTime
-        }
+    // Convert the start and end times to the Asia/Kolkata time zone
+    const options = {
+      timeZone: "Asia/Kolkata",
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    };
 
-        const endDateTime = event.end?.dateTime || event.end;
+    const startTime = new Date(startDateTime).toLocaleString('en-US', options);
+    const endTime = new Date(endDateTime).toLocaleString('en-US', options);
 
-        const startDate = new Date(startDateTime);
-        const startTime = startDate.toUTCString();
+    return {
+      start: { dateTime: startTime },
+      end: { dateTime: endTime }
+    };
+  }).filter(Boolean);
 
-        const endDate = new Date(endDateTime);
-        const endTime = endDate.toUTCString();
+  console.log("Busy Time Slots:", busyTimeSlots);
 
-        return {
-          start: {
-            dateTime: startTime,
-            // time: startTimeString,
-          },
-          end: {
-            dateTime: endTime,
-            // time: endTimeString,
-          },
-        };
-      })
-      .filter(Boolean);
-
-    // console.log("Busy Time Slots:", busyTimeSlots); // Log the busy time slots
-
-    // Assuming week.start and week.end are available as Date objects
-    const allTimeSlots = generateAllTimeSlots(week.start, week.end);
-
-    //console.log("All Time Slots:", allTimeSlots); // Log all time slots
-
-    const filteredTimeSlots = filterBusyTimeSlots(
-      allTimeSlots,
-      busyTimeSlots,
-      reservedEvent
-    );
-
-    //  console.log("Filtered Time Slots:", filteredTimeSlots); // Log the filtered time slots
-
-    setBusyTimeSlots(busyTimeSlots);
-  }, [taskData, matching]);
+  setBusyTimeSlots(busyTimeSlots);
+}, [taskData, matching]);
+  
   const googleSignIn = async () => {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
