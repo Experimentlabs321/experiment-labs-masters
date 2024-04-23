@@ -399,7 +399,7 @@ const CourseAccess = () => {
             {stateParams !== "bundles" && (
               <div
                 className={`flex flex-wrap ${
-                  showCourses?.length <= 2
+                  showCourses?.length <= 3
                     ? "justify-start gap-x-14"
                     : "justify-between gap-x-2"
                 }  gap-y-5`}

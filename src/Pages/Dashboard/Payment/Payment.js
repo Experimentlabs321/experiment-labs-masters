@@ -554,7 +554,7 @@ const Payment = () => {
                       )}
                       {batchesData[0] && (
                         <select
-                          className="mt-1 p-2 border w-full rounded-md bg-white"
+                          className="appearance-none mt-1 p-2 border w-full rounded-md bg-white"
                           disabled={isBatchPayment === true}
                           onChange={(e) =>
                             setSelectedBatch(batchesData[e.target.value])

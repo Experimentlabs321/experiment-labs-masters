@@ -654,7 +654,7 @@ const ScheduleTask = ({ taskData, week }) => {
                   },
                   // Add other event properties as needed
                 };
-                fetch(`https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events/${eventId}`, {
+                fetch(`https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events/${eventId}?sendUpdates=none`, {
                   method: 'PATCH', // Method to update the event
                   headers: {
                     'Authorization': `Bearer ${newAccessToken}`,
@@ -666,7 +666,7 @@ const ScheduleTask = ({ taskData, week }) => {
                   .then(async data => {
                     console.log('Event updated:', data);
                     var rescheduledEvent = {
-                      title: `${userInfo?.name} <> Experiment Labs <> Doubt clearing <> `,
+                      title: `${userInfo?.name} <> Doubt clearing <> `,
                       start: {
                         dateTime: selectedTimeDatee,
                         timeZone: "UTC",
@@ -730,66 +730,70 @@ const ScheduleTask = ({ taskData, week }) => {
                     //     "eventId": "0kh2gidugamp50s33mpm0cto24"
                     //   }
                     // );
-                    const sendMail = await axios.post(
-                      `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
-                      {
-                        //  from: `${userInfo?.email}`,
-                        //    to: `${user?.email},${adminMail}`,
-                        to: `${user?.email}`,
-                        templateType: "emailAction",
-                        templateName: "sheduleTask",
-                        organizationId: userInfo?.organizationId,
-                        start_time: eventStartTime,
-                        end_time: eventEndTime,
-                        meeting_link: rescheduledEvent?.hangoutLink,
-                        learner_name: adminName,
-                        learner_email: adminMail,
-                        meeting_date: date,
-                        /*  subject: `Event request`,
-                        message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
-                          }`, */
-                      }
-                    );
-                    const sendMailAdmin = await axios.post(
-                      `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
-                      {
-                        //  from: `${userInfo?.email}`,
-                        //    to: `${user?.email},${adminMail}`,
-                        to: `${adminMail}`,
-                        templateType: "emailAction",
-                        templateName: "sheduleTask",
-                        organizationId: userInfo?.organizationId,
-                        start_time: eventStartTime,
-                        end_time: eventEndTime,
-                        meeting_link: rescheduledEvent?.hangoutLink,
-                        learner_name: userInfo?.name,
-                        learner_email: userInfo?.email,
-                        meeting_date: date,
-                        /*  subject: `Event request`,
-                        message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
-                          }`, */
-                      }
-                    );
-                    console.log("send ", sendMail);
-                    console.log("Admin Mail ", sendMailAdmin);
+
 
                     console.log("res ", updateResponse?.data);
-                    if (sendMail?.data?.success && sendMailAdmin?.data?.success && updateResponse?.data?.acknowledged) {
-                      
-                      const newRescheduleEvent = await axios.put(
-                        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/updateEvent`,
-                        { ...rescheduledEvent, eventDBid: eventDBid }
+                    if( updateResponse?.data?.acknowledged){
+                      const sendMail = await axios.post(
+                        `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                        {
+                          //  from: `${userInfo?.email}`,
+                          //    to: `${user?.email},${adminMail}`,
+                          to: `${user?.email}`,
+                          templateType: "emailAction",
+                          templateName: "sheduleTask",
+                          organizationId: userInfo?.organizationId,
+                          start_time: eventStartTime,
+                          end_time: eventEndTime,
+                          meeting_link: rescheduledEvent?.hangoutLink,
+                          learner_name: adminName,
+                          learner_email: adminMail,
+                          meeting_date: date,
+                          /*  subject: `Event request`,
+                          message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
+                            }`, */
+                        }
                       );
-                      Loading().close();
-                      // console.log("new event created ", newEvent);
-                      await Swal.fire({
-                        icon: 'success',
-                        title: 'Event Rescheduled!',
-                        text: 'The event has been successfully rescheduled.'
-                      });
+                      const sendMailAdmin = await axios.post(
+                        `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                        {
+                          //  from: `${userInfo?.email}`,
+                          //    to: `${user?.email},${adminMail}`,
+                          to: `${adminMail}`,
+                          templateType: "emailAction",
+                          templateName: "sheduleTask",
+                          organizationId: userInfo?.organizationId,
+                          start_time: eventStartTime,
+                          end_time: eventEndTime,
+                          meeting_link: rescheduledEvent?.hangoutLink,
+                          learner_name: userInfo?.name,
+                          learner_email: userInfo?.email,
+                          meeting_date: date,
+                          /*  subject: `Event request`,
+                          message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
+                            }`, */
+                        }
+                      );
+                      console.log("send ", sendMail);
+                      console.log("Admin Mail ", sendMailAdmin);
+                      if (sendMail?.data?.success && sendMailAdmin?.data?.success) {
 
-                      navigate("/courseAccess");
+                        const newRescheduleEvent = await axios.put(
+                          `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/updateEvent`,
+                          { ...rescheduledEvent, eventDBid: eventDBid }
+                        );
+                       
+                        // console.log("new event created ", newEvent);
+                        await Swal.fire({
+                          icon: 'success',
+                          title: 'Event Rescheduled!',
+                          text: 'The event has been successfully rescheduled.'
+                        });
+                        Loading().close();
+                        navigate("/courseAccess");
+                      }
                     }
+
                     // Other UI updates or state resets after successful rescheduling
                   })
                   .catch(error => {
@@ -804,69 +808,71 @@ const ScheduleTask = ({ taskData, week }) => {
                       `${process.env.REACT_APP_SERVER_API}/api/v1/events`,
                       event
                     );
-                    const sendMail = await axios.post(
-                      `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
-                      {
-                        //  from: `${userInfo?.email}`,
-                        //    to: `${user?.email},${adminMail}`,
-                        to: `${user?.email}`,
-                        templateType: "emailAction",
-                        templateName: "sheduleTask",
-                        organizationId: userInfo?.organizationId,
-                        start_time: eventStartTime,
-                        end_time: eventEndTime,
-                        meeting_link: event?.hangoutLink,
-                        learner_name: adminName,
-                        learner_email: adminMail,
-                        meeting_date: date,
-                        /*  subject: `Event request`,
-                        message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
-                          }`, */
-                      }
-                    );
-                    const sendMailAdmin = await axios.post(
-                      `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
-                      {
-                        //  from: `${userInfo?.email}`,
-                        //    to: `${user?.email},${adminMail}`,
-                        to: `${adminMail}`,
-                        templateType: "emailAction",
-                        templateName: "sheduleTask",
-                        organizationId: userInfo?.organizationId,
-                        start_time: eventStartTime,
-                        end_time: eventEndTime,
-                        meeting_link: event?.hangoutLink,
-                        learner_name: userInfo?.name,
-                        learner_email: userInfo?.email,
-                        meeting_date: date,
-                        /*  subject: `Event request`,
-                        message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
-                          }`, */
-                      }
-                    );
-                    console.log("send ", sendMail);
-                    console.log("Admin Mail ", adminMail);
 
-                    console.log("res ", response);
-                    if (sendMail?.data?.success && response?.data?.acknowledged) {
-                      Loading().close();
-                      const newEvent = await axios.post(
-                        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/addEvent`,
-                        { ...event, eventDBid: response?.data?.insertedId }
+                    if(response?.data?.acknowledged){
+                      const sendMail = await axios.post(
+                        `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                        {
+                          //  from: `${userInfo?.email}`,
+                          //    to: `${user?.email},${adminMail}`,
+                          to: `${user?.email}`,
+                          templateType: "emailAction",
+                          templateName: "sheduleTask",
+                          organizationId: userInfo?.organizationId,
+                          start_time: eventStartTime,
+                          end_time: eventEndTime,
+                          meeting_link: event?.hangoutLink,
+                          learner_name: adminName,
+                          learner_email: adminMail,
+                          meeting_date: date,
+                          /*  subject: `Event request`,
+                          message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
+                            }`, */
+                        }
                       );
-                      // console.log("new event created ", newEvent);
-                      await Swal.fire({
-                        icon: "success",
-                        title: "Request Sent!",
-                        text: "Your meeting is confirmed. Please go to the Dashboard to access the meeting link",
-                      });
-
-                      navigate("/courseAccess");
+                      const sendMailAdmin = await axios.post(
+                        `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                        {
+                          //  from: `${userInfo?.email}`,
+                          //    to: `${user?.email},${adminMail}`,
+                          to: `${adminMail}`,
+                          templateType: "emailAction",
+                          templateName: "sheduleTask",
+                          organizationId: userInfo?.organizationId,
+                          start_time: eventStartTime,
+                          end_time: eventEndTime,
+                          meeting_link: event?.hangoutLink,
+                          learner_name: userInfo?.name,
+                          learner_email: userInfo?.email,
+                          meeting_date: date,
+                          /*  subject: `Event request`,
+                          message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
+                            }`, */
+                        }
+                      );
+                      console.log("send ", sendMail);
+                      console.log("Admin Mail ", adminMail);
+                      if (sendMail?.data?.success && sendMailAdmin?.data?.success) {
+                        const newEvent = await axios.post(
+                          `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/addEvent`,
+                          { ...event, eventDBid: response?.data?.insertedId }
+                        );
+                        // console.log("new event created ", newEvent);
+                        Loading().close();
+                        await Swal.fire({
+                          icon: "success",
+                          title: "Request Sent!",
+                          text: "Your meeting is confirmed. Please go to the Dashboard to access the meeting link",
+                        });
+  
+                        navigate("/courseAccess");
+                      }
                     }
+
                   };
                   gapi.client
                     .request({
-                      path: `https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events?conferenceDataVersion=1`,
+                      path: `https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events?conferenceDataVersion=1&sendUpdates=none`,
                       method: "POST",
                       body: event,
                       headers: {
@@ -878,7 +884,7 @@ const ScheduleTask = ({ taskData, week }) => {
                       (response) => {
                         console.log(response);
                         var event = {
-                          title: `${userInfo?.name} <> Experiment Labs <> Doubt clearing <> `,
+                          title: `${userInfo?.name} <> Doubt clearing <> `,
                           start: {
                             dateTime: selectedTimeDatee,
                             timeZone: "UTC",
@@ -1001,103 +1007,107 @@ const ScheduleTask = ({ taskData, week }) => {
                     `${process.env.REACT_APP_SERVER_API}/api/v1/events/${eventDBid}`,
                     postData
                   );
-                  const sendMail = await axios.post(
-                    `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
-                    {
-                      //  from: `${userInfo?.email}`,
-                      //    to: `${user?.email},${adminMail}`,
-                      to: `${user?.email}`,
-                      templateType: "emailAction",
-                      templateName: "sheduleTask",
-                      organizationId: userInfo?.organizationId,
-                      start_time: meetingStart,
-                      end_time: meetingEnd,
-                      meeting_link: studentUrl,
-                      learner_name: adminName,
-                      learner_email: adminMail,
-                      meeting_date: '',
-                      /*  subject: `Event request`,
-                      message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
-                        }`, */
-                    }
-                  );
-                  const sendMailAdmin = await axios.post(
-                    `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
-                    {
-                      //  from: `${userInfo?.email}`,
-                      //    to: `${user?.email},${adminMail}`,
-                      to: `${adminMail}`,
-                      templateType: "emailAction",
-                      templateName: "sheduleTask",
-                      organizationId: userInfo?.organizationId,
-                      start_time: meetingStart,
-                      end_time: meetingEnd,
-                      meeting_link: adminUrl,
-                      learner_name: adminName,
-                      learner_email: adminMail,
-                      meeting_date: '',
-                      /*  subject: `Event request`,
-                      message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
-                        }`, */
-                    }
-                  );
-                  console.log("send ", sendMail);
-                  console.log("Admin Mail ", adminMail);
+
 
                   console.log("res ", updateResponse);
-                  if (sendMail?.data?.success && updateResponse?.data?.acknowledged) {
-                    const updatedEvent = {
-                      summary: `${userInfo?.name} Doubt Clearing Session`,
-                      description: `Join Zoom Meeting: ${adminUrl}\nStart the Meeting: ${studentUrl}`,
-                      location: newZoomSchedule.join_url,  // Zoom meeting link as location
-                      start: {
-                        dateTime: meetingStartDate.toISOString(),  // Convert to ISO string for Google Calendar
-                        timeZone: "Asia/Kolkata"  // Explicitly setting time zone
-                      },
-                      end: {
-                        dateTime: meetingEndDate.toISOString(),  // Calculate end time based on duration
-                        timeZone: "Asia/Kolkata"  // Explicitly setting time zone
-                      },
-                      attendees: [
-                        { email: user.email },  // User's email
-                        { email: adminMail },   // Admin's email
-                      ],
-                      reminders: {
-                        useDefault: true
+                  if (updateResponse?.data?.acknowledged) {
+                    const sendMail = await axios.post(
+                      `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                      {
+                        //  from: `${userInfo?.email}`,
+                        //    to: `${user?.email},${adminMail}`,
+                        to: `${user?.email}`,
+                        templateType: "emailAction",
+                        templateName: "sheduleTask",
+                        organizationId: userInfo?.organizationId,
+                        start_time: meetingStart,
+                        end_time: meetingEnd,
+                        meeting_link: studentUrl,
+                        learner_name: adminName,
+                        learner_email: adminMail,
+                        meeting_date: '',
+                        /*  subject: `Event request`,
+                        message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
+                          }`, */
                       }
-                    };
-                    fetch(`https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events/${eventId}`, {
-                      method: 'PATCH', // Method to update the event
-                      headers: {
-                        'Authorization': `Bearer ${newAccessToken}`,
-                        'Content-Type': 'application/json'
-                      },
-                      body: JSON.stringify(updatedEvent)
-                    })
-                      .then(response => response.json()) // Convert the response to JSON
-                      .then(async data => {
-                        console.log('Event updated:', data);
-
-                        // Other UI updates or state resets after successful rescheduling
-                      })
-                      .catch(error => {
-                        console.error('Error updating event:', error);
-                        // Handle error
-                      });
-                    const newRescheduleEvent = await axios.put(
-                      `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/updateEvent`,
-                      { ...postData, eventDBid: eventDBid, eventId: eventId}
                     );
-                    Loading().close();
-                    // console.log("new event created ", newEvent);
-                    await Swal.fire({
-                      icon: "success",
-                      title: "Request Sent!",
-                      text: "Your meeting is rescheduled. Please check your email to access the zoom link",
-                    });
+                    const sendMailAdmin = await axios.post(
+                      `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                      {
+                        //  from: `${userInfo?.email}`,
+                        //    to: `${user?.email},${adminMail}`,
+                        to: `${adminMail}`,
+                        templateType: "emailAction",
+                        templateName: "sheduleTask",
+                        organizationId: userInfo?.organizationId,
+                        start_time: meetingStart,
+                        end_time: meetingEnd,
+                        meeting_link: adminUrl,
+                        learner_name: adminName,
+                        learner_email: adminMail,
+                        meeting_date: '',
+                        /*  subject: `Event request`,
+                        message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
+                          }`, */
+                      }
+                    );
+                    console.log("send ", sendMail);
+                    console.log("Admin Mail ", adminMail);
+                    if (sendMail?.data?.success && sendMailAdmin?.data?.success) {
+                      const updatedEvent = {
+                        summary: `${userInfo?.name} Doubt Clearing Session`,
+                        description: `Join Zoom Meeting: ${adminUrl}\nStart the Meeting: ${studentUrl}`,
+                        location: newZoomSchedule.join_url,  // Zoom meeting link as location
+                        start: {
+                          dateTime: meetingStartDate.toISOString(),  // Convert to ISO string for Google Calendar
+                          timeZone: "Asia/Kolkata"  // Explicitly setting time zone
+                        },
+                        end: {
+                          dateTime: meetingEndDate.toISOString(),  // Calculate end time based on duration
+                          timeZone: "Asia/Kolkata"  // Explicitly setting time zone
+                        },
+                        attendees: [
+                          { email: user.email },  // User's email
+                          { email: adminMail },   // Admin's email
+                        ],
+                        reminders: {
+                          useDefault: true
+                        }
+                      };
+                      fetch(`https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events/${eventId}?sendUpdates=none`, {
+                        method: 'PATCH', // Method to update the event
+                        headers: {
+                          'Authorization': `Bearer ${newAccessToken}`,
+                          'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(updatedEvent)
+                      })
+                        .then(response => response.json()) // Convert the response to JSON
+                        .then(async data => {
+                          console.log('Event updated:', data);
 
-                    navigate("/courseAccess");
+                          // Other UI updates or state resets after successful rescheduling
+                        })
+                        .catch(error => {
+                          console.error('Error updating event:', error);
+                          // Handle error
+                        });
+                      const newRescheduleEvent = await axios.put(
+                        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/updateEvent`,
+                        { ...postData, eventDBid: eventDBid, eventId: eventId }
+                      );
+                      Loading().close();
+                      // console.log("new event created ", newEvent);
+                      await Swal.fire({
+                        icon: "success",
+                        title: "Request Sent!",
+                        text: "Your meeting is rescheduled. Please check your email to access the zoom link",
+                      });
+
+                      navigate("/courseAccess");
+                    }
                   }
+
                 } catch (error) {
                   console.error("An error occurred:", error);
                   // Handle the error appropriately, perhaps show an error message to the user
@@ -1189,112 +1199,116 @@ const ScheduleTask = ({ taskData, week }) => {
                     `${process.env.REACT_APP_BACKEND_API}/events`,
                     postData
                   );
-                  const sendMail = await axios.post(
-                    `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
-                    {
-                      //  from: `${userInfo?.email}`,
-                      //    to: `${user?.email},${adminMail}`,
-                      to: `${user?.email}`,
-                      templateType: "emailAction",
-                      templateName: "sheduleTask",
-                      organizationId: userInfo?.organizationId,
-                      start_time: meetingStart,
-                      end_time: meetingEnd,
-                      meeting_link: studentUrl,
-                      learner_name: adminName,
-                      learner_email: adminMail,
-                      meeting_date: '',
-                      /*  subject: `Event request`,
-                      message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
-                        }`, */
-                    }
-                  );
-                  const sendMailAdmin = await axios.post(
-                    `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
-                    {
-                      //  from: `${userInfo?.email}`,
-                      //    to: `${user?.email},${adminMail}`,
-                      to: `${adminMail}`,
-                      templateType: "emailAction",
-                      templateName: "sheduleTask",
-                      organizationId: userInfo?.organizationId,
-                      start_time: meetingStart,
-                      end_time: meetingEnd,
-                      meeting_link: adminUrl,
-                      learner_name: adminName,
-                      learner_email: adminMail,
-                      meeting_date: '',
-                      /*  subject: `Event request`,
-                      message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
-                        }`, */
-                    }
-                  );
-                  console.log("send ", sendMail);
-                  console.log("Admin Mail ", adminMail);
+
+                  // console.log("send ", sendMail);
+                  // console.log("Admin Mail ", adminMail);
 
                   console.log("res ", response);
-                  if (sendMail?.data?.success && response?.data?.acknowledged) {
-                    async function initiate() {
-                      var event = {
-                        summary: `${userInfo?.name} Doubt Clearing Session`,
-                        description: `Join Zoom Meeting: ${adminUrl}\nStart the Meeting: ${studentUrl}`,
-                        location: newZoomSchedule.join_url,
-                        start: {
-                          dateTime: meetingStartDate.toISOString(),
-                          timeZone: "Asia/Kolkata"
-                        },
-                        end: {
-                          dateTime: meetingEndDate.toISOString(),
-                          timeZone: "Asia/Kolkata"
-                        },
-                        attendees: [
-                          { email: user.email },
-                          { email: adminMail },
-                        ],
-                        reminders: {
-                          useDefault: true
-                        }
-                      };
-
-                      try {
-                        const responseData = await gapi.client.request({
-                          path: `https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events?conferenceDataVersion=1`,
-                          method: "POST",
-                          body: JSON.stringify(event),
-                          headers: {
-                            "Content-type": "application/json",
-                            Authorization: `Bearer ${newAccessToken}`,
-                          },
-                        });
-                        console.log("Google Calendar event created successfully:", response);
-                        // var event = {
-                        //   ...response
-                        // } // Get the event ID from the response
-                        // sendCalendarEvent(event);
-
-                        const newEvent = await axios.post(
-                          `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/addEvent`,
-                          { ...postData, eventDBid: response?.data?.insertedId, eventId: responseData.result.id }
-                        );
-                      } catch (error) {
-                        console.error("Failed to create Google Calendar event:", error);
+                  if (response?.data?.acknowledged) {
+                    const sendMail = await axios.post(
+                      `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                      {
+                        //  from: `${userInfo?.email}`,
+                        //    to: `${user?.email},${adminMail}`,
+                        to: `${user?.email}`,
+                        templateType: "emailAction",
+                        templateName: "sheduleTask",
+                        organizationId: userInfo?.organizationId,
+                        start_time: meetingStart,
+                        end_time: meetingEnd,
+                        meeting_link: studentUrl,
+                        learner_name: adminName,
+                        learner_email: adminMail,
+                        meeting_date: '',
+                        /*  subject: `Event request`,
+                        message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
+                          }`, */
                       }
+                    );
+                    const sendMailAdmin = await axios.post(
+                      `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                      {
+                        //  from: `${userInfo?.email}`,
+                        //    to: `${user?.email},${adminMail}`,
+                        to: `${adminMail}`,
+                        templateType: "emailAction",
+                        templateName: "sheduleTask",
+                        organizationId: userInfo?.organizationId,
+                        start_time: meetingStart,
+                        end_time: meetingEnd,
+                        meeting_link: adminUrl,
+                        learner_name: adminName,
+                        learner_email: adminMail,
+                        meeting_date: '',
+                        /*  subject: `Event request`,
+                        message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
+                          }`, */
+                      }
+                    );
+                    if (sendMail?.data?.success && sendMailAdmin?.data?.success) {
+                      async function initiate() {
+                        var event = {
+                          summary: `${userInfo?.name} Doubt Clearing Session`,
+                          description: `Join Zoom Meeting: ${adminUrl}\nStart the Meeting: ${studentUrl}`,
+                          location: newZoomSchedule.join_url,
+                          start: {
+                            dateTime: meetingStartDate.toISOString(),
+                            timeZone: "Asia/Kolkata"
+                          },
+                          end: {
+                            dateTime: meetingEndDate.toISOString(),
+                            timeZone: "Asia/Kolkata"
+                          },
+                          attendees: [
+                            { email: user.email },
+                            { email: adminMail },
+                          ],
+                          reminders: {
+                            useDefault: true
+                          }
+                        };
+
+                        try {
+                          const responseData = await gapi.client.request({
+                            path: `https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events?conferenceDataVersion=1&sendUpdates=none`,
+                            method: "POST",
+                            body: JSON.stringify(event),
+                            headers: {
+                              "Content-type": "application/json",
+                              Authorization: `Bearer ${newAccessToken}`,
+                            },
+                          });
+                          console.log("Google Calendar event created successfully:", response);
+                          // var event = {
+                          //   ...response
+                          // } // Get the event ID from the response
+                          // sendCalendarEvent(event);
+
+                          const newEvent = await axios.post(
+                            `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/addEvent`,
+                            { ...postData, eventDBid: response?.data?.insertedId, eventId: responseData.result.id }
+                          );
+                        } catch (error) {
+                          console.error("Failed to create Google Calendar event:", error);
+                        }
+                      }
+
+                      // Prepare the Google Calendar event data
+
+                      gapi.load("client", initiate);
+
+                      Loading().close();
+                      // console.log("new event created ", newEvent);
+                      await Swal.fire({
+                        icon: "success",
+                        title: "Request Sent!",
+                        text: "Your meeting is confirmed. Please check your email to access the zoom link",
+                      });
+
+                      navigate("/courseAccess");
                     }
-
-                    // Prepare the Google Calendar event data
-
-                    gapi.load("client", initiate);
-
-                    Loading().close();
-                    // console.log("new event created ", newEvent);
-                    await Swal.fire({
-                      icon: "success",
-                      title: "Request Sent!",
-                      text: "Your meeting is confirmed. Please check your email to access the zoom link",
-                    });
-
-                    navigate("/courseAccess");
                   }
+
                 } catch (error) {
                   console.error("An error occurred:", error);
                   // Handle the error appropriately, perhaps show an error message to the user
