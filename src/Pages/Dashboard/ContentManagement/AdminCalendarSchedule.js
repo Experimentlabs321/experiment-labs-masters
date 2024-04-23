@@ -196,6 +196,7 @@ const AdminCalendarSchedule = () => {
     const currentDate = getCurrentDate();
     const form = event.target;
     const scheduleName = form.scheduleName?.value;
+    const calendarSubjectName = form.calendarSubjectName?.value;
     const dateRange = adminCalendarInfo?.dateRange;
     const minimumTime = adminCalendarInfo?.minimumTime;
     const maximumTime = adminCalendarInfo?.maximumTime;
@@ -218,6 +219,7 @@ const AdminCalendarSchedule = () => {
       usersession: global,
       events: calendarEvents,
       taskDrip,
+      calendarSubjectName
     };
     setAssignmentData(manageSchedule);
     console.log(manageSchedule);
@@ -666,6 +668,26 @@ const AdminCalendarSchedule = () => {
                         name="scheduleName"
                         type="text"
                         placeholder="schedule Name"
+                      />
+                    </div>
+                    <div className="">
+                      <div className="flex items-center gap-4">
+                        <p className="h-2 w-2 bg-black rounded-full"></p>
+                        <p className="font-bold text-lg me-[36px]">
+                          Calendar Subject Name
+                        </p>
+                        <img src={required} alt="required" />
+                      </div>
+
+                      <input
+                        required
+                        /*   defaultValue={
+                            assignmentData ? assignmentData?.scheduleName : ""
+                          } */
+                        className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
+                        name="calendarSubjectName"
+                        type="text"
+                        placeholder="Calendar Subject Name"
                       />
                     </div>
 
