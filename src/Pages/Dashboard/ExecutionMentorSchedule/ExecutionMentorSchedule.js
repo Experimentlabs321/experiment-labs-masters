@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import Layout from "../Layout";
-import AssignmentUpNev from "../ExecutionMentorAssignments/AssignmentUpNev";
 
 import meetIcon from "../../../assets/Dashboard/meetIcon.png";
 import zoom from "../../../assets/icons/zoom-240.png";
@@ -31,16 +30,13 @@ import toast from "react-hot-toast";
 import required from "../../../assets/ContentManagement/required.png";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
-const localizer = momentLocalizer(moment);
-
-
 const ExecutionMentorSchedule = () => {
   const { agenda } = useParams();
   const { user, userInfo } = useContext(AuthContext);
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [itemDetails, setItemDetails] = useState();
-  const [timeZone, setTimeZone] = useState('UTC');
+  const [timeZone, setTimeZone] = useState("UTC");
 
   const [chapter, setChapter] = useState({});
   const [course, setCourse] = useState({});
@@ -70,8 +66,23 @@ const ExecutionMentorSchedule = () => {
   const { isLoading } = useSessionContext();
   const [previousLocation, setPreviousLocation] = useState(null);
   const [adminCalendarInfo, setAdminCalendarInfo] = useState({});
-  const [meetingTypee, setMeetingTypee] = useState(adminCalendarInfo?.meetingType || '');
+  const [meetingTypee, setMeetingTypee] = useState(
+    adminCalendarInfo?.meetingType || ""
+  );
   console.log(calendarEvents);
+
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/calenderInfo/getCalendarInfoByEmail/email/${user?.email}`
+      )
+      .then((response) => {
+        setAdminCalendarInfo(response?.data);
+        setSelectedHoliday(response?.data?.offDays);
+      })
+
+      .catch((error) => console.error(error));
+  }, [user, userInfo]);
   // Save current location before redirecting to Google sign-in
   useEffect(() => {
     setPreviousLocation(window.location.pathname);
@@ -81,28 +92,20 @@ const ExecutionMentorSchedule = () => {
     if (calendarfetch === true) {
       googleSignIn();
     }
-  }, [calendarfetch])
-  useEffect(() => {
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVER_API
-        }/api/v1/batches/courseId/${localStorage.getItem("courseId")}`
-      )
-      .then((response) => {
-        setBatchesData(response?.data);
-      })
-      .catch((error) => console.error(error));
-  }, [chapter?.courseId]);
-  useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/calenderInfo/getCalendarInfoByEmail/email/${userInfo?.email}`)
-      .then((response) => {
-        setAdminCalendarInfo(response?.data);
-        setSelectedHoliday(response?.data?.offDays);
-      })
-
-      .catch((error) => console.error(error));
-  }, [userInfo, userInfo?.email]);
+  }, [calendarfetch]);
+  // useEffect(() => {
+  //   axios
+  //     .get(
+  //       `${
+  //         process.env.REACT_APP_SERVER_API
+  //       }/api/v1/batches/courseId/${localStorage.getItem("courseId")}`
+  //     )
+  //     .then((response) => {
+  //       setBatchesData(response?.data);
+  //     })
+  //     .catch((error) => console.error(error));
+  // }, [chapter?.courseId]);
+  console.log(adminCalendarInfo, user?.email);
   // useEffect(() => {
   //   axios
   //     .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
@@ -112,16 +115,16 @@ const ExecutionMentorSchedule = () => {
 
   //     .catch((error) => console.error(error));
   // }, [userInfo, userInfo?.email]);
-  useEffect(() => {
-    if (chapter?.courseId)
-      axios
-        .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${chapter?.courseId}`
-        )
-        .then((response) => {
-          setCourse(response?.data);
-        });
-  }, [chapter]);
+  // useEffect(() => {
+  //   if (chapter?.courseId)
+  //     axios
+  //       .get(
+  //         `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${chapter?.courseId}`
+  //       )
+  //       .then((response) => {
+  //         setCourse(response?.data);
+  //       });
+  // }, [chapter]);
   useEffect(() => {
     if (userInfo) {
       setLoading(true);
@@ -131,7 +134,6 @@ const ExecutionMentorSchedule = () => {
         )
         .then((response) => {
           setItemDetails(response?.data);
-
         })
         .finally(() => {
           setLoading(false);
@@ -220,8 +222,8 @@ const ExecutionMentorSchedule = () => {
   const getCurrentDate = () => {
     const today = new Date();
     const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
   // Function to check if a given date is in the past
@@ -234,11 +236,11 @@ const ExecutionMentorSchedule = () => {
 
   // Function to handle the day rendering
   const handleDayRender = (info) => {
-    const date = info.date.toISOString().split('T')[0];
+    const date = info.date.toISOString().split("T")[0];
     const isPastDayValue = isPastDay(date);
 
     if (isPastDayValue) {
-      info.el.style.backgroundColor = 'lightgray'; // Apply your desired color for past days
+      info.el.style.backgroundColor = "lightgray"; // Apply your desired color for past days
     }
   };
   const handleSubmit = async (event) => {
@@ -258,7 +260,7 @@ const ExecutionMentorSchedule = () => {
       minimumTime,
       meetingDuration: meetingDuration,
       meetingType: meetingType,
-      events: calendarEvents,
+      // events: calendarEvents,
       adminMail: userInfo?.email,
     };
     setAssignmentData(manageSchedule);
@@ -272,8 +274,7 @@ const ExecutionMentorSchedule = () => {
       if (newSchedule?.status === 200) {
         toast.success("Schedule added Successfully");
         event.target.reset();
-      }
-      else {
+      } else {
         toast.error("Something went wrong");
       }
       console.log(manageSchedule);
@@ -299,7 +300,7 @@ const ExecutionMentorSchedule = () => {
   }
   const googleSignIn = async () => {
     const preAuthUrl = window.location.pathname; // You might want to store the full location object or pathname
-    localStorage.setItem('preAuthUrl', preAuthUrl);
+    localStorage.setItem("preAuthUrl", preAuthUrl);
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
@@ -357,7 +358,9 @@ const ExecutionMentorSchedule = () => {
   }
   async function fetchGoogleCalendarEvents() {
     const currentDate = new Date().toISOString();
-    const url = new URL("https://www.googleapis.com/calendar/v3/calendars/primary/events");
+    const url = new URL(
+      "https://www.googleapis.com/calendar/v3/calendars/primary/events"
+    );
 
     url.searchParams.append("timeMin", currentDate);
     url.searchParams.append("singleEvents", true);
@@ -379,7 +382,8 @@ const ExecutionMentorSchedule = () => {
     const data = await response.json();
 
     // Extract time zone from the first event (assuming all events have the same time zone)
-    const timeZone = data.items.length > 0 ? data.items[0].start.timeZone : 'UTC';
+    const timeZone =
+      data.items.length > 0 ? data.items[0].start.timeZone : "UTC";
 
     console.log(data);
 
@@ -389,12 +393,11 @@ const ExecutionMentorSchedule = () => {
     try {
       const events = await fetchGoogleCalendarEvents();
       setCalendarError(false);
-      setCalendarEvents(events.events || []);  // Use events.events to ensure it's an array
-
+      setCalendarEvents(events.events || []); // Use events.events to ensure it's an array
     } catch (error) {
       console.error(error);
       setCalendarError(true);
-      setCalendarEvents([]);  // Set calendarEvents to an empty array on error
+      setCalendarEvents([]); // Set calendarEvents to an empty array on error
     }
   }
   function renderEventContent(eventInfo) {
@@ -403,12 +406,16 @@ const ExecutionMentorSchedule = () => {
     const options = {
       timeZone: eventInfo?.event?.start?.timeZone,
       hour12: false,
-      hour: 'numeric',
-      minute: 'numeric',
+      hour: "numeric",
+      minute: "numeric",
     };
 
-    const formattedStartDate = new Intl.DateTimeFormat('en-US', options).format(new Date(eventInfo?.event?.start));
-    const formattedEndDate = new Intl.DateTimeFormat('en-US', options).format(new Date(eventInfo?.event?.end));
+    const formattedStartDate = new Intl.DateTimeFormat("en-US", options).format(
+      new Date(eventInfo?.event?.start)
+    );
+    const formattedEndDate = new Intl.DateTimeFormat("en-US", options).format(
+      new Date(eventInfo?.event?.end)
+    );
     const meetlink = eventInfo?.event?.extendedProps?.link;
     const description = eventInfo?.event?.extendedProps?.description;
     let zoomMeetingUrl = ""; // Initialize zoomMeetingUrl variable to store the URL
@@ -423,7 +430,9 @@ const ExecutionMentorSchedule = () => {
         console.log("No URL found after 'Start the Meeting:'.");
       }
     } else {
-      console.log("Description is not available or does not contain 'Start the Meeting:'.");
+      console.log(
+        "Description is not available or does not contain 'Start the Meeting:'."
+      );
     }
     // console.log(formattedStartDate);
     // console.log(formattedEndDate);
@@ -452,7 +461,7 @@ const ExecutionMentorSchedule = () => {
             </span>{" "}
             Google Meet
           </a>
-        ) : zoomMeetingUrl ?
+        ) : zoomMeetingUrl ? (
           <a
             target="_blank"
             href={zoomMeetingUrl}
@@ -463,14 +472,13 @@ const ExecutionMentorSchedule = () => {
               <img src={zoom} className="w-[26px] mr-1" alt="icon" />
             </span>{" "}
             Zoom
-          </a> : (
-            <p>No Meeting Link Available</p>
-          )}
+          </a>
+        ) : (
+          <p>No Meeting Link Available</p>
+        )}
       </div>
     );
   }
-
-
 
   const handleDateClick = (date) => {
     setSelectedDate(date);
@@ -562,7 +570,7 @@ const ExecutionMentorSchedule = () => {
   //for title
   function extractTitleWithoutMeetLink(title) {
     const meetLinkRegex = /https:\/\/meet\.google\.com\/\S+/;
-    const titleWithoutLink = title?.replace(meetLinkRegex, '').trim();
+    const titleWithoutLink = title?.replace(meetLinkRegex, "").trim();
     return titleWithoutLink || null;
   }
 
@@ -574,16 +582,13 @@ const ExecutionMentorSchedule = () => {
   //   const formattedEndDate = eventInfo?.event?.end?.toUTCString();
   //   const meetlink = extractMeetLink(eventInfo?.event?.title);
 
-
   //   // console.log(formattedStartDate)
   //   // console.log(formattedEndDate)
-
 
   //   const startTimeStamp = new Date(formattedStartDate);
   //   const startTimeString = startTimeStamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', timeZone: 'GMT' });
   //   const endTimeStamp = new Date(formattedEndDate);
   //   const endTimeString = endTimeStamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', timeZone: 'GMT' });
-
 
   //   return (
   //     <div
@@ -617,7 +622,6 @@ const ExecutionMentorSchedule = () => {
 
         <div className="flex">
           <div className="w-full mx-10 mt-10">
-
             {/* <div className="mt-10">
               {
                 agenda ?    <Calendar
@@ -728,7 +732,7 @@ const ExecutionMentorSchedule = () => {
                         start: event?.start.dateTime,
                         end: event?.end.dateTime,
                         link: event?.hangoutLink,
-                        description: event?.description
+                        description: event?.description,
                       }))}
                       dateClick={(info) => handleDateClick(info.date)}
                       eventTimeFormat={{
@@ -736,14 +740,12 @@ const ExecutionMentorSchedule = () => {
                         minute: "2-digit",
                         meridiem: "short",
                       }}
-                      timeZone={timeZone}// Use timeZone state
-                    // dayRender={handleDayRender}
+                      timeZone={timeZone} // Use timeZone state
+                      // dayRender={handleDayRender}
                     />
                   </div>
                   <form onSubmit={handleSubmit} className="ms-[40px]  mt-12">
                     <div className="grid grid-cols-2 gap-10">
-
-
                       <div className="">
                         <div className="flex items-center gap-4">
                           <p className="h-2 w-2 bg-black rounded-full"></p>
@@ -824,7 +826,10 @@ const ExecutionMentorSchedule = () => {
                         </div>
                         <ul className="flex gap-4 flex-wrap ">
                           {days?.map((day, index) => (
-                            <li key={index} className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] ">
+                            <li
+                              key={index}
+                              className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] "
+                            >
                               <input
                                 type="checkbox"
                                 id={"student" + index} // Updated to avoid duplicate IDs
@@ -835,14 +840,18 @@ const ExecutionMentorSchedule = () => {
                                 className="mb-1"
                               />
                               <div className="flex mb-1 items-center">
-                                <label className="ms-4" htmlFor={"student" + index}> {/* Updated for */}
+                                <label
+                                  className="ms-4"
+                                  htmlFor={"student" + index}
+                                >
+                                  {" "}
+                                  {/* Updated for */}
                                   {day?.day}
                                 </label>
                               </div>
                             </li>
                           ))}
                         </ul>
-
                       </div>
                       <div className="">
                         <div className="flex items-center gap-4">
@@ -860,12 +869,14 @@ const ExecutionMentorSchedule = () => {
                           defaultValue={adminCalendarInfo?.meetingType}
                           onChange={(e) => setMeetingTypee(e.target.value)}
                         >
-                          <option disabled selected value="">Select a Meeting Type</option>
+                          <option disabled selected value="">
+                            Select a Meeting Type
+                          </option>
                           <option value="Zoom">Zoom</option>
                           <option value="Meet">Google Meet</option>
                         </select>
 
-                        {meetingTypee === 'Zoom' && (
+                        {meetingTypee === "Zoom" && (
                           <div className="text-red-500 text-center mt-4">
                             <p>Zoom Recordings will expire in 30 days.</p>
                           </div>
@@ -895,7 +906,6 @@ const ExecutionMentorSchedule = () => {
                 </div>
               )}
             </div>
-
           </div>
 
           {/* <div>
