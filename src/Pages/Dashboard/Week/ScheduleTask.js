@@ -69,6 +69,7 @@ const matchInputWithBusySlots = (inputDate, inputTime, busyTimeSlots) => {
 };
 
 const ScheduleTask = ({ taskData, week }) => {
+  const calendarSubjectName = taskData?.calendarSubjectName;
   const taskId = taskData?._id;
   const adminMail = taskData?.usersession?.user?.email;
   const adminName = taskData?.usersession?.user?.user_metadata?.name;
@@ -612,7 +613,7 @@ const ScheduleTask = ({ taskData, week }) => {
             .then((response) => response.json())
             .then((data) => {
               var event = {
-                summary: `${userInfo?.name} Doubt Clearing Session`,
+                summary: `${userInfo?.name} ${calendarSubjectName}`,
                 location: "",
                 start: {
                   dateTime: selectedTimeDatee,
@@ -666,7 +667,7 @@ const ScheduleTask = ({ taskData, week }) => {
                   .then(async data => {
                     console.log('Event updated:', data);
                     var rescheduledEvent = {
-                      title: `${userInfo?.name} <> Doubt clearing <> `,
+                      title: `${userInfo?.name} ${calendarSubjectName} `,
                       start: {
                         dateTime: selectedTimeDatee,
                         timeZone: "UTC",
@@ -884,7 +885,7 @@ const ScheduleTask = ({ taskData, week }) => {
                       (response) => {
                         console.log(response);
                         var event = {
-                          title: `${userInfo?.name} <> Doubt clearing <> `,
+                          title: `${userInfo?.name} ${calendarSubjectName}`,
                           start: {
                             dateTime: selectedTimeDatee,
                             timeZone: "UTC",
@@ -1055,7 +1056,7 @@ const ScheduleTask = ({ taskData, week }) => {
                     console.log("Admin Mail ", adminMail);
                     if (sendMail?.data?.success && sendMailAdmin?.data?.success) {
                       const updatedEvent = {
-                        summary: `${userInfo?.name} Doubt Clearing Session`,
+                        summary: `${userInfo?.name} ${calendarSubjectName}`,
                         description: `Join Zoom Meeting: ${adminUrl}\nStart the Meeting: ${studentUrl}`,
                         location: newZoomSchedule.join_url,  // Zoom meeting link as location
                         start: {
@@ -1248,7 +1249,7 @@ const ScheduleTask = ({ taskData, week }) => {
                     if (sendMail?.data?.success && sendMailAdmin?.data?.success) {
                       async function initiate() {
                         var event = {
-                          summary: `${userInfo?.name} Doubt Clearing Session`,
+                          summary: `${userInfo?.name} ${calendarSubjectName}`,
                           description: `Join Zoom Meeting: ${adminUrl}\nStart the Meeting: ${studentUrl}`,
                           location: newZoomSchedule.join_url,
                           start: {

@@ -170,6 +170,7 @@ const EditSchedule = ({ taskData }) => {
     const currentDate = getCurrentDate();
     const form = event.target;
     const scheduleName = form.scheduleName?.value;
+    const calendarSubjectName = form.calendarSubjectName?.value;
     const dateRange = form.dateRange?.value;
     const minimumTime = form.minimumTime?.value;
     const maximumTime = form.maximumTime?.value;
@@ -188,6 +189,7 @@ const EditSchedule = ({ taskData }) => {
       usersession: scheduleData?.usersession,
       events: scheduleData?.events,
       taskDrip,
+      calendarSubjectName
     };
 
     console.log(manageSchedule);
@@ -373,6 +375,25 @@ const EditSchedule = ({ taskData }) => {
                 name="scheduleName"
                 type="text"
                 placeholder="schedule Name"
+              />
+            </div>
+            <div className="">
+              <div className="flex items-center gap-4">
+                <p className="h-2 w-2 bg-black rounded-full"></p>
+                <p className="font-bold text-lg me-[36px]">Calendar Subject Name</p>
+                <img src={required} alt="required" />
+              </div>
+
+              <input
+                required
+                /*   defaultValue={
+                            assignmentData ? assignmentData?.scheduleName : ""
+                          } */
+                defaultValue={scheduleData?.calendarSubjectName}
+                className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
+                name="calendarSubjectName"
+                type="text"
+                placeholder="Calendar Subject Name"
               />
             </div>
 
