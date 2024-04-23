@@ -124,7 +124,7 @@ const DashboardCourses = ({ myCoursesChecked, allCoursesChecked, courseAccessUrl
           </div>
           <div className="my-[60px] ">
             <div
-              className={`flex flex-wrap ${myCourses.length <= 2
+              className={`flex ${myCourses.length <= 2
                 ? "justify-start gap-x-14"
                 : "justify-between gap-x-2"
                 }  gap-y-5`}
