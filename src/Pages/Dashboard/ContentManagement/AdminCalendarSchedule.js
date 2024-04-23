@@ -45,11 +45,10 @@ const customStyles = {
   },
 };
 
-
 const localizer = momentLocalizer(moment);
 const AdminCalendarSchedule = () => {
   const { id } = useParams();
-  const [timeZone, setTimeZone] = useState('UTC');
+  const [timeZone, setTimeZone] = useState("UTC");
   const { user, userInfo } = useContext(AuthContext);
 
   const [chapter, setChapter] = useState({});
@@ -89,11 +88,12 @@ const AdminCalendarSchedule = () => {
     if (calendarfetch === true) {
       googleSignIn();
     }
-  }, [calendarfetch])
+  }, [calendarfetch]);
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API
+        `${
+          process.env.REACT_APP_SERVER_API
         }/api/v1/batches/courseId/${localStorage.getItem("courseId")}`
       )
       .then((response) => {
@@ -123,7 +123,9 @@ const AdminCalendarSchedule = () => {
   }, [chapter]);
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/calenderInfo/getCalendarInfoByEmail/email/${userInfo?.email}`)
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/calenderInfo/getCalendarInfoByEmail/email/${userInfo?.email}`
+      )
       .then((response) => {
         setAdminCalendarInfo(response?.data);
       })
@@ -170,8 +172,8 @@ const AdminCalendarSchedule = () => {
   const getCurrentDate = () => {
     const today = new Date();
     const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
   // Function to check if a given date is in the past
@@ -184,13 +186,24 @@ const AdminCalendarSchedule = () => {
 
   // Function to handle the day rendering
   const handleDayRender = (info) => {
-    const date = info.date.toISOString().split('T')[0];
+    const date = info.date.toISOString().split("T")[0];
     const isPastDayValue = isPastDay(date);
 
     if (isPastDayValue) {
-      info.el.style.backgroundColor = 'lightgray'; // Apply your desired color for past days
+      info.el.style.backgroundColor = "lightgray"; // Apply your desired color for past days
     }
   };
+  const currentDate = new Date(); // Current date
+  const endDate = new Date(); // Create a new Date object for the end date
+  // endDate.setDate(currentDate.getDate() + adminCalendarInfo?.dateRange);
+  endDate.setUTCDate(endDate.getUTCDate() + +adminCalendarInfo?.dateRange);
+  const relevantEvents = calendarEvents.filter((event) => {
+    const eventStart = new Date(event?.originalStartTime?.dateTime); // Parse event start date
+    return eventStart >= currentDate && eventStart <= endDate;
+  });
+  console.log(endDate);
+  console.log(calendarEvents);
+  console.log(relevantEvents);
   const handleSubmit = async (event) => {
     event.preventDefault();
     const currentDate = getCurrentDate();
@@ -203,7 +216,7 @@ const AdminCalendarSchedule = () => {
     const meetingDuration = adminCalendarInfo?.meetingDuration;
     const offDays = adminCalendarInfo?.offDays;
     const meetingType = adminCalendarInfo?.meetingType;
-    console.log(adminCalendarInfo)
+    console.log(adminCalendarInfo);
     const manageSchedule = {
       scheduleName,
       taskName: scheduleName,
@@ -211,15 +224,15 @@ const AdminCalendarSchedule = () => {
       courseId: chapter?.courseId,
       batches: selectedBatches,
       offDays: offDays,
-      dateRange : dateRange,
+      dateRange: dateRange,
       maximumTime,
       minimumTime,
-      meetingDuration : meetingDuration,
-      meetingType : meetingType,
+      meetingDuration: meetingDuration,
+      meetingType: meetingType,
       usersession: global,
-      events: calendarEvents,
+      events: relevantEvents,
       taskDrip,
-      calendarSubjectName
+      calendarSubjectName,
     };
     setAssignmentData(manageSchedule);
     console.log(manageSchedule);
@@ -233,8 +246,7 @@ const AdminCalendarSchedule = () => {
         toast.success("Schedule added Successfully");
         event.target.reset();
         navigate(`/questLevels/${chapter?.courseId}`);
-      }
-      else {
+      } else {
         toast.error("Something went wrong");
       }
       console.log(manageSchedule);
@@ -272,7 +284,7 @@ const AdminCalendarSchedule = () => {
   }
   const googleSignIn = async () => {
     const preAuthUrl = window.location.pathname; // You might want to store the full location object or pathname
-    localStorage.setItem('preAuthUrl', preAuthUrl);
+    localStorage.setItem("preAuthUrl", preAuthUrl);
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
@@ -330,7 +342,9 @@ const AdminCalendarSchedule = () => {
   }
   async function fetchGoogleCalendarEvents() {
     const currentDate = new Date().toISOString();
-    const url = new URL("https://www.googleapis.com/calendar/v3/calendars/primary/events");
+    const url = new URL(
+      "https://www.googleapis.com/calendar/v3/calendars/primary/events"
+    );
 
     url.searchParams.append("timeMin", currentDate);
     url.searchParams.append("singleEvents", true);
@@ -352,7 +366,8 @@ const AdminCalendarSchedule = () => {
     const data = await response.json();
 
     // Extract time zone from the first event (assuming all events have the same time zone)
-    const timeZone = data.items.length > 0 ? data.items[0].start.timeZone : 'UTC';
+    const timeZone =
+      data.items.length > 0 ? data.items[0].start.timeZone : "UTC";
 
     console.log(data);
 
@@ -362,12 +377,11 @@ const AdminCalendarSchedule = () => {
     try {
       const events = await fetchGoogleCalendarEvents();
       setCalendarError(false);
-      setCalendarEvents(events.events || []);  // Use events.events to ensure it's an array
-
+      setCalendarEvents(events.events || []); // Use events.events to ensure it's an array
     } catch (error) {
       console.error(error);
       setCalendarError(true);
-      setCalendarEvents([]);  // Set calendarEvents to an empty array on error
+      setCalendarEvents([]); // Set calendarEvents to an empty array on error
     }
   }
   function renderEventContent(eventInfo) {
@@ -376,12 +390,16 @@ const AdminCalendarSchedule = () => {
     const options = {
       timeZone: eventInfo?.event?.start?.timeZone,
       hour12: false,
-      hour: 'numeric',
-      minute: 'numeric',
+      hour: "numeric",
+      minute: "numeric",
     };
 
-    const formattedStartDate = new Intl.DateTimeFormat('en-US', options).format(new Date(eventInfo?.event?.start));
-    const formattedEndDate = new Intl.DateTimeFormat('en-US', options).format(new Date(eventInfo?.event?.end));
+    const formattedStartDate = new Intl.DateTimeFormat("en-US", options).format(
+      new Date(eventInfo?.event?.start)
+    );
+    const formattedEndDate = new Intl.DateTimeFormat("en-US", options).format(
+      new Date(eventInfo?.event?.end)
+    );
     const meetlink = eventInfo?.event?.extendedProps?.link;
     const description = eventInfo?.event?.extendedProps?.description;
     let zoomMeetingUrl = ""; // Initialize zoomMeetingUrl variable to store the URL
@@ -396,7 +414,9 @@ const AdminCalendarSchedule = () => {
         console.log("No URL found after 'Start the Meeting:'.");
       }
     } else {
-      console.log("Description is not available or does not contain 'Start the Meeting:'.");
+      console.log(
+        "Description is not available or does not contain 'Start the Meeting:'."
+      );
     }
     // console.log(formattedStartDate);
     // console.log(formattedEndDate);
@@ -425,7 +445,7 @@ const AdminCalendarSchedule = () => {
             </span>{" "}
             Google Meet
           </a>
-        ) : zoomMeetingUrl ?
+        ) : zoomMeetingUrl ? (
           <a
             target="_blank"
             href={zoomMeetingUrl}
@@ -436,14 +456,13 @@ const AdminCalendarSchedule = () => {
               <img src={zoom} className="w-[26px] mr-1" alt="icon" />
             </span>{" "}
             Zoom
-          </a> : (
-            <p>No Meeting Link Available</p>
-          )}
+          </a>
+        ) : (
+          <p>No Meeting Link Available</p>
+        )}
       </div>
     );
   }
-
-
 
   const handleDateClick = (date) => {
     setSelectedDate(date);
@@ -636,7 +655,7 @@ const AdminCalendarSchedule = () => {
                       start: event?.start.dateTime,
                       end: event?.end.dateTime,
                       link: event?.hangoutLink,
-                      description: event?.description
+                      description: event?.description,
                     }))}
                     dateClick={(info) => handleDateClick(info.date)}
                     eventTimeFormat={{
@@ -644,7 +663,7 @@ const AdminCalendarSchedule = () => {
                       minute: "2-digit",
                       meridiem: "short",
                     }}
-                    timeZone={timeZone}// Use timeZone state
+                    timeZone={timeZone} // Use timeZone state
                     dayRender={handleDayRender}
                   />
                 </div>
@@ -837,7 +856,9 @@ const AdminCalendarSchedule = () => {
                     <fieldset>
                       <div className="flex items-center gap-4 mb-5">
                         <p className="h-2 w-2 bg-black rounded-full"></p>
-                        <p className="font-bold text-lg me-[36px]">Enable Drip</p>
+                        <p className="font-bold text-lg me-[36px]">
+                          Enable Drip
+                        </p>
                         <img src={required} alt="" />
                       </div>
                       <div className="flex items-center space-x-4">
@@ -853,8 +874,11 @@ const AdminCalendarSchedule = () => {
                           />
                           <label
                             htmlFor="radioYes"
-                            className={`ml-2 text-sm font-medium ${course?.enableDrip ? "text-gray-400" : "text-gray-900"
-                              }`}
+                            className={`ml-2 text-sm font-medium ${
+                              course?.enableDrip
+                                ? "text-gray-400"
+                                : "text-gray-900"
+                            }`}
                           >
                             Yes
                           </label>
@@ -872,8 +896,11 @@ const AdminCalendarSchedule = () => {
                           />
                           <label
                             htmlFor="radioNo"
-                            className={`ml-2 text-sm font-medium ${course?.enableDrip ? "text-gray-400" : "text-gray-900"
-                              }`}
+                            className={`ml-2 text-sm font-medium ${
+                              course?.enableDrip
+                                ? "text-gray-400"
+                                : "text-gray-900"
+                            }`}
                           >
                             No
                           </label>

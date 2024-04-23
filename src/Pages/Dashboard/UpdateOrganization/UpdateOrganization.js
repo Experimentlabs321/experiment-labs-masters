@@ -12,9 +12,9 @@ import { useNavigate } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import LanguageSetting from "./LanguageSetting/LanguageSetting";
 import EmailIntegration from "./EmailIntegration";
+import WatiIntegration from "./WatiIntegration";
 
 const UpdateOrganization = () => {
-
   const navigate = useNavigate();
   const { userInfo } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(true);
@@ -30,6 +30,7 @@ const UpdateOrganization = () => {
   const [dashboardTheme, setDashboardTheme] = useState({});
   const [currentPage, setCurrentPage] = useState("organizationTheme");
   const [paymentInstance, setPaymentInstance] = useState({});
+  const [watiInstance, setWatiInstance] = useState({});
   const [maxDeviceCount, setMaxDeviceCount] = useState(0);
   const [paymentNavbarColor, setPaymentNavbarColor] = useState(
     orgData?.paymentNavbarColor || "#3E4DAC"
@@ -51,7 +52,7 @@ const UpdateOrganization = () => {
   const [courseAccessUrl, setCourseAccessUrl] = useState(
     `/courseAccess?state=allCourses`
   );
- /*  console.log(paymentNavbarAccessDashboardButtonColor);
+  /*  console.log(paymentNavbarAccessDashboardButtonColor);
   console.log(paymentNavbarAccessDashboardButtonTextColor);
   console.log(paymentNavbarLogoutButtonColor);
   console.log(paymentNavbarLogoutButtonTextColor); */
@@ -65,10 +66,8 @@ const UpdateOrganization = () => {
           `${process.env.REACT_APP_SERVER_API}/api/v1/language/getUpdateOrganizationSubDetailsByOrganizationAndName/organizationTheme/organizationsId/${userInfo?.organizationId}`
         )
         .then((response) => {
-
-          console.log(response)
+          console.log(response);
           setItemDetails(response?.data);
-
         })
         .finally(() => {
           setLoading(false);
@@ -108,6 +107,7 @@ const UpdateOrganization = () => {
         );
         setDashboardTheme(response?.data?.dashboardTheme || {});
         setPaymentInstance(response?.data?.paymentInstance || {});
+        setWatiInstance(response?.data?.watiInstance || {});
         setMaxDeviceCount(response?.data?.maxDeviceCount || 0);
         setCourseAccessUrl(
           response?.data?.courseAccessUrl || "/courseAccess?state=allCourses"
@@ -174,8 +174,9 @@ const UpdateOrganization = () => {
                 : "bg-white border-2 border-gray-400 text-black"
             }`}
           >
-            {itemDetails?.organizationTheme ? itemDetails?.organizationTheme :"Organization Theme"}
-            
+            {itemDetails?.organizationTheme
+              ? itemDetails?.organizationTheme
+              : "Organization Theme"}
           </button>
           <button
             onClick={() => setCurrentPage("dashboardTheme")}
@@ -185,8 +186,9 @@ const UpdateOrganization = () => {
                 : "bg-white border-2 border-gray-400 text-black"
             }`}
           >
-            {itemDetails?.dashboardTheme ? itemDetails?.dashboardTheme :"Dashboard Theme"}
-            
+            {itemDetails?.dashboardTheme
+              ? itemDetails?.dashboardTheme
+              : "Dashboard Theme"}
           </button>
           <button
             onClick={() => setCurrentPage("paymentIntegration")}
@@ -196,8 +198,9 @@ const UpdateOrganization = () => {
                 : "bg-white border-2 border-gray-400 text-black"
             }`}
           >
-            {itemDetails?.paymentIntegration ? itemDetails?.paymentIntegration :"Payment Integration"}
-            
+            {itemDetails?.paymentIntegration
+              ? itemDetails?.paymentIntegration
+              : "Payment Integration"}
           </button>
           <button
             onClick={() => setCurrentPage("deviceLimit")}
@@ -207,8 +210,9 @@ const UpdateOrganization = () => {
                 : "bg-white border-2 border-gray-400 text-black"
             }`}
           >
-            {itemDetails?.limitDevice ? itemDetails?.limitDevice :"Limit Device"}
-            
+            {itemDetails?.limitDevice
+              ? itemDetails?.limitDevice
+              : "Limit Device"}
           </button>
           <button
             onClick={() => setCurrentPage("language Setting")}
@@ -218,8 +222,9 @@ const UpdateOrganization = () => {
                 : "bg-white border-2 border-gray-400 text-black"
             }`}
           >
-            {itemDetails?.languageSetting ? itemDetails?.languageSetting :"Language Setting"}
-            
+            {itemDetails?.languageSetting
+              ? itemDetails?.languageSetting
+              : "Language Setting"}
           </button>
           <button
             onClick={() => setCurrentPage("emailIntegration")}
@@ -229,21 +234,38 @@ const UpdateOrganization = () => {
                 : "bg-white border-2 border-gray-400 text-black"
             }`}
           >
-            {itemDetails?.emailIntegration ? itemDetails?.emailIntegration :"Email Integration"}
-           
-            
+            {itemDetails?.emailIntegration
+              ? itemDetails?.emailIntegration
+              : "Email Integration"}
+          </button>
+          <button
+            onClick={() => setCurrentPage("watiIntegration")}
+            className={`px-4 py-2 text-lg font-semibold rounded-lg ${
+              currentPage === "watiIntegration"
+                ? "bg-[#3E4DAC] text-white"
+                : "bg-white border-2 border-gray-400 text-black"
+            }`}
+          >
+            {itemDetails?.watiIntegration
+              ? itemDetails?.watiIntegration
+              : "Whatsapp Integration"}
           </button>
         </div>
 
         {currentPage === "organizationTheme" && (
           <div>
             <h1 className="px-4 mt-4 text-lg font-bold font-sans">
-            {itemDetails?.organizationID ? itemDetails?.organizationID :"Organization ID"} : {orgData?._id}
+              {itemDetails?.organizationID
+                ? itemDetails?.organizationID
+                : "Organization ID"}{" "}
+              : {orgData?._id}
             </h1>
             <form onSubmit={handleSubmit} className="px-4 mt-1">
               <div className="flex gap-4">
                 <div className="flex flex-col mt-5 basis-1/2">
-                  <label className="font-bold text-lg">{itemDetails?.favicon ? itemDetails?.favicon :"Favicon"}</label>
+                  <label className="font-bold text-lg">
+                    {itemDetails?.favicon ? itemDetails?.favicon : "Favicon"}
+                  </label>
                   <UploadFile setFileUrl={setFaviconUrl}>
                     <div>
                       <img
@@ -253,21 +275,28 @@ const UpdateOrganization = () => {
                         alt=""
                       />
                       <p className="text-xl text-gray-400">
-                      {itemDetails?.dragAndDropYourFile ? itemDetails?.dragAndDropYourFile :"Drag & Drop your file"}
-                        
+                        {itemDetails?.dragAndDropYourFile
+                          ? itemDetails?.dragAndDropYourFile
+                          : "Drag & Drop your file"}
                       </p>
                       <p className="py-4">
                         <span className="rounded-lg bg-gray-400 px-3 py-3 font-semibold">
                           {/* <BiVideoPlus className="animate-bounce" /> */}
-                          {itemDetails?.uploadFavicon ? itemDetails?.uploadFavicon :"Upload Favicon"}
-                          
+                          {itemDetails?.uploadFavicon
+                            ? itemDetails?.uploadFavicon
+                            : "Upload Favicon"}
                         </span>
                       </p>
                     </div>
                   </UploadFile>
                 </div>
                 <div className="flex flex-col mt-5 basis-1/2">
-                  <label className="font-bold text-lg"> {itemDetails?.currentFavicon ? itemDetails?.currentFavicon :"Current Favicon"}</label>
+                  <label className="font-bold text-lg">
+                    {" "}
+                    {itemDetails?.currentFavicon
+                      ? itemDetails?.currentFavicon
+                      : "Current Favicon"}
+                  </label>
                   {faviconUrl ? (
                     <img
                       className="mx-auto my-auto max-w-[200px]"
@@ -276,7 +305,9 @@ const UpdateOrganization = () => {
                     />
                   ) : (
                     <p className="text-center font-bold text-lg my-auto">
-                      {itemDetails?.faviconHasNotAdded ? itemDetails?.faviconHasNotAdded :"Favicon has not added"}
+                      {itemDetails?.faviconHasNotAdded
+                        ? itemDetails?.faviconHasNotAdded
+                        : "Favicon has not added"}
                       !
                     </p>
                   )}
@@ -285,7 +316,9 @@ const UpdateOrganization = () => {
 
               <div className="flex gap-4">
                 <div className="flex flex-col mt-5 basis-1/2">
-                  <label className="font-bold text-lg">{itemDetails?.logo ? itemDetails?.logo :"Logo"}</label>
+                  <label className="font-bold text-lg">
+                    {itemDetails?.logo ? itemDetails?.logo : "Logo"}
+                  </label>
                   <UploadFile setFileUrl={setOrgLogoUrl}>
                     <div>
                       <img
@@ -295,21 +328,27 @@ const UpdateOrganization = () => {
                         alt=""
                       />
                       <p className="text-xl text-gray-400">
-                      {itemDetails?.dragAndDropYourFile ? itemDetails?.dragAndDropYourFile :"Drag & Drop your file"}
-                        
+                        {itemDetails?.dragAndDropYourFile
+                          ? itemDetails?.dragAndDropYourFile
+                          : "Drag & Drop your file"}
                       </p>
                       <p className="py-4">
                         <span className="rounded-lg bg-gray-400 px-3 py-3 font-semibold">
                           {/* <BiVideoPlus className="animate-bounce" /> */}
-                          {itemDetails?.uploadLogo ? itemDetails?.uploadLogo :"Upload Logo"}
-                          
+                          {itemDetails?.uploadLogo
+                            ? itemDetails?.uploadLogo
+                            : "Upload Logo"}
                         </span>
                       </p>
                     </div>
                   </UploadFile>
                 </div>
                 <div className="flex flex-col mt-5 basis-1/2">
-                  <label className="font-bold text-lg">{itemDetails?.currentLogo ? itemDetails?.currentLogo :"Current Logo"}</label>
+                  <label className="font-bold text-lg">
+                    {itemDetails?.currentLogo
+                      ? itemDetails?.currentLogo
+                      : "Current Logo"}
+                  </label>
                   {orgLogoUrl ? (
                     <img
                       className="mx-auto my-auto max-w-[200px]"
@@ -318,7 +357,9 @@ const UpdateOrganization = () => {
                     />
                   ) : (
                     <p className="text-center font-bold text-lg my-auto">
-                      {itemDetails?.logoHasNotAdded ? itemDetails?.logoHasNotAdded :"Logo has not added"}
+                      {itemDetails?.logoHasNotAdded
+                        ? itemDetails?.logoHasNotAdded
+                        : "Logo has not added"}
                       !
                     </p>
                   )}
@@ -327,8 +368,9 @@ const UpdateOrganization = () => {
               <div className="flex gap-4">
                 <div className="flex flex-col mt-5 basis-1/2">
                   <label className="font-bold text-lg">
-                  {itemDetails?.logoForLoginPage ? itemDetails?.logoForLoginPage :"Logo for login page"}
-                    
+                    {itemDetails?.logoForLoginPage
+                      ? itemDetails?.logoForLoginPage
+                      : "Logo for login page"}
                   </label>
                   <UploadFile setFileUrl={setLoginPageOrgLogoUrl}>
                     <div>
@@ -339,14 +381,16 @@ const UpdateOrganization = () => {
                         alt=""
                       />
                       <p className="text-xl text-gray-400">
-                      {itemDetails?.dragAndDropYourFile ? itemDetails?.dragAndDropYourFile :"Drag & Drop your file"}
-                        
+                        {itemDetails?.dragAndDropYourFile
+                          ? itemDetails?.dragAndDropYourFile
+                          : "Drag & Drop your file"}
                       </p>
                       <p className="py-4">
                         <span className="rounded-lg bg-gray-400 px-3 py-3 font-semibold">
                           {/* <BiVideoPlus className="animate-bounce" /> */}
-                          {itemDetails?.uploadLogo ? itemDetails?.uploadLogo :"Upload Logo"}
-                          
+                          {itemDetails?.uploadLogo
+                            ? itemDetails?.uploadLogo
+                            : "Upload Logo"}
                         </span>
                       </p>
                     </div>
@@ -354,8 +398,9 @@ const UpdateOrganization = () => {
                 </div>
                 <div className="flex flex-col mt-5 basis-1/2">
                   <label className="font-bold text-lg">
-                  {itemDetails?.currentLoginPageLogo ? itemDetails?.currentLoginPageLogo :"Current Login Page Logo"}
-                    
+                    {itemDetails?.currentLoginPageLogo
+                      ? itemDetails?.currentLoginPageLogo
+                      : "Current Login Page Logo"}
                   </label>
                   {loginPageOrgLogoUrl ? (
                     <img
@@ -365,7 +410,9 @@ const UpdateOrganization = () => {
                     />
                   ) : (
                     <p className="text-center font-bold text-lg my-auto">
-                      {itemDetails?.logoHasNotAdded ? itemDetails?.logoHasNotAdded :"Logo has not added"}
+                      {itemDetails?.logoHasNotAdded
+                        ? itemDetails?.logoHasNotAdded
+                        : "Logo has not added"}
                       !
                     </p>
                   )}
@@ -373,7 +420,11 @@ const UpdateOrganization = () => {
               </div>
               <div className="flex gap-4">
                 <div className="flex flex-col mt-5 basis-1/2">
-                  <label className="font-bold text-lg">{itemDetails?.loginTitle ? itemDetails?.loginTitle :"Login title"}</label>
+                  <label className="font-bold text-lg">
+                    {itemDetails?.loginTitle
+                      ? itemDetails?.loginTitle
+                      : "Login title"}
+                  </label>
                   <input
                     type="text"
                     defaultValue={orgData?.loginTitle}
@@ -382,7 +433,11 @@ const UpdateOrganization = () => {
                   />
                 </div>
                 <div className="flex flex-col mt-5 basis-1/2">
-                  <label className="font-bold text-lg">{itemDetails?.loginSubTitle ? itemDetails?.loginSubTitle :"Login sub-title"}</label>
+                  <label className="font-bold text-lg">
+                    {itemDetails?.loginSubTitle
+                      ? itemDetails?.loginSubTitle
+                      : "Login sub-title"}
+                  </label>
                   <input
                     type="text"
                     name="loginSubTitle"
@@ -395,8 +450,9 @@ const UpdateOrganization = () => {
               <div className="flex gap-4">
                 <div className="flex flex-col mt-5 basis-1/2">
                   <label className="font-bold text-lg">
-                  {itemDetails?.loginSidebarImage ? itemDetails?.loginSidebarImage :"Login sidebar image"}
-                    
+                    {itemDetails?.loginSidebarImage
+                      ? itemDetails?.loginSidebarImage
+                      : "Login sidebar image"}
                   </label>
                   <UploadFile setFileUrl={setLoginSidebarImage}>
                     <div>
@@ -407,21 +463,27 @@ const UpdateOrganization = () => {
                         alt=""
                       />
                       <p className="text-xl text-gray-400">
-                      {itemDetails?.dragAndDropYourFile ? itemDetails?.dragAndDropYourFile :"Drag & Drop your file"}
-                        
+                        {itemDetails?.dragAndDropYourFile
+                          ? itemDetails?.dragAndDropYourFile
+                          : "Drag & Drop your file"}
                       </p>
                       <p className="py-4">
                         <span className="rounded-lg bg-gray-400 px-3 py-3 font-semibold">
                           {/* <BiVideoPlus className="animate-bounce" /> */}
-                          {itemDetails?.uploadImage ? itemDetails?.uploadImage :"Upload Image"}
-                          
+                          {itemDetails?.uploadImage
+                            ? itemDetails?.uploadImage
+                            : "Upload Image"}
                         </span>
                       </p>
                     </div>
                   </UploadFile>
                 </div>
                 <div className="flex flex-col mt-5 basis-1/2">
-                  <label className="font-bold text-lg">{itemDetails?.currentImage ? itemDetails?.currentImage :"Current image"}</label>
+                  <label className="font-bold text-lg">
+                    {itemDetails?.currentImage
+                      ? itemDetails?.currentImage
+                      : "Current image"}
+                  </label>
                   {loginSidebarImage ? (
                     <img
                       className="mx-auto my-auto max-w-[200px]"
@@ -430,7 +492,9 @@ const UpdateOrganization = () => {
                     />
                   ) : (
                     <p className="text-center font-bold text-lg my-auto">
-                      {itemDetails?.imageHasNotAdded ? itemDetails?.imageHasNotAdded :"Image has not added"}
+                      {itemDetails?.imageHasNotAdded
+                        ? itemDetails?.imageHasNotAdded
+                        : "Image has not added"}
                       !
                     </p>
                   )}
@@ -440,8 +504,9 @@ const UpdateOrganization = () => {
               <div className="flex gap-4">
                 <div className="flex flex-col mt-5 basis-1/2">
                   <label className="font-bold text-lg">
-                  {itemDetails?.paymentNavbarLogo ? itemDetails?.paymentNavbarLogo :"Payment navbar logo"}
-                    
+                    {itemDetails?.paymentNavbarLogo
+                      ? itemDetails?.paymentNavbarLogo
+                      : "Payment navbar logo"}
                   </label>
                   <UploadFile setFileUrl={setPaymentNavbarLogo}>
                     <div>
@@ -452,21 +517,28 @@ const UpdateOrganization = () => {
                         alt=""
                       />
                       <p className="text-xl text-gray-400">
-                      {itemDetails?.dragAndDropYourFile ? itemDetails?.dragAndDropYourFile :"Drag & Drop your file"}
-                        
+                        {itemDetails?.dragAndDropYourFile
+                          ? itemDetails?.dragAndDropYourFile
+                          : "Drag & Drop your file"}
                       </p>
                       <p className="py-4">
                         <span className="rounded-lg bg-gray-400 px-3 py-3 font-semibold">
                           {/* <BiVideoPlus className="animate-bounce" /> */}
-                          {itemDetails?.uploadImage ? itemDetails?.uploadImage :"Upload Image"}
-                          
+                          {itemDetails?.uploadImage
+                            ? itemDetails?.uploadImage
+                            : "Upload Image"}
                         </span>
                       </p>
                     </div>
                   </UploadFile>
                 </div>
                 <div className="flex flex-col mt-5 basis-1/2">
-                  <label className="font-bold text-lg"> {itemDetails?.currentImage ? itemDetails?.currentImage :"Current image"}</label>
+                  <label className="font-bold text-lg">
+                    {" "}
+                    {itemDetails?.currentImage
+                      ? itemDetails?.currentImage
+                      : "Current image"}
+                  </label>
                   {paymentNavbarLogo ? (
                     <img
                       className="mx-auto my-auto max-w-[200px]"
@@ -475,7 +547,9 @@ const UpdateOrganization = () => {
                     />
                   ) : (
                     <p className="text-center font-bold text-lg my-auto">
-                       {itemDetails?.logoHasNotAdded ? itemDetails?.logoHasNotAdded :"Logo has not added"}
+                      {itemDetails?.logoHasNotAdded
+                        ? itemDetails?.logoHasNotAdded
+                        : "Logo has not added"}
                       !
                     </p>
                   )}
@@ -485,8 +559,9 @@ const UpdateOrganization = () => {
               <div className="flex gap-4">
                 <div className="flex flex-col mt-5 basis-1/2">
                   <label className="font-bold text-lg">
-                  {itemDetails?.progressiveWebAppLogo ? itemDetails?.progressiveWebAppLogo :"Progressive web app logo"}
-                    
+                    {itemDetails?.progressiveWebAppLogo
+                      ? itemDetails?.progressiveWebAppLogo
+                      : "Progressive web app logo"}
                   </label>
                   <UploadFile setFileUrl={setPWALogo}>
                     <div>
@@ -497,21 +572,28 @@ const UpdateOrganization = () => {
                         alt=""
                       />
                       <p className="text-xl text-gray-400">
-                      {itemDetails?.dragAndDropYourFile ? itemDetails?.dragAndDropYourFile :"Drag & Drop your file"}
-                        
+                        {itemDetails?.dragAndDropYourFile
+                          ? itemDetails?.dragAndDropYourFile
+                          : "Drag & Drop your file"}
                       </p>
                       <p className="py-4">
                         <span className="rounded-lg bg-gray-400 px-3 py-3 font-semibold">
                           {/* <BiVideoPlus className="animate-bounce" /> */}
-                          {itemDetails?.uploadImage ? itemDetails?.uploadImage :"Upload Image"}
-                          
+                          {itemDetails?.uploadImage
+                            ? itemDetails?.uploadImage
+                            : "Upload Image"}
                         </span>
                       </p>
                     </div>
                   </UploadFile>
                 </div>
                 <div className="flex flex-col mt-5 basis-1/2">
-                  <label className="font-bold text-lg"> {itemDetails?.currentImage ? itemDetails?.currentImage :"Current image"}</label>
+                  <label className="font-bold text-lg">
+                    {" "}
+                    {itemDetails?.currentImage
+                      ? itemDetails?.currentImage
+                      : "Current image"}
+                  </label>
                   {pWALogo ? (
                     <img
                       className="mx-auto my-auto max-w-[200px]"
@@ -520,7 +602,9 @@ const UpdateOrganization = () => {
                     />
                   ) : (
                     <p className="text-center font-bold text-lg my-auto">
-                       {itemDetails?.logoHasNotAdded ? itemDetails?.logoHasNotAdded :"Logo has not added"}
+                      {itemDetails?.logoHasNotAdded
+                        ? itemDetails?.logoHasNotAdded
+                        : "Logo has not added"}
                       !
                     </p>
                   )}
@@ -530,8 +614,9 @@ const UpdateOrganization = () => {
               <div className="flex gap-4">
                 <div className="flex flex-col mt-5 basis-1/2">
                   <label className="font-bold text-lg">
-                  {itemDetails?.progressiveWebAppSplashScreenLogo ? itemDetails?.progressiveWebAppSplashScreenLogo :"Progressive web app splash screen logo"}
-                    
+                    {itemDetails?.progressiveWebAppSplashScreenLogo
+                      ? itemDetails?.progressiveWebAppSplashScreenLogo
+                      : "Progressive web app splash screen logo"}
                   </label>
                   <UploadFile setFileUrl={setPWASplashscreenLogo}>
                     <div>
@@ -542,21 +627,27 @@ const UpdateOrganization = () => {
                         alt=""
                       />
                       <p className="text-xl text-gray-400">
-                      {itemDetails?.dragAndDropYourFile ? itemDetails?.dragAndDropYourFile :"Drag & Drop your file"}
-                        
+                        {itemDetails?.dragAndDropYourFile
+                          ? itemDetails?.dragAndDropYourFile
+                          : "Drag & Drop your file"}
                       </p>
                       <p className="py-4">
                         <span className="rounded-lg bg-gray-400 px-3 py-3 font-semibold">
                           {/* <BiVideoPlus className="animate-bounce" /> */}
-                          {itemDetails?.uploadImage ? itemDetails?.uploadImage :"Upload Image"}
-                          
+                          {itemDetails?.uploadImage
+                            ? itemDetails?.uploadImage
+                            : "Upload Image"}
                         </span>
                       </p>
                     </div>
                   </UploadFile>
                 </div>
                 <div className="flex flex-col mt-5 basis-1/2">
-                  <label className="font-bold text-lg">{itemDetails?.currentImage ? itemDetails?.currentImage :"Current image"}</label>
+                  <label className="font-bold text-lg">
+                    {itemDetails?.currentImage
+                      ? itemDetails?.currentImage
+                      : "Current image"}
+                  </label>
                   {pWASplashscreenLogo ? (
                     <img
                       className="mx-auto my-auto max-w-[200px]"
@@ -565,7 +656,9 @@ const UpdateOrganization = () => {
                     />
                   ) : (
                     <p className="text-center font-bold text-lg my-auto">
-                      {itemDetails?.logoHasNotAdded ? itemDetails?.logoHasNotAdded :"Logo has not added"}
+                      {itemDetails?.logoHasNotAdded
+                        ? itemDetails?.logoHasNotAdded
+                        : "Logo has not added"}
                       !
                     </p>
                   )}
@@ -574,8 +667,9 @@ const UpdateOrganization = () => {
               <div className="flex gap-4">
                 <div className="flex flex-col mt-5 basis-1/2">
                   <label className="font-bold text-lg">
-                  {itemDetails?.organizationRootUrl ? itemDetails?.organizationRootUrl :"Organization Root Url"}
-                    
+                    {itemDetails?.organizationRootUrl
+                      ? itemDetails?.organizationRootUrl
+                      : "Organization Root Url"}
                   </label>
                   <input
                     type="text"
@@ -586,8 +680,9 @@ const UpdateOrganization = () => {
                 </div>
                 <div className="flex flex-col mt-5 basis-1/2">
                   <label className="font-bold text-lg">
-                  {itemDetails?.organizationDefaultUrl ? itemDetails?.organizationDefaultUrl :"Organization Default Url"}
-                    
+                    {itemDetails?.organizationDefaultUrl
+                      ? itemDetails?.organizationDefaultUrl
+                      : "Organization Default Url"}
                   </label>
                   <input
                     type="text"
@@ -607,7 +702,11 @@ const UpdateOrganization = () => {
                 </div>
               </div>
               <div className="flex flex-col mt-5 basis-1/2">
-                <label className="font-bold text-lg">{itemDetails?.courseAccessUrl ? itemDetails?.courseAccessUrl :"Course Access Url"}</label>
+                <label className="font-bold text-lg">
+                  {itemDetails?.courseAccessUrl
+                    ? itemDetails?.courseAccessUrl
+                    : "Course Access Url"}
+                </label>
                 <input
                   type="text"
                   defaultValue={courseAccessUrl}
@@ -618,8 +717,9 @@ const UpdateOrganization = () => {
               </div>
               <div className="flex flex-col mt-5">
                 <label className="font-bold text-lg">
-                {itemDetails?.titleAndSubTitleColor ? itemDetails?.titleAndSubTitleColor :"Title & sub-title color"}
-                  
+                  {itemDetails?.titleAndSubTitleColor
+                    ? itemDetails?.titleAndSubTitleColor
+                    : "Title & sub-title color"}
                 </label>
                 <ul className="flex gap-4 flex-wrap ">
                   <li className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] ">
@@ -634,8 +734,7 @@ const UpdateOrganization = () => {
                     />
                     <div className="flex mb-1 items-center">
                       <label className="ms-4" htmlFor="black">
-                      {itemDetails?.black ? itemDetails?.black :"Black"}
-                        
+                        {itemDetails?.black ? itemDetails?.black : "Black"}
                       </label>
                     </div>
                   </li>
@@ -651,8 +750,7 @@ const UpdateOrganization = () => {
                     />
                     <div className="flex mb-1 items-center">
                       <label className="ms-4" htmlFor="white">
-                      {itemDetails?.white ? itemDetails?.white :"White"}
-                        
+                        {itemDetails?.white ? itemDetails?.white : "White"}
                       </label>
                     </div>
                   </li>
@@ -664,8 +762,9 @@ const UpdateOrganization = () => {
                   htmlFor="colorInput"
                   className="block text-lg font-medium text-gray-700"
                 >
-                  {itemDetails?.paymentNavbarColor ? itemDetails?.paymentNavbarColor :"Payment Navbar Color"}
-                 
+                  {itemDetails?.paymentNavbarColor
+                    ? itemDetails?.paymentNavbarColor
+                    : "Payment Navbar Color"}
                 </label>
                 <input
                   type="color"
@@ -681,8 +780,9 @@ const UpdateOrganization = () => {
                   htmlFor="colorInput"
                   className="block text-lg font-medium text-gray-700"
                 >
-                  {itemDetails?.paymentNavbarAccessDashboardButtonColor ? itemDetails?.paymentNavbarAccessDashboardButtonColor :"Payment Navbar Access Dashboard Button Color"}
-                  
+                  {itemDetails?.paymentNavbarAccessDashboardButtonColor
+                    ? itemDetails?.paymentNavbarAccessDashboardButtonColor
+                    : "Payment Navbar Access Dashboard Button Color"}
                 </label>
                 <input
                   type="color"
@@ -700,8 +800,9 @@ const UpdateOrganization = () => {
                   htmlFor="colorInput"
                   className="block text-lg font-medium text-gray-700"
                 >
-                  {itemDetails?.paymentNavbarAccessDashboardButtonTextColor ? itemDetails?.paymentNavbarAccessDashboardButtonTextColor :"Payment Navbar Access Dashboard Button Text Color"}
-                  
+                  {itemDetails?.paymentNavbarAccessDashboardButtonTextColor
+                    ? itemDetails?.paymentNavbarAccessDashboardButtonTextColor
+                    : "Payment Navbar Access Dashboard Button Text Color"}
                 </label>
                 <input
                   type="color"
@@ -721,8 +822,9 @@ const UpdateOrganization = () => {
                   htmlFor="colorInput"
                   className="block text-lg font-medium text-gray-700"
                 >
-                  {itemDetails?.paymentNavbarLogoutButtonColor ? itemDetails?.paymentNavbarLogoutButtonColor :"Payment Navbar Logout Button Color"}
-                  
+                  {itemDetails?.paymentNavbarLogoutButtonColor
+                    ? itemDetails?.paymentNavbarLogoutButtonColor
+                    : "Payment Navbar Logout Button Color"}
                 </label>
                 <input
                   type="color"
@@ -740,8 +842,9 @@ const UpdateOrganization = () => {
                   htmlFor="colorInput"
                   className="block text-lg font-medium text-gray-700"
                 >
-                  {itemDetails?.paymentNavbarLogoutButtontextColor ? itemDetails?.paymentNavbarLogoutButtontextColor :"Payment Navbar Logout Button text Color"}
-                  
+                  {itemDetails?.paymentNavbarLogoutButtontextColor
+                    ? itemDetails?.paymentNavbarLogoutButtontextColor
+                    : "Payment Navbar Logout Button text Color"}
                 </label>
                 <input
                   type="color"
@@ -757,7 +860,7 @@ const UpdateOrganization = () => {
 
               <input
                 className="bg-green text-white py-3 px-4 font-bold rounded-lg mb-5 cursor-pointer"
-                value={itemDetails?.save ? itemDetails?.save :"Save"}
+                value={itemDetails?.save ? itemDetails?.save : "Save"}
                 type="submit"
               />
             </form>
@@ -794,6 +897,13 @@ const UpdateOrganization = () => {
         )}
         {currentPage === "emailIntegration" && (
           <EmailIntegration orgData={orgData} />
+        )}
+        {currentPage === "watiIntegration" && (
+          <WatiIntegration
+            watiInstance={watiInstance}
+            setWatiInstance={setWatiInstance}
+            orgData={orgData}
+          />
         )}
       </Layout>
     </div>
