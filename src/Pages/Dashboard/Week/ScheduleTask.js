@@ -139,6 +139,32 @@ const ScheduleTask = ({ taskData, week }) => {
   const calendarID = process.env.REACT_APP_calendarID;
   const [userZoomInfo, setUserZoomInfo] = useState({});
   const [isReschedule, setIsReschedule] = useState(false);
+  const [adminCalendarInfo, setAdminCalendarInfo] = useState({});
+  const [relevantEvents, setRelevantEvents] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVER_API}/api/v1/calenderInfo/getCalendarInfoByEmail/email/${taskData?.adminCalenderEmail}`
+      )
+      .then((response) => {
+        setAdminCalendarInfo(response?.data);
+
+        const currentDate = new Date(); // Current date
+        const endDate = new Date(); // Create a new Date object for the end date
+        // endDate.setDate(currentDate.getDate() + adminCalendarInfo?.dateRange);
+        endDate.setUTCDate(endDate.getUTCDate() + +response?.data?.dateRange);
+        const relevantEvents = response?.data?.events.filter((event) => {
+          const eventStart = new Date(event?.start?.dateTime); // Parse event start date
+          return eventStart >= currentDate && eventStart <= endDate;
+        });
+        setRelevantEvents(relevantEvents);
+      })
+
+      .catch((error) => console.error(error));
+  }, [taskData]);
+
+  console.log(adminCalendarInfo, relevantEvents);
 
   useEffect(() => {
     // Assuming taskData is already available when the component mounts
@@ -164,7 +190,7 @@ const ScheduleTask = ({ taskData, week }) => {
   }, [taskData]);
   useEffect(() => {
     const fetchZoomInfos = async () => {
-      if (taskData?.events?.length > 0) {
+      if (adminCalendarInfo?.events?.length > 0) {
         try {
           // Initialize an array to hold the combined data for each event
           let combinedZoomInfos = [];
@@ -326,7 +352,7 @@ const ScheduleTask = ({ taskData, week }) => {
   console.log("input time ", time);
 
   useEffect(() => {
-    const busyTimeSlots = taskData?.events
+    const busyTimeSlots = adminCalendarInfo?.events
       ?.map((event) => {
         // Check if start and end are directly available or nested under different properties
         const startDateTime = event.start?.dateTime || event.start_time;
@@ -406,23 +432,24 @@ const ScheduleTask = ({ taskData, week }) => {
     // Update the state variable with user requester events
     setUserRequesterEvents(userRequesterEvents);
     console.log("my events ", userRequesterEvents);
-  }, [taskData, user]);
+  }, [taskData, user, adminCalendarInfo]);
   console.log("my events ", userRequesterEvents);
 
   useEffect(() => {
-    axios
-      .post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/events/recording/organizationId/${userInfo?.organizationId}`,
-        {
-          meetingId: userRequesterEvents[0]?.id,
-        }
-      )
-      .then((response) => {
-        setUserZoomInfo(response?.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    if (userRequesterEvents?.length > 0)
+      axios
+        .post(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/events/recording/organizationId/${userInfo?.organizationId}`,
+          {
+            meetingId: userRequesterEvents[0]?.id,
+          }
+        )
+        .then((response) => {
+          setUserZoomInfo(response?.data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
   }, [userRequesterEvents, userInfo?.organizationId]);
   console.log(userZoomInfo?.recording_files);
   const generateAllTimeSlots = (start, end) => {
@@ -806,9 +833,29 @@ const ScheduleTask = ({ taskData, week }) => {
                         sendMail?.data?.success &&
                         sendMailAdmin?.data?.success
                       ) {
+                        console.log({
+                          ...rescheduledEvent,
+                          eventDBid: eventDBid,
+                        });
                         const newRescheduleEvent = await axios.put(
                           `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/updateEvent`,
                           { ...rescheduledEvent, eventDBid: eventDBid }
+                        );
+                        console.log(newRescheduleEvent);
+
+                        const filteredEvent = relevantEvents?.filter(
+                          (item) => item?.eventId !== rescheduledEvent?.eventId
+                        );
+                        const calendarInfo = { ...adminCalendarInfo };
+                        calendarInfo.events = [
+                          ...filteredEvent,
+                          { ...rescheduledEvent, eventDBid: eventDBid },
+                        ];
+                        delete calendarInfo._id;
+                        console.log(calendarInfo);
+                        const newSchedule = await axios.post(
+                          `${process.env.REACT_APP_SERVER_API}/api/v1/calenderInfo/updateOrInsertCalendarInfo/email/${calendarInfo?.email}`,
+                          calendarInfo
                         );
 
                         // console.log("new event created ", newEvent);
@@ -886,6 +933,17 @@ const ScheduleTask = ({ taskData, week }) => {
                         const newEvent = await axios.post(
                           `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/addEvent`,
                           { ...event, eventDBid: response?.data?.insertedId }
+                        );
+                        const calendarInfo = { ...adminCalendarInfo };
+                        calendarInfo.events = [
+                          ...relevantEvents,
+                          { ...event, eventDBid: response?.data?.insertedId },
+                        ];
+                        delete calendarInfo._id;
+                        console.log(calendarInfo);
+                        const newSchedule = await axios.post(
+                          `${process.env.REACT_APP_SERVER_API}/api/v1/calenderInfo/updateOrInsertCalendarInfo/email/${calendarInfo?.email}`,
+                          calendarInfo
                         );
                         // console.log("new event created ", newEvent);
                         Loading().close();
@@ -1139,9 +1197,29 @@ const ScheduleTask = ({ taskData, week }) => {
                           console.error("Error updating event:", error);
                           // Handle error
                         });
+                      console.log({
+                        ...postData,
+                        eventDBid: eventDBid,
+                        eventId: eventId,
+                      });
                       const newRescheduleEvent = await axios.put(
                         `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/updateEvent`,
                         { ...postData, eventDBid: eventDBid, eventId: eventId }
+                      );
+
+                      const filteredEvent = relevantEvents?.filter(
+                        (item) => item?.eventId !== eventId
+                      );
+                      const calendarInfo = { ...adminCalendarInfo };
+                      calendarInfo.events = [
+                        ...filteredEvent,
+                        { ...postData, eventDBid: eventDBid, eventId: eventId },
+                      ];
+                      delete calendarInfo._id;
+                      console.log(calendarInfo);
+                      const newSchedule = await axios.post(
+                        `${process.env.REACT_APP_SERVER_API}/api/v1/calenderInfo/updateOrInsertCalendarInfo/email/${calendarInfo?.email}`,
+                        calendarInfo
                       );
                       Loading().close();
                       // console.log("new event created ", newEvent);
@@ -1354,6 +1432,21 @@ const ScheduleTask = ({ taskData, week }) => {
                               eventId: responseData.result.id,
                             }
                           );
+                          const calendarInfo = { ...adminCalendarInfo };
+                          calendarInfo.events = [
+                            ...relevantEvents,
+                            {
+                              ...postData,
+                              eventDBid: response?.data?.insertedId,
+                              eventId: responseData.result.id,
+                            },
+                          ];
+                          delete calendarInfo._id;
+                          console.log(calendarInfo);
+                          const newSchedule = await axios.post(
+                            `${process.env.REACT_APP_SERVER_API}/api/v1/calenderInfo/updateOrInsertCalendarInfo/email/${calendarInfo?.email}`,
+                            calendarInfo
+                          );
                         } catch (error) {
                           console.error(
                             "Failed to create Google Calendar event:",
@@ -1467,7 +1560,7 @@ const ScheduleTask = ({ taskData, week }) => {
   //   (event) => console.log(event)
   // );
   console.log(taskData);
-  const isUserRequester = taskData?.events?.some(
+  const isUserRequester = adminCalendarInfo?.events?.some(
     (event) => event.requester === user?.email
   );
   console.log("is there my event", isUserRequester);

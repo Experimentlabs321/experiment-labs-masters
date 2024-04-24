@@ -24,6 +24,7 @@ import zoom from "../../../assets/icons/zoom-240.png";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import Loading from "../../Shared/Loading/Loading";
 let global;
 const customStyles = {
   overlay: {
@@ -198,13 +199,14 @@ const AdminCalendarSchedule = () => {
   // endDate.setDate(currentDate.getDate() + adminCalendarInfo?.dateRange);
   endDate.setUTCDate(endDate.getUTCDate() + +adminCalendarInfo?.dateRange);
   const relevantEvents = calendarEvents.filter((event) => {
-    const eventStart = new Date(event?.originalStartTime?.dateTime); // Parse event start date
+    const eventStart = new Date(event?.start?.dateTime); // Parse event start date
     return eventStart >= currentDate && eventStart <= endDate;
   });
   console.log(endDate);
   console.log(calendarEvents);
   console.log(relevantEvents);
   const handleSubmit = async (event) => {
+    Loading();
     event.preventDefault();
     const currentDate = getCurrentDate();
     const form = event.target;
@@ -216,7 +218,15 @@ const AdminCalendarSchedule = () => {
     const meetingDuration = adminCalendarInfo?.meetingDuration;
     const offDays = adminCalendarInfo?.offDays;
     const meetingType = adminCalendarInfo?.meetingType;
-    console.log(adminCalendarInfo);
+
+    const calendarInfo = { ...adminCalendarInfo };
+    calendarInfo.events = relevantEvents;
+    delete calendarInfo._id;
+    console.log(calendarInfo);
+    const newSchedule = await axios.post(
+      `${process.env.REACT_APP_SERVER_API}/api/v1/calenderInfo/updateOrInsertCalendarInfo/email/${calendarInfo?.email}`,
+      calendarInfo
+    );
     const manageSchedule = {
       scheduleName,
       taskName: scheduleName,
@@ -233,6 +243,7 @@ const AdminCalendarSchedule = () => {
       events: relevantEvents,
       taskDrip,
       calendarSubjectName,
+      adminCalenderEmail: calendarInfo?.email,
     };
     setAssignmentData(manageSchedule);
     console.log(manageSchedule);
@@ -243,14 +254,17 @@ const AdminCalendarSchedule = () => {
       );
       console.log(newSchedule);
       if (newSchedule?.data?.result?.acknowledged) {
+        Loading().close();
         toast.success("Schedule added Successfully");
         event.target.reset();
         navigate(`/questLevels/${chapter?.courseId}`);
       } else {
+        Loading().close();
         toast.error("Something went wrong");
       }
       console.log(manageSchedule);
     }
+    Loading().close();
   };
   console.log("Start", start);
   console.log("End", end);

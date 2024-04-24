@@ -244,6 +244,15 @@ const ExecutionMentorSchedule = () => {
     }
   };
   const handleSubmit = async (event) => {
+    const currDate = new Date(); // Current date
+    const endDate = new Date(); // Create a new Date object for the end date
+    // endDate.setDate(currentDate.getDate() + adminCalendarInfo?.dateRange);
+    endDate.setUTCDate(endDate.getUTCDate() + +adminCalendarInfo?.dateRange);
+    const relevantEvents = calendarEvents.filter((event) => {
+      const eventStart = new Date(event?.start?.dateTime); // Parse event start date
+      return eventStart >= currDate && eventStart <= endDate;
+    });
+    console.log(relevantEvents);
     event.preventDefault();
     const currentDate = getCurrentDate();
     const form = event.target;
@@ -260,8 +269,9 @@ const ExecutionMentorSchedule = () => {
       minimumTime,
       meetingDuration: meetingDuration,
       meetingType: meetingType,
-      // events: calendarEvents,
+      events: relevantEvents,
       adminMail: userInfo?.email,
+      syncedMail: session?.user?.email,
     };
     setAssignmentData(manageSchedule);
     // console.log(manageSchedule);
