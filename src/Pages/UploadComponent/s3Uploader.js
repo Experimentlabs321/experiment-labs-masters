@@ -62,8 +62,9 @@ const uploadFileToS3 = (file, onProgress) => {
     managedUpload
       .promise()
       .then((response) => {
-        console.log("Upload successful:", response.Location);
-        resolve(response.Location); // Resolve the promise with the file URL
+        console.log("Upload successful: ", response);
+        resolve(`${process.env.REACT_APP_file_base_url}/${response.Key}`); // Resolve the promise with the file URL
+        console.log("Resolve Link ===================> ",`${process.env.REACT_APP_file_base_url}/${response.Key}`);
       })
       .catch((error) => {
         console.error("Upload failed:", error);
