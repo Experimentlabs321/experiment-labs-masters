@@ -111,8 +111,8 @@ const LoginWithOrganization = () => {
         } catch (error) {
           Swal.fire({
             icon: "error",
-            title: "Wrong Email or Password",
-            text: "Please enter correct email and password.",
+            title: "Wrong Password",
+            text: "Please enter correct password.",
           });
         }
       } else {
@@ -136,8 +136,8 @@ const LoginWithOrganization = () => {
       } else {
         Swal.fire({
           icon: "error",
-          title: "Wrong Email or Password",
-          text: "Please enter correct email and password.",
+          title: "Not a registered email",
+          text: "Please enter valid email.",
         });
       }
       // Optionally show a generic error message to the user
