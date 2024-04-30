@@ -51,7 +51,7 @@ const ReviewSubmission = (taskData) => {
         `${process.env.REACT_APP_BACKEND_API}/getSubmitAssignment/submitter/${userInfo?._id}/${taskData?.taskData?._id}`
       ) */
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/assignmentSubmissions/taskId/${taskData?.taskData._id}/submitterId/${userInfo?._id}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/taskId/${taskData?.taskData._id}/submitterId/${userInfo?._id}`
       )
       .then((response) => {
         setSubmittedResult(response?.data[0]);

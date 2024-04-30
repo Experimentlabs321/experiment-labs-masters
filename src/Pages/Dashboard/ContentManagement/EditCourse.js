@@ -64,7 +64,7 @@ const EditCourse = () => {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/courses/${id}`)
+      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/${id}`)
       .then((response) => {
         setCourseData(response?.data);
         setEnableDrip(response?.data?.enableDrip);
@@ -149,7 +149,7 @@ const EditCourse = () => {
     };
     if (submitPermission) {
       const newCourse = await axios.put(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${id}`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/${id}`,
         addCourse
       );
       console.log("new course --> ", newCourse);
@@ -168,7 +168,7 @@ const EditCourse = () => {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/CourseCategory/getCourseCategory/organizationId/${userInfo?.organizationId}`)
+      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/CourseCategory/getCourseCategory/organizationId/${userInfo?.organizationId}`)
       .then((response) => {
         setCourseCategories(response?.data);
 
@@ -196,7 +196,7 @@ const EditCourse = () => {
     console.log(addCourseCategory);
 
     try {
-      const response = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/v1/CourseCategory/addCourseCategory/organizationId/${userInfo?.organizationId}`, addCourseCategory);
+      const response = await axios.post(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/CourseCategory/addCourseCategory/organizationId/${userInfo?.organizationId}`, addCourseCategory);
       console.log(response)
       if (response.data === "Course category added successfully") {
         toast.success("Category added Successfully");

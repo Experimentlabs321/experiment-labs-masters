@@ -15,7 +15,7 @@ const CourseCard = ({ course }) => {
   };
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/chapters`)
+      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters`)
       .then((response) => {
         const currentCourseChapter = response?.data?.filter(
           (item) => item?.courseId === course?._id

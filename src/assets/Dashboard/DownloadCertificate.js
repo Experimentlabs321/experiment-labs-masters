@@ -26,7 +26,7 @@ const DownloadCertificate = () => {
     );
 
     axios
-      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/courses/${courseId}`)
+      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/${courseId}`)
       .then((response) => {
         setCourseData(response?.data);
       })
@@ -35,7 +35,7 @@ const DownloadCertificate = () => {
     if (courseInfo?.batchId) {
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/certificateTemplates/courseId/${courseId}/batchId/${courseInfo?.batchId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/certificateTemplates/courseId/${courseId}/batchId/${courseInfo?.batchId}`
         )
         .then((response) => {
           setCertificateTemplate(response?.data?.template);
@@ -44,7 +44,7 @@ const DownloadCertificate = () => {
 
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/batches/batchId/${courseInfo?.batchId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/batchId/${courseInfo?.batchId}`
         )
         .then((response) => {
           setBatchData(response?.data);

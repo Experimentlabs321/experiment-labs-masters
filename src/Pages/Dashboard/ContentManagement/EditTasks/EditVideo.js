@@ -108,7 +108,7 @@ const EditVideo = () => {
     if (videoData?.chapterId)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/${videoData?.chapterId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${videoData?.chapterId}`
         )
         .then((res) => setChapter(res?.data))
         .catch((error) => console.error(error));
@@ -118,7 +118,7 @@ const EditVideo = () => {
     if (chapter?.courseId)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${chapter?.courseId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/${chapter?.courseId}`
         )
         .then((response) => {
           setCourse(response?.data);
@@ -141,7 +141,7 @@ const EditVideo = () => {
 
       axios
         .post(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/earningCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/earningCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
           fetchData
         )
         .then((res) => setEarningCategories(res?.data))
@@ -153,7 +153,7 @@ const EditVideo = () => {
     if (chapter?.courseId)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${chapter?.courseId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/courseId/${chapter?.courseId}`
         )
         .then((response) => {
           setBatchesData(response?.data);

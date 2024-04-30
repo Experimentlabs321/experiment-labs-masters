@@ -213,7 +213,8 @@ const EditResult = (submittedAssignment) => {
       toast.error("Value error");
     } else {
       const addMarks = await axios.post(
-        `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${id}/addResult`,
+       // `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${id}/addResult`,
+       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/${id}/result`,
         manageAssignment
       );
 

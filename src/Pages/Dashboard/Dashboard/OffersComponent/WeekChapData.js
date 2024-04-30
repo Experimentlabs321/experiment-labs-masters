@@ -7,7 +7,7 @@ export default function WeekChapData({ weekData, userId }) {
   useEffect(() => {
     const fetchChapterDetails = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_SERVER_API}/api/v1/chapters/weekId/${weekData._id}`);
+        const response = await axios.get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/weekId/${weekData._id}`);
         // Assuming response.data is an array of chapters
         setChapters(response.data);
       } catch (error) {

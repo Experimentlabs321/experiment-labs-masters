@@ -70,7 +70,7 @@ const Week = () => {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/chapters/weekId/${id}`)
+      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/weekId/${id}`)
       .then((response) => {
         setChapters(response?.data);
 
@@ -85,7 +85,7 @@ const Week = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${chapters[0]?.courseId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/${chapters[0]?.courseId}`
       )
       .then((response) => {
         setCourseData(response?.data);

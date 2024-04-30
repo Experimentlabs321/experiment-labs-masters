@@ -43,7 +43,7 @@ const SalesAndRevenue = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/courseAndBatch/organizationId/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/courseAndBatch/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
         setCourses(response?.data);
@@ -55,7 +55,7 @@ const SalesAndRevenue = () => {
     if (selectedCourse?._id)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${selectedCourse?._id}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/courseId/${selectedCourse?._id}`
         )
         .then((response) => {
           setBatchesData(response?.data);
@@ -67,7 +67,7 @@ const SalesAndRevenue = () => {
     if (userInfo.organizationId)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/bundles/organizationId/${userInfo.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/bundles/organizationId/${userInfo.organizationId}`
         )
         .then((response) => {
           setBundles(response?.data);
@@ -193,7 +193,7 @@ const SalesAndRevenue = () => {
     setCourseDropdown(false);
 
     const { data } = await axios.get(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${selectedCourse._id}`
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/courseId/${selectedCourse._id}`
     );
     selectedCourse.batches = data;
 

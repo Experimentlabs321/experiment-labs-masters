@@ -123,7 +123,7 @@ const AddingEditingMatchingQues = () => {
            
         };
 
-        const course = await axios.post(`${process.env.REACT_APP_BACKEND_API}/courses`, addCourse);
+        const course = await axios.post(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses`, addCourse);
 
         if (course?.data?.acknowledged) {
             toast.success("Course added Successfully");

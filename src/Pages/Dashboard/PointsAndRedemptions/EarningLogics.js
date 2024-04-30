@@ -94,7 +94,7 @@ const EarningLogics = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
         setCourses(response?.data);
@@ -191,7 +191,7 @@ const EarningLogics = () => {
     delete course._id;
     console.log(course);
     const updateCourse = await axios.put(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${selectedCourse?._id}`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/${selectedCourse?._id}`,
       course
     );
     console.log(updateCourse);

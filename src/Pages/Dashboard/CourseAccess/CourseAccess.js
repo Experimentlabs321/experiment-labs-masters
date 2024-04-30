@@ -48,7 +48,7 @@ const CourseAccess = () => {
     const fetchAllData = async () => {
       await axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/userId/${userInfo._id}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/userId/${userInfo._id}`
         )
         .then((response) => {
           setMyCourses(response?.data);
@@ -60,7 +60,7 @@ const CourseAccess = () => {
         });
       await axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
         )
         .then((response) => {
           setCourses(response?.data);
@@ -73,7 +73,7 @@ const CourseAccess = () => {
         });
       await axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/bundles/organizationId/${userInfo.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/bundles/organizationId/${userInfo.organizationId}`
         )
         .then((response) => {
           setBundles(response?.data);
@@ -96,7 +96,7 @@ const CourseAccess = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/CourseCategory/getCourseCategory/organizationId/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/CourseCategory/getCourseCategory/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
         setCourseCategories(response?.data);
@@ -135,7 +135,7 @@ const CourseAccess = () => {
       Loading();
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/userId/${userInfo._id}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/userId/${userInfo._id}`
         )
         .then((response) => {
           setShowCourses(response?.data);
@@ -149,7 +149,7 @@ const CourseAccess = () => {
       Loading();
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
         )
         .then((response) => {
           setShowCourses(response?.data);
@@ -164,7 +164,7 @@ const CourseAccess = () => {
       Loading();
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/bundles/organizationId/${userInfo.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/bundles/organizationId/${userInfo.organizationId}`
         )
         .then((response) => {
           setShowCourses(response?.data);
