@@ -77,10 +77,10 @@ const Profile = () => {
 
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${courseId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/${courseId}`
         );
         const batch = await axios.get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/batches/batchId/${batchId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/batchId/${batchId}`
         );
         return { ...response?.data, course, batch: batch?.data[0] };
       } catch (error) {

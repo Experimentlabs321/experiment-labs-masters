@@ -90,7 +90,7 @@ const Aside = ({
     if (chapter?._id) {
       try {
         const newChapter = await axios.put(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/chapters/${chapter?._id}`,
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/chapters/${chapter?._id}`,
           updatedChapter
         );
         // setCount(count + 1);

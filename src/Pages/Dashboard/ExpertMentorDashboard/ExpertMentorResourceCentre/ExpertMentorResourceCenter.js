@@ -90,7 +90,7 @@ const ExpertMentorResourceCentre = () => {
 
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${courseId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/courseId/${courseId}`
       );
       setBatches(response?.data);
       console.log("response =========>", response?.data);
@@ -103,7 +103,7 @@ const ExpertMentorResourceCentre = () => {
     const fetchCourses = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
         );
         // console.log("response =========>", response?.data);
         setCourses(response?.data);
@@ -145,7 +145,7 @@ const ExpertMentorResourceCentre = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/weekId/${currentWeek?._id}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/weekId/${currentWeek?._id}`
       )
       .then((response) => {
         setChapters(response?.data);
@@ -153,7 +153,7 @@ const ExpertMentorResourceCentre = () => {
       .catch((error) => console.error(error));
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/weekId/${previousWeek?._id}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/weekId/${previousWeek?._id}`
       )
       .then((response) => {
         setPreviousChapters(response?.data);

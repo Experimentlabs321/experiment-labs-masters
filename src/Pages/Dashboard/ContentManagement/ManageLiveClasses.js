@@ -149,7 +149,7 @@ const ManageLiveClasses = () => {
         if (fetchData && userInfo?.organizationId && chapter?.courseId) {
           axios
             .get(
-              `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${chapter?.courseId}`
+              `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/${chapter?.courseId}`
             )
             .then((res) => setCourse(res?.data))
             .catch((error) => console.error(error));
@@ -176,7 +176,7 @@ const ManageLiveClasses = () => {
     if (chapter?.courseId) {
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${chapter?.courseId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/courseId/${chapter?.courseId}`
         )
         .then((response) => {
           setBatchesData(response?.data);
@@ -243,7 +243,7 @@ const ManageLiveClasses = () => {
     console.log(manageClass);
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/classes`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/classes`,
         // `http://localhost:5000/api/v1/classes`,
         {
           authCode: code,

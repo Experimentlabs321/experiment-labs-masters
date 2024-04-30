@@ -74,7 +74,7 @@ const ExecutionMentorSchedule = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/calenderInfo/getCalendarInfoByEmail/email/${user?.email}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/getCalendarInfoByEmail/email/${user?.email}`
       )
       .then((response) => {
         setAdminCalendarInfo(response?.data);
@@ -144,7 +144,7 @@ const ExecutionMentorSchedule = () => {
   //console.log(itemDetails)
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACKEND_API}/events`)
+      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/events`)
       .then((response) => {
         console.log(response?.data);
         let filteredEvent = [];
@@ -277,7 +277,7 @@ const ExecutionMentorSchedule = () => {
     // console.log(manageSchedule);
     if (submitPermission) {
       const newSchedule = await axios.post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/calenderInfo/updateOrInsertCalendarInfo/email/${userInfo?.email}`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/updateOrInsertCalendarInfo/email/${userInfo?.email}`,
         manageSchedule
       );
       console.log(newSchedule);

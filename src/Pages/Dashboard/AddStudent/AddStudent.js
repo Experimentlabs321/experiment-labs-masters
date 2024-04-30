@@ -65,7 +65,7 @@ const AddStudent = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
         setCourses(response?.data);
@@ -74,7 +74,7 @@ const AddStudent = () => {
 
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/bundles/organizationId/${userInfo.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/bundles/organizationId/${userInfo.organizationId}`
       )
       .then((response) => {
         setBundles(response?.data);
@@ -89,7 +89,7 @@ const AddStudent = () => {
     if (selectedCourse?._id)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${selectedCourse?._id}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/courseId/${selectedCourse?._id}`
         )
         .then((response) => {
           setBatchesData(response?.data);

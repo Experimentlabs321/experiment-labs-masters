@@ -174,7 +174,7 @@ const CreateCertificate = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
         setCourses(response?.data);
@@ -186,7 +186,7 @@ const CreateCertificate = () => {
     if (selectedCourse?._id)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${selectedCourse?._id}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/courseId/${selectedCourse?._id}`
         )
         .then((response) => {
           setBatchesData(response?.data);

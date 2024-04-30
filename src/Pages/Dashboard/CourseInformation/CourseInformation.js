@@ -179,7 +179,7 @@ const CourseInformation = () => {
     };
 
     const newChapter = await axios.post(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/chapters`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters`,
       chapter
     );
 
@@ -204,7 +204,7 @@ const CourseInformation = () => {
     };
 
     const newChapter = await axios.put(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/${chapterData?._id}`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${chapterData?._id}`,
       chapter
     );
 
@@ -443,7 +443,7 @@ const CourseInformation = () => {
 
       await axios
         .delete(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/chapterId/${id}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/chapterId/${id}`
         )
         .then((result) => {
           console.log(result);
@@ -472,7 +472,7 @@ const CourseInformation = () => {
   useEffect(() => {
     if (id)
       axios
-        .get(`${process.env.REACT_APP_SERVER_API}/api/v1/courses/${id}`)
+        .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/${id}`)
         .then((response) => {
           setCourseData(response?.data);
         })
@@ -527,7 +527,7 @@ const CourseInformation = () => {
     if (currentWeek?._id) {
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/weekId/${currentWeek?._id}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/weekId/${currentWeek?._id}`
         )
         .then((response) => {
           if (Role === "admin") setChapters(response?.data);
@@ -566,7 +566,7 @@ const CourseInformation = () => {
     if (id)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${id}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/courseId/${id}`
         )
         .then((response) => {
           setBatchesData(response?.data);

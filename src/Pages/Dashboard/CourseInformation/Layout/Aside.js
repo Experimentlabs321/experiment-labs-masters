@@ -47,7 +47,7 @@ const Aside = () => {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/courses/${id}`)
+      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/${id}`)
       .then((response) => {
         // setCourseData(response?.data);
 

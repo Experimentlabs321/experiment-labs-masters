@@ -40,7 +40,7 @@ const AddEarningPointItemForm = ({
     }
 
     const newItem = await axios.post(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/earningCategories/earningItems`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/earningCategories/earningItems`,
       {
         organizationId: userInfo?.organizationId,
         categoryName: selectedEarningCategory?.categoryName,

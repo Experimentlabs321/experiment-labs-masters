@@ -102,7 +102,7 @@ const EditAudio = () => {
     if (audioData?.chapterId)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/${audioData?.chapterId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${audioData?.chapterId}`
         )
         .then((res) => setChapter(res?.data))
         .catch((error) => console.error(error));
@@ -124,14 +124,14 @@ const EditAudio = () => {
 
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${fetchData?.courseId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/${fetchData?.courseId}`
         )
         .then((res) => setCourse(res?.data))
         .catch((error) => console.error(error));
 
       axios
         .post(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/earningCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/earningCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
           fetchData
         )
         .then((res) => setEarningCategories(res?.data))
@@ -143,7 +143,7 @@ const EditAudio = () => {
     if (chapter?.courseId)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${chapter?.courseId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/courseId/${chapter?.courseId}`
         )
         .then((response) => {
           setBatchesData(response?.data);

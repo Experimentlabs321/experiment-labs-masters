@@ -109,7 +109,7 @@ const EditReading = () => {
     if (readingData?.chapterId)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/${readingData?.chapterId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${readingData?.chapterId}`
         )
         .then((res) => setChapter(res?.data))
         .catch((error) => console.error(error));
@@ -131,7 +131,7 @@ const EditReading = () => {
 
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${fetchData?.courseId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/${fetchData?.courseId}`
         )
         .then((res) => setCourse(res?.data))
         .catch((error) => console.error(error));
@@ -150,7 +150,7 @@ const EditReading = () => {
     if (course?._id)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${course?._id}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/courseId/${course?._id}`
         )
         .then((response) => {
           setBatchesData(response?.data);

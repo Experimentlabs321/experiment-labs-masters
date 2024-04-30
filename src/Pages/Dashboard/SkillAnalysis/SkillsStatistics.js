@@ -20,7 +20,7 @@ const SkillsStatistics = ({ skillsData, selectedCourse }) => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/courseId/${selectedCourse?._id}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/courseId/${selectedCourse?._id}`
       )
       .then((response) => {
         console.log(response);

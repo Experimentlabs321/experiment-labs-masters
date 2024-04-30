@@ -22,7 +22,8 @@ const Submission = ({ taskData }) => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${taskData?._id}/${userInfo?._id}`
+       // `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${taskData?._id}/${userInfo?._id}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/taskId/${taskData?._id}/submitterId/${userInfo?._id}`
       )
       .then((response) => {
         setSubmissionData(response?.data[response?.data?.length - 1]);
@@ -34,7 +35,8 @@ const Submission = ({ taskData }) => {
 
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${taskData?._id}/${userInfo?._id}`
+       // `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${taskData?._id}/${userInfo?._id}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/taskId/${taskData?._id}/submitterId/${userInfo?._id}`
       )
       .then((response) => {
         setSubmissionData(response?.data[response?.data?.length - 1]);
@@ -49,13 +51,13 @@ const Submission = ({ taskData }) => {
     );
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${findCourseAndBatch?.courseId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/${findCourseAndBatch?.courseId}`
       )
       .then((res) => setCourse(res?.data))
       .catch((error) => console.error(error));
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/batches/batchId/${findCourseAndBatch?.batchId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/batchId/${findCourseAndBatch?.batchId}`
       )
       .then((response) => {
         setBatch(response?.data);
@@ -118,7 +120,8 @@ const Submission = ({ taskData }) => {
     if (manageAssignment && fileUrl) {
       console.log(manageAssignment);
       const newAssignment = await axios.post(
-        `${process.env.REACT_APP_BACKEND_API}/submitAssignment`,
+       // `${process.env.REACT_APP_BACKEND_API}/submitAssignment`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions`,
         manageAssignment
       );
       console.log(newAssignment);

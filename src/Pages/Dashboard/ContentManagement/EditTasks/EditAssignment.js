@@ -94,7 +94,7 @@ const EditAssignment = () => {
     if (assignmentData?.chapterId)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/${assignmentData?.chapterId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${assignmentData?.chapterId}`
         )
         .then((res) => setChapter(res?.data))
         .catch((error) => console.error(error));
@@ -115,7 +115,7 @@ const EditAssignment = () => {
         .catch((error) => console.error(error));
       axios
         .post(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/earningCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/earningCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
           fetchData
         )
         .then((res) => setEarningCategories(res?.data))
@@ -127,7 +127,7 @@ const EditAssignment = () => {
     if (chapter?.courseId)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${chapter?.courseId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/${chapter?.courseId}`
         )
         .then((response) => {
           setCourse(response?.data);
@@ -138,7 +138,7 @@ const EditAssignment = () => {
     if (course?._id)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${course?._id}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/courseId/${course?._id}`
         )
         .then((response) => {
           setBatchesData(response?.data);
