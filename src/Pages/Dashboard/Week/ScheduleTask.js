@@ -109,6 +109,8 @@ const ScheduleTask = ({ taskData, week }) => {
   const [eventId, setEventId] = useState(null);
   const [zoomeventId, setZoomEventId] = useState("");
   const [eventDBid, setEventDBid] = useState(null);
+  const [requesterStd, setRequesterStd] = useState(null);
+  const [stdName, setStdName] = useState(null);
   if (userInfo.role !== "admin") {
     window.addEventListener("contextmenu", (e) => {
       e.preventDefault();
@@ -122,6 +124,21 @@ const ScheduleTask = ({ taskData, week }) => {
   const handleRescheduleZoom = (eventId, eventDBid) => {
     setEventDBid(eventDBid);
     setEventId(eventId);
+
+    setIsReschedule(true);
+  };
+  const handleRescheduleMeetAdmin = (eventId, eventDBid, requested, name) => {
+    setEventDBid(eventDBid);
+    setEventId(eventId);
+    setRequesterStd(requested)
+    setStdName(name);
+    setIsReschedule(true);
+  };
+  const handleRescheduleZoomAdmin = (eventId, eventDBid, requested, name) => {
+    setEventDBid(eventDBid);
+    setEventId(eventId);
+    setRequesterStd(requested)
+    setStdName(name);
     setIsReschedule(true);
   };
   console.log(userInfo);
@@ -141,7 +158,7 @@ const ScheduleTask = ({ taskData, week }) => {
   const [isReschedule, setIsReschedule] = useState(false);
   const [adminCalendarInfo, setAdminCalendarInfo] = useState({});
   const [relevantEvents, setRelevantEvents] = useState([]);
-
+  console.log(date);
   useEffect(() => {
     axios
       .get(
@@ -461,7 +478,7 @@ const ScheduleTask = ({ taskData, week }) => {
     }
     return timeSlots;
   };
-  useEffect(() => {}, [userRequesterEvents]);
+  useEffect(() => { }, [userRequesterEvents]);
   // Function to filter out busy time slots
   const filterBusyTimeSlots = (allTimeSlots, busyTimeSlots, reservedEvent) => {
     return allTimeSlots.filter((timeSlot) => {
@@ -663,7 +680,7 @@ const ScheduleTask = ({ taskData, week }) => {
             .then((response) => response.json())
             .then((data) => {
               var event = {
-                summary: `${userInfo?.name} ${calendarSubjectName}`,
+                summary: `${stdName ? stdName : userInfo?.name} ${calendarSubjectName}`,
                 location: "",
                 start: {
                   dateTime: selectedTimeDatee,
@@ -675,7 +692,7 @@ const ScheduleTask = ({ taskData, week }) => {
                 },
                 attendees: [
                   // { email: "naman.j@experimentlabs.in" },
-                  { email: user?.email },
+                  { email: requesterStd ? requesterStd : user?.email },
                   { email: adminMail },
                 ],
                 reminders: {
@@ -720,7 +737,7 @@ const ScheduleTask = ({ taskData, week }) => {
                   .then(async (data) => {
                     console.log("Event updated:", data);
                     var rescheduledEvent = {
-                      title: `${userInfo?.name} ${calendarSubjectName} `,
+                      title: `${stdName ? stdName : userInfo?.name} ${calendarSubjectName} `,
                       start: {
                         dateTime: selectedTimeDatee,
                         timeZone: "UTC",
@@ -736,7 +753,7 @@ const ScheduleTask = ({ taskData, week }) => {
                       attendees: [
                         // { email: "naman.j@experimentlabs.in" },
                         // { email: "gaurav@experimentlabs.in" },
-                        { email: user?.email },
+                        { email: requesterStd ? requesterStd : user?.email },
                         // { email: "alrafi4@gmail.com" },
                         {
                           email: adminMail,
@@ -745,7 +762,8 @@ const ScheduleTask = ({ taskData, week }) => {
                       // Assuming "weekData" is something specific to your application and not part of the standard Calendar API response
                       weekData: currentWeek,
                       hangoutLink: data.hangoutLink, // Access directly from data
-                      requester: user?.email,
+                      requester: requesterStd ? requesterStd : user?.email,
+                      studentName: stdName ? stdName : userInfo?.name,
                       eventId: eventId, // Access directly from data
                     };
                     console.log(rescheduledEvent);
@@ -792,15 +810,15 @@ const ScheduleTask = ({ taskData, week }) => {
                         {
                           //  from: `${userInfo?.email}`,
                           //    to: `${user?.email},${adminMail}`,
-                          to: `${user?.email}`,
+                          to: `${requesterStd ? requesterStd : user?.email}`,
                           templateType: "emailAction",
-                          templateName: "sheduleTask",
+                          templateName: "sheduleTaskStudent",
                           organizationId: userInfo?.organizationId,
                           start_time: eventStartTime,
                           end_time: eventEndTime,
                           meeting_link: rescheduledEvent?.hangoutLink,
-                          learner_name: adminName,
-                          learner_email: adminMail,
+                          admin_name: adminName,
+                          site_email: adminMail,
                           meeting_date: date,
                           /*  subject: `Event request`,
                           message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
@@ -819,8 +837,8 @@ const ScheduleTask = ({ taskData, week }) => {
                           start_time: eventStartTime,
                           end_time: eventEndTime,
                           meeting_link: rescheduledEvent?.hangoutLink,
-                          learner_name: userInfo?.name,
-                          learner_email: userInfo?.email,
+                          learner_name: stdName ? stdName : userInfo?.name,
+                          learner_email: requesterStd ? requesterStd : user?.email,
                           meeting_date: date,
                           /*  subject: `Event request`,
                           message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
@@ -891,13 +909,13 @@ const ScheduleTask = ({ taskData, week }) => {
                           //    to: `${user?.email},${adminMail}`,
                           to: `${user?.email}`,
                           templateType: "emailAction",
-                          templateName: "sheduleTask",
+                          templateName: "sheduleTaskStudent",
                           organizationId: userInfo?.organizationId,
                           start_time: eventStartTime,
                           end_time: eventEndTime,
                           meeting_link: event?.hangoutLink,
-                          learner_name: adminName,
-                          learner_email: adminMail,
+                          admin_name: adminName,
+                          site_email: adminMail,
                           meeting_date: date,
                           /*  subject: `Event request`,
                           message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
@@ -916,8 +934,8 @@ const ScheduleTask = ({ taskData, week }) => {
                           start_time: eventStartTime,
                           end_time: eventEndTime,
                           meeting_link: event?.hangoutLink,
-                          learner_name: userInfo?.name,
-                          learner_email: userInfo?.email,
+                          learner_name: stdName ? stdName : userInfo?.name,
+                          learner_email: requesterStd ? requesterStd : user?.email,
                           meeting_date: date,
                           /*  subject: `Event request`,
                           message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
@@ -971,7 +989,7 @@ const ScheduleTask = ({ taskData, week }) => {
                       (response) => {
                         console.log(response);
                         var event = {
-                          title: `${userInfo?.name} ${calendarSubjectName}`,
+                          title: `${stdName ? stdName : userInfo?.name} ${calendarSubjectName}`,
                           start: {
                             dateTime: selectedTimeDatee,
                             timeZone: "UTC",
@@ -987,7 +1005,7 @@ const ScheduleTask = ({ taskData, week }) => {
                           attendees: [
                             // { email: "naman.j@experimentlabs.in" },
                             // { email: "gaurav@experimentlabs.in" },
-                            { email: user?.email },
+                            { email: requesterStd ? requesterStd : user?.email },
                             // { email: "alrafi4@gmail.com" },
                             {
                               email: adminMail,
@@ -995,7 +1013,8 @@ const ScheduleTask = ({ taskData, week }) => {
                           ],
                           weekData: currentWeek,
                           hangoutLink: response?.result?.hangoutLink,
-                          requester: user?.email,
+                          requester: requesterStd ? requesterStd : user?.email,
+                          studentName: stdName ? stdName : userInfo?.name,
                           eventId: response?.result?.id,
                         };
                         sendData(event);
@@ -1092,10 +1111,16 @@ const ScheduleTask = ({ taskData, week }) => {
                 const format = "MM/DD/YYYY, hh:mm:ss A"; // This is the format based on your output
                 const meetingStartDate = moment(meetingStart, format).toDate(); // Use moment.js to parse the string
                 const meetingEndDate = moment(meetingEnd, format).toDate();
+                const formattedDate = moment(meetingStart, "MM/DD/YYYY, hh:mm:ss A").format('YYYY-MM-DD');
+                const formattedStartTime = moment(meetingStart, "MM/DD/YYYY, hh:mm:ss A").format('hh:mm:ss A');
+                const formattedEndTime = moment(meetingEnd, "MM/DD/YYYY, hh:mm:ss A").format('hh:mm:ss A');
+                console.log(formattedDate);
+                console.log(formattedEndTime);
                 try {
                   const postData = {
                     ...newZoomSchedule?.data,
-                    requester: user?.email,
+                    requester: requesterStd ? requesterStd : user?.email,
+                    studentName: stdName ? stdName : userInfo?.name,
                     organization: {
                       organizationId: userInfo?.organizationId,
                       organizationName: userInfo?.organizationName,
@@ -1115,16 +1140,16 @@ const ScheduleTask = ({ taskData, week }) => {
                       {
                         //  from: `${userInfo?.email}`,
                         //    to: `${user?.email},${adminMail}`,
-                        to: `${user?.email}`,
+                        to: `${requesterStd ? requesterStd : user?.email}`,
                         templateType: "emailAction",
-                        templateName: "sheduleTask",
+                        templateName: "sheduleTaskStudent",
                         organizationId: userInfo?.organizationId,
-                        start_time: meetingStart,
-                        end_time: meetingEnd,
+                        start_time: formattedStartTime,
+                        end_time: formattedEndTime,
                         meeting_link: studentUrl,
-                        learner_name: adminName,
-                        learner_email: adminMail,
-                        meeting_date: "",
+                        admin_name: adminName,
+                        site_email: adminMail,
+                        meeting_date: formattedDate,
                         /*  subject: `Event request`,
                         message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
                           }`, */
@@ -1139,12 +1164,12 @@ const ScheduleTask = ({ taskData, week }) => {
                         templateType: "emailAction",
                         templateName: "sheduleTask",
                         organizationId: userInfo?.organizationId,
-                        start_time: meetingStart,
-                        end_time: meetingEnd,
+                        start_time: formattedStartTime,
+                        end_time: formattedEndTime,
                         meeting_link: adminUrl,
-                        learner_name: adminName,
-                        learner_email: adminMail,
-                        meeting_date: "",
+                        learner_name: stdName ? stdName : userInfo?.name,
+                        learner_email: requesterStd ? requesterStd : user?.email,
+                        meeting_date: formattedDate,
                         /*  subject: `Event request`,
                         message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
                           }`, */
@@ -1157,7 +1182,7 @@ const ScheduleTask = ({ taskData, week }) => {
                       sendMailAdmin?.data?.success
                     ) {
                       const updatedEvent = {
-                        summary: `${userInfo?.name} ${calendarSubjectName}`,
+                        summary: `${stdName ? stdName : userInfo?.name} ${calendarSubjectName}`,
                         description: `Join Zoom Meeting: ${adminUrl}\nStart the Meeting: ${studentUrl}`,
                         location: newZoomSchedule.join_url, // Zoom meeting link as location
                         start: {
@@ -1169,7 +1194,7 @@ const ScheduleTask = ({ taskData, week }) => {
                           timeZone: "Asia/Kolkata", // Explicitly setting time zone
                         },
                         attendees: [
-                          { email: user.email }, // User's email
+                          { email: requesterStd ? requesterStd : user?.email }, // User's email
                           { email: adminMail }, // Admin's email
                         ],
                         reminders: {
@@ -1317,11 +1342,16 @@ const ScheduleTask = ({ taskData, week }) => {
                 const format = "MM/DD/YYYY, hh:mm:ss A"; // This is the format based on your output
                 const meetingStartDate = moment(meetingStart, format).toDate(); // Use moment.js to parse the string
                 const meetingEndDate = moment(meetingEnd, format).toDate();
-
+                const formattedDate = moment(meetingStart, "MM/DD/YYYY, hh:mm:ss A").format('YYYY-MM-DD');
+                const formattedStartTime = moment(meetingStart, "MM/DD/YYYY, hh:mm:ss A").format('hh:mm:ss A');
+                const formattedEndTime = moment(meetingEnd, "MM/DD/YYYY, hh:mm:ss A").format('hh:mm:ss A');
+                console.log(formattedDate);
+                console.log(formattedEndTime);
                 try {
                   const postData = {
                     ...newZoomSchedule?.data,
                     requester: user?.email,
+                    studentName: userInfo?.name,
                     organization: {
                       organizationId: userInfo?.organizationId,
                       organizationName: userInfo?.organizationName,
@@ -1346,14 +1376,14 @@ const ScheduleTask = ({ taskData, week }) => {
                         //    to: `${user?.email},${adminMail}`,
                         to: `${user?.email}`,
                         templateType: "emailAction",
-                        templateName: "sheduleTask",
+                        templateName: "sheduleTaskStudent",
                         organizationId: userInfo?.organizationId,
-                        start_time: meetingStart,
-                        end_time: meetingEnd,
+                        start_time: formattedStartTime,
+                        end_time: formattedEndTime,
                         meeting_link: studentUrl,
-                        learner_name: adminName,
-                        learner_email: adminMail,
-                        meeting_date: "",
+                        admin_name: adminName,
+                        site_email: adminMail,
+                        meeting_date: formattedDate,
                         /*  subject: `Event request`,
                         message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
                           }`, */
@@ -1368,12 +1398,12 @@ const ScheduleTask = ({ taskData, week }) => {
                         templateType: "emailAction",
                         templateName: "sheduleTask",
                         organizationId: userInfo?.organizationId,
-                        start_time: meetingStart,
-                        end_time: meetingEnd,
+                        start_time: formattedStartTime,
+                        end_time: formattedEndTime,
                         meeting_link: adminUrl,
-                        learner_name: adminName,
-                        learner_email: adminMail,
-                        meeting_date: "",
+                        learner_name: userInfo?.name,
+                        learner_email: user?.email,
+                        meeting_date: formattedDate,
                         /*  subject: `Event request`,
                         message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
                           }`, */
@@ -1604,6 +1634,7 @@ const ScheduleTask = ({ taskData, week }) => {
   };
 
   console.log(matching, timeRangeError);
+  console.log(eventId, eventDBid, requesterStd, stdName);
   return (
     <div className="flex justify-center my-5">
       {userInfo?.role === "admin" && zoomInfo?.length > 0 ? (
@@ -1615,9 +1646,8 @@ const ScheduleTask = ({ taskData, week }) => {
               </div>
             )}
             <table
-              className={`min-w-full leading-normal ${
-                isLoading ? "opacity-50" : ""
-              }`}
+              className={`min-w-full leading-normal ${isLoading ? "opacity-50" : ""
+                }`}
             >
               <thead>
                 <tr>
@@ -1658,221 +1688,505 @@ const ScheduleTask = ({ taskData, week }) => {
         </>
       ) : (
         <>
-          {userRequesterEvents?.length > 0 && isReschedule === false ? (
-            // Render content specific to events where the user is the requester
-            <div className="grid grid-cols-1 my-5 justify-items-center gap-5 items-center">
-              {/* <p>You are the requester in the following events:</p> */}
-              {userRequesterEvents?.map((event, index) => (
-                <div
-                  key={index}
-                  className=" shadow-lg outline-double outline-offset-2 outline-2 outline-emerald-500  w-[320px] rounded p-2 "
-                >
-                  <p className="flex gap-1 items-center text-sm">
-                    <FiberManualRecordIcon
-                      sx={{ color: red[400] }}
-                    ></FiberManualRecordIcon>
-                    Meeting with {event?.organization?.organizationName}
-                  </p>
-                  {event?.meetingType === "Zoom" ? (
-                    <div className="flex items-center gap-2">
-                      <div className="mt-3 mb-1 ">
-                        <p className="font-medium text-sm flex justify-between mt-2 gap-2">
-                          <div className="flex justify-between gap-2">
-                            <AccessAlarmOutlinedIcon fontSize="small" />
-                            <span className="font-semibold text-[14px]">
-                              Starts{" "}
-                            </span>
-                          </div>
-                          <ul className="text-sm">
-                            <li key={index}>
-                              {formatTimeForZoom(
-                                event,
-                                event?.start_time ? "start" : ""
-                              )}
-                            </li>
-                          </ul>
-                        </p>
-                        <p className="font-medium text-sm flex justify-between mt-2 gap-2">
-                          <div className="flex justify-between  gap-2">
-                            <AccessAlarmOutlinedIcon fontSize="small" />
-                            <span className="font-semibold text-[14px]">
-                              Ends{" "}
-                            </span>
-                          </div>
-                          <ul className="text-sm">
-                            <li key={index}>
-                              {formatTimeForZoom(
-                                event,
-                                event?.end_time ? "" : "end"
-                              )}
-                            </li>
-                          </ul>
-                        </p>
+          <>
+            {userInfo?.role === 'admin' && taskData?.events?.length > 0 && isReschedule === false ?
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 my-5 justify-items-center gap-10 items-center">
+                {/* <p>You are the requester in the following events:</p> */}
+                {taskData?.events?.map((event, index) => (
+                  event?.requester ? <div
+                    key={index}
+                    className=" shadow-lg outline-double outline-offset-2 outline-2 outline-emerald-500  w-[320px] rounded p-2 "
+                  >
+                    <p className="flex gap-1 items-center text-sm">
+                      <FiberManualRecordIcon
+                        sx={{ color: red[400] }}
+                      ></FiberManualRecordIcon>
+                      Meeting with {event?.requester}
+                    </p>
+                    {event?.meetingType === "Zoom" ? (
+                      <div className="flex items-center gap-2">
+                        <div className="mt-3 mb-1 ">
+                          <p className="font-medium text-sm flex justify-between mt-2 gap-2">
+                            <div className="flex justify-between gap-2">
+                              <AccessAlarmOutlinedIcon fontSize="small" />
+                              <span className="font-semibold text-[14px]">
+                                Starts{" "}
+                              </span>
+                            </div>
+                            <ul className="text-sm">
+                              <li key={index}>
+                                {formatTimeForZoom(
+                                  event,
+                                  event?.start_time ? "start" : ""
+                                )}
+                              </li>
+                            </ul>
+                          </p>
+                          <p className="font-medium text-sm flex justify-between mt-2 gap-2">
+                            <div className="flex justify-between  gap-2">
+                              <AccessAlarmOutlinedIcon fontSize="small" />
+                              <span className="font-semibold text-[14px]">
+                                Ends{" "}
+                              </span>
+                            </div>
+                            <ul className="text-sm">
+                              <li key={index}>
+                                {formatTimeForZoom(
+                                  event,
+                                  event?.end_time ? "" : "end"
+                                )}
+                              </li>
+                            </ul>
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-2">
-                      <div className="mt-3 mb-1 ">
-                        <p className="font-medium text-sm flex justify-between mt-2 gap-2">
-                          <div className="flex justify-between gap-2">
-                            <AccessAlarmOutlinedIcon fontSize="small" />
-                            <span className="font-semibold text-[14px]">
-                              Starts{" "}
-                            </span>
-                          </div>
-                          <ul className="text-sm">
-                            {formatUtcDateTimeStringToListItems(
-                              event?.start?.dateTime
-                            )?.map((item, index) => (
-                              <li key={index}>{item}</li>
-                            ))}
-                          </ul>
-                        </p>
-                        <p className="font-medium text-sm flex justify-between mt-2 gap-2">
-                          <div className="flex justify-between  gap-2">
-                            <AccessAlarmOutlinedIcon fontSize="small" />
-                            <span className="font-semibold text-[14px]">
-                              Ends{" "}
-                            </span>
-                          </div>
-                          <ul className="text-sm">
-                            {formatUtcDateTimeStringToListItems(
-                              event?.end?.dateTime
-                            )?.map((item, index) => (
-                              <li key={index}>{item}</li>
-                            ))}
-                          </ul>
-                        </p>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <div className="mt-3 mb-1 ">
+                          <p className="font-medium text-sm flex justify-between mt-2 gap-2">
+                            <div className="flex justify-between gap-2">
+                              <AccessAlarmOutlinedIcon fontSize="small" />
+                              <span className="font-semibold text-[14px]">
+                                Starts{" "}
+                              </span>
+                            </div>
+                            <ul className="text-sm">
+                              {formatUtcDateTimeStringToListItems(
+                                event?.start?.dateTime
+                              )?.map((item, index) => (
+                                <li key={index}>{item}</li>
+                              ))}
+                            </ul>
+                          </p>
+                          <p className="font-medium text-sm flex justify-between mt-2 gap-2">
+                            <div className="flex justify-between  gap-2">
+                              <AccessAlarmOutlinedIcon fontSize="small" />
+                              <span className="font-semibold text-[14px]">
+                                Ends{" "}
+                              </span>
+                            </div>
+                            <ul className="text-sm">
+                              {formatUtcDateTimeStringToListItems(
+                                event?.end?.dateTime
+                              )?.map((item, index) => (
+                                <li key={index}>{item}</li>
+                              ))}
+                            </ul>
+                          </p>
+                        </div>
                       </div>
+                    )}
+                    <div className="grid gap-2 align-middle items-center">
+                      <div className="w-10/12 mx-auto mt-3 text-white bg-sky-500  rounded-md">
+                        <Link
+                          to={
+                            event?.meetingType === "Zoom"
+                              ? userInfo?.role === "admin"
+                                ? event?.start_url
+                                : event?.join_url
+                              : event?.hangoutLink
+                          }
+                          className="flex gap-2 items-center justify-center py-[6px]"
+                        >
+                          <img
+                            src={
+                              event?.meetingType === "Zoom" ? zoom : googlemeet
+                            }
+                            className="w-[21px] h-[21px]"
+                            alt="googlemeet or zoom"
+                          ></img>
+                          <p>
+                            Go to{" "}
+                            {event?.meetingType === "Zoom" ? "zoom" : "meet"} Link
+                          </p>
+                        </Link>
+                      </div>
+                      {event?.meetingType !== "Zoom" ? (
+                        <p className="mt-1 text-center">Or</p>
+                      ) : (
+                        <p className="mt-1 text-center">Or</p>
+                      )}
+                      {event?.meetingType !== "Zoom" ? (
+                        <div className="w-10/12 mx-auto mt-1 text-center text-white bg-orange-400  rounded-md">
+                          <button
+                            onClick={() =>
+                              handleRescheduleMeetAdmin(
+                                event?.eventId,
+                                event?.eventDBid,
+                                event?.requester,
+                                event?.studentName
+                              )
+                            }
+                            className="w-10/12 rounded-md  text-center  py-[6px]"
+                          >
+                            Reschedule Meet
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="w-10/12 mx-auto mt-1 text-center text-white bg-orange-400  rounded-md">
+                          <button
+                            onClick={() =>
+                              handleRescheduleZoomAdmin(
+                                event?.eventId,
+                                event?.eventDBid,
+                                event?.requester,
+                                event?.studentName
+                              )
+                            }
+                            className="w-10/12 rounded-md  text-center  py-[6px]"
+                          >
+                            Reschedule Zoom
+                          </button>
+                        </div>
+                      )}
                     </div>
-                  )}
-                  <div className="grid gap-2 align-middle items-center">
-                    <div className="w-10/12 mx-auto mt-3 text-white bg-sky-500  rounded-md">
-                      <Link
-                        to={
-                          event?.meetingType === "Zoom"
-                            ? userInfo?.role === "admin"
-                              ? event?.start_url
-                              : event?.join_url
-                            : event?.hangoutLink
-                        }
-                        className="flex gap-2 items-center justify-center py-[6px]"
+                  </div> : <></>
+                ))}
+                {userZoomInfo?.uuid && userZoomInfo?.recording_files ? (
+                  <div className="mt-16">
+                    <div className="mx-auto flex justify-center ">
+                      <a
+                        className="bg-teal-500 text-white py-2 px-4 rounded-lg"
+                        target="_blank"
+                        rel="noreferrer"
+                        href={userZoomInfo?.recording_files[0]?.play_url}
                       >
-                        <img
-                          src={
-                            event?.meetingType === "Zoom" ? zoom : googlemeet
-                          }
-                          className="w-[21px] h-[21px]"
-                          alt="googlemeet or zoom"
-                        ></img>
-                        <p>
-                          Go to{" "}
-                          {event?.meetingType === "Zoom" ? "zoom" : "meet"} Link
-                        </p>
-                      </Link>
+                        See Zoom Recording
+                      </a>
                     </div>
-                    {event?.meetingType !== "Zoom" ? (
-                      <p className="mt-1 text-center">Or</p>
-                    ) : (
-                      <p className="mt-1 text-center">Or</p>
-                    )}
-                    {event?.meetingType !== "Zoom" ? (
-                      <div className="w-10/12 mx-auto mt-1 text-center text-white bg-orange-400  rounded-md">
-                        <button
-                          onClick={() =>
-                            handleRescheduleMeet(
-                              event?.eventId,
-                              event?.eventDBid
-                            )
-                          }
-                          className="w-10/12 rounded-md  text-center  py-[6px]"
+                    <div className="text-red-500 text-center mt-5">
+                      <p>Zoom Recordings will expire in 30 days.</p>
+                    </div>
+                  </div>
+                ) : (
+                  <></>
+                )}
+                {/* Add any additional content or components specific to user requester events */}
+              </div>
+              :
+              (
+                userInfo?.role === "admin" ?
+                  <div className="w-[250px] lg:w-[355px] min-w-[250px] lg:min-w-min h-[370px] lg:h-[515px]">
+                    <h1 className="text-[18px] lg:text-[25px] font-[700] text-center pb-[25px]">
+                      Request {meetingType} slot
+                    </h1>
+                    <div
+                      style={{
+                        filter: "drop-shadow(3.75217px 3.75217px 0px #000000)",
+                      }}
+                      className="bg-[#0E2749] w-full h-[400px] rounded-[14px] py-[15px] px-[15px] mb-10 lg:p-[30px] flex flex-col justify-between items-center gap-5"
+                    >
+                      <div className="w-full relative">
+                        <p className="text-[#C0C0C0] text-[18px] font-[600] pb-[18px]">
+                          Date
+                        </p>
+                        <div className="relative inline-flex w-full">
+                          <input
+                            required
+                            onChange={handleDateChange}
+                            className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
+                            name="date"
+                            id="date"
+                            type="date"
+                            min={getCurrentDate()}
+                            max={maxDateString}
+                          />
+                        </div>
+                        <p className="text-[#C0C0C0] text-[18px] font-[600] py-[18px]">
+                          Time
+                        </p>
+                        <div className="relative inline-flex w-full">
+                          <select
+                            required
+                            onChange={handleTimeChange}
+                            className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
+                            name="time"
+                            id="time"
+                          // defaultValue={taskData?.minimumTime}
+                          >
+                            <option className="hidden">Select Time</option>
+                            {generateTimeOptions()}
+                          </select>
+                        </div>
+                      </div>
+                      {reservedEvent ? (
+                        <a
+                          href={reservedEvent?.hangoutLink}
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{ boxShadow: "0px 6.32482px 0px #CA5F98" }}
+                          className="bg-[#0F3934] w-full py-[15px] px-[23px] rounded-[13px] text-[12px] lg:text-[18px] font-[700] z-[1]"
                         >
-                          Reschedule Meet
-                        </button>
+                          <p className="flex items-center justify-center text-white">
+                            Join Meeting{" "}
+                            <img
+                              className="pl-1 w-[21px] lg:w-[32px]"
+                              src={RightArrowWhite}
+                              alt="RightArrowBlack"
+                            />
+                          </p>
+                        </a>
+                      ) : (
+                        <>
+                          {matching || timeRangeError ? (
+                            <>
+                              {timeRangeError ? (
+                                <p className="text-white">
+                                  Please choose a time between {minTime} and {maxTime}
+                                  .
+                                </p>
+                              ) : (
+                                <p className="text-white">
+                                  Admin is Busy at that time
+                                </p>
+                              )}
+                            </>
+                          ) : (
+                            <DashboardPrimaryButton
+                              bgColor="#3E4DAC"
+                              shadow="0px 6.32482px 0px #CA5F98"
+                              width="full"
+                              onClick={addEvent}
+                              disabled={
+                                !selectedTimeSlot ||
+                                isTimeSlotBusy(selectedTimeSlot) ||
+                                isTimeSlotReserved(selectedTimeSlot)
+                              }
+                            >
+                              <p className="flex items-center justify-center text-white">
+                                Request Event{" "}
+                                <img
+                                  className="pl-1 w-[21px] lg:w-[32px]"
+                                  src={RightArrowWhite}
+                                  alt="RightArrowBlack"
+                                />
+                              </p>
+                            </DashboardPrimaryButton>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </div> : <></>
+              )
+            }
+          </>
+          <>
+            {userRequesterEvents?.length > 0 && isReschedule === false ? (
+              // Render content specific to events where the user is the requester
+              <div className="grid grid-cols-1 my-5 justify-items-center gap-5 items-center">
+                {/* <p>You are the requester in the following events:</p> */}
+                {userRequesterEvents?.map((event, index) => (
+                  <div
+                    key={index}
+                    className=" shadow-lg outline-double outline-offset-2 outline-2 outline-emerald-500  w-[320px] rounded p-2 "
+                  >
+                    <p className="flex gap-1 items-center text-sm">
+                      <FiberManualRecordIcon
+                        sx={{ color: red[400] }}
+                      ></FiberManualRecordIcon>
+                      Meeting with {event?.organization?.organizationName}
+                    </p>
+                    {event?.meetingType === "Zoom" ? (
+                      <div className="flex items-center gap-2">
+                        <div className="mt-3 mb-1 ">
+                          <p className="font-medium text-sm flex justify-between mt-2 gap-2">
+                            <div className="flex justify-between gap-2">
+                              <AccessAlarmOutlinedIcon fontSize="small" />
+                              <span className="font-semibold text-[14px]">
+                                Starts{" "}
+                              </span>
+                            </div>
+                            <ul className="text-sm">
+                              <li key={index}>
+                                {formatTimeForZoom(
+                                  event,
+                                  event?.start_time ? "start" : ""
+                                )}
+                              </li>
+                            </ul>
+                          </p>
+                          <p className="font-medium text-sm flex justify-between mt-2 gap-2">
+                            <div className="flex justify-between  gap-2">
+                              <AccessAlarmOutlinedIcon fontSize="small" />
+                              <span className="font-semibold text-[14px]">
+                                Ends{" "}
+                              </span>
+                            </div>
+                            <ul className="text-sm">
+                              <li key={index}>
+                                {formatTimeForZoom(
+                                  event,
+                                  event?.end_time ? "" : "end"
+                                )}
+                              </li>
+                            </ul>
+                          </p>
+                        </div>
                       </div>
                     ) : (
-                      <div className="w-10/12 mx-auto mt-1 text-center text-white bg-orange-400  rounded-md">
-                        <button
-                          onClick={() =>
-                            handleRescheduleZoom(
-                              event?.eventId,
-                              event?.eventDBid
-                            )
-                          }
-                          className="w-10/12 rounded-md  text-center  py-[6px]"
-                        >
-                          Reschedule Zoom
-                        </button>
+                      <div className="flex items-center gap-2">
+                        <div className="mt-3 mb-1 ">
+                          <p className="font-medium text-sm flex justify-between mt-2 gap-2">
+                            <div className="flex justify-between gap-2">
+                              <AccessAlarmOutlinedIcon fontSize="small" />
+                              <span className="font-semibold text-[14px]">
+                                Starts{" "}
+                              </span>
+                            </div>
+                            <ul className="text-sm">
+                              {formatUtcDateTimeStringToListItems(
+                                event?.start?.dateTime
+                              )?.map((item, index) => (
+                                <li key={index}>{item}</li>
+                              ))}
+                            </ul>
+                          </p>
+                          <p className="font-medium text-sm flex justify-between mt-2 gap-2">
+                            <div className="flex justify-between  gap-2">
+                              <AccessAlarmOutlinedIcon fontSize="small" />
+                              <span className="font-semibold text-[14px]">
+                                Ends{" "}
+                              </span>
+                            </div>
+                            <ul className="text-sm">
+                              {formatUtcDateTimeStringToListItems(
+                                event?.end?.dateTime
+                              )?.map((item, index) => (
+                                <li key={index}>{item}</li>
+                              ))}
+                            </ul>
+                          </p>
+                        </div>
                       </div>
                     )}
+                    <div className="grid gap-2 align-middle items-center">
+                      <div className="w-10/12 mx-auto mt-3 text-white bg-sky-500  rounded-md">
+                        <Link
+                          to={
+                            event?.meetingType === "Zoom"
+                              ? userInfo?.role === "admin"
+                                ? event?.start_url
+                                : event?.join_url
+                              : event?.hangoutLink
+                          }
+                          className="flex gap-2 items-center justify-center py-[6px]"
+                        >
+                          <img
+                            src={
+                              event?.meetingType === "Zoom" ? zoom : googlemeet
+                            }
+                            className="w-[21px] h-[21px]"
+                            alt="googlemeet or zoom"
+                          ></img>
+                          <p>
+                            Go to{" "}
+                            {event?.meetingType === "Zoom" ? "zoom" : "meet"} Link
+                          </p>
+                        </Link>
+                      </div>
+                      {event?.meetingType !== "Zoom" ? (
+                        <p className="mt-1 text-center">Or</p>
+                      ) : (
+                        <p className="mt-1 text-center">Or</p>
+                      )}
+                      {event?.meetingType !== "Zoom" ? (
+                        <div className="w-10/12 mx-auto mt-1 text-center text-white bg-orange-400  rounded-md">
+                          <button
+                            onClick={() =>
+                              handleRescheduleMeet(
+                                event?.eventId,
+                                event?.eventDBid
+                              )
+                            }
+                            className="w-10/12 rounded-md  text-center  py-[6px]"
+                          >
+                            Reschedule Meet
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="w-10/12 mx-auto mt-1 text-center text-white bg-orange-400  rounded-md">
+                          <button
+                            onClick={() =>
+                              handleRescheduleZoom(
+                                event?.eventId,
+                                event?.eventDBid
+                              )
+                            }
+                            className="w-10/12 rounded-md  text-center  py-[6px]"
+                          >
+                            Reschedule Zoom
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
-              {userZoomInfo?.uuid && userZoomInfo?.recording_files ? (
-                <div className="mt-16">
-                  <div className="mx-auto flex justify-center ">
-                    <a
-                      className="bg-teal-500 text-white py-2 px-4 rounded-lg"
-                      target="_blank"
-                      rel="noreferrer"
-                      href={userZoomInfo?.recording_files[0]?.play_url}
-                    >
-                      See Zoom Recording
-                    </a>
+                ))}
+                {userZoomInfo?.uuid && userZoomInfo?.recording_files ? (
+                  <div className="mt-16">
+                    <div className="mx-auto flex justify-center ">
+                      <a
+                        className="bg-teal-500 text-white py-2 px-4 rounded-lg"
+                        target="_blank"
+                        rel="noreferrer"
+                        href={userZoomInfo?.recording_files[0]?.play_url}
+                      >
+                        See Zoom Recording
+                      </a>
+                    </div>
+                    <div className="text-red-500 text-center mt-5">
+                      <p>Zoom Recordings will expire in 30 days.</p>
+                    </div>
                   </div>
-                  <div className="text-red-500 text-center mt-5">
-                    <p>Zoom Recordings will expire in 30 days.</p>
-                  </div>
-                </div>
-              ) : (
-                <></>
-              )}
-              {/* Add any additional content or components specific to user requester events */}
-            </div>
-          ) : (
-            <div className="w-[250px] lg:w-[355px] min-w-[250px] lg:min-w-min h-[370px] lg:h-[515px]">
-              <h1 className="text-[18px] lg:text-[25px] font-[700] text-center pb-[25px]">
-                Request {meetingType} slot
-              </h1>
-              <div
-                style={{
-                  filter: "drop-shadow(3.75217px 3.75217px 0px #000000)",
-                }}
-                className="bg-[#0E2749] w-full h-[400px] rounded-[14px] py-[15px] px-[15px] mb-10 lg:p-[30px] flex flex-col justify-between items-center gap-5"
-              >
-                <div className="w-full relative">
-                  <p className="text-[#C0C0C0] text-[18px] font-[600] pb-[18px]">
-                    Date
-                  </p>
-                  <div className="relative inline-flex w-full">
-                    <input
-                      required
-                      onChange={handleDateChange}
-                      className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
-                      name="date"
-                      id="date"
-                      type="date"
-                      min={getCurrentDate()}
-                      max={maxDateString}
-                    />
-                  </div>
-                  <p className="text-[#C0C0C0] text-[18px] font-[600] py-[18px]">
-                    Time
-                  </p>
-                  <div className="relative inline-flex w-full">
-                    <select
-                      required
-                      onChange={handleTimeChange}
-                      className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
-                      name="time"
-                      id="time"
-                      // defaultValue={taskData?.minimumTime}
-                    >
-                      <option className="hidden">Select Time</option>
-                      {generateTimeOptions()}
-                    </select>
-                  </div>
-                  {/* <div className="relative inline-flex w-full">
+                ) : (
+                  <></>
+                )}
+                {/* Add any additional content or components specific to user requester events */}
+              </div>
+            ) : (
+              userInfo?.role === "user" ?
+                <div className="w-[250px] lg:w-[355px] min-w-[250px] lg:min-w-min h-[370px] lg:h-[515px]">
+                  <h1 className="text-[18px] lg:text-[25px] font-[700] text-center pb-[25px]">
+                    Request {meetingType} slot
+                  </h1>
+                  <div
+                    style={{
+                      filter: "drop-shadow(3.75217px 3.75217px 0px #000000)",
+                    }}
+                    className="bg-[#0E2749] w-full h-[400px] rounded-[14px] py-[15px] px-[15px] mb-10 lg:p-[30px] flex flex-col justify-between items-center gap-5"
+                  >
+                    <div className="w-full relative">
+                      <p className="text-[#C0C0C0] text-[18px] font-[600] pb-[18px]">
+                        Date
+                      </p>
+                      <div className="relative inline-flex w-full">
+                        <input
+                          required
+                          onChange={handleDateChange}
+                          className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
+                          name="date"
+                          id="date"
+                          type="date"
+                          min={getCurrentDate()}
+                          max={maxDateString}
+                        />
+                      </div>
+                      <p className="text-[#C0C0C0] text-[18px] font-[600] py-[18px]">
+                        Time
+                      </p>
+                      <div className="relative inline-flex w-full">
+                        <select
+                          required
+                          onChange={handleTimeChange}
+                          className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
+                          name="time"
+                          id="time"
+                        // defaultValue={taskData?.minimumTime}
+                        >
+                          <option className="hidden">Select Time</option>
+                          {generateTimeOptions()}
+                        </select>
+                      </div>
+                      {/* <div className="relative inline-flex w-full">
                 <input
                   required
                   onChange={handleBTimeChange}
@@ -1885,66 +2199,67 @@ const ScheduleTask = ({ taskData, week }) => {
                   defaultValue={taskData?.minimumTime} // Set the default value to 9:00 AM
                 />
               </div> */}
-                </div>
-                {reservedEvent ? (
-                  <a
-                    href={reservedEvent?.hangoutLink}
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{ boxShadow: "0px 6.32482px 0px #CA5F98" }}
-                    className="bg-[#0F3934] w-full py-[15px] px-[23px] rounded-[13px] text-[12px] lg:text-[18px] font-[700] z-[1]"
-                  >
-                    <p className="flex items-center justify-center text-white">
-                      Join Meeting{" "}
-                      <img
-                        className="pl-1 w-[21px] lg:w-[32px]"
-                        src={RightArrowWhite}
-                        alt="RightArrowBlack"
-                      />
-                    </p>
-                  </a>
-                ) : (
-                  <>
-                    {matching || timeRangeError ? (
-                      <>
-                        {timeRangeError ? (
-                          <p className="text-white">
-                            Please choose a time between {minTime} and {maxTime}
-                            .
-                          </p>
-                        ) : (
-                          <p className="text-white">
-                            Admin is Busy at that time
-                          </p>
-                        )}
-                      </>
-                    ) : (
-                      <DashboardPrimaryButton
-                        bgColor="#3E4DAC"
-                        shadow="0px 6.32482px 0px #CA5F98"
-                        width="full"
-                        onClick={addEvent}
-                        disabled={
-                          !selectedTimeSlot ||
-                          isTimeSlotBusy(selectedTimeSlot) ||
-                          isTimeSlotReserved(selectedTimeSlot)
-                        }
+                    </div>
+                    {reservedEvent ? (
+                      <a
+                        href={reservedEvent?.hangoutLink}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{ boxShadow: "0px 6.32482px 0px #CA5F98" }}
+                        className="bg-[#0F3934] w-full py-[15px] px-[23px] rounded-[13px] text-[12px] lg:text-[18px] font-[700] z-[1]"
                       >
                         <p className="flex items-center justify-center text-white">
-                          Request Event{" "}
+                          Join Meeting{" "}
                           <img
                             className="pl-1 w-[21px] lg:w-[32px]"
                             src={RightArrowWhite}
                             alt="RightArrowBlack"
                           />
                         </p>
-                      </DashboardPrimaryButton>
+                      </a>
+                    ) : (
+                      <>
+                        {matching || timeRangeError ? (
+                          <>
+                            {timeRangeError ? (
+                              <p className="text-white">
+                                Please choose a time between {minTime} and {maxTime}
+                                .
+                              </p>
+                            ) : (
+                              <p className="text-white">
+                                Admin is Busy at that time
+                              </p>
+                            )}
+                          </>
+                        ) : (
+                          <DashboardPrimaryButton
+                            bgColor="#3E4DAC"
+                            shadow="0px 6.32482px 0px #CA5F98"
+                            width="full"
+                            onClick={addEvent}
+                            disabled={
+                              !selectedTimeSlot ||
+                              isTimeSlotBusy(selectedTimeSlot) ||
+                              isTimeSlotReserved(selectedTimeSlot)
+                            }
+                          >
+                            <p className="flex items-center justify-center text-white">
+                              Request Event{" "}
+                              <img
+                                className="pl-1 w-[21px] lg:w-[32px]"
+                                src={RightArrowWhite}
+                                alt="RightArrowBlack"
+                              />
+                            </p>
+                          </DashboardPrimaryButton>
+                        )}
+                      </>
                     )}
-                  </>
-                )}
-              </div>
-            </div>
-          )}
+                  </div>
+                </div> : <></>
+            )}
+          </>
         </>
       )}
     </div>
