@@ -113,7 +113,7 @@ const CertificateEditor = ({
     if (mode === "edit" && selectedCourse && selectedBatch)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/certificateTemplates/courseId/${selectedCourse?._id}/batchId/${selectedBatch?._id}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/certificateTemplates/courseId/${selectedCourse?._id}/batchId/${selectedBatch?._id}`
         )
         .then((response) => {
           console.log(response?.data?.template);
@@ -304,7 +304,7 @@ const CertificateEditor = ({
       };
       console.log(templateData);
       const addTemplate = await axios.post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/certificateTemplates`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/certificateTemplates`,
         templateData
       );
 

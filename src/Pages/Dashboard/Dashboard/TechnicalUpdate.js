@@ -62,7 +62,7 @@ const TechnicalUpdate = ({
   const [startTime, setStartTime] = useState();
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACKEND_API}/events`)
+      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/events`)
       .then((response) => {
         const findEvent = response?.data?.find(
           (item) =>
@@ -113,7 +113,7 @@ const TechnicalUpdate = ({
       // You can now use combinedDateTime as needed
 
       const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND_API}/events`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/event`,
         { ...event }
       );
       const sendMail = await axios.post(
@@ -213,7 +213,7 @@ const TechnicalUpdate = ({
           function initiate() {
             const sendData = async (event) => {
               const response = await axios.post(
-                `${process.env.REACT_APP_BACKEND_API}/events`,
+                `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events`,
                 event
               );
               const sendMail = await axios.post(

@@ -24,7 +24,7 @@ const CreateBundle = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
         setAvailableCourses(response?.data);
@@ -47,7 +47,7 @@ const CreateBundle = () => {
     setCourseDropdown(false);
 
     const { data } = await axios.get(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${selectedCourse._id}`
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/courseId/${selectedCourse._id}`
     );
     selectedCourse.batches = data;
     console.log("Selected Course", selectedCourse);
@@ -147,7 +147,7 @@ const CreateBundle = () => {
     };
     if (submitPermission) {
       const newBundle = await axios.post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/bundles`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/bundles`,
         addBundle
       );
       console.log("new course --> ", newBundle);

@@ -29,7 +29,7 @@ const SelectEarningCategory = ({
       return;
     }
     const newCategory = await axios.post(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/earningCategories`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/earningCategories`,
       {
         categoryName: `category ${earningCategories?.length + 1}`,
         totalWeight: 0,
@@ -72,7 +72,7 @@ const SelectEarningCategory = ({
     };
     console.log(update);
     const updatedCategory = await axios.put(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/earningCategories/categoryName`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/earningCategories/categoryName`,
       update
     );
 

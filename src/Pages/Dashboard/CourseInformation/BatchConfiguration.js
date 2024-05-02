@@ -71,7 +71,7 @@ const BatchConfiguration = ({
     console.log(sendData);
 
     const newBatch = await axios.post(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/batches`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches`,
       sendData
     );
 
@@ -115,7 +115,7 @@ const BatchConfiguration = ({
 
     try {
       const editBatch = await axios.put(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/batches/updateBatch/batchId/${selectedBatches[0]?._id}`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/updateBatch/batchId/${selectedBatches[0]?._id}`,
         sendData
       );
 
@@ -149,7 +149,7 @@ const BatchConfiguration = ({
         Loading();
         try {
           const deleteBatch = await axios.delete(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/batches/deleteBatch/batchId/${selectedBatches[0]?._id}`
+            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/deleteBatch/batchId/${selectedBatches[0]?._id}`
           );
 
           console.log(deleteBatch);

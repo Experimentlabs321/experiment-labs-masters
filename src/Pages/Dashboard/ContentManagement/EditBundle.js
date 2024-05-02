@@ -32,7 +32,7 @@ const EditBundle = () => {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/bundles/bundleId/${id}`)
+      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/bundles/bundleId/${id}`)
       .then((response) => {
         setBundleData(response?.data);
         setSelectedCoursesAndBatches(response?.data?.courses);
@@ -49,7 +49,7 @@ const EditBundle = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
         const previousSelectedCourse = response?.data?.filter((item) =>
@@ -59,7 +59,7 @@ const EditBundle = () => {
         );
         previousSelectedCourse?.forEach(async (element, index) => {
           const { data } = await axios.get(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${element._id}`
+            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/courseId/${element._id}`
           );
           console.log("element: ", data);
           previousSelectedCourse[index].batches = data;
@@ -90,7 +90,7 @@ const EditBundle = () => {
     setCourseDropdown(false);
 
     const { data } = await axios.get(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${selectedCourse._id}`
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/courseId/${selectedCourse._id}`
     );
     selectedCourse.batches = data;
     console.log("Selected Course", selectedCourse);
@@ -190,7 +190,7 @@ const EditBundle = () => {
     };
     if (submitPermission) {
       const updateBundle = await axios.put(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/bundles/updateBundle/bundleId/${id}`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/bundles/updateBundle/bundleId/${id}`,
         addBundle
       );
 

@@ -300,7 +300,8 @@ const AssignmentEvaluation2 = () => {
 
       console.log(manageAssignment);
       const addMarks = await axios.post(
-        `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${id}/addResult`,
+        // `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${id}/addResult`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/${id}/result`,
         manageAssignment
       );
 
@@ -411,7 +412,8 @@ const AssignmentEvaluation2 = () => {
     console.log(sendMail);
 
     const addFeedback = await axios.post(
-      `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${id}/addResult`,
+      // `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${id}/addResult`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/${id}/result`,
       manageFeedback
     );
 
@@ -484,7 +486,8 @@ const AssignmentEvaluation2 = () => {
     console.log(sendMail);
 
     const addFeedback = await axios.post(
-      `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${id}/addReview`,
+    //  `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${id}/addReview`,
+    `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/${id}/review`,
       manageFeedback
     );
 
@@ -553,7 +556,8 @@ const AssignmentEvaluation2 = () => {
     console.log(sendMail);
 
     const addFeedback = await axios.post(
-      `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${id}/addResult`,
+      //`${process.env.REACT_APP_BACKEND_API}/submitAssignment/${id}/addResult`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/${id}/result`,
       manageStatus
     );
 

@@ -103,7 +103,7 @@ const TaskDetails = () => {
     if (taskData?.chapterId)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/${taskData?.chapterId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${taskData?.chapterId}`
         )
         .then((res) => {
           setChapter(res?.data);
@@ -126,7 +126,7 @@ const TaskDetails = () => {
     if (chapter?.courseId)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${chapter?.courseId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/${chapter?.courseId}`
         )
         .then((res) => setCourseData(res?.data))
         .catch((error) => console.error(error));
@@ -136,7 +136,7 @@ const TaskDetails = () => {
     if (week?._id)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/weekId/${week?._id}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/weekId/${week?._id}`
         )
         .then((response) => {
           setChapters(response?.data);

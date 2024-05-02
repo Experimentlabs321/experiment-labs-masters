@@ -69,7 +69,7 @@ const QuizGeneralInformation = () => {
     if (chapter?.courseId)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${chapter?.courseId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/${chapter?.courseId}`
         )
         .then((response) => {
           setCourse(response?.data);
@@ -80,7 +80,7 @@ const QuizGeneralInformation = () => {
     if (chapter?.courseId)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${chapter?.courseId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/courseId/${chapter?.courseId}`
         )
         .then((response) => {
           setBatchesData(response?.data);
@@ -102,7 +102,7 @@ const QuizGeneralInformation = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${chapter?.courseId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/${chapter?.courseId}`
       )
       .then((response) => {
         setCourseData(response?.data);

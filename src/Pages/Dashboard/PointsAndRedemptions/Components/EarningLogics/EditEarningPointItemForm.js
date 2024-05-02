@@ -39,7 +39,7 @@ const EditEarningPointItemForm = ({
     };
     if (data?.categoryName === selectedEarningCategory?.categoryName) {
       const updatedItem = await axios.put(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/earningCategories/earningItems`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/earningCategories/earningItems`,
         data
       );
       if (updatedItem?.data?.acknowledged) {
@@ -80,7 +80,7 @@ const EditEarningPointItemForm = ({
         return;
       }
       const newItem = await axios.post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/earningCategories/earningItems`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/earningCategories/earningItems`,
         {
           organizationId: userInfo?.organizationId,
           categoryName: currentCategory?.categoryName,
@@ -94,7 +94,7 @@ const EditEarningPointItemForm = ({
       );
       if (newItem?.data?.acknowledged) {
         fetch(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/earningCategories/earningItems`,
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/earningCategories/earningItems`,
           {
             method: "DELETE",
             headers: {

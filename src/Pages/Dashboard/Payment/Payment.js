@@ -57,14 +57,14 @@ const Payment = () => {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/courses/${id}`)
+      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/${id}`)
       .then((response) => {
         setCourse(response?.data);
       })
       .catch((error) => console.error(error));
 
     axios
-      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${id}`)
+      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/courseId/${id}`)
       .then((response) => {
         setBatchesData(response?.data);
         if (queryBatch) {

@@ -19,7 +19,7 @@ const DashboardCourses = ({ myCoursesChecked, allCoursesChecked, courseAccessUrl
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
         setCourses(response?.data);
@@ -28,7 +28,7 @@ const DashboardCourses = ({ myCoursesChecked, allCoursesChecked, courseAccessUrl
 
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/userId/${userInfo._id}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/userId/${userInfo._id}`
       )
       .then((response) => {
         setMyCourses(response?.data);

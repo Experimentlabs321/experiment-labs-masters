@@ -37,7 +37,7 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
         setAvailableCourses(response?.data);
@@ -45,7 +45,7 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
       .catch((error) => console.error(error));
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/bundles/organizationId/${userInfo.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/bundles/organizationId/${userInfo.organizationId}`
       )
       .then((response) => {
         setBundles(response?.data);
@@ -187,7 +187,7 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
     setCourseDropdown(false);
 
     const { data } = await axios.get(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/batches/courseId/${selectedCourse._id}`
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/courseId/${selectedCourse._id}`
     );
     selectedCourse.batches = data;
     console.log("Selected Course", selectedCourse);

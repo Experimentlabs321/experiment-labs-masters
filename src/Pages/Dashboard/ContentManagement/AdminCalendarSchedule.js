@@ -93,9 +93,7 @@ const AdminCalendarSchedule = () => {
   useEffect(() => {
     axios
       .get(
-        `${
-          process.env.REACT_APP_SERVER_API
-        }/api/v1/batches/courseId/${localStorage.getItem("courseId")}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/courseId/${localStorage.getItem("courseId")}`
       )
       .then((response) => {
         setBatchesData(response?.data);
@@ -116,7 +114,7 @@ const AdminCalendarSchedule = () => {
     if (chapter?.courseId)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/courses/${chapter?.courseId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/${chapter?.courseId}`
         )
         .then((response) => {
           setCourse(response?.data);
@@ -125,7 +123,7 @@ const AdminCalendarSchedule = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/calenderInfo/getCalendarInfoByEmail/email/${userInfo?.email}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/getCalendarInfoByEmail/email/${userInfo?.email}`
       )
       .then((response) => {
         setAdminCalendarInfo(response?.data);
@@ -224,7 +222,7 @@ const AdminCalendarSchedule = () => {
     delete calendarInfo._id;
     console.log(calendarInfo);
     const newSchedule = await axios.post(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/calenderInfo/updateOrInsertCalendarInfo/email/${calendarInfo?.email}`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/updateOrInsertCalendarInfo/email/${calendarInfo?.email}`,
       calendarInfo
     );
     const manageSchedule = {

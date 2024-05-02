@@ -122,7 +122,7 @@ const Dashboard = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/courses/userId/${userInfo._id}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/userId/${userInfo._id}`
       )
       .then((response) => {
         setCourses(response?.data);
@@ -181,7 +181,7 @@ const Dashboard = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/weekId/${currentWeek?._id}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/weekId/${currentWeek?._id}`
       )
       .then((response) => {
         setChapters(response?.data);
@@ -219,7 +219,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/chapters`)
+      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters`)
       .then((response) => {
         const currentCourseChapter = response?.data?.filter(
           (item) => item?.courseId === selectedCourse?._id
@@ -281,7 +281,7 @@ const Dashboard = () => {
       return;
     }
     axios
-      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/events/email/${userInfo.email}`)
+      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/email/${userInfo.email}`)
       .then((response) => {
         console.log(response?.data);
         const currentDate = new Date(getCurrentDate()).getTime();

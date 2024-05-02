@@ -10,7 +10,9 @@ const MySubmission = ({ taskData }) => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${taskData?._id}/${userInfo?._id}`
+       // `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${taskData?._id}/${userInfo?._id}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/taskId/${taskData?._id}/submitterId/${userInfo?._id}
+        `,
       )
       .then((response) => {
         if (response && response.data && response.data.length > 0) {

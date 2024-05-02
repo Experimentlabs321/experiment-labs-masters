@@ -162,7 +162,7 @@ const ScheduleTask = ({ taskData, week }) => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/calenderInfo/getCalendarInfoByEmail/email/${taskData?.adminCalenderEmail}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/getCalendarInfoByEmail/email/${taskData?.adminCalenderEmail}`
       )
       .then((response) => {
         setAdminCalendarInfo(response?.data);
@@ -216,7 +216,7 @@ const ScheduleTask = ({ taskData, week }) => {
           for (const event of taskData.events) {
             try {
               const response = await axios.post(
-                `${process.env.REACT_APP_SERVER_API}/api/v1/events/recording/organizationId/${event?.organization?.organizationId}`,
+                `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/recording/organizationId/${event?.organization?.organizationId}`,
                 {
                   meetingId: event?.id,
                 }
@@ -456,7 +456,7 @@ const ScheduleTask = ({ taskData, week }) => {
     if (userRequesterEvents?.length > 0)
       axios
         .post(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/events/recording/organizationId/${userInfo?.organizationId}`,
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/recording/organizationId/${userInfo?.organizationId}`,
           {
             meetingId: userRequesterEvents[0]?.id,
           }
@@ -769,7 +769,7 @@ const ScheduleTask = ({ taskData, week }) => {
                     console.log(rescheduledEvent);
                     console.log(eventDBid);
                     const updateResponse = await axios.put(
-                      `${process.env.REACT_APP_SERVER_API}/api/v1/events/${eventDBid}`,
+                      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/${eventDBid}`,
                       rescheduledEvent
                     );
                     // const updateResponse = await axios.put(
@@ -872,7 +872,7 @@ const ScheduleTask = ({ taskData, week }) => {
                         delete calendarInfo._id;
                         console.log(calendarInfo);
                         const newSchedule = await axios.post(
-                          `${process.env.REACT_APP_SERVER_API}/api/v1/calenderInfo/updateOrInsertCalendarInfo/email/${calendarInfo?.email}`,
+                          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/updateOrInsertCalendarInfo/email/${calendarInfo?.email}`,
                           calendarInfo
                         );
 
@@ -897,7 +897,7 @@ const ScheduleTask = ({ taskData, week }) => {
                 function initiate() {
                   const sendData = async (event) => {
                     const response = await axios.post(
-                      `${process.env.REACT_APP_SERVER_API}/api/v1/events`,
+                      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events`,
                       event
                     );
 
@@ -960,7 +960,7 @@ const ScheduleTask = ({ taskData, week }) => {
                         delete calendarInfo._id;
                         console.log(calendarInfo);
                         const newSchedule = await axios.post(
-                          `${process.env.REACT_APP_SERVER_API}/api/v1/calenderInfo/updateOrInsertCalendarInfo/email/${calendarInfo?.email}`,
+                          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/updateOrInsertCalendarInfo/email/${calendarInfo?.email}`,
                           calendarInfo
                         );
                         // console.log("new event created ", newEvent);
@@ -1072,7 +1072,7 @@ const ScheduleTask = ({ taskData, week }) => {
                 duration: meetingLength,
               };
               const newZoomSchedule = await axios.post(
-                `${process.env.REACT_APP_SERVER_API}/api/v1/events/meeting/organizationId/${userInfo?.organizationId}`,
+                `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/meeting/organizationId/${userInfo?.organizationId}`,
                 zoomSchedule
               );
               if (newZoomSchedule?.data?.uuid) {
@@ -1129,7 +1129,7 @@ const ScheduleTask = ({ taskData, week }) => {
                     taskId: taskId,
                   };
                   const updateResponse = await axios.put(
-                    `${process.env.REACT_APP_SERVER_API}/api/v1/events/${eventDBid}`,
+                    `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/${eventDBid}`,
                     postData
                   );
 
@@ -1243,7 +1243,7 @@ const ScheduleTask = ({ taskData, week }) => {
                       delete calendarInfo._id;
                       console.log(calendarInfo);
                       const newSchedule = await axios.post(
-                        `${process.env.REACT_APP_SERVER_API}/api/v1/calenderInfo/updateOrInsertCalendarInfo/email/${calendarInfo?.email}`,
+                        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/updateOrInsertCalendarInfo/email/${calendarInfo?.email}`,
                         calendarInfo
                       );
                       Loading().close();
@@ -1303,7 +1303,7 @@ const ScheduleTask = ({ taskData, week }) => {
                 duration: meetingLength,
               };
               const newZoomSchedule = await axios.post(
-                `${process.env.REACT_APP_SERVER_API}/api/v1/events/meeting/organizationId/${userInfo?.organizationId}`,
+                `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/meeting/organizationId/${userInfo?.organizationId}`,
                 zoomSchedule
               );
               if (newZoomSchedule?.data?.uuid) {
@@ -1474,7 +1474,7 @@ const ScheduleTask = ({ taskData, week }) => {
                           delete calendarInfo._id;
                           console.log(calendarInfo);
                           const newSchedule = await axios.post(
-                            `${process.env.REACT_APP_SERVER_API}/api/v1/calenderInfo/updateOrInsertCalendarInfo/email/${calendarInfo?.email}`,
+                            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/updateOrInsertCalendarInfo/email/${calendarInfo?.email}`,
                             calendarInfo
                           );
                         } catch (error) {
