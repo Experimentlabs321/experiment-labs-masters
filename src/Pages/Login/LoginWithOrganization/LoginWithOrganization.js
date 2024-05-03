@@ -60,7 +60,7 @@ const LoginWithOrganization = () => {
   console.log(orgRootUrl);
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${id}`)
+      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/organizations/${id}`)
       .then((response) => {
         setOrgData(response?.data);
       })
@@ -94,7 +94,7 @@ const LoginWithOrganization = () => {
     const password = form.password.value;
     try {
       const userDevice = await axios.put(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/users/addDevice/${email}`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/addDevice/${email}`,
         {
           device: userAgent,
         }
@@ -146,7 +146,7 @@ const LoginWithOrganization = () => {
 
   const saveUser = async (email) => {
     try {
-      fetch(`${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${email}`)
+      fetch(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/users?email=${email}`)
         .then((res) => res.json())
         .then((data) => {
           Loading().close();
@@ -174,7 +174,7 @@ const LoginWithOrganization = () => {
         setRedirectUser(false);
         const email = result?.user?.email;
         const userDetails = await axios.get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${email}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users?email=${email}`
         );
         if (userDetails?.data?.isUser === false) {
           toast.error("Your Are Not Registered User");
@@ -183,7 +183,7 @@ const LoginWithOrganization = () => {
           try {
             const userAgent = window.navigator.userAgent;
             const userDevice = await axios.put(
-              `${process.env.REACT_APP_SERVER_API}/api/v1/users/addDevice/${email}`,
+              `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/addDevice/${email}`,
               {
                 device: userAgent,
               }

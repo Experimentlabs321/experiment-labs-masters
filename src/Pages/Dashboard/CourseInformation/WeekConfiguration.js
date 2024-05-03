@@ -190,7 +190,7 @@ const WeekConfiguration = ({
     };
 
     const newWeek = await axios.post(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/weeks`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/weeks`,
       week
     );
 
@@ -227,7 +227,7 @@ const WeekConfiguration = ({
 
     if (totalAddedCombinedWeighted() === 100) {
       const newWeek = await axios.put(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/weeks/${currentWeek?._id}`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/weeks/${currentWeek?._id}`,
         week
       );
 
@@ -265,7 +265,7 @@ const WeekConfiguration = ({
     }
 
     await axios
-      .delete(`${process.env.REACT_APP_SERVER_API}/api/v1/weeks/${id}`)
+      .delete(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/weeks/${id}`)
       .then((result) => {
         if (result?.data?.deletedCount > 0) {
           toast.success("Week Deleted Successfully!");

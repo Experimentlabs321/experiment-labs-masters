@@ -63,7 +63,7 @@ const OffersTable = ({ offerData, setOfferData, getAllOffers, isLoading }) => {
 
   const handleDeleteOffer = async (id) => {
     const res = await axios.delete(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/offers/${id}`
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/offers/${id}`
     );
     if (res.data.success) {
       getAllOffers();
@@ -151,7 +151,7 @@ const OffersTable = ({ offerData, setOfferData, getAllOffers, isLoading }) => {
       console.log(updateOffer);
 
       const res = await axios.put(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/offers/${id}`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/offers/${id}`,
         updateOffer
       );
 

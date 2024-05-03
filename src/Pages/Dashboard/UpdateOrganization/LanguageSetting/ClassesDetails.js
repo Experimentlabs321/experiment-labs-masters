@@ -16,7 +16,7 @@ const ClassesDetails = () => {
             setAdminLoading(true);
             axios
                 .get(
-                    `${process.env.REACT_APP_SERVER_API}/api/v1/language/getContentManageSubDetailsByOrganizationAndName/classes/organizationsId/${userInfo?.organizationId}`
+                    `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getContentManageSubDetailsByOrganizationAndName/classes/organizationsId/${userInfo?.organizationId}`
                 )
                 .then((response) => {
 
@@ -36,7 +36,7 @@ const ClassesDetails = () => {
             setAdminLoading(true);
             axios
                 .get(
-                    `${process.env.REACT_APP_SERVER_API}/api/v1/language/getContentManageSubDetailsByOrganizationAndName/classes/organizationsId/${userInfo?.organizationId}`
+                    `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getContentManageSubDetailsByOrganizationAndName/classes/organizationsId/${userInfo?.organizationId}`
                 )
                 .then((response) => {
                     setItemDetails(response?.data);
@@ -116,7 +116,7 @@ const ClassesDetails = () => {
         };
         console.log(itemDetail)
         const item = await axios.post(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/language/addContentManageSubDetails/classes/organizationId/${userInfo?.organizationId}`,
+            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/addContentManageSubDetails/classes/organizationId/${userInfo?.organizationId}`,
             itemDetail
         );
         console.log(item)

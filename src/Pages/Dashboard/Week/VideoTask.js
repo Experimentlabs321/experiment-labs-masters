@@ -171,7 +171,7 @@ const VideoTask = ({ taskData, count, setCount }) => {
         },
       };
       const submitCompletion = await axios.post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/${openTask?.taskType}/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/${openTask?.taskType}/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`,
         sendData
       );
       Loading().close();

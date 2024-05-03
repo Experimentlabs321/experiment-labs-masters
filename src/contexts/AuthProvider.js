@@ -53,7 +53,7 @@ const AuthProvider = ({ children }) => {
     try {
       if (userInfo?.email) {
         const userDevice = axios.put(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/users/removeDevice/${userInfo?.email}`,
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/removeDevice/${userInfo?.email}`,
           { device: userAgent }
         );
       }
@@ -111,7 +111,7 @@ const AuthProvider = ({ children }) => {
     Loading();
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${user?.email}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users?email=${user?.email}`
       )
       .then((user) => {
         setUserInfo(user?.data);

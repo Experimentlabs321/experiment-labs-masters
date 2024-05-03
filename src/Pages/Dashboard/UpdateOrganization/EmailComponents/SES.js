@@ -19,7 +19,7 @@ const SES = ({ orgData }) => {
     const fetchSESIntegrationData = async () => {
         if (orgData?._id !== undefined) {
             axios.get(
-                `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/e/${orgData?._id}`
+                `${process.env.REACT_APP_SERVERLESS_API}/api/v1/organizations/e/${orgData?._id}`
                 // `http://localhost:5000/api/v1/organizations/e/${orgData?._id}`
             )
                 .then((response) => {
@@ -57,7 +57,7 @@ const SES = ({ orgData }) => {
         // console.log("Data ==========>",orgData?._id);
 
         const updateOrg = await axios.put(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/e/${orgData?._id}`,
+            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/organizations/e/${orgData?._id}`,
             // `http://localhost:5000/api/v1/organizations/e/${orgData?._id}`,
             orgInfo
         );

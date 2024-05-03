@@ -17,7 +17,7 @@ const AddTaskDetails = () => {
             setAdminLoading(true);
             axios
                 .get(
-                    `${process.env.REACT_APP_SERVER_API}/api/v1/language/getContentManageSubDetailsByOrganizationAndName/addTask/organizationsId/${userInfo?.organizationId}`
+                    `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getContentManageSubDetailsByOrganizationAndName/addTask/organizationsId/${userInfo?.organizationId}`
                 )
                 .then((response) => {
 
@@ -37,7 +37,7 @@ const AddTaskDetails = () => {
             setAdminLoading(true);
             axios
                 .get(
-                    `${process.env.REACT_APP_SERVER_API}/api/v1/language/getContentManageSubDetailsByOrganizationAndName/addTask/organizationsId/${userInfo?.organizationId}`
+                    `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getContentManageSubDetailsByOrganizationAndName/addTask/organizationsId/${userInfo?.organizationId}`
                 )
                 .then((response) => {
                     setItemDetails(response?.data);
@@ -78,7 +78,7 @@ const AddTaskDetails = () => {
         };
         console.log(itemDetail)
         const item = await axios.post(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/language/addContentManageSubDetails/addTask/organizationId/${userInfo?.organizationId}`,
+            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/addContentManageSubDetails/addTask/organizationId/${userInfo?.organizationId}`,
             itemDetail
         );
         console.log(item)

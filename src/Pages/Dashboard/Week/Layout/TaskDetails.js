@@ -89,7 +89,7 @@ const TaskDetails = () => {
 
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/${taskTypeForAPI}/taskId/${id}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/${taskTypeForAPI}/taskId/${id}`
       )
       .then((response) => {
         setTaskData(response?.data);
@@ -119,7 +119,7 @@ const TaskDetails = () => {
     if (chapter?.weekId)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/weeks/${chapter?.weekId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/weeks/${chapter?.weekId}`
         )
         .then((res) => setWeek(res?.data))
         .catch((error) => console.error(error));

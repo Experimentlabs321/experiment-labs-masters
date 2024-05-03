@@ -16,7 +16,7 @@ const AdminDashboardHome = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/organizations/${userInfo?.organizationId}`
       )
       .then((response) => {
         setOrganization(response?.data);
@@ -32,7 +32,7 @@ const AdminDashboardHome = () => {
       //  setAdminLoading(true);
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/language/getItemDetailsByOrganizationAndName/dashboard/organizationsId/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getItemDetailsByOrganizationAndName/dashboard/organizationsId/${userInfo?.organizationId}`
         )
         .then((response) => {
           setItemDetails(response?.data);

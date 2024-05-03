@@ -42,7 +42,7 @@ const ManageQuiz = () => {
         if (fetchData && userInfo?.organizationId && chapter?.courseId) {
           axios
             .get(
-              `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
+              `${process.env.REACT_APP_SERVERLESS_API}/api/v1/skillCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
               fetchData
             )
             .then((res) => setSkillCategories(res?.data))
@@ -84,7 +84,7 @@ const ManageQuiz = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/organizations/${userInfo?.organizationId}`
       )
       .then((response) => {
         setOrgData(response?.data);

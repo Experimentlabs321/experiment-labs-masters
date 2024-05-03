@@ -28,7 +28,7 @@ const SelectSkillCategory = ({
       return;
     }
     const newChapter = await axios.post(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/skillCategories`,
       {
         categoryName: `category ${skillCategories?.length + 1}`,
         courseId: selectedCourse?._id,
@@ -73,7 +73,7 @@ const SelectSkillCategory = ({
       courseId: selectedCourse?._id,
     };
     const updatedCategory = await axios.put(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/categoryName`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/skillCategories/categoryName`,
       update
     );
     console.log(updatedCategory);
@@ -110,7 +110,7 @@ const SelectSkillCategory = ({
     }).then(async (result) => {
       if (result.isConfirmed) {
         fetch(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/categories`,
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/skillCategories/categories`,
           {
             method: "PUT",
             headers: {

@@ -23,7 +23,7 @@ const Announcements = () => {
       setLoading(true);
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/language/getItemDetailsByOrganizationAndName/announcements/organizationsId/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getItemDetailsByOrganizationAndName/announcements/organizationsId/${userInfo?.organizationId}`
         )
         .then((response) => {
           setItemDetails(response?.data);

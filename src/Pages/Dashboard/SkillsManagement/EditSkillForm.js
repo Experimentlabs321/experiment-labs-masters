@@ -40,7 +40,7 @@ const EditSkillForm = ({
     console.log(data);
     if (data?.categoryName === selectedSkillCategory?.categoryName) {
       const updatedSkill = await axios.put(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/skills`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/skillCategories/skills`,
         data
       );
       if (updatedSkill?.data?.acknowledged) {
@@ -66,7 +66,7 @@ const EditSkillForm = ({
         (item) => item?.categoryName === data?.categoryName
       );
       const newSkill = await axios.post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/skills`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/skillCategories/skills`,
         {
           organizationId: userInfo?.organizationId,
           categoryName: currentCategory?.categoryName,

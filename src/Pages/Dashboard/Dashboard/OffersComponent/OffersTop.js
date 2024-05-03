@@ -144,7 +144,7 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
       console.log(newOffer);
 
       const res = await axios.post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/offers`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/offers`,
         newOffer
       );
 

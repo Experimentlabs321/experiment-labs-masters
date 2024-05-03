@@ -18,7 +18,7 @@ const SkillsImprovementEngineDetails = () => {
             setAdminLoading(true);
             axios
                 .get(
-                    `${process.env.REACT_APP_SERVER_API}/api/v1/language/getSkillsManagementSubDetailsByOrganizationAndName/skillsImprovementEngine/organizationsId/${userInfo?.organizationId}`
+                    `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getSkillsManagementSubDetailsByOrganizationAndName/skillsImprovementEngine/organizationsId/${userInfo?.organizationId}`
                 )
                 .then((response) => {
 
@@ -39,7 +39,7 @@ const SkillsImprovementEngineDetails = () => {
             setAdminLoading(true);
             axios
                 .get(
-                    `${process.env.REACT_APP_SERVER_API}/api/v1/language/getSkillsManagementSubDetailsByOrganizationAndName/skillsImprovementEngine/organizationsId/${userInfo?.organizationId}`
+                    `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getSkillsManagementSubDetailsByOrganizationAndName/skillsImprovementEngine/organizationsId/${userInfo?.organizationId}`
                 )
                 .then((response) => {
                     setItemDetails(response?.data);
@@ -90,7 +90,7 @@ const SkillsImprovementEngineDetails = () => {
         };
         console.log(itemDetail)
         const item = await axios.post(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/language/addSkillsManagementSubDetails/skillsImprovementEngine/organizationId/${userInfo?.organizationId}`,
+            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/addSkillsManagementSubDetails/skillsImprovementEngine/organizationId/${userInfo?.organizationId}`,
             itemDetail
         );
         console.log(item)

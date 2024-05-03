@@ -76,7 +76,7 @@ const EditVideo = () => {
     if (id)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/videos/taskId/${id}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/videos/taskId/${id}`
         )
         .then((response) => {
           setVideoData(response?.data ? response?.data : videoData);
@@ -133,7 +133,7 @@ const EditVideo = () => {
     if (chapter?.courseId && userInfo?.organizationId) {
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/skillCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
           fetchData
         )
         .then((res) => setSkillCategories(res?.data))
@@ -165,7 +165,7 @@ const EditVideo = () => {
     if (userInfo?.organizationId)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/organizations/${userInfo?.organizationId}`
         )
         .then((response) => {
           setOrgData(response?.data);
@@ -226,7 +226,7 @@ const EditVideo = () => {
 
     if (submitPermission) {
       const newTask = await axios.put(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/videos/taskId/${videoData?._id}`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/videos/taskId/${videoData?._id}`,
         ManageVideo
       );
       console.log(newTask);

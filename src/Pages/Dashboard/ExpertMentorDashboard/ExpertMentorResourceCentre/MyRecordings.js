@@ -29,7 +29,7 @@ const MyRecordings = ({ courses }) => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/classes/courseId/${selectedCourse?._id}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/classes/courseId/${selectedCourse?._id}`
       )
       .then((response) => {
         setRecordedClasses(response?.data);
@@ -118,7 +118,7 @@ const MyRecordings = ({ courses }) => {
                         );
                         await axios
                           .get(
-                            `${process.env.REACT_APP_SERVER_API}/api/v1/weeks/${recordedClass?.weekId}`
+                            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/weeks/${recordedClass?.weekId}`
                           )
                           .then((response) => {
                             localStorage.setItem(

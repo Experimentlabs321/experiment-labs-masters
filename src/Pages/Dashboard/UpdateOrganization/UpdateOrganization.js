@@ -63,7 +63,7 @@ const UpdateOrganization = () => {
       setLoading(true);
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/language/getUpdateOrganizationSubDetailsByOrganizationAndName/organizationTheme/organizationsId/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getUpdateOrganizationSubDetailsByOrganizationAndName/organizationTheme/organizationsId/${userInfo?.organizationId}`
         )
         .then((response) => {
           console.log(response);
@@ -80,7 +80,7 @@ const UpdateOrganization = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/organizations/${userInfo?.organizationId}`
       )
       .then((response) => {
         setOrgData(response?.data);
@@ -149,7 +149,7 @@ const UpdateOrganization = () => {
     console.log(orgInfo);
 
     const updateOrg = await axios.put(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${orgData?._id}`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/organizations/${orgData?._id}`,
       orgInfo
     );
 

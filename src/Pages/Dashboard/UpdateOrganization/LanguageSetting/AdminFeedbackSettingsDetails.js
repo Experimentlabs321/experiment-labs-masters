@@ -19,7 +19,7 @@ const AdminFeedbackSettingsDetails = () => {
             setAdminLoading(true);
             axios
                 .get(
-                    `${process.env.REACT_APP_SERVER_API}/api/v1/language/getFeedbackSubDetailsByOrganizationAndName/feedbackSettings/organizationsId/${userInfo?.organizationId}`
+                    `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getFeedbackSubDetailsByOrganizationAndName/feedbackSettings/organizationsId/${userInfo?.organizationId}`
                 )
                 .then((response) => {
 
@@ -39,7 +39,7 @@ const AdminFeedbackSettingsDetails = () => {
             setAdminLoading(true);
             axios
                 .get(
-                    `${process.env.REACT_APP_SERVER_API}/api/v1/language/getFeedbackSubDetailsByOrganizationAndName/feedbackSettings/organizationsId/${userInfo?.organizationId}`
+                    `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getFeedbackSubDetailsByOrganizationAndName/feedbackSettings/organizationsId/${userInfo?.organizationId}`
                 )
                 .then((response) => {
                     setItemDetails(response?.data);
@@ -147,7 +147,7 @@ const AdminFeedbackSettingsDetails = () => {
         };
         console.log(itemDetail)
         const item = await axios.post(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/language/addFeedbackSubDetails/feedbackSettings/organizationId/${userInfo?.organizationId}`,
+            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/addFeedbackSubDetails/feedbackSettings/organizationId/${userInfo?.organizationId}`,
             itemDetail
         );
         console.log(item)

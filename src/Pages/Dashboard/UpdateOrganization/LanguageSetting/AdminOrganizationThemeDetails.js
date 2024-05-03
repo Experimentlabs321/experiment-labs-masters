@@ -16,7 +16,7 @@ const AdminOrganizationThemeDetails = () => {
       setAdminLoading(true);
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/language/getUpdateOrganizationSubDetailsByOrganizationAndName/organizationTheme/organizationsId/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getUpdateOrganizationSubDetailsByOrganizationAndName/organizationTheme/organizationsId/${userInfo?.organizationId}`
         )
         .then((response) => {
 
@@ -36,7 +36,7 @@ const AdminOrganizationThemeDetails = () => {
       setAdminLoading(true);
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/language/getUpdateOrganizationSubDetailsByOrganizationAndName/organizationTheme/organizationsId/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getUpdateOrganizationSubDetailsByOrganizationAndName/organizationTheme/organizationsId/${userInfo?.organizationId}`
         )
         .then((response) => {
           setItemDetails(response?.data);
@@ -136,7 +136,7 @@ const AdminOrganizationThemeDetails = () => {
     };
     console.log(itemDetail)
     const item = await axios.post(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/language/addUpdateOrganizationSubDetails/organizationTheme/organizationId/${userInfo?.organizationId}`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/addUpdateOrganizationSubDetails/organizationTheme/organizationId/${userInfo?.organizationId}`,
       itemDetail
     );
     console.log(item)

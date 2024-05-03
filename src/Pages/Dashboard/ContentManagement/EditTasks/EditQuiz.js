@@ -31,7 +31,7 @@ const EditQuiz = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/quizes/taskId/${id}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/quizes/taskId/${id}`
       )
       .then((response) => {
         setQuizData(response?.data);
@@ -129,7 +129,7 @@ const EditQuiz = () => {
     if (submitPermission) {
       await delete updatedQuizObject?._id;
       const newQuiz = await axios.put(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/quizes/taskId/${quizData?._id}`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/quizes/taskId/${quizData?._id}`,
         updatedQuizObject
       );
       console.log(newQuiz);
