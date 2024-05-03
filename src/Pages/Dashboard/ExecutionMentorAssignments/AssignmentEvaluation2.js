@@ -1,29 +1,34 @@
 //AssignmentEvaluation2.js
 
-import React, { useContext, useState } from "react";
-import Layout from "../Layout";
-import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
-import AssignmentUpNev from "./AssignmentUpNev";
-import AssignmentRightNev from "./AssignmentRightNev";
-import arrowRight from "../../../assets/ExecutionMentor/arrowRight.svg";
-import { useEffect } from "react";
-import axios from "axios";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import { toast } from "react-hot-toast";
-import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
-import Typography from "@mui/material/Typography";
-import EditResult from "./EditResult";
-import { AuthContext } from "../../../contexts/AuthProvider";
-import Loading from "../../Shared/Loading/Loading";
-import uploadFileToS3 from "../../UploadComponent/s3Uploader";
-import { saveAs } from "file-saver";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+
+import axios from 'axios';
+import { saveAs } from 'file-saver';
+import { toast } from 'react-hot-toast';
+import {
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
+
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import CloseIcon from '@mui/icons-material/Close';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import IconButton from '@mui/material/IconButton';
+import { styled } from '@mui/material/styles';
+
+import arrowRight from '../../../assets/ExecutionMentor/arrowRight.svg';
+import { AuthContext } from '../../../contexts/AuthProvider';
+import Loading from '../../Shared/Loading/Loading';
+import uploadFileToS3 from '../../UploadComponent/s3Uploader';
+import Layout from '../Layout';
+import AssignmentUpNev from './AssignmentUpNev';
+import EditResult from './EditResult';
+
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
     padding: theme.spacing(2),
@@ -685,7 +690,7 @@ const AssignmentEvaluation2 = () => {
           <AssignmentUpNev />
         </div>
 
-        <div className="flex mt-24 me-10">
+        <div className="flex mt-32 me-10">
           <div className="w-full">
             <div className="flex justify-between gap-10">
               <div className="px-10 grid gap-10 pb-3 text-lg mt-10">
