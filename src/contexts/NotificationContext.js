@@ -21,7 +21,7 @@ export const NotificationProvider = ({ children }) => {
     if (user?.email) {
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${user?.email}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users?email=${user?.email}`
         )
         .then((userInfo) => {
           if (
@@ -93,7 +93,7 @@ export const NotificationProvider = ({ children }) => {
     if (user?.email) {
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${user?.email}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users?email=${user?.email}`
         )
         .then((userInfo) => {
           if (
@@ -195,7 +195,7 @@ export const NotificationProvider = ({ children }) => {
     if (user?.email) {
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${user?.email}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users?email=${user?.email}`
         )
         .then(async (userInfo) => {
           try {

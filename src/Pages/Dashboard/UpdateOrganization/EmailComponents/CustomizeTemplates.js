@@ -23,7 +23,7 @@ const EmailTemplateRow = ({ title, description, active, templateId, template, fe
 
   const handleActive = async (templateId) => {
     const response = await axios.put(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail/templateId/${templateId}`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail/templateId/${templateId}`,
       // `http://localhost:5000/api/v1/sendMail/templateId/${templateId}`,
       {
         active: !isActive + "",
@@ -35,7 +35,7 @@ const EmailTemplateRow = ({ title, description, active, templateId, template, fe
 
   const handleUpdate = async () => {
     const response = await axios.put(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail/templateId/${templateId}`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail/templateId/${templateId}`,
       {
         htmlPart: selectedHtmlPart,
         email: template?.email,
@@ -165,7 +165,7 @@ const CustomizeTemplates = ({ email, orgData }) => {
   const [templates, setTemplates] = useState([]);
 
   const fetchEmailActionTemplates = async () => {
-    const response = await axios.get(`${process.env.REACT_APP_SERVER_API}/api/v1/sendMail/organizationId/${orgData?._id}?email=${email}`);
+    const response = await axios.get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail/organizationId/${orgData?._id}?email=${email}`);
     console.log("Template Data", response);
     setTemplates(response?.data);
   }

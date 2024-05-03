@@ -135,7 +135,7 @@ const EditMultiChoQues = ({
     };
 
     const newQuestion = await axios.put(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/questionBank/questionId/${editingQueInfo?._id}`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/questionBank/questionId/${editingQueInfo?._id}`,
       addQuestion
     );
 

@@ -30,7 +30,7 @@ const EditResult = (submittedAssignment) => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/assignments/taskId/${taskid}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/assignments/taskId/${taskid}`
       )
       .then((response) => {
         const ass = response?.data;

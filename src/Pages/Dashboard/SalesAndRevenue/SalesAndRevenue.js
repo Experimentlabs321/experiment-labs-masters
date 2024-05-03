@@ -80,7 +80,7 @@ const SalesAndRevenue = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/stats/organizationId/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/stats/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
         setOverViewCount(response?.data);
@@ -97,7 +97,7 @@ const SalesAndRevenue = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/users/students/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/students/${userInfo?.organizationId}`
       )
       .then((response) => {
         setStudents(response?.data);
@@ -129,7 +129,7 @@ const SalesAndRevenue = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/users/getAllPaidInfoWithPayerData/organizationId/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/getAllPaidInfoWithPayerData/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
         setPaidStudents(response?.data?.reverse());

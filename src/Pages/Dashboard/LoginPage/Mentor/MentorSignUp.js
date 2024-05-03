@@ -70,7 +70,7 @@ const MentorSignUp = () => {
 
     useEffect(() => {
         axios
-            .get(`${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${id}`)
+            .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/organizations/${id}`)
             .then((response) => {
                 setOrgData(response?.data);
             })
@@ -112,12 +112,12 @@ const MentorSignUp = () => {
             const result = await createUser(email, password);
             if (result.user.uid) {
                 const res = await axios.post(
-                    `${process.env.REACT_APP_SERVER_API}/api/v1/users`,
+                    `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users`,
                     data
                 );
                 console.log("Response ================>", res);
                 const userDevice = await axios.put(
-                    `${process.env.REACT_APP_SERVER_API}/api/v1/users/addDevice/${email}`,
+                    `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/addDevice/${email}`,
                     {
                         device: userAgent,
                     }
@@ -126,7 +126,7 @@ const MentorSignUp = () => {
                     await handleLogout();
                     toast.success("Registered Successfully");
                     const sendMail = await axios.post(
-                        `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
                         {
                             to: email,
                             templateType: "emailAction",
@@ -159,11 +159,11 @@ const MentorSignUp = () => {
                     const email = result?.user?.email;
                     const newName = result?.user?.displayName;
                     const userDetails = await axios.get(
-                        `${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${email}`
+                        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users?email=${email}`
                     );
                     if (userDetails?.data?.isUser === false) {
                         const res = await axios.post(
-                            `${process.env.REACT_APP_SERVER_API}/api/v1/users`,
+                            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users`,
                             {
                                 email,
                                 name: newName,
@@ -178,7 +178,7 @@ const MentorSignUp = () => {
                             await handleLogout();
                             toast.success("Registered Successfully");
                             const sendMail = await axios.post(
-                                `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                                `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
                                 {
                                     to: email,
                                     templateType: "emailAction",

@@ -71,7 +71,7 @@ const Layout = ({ children }) => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/organizations/${userInfo?.organizationId}`
       )
       .then((response) => {
         setOrgData(response?.data);

@@ -247,7 +247,7 @@ const ManageQuestion = ({
     await delete updatedQuizObject?._id;
     Loading();
     const newTask = await axios.put(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/quizes/taskId/${quizData?._id}`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/quizes/taskId/${quizData?._id}`,
       updatedQuizObject
     );
 
@@ -423,7 +423,7 @@ const ManageQuestion = ({
     if (userInfo?.organizationId)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/questionBank/organizationId/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/questionBank/organizationId/${userInfo?.organizationId}`
         )
         .then((response) => {
           if (response?.data) setQuestionBankQuestions(response?.data);
@@ -521,7 +521,7 @@ const ManageQuestion = ({
       console.log(updatedQuestions, id);
       await delete updatedQuizObject?._id;
       const newQuiz = await axios.put(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/quizes/taskId/${quizData?._id}`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/quizes/taskId/${quizData?._id}`,
         updatedQuizObject
       );
       console.log(newQuiz);
@@ -599,7 +599,7 @@ const ManageQuestion = ({
           previousQuiz.questions = quizQue;
           delete previousQuiz?._id;
           const newQuiz = await axios.put(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/quizes/taskId/${quizId}`,
+            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/quizes/taskId/${quizId}`,
             previousQuiz
           );
           console.log(newQuiz);

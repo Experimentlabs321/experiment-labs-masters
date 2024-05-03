@@ -18,7 +18,7 @@ const VideoDetails = () => {
             setAdminLoading(true);
             axios
                 .get(
-                    `${process.env.REACT_APP_SERVER_API}/api/v1/language/getContentManageSubDetailsByOrganizationAndName/video/organizationsId/${userInfo?.organizationId}`
+                    `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getContentManageSubDetailsByOrganizationAndName/video/organizationsId/${userInfo?.organizationId}`
                 )
                 .then((response) => {
 
@@ -38,7 +38,7 @@ const VideoDetails = () => {
             setAdminLoading(true);
             axios
                 .get(
-                    `${process.env.REACT_APP_SERVER_API}/api/v1/language/getContentManageSubDetailsByOrganizationAndName/video/organizationsId/${userInfo?.organizationId}`
+                    `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getContentManageSubDetailsByOrganizationAndName/video/organizationsId/${userInfo?.organizationId}`
                 )
                 .then((response) => {
                     setItemDetails(response?.data);
@@ -94,7 +94,7 @@ const VideoDetails = () => {
         };
         console.log(itemDetail)
         const item = await axios.post(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/language/addContentManageSubDetails/video/organizationId/${userInfo?.organizationId}`,
+            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/addContentManageSubDetails/video/organizationId/${userInfo?.organizationId}`,
             itemDetail
         );
         console.log(item)

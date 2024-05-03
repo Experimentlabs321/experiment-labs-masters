@@ -72,7 +72,7 @@ const EditReading = () => {
     if (id)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/readings/taskId/${id}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/readings/taskId/${id}`
         )
         .then((response) => {
           setReadingData(response?.data ? response?.data : {});
@@ -123,7 +123,7 @@ const EditReading = () => {
     if (userInfo?.organizationId && chapter?.courseId) {
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/skillCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
           fetchData
         )
         .then((res) => setSkillCategories(res?.data))
@@ -162,7 +162,7 @@ const EditReading = () => {
     if (userInfo?.organizationId)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/organizations/${userInfo?.organizationId}`
         )
         .then((response) => {
           setOrgData(response?.data);
@@ -213,7 +213,7 @@ const EditReading = () => {
 
     if (submitPermission) {
       const newTask = await axios.put(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/readings/taskId/${readingData?._id}`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/readings/taskId/${readingData?._id}`,
         manageReading
       );
       console.log(newTask);

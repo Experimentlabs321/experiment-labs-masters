@@ -27,7 +27,7 @@ const Main = () => {
             if (rootUrl) {
                 axios
                     .post(
-                        `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/findOrg`,
+                        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/organizations/findOrg`,
                         {
                             orgDefaultUrl: rootUrl,
                         }

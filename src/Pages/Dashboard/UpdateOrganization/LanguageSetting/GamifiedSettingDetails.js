@@ -18,7 +18,7 @@ const GamifiedSettingDetails = () => {
             setAdminLoading(true);
             axios
                 .get(
-                    `${process.env.REACT_APP_SERVER_API}/api/v1/language/getPointsAndRedemptionsSubDetailsByOrganizationAndName/gamifiedSetting/organizationsId/${userInfo?.organizationId}`
+                    `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getPointsAndRedemptionsSubDetailsByOrganizationAndName/gamifiedSetting/organizationsId/${userInfo?.organizationId}`
                 )
                 .then((response) => {
 
@@ -38,7 +38,7 @@ const GamifiedSettingDetails = () => {
             setAdminLoading(true);
             axios
                 .get(
-                    `${process.env.REACT_APP_SERVER_API}/api/v1/language/getPointsAndRedemptionsSubDetailsByOrganizationAndName/gamifiedSetting/organizationsId/${userInfo?.organizationId}`
+                    `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getPointsAndRedemptionsSubDetailsByOrganizationAndName/gamifiedSetting/organizationsId/${userInfo?.organizationId}`
                 )
                 .then((response) => {
                     setItemDetails(response?.data);
@@ -90,7 +90,7 @@ const GamifiedSettingDetails = () => {
         };
         console.log(itemDetail)
         const item = await axios.post(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/language/addPointsAndRedemptionsSubDetails/gamifiedSetting/organizationId/${userInfo?.organizationId}`,
+            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/addPointsAndRedemptionsSubDetails/gamifiedSetting/organizationId/${userInfo?.organizationId}`,
             itemDetail
         );
         console.log(item)

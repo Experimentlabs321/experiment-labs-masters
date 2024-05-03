@@ -272,7 +272,7 @@ const CourseInformation = () => {
           selectedChapterAndTaskToDeleteTask?.task?.batches?.length
         ) {
           fetch(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/${taskTypeForAPI}/taskId/${task?.taskId}`,
+            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/${taskTypeForAPI}/taskId/${task?.taskId}`,
             {
               method: "DELETE",
               headers: {
@@ -319,7 +319,7 @@ const CourseInformation = () => {
           setSelectedBatchesToDeleteTask([]);
           console.log(selectedChapterAndTaskToDeleteTask.task);
           fetch(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/${taskTypeForAPI}/taskId/${task?.taskId}`,
+            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/${taskTypeForAPI}/taskId/${task?.taskId}`,
             {
               method: "DELETE",
               headers: {
@@ -482,7 +482,7 @@ const CourseInformation = () => {
   useEffect(() => {
     if (id)
       axios
-        .get(`${process.env.REACT_APP_SERVER_API}/api/v1/weeks/courseId/${id}`)
+        .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/weeks/courseId/${id}`)
         .then((response) => {
           setWeeks(response?.data);
           const currentDateTime = new Date();

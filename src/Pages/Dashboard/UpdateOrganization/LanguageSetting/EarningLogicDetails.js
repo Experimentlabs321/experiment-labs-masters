@@ -17,7 +17,7 @@ const EarningLogicDetails = () => {
             setAdminLoading(true);
             axios
                 .get(
-                    `${process.env.REACT_APP_SERVER_API}/api/v1/language/getPointsAndRedemptionsSubDetailsByOrganizationAndName/earningLogic/organizationsId/${userInfo?.organizationId}`
+                    `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getPointsAndRedemptionsSubDetailsByOrganizationAndName/earningLogic/organizationsId/${userInfo?.organizationId}`
                 )
                 .then((response) => {
 
@@ -37,7 +37,7 @@ const EarningLogicDetails = () => {
             setAdminLoading(true);
             axios
                 .get(
-                    `${process.env.REACT_APP_SERVER_API}/api/v1/language/getPointsAndRedemptionsSubDetailsByOrganizationAndName/earningLogic/organizationsId/${userInfo?.organizationId}`
+                    `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getPointsAndRedemptionsSubDetailsByOrganizationAndName/earningLogic/organizationsId/${userInfo?.organizationId}`
                 )
                 .then((response) => {
                     setItemDetails(response?.data);
@@ -143,7 +143,7 @@ const EarningLogicDetails = () => {
         };
         console.log(itemDetail)
         const item = await axios.post(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/language/addPointsAndRedemptionsSubDetails/earningLogic/organizationId/${userInfo?.organizationId}`,
+            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/addPointsAndRedemptionsSubDetails/earningLogic/organizationId/${userInfo?.organizationId}`,
             itemDetail
         );
         console.log(item)

@@ -119,7 +119,7 @@ const AssignmentEvaluation2 = () => {
     if (assignment)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/assignments/taskId/${assignment?.taskId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/assignments/taskId/${assignment?.taskId}`
         )
         .then((response) => {
           const ass = response?.data;
@@ -136,7 +136,7 @@ const AssignmentEvaluation2 = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/assignments/taskId/${assignment?.taskId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/assignments/taskId/${assignment?.taskId}`
       )
       .then((response) => {
         if (
@@ -329,7 +329,7 @@ const AssignmentEvaluation2 = () => {
         },
       };
       const submitCompletion = await axios.post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/Assignment/taskId/${assignment?.taskId}/chapterId/${mainAssignments?.chapterId}`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/Assignment/taskId/${assignment?.taskId}/chapterId/${mainAssignments?.chapterId}`,
         sendData
       );
 
@@ -394,7 +394,7 @@ const AssignmentEvaluation2 = () => {
     console.log(manageFeedback);
     Loading();
     const sendMail = await axios.post(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
       {
         // from: `${user?.email}`,
         //    to: `${user?.email},shihab77023@gmail.com`,
@@ -443,7 +443,7 @@ const AssignmentEvaluation2 = () => {
       },
     };
     const submitCompletion = await axios.post(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/Assignment/taskId/${assignment?.taskId}/chapterId/${mainAssignments?.chapterId}`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/Assignment/taskId/${assignment?.taskId}/chapterId/${mainAssignments?.chapterId}`,
       sendData
     );
 
@@ -468,7 +468,7 @@ const AssignmentEvaluation2 = () => {
     console.log(manageFeedback);
     Loading();
     const sendMail = await axios.post(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
       {
         to: `${assignment?.submitter?.email}`,
         templateType: "emailAction",
@@ -519,7 +519,7 @@ const AssignmentEvaluation2 = () => {
       },
     };
     const submitCompletion = await axios.post(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/Assignment/taskId/${assignment?.taskId}/chapterId/${mainAssignments?.chapterId}`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/Assignment/taskId/${assignment?.taskId}/chapterId/${mainAssignments?.chapterId}`,
       sendData
     );
 
@@ -538,7 +538,7 @@ const AssignmentEvaluation2 = () => {
     console.log(manageStatus);
     Loading();
     const sendMail = await axios.post(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
       {
         to: `${assignment?.submitter?.email}`,
         templateType: "emailAction",
@@ -588,7 +588,7 @@ const AssignmentEvaluation2 = () => {
       },
     };
     const submitCompletion = await axios.post(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/Assignment/taskId/${assignment?.taskId}/chapterId/${mainAssignments?.chapterId}`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/Assignment/taskId/${assignment?.taskId}/chapterId/${mainAssignments?.chapterId}`,
       sendData
     );
 

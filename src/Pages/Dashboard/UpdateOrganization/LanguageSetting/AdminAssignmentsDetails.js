@@ -17,7 +17,7 @@ const AdminAssignmentsDetails = () => {
       setAdminLoading(true);
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/language/getItemDetailsByOrganizationAndName/assignments/organizationsId/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getItemDetailsByOrganizationAndName/assignments/organizationsId/${userInfo?.organizationId}`
         )
         .then((response) => {
           setItemDetails(response?.data);
@@ -36,7 +36,7 @@ const AdminAssignmentsDetails = () => {
       setAdminLoading(true);
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/language/getItemDetailsByOrganizationAndName/assignments/organizationsId/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getItemDetailsByOrganizationAndName/assignments/organizationsId/${userInfo?.organizationId}`
         )
         .then((response) => {
           setItemDetails(response?.data);
@@ -91,7 +91,7 @@ const AdminAssignmentsDetails = () => {
     };
     console.log(itemDetails)
     const item = await axios.post(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/language/addNavItemsDetails/assignments/organizationId/${userInfo?.organizationId}`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/addNavItemsDetails/assignments/organizationId/${userInfo?.organizationId}`,
       itemDetails
     );
     console.log(item)

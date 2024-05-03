@@ -17,7 +17,7 @@ const AdminPaymentIntegrationDetails = () => {
       setAdminLoading(true);
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/language/getUpdateOrganizationSubDetailsByOrganizationAndName/paymentIntegration/organizationsId/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getUpdateOrganizationSubDetailsByOrganizationAndName/paymentIntegration/organizationsId/${userInfo?.organizationId}`
         )
         .then((response) => {
 
@@ -38,7 +38,7 @@ const AdminPaymentIntegrationDetails = () => {
       setAdminLoading(true);
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/language/getUpdateOrganizationSubDetailsByOrganizationAndName/paymentIntegration/organizationsId/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getUpdateOrganizationSubDetailsByOrganizationAndName/paymentIntegration/organizationsId/${userInfo?.organizationId}`
         )
         .then((response) => {
           setItemDetails(response?.data);
@@ -69,7 +69,7 @@ const AdminPaymentIntegrationDetails = () => {
     };
     console.log(itemDetail)
     const item = await axios.post(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/language/addUpdateOrganizationSubDetails/paymentIntegration/organizationId/${userInfo?.organizationId}`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/addUpdateOrganizationSubDetails/paymentIntegration/organizationId/${userInfo?.organizationId}`,
       itemDetail
     );
     console.log(item)

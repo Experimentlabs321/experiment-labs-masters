@@ -195,7 +195,7 @@ const EditSchedule = ({ taskData }) => {
     console.log(manageSchedule);
     if (submitPermission) {
       const newTask = await axios.put(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/schedule/taskId/${scheduleData?._id}`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/schedule/taskId/${scheduleData?._id}`,
         manageSchedule
       );
       console.log(newTask);
@@ -211,7 +211,7 @@ const EditSchedule = ({ taskData }) => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/schedule/taskId/${id}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/schedule/taskId/${id}`
       )
       .then((response) => {
         setScheduleData(response?.data);

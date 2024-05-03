@@ -228,7 +228,8 @@ const FeedbackPopup = ({ taskData }) => {
 
     try {
       const addFeedback = await axios.post(
-        `${process.env.REACT_APP_BACKEND_API}/givenFeedbacks`,
+       // `${process.env.REACT_APP_BACKEND_API}/givenFeedbacks`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/givenFeedbacks`,
         manageFeedback
       );
       //console.log(addFeedback?.data)

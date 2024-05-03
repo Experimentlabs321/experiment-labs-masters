@@ -50,7 +50,7 @@ const BundlePayment = () => {
 
   const fetchOffers = async (bundleId) => {
     const offers = await axios.get(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/offers/bundleId/${bundleId}`
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/offers/bundleId/${bundleId}`
     );
     setOffers(offers?.data?.result);
     setCoupon("");
@@ -73,7 +73,7 @@ const BundlePayment = () => {
     if (course?.organization?.organizationId)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${course?.organization?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/organizations/${course?.organization?.organizationId}`
         )
         .then((response) => {
           setOrganizationData(response?.data);
@@ -146,7 +146,7 @@ const BundlePayment = () => {
       console.log("EnrollData ============>", enrollData);
       const res = await axios.post(
         // `http://localhost:5000/api/v1/users/unpaidUsers/enroll`,
-        `${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/enroll`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/unpaidUsers/enroll`,
         enrollData
       );
       console.log("Free Response =========>", res);
@@ -169,7 +169,7 @@ const BundlePayment = () => {
         };
 
         const updateOrg = await axios.post(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
           // `http://localhost:5000/api/v1/sendMail`,
           newData
         );
@@ -182,7 +182,7 @@ const BundlePayment = () => {
     const {
       data: { order },
     } = await axios.post(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/checkout`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/unpaidUsers/checkout`,
       {
         price: Math.round(+(+course.price - +couponDiscount)),
         paymentInstance: {
@@ -234,7 +234,7 @@ const BundlePayment = () => {
         console.log(selectOffer._id);
         Loading();
         const res = await axios.post(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/verifyBundlePayment`,
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/unpaidUsers/verifyBundlePayment`,
           response
         );
         if (res) Loading().close();
@@ -256,7 +256,7 @@ const BundlePayment = () => {
           };
 
           const updateOrg = await axios.post(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
             // `http://localhost:5000/api/v1/sendMail`,
             newData
           );
@@ -275,7 +275,7 @@ const BundlePayment = () => {
   };
 
   const saveUser = async (email) => {
-    fetch(`${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${email}`)
+    fetch(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/users?email=${email}`)
       .then((res) => res.json())
       .then((data) => {
         localStorage.setItem("role", data?.role);
@@ -290,7 +290,7 @@ const BundlePayment = () => {
     const userAgent = window.navigator.userAgent;
     try {
       const userDevice = await axios.put(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/users/addDevice/${email}`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/addDevice/${email}`,
         {
           device: userAgent,
         }
@@ -330,13 +330,13 @@ const BundlePayment = () => {
       .then(async (result) => {
         const email = result?.user?.email;
         const userDetails = await axios.get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${email}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users?email=${email}`
         );
         if (userDetails?.data?.isUser === false) {
           const googleMail = result?.user?.email;
           const newName = result?.user?.displayName;
           const res = await axios.post(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/users`,
+            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users`,
             {
               email: googleMail,
               name: newName,
@@ -384,7 +384,7 @@ const BundlePayment = () => {
           if (res.data.acknowledged) {
             saveUser(result?.user?.email);
             const sendMail = await axios.post(
-              `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+              `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
               {
                 to: email,
                 templateType: "emailAction",
@@ -430,7 +430,7 @@ const BundlePayment = () => {
             if (res.data.acknowledged) {
               saveUser(googleMail);
               const sendMail = await axios.post(
-                `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
                 {
                   to: googleMail,
                   templateType: "emailAction",

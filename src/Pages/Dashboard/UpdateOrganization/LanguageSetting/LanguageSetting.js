@@ -95,7 +95,7 @@ const LanguageSetting = () => {
             setAdminLoading(true);
             axios
                 .get(
-                    `${process.env.REACT_APP_SERVER_API}/api/v1/language/getNavItemsByOrganization/organizationId/${userInfo?.organizationId}`
+                    `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getNavItemsByOrganization/organizationId/${userInfo?.organizationId}`
                 )
                 .then((response) => {
                     setOrganizationNavDetails(response?.data);
@@ -126,7 +126,7 @@ const LanguageSetting = () => {
         };
 
         const UpdateItemName = await axios.post(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/language/addNavItemsName/${itemName}/organizationId/${userInfo?.organizationId}`,
+            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/addNavItemsName/${itemName}/organizationId/${userInfo?.organizationId}`,
             newItem
         );
 

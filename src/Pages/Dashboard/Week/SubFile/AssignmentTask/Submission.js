@@ -143,7 +143,7 @@ const Submission = ({ taskData }) => {
         },
       };
       const submitCompletion = await axios.post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/Assignment/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/Assignment/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`,
         sendData
       );
 
@@ -166,7 +166,7 @@ const Submission = ({ taskData }) => {
           }
         );
         const sendMail = await axios.post(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
           // `http://localhost:5000/api/v1/sendMail`,
           {
             //from: user?.email,

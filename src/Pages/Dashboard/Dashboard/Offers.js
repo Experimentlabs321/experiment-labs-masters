@@ -12,7 +12,7 @@ const Offers = () => {
 
     const getAllOffers = async () => {
         setIsLoading(true);
-        const res = await axios.get(`${process.env.REACT_APP_SERVER_API}/api/v1/offers/organizationId/${userInfo?.organizationId}`);
+        const res = await axios.get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/offers/organizationId/${userInfo?.organizationId}`);
         setOfferData(res.data.result.reverse());
         setIsLoading(false);
     }

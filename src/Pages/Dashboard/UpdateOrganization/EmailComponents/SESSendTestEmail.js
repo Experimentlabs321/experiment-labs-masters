@@ -33,7 +33,7 @@ const SESSendTestEmail = ({ setShowTestSendForm, orgData, email, fetchSESIntegra
                 });
 
             const updateOrg = await axios.post(
-                `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
                 // `http://localhost:5000/api/v1/sendMail`,
                 newData
             );
