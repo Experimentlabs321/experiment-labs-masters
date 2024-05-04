@@ -117,7 +117,7 @@ const TechnicalUpdate = ({
         { ...event }
       );
       const sendMail = await axios.post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
         {
           to: user?.email,
           templateType: "emailAction",
@@ -217,7 +217,7 @@ const TechnicalUpdate = ({
                 event
               );
               const sendMail = await axios.post(
-                `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
                 {
                   to: user?.email,
                   templateType: "emailAction",

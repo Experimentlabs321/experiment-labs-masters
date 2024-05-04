@@ -116,7 +116,7 @@ const ExpertMentorResourceCentre = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/weeks/courseId/${selectedCourseId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/weeks/courseId/${selectedCourseId}`
       )
       .then((response) => {
         setWeeks(response?.data);

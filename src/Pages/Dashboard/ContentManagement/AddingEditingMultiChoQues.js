@@ -122,7 +122,7 @@ const AddingEditingMultiChoQues = ({
     };
 
     const newQuestion = await axios.post(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/questionBank/addQuestion`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/questionBank/addQuestion`,
       addQuestion
     );
 
@@ -135,7 +135,7 @@ const AddingEditingMultiChoQues = ({
       await delete updatedQuizObject?._id;
       Loading();
       const newTask = await axios.put(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/quizes/taskId/${quizData?._id}`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/quizes/taskId/${quizData?._id}`,
         updatedQuizObject
       );
 

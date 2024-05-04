@@ -383,7 +383,7 @@ const NavBar = (props) => {
       .then(async (result) => {
         const email = result?.user?.email;
         const userDetails = await axios.get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${email}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users?email=${email}`
         );
         console.log("Now Result  ==============>", result?.user?.email);
         console.log("Now Result  ==============>", userDetails);
@@ -508,7 +508,7 @@ const NavBar = (props) => {
 
     console.log("Gone Here ===============>", data);
 
-    fetch(`${process.env.REACT_APP_SERVER_API}/api/v1/users/interactions`, {
+    fetch(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/interactions`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -518,7 +518,7 @@ const NavBar = (props) => {
       .then(async (res) => {
         console.log("Submit ===============>", res);
         const sendMail = await axios.post(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
           {
             from: `${email}`,
             to: `naman.j@experimentlabs.in`,
@@ -564,7 +564,7 @@ const NavBar = (props) => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/organizations/${userInfo?.organizationId}`
       )
       .then((response) => {
         setOrgData(response?.data);

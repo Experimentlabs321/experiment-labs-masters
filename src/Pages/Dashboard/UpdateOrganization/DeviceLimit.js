@@ -13,7 +13,7 @@ const DeviceLimit = ({ maxDeviceCount, setMaxDeviceCount, orgData }) => {
         setLoading(true);
         axios
           .get(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/language/getUpdateOrganizationSubDetailsByOrganizationAndName/limitDevice/organizationsId/${userInfo?.organizationId}`
+            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getUpdateOrganizationSubDetailsByOrganizationAndName/limitDevice/organizationsId/${userInfo?.organizationId}`
           )
           .then((response) => {
   
@@ -39,7 +39,7 @@ const DeviceLimit = ({ maxDeviceCount, setMaxDeviceCount, orgData }) => {
         // console.log("Data ==========>",orgInfo);
 
         const updateOrg = await axios.put(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${orgData?._id}`,
+            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/organizations/${orgData?._id}`,
             orgInfo
         );
 

@@ -80,7 +80,7 @@ function App() {
     }
 
     fetch(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/organizations/${userInfo?.organizationId}`
     )
       .then((response) => response.json())
       .then((data) => {
@@ -182,7 +182,7 @@ function App() {
       const events = await fetchGoogleCalendarEvents();
       const adminEmail = events[0]?.creator?.email;
       const newEvent = await axios.post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/updateEvent/${adminEmail}`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/updateEvent/${adminEmail}`,
         events
       );
       console.log(newEvent);

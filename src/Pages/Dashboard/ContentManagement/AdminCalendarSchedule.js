@@ -247,7 +247,7 @@ const AdminCalendarSchedule = () => {
     console.log(manageSchedule);
     if (submitPermission) {
       const newSchedule = await axios.post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/schedule`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/schedule`,
         manageSchedule
       );
       console.log(newSchedule);

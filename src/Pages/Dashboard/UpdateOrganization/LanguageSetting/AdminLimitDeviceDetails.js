@@ -18,7 +18,7 @@ const AdminLimitDeviceDetails = () => {
       setAdminLoading(true);
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/language/getUpdateOrganizationSubDetailsByOrganizationAndName/limitDevice/organizationsId/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getUpdateOrganizationSubDetailsByOrganizationAndName/limitDevice/organizationsId/${userInfo?.organizationId}`
         )
         .then((response) => {
 
@@ -39,7 +39,7 @@ const AdminLimitDeviceDetails = () => {
       setAdminLoading(true);
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/language/getUpdateOrganizationSubDetailsByOrganizationAndName/limitDevice/organizationsId/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getUpdateOrganizationSubDetailsByOrganizationAndName/limitDevice/organizationsId/${userInfo?.organizationId}`
         )
         .then((response) => {
           setItemDetails(response?.data);
@@ -70,7 +70,7 @@ const AdminLimitDeviceDetails = () => {
     };
     console.log(itemDetail)
     const item = await axios.post(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/language/addUpdateOrganizationSubDetails/limitDevice/organizationId/${userInfo?.organizationId}`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/addUpdateOrganizationSubDetails/limitDevice/organizationId/${userInfo?.organizationId}`,
       itemDetail
     );
     console.log(item)

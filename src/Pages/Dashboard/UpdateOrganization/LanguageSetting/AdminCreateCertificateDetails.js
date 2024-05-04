@@ -17,7 +17,7 @@ const AdminCreateCertificateDetails = () => {
       setAdminLoading(true);
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/language/getItemDetailsByOrganizationAndName/createCertificate/organizationsId/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getItemDetailsByOrganizationAndName/createCertificate/organizationsId/${userInfo?.organizationId}`
         )
         .then((response) => {
           setItemDetails(response?.data);
@@ -35,7 +35,7 @@ const AdminCreateCertificateDetails = () => {
       setAdminLoading(true);
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/language/getItemDetailsByOrganizationAndName/createCertificate/organizationsId/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getItemDetailsByOrganizationAndName/createCertificate/organizationsId/${userInfo?.organizationId}`
         )
         .then((response) => {
           setItemDetails(response?.data);
@@ -167,7 +167,7 @@ const AdminCreateCertificateDetails = () => {
     };
     console.log(itemDetails)
     const item = await axios.post(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/language/addNavItemsDetails/createCertificate/organizationId/${userInfo?.organizationId}`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/addNavItemsDetails/createCertificate/organizationId/${userInfo?.organizationId}`,
       itemDetails
     );
     console.log(item)

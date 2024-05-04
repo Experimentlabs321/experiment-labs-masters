@@ -17,7 +17,7 @@ const MyLearnersDetails = () => {
       setAdminLoading(true);
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/language/getMyLearnersSubDetailsByOrganizationAndName/myLearners/organizationsId/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getMyLearnersSubDetailsByOrganizationAndName/myLearners/organizationsId/${userInfo?.organizationId}`
         )
         .then((response) => {
 
@@ -38,7 +38,7 @@ const MyLearnersDetails = () => {
       setAdminLoading(true);
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/language/getMyLearnersSubDetailsByOrganizationAndName/myLearners/organizationsId/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getMyLearnersSubDetailsByOrganizationAndName/myLearners/organizationsId/${userInfo?.organizationId}`
         )
         .then((response) => {
           setItemDetails(response?.data);
@@ -89,7 +89,7 @@ const MyLearnersDetails = () => {
     };
     console.log(itemDetail)
     const item = await axios.post(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/language/addMyLearnersSubDetails/myLearners/organizationId/${userInfo?.organizationId}`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/addMyLearnersSubDetails/myLearners/organizationId/${userInfo?.organizationId}`,
       itemDetail
     );
     console.log(item)

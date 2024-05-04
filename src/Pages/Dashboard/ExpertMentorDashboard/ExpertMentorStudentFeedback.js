@@ -57,7 +57,7 @@ const ExpertMentorStudentFeedback = ({admin}) => {
       setLoading(true);
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/language/getFeedbackSubDetailsByOrganizationAndName/liveClassFeedback/organizationsId/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getFeedbackSubDetailsByOrganizationAndName/liveClassFeedback/organizationsId/${userInfo?.organizationId}`
         )
         .then((response) => {
 

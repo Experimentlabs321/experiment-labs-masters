@@ -36,7 +36,7 @@ console.log(taskData)
   const handleRemoveTemplate = async (taskId) => {
     try {
       const res = await axios.delete(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/assignments/taskId/${taskId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/assignments/taskId/${taskId}`
       );
       console.log(res);
       if (res.data.success) {

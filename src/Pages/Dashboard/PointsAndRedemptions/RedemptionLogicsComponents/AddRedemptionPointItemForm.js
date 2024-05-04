@@ -36,7 +36,7 @@ const AddRedemptionPointItemForm = ({
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/weeks/courseId/${courseId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/weeks/courseId/${courseId}`
       )
       .then((response) => {
         setCourse(response?.data);

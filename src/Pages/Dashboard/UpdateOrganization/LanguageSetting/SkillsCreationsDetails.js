@@ -18,7 +18,7 @@ const SkillsCreationsDetails = () => {
             setAdminLoading(true);
             axios
                 .get(
-                    `${process.env.REACT_APP_SERVER_API}/api/v1/language/getSkillsManagementSubDetailsByOrganizationAndName/skillsCreations/organizationsId/${userInfo?.organizationId}`
+                    `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getSkillsManagementSubDetailsByOrganizationAndName/skillsCreations/organizationsId/${userInfo?.organizationId}`
                 )
                 .then((response) => {
 
@@ -39,7 +39,7 @@ const SkillsCreationsDetails = () => {
             setAdminLoading(true);
             axios
                 .get(
-                    `${process.env.REACT_APP_SERVER_API}/api/v1/language/getSkillsManagementSubDetailsByOrganizationAndName/skillsCreations/organizationsId/${userInfo?.organizationId}`
+                    `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getSkillsManagementSubDetailsByOrganizationAndName/skillsCreations/organizationsId/${userInfo?.organizationId}`
                 )
                 .then((response) => {
                     setItemDetails(response?.data);
@@ -135,7 +135,7 @@ const SkillsCreationsDetails = () => {
         };
         console.log(itemDetail)
         const item = await axios.post(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/language/addSkillsManagementSubDetails/skillsCreations/organizationId/${userInfo?.organizationId}`,
+            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/addSkillsManagementSubDetails/skillsCreations/organizationId/${userInfo?.organizationId}`,
             itemDetail
         );
         console.log(item)

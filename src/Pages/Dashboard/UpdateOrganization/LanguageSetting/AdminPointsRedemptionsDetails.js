@@ -18,7 +18,7 @@ const AdminPointsRedemptionsDetails = () => {
       setAdminLoading(true);
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/language/getItemDetailsByOrganizationAndName/pointsAndRedemptions/organizationsId/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getItemDetailsByOrganizationAndName/pointsAndRedemptions/organizationsId/${userInfo?.organizationId}`
         )
         .then((response) => {
           setItemDetails(response?.data);
@@ -36,7 +36,7 @@ const AdminPointsRedemptionsDetails = () => {
       setAdminLoading(true);
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/language/getItemDetailsByOrganizationAndName/pointsAndRedemptions/organizationsId/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getItemDetailsByOrganizationAndName/pointsAndRedemptions/organizationsId/${userInfo?.organizationId}`
         )
         .then((response) => {
           setItemDetails(response?.data);
@@ -75,7 +75,7 @@ const AdminPointsRedemptionsDetails = () => {
     };
     console.log(itemDetails)
     const item = await axios.post(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/language/addNavItemsDetails/pointsAndRedemptions/organizationId/${userInfo?.organizationId}`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/addNavItemsDetails/pointsAndRedemptions/organizationId/${userInfo?.organizationId}`,
       itemDetails
     );
     console.log(item)

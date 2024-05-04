@@ -53,7 +53,7 @@ const EarningLogics = () => {
           setLoading(true);
           axios
               .get(
-                  `${process.env.REACT_APP_SERVER_API}/api/v1/language/getPointsAndRedemptionsSubDetailsByOrganizationAndName/earningLogic/organizationsId/${userInfo?.organizationId}`
+                  `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getPointsAndRedemptionsSubDetailsByOrganizationAndName/earningLogic/organizationsId/${userInfo?.organizationId}`
               )
               .then((response) => {
 
@@ -71,7 +71,7 @@ const EarningLogics = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/weeks/courseId/${selectedCourse?._id}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/weeks/courseId/${selectedCourse?._id}`
       )
       .then((response) => {
         setWeeks(response?.data);

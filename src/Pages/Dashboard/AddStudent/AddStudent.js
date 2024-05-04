@@ -36,7 +36,7 @@ const AddStudent = () => {
       setLoading(true);
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/language/getMyLearnersSubDetailsByOrganizationAndName/addLearners/organizationsId/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getMyLearnersSubDetailsByOrganizationAndName/addLearners/organizationsId/${userInfo?.organizationId}`
         )
         .then((response) => {
           console.log(response);
@@ -53,7 +53,7 @@ const AddStudent = () => {
     if (userInfo?.organizationId)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/organizations/${userInfo?.organizationId}`
         )
         .then((response) => {
           setOrganizationData(response?.data);
@@ -178,7 +178,7 @@ const AddStudent = () => {
           };
 
           const updateOrg = await axios.post(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
             // `http://localhost:5000/api/v1/sendMail`,
             newData
           );
@@ -204,7 +204,7 @@ const AddStudent = () => {
           };
 
           const updateOrg = await axios.post(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
             // `http://localhost:5000/api/v1/sendMail`,
             newData
           );
@@ -223,7 +223,7 @@ const AddStudent = () => {
       } else {
         if (mode === "course") {
           const newUser = await axios.post(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/users/addOrUpdateUserWithCourse`,
+            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/addOrUpdateUserWithCourse`,
             // `http://localhost:5000/api/v1/users/addOrUpdateUserWithCourse`,
             {
               user: userData,
@@ -257,7 +257,7 @@ const AddStudent = () => {
             console.log("EnrollData ============>", enrollData);
             const res = await axios.post(
               // `http://localhost:5000/api/v1/users/unpaidUsers/enroll`,
-              `${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/enroll`,
+              `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/unpaidUsers/enroll`,
               enrollData
             );
             if (res.data.success) {
@@ -274,7 +274,7 @@ const AddStudent = () => {
               };
 
               const updateOrg = await axios.post(
-                `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
                 // `http://localhost:5000/api/v1/sendMail`,
                 newData
               );
@@ -287,7 +287,7 @@ const AddStudent = () => {
           }
         } else {
           const newUser = await axios.post(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/users/addOrUpdateUserWithBundle`,
+            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/addOrUpdateUserWithBundle`,
             // `http://localhost:5000/api/v1/users/addOrUpdateUserWithBundle`,
             {
               user: userData,
@@ -317,7 +317,7 @@ const AddStudent = () => {
             console.log("EnrollData ============>", enrollData);
             const res = await axios.post(
               // `http://localhost:5000/api/v1/users/unpaidUsers/enroll`,
-              `${process.env.REACT_APP_SERVER_API}/api/v1/users/unpaidUsers/enroll`,
+              `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/unpaidUsers/enroll`,
               enrollData
             );
             if (res.data.success) {
@@ -333,7 +333,7 @@ const AddStudent = () => {
               };
 
               const updateOrg = await axios.post(
-                `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
                 // `http://localhost:5000/api/v1/sendMail`,
                 newData
               );

@@ -37,7 +37,7 @@ const Skill = () => {
         setLoading(true);
           axios
               .get(
-                  `${process.env.REACT_APP_SERVER_API}/api/v1/language/getSkillsManagementSubDetailsByOrganizationAndName/skillsCreations/organizationsId/${userInfo?.organizationId}`
+                  `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getSkillsManagementSubDetailsByOrganizationAndName/skillsCreations/organizationsId/${userInfo?.organizationId}`
               )
               .then((response) => {
 
@@ -80,7 +80,7 @@ const Skill = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/organizationId/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/skillCategories/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
         setOrgSkills(response?.data?.courses);

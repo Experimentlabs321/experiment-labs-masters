@@ -70,7 +70,7 @@ const EditAudio = () => {
     if (id)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/audios/taskId/${id}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/audios/taskId/${id}`
         )
         .then((response) => {
           setAudioData(response?.data);
@@ -116,7 +116,7 @@ const EditAudio = () => {
     if (chapter?.courseId && userInfo?.organizationId) {
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/skillCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
           fetchData
         )
         .then((res) => setSkillCategories(res?.data))
@@ -155,7 +155,7 @@ const EditAudio = () => {
     if (userInfo?.organizationId)
       axios
         .get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/organizations/${userInfo?.organizationId}`
         )
         .then((response) => {
           setOrgData(response?.data);
@@ -206,7 +206,7 @@ const EditAudio = () => {
 
     if (submitPermission) {
       const newTask = await axios.put(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/audios/taskId/${audioData?._id}`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/audios/taskId/${audioData?._id}`,
         ManageAudio
       );
       console.log(newTask);

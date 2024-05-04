@@ -155,7 +155,7 @@ const ManageLiveClasses = () => {
             .catch((error) => console.error(error));
           axios
             .get(
-              `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
+              `${process.env.REACT_APP_SERVERLESS_API}/api/v1/skillCategories/organizationId/${fetchData?.organizationId}/courseId/${fetchData?.courseId}`,
               fetchData
             )
             .then((res) => setSkillCategories(res?.data))
@@ -188,7 +188,7 @@ const ManageLiveClasses = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/users/mentors/organizationId/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/mentors/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
         setMentors(response?.data);
@@ -199,7 +199,7 @@ const ManageLiveClasses = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/organizations/${userInfo?.organizationId}`
       )
       .then((response) => {
         setOrgData(response?.data);
@@ -266,7 +266,7 @@ const ManageLiveClasses = () => {
       manageClass = { ...manageClass, meetingData: meetingData };
       const { clientID, clientSecret, redirectURI, ...newManageClass } = manageClass;
       const newClass = await axios.post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/classes`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/classes`,
         // `http://localhost:5000/api/v1/tasks/taskType/classes`,
         newManageClass
       );

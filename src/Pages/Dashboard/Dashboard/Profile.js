@@ -55,7 +55,7 @@ const Profile = () => {
 
   const fetchProfile = async () => {
     axios
-      .get(`${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${email}`)
+      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/users?email=${email}`)
       .then((user) => {
         setProfileInfo(user?.data);
       })
@@ -108,7 +108,7 @@ const Profile = () => {
       const courseId = course.courseId;
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/weeks/courseId/${courseId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/weeks/courseId/${courseId}`
         );
         return response?.data;
       } catch (error) {
@@ -190,7 +190,7 @@ const Profile = () => {
   const handleRemoveDevice = (userAgent) => {
     try {
       const userDevice = axios.put(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/users/removeDevice/${profileInfo?.email}`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/removeDevice/${profileInfo?.email}`,
         {
           device: userAgent,
         }
@@ -234,7 +234,7 @@ const Profile = () => {
         Loading();
         try {
           const response = await axios.post(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/users/refund`,
+            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/refund`,
             // `http://localhost:5000/api/v1/users/refund`,
             {
               receiptId: course?.receiptId

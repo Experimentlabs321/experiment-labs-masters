@@ -844,7 +844,7 @@ const ScheduleTask = ({ taskData, week }) => {
                     console.log("res ", updateResponse?.data);
                     if (updateResponse?.data?.acknowledged) {
                       const sendMail = await axios.post(
-                        `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
                         {
                           //  from: `${userInfo?.email}`,
                           //    to: `${user?.email},${adminMail}`,
@@ -864,7 +864,7 @@ const ScheduleTask = ({ taskData, week }) => {
                         }
                       );
                       const sendMailAdmin = await axios.post(
-                        `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
                         {
                           //  from: `${userInfo?.email}`,
                           //    to: `${user?.email},${adminMail}`,
@@ -894,7 +894,7 @@ const ScheduleTask = ({ taskData, week }) => {
                           eventDBid: eventDBid,
                         });
                         const newRescheduleEvent = await axios.put(
-                          `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/updateEvent`,
+                          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/${taskData?._id}/updateEvent`,
                           { ...rescheduledEvent, eventDBid: eventDBid }
                         );
                         console.log(newRescheduleEvent);
@@ -941,7 +941,7 @@ const ScheduleTask = ({ taskData, week }) => {
 
                     if (response?.data?.acknowledged) {
                       const sendMail = await axios.post(
-                        `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
                         {
                           //  from: `${userInfo?.email}`,
                           //    to: `${user?.email},${adminMail}`,
@@ -961,7 +961,7 @@ const ScheduleTask = ({ taskData, week }) => {
                         }
                       );
                       const sendMailAdmin = await axios.post(
-                        `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
                         {
                           //  from: `${userInfo?.email}`,
                           //    to: `${user?.email},${adminMail}`,
@@ -987,7 +987,7 @@ const ScheduleTask = ({ taskData, week }) => {
                         sendMailAdmin?.data?.success
                       ) {
                         const newEvent = await axios.post(
-                          `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/addEvent`,
+                          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/${taskData?._id}/addEvent`,
                           { ...event, eventDBid: response?.data?.insertedId }
                         );
                         const calendarInfo = { ...adminCalendarInfo };
@@ -1174,7 +1174,7 @@ const ScheduleTask = ({ taskData, week }) => {
                   console.log("res ", updateResponse);
                   if (updateResponse?.data?.acknowledged) {
                     const sendMail = await axios.post(
-                      `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
                       {
                         //  from: `${userInfo?.email}`,
                         //    to: `${user?.email},${adminMail}`,
@@ -1194,7 +1194,7 @@ const ScheduleTask = ({ taskData, week }) => {
                       }
                     );
                     const sendMailAdmin = await axios.post(
-                      `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
                       {
                         //  from: `${userInfo?.email}`,
                         //    to: `${user?.email},${adminMail}`,
@@ -1266,7 +1266,7 @@ const ScheduleTask = ({ taskData, week }) => {
                         eventId: eventId,
                       });
                       const newRescheduleEvent = await axios.put(
-                        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/updateEvent`,
+                        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/${taskData?._id}/updateEvent`,
                         { ...postData, eventDBid: eventDBid, eventId: eventId }
                       );
 
@@ -1408,7 +1408,7 @@ const ScheduleTask = ({ taskData, week }) => {
                   console.log("res ", response);
                   if (response?.data?.acknowledged) {
                     const sendMail = await axios.post(
-                      `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
                       {
                         //  from: `${userInfo?.email}`,
                         //    to: `${user?.email},${adminMail}`,
@@ -1428,7 +1428,7 @@ const ScheduleTask = ({ taskData, week }) => {
                       }
                     );
                     const sendMailAdmin = await axios.post(
-                      `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+                      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
                       {
                         //  from: `${userInfo?.email}`,
                         //    to: `${user?.email},${adminMail}`,
@@ -1493,7 +1493,7 @@ const ScheduleTask = ({ taskData, week }) => {
                           // sendCalendarEvent(event);
 
                           const newEvent = await axios.post(
-                            `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/${taskData?._id}/addEvent`,
+                            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/${taskData?._id}/addEvent`,
                             {
                               ...postData,
                               eventDBid: response?.data?.insertedId,

@@ -34,7 +34,7 @@ const AddSkillForm = ({
     }
 
     const newSkill = await axios.post(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/skillCategories/skills`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/skillCategories/skills`,
       {
         organizationId: userInfo?.organizationId,
         categoryName: selectedSkillCategory?.categoryName,

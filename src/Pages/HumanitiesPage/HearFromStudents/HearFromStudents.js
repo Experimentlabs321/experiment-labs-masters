@@ -79,7 +79,7 @@ const HearFromStudents = () => {
     console.log("Gone Here ===============>", data);
 
     fetch(
-      `${process.env.REACT_APP_SERVER_API}/api/v1/users/interactions`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/interactions`,
       {
         method: "POST",
         headers: {
@@ -91,7 +91,7 @@ const HearFromStudents = () => {
       .then(async (res) => {
         console.log("Submit ===============>", res);
         const sendMail = await axios.post(
-          `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
           {
             from: `${email}`,
             to: `naman.j@experimentlabs.in`,
