@@ -158,6 +158,44 @@ const ScheduleTask = ({ taskData, week }) => {
   const [isReschedule, setIsReschedule] = useState(false);
   const [adminCalendarInfo, setAdminCalendarInfo] = useState({});
   const [relevantEvents, setRelevantEvents] = useState([]);
+  const [events, setEvents] = useState([]);
+  const [filteredEvents, setFilteredEvents] = useState([]);
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+
+  useEffect(() => {
+    // Assuming taskData.events is already populated
+    setEvents(taskData?.events || []);
+    setFilteredEvents(taskData?.events || []);
+  }, [taskData?.events]);
+  const filterEventsByDate = () => {
+    if (!fromDate || !toDate) {
+      // If no dates are set, show all events
+      setFilteredEvents(events);
+      return;
+    }
+
+    const from = new Date(fromDate);
+    const to = new Date(toDate);
+
+    const filtered = events.filter(event => {
+      // Check for both potential start and end time formats
+      const startTime = event.start?.dateTime ? new Date(event.start.dateTime) :
+        event.start_time ? new Date(event.start_time) :
+          null;
+
+
+      console.log("from :", from, "to :", to, "start :", startTime)
+      // Ensure both startTime and endTime are valid Date objects before comparing
+      return startTime && startTime >= from && startTime <= to;
+    });
+
+    setFilteredEvents(filtered);
+  };
+
+  useEffect(() => {
+    filterEventsByDate();
+  }, [fromDate, toDate, events]);
   console.log(date);
   useEffect(() => {
     axios
@@ -1636,7 +1674,7 @@ const ScheduleTask = ({ taskData, week }) => {
   console.log(matching, timeRangeError);
   console.log(eventId, eventDBid, requesterStd, stdName);
   return (
-    <div className="flex justify-center my-5">
+    <div className="grid justify-center my-5">
       {userInfo?.role === "admin" && zoomInfo?.length > 0 ? (
         <>
           <div className="overflow-x-auto mt-10 relative">
@@ -1690,179 +1728,204 @@ const ScheduleTask = ({ taskData, week }) => {
         <>
           <>
             {userInfo?.role === 'admin' && taskData?.events?.length > 0 && isReschedule === false ?
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 my-5 justify-items-center gap-10 items-center">
-                {/* <p>You are the requester in the following events:</p> */}
-                {taskData?.events?.map((event, index) => (
-                  event?.requester ? <div
-                    key={index}
-                    className=" shadow-lg outline-double outline-offset-2 outline-2 outline-emerald-500  w-[320px] rounded p-2 "
-                  >
-                    <p className="flex gap-1 items-center text-sm">
-                      <FiberManualRecordIcon
-                        sx={{ color: red[400] }}
-                      ></FiberManualRecordIcon>
-                      Meeting with {event?.requester}
-                    </p>
-                    {event?.meetingType === "Zoom" ? (
-                      <div className="flex items-center gap-2">
-                        <div className="mt-3 mb-1 ">
-                          <p className="font-medium text-sm flex justify-between mt-2 gap-2">
-                            <div className="flex justify-between gap-2">
-                              <AccessAlarmOutlinedIcon fontSize="small" />
-                              <span className="font-semibold text-[14px]">
-                                Starts{" "}
-                              </span>
-                            </div>
-                            <ul className="text-sm">
-                              <li key={index}>
-                                {formatTimeForZoom(
-                                  event,
-                                  event?.start_time ? "start" : ""
-                                )}
-                              </li>
-                            </ul>
-                          </p>
-                          <p className="font-medium text-sm flex justify-between mt-2 gap-2">
-                            <div className="flex justify-between  gap-2">
-                              <AccessAlarmOutlinedIcon fontSize="small" />
-                              <span className="font-semibold text-[14px]">
-                                Ends{" "}
-                              </span>
-                            </div>
-                            <ul className="text-sm">
-                              <li key={index}>
-                                {formatTimeForZoom(
-                                  event,
-                                  event?.end_time ? "" : "end"
-                                )}
-                              </li>
-                            </ul>
-                          </p>
+              <>
+                <div className="flex gap-5 my-5">
+                  <p>
+                    <span>From Date :</span>
+                    <input
+                      className="p-2 border rounded ms-2"
+                      type="datetime-local"
+                      value={fromDate}
+                      onChange={(e) => setFromDate(e.target.value)}
+                    />
+                  </p>
+                  <p>
+                    <span>To Date :</span>
+                    <input
+                      className="p-2 border rounded ms-2"
+                      type="datetime-local"
+                      value={toDate}
+                      onChange={(e) => setToDate(e.target.value)}
+                    />
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 my-5 justify-items-center gap-10 items-center">
+                  {/* <p>You are the requester in the following events:</p> */}
+                  {filteredEvents.length > 0 ? (filteredEvents.map((event, index) => (
+                    event?.requester ? <div
+                      key={index}
+                      className=" shadow-lg outline-double outline-offset-2 outline-2 outline-emerald-500  w-[320px] rounded p-2 "
+                    >
+                      <p className="flex gap-1 items-center text-sm">
+                        <FiberManualRecordIcon
+                          sx={{ color: red[400] }}
+                        ></FiberManualRecordIcon>
+                        Meeting with {event?.requester}
+                      </p>
+                      {event?.meetingType === "Zoom" ? (
+                        <div className="flex items-center gap-2">
+                          <div className="mt-3 mb-1 ">
+                            <p className="font-medium text-sm flex justify-between mt-2 gap-2">
+                              <div className="flex justify-between gap-2">
+                                <AccessAlarmOutlinedIcon fontSize="small" />
+                                <span className="font-semibold text-[14px]">
+                                  Starts{" "}
+                                </span>
+                              </div>
+                              <ul className="text-sm">
+                                <li key={index}>
+                                  {formatTimeForZoom(
+                                    event,
+                                    event?.start_time ? "start" : ""
+                                  )}
+                                </li>
+                              </ul>
+                            </p>
+                            <p className="font-medium text-sm flex justify-between mt-2 gap-2">
+                              <div className="flex justify-between  gap-2">
+                                <AccessAlarmOutlinedIcon fontSize="small" />
+                                <span className="font-semibold text-[14px]">
+                                  Ends{" "}
+                                </span>
+                              </div>
+                              <ul className="text-sm">
+                                <li key={index}>
+                                  {formatTimeForZoom(
+                                    event,
+                                    event?.end_time ? "" : "end"
+                                  )}
+                                </li>
+                              </ul>
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-2">
-                        <div className="mt-3 mb-1 ">
-                          <p className="font-medium text-sm flex justify-between mt-2 gap-2">
-                            <div className="flex justify-between gap-2">
-                              <AccessAlarmOutlinedIcon fontSize="small" />
-                              <span className="font-semibold text-[14px]">
-                                Starts{" "}
-                              </span>
-                            </div>
-                            <ul className="text-sm">
-                              {formatUtcDateTimeStringToListItems(
-                                event?.start?.dateTime
-                              )?.map((item, index) => (
-                                <li key={index}>{item}</li>
-                              ))}
-                            </ul>
-                          </p>
-                          <p className="font-medium text-sm flex justify-between mt-2 gap-2">
-                            <div className="flex justify-between  gap-2">
-                              <AccessAlarmOutlinedIcon fontSize="small" />
-                              <span className="font-semibold text-[14px]">
-                                Ends{" "}
-                              </span>
-                            </div>
-                            <ul className="text-sm">
-                              {formatUtcDateTimeStringToListItems(
-                                event?.end?.dateTime
-                              )?.map((item, index) => (
-                                <li key={index}>{item}</li>
-                              ))}
-                            </ul>
-                          </p>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <div className="mt-3 mb-1 ">
+                            <p className="font-medium text-sm flex justify-between mt-2 gap-2">
+                              <div className="flex justify-between gap-2">
+                                <AccessAlarmOutlinedIcon fontSize="small" />
+                                <span className="font-semibold text-[14px]">
+                                  Starts{" "}
+                                </span>
+                              </div>
+                              <ul className="text-sm">
+                                {formatUtcDateTimeStringToListItems(
+                                  event?.start?.dateTime
+                                )?.map((item, index) => (
+                                  <li key={index}>{item}</li>
+                                ))}
+                              </ul>
+                            </p>
+                            <p className="font-medium text-sm flex justify-between mt-2 gap-2">
+                              <div className="flex justify-between  gap-2">
+                                <AccessAlarmOutlinedIcon fontSize="small" />
+                                <span className="font-semibold text-[14px]">
+                                  Ends{" "}
+                                </span>
+                              </div>
+                              <ul className="text-sm">
+                                {formatUtcDateTimeStringToListItems(
+                                  event?.end?.dateTime
+                                )?.map((item, index) => (
+                                  <li key={index}>{item}</li>
+                                ))}
+                              </ul>
+                            </p>
+                          </div>
                         </div>
+                      )}
+                      <div className="grid gap-2 align-middle items-center">
+                        <div className="w-10/12 mx-auto mt-3 text-white bg-sky-500  rounded-md">
+                          <Link
+                            to={
+                              event?.meetingType === "Zoom"
+                                ? userInfo?.role === "admin"
+                                  ? event?.start_url
+                                  : event?.join_url
+                                : event?.hangoutLink
+                            }
+                            className="flex gap-2 items-center justify-center py-[6px]"
+                          >
+                            <img
+                              src={
+                                event?.meetingType === "Zoom" ? zoom : googlemeet
+                              }
+                              className="w-[21px] h-[21px]"
+                              alt="googlemeet or zoom"
+                            ></img>
+                            <p>
+                              Go to{" "}
+                              {event?.meetingType === "Zoom" ? "zoom" : "meet"} Link
+                            </p>
+                          </Link>
+                        </div>
+                        {event?.meetingType !== "Zoom" ? (
+                          <p className="mt-1 text-center">Or</p>
+                        ) : (
+                          <p className="mt-1 text-center">Or</p>
+                        )}
+                        {event?.meetingType !== "Zoom" ? (
+                          <div className="w-10/12 mx-auto mt-1 text-center text-white bg-orange-400  rounded-md">
+                            <button
+                              onClick={() =>
+                                handleRescheduleMeetAdmin(
+                                  event?.eventId,
+                                  event?.eventDBid,
+                                  event?.requester,
+                                  event?.studentName
+                                )
+                              }
+                              className="w-10/12 rounded-md  text-center  py-[6px]"
+                            >
+                              Reschedule Meet
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="w-10/12 mx-auto mt-1 text-center text-white bg-orange-400  rounded-md">
+                            <button
+                              onClick={() =>
+                                handleRescheduleZoomAdmin(
+                                  event?.eventId,
+                                  event?.eventDBid,
+                                  event?.requester,
+                                  event?.studentName
+                                )
+                              }
+                              className="w-10/12 rounded-md  text-center  py-[6px]"
+                            >
+                              Reschedule Zoom
+                            </button>
+                          </div>
+                        )}
                       </div>
-                    )}
-                    <div className="grid gap-2 align-middle items-center">
-                      <div className="w-10/12 mx-auto mt-3 text-white bg-sky-500  rounded-md">
-                        <Link
-                          to={
-                            event?.meetingType === "Zoom"
-                              ? userInfo?.role === "admin"
-                                ? event?.start_url
-                                : event?.join_url
-                              : event?.hangoutLink
-                          }
-                          className="flex gap-2 items-center justify-center py-[6px]"
+                    </div> : <></>
+                  ))) : 
+                  <div className="col-span-full text-center">
+                    <p className="font-medium">No events found for the selected date range.</p>
+                  </div>}
+                  {userZoomInfo?.uuid && userZoomInfo?.recording_files ? (
+                    <div className="mt-16">
+                      <div className="mx-auto flex justify-center ">
+                        <a
+                          className="bg-teal-500 text-white py-2 px-4 rounded-lg"
+                          target="_blank"
+                          rel="noreferrer"
+                          href={userZoomInfo?.recording_files[0]?.play_url}
                         >
-                          <img
-                            src={
-                              event?.meetingType === "Zoom" ? zoom : googlemeet
-                            }
-                            className="w-[21px] h-[21px]"
-                            alt="googlemeet or zoom"
-                          ></img>
-                          <p>
-                            Go to{" "}
-                            {event?.meetingType === "Zoom" ? "zoom" : "meet"} Link
-                          </p>
-                        </Link>
+                          See Zoom Recording
+                        </a>
                       </div>
-                      {event?.meetingType !== "Zoom" ? (
-                        <p className="mt-1 text-center">Or</p>
-                      ) : (
-                        <p className="mt-1 text-center">Or</p>
-                      )}
-                      {event?.meetingType !== "Zoom" ? (
-                        <div className="w-10/12 mx-auto mt-1 text-center text-white bg-orange-400  rounded-md">
-                          <button
-                            onClick={() =>
-                              handleRescheduleMeetAdmin(
-                                event?.eventId,
-                                event?.eventDBid,
-                                event?.requester,
-                                event?.studentName
-                              )
-                            }
-                            className="w-10/12 rounded-md  text-center  py-[6px]"
-                          >
-                            Reschedule Meet
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="w-10/12 mx-auto mt-1 text-center text-white bg-orange-400  rounded-md">
-                          <button
-                            onClick={() =>
-                              handleRescheduleZoomAdmin(
-                                event?.eventId,
-                                event?.eventDBid,
-                                event?.requester,
-                                event?.studentName
-                              )
-                            }
-                            className="w-10/12 rounded-md  text-center  py-[6px]"
-                          >
-                            Reschedule Zoom
-                          </button>
-                        </div>
-                      )}
+                      <div className="text-red-500 text-center mt-5">
+                        <p>Zoom Recordings will expire in 30 days.</p>
+                      </div>
                     </div>
-                  </div> : <></>
-                ))}
-                {userZoomInfo?.uuid && userZoomInfo?.recording_files ? (
-                  <div className="mt-16">
-                    <div className="mx-auto flex justify-center ">
-                      <a
-                        className="bg-teal-500 text-white py-2 px-4 rounded-lg"
-                        target="_blank"
-                        rel="noreferrer"
-                        href={userZoomInfo?.recording_files[0]?.play_url}
-                      >
-                        See Zoom Recording
-                      </a>
-                    </div>
-                    <div className="text-red-500 text-center mt-5">
-                      <p>Zoom Recordings will expire in 30 days.</p>
-                    </div>
-                  </div>
-                ) : (
-                  <></>
-                )}
-                {/* Add any additional content or components specific to user requester events */}
-              </div>
+                  ) : (
+                    <></>
+                  )}
+                  {/* Add any additional content or components specific to user requester events */}
+                </div>
+              </>
               :
               (
                 userInfo?.role === "admin" ?
