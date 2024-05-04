@@ -1734,7 +1734,7 @@ const ScheduleTask = ({ taskData, week }) => {
                     <span>From Date :</span>
                     <input
                       className="p-2 border rounded ms-2"
-                      type="datetime-local"
+                      type="date"
                       value={fromDate}
                       onChange={(e) => setFromDate(e.target.value)}
                     />
@@ -1743,7 +1743,7 @@ const ScheduleTask = ({ taskData, week }) => {
                     <span>To Date :</span>
                     <input
                       className="p-2 border rounded ms-2"
-                      type="datetime-local"
+                      type="date"
                       value={toDate}
                       onChange={(e) => setToDate(e.target.value)}
                     />
