@@ -1,15 +1,23 @@
 // import mammoth from "mammoth";
-import React, { useContext, useEffect, useState, useRef } from "react";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import Quiz from "./SubFile/Shared/Quiz";
-import { AuthContext } from "../../../contexts/AuthProvider";
-import axios from "axios";
-import Swal from "sweetalert2";
-import icon from "../../../icon192.png";
-import { useNavigate } from "react-router-dom";
-import Loading from "../../Shared/Loading/Loading";
-import { saveAs } from "file-saver";
-import { CircularProgress } from "@mui/material";
+import React, {
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+
+import axios from 'axios';
+import { saveAs } from 'file-saver';
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import Box from '@mui/material/Box';
+import LinearProgress from '@mui/material/LinearProgress';
+
+import { AuthContext } from '../../../contexts/AuthProvider';
+import Loading from '../../Shared/Loading/Loading';
+import Quiz from './SubFile/Shared/Quiz';
 
 const ReadingTask = ({ taskData, count, setCount }) => {
   const navigate = useNavigate();
@@ -201,6 +209,23 @@ const ReadingTask = ({ taskData, count, setCount }) => {
       }
     };
   }, [taskData?.additionalFiles, cancelTokenSource]);
+  const [progress, setProgress] = React.useState(0);
+
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setProgress((oldProgress) => {
+        if (oldProgress === 100) {
+          return 0;
+        }
+        const diff = Math.random() * 10;
+        return Math.min(oldProgress + diff, 100);
+      });
+    }, 500);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
   return (
     <div>
       {completionStatus ? (
@@ -219,8 +244,16 @@ const ReadingTask = ({ taskData, count, setCount }) => {
       )}
 
       {!iframeLoaded && (
-        <div className=" flex align-items-center my-5 py-5 w-full">
-          <CircularProgress className="w-full mx-auto" />
+        <div className=" flex justify-center  w-full  ">
+          <div className='flex flex-col items-center gap-3'>
+            <p className="mt-20">Loading...</p>
+            <Box sx={{ width: '500px' }}>
+              <LinearProgress sx={{ height: '20px', borderRadius: '10px', }} variant="determinate" value={progress} />
+            </Box>
+          </div>
+
+
+          {/* <CircularProgress className="w-full mx-auto" /> */}
         </div>
       )}
 
@@ -240,10 +273,10 @@ const ReadingTask = ({ taskData, count, setCount }) => {
 
             {additionalFile &&
               (taskData?.additionalFiles.endsWith(".png") ||
-              taskData?.additionalFiles.endsWith(".jpg") ||
-              taskData?.additionalFiles.endsWith(".jpeg") ||
-              taskData?.additionalFiles.endsWith(".gif") ||
-              taskData?.additionalFiles.endsWith(".bmp") ? (
+                taskData?.additionalFiles.endsWith(".jpg") ||
+                taskData?.additionalFiles.endsWith(".jpeg") ||
+                taskData?.additionalFiles.endsWith(".gif") ||
+                taskData?.additionalFiles.endsWith(".bmp") ? (
                 <div className="">
                   <img
                     src={taskData?.additionalFiles}
