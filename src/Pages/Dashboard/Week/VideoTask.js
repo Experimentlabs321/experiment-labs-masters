@@ -253,6 +253,7 @@ const VideoTask = ({ taskData, count, setCount }) => {
       }
     };
   }, [taskData?.additionalFiles, cancelTokenSource]);
+  console.log(taskData);
   return (
     <div>
       {taskData?.additionalFiles && (

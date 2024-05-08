@@ -366,7 +366,7 @@ const ManageQuestion = ({
   const filterQuestionsForSelectedBatches = () => {
     console.log(selectedBatchesForShowingQuestion);
     const filteredQuestions = quizData?.questions?.filter((batch) =>
-      selectedBatches.includes(batch.batchId)
+      selectedBatches.includes(batch?.batchId)
     )?.questions;
     setQuestionsForSelectedBatches(filteredQuestions);
     console.log(filteredQuestions);
