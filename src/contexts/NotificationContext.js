@@ -21,7 +21,7 @@ export const NotificationProvider = ({ children }) => {
     if (user?.email) {
       axios
         .get(
-          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users?email=${user?.email}`
+          `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/users?email=${user?.email}`
         )
         .then((userInfo) => {
           if (
@@ -58,6 +58,19 @@ export const NotificationProvider = ({ children }) => {
               } else if (
                 newNotification?.recipient?.type === "Specific Student"
               ) {
+                if (
+                  newNotification?.recipient?.recipientEmail === user?.email
+                ) {
+                  setNotifications((prevNotifications) => [
+                    newNotification,
+                    ...prevNotifications,
+                  ]);
+                  setUnreadNotifications((prevNotifications) => [
+                    newNotification,
+                    ...prevNotifications,
+                  ]);
+                  setNumberOfUnreadNotification(unreadNotifications?.length);
+                }
               }
             }
           } else if (
@@ -93,7 +106,7 @@ export const NotificationProvider = ({ children }) => {
     if (user?.email) {
       axios
         .get(
-          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users?email=${user?.email}`
+          `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/users?email=${user?.email}`
         )
         .then((userInfo) => {
           if (
@@ -195,7 +208,7 @@ export const NotificationProvider = ({ children }) => {
     if (user?.email) {
       axios
         .get(
-          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users?email=${user?.email}`
+          `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/users?email=${user?.email}`
         )
         .then(async (userInfo) => {
           try {
