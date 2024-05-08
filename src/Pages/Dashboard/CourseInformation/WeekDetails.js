@@ -60,7 +60,7 @@ const WeekDetails = ({
     if (chapter?._id) {
       try {
         const newChapter = await axios.put(
-          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/chapters/${chapter?._id}`,
+          `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/chapters/${chapter?._id}`,
           updatedChapter
         );
         // setCount(count + 1);
@@ -238,7 +238,7 @@ const WeekDetails = ({
       if (chapters?.length === 1) {
         await axios
           .put(
-            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/deleteTasksInChapter/chapterId/${id}`
+            `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/deleteTasksInChapter/chapterId/${id}`
           )
           .then((result) => {
             console.log(result);
@@ -265,7 +265,7 @@ const WeekDetails = ({
 
       await axios
         .delete(
-          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/chapterId/${id}`
+          `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/chapterId/${id}`
         )
         .then((result) => {
           console.log(result);
