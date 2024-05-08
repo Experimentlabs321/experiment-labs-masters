@@ -58,6 +58,7 @@ const WeekDetails = ({
     delete updatedChapter._id;
     console.log(chapter);
     if (chapter?._id) {
+      console.log(updatedChapter);
       try {
         const newChapter = await axios.put(
           `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/chapters/${chapter?._id}`,
