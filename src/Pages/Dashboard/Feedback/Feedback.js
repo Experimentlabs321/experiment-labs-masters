@@ -221,9 +221,9 @@ console.log(itemFeedbackSettingDetails)
               <SearchIcon className="Search1 w-6 h-6 left-[8px] top-[8px] absolute text-white" />
             </div>
           </div>
-          <Badge className="mr-4" badgeContent={1} color="error">
+          {/* <Badge className="mr-4" badgeContent={1} color="error">
             <NotificationsIcon color="action" />
-          </Badge>
+          </Badge> */}
         </div>
         <div className="px-4 my-5 flex items-center gap-4">
           <button
