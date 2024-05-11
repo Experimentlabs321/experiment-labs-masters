@@ -1,8 +1,13 @@
 // ApexChart.jsx
-import React, { useContext, useEffect, useState } from "react";
-import ReactApexChart from "react-apexcharts";
-import Loading from "../../Shared/Loading/Loading";
-import { CircularProgress } from "@mui/material";
+import React, {
+  useEffect,
+  useState,
+} from 'react';
+
+import ReactApexChart from 'react-apexcharts';
+
+import { CircularProgress } from '@mui/material';
+
 const ApexChart = ({ selectedFilter, students, setTotalStudents, setTotalEnrolledStudents, fromDate, toDate ,itemDetails}) => {
 
 
@@ -211,59 +216,52 @@ const ApexChart = ({ selectedFilter, students, setTotalStudents, setTotalEnrolle
 
   useEffect(() => {
     if (selectedFilter === "Overall" && students) {
-
-      // Find the earliest and latest dates in the dataset
-      const dates = students.map(student => new Date(student.dateCreated));
-      const earliestDate = new Date(Math.min(...dates));
-      const latestDate = new Date(Math.max(...dates));
-
-      const monthNames = [];
-      const monthsStartDate = [];
-
-      let currentDate = new Date(earliestDate);
-      while (currentDate <= latestDate) {
-        const monthName = currentDate.toLocaleString('default', { month: 'long' });
-        const year = currentDate.getFullYear();
-        const monthYear = `${monthName} (${year})`;
-        monthNames.push(monthYear);
-        monthsStartDate.push(new Date(currentDate));
-        currentDate.setMonth(currentDate.getMonth() + 1);
-      }
-
-      const studentCountByMonth = monthsStartDate.map((startDate, index) => {
-        const endDate = new Date(startDate);
-        endDate.setMonth(endDate.getMonth() + 1);
-        endDate.setDate(endDate.getDate() - 1);
-
-        return students.filter(student => {
-          const studentDate = new Date(student.dateCreated);
-          return studentDate >= startDate && studentDate <= endDate;
-        }).length;
+      // Group students by year
+      const studentsByYear = {};
+      students.forEach(student => {
+        const year = new Date(student.dateCreated).getFullYear();
+        if (!studentsByYear[year]) {
+          studentsByYear[year] = [];
+        }
+        studentsByYear[year].push(student);
       });
-
-      setOverallMonthsArr(monthNames);
-      setTotalStudentsOverall(studentCountByMonth);
-
-      const totalStudentsSum = studentCountByMonth.reduce((total, count) => total + count, 0);
+  
+      // Initialize arrays to store data for each year
+      const years = Object.keys(studentsByYear);
+      const totalStudentsByYear = [];
+      const totalEnrolledByYear = [];
+      let totalStudentsSum = 0;
+      let totalEnrolledSum = 0;
+  
+      // Calculate statistics for each year
+      years.forEach(year => {
+        const yearStudents = studentsByYear[year];
+        const yearStartDate = new Date(year, 0, 1);
+        const yearEndDate = new Date(year, 11, 31);
+  
+        // Total students for the year
+        const totalStudents = yearStudents.length;
+        totalStudentsByYear.push(totalStudents);
+        totalStudentsSum += totalStudents;
+  
+        // Total enrolled students for the year
+        const totalEnrolled = yearStudents.filter(student => student.courses && student.courses.length > 0 && student.role === "user").length;
+        totalEnrolledByYear.push(totalEnrolled);
+        totalEnrolledSum += totalEnrolled;
+      });
+  
+      // Set state variables
+      setOverallMonthsArr(years);
+      setTotalStudentsOverall(totalStudentsByYear);
+      setTotalOverallEnrolled(totalEnrolledByYear);
       setTotalStudents(totalStudentsSum);
-
-      const totalEnrolledArray = monthsStartDate.map((startDate, index) => {
-        const endDate = new Date(startDate);
-        endDate.setMonth(endDate.getMonth() + 1);
-        endDate.setDate(endDate.getDate() - 1);
-
-        return students.filter(student => {
-          const studentDate = new Date(student.dateCreated);
-          return studentDate >= startDate && studentDate <= endDate && student?.courses && student.courses.length > 0 && student.role === "user";
-        }).length;
-      });
-
-      const totalEnrolledSum = totalEnrolledArray.reduce((total, count) => total + count, 0);
-      setTotalOverallEnrolled(totalEnrolledArray);
       setTotalEnrolledStudents(totalEnrolledSum);
+  
       setIsLoading(false);
     }
-  }, [students, selectedFilter, setTotalStudents, setTotalEnrolledStudents]);
+  }, [selectedFilter, students, setTotalStudents, setTotalEnrolledStudents]);
+  
+  
 
   //// custom total vs enrolled students
   useEffect(() => {
