@@ -107,6 +107,7 @@ const AssignmentEvaluation2 = () => {
   //const {userInfo} = useContext(AuthContext);
 
   useEffect(() => {
+    Loading();
     axios
       .get(
         `${process.env.REACT_APP_BACKEND_API}/getSingleSubmitAssignment/${id}`
@@ -114,7 +115,7 @@ const AssignmentEvaluation2 = () => {
       .then((response) => {
         setAssignment(response?.data);
         setSelectedFile(response?.data?.submitter?.result?.attachFile)
-        
+        Loading().close();
         // console.log(response?.data.taskName)
       })
       .catch((error) => console.error(error));

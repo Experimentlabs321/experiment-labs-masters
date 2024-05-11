@@ -223,7 +223,7 @@ const MentorAssignments = () => {
 
 
               <div className="mt-10 text-[#F50000] text-lg font-medium">
-                <p>{itemDetails?.pendingEvaluations ? itemDetails?.pendingEvaluations : "Pending evaluations"}  - {filteredData.length}</p>
+                <p>{itemDetails?.pendingEvaluations ? itemDetails?.pendingEvaluations : "Total Pending evaluations"}  - {filteredData.length}</p>
               </div>
             </div>
             {/*  <div>
