@@ -77,65 +77,63 @@ function App() {
     if (!userInfo) {
       return;
     }
+    fetch(
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/organizations/${userInfo?.organizationId}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        setData(data);
+        setIsLoading(false);
+        // Remove previous manifest if it exists
+        const existingManifest = document.getElementById("manifest");
+        if (existingManifest) {
+          existingManifest.remove();
+        }
 
-    if (userInfo?.organizationId)
-      fetch(
-        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/organizations/${userInfo?.organizationId}`
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          setData(data);
-          setIsLoading(false);
-          // Remove previous manifest if it exists
-          const existingManifest = document.getElementById("manifest");
-          if (existingManifest) {
-            existingManifest.remove();
-          }
+        // Generate the dynamic manifest
+        const manifest = {
+          short_name: data?.organizationName,
+          name: data?.organizationName,
+          icons: [
+            {
+              src: "https://i.ibb.co/qCjt6fH/icon192.png",
+              type: "image/png",
+              sizes: "192x192",
+              purpose: "maskable",
+            },
+            {
+              src: "https://i.ibb.co/5K6F5M6/icon512.png",
+              type: "image/png",
+              sizes: "512x512",
+            },
+            {
+              src: "https://i.ibb.co/nQL81Tw/icon64.png",
+              type: "image/png",
+              sizes: "64x64",
+              purpose: "any",
+            },
+          ],
+          start_url: "http://localhost:3000/",
+          display: "standalone",
+          theme_color: "#000000",
+          background_color: "#000000",
+          prefer_related_applications: true,
+        };
 
-          // Generate the dynamic manifest
-          const manifest = {
-            short_name: data?.organizationName,
-            name: data?.organizationName,
-            icons: [
-              {
-                src: "https://i.ibb.co/qCjt6fH/icon192.png",
-                type: "image/png",
-                sizes: "192x192",
-                purpose: "maskable",
-              },
-              {
-                src: "https://i.ibb.co/5K6F5M6/icon512.png",
-                type: "image/png",
-                sizes: "512x512",
-              },
-              {
-                src: "https://i.ibb.co/nQL81Tw/icon64.png",
-                type: "image/png",
-                sizes: "64x64",
-                purpose: "any",
-              },
-            ],
-            start_url: "http://localhost:3000/",
-            display: "standalone",
-            theme_color: "#000000",
-            background_color: "#000000",
-            prefer_related_applications: true,
-          };
+        const dynamicJsonDataLink = document.createElement("link");
+        dynamicJsonDataLink.id = "manifest";
+        dynamicJsonDataLink.rel = "manifest";
+        dynamicJsonDataLink.href = URL.createObjectURL(
+          new Blob([JSON.stringify(manifest)], { type: "application/json" })
+        );
+        document.head.appendChild(dynamicJsonDataLink);
 
-          const dynamicJsonDataLink = document.createElement("link");
-          dynamicJsonDataLink.id = "manifest";
-          dynamicJsonDataLink.rel = "manifest";
-          dynamicJsonDataLink.href = URL.createObjectURL(
-            new Blob([JSON.stringify(manifest)], { type: "application/json" })
-          );
-          document.head.appendChild(dynamicJsonDataLink);
-
-          setIsLoading(false);
-        })
-        .catch((error) => {
-          console.error("Error fetching organization data:", error);
-          setIsLoading(false);
-        });
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching organization data:", error);
+        setIsLoading(false);
+      });
   }, [userInfo, orgLogo]);
 
   if (isLoading) {
@@ -181,17 +179,15 @@ function App() {
     try {
       const events = await fetchGoogleCalendarEvents();
       const adminEmail = events[0]?.creator?.email;
-      if (adminEmail) {
-        const newEvent = await axios.post(
-          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/updateEvent/${adminEmail}`,
-          events
-        );
-        console.log(newEvent);
-        if (newEvent?.data?.success) {
-          console.log("Events updated");
-        }
-        setCalendarEvents(events);
+      const newEvent = await axios.post(
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/updateEvent/${adminEmail}`,
+        events
+      );
+      console.log(newEvent);
+      if (newEvent?.data?.success) {
+        console.log("Events updated");
       }
+      setCalendarEvents(events);
     } catch (error) {
       console.error(error.message);
     }
