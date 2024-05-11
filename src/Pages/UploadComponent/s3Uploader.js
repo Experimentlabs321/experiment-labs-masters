@@ -26,6 +26,8 @@
 // export default uploadFileToS3;
 
 import AWS from "aws-sdk";
+import { v4 as uuidv4 } from "uuid";
+
 
 AWS.config.update({
   accessKeyId: process.env.REACT_APP_accessKeyId,
@@ -39,9 +41,12 @@ const s3 = new AWS.S3();
 
 const uploadFileToS3 = (file, onProgress) => {
   console.log("Uploading file to S3...");
+
+  const fileKey = `${uuidv4()}-${Date.now()}-${file.name}`;
+  
   const params = {
     Bucket: "experiment-labs-my-bucket",
-    Key: file.name,
+    Key: fileKey,
     Body: file,
     CacheControl: "no-cache, no-store, must-revalidate",
   };

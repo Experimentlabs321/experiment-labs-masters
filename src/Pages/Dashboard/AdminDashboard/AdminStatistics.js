@@ -9,7 +9,7 @@ import inrIcon from "../../../assets/Dashboard/inrIcon.png";
 
 import { CircularProgress } from "@mui/material";
 
-const AdminStatistics = ({itemDetails}) => {
+const AdminStatistics = ({ itemDetails }) => {
   const { userInfo } = useContext(AuthContext);
   const [overViewCount, setOverViewCount] = useState();
   const [students, setStudents] = useState();
@@ -20,7 +20,7 @@ const AdminStatistics = ({itemDetails}) => {
   const [paidStudents, setPaidStudents] = useState();
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     axios
       .get(
@@ -31,70 +31,99 @@ const AdminStatistics = ({itemDetails}) => {
         setIsLoading(false);
       })
       .catch((error) => {
-        console.error(error)
-        setIsLoading(false)
+        console.error(error);
+        setIsLoading(false);
       });
   }, [userInfo]);
 
   // console.log(overViewCount);
 
   useEffect(() => {
-  
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/students/${userInfo?.organizationId}`
-      )
-      .then((response) => {
-        setStudents(response?.data);
-        setIsLoading(false)
-      })
-      .catch((error) => {
-        console.error(error)
-        setIsLoading(false)
-      });
-    setIsLoading(false)
+    if (userInfo?.organizationId) {
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/students/${userInfo?.organizationId}`
+        )
+        .then((response) => {
+          setStudents(response?.data);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.error(error);
+          setIsLoading(false);
+        });
+      setIsLoading(false);
+    }
   }, [userInfo]);
   useEffect(() => {
-    
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/getAllPaidInfo/organizationId/${userInfo?.organizationId}`
-      )
-      .then((response) => {
-        setPaidStudents(response?.data);
-        setIsLoading(false)
-      })
-      .catch((error) => {console.error(error)
-        setIsLoading(false)});
-    setIsLoading(false)
+    if (userInfo?.organizationId) {
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/getAllPaidInfo/organizationId/${userInfo?.organizationId}`
+        )
+        .then((response) => {
+          setPaidStudents(response?.data);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.error(error);
+          setIsLoading(false);
+        });
+      setIsLoading(false);
+    }
   }, [userInfo]);
 
   return (
     <div>
-      <h1 className="text-3xl font-bold my-10">{itemDetails?.overview ?itemDetails?.overview : "Overview" }  </h1>
+      <h1 className="text-3xl font-bold my-10">
+        {itemDetails?.overview ? itemDetails?.overview : "Overview"}{" "}
+      </h1>
       {isLoading && (
         <div className=" flex align-items-center my-5 py-5">
           <CircularProgress className="w-full mx-auto" />
         </div>
       )}
       <div className="mb-5 flex gap-5 items-center">
-        <label className="font-bold"> {itemDetails?.selectFilter ? itemDetails?.selectFilter : "Select Filter" }:</label>
+        <label className="font-bold">
+          {" "}
+          {itemDetails?.selectFilter
+            ? itemDetails?.selectFilter
+            : "Select Filter"}
+          :
+        </label>
         <select
           className="p-2 border rounded"
           onChange={(e) => setSelectedFilter(e.target.value)}
           value={selectedFilter}
         >
-          <option value="Last 7 Days">{itemDetails?.lastSevenDays ? itemDetails?.lastSevenDays : "Last 7 Days" } </option>
-          <option value="Last 30 Days"> {itemDetails?.lastThirtyDays ? itemDetails?.lastThirtyDays : "Last 30 Days" }</option>
-          <option value="Last 11 Months">{itemDetails?.lastYear ? itemDetails?.lastYear : "Last year" }</option>
-          <option value="Overall">{itemDetails?.overall ? itemDetails?.overall : "Overall" }</option>
-          <option value="Custom date">{itemDetails?.customDate ? itemDetails?.customDate : "Custom date" }</option>
+          <option value="Last 7 Days">
+            {itemDetails?.lastSevenDays
+              ? itemDetails?.lastSevenDays
+              : "Last 7 Days"}{" "}
+          </option>
+          <option value="Last 30 Days">
+            {" "}
+            {itemDetails?.lastThirtyDays
+              ? itemDetails?.lastThirtyDays
+              : "Last 30 Days"}
+          </option>
+          <option value="Last 11 Months">
+            {itemDetails?.lastYear ? itemDetails?.lastYear : "Last year"}
+          </option>
+          <option value="Overall">
+            {itemDetails?.overall ? itemDetails?.overall : "Overall"}
+          </option>
+          <option value="Custom date">
+            {itemDetails?.customDate ? itemDetails?.customDate : "Custom date"}
+          </option>
         </select>
       </div>
       {selectedFilter === "Custom date" && (
         <div className="flex gap-5 my-5">
           <p>
-            <span>{itemDetails?.fromDate ?itemDetails?.fromDate : "From Date" } :</span>
+            <span>
+              {itemDetails?.fromDate ? itemDetails?.fromDate : "From Date"} :
+            </span>
             <input
               className="p-2 border rounded ms-2"
               type="datetime-local"
@@ -103,7 +132,9 @@ const AdminStatistics = ({itemDetails}) => {
             />
           </p>
           <p>
-            <span>{itemDetails?.toDate ?itemDetails?.toDate : "To Date" }:</span>
+            <span>
+              {itemDetails?.toDate ? itemDetails?.toDate : "To Date"}:
+            </span>
             <input
               className="p-2 border rounded ms-2"
               type="datetime-local"
@@ -121,8 +152,9 @@ const AdminStatistics = ({itemDetails}) => {
         >
           <div className="justify-between items-stretch flex gap-5">
             <div className="text-white text-sm font-medium tracking-widest">
-            {itemDetails?.totalStudents ?itemDetails?.totalStudents : "Total Students" }
-              
+              {itemDetails?.totalStudents
+                ? itemDetails?.totalStudents
+                : "Total Students"}
             </div>
             <img
               alt="icon"
@@ -141,8 +173,9 @@ const AdminStatistics = ({itemDetails}) => {
         >
           <div className="justify-between items-stretch flex gap-5">
             <div className="text-white text-sm font-medium tracking-widest">
-            {itemDetails?.enrolledStudents ?itemDetails?.enrolledStudents : "Enrolled Students" }
-              
+              {itemDetails?.enrolledStudents
+                ? itemDetails?.enrolledStudents
+                : "Enrolled Students"}
             </div>
             <img
               loading="lazy"
@@ -161,8 +194,9 @@ const AdminStatistics = ({itemDetails}) => {
         >
           <div className="justify-between items-stretch flex gap-5">
             <div className="text-white text-sm font-medium tracking-widest">
-            {itemDetails?.totalRevenue ?itemDetails?.totalRevenue : "Total Revenue" }
-              
+              {itemDetails?.totalRevenue
+                ? itemDetails?.totalRevenue
+                : "Total Revenue"}
             </div>
             <img
               loading="lazy"
@@ -183,8 +217,9 @@ const AdminStatistics = ({itemDetails}) => {
         >
           <div className="justify-between items-stretch flex gap-5">
             <div className="text-white text-sm font-medium tracking-widest">
-            {itemDetails?.unevaluatedAssignments ?itemDetails?.unevaluatedAssignments : "Unevaluated Assignments" }
-             
+              {itemDetails?.unevaluatedAssignments
+                ? itemDetails?.unevaluatedAssignments
+                : "Unevaluated Assignments"}
             </div>
             <img
               alt="icon"
@@ -206,8 +241,9 @@ const AdminStatistics = ({itemDetails}) => {
         >
           <div className="justify-between items-stretch flex gap-5">
             <div className="text-white text-sm font-medium tracking-widest">
-            {itemDetails?.meetingsToday ?itemDetails?.meetingsToday : "Meetings Today" }
-             
+              {itemDetails?.meetingsToday
+                ? itemDetails?.meetingsToday
+                : "Meetings Today"}
             </div>
             <img
               loading="lazy"
@@ -238,7 +274,7 @@ const AdminStatistics = ({itemDetails}) => {
       </div>
       <div className="my-10">
         <ApexChart
-        itemDetails={itemDetails}
+          itemDetails={itemDetails}
           selectedFilter={selectedFilter}
           students={students}
           setTotalStudents={setTotalStudents}
@@ -247,7 +283,7 @@ const AdminStatistics = ({itemDetails}) => {
           fromDate={fromDate}
         />
         <RevenueChart
-        itemDetails={itemDetails}
+          itemDetails={itemDetails}
           selectedFilter={selectedFilter}
           paidStudents={paidStudents}
           setTotalRevenue={setTotalRevenue}
