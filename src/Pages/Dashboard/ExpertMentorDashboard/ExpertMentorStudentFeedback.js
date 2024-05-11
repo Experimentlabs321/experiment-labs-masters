@@ -434,7 +434,7 @@ const ExpertMentorStudentFeedback = ({admin}) => {
           </div>
 
           <div className="my-10 me-10">
-            <p>{itemDetails?.totalStudents ? itemDetails?.totalStudents :"Total Students"} - 1000</p>
+            {/* <p>{itemDetails?.totalStudents ? itemDetails?.totalStudents :"Total Students"} - 1000</p> */}
           </div>
         </div>
 

@@ -92,9 +92,9 @@ const SkillsManagement = () => {
               <SearchIcon className="Search1 w-6 h-6 left-[8px] top-[8px] absolute text-white" />
             </div>
           </div>
-          <Badge badgeContent={1} color="error">
+          {/* <Badge badgeContent={1} color="error">
             <NotificationsIcon color="action" />
-          </Badge>
+          </Badge> */}
         </div>
 
         <div className="my-8 px-7">
