@@ -1,10 +1,13 @@
 //RevenueChart.js
 
-import React, { useEffect, useState } from "react";
-import ReactApexChart from "react-apexcharts";
-import Loading from "../../Shared/Loading/Loading";
+import React, {
+  useEffect,
+  useState,
+} from 'react';
 
-import { CircularProgress } from "@mui/material";
+import ReactApexChart from 'react-apexcharts';
+
+import { CircularProgress } from '@mui/material';
 
 const RevenueChart = ({
 
@@ -218,58 +221,57 @@ const RevenueChart = ({
     }, [selectedFilter, paidStudents, setTotalRevenue]);
 
     /// overall revenue vs discount
+
     useEffect(() => {
         if (selectedFilter === "Overall" && paidStudents) {
-
             const currentDate = new Date();
-            const startDate = new Date(paidStudents?.reduce((earliest, student) => {
-                const studentDate = new Date(student.paidAt);
-                return earliest ? (studentDate < earliest ? studentDate : earliest) : studentDate;
-            }, null));
-
-            const monthsStartDate = [];
-            const monthNames = [];
-
-            let currentMonth = new Date(startDate);
-
-            while (currentMonth <= currentDate) {
-                monthsStartDate.push(new Date(currentMonth));
-                const monthName = currentMonth.toLocaleString('default', { month: 'long' });
-                const year = currentMonth.getFullYear();
-                monthNames.push(`${monthName} (${year})`);
-                currentMonth.setMonth(currentMonth.getMonth() + 1);
-            }
-
-            const revenueSums = Array(monthsStartDate.length).fill(0);
-            const discountSums = Array(monthsStartDate.length).fill(0);
             let totalRevenueSum = 0;
-
-            paidStudents?.forEach(student => {
+            const overallYear = [];
+            const revenueByYear = new Map(); // Map to store revenue sums by year
+            const discountByYear = new Map(); // Map to store discount sums by year
+    
+            // Determine the range of years to consider (current year and previous two years)
+            const startYear = currentDate.getFullYear() - 2;
+            const endYear = currentDate.getFullYear();
+    
+            // Initialize maps for each year within the range
+            for (let year = startYear; year <= endYear; year++) {
+                revenueByYear.set(year, 0);
+                discountByYear.set(year, 0);
+                overallYear.push(year);
+            }
+    
+            paidStudents.forEach(student => {
                 const studentDate = new Date(student.paidAt);
+                const studentYear = studentDate.getFullYear();
                 const studentRevenue = student.paidAmount || 0;
                 const studentDiscount = student.discountAmount || 0;
-
-                for (let i = 0; i < monthsStartDate.length; i++) {
-                    const startDate = monthsStartDate[i];
-                    const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0);
-
-                    if (studentDate >= startDate && studentDate <= endDate) {
-                        revenueSums[i] += studentRevenue;
-                        discountSums[i] += studentDiscount;
-                        totalRevenueSum += studentRevenue;
-                        break;
-                    }
-                }
+    
+                // Update total revenue sum
+                totalRevenueSum += studentRevenue;
+    
+                // Update revenue sum for the current year
+                revenueByYear.set(studentYear, revenueByYear.get(studentYear) + studentRevenue);
+    
+                // Update discount sum for the current year
+                discountByYear.set(studentYear, discountByYear.get(studentYear) + studentDiscount);
             });
-
-            setOverallArr(monthNames);
-            setTotalRevenueOverall(revenueSums);
-            setTotalDiscountOverall(discountSums);
+    
+            // Set overall years state
+            setOverallArr(overallYear);
+    
+            // Set total revenue and discount sums by year
+            setTotalRevenueOverall(Array.from(revenueByYear.values()));
+            setTotalDiscountOverall(Array.from(discountByYear.values()));
             setTotalRevenue(totalRevenueSum);
-
+    
             setIsLoading(false);
         }
     }, [selectedFilter, paidStudents, setTotalRevenue]);
+    
+    
+    
+    
 
     // custom date 
     useEffect(() => {
