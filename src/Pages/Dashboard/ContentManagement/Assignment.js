@@ -1,31 +1,28 @@
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../Layout";
-import arrowDown from "../../../assets/SkillsManagement/arrow.svg";
-import arrowright from "../../../assets/SkillsManagement/arrowright.svg";
-import required from "../../../assets/ContentManagement/required.png";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import closeCircle from "../../../assets/ContentManagement/closeCircle.svg";
-import edit from "../../../assets/ContentManagement/edit.svg";
-import PropTypes from "prop-types";
-import { styled } from "@mui/material/styles";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
-import Typography from "@mui/material/Typography";
-import { Link, useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { toast } from "react-hot-toast";
-import General from "./Components/Assignment/General";
-import { AuthContext } from "../../../contexts/AuthProvider";
-import SkillBasedParameter from "./Components/Shared/SkillBasedParameter";
-import ItemEarningParameter from "./Components/Shared/ItemEarningParameter";
-import uploadFileToS3 from "../../UploadComponent/s3Uploader";
-import AssignmentTask from "../Week/AssignmentTask";
-import Loading from "../../Shared/Loading/Loading";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 
-import { CircularProgress } from "@mui/material";
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
+import {
+  Link,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
+
+import arrowDown from '../../../assets/SkillsManagement/arrow.svg';
+import arrowright from '../../../assets/SkillsManagement/arrowright.svg';
+import { AuthContext } from '../../../contexts/AuthProvider';
+import Loading from '../../Shared/Loading/Loading';
+import uploadFileToS3 from '../../UploadComponent/s3Uploader';
+import Layout from '../Layout';
+import AssignmentTask from '../Week/AssignmentTask';
+import General from './Components/Assignment/General';
+import ItemEarningParameter from './Components/Shared/ItemEarningParameter';
+import SkillBasedParameter from './Components/Shared/SkillBasedParameter';
+
 const Assignment = () => {
   const [isOpenGeneral, setisOpenGeneral] = useState(true);
 
@@ -66,7 +63,9 @@ const Assignment = () => {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
+    
+      //.get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
+      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${id}`)
       .then((response) => {
         setChapter(response?.data);
         setIsLoading(false);

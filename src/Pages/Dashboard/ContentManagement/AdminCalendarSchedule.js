@@ -1,30 +1,41 @@
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../Layout";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
-import Modal from "react-modal";
+import 'react-datetime-picker/dist/DateTimePicker.css';
+import 'react-calendar/dist/Calendar.css';
+import 'react-clock/dist/Clock.css';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
+
+import React, {
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+
+import axios from 'axios';
+import moment from 'moment';
+import { momentLocalizer } from 'react-big-calendar';
+import toast from 'react-hot-toast';
+import {
+  Link,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
+
+import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin from '@fullcalendar/interaction';
+import listPlugin from '@fullcalendar/list';
+import FullCalendar from '@fullcalendar/react';
 import {
   useSession,
-  useSupabaseClient,
   useSessionContext,
-} from "@supabase/auth-helpers-react";
-import DateTimePicker from "react-datetime-picker";
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import listPlugin from "@fullcalendar/list";
-import interactionPlugin from "@fullcalendar/interaction";
-import "react-datetime-picker/dist/DateTimePicker.css";
-import "react-calendar/dist/Calendar.css";
-import "react-clock/dist/Clock.css";
-import toast from "react-hot-toast";
-import { AuthContext } from "../../../contexts/AuthProvider";
-import required from "../../../assets/ContentManagement/required.png";
-import meetIcon from "../../../assets/Dashboard/meetIcon.png";
-import zoom from "../../../assets/icons/zoom-240.png";
-import { Calendar, momentLocalizer } from "react-big-calendar";
-import moment from "moment";
-import "react-big-calendar/lib/css/react-big-calendar.css";
-import Loading from "../../Shared/Loading/Loading";
+  useSupabaseClient,
+} from '@supabase/auth-helpers-react';
+
+import required from '../../../assets/ContentManagement/required.png';
+import meetIcon from '../../../assets/Dashboard/meetIcon.png';
+import zoom from '../../../assets/icons/zoom-240.png';
+import { AuthContext } from '../../../contexts/AuthProvider';
+import Loading from '../../Shared/Loading/Loading';
+import Layout from '../Layout';
+
 let global;
 const customStyles = {
   overlay: {
@@ -102,7 +113,8 @@ const AdminCalendarSchedule = () => {
   }, [chapter?.courseId]);
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
+     // .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
+      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${id}`)
       .then((response) => {
         setChapter(response?.data);
       })
