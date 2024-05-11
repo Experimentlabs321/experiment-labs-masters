@@ -7,6 +7,7 @@ import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Loading from "../../Shared/Loading/Loading";
+import AnnouncementsIcon from "../../../assets/Dashboard/AnnouncementsDark.png";
 
 const Announcements = () => {
   const { user, userInfo } = useContext(AuthContext);
@@ -244,6 +245,14 @@ const Announcements = () => {
                 </div>
               );
           })}
+          {announcements?.length === 0 && (
+            <div>
+              <div className=" mt-10 w-full flex flex-col gap-1 items-center justify-center text-gray-400">
+                <img src={AnnouncementsIcon} alt="AnnouncementsIcon" />
+                <h1 className="text-lg font-bold">No Announcement</h1>
+              </div>
+            </div>
+          )}
         </div>
       </Layout>
     </div>
