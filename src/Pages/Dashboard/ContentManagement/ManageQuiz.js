@@ -1,18 +1,23 @@
-import Layout from "../Layout";
-import required from "../../../assets/ContentManagement/required.png";
-import youtube from "../../../assets/ContentManagement/youtube.svg";
-import Audioimg from "../../../assets/ContentManagement/audio.png";
-import { useContext, useEffect, useRef, useState } from "react";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import QuizGeneralInformation from "./QuizGeneralInformation";
-import QuizResult from "./QuizResult";
-import QuizEvaluationParameter from "./QuizEvaluationParameter";
-import ManageQuestionBank from "./ManageQuestionBank";
-import ManageQuestion from "./ManageQuestion";
-import { Link, useParams } from "react-router-dom";
-import axios from "axios";
-import { AuthContext } from "../../../contexts/AuthProvider";
-import Swal from "sweetalert2";
+import {
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+
+import axios from 'axios';
+import {
+  Link,
+  useParams,
+} from 'react-router-dom';
+import Swal from 'sweetalert2';
+
+import { AuthContext } from '../../../contexts/AuthProvider';
+import Layout from '../Layout';
+import ManageQuestion from './ManageQuestion';
+import ManageQuestionBank from './ManageQuestionBank';
+import QuizEvaluationParameter from './QuizEvaluationParameter';
+import QuizGeneralInformation from './QuizGeneralInformation';
+import QuizResult from './QuizResult';
 
 const ManageQuiz = () => {
   const [selectedTab, setSelectedTab] = useState("Quiz General Information");
@@ -32,7 +37,8 @@ const ManageQuiz = () => {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
+    .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${id}`)
+    //  .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
       .then((response) => {
         setChapter(response?.data);
         const fetchData = {

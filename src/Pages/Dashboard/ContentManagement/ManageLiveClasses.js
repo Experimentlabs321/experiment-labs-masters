@@ -1,34 +1,34 @@
 //ManageLiveClasses
 
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../Layout";
-import arrowDown from "../../../assets/SkillsManagement/arrow.svg";
-import arrowright from "../../../assets/SkillsManagement/arrowright.svg";
-import MyLocationIcon from "@mui/icons-material/MyLocation";
-import required from "../../../assets/ContentManagement/required.png";
-import PropTypes from "prop-types";
-import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
-import Typography from "@mui/material/Typography";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 
-import Badge from "@mui/material/Badge";
-import MailIcon from "@mui/icons-material/Mail";
-import SearchIcon from "@mui/icons-material/Search";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import { Link, useLocation, useParams, useNavigate } from "react-router-dom";
-import Level from "../Dashboard/Level";
-import { AuthContext } from "../../../contexts/AuthProvider";
-import axios from "axios";
-import SkillBasedParameter from "./Components/Shared/SkillBasedParameter";
-import ItemEarningParameter from "./Components/Shared/ItemEarningParameter";
-import toast from "react-hot-toast";
-import Loading from "../../Shared/Loading/Loading";
+import axios from 'axios';
+import PropTypes from 'prop-types';
+import toast from 'react-hot-toast';
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
+
+import CloseIcon from '@mui/icons-material/Close';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import IconButton from '@mui/material/IconButton';
+import { styled } from '@mui/material/styles';
+
+import required from '../../../assets/ContentManagement/required.png';
+import arrowDown from '../../../assets/SkillsManagement/arrow.svg';
+import arrowright from '../../../assets/SkillsManagement/arrowright.svg';
+import { AuthContext } from '../../../contexts/AuthProvider';
+import Loading from '../../Shared/Loading/Loading';
+import Layout from '../Layout';
+import ItemEarningParameter from './Components/Shared/ItemEarningParameter';
+import SkillBasedParameter from './Components/Shared/SkillBasedParameter';
 
 const ManageLiveClasses = () => {
   const { id } = useParams();
@@ -139,7 +139,8 @@ const ManageLiveClasses = () => {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
+    .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${id}`)
+     // .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
       .then((response) => {
         setChapter(response?.data);
         const fetchData = {

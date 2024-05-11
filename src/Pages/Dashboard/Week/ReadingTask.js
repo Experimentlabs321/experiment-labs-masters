@@ -12,8 +12,10 @@ import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import Box from '@mui/material/Box';
-import LinearProgress from '@mui/material/LinearProgress';
+import {
+  Box,
+  LinearProgress,
+} from '@mui/material';
 
 import { AuthContext } from '../../../contexts/AuthProvider';
 import Loading from '../../Shared/Loading/Loading';
@@ -211,7 +213,7 @@ const ReadingTask = ({ taskData, count, setCount }) => {
   }, [taskData?.additionalFiles, cancelTokenSource]);
   const [progress, setProgress] = React.useState(0);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const timer = setInterval(() => {
       setProgress((oldProgress) => {
         if (oldProgress === 100) {
@@ -225,7 +227,7 @@ const ReadingTask = ({ taskData, count, setCount }) => {
     return () => {
       clearInterval(timer);
     };
-  }, []);
+  }, []); 
   return (
     <div>
       {completionStatus ? (
@@ -245,12 +247,12 @@ const ReadingTask = ({ taskData, count, setCount }) => {
 
       {!iframeLoaded && (
         <div className=" flex justify-center  w-full  ">
-          <div className='flex flex-col items-center gap-3'>
+           <div className='flex flex-col items-center gap-3'>
             <p className="mt-20">Loading...</p>
             <Box sx={{ width: '500px' }}>
               <LinearProgress sx={{ height: '20px', borderRadius: '10px', }} variant="determinate" value={progress} />
             </Box>
-          </div>
+          </div> 
 
 
           {/* <CircularProgress className="w-full mx-auto" /> */}
@@ -264,12 +266,12 @@ const ReadingTask = ({ taskData, count, setCount }) => {
           style={{ display: iframeLoaded ? "block" : "none" }}
         >
           <div className="container mx-auto relative">
-            {isOverlayVisible && (
+          {/*   {isOverlayVisible && (
               <div
                 className="fixed top-0 left-0 w-full h-full z-[9999] bg-transparent"
                 onClick={handleCompletion}
               ></div>
-            )}
+            )} */}
 
             {additionalFile &&
               (taskData?.additionalFiles.endsWith(".png") ||
