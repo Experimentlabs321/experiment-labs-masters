@@ -287,7 +287,7 @@ const SalesAndRevenue = () => {
     console.log(bundlesData?.bundleFullName, courseData?.courseFullName);
     if (!std?.bundleId) {
       console.log(courseData?.courseFullName);
-      courseOrBundleName = courseData.courseFullName;
+      courseOrBundleName = courseData?.courseFullName;
     } else {
       // courseOrBundleName = bundles?.find(
       //   (item) => item?._id === std?.bundleId
