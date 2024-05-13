@@ -1,9 +1,15 @@
-import React, { useContext, useEffect, useState } from "react";
-import DashboardPrimaryButton from "../Shared/DashboardPrimaryButton";
-import DialogLayout from "../Shared/DialogLayout";
-import { AuthContext } from "../../../contexts/AuthProvider";
-import axios from "axios";
-import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+
+import axios from 'axios';
+
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+
+import { AuthContext } from '../../../contexts/AuthProvider';
+import DialogLayout from '../Shared/DialogLayout';
 
 const SkillsStatistics = ({ skillsData, selectedCourse }) => {
   console.log(selectedCourse?._id);
@@ -53,7 +59,8 @@ const SkillsStatistics = ({ skillsData, selectedCourse }) => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_API}/getSubmitAssignment/all/${userInfo._id}`
+       // `${process.env.REACT_APP_BACKEND_API}/getSubmitAssignment/all/${userInfo._id}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/submitterId/${userInfo._id}`
       )
       .then((response) => {
         // setAssignment(response?.data)

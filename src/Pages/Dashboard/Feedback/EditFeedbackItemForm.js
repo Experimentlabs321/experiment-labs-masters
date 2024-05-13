@@ -1,10 +1,15 @@
 //EditFeedbackItemForm
 
-import React, { useEffect, useState } from "react";
-import Swal from "sweetalert2";
-import { toast } from "react-hot-toast";
-import axios from "axios";
-import uploadFileToS3 from "../../UploadComponent/s3Uploader";
+import React, {
+  useEffect,
+  useState,
+} from 'react';
+
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
+import Swal from 'sweetalert2';
+
+import uploadFileToS3 from '../../UploadComponent/s3Uploader';
 
 const EditFeedbackItemForm = ({
   selectedFeedback,
@@ -108,7 +113,8 @@ const EditFeedbackItemForm = ({
               return;
              } */
       const updatedItem = await axios.put(
-        `${process.env.REACT_APP_BACKEND_API}/editFeedbackItem`,
+        //`${process.env.REACT_APP_BACKEND_API}/editFeedbackItem`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/feedbackCategories/feedbackItems`,
         data
       );
 
@@ -150,7 +156,8 @@ const EditFeedbackItemForm = ({
         return;
       }
       const newItem = await axios.post(
-        `${process.env.REACT_APP_BACKEND_API}/feedbackItems`,
+        //`${process.env.REACT_APP_BACKEND_API}/feedbackItems`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/feedbackCategories/feedbackItems`,
         {
           organizationId: userInfo?.organizationId,
           categoryName: currentCategory?.categoryName,
@@ -164,7 +171,10 @@ const EditFeedbackItemForm = ({
         }
       );
       if (newItem?.data?.acknowledged) {
-        fetch(`${process.env.REACT_APP_BACKEND_API}/deleteFeedbackItem`, {
+        fetch(
+         // `${process.env.REACT_APP_BACKEND_API}/deleteFeedbackItem`, 
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/feedbackCategories/feedbackItems`, 
+          {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",

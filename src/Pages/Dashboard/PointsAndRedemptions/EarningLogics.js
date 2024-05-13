@@ -1,20 +1,29 @@
-import React, { useContext, useEffect, useState } from "react";
-import UploadingImg from "../../../assets/PointsRedemptions/uploadimg.png";
-import Layout from "../Layout";
-import Badge from "@mui/material/Badge";
-import SearchIcon from "@mui/icons-material/Search";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import axios from "axios";
-import { AuthContext } from "../../../contexts/AuthProvider";
-import AddSharpIcon from "@mui/icons-material/AddSharp";
-import Swal from "sweetalert2";
-import { toast } from "react-hot-toast";
-import SelectEarningCategory from "./Components/EarningLogics/SelectEarningCategory";
-import AddEarningPointItemForm from "./Components/EarningLogics/AddEarningPointItemForm";
-import EditEarningPointItemForm from "./Components/EarningLogics/EditEarningPointItemForm";
-import ToggleOnIcon from "@mui/icons-material/ToggleOn";
-import ToggleOffIcon from "@mui/icons-material/ToggleOff";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
+import Swal from 'sweetalert2';
+
+import AddSharpIcon from '@mui/icons-material/AddSharp';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import SearchIcon from '@mui/icons-material/Search';
+import ToggleOffIcon from '@mui/icons-material/ToggleOff';
+import ToggleOnIcon from '@mui/icons-material/ToggleOn';
+import Badge from '@mui/material/Badge';
+
+import UploadingImg from '../../../assets/PointsRedemptions/uploadimg.png';
+import { AuthContext } from '../../../contexts/AuthProvider';
+import Layout from '../Layout';
+import AddEarningPointItemForm
+  from './Components/EarningLogics/AddEarningPointItemForm';
+import EditEarningPointItemForm
+  from './Components/EarningLogics/EditEarningPointItemForm';
+import SelectEarningCategory
+  from './Components/EarningLogics/SelectEarningCategory';
 
 const EarningLogics = () => {
   const { userInfo } = useContext(AuthContext);
@@ -106,7 +115,8 @@ const EarningLogics = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_API}/earning_categories/${userInfo?.organizationId}`
+      //  `${process.env.REACT_APP_BACKEND_API}/earning_categories/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/earningCategories/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
         setOrgEarningLogics(response?.data?.courses);
@@ -156,7 +166,10 @@ const EarningLogics = () => {
       confirmButtonText: "Delete",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        fetch(`${process.env.REACT_APP_BACKEND_API}/deleteItem`, {
+        fetch(
+          //`${process.env.REACT_APP_BACKEND_API}/deleteItem`,
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/earningCategories/earningItems`,
+           {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",

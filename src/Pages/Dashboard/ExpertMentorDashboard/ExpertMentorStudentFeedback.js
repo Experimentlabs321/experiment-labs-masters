@@ -1,27 +1,29 @@
 //ExpertMentorStudentFeedback
 
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../Layout";
-import "react-circular-progressbar/dist/styles.css";
-import SearchIcon from "@mui/icons-material/Search";
-import notification from "../../../assets/ExecutionMentor/notification.svg";
-import IconNav from "../../../assets/ExpertMentorDashboard/Iconnav.svg";
-import ranking from "../../../assets/ExpertMentorDashboard/ranking.svg";
+import 'react-circular-progressbar/dist/styles.css';
 
-import Rating from "@mui/material/Rating";
-import Stack from "@mui/material/Stack";
-import ForumTwoToneIcon from "@mui/icons-material/ForumTwoTone";
-import { AuthContext } from "../../../contexts/AuthProvider";
-import axios from "axios";
-import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
-import Typography from "@mui/material/Typography";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+
+import axios from 'axios';
+
+import CloseIcon from '@mui/icons-material/Close';
+import SearchIcon from '@mui/icons-material/Search';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import IconButton from '@mui/material/IconButton';
+import Rating from '@mui/material/Rating';
+import { styled } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
+
+import IconNav from '../../../assets/ExpertMentorDashboard/Iconnav.svg';
+import ranking from '../../../assets/ExpertMentorDashboard/ranking.svg';
+import { AuthContext } from '../../../contexts/AuthProvider';
+import Layout from '../Layout';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -102,8 +104,11 @@ const ExpertMentorStudentFeedback = ({admin}) => {
 
   useEffect(() => {
     axios
+      // .get(
+      //   `${process.env.REACT_APP_BACKEND_API}/feedback_categories/${userInfo?.organizationId}`
+      // )
       .get(
-        `${process.env.REACT_APP_BACKEND_API}/feedback_categories/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/feedbackCategories/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
         const feedbacks = response?.data?.courses?.find(
@@ -131,8 +136,11 @@ const ExpertMentorStudentFeedback = ({admin}) => {
 
   useEffect(() => {
     axios
+      // .get(
+      //   `${process.env.REACT_APP_BACKEND_API}/getFeedbacks/${selectedCourse?._id}`
+      // )
       .get(
-        `${process.env.REACT_APP_BACKEND_API}/getFeedbacks/${selectedCourse?._id}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/givenFeedbacks/courseId/${selectedCourse?._id}`
       )
       .then((response) => {
         const filteredFeedbacks = response?.data.reduce((acc, accessClass) => {

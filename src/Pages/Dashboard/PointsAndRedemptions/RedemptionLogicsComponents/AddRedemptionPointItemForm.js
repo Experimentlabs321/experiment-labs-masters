@@ -1,10 +1,15 @@
 //AddRedemptionPointItemForm
 
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import Swal from "sweetalert2";
-import { toast } from "react-hot-toast";
-import uploadFileToS3 from "../../../UploadComponent/s3Uploader";
+import React, {
+  useEffect,
+  useState,
+} from 'react';
+
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
+import Swal from 'sweetalert2';
+
+import uploadFileToS3 from '../../../UploadComponent/s3Uploader';
 
 const AddRedemptionPointItemForm = ({
   setIsOpenRedemptionItemAddForm,
@@ -79,7 +84,8 @@ const AddRedemptionPointItemForm = ({
     }
 
     const newItem = await axios.post(
-      `${process.env.REACT_APP_BACKEND_API}/redemptionItems`,
+      //`${process.env.REACT_APP_BACKEND_API}/redemptionItems`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/redemptionCategories/redemptionItems`,
       {
         organizationId: userInfo?.organizationId,
         categoryName: selectedRedemptionCategory?.categoryName,

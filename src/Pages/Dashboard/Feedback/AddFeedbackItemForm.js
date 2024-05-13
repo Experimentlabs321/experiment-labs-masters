@@ -1,11 +1,15 @@
 //AddFeedbackItemForm
 
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import Swal from "sweetalert2";
-import { toast } from "react-hot-toast";
+import React, {
+  useEffect,
+  useState,
+} from 'react';
 
-import uploadFileToS3 from "../../UploadComponent/s3Uploader";
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
+import Swal from 'sweetalert2';
+
+import uploadFileToS3 from '../../UploadComponent/s3Uploader';
 
 const AddFeedbackItemForm = ({
   setIsOpenFeedbackItemAddForm,
@@ -93,7 +97,8 @@ const AddFeedbackItemForm = ({
     }
 
     const newItem = await axios.post(
-      `${process.env.REACT_APP_BACKEND_API}/feedbackItems`,
+    //  `${process.env.REACT_APP_BACKEND_API}/feedbackItems`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/feedbackCategories/feedbackItems`,
       {
         organizationId: userInfo?.organizationId,
         categoryName: selectedFeedbackCategory?.categoryName,

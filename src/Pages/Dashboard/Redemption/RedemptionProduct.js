@@ -1,12 +1,14 @@
-import React, { useContext } from "react";
-import NotificationIcon from "../../../assets/Dashboard/NotificationIcon.svg";
-import NotificationIconMobile from "../../../assets/Dashboard/NotificationIconMobile.svg";
-import SearchIcon from "../../../assets/Dashboard/SearchIcon.png";
-import SearchIconMobile from "../../../assets/Dashboard/SearchIconMobile.svg";
-import axios from "axios";
-import { AuthContext } from "../../../contexts/AuthProvider";
-import toast from "react-hot-toast";
+import React, { useContext } from 'react';
 
+import axios from 'axios';
+import toast from 'react-hot-toast';
+
+import NotificationIcon from '../../../assets/Dashboard/NotificationIcon.svg';
+import NotificationIconMobile
+  from '../../../assets/Dashboard/NotificationIconMobile.svg';
+import SearchIcon from '../../../assets/Dashboard/SearchIcon.png';
+import SearchIconMobile from '../../../assets/Dashboard/SearchIconMobile.svg';
+import { AuthContext } from '../../../contexts/AuthProvider';
 
 const RedemptionProduct = ({ setState, state, redemptionProduct }) => {
   console.log(redemptionProduct);
@@ -19,7 +21,8 @@ const RedemptionProduct = ({ setState, state, redemptionProduct }) => {
 
 
     const newItem = await axios.post(
-      `${process.env.REACT_APP_BACKEND_API}/redemptionAccess`,
+     // `${process.env.REACT_APP_BACKEND_API}/redemptionAccess`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/redemptionAccesses`,
       {
         organizationId: userInfo?.organizationId,
         userId: userInfo?._id,
