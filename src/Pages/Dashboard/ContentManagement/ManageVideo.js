@@ -1,20 +1,29 @@
-import Layout from "../Layout";
-import required from "../../../assets/ContentManagement/required.png";
-import youtube from "../../../assets/ContentManagement/youtube.svg";
-import videoplay from "../../../assets/ContentManagement/videoplay.png";
-import { useContext, useEffect, useRef, useState } from "react";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import SkillBasedParameter from "./Components/Shared/SkillBasedParameter";
-import ItemEarningParameter from "./Components/Shared/ItemEarningParameter";
-import axios from "axios";
-import { AuthContext } from "../../../contexts/AuthProvider";
-import { Link, useParams, useNavigate } from "react-router-dom";
-import uploadFileToS3 from "../../UploadComponent/s3Uploader";
-import { toast } from "react-hot-toast";
-import VideoTask from "../Week/VideoTask";
-import DialogLayout from "../Shared/DialogLayout";
-import CompletionParameter from "./Components/Shared/CompletionParameter";
-import Loading from "../../Shared/Loading/Loading";
+import {
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
+import {
+  Link,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
+
+import required from '../../../assets/ContentManagement/required.png';
+import videoplay from '../../../assets/ContentManagement/videoplay.png';
+import youtube from '../../../assets/ContentManagement/youtube.svg';
+import { AuthContext } from '../../../contexts/AuthProvider';
+import Loading from '../../Shared/Loading/Loading';
+import uploadFileToS3 from '../../UploadComponent/s3Uploader';
+import Layout from '../Layout';
+import DialogLayout from '../Shared/DialogLayout';
+import VideoTask from '../Week/VideoTask';
+import CompletionParameter from './Components/Shared/CompletionParameter';
+import ItemEarningParameter from './Components/Shared/ItemEarningParameter';
+import SkillBasedParameter from './Components/Shared/SkillBasedParameter';
 
 const ManageVideo = () => {
   // upload file
@@ -75,7 +84,8 @@ const ManageVideo = () => {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
+    .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${id}`)
+     // .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
       .then((response) => {
         setChapter(response?.data);
         const fetchData = {

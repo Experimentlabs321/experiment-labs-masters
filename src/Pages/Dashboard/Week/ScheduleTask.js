@@ -1,27 +1,36 @@
-import { AuthContext } from "../../../contexts/AuthProvider";
-import React, { useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import AccessAlarmOutlinedIcon from "@mui/icons-material/AccessAlarmOutlined";
-import axios from "axios";
+import 'react-datetime-picker/dist/DateTimePicker.css';
+import 'react-calendar/dist/Calendar.css';
 
-import moment from "moment";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+
+import axios from 'axios';
+import { gapi } from 'gapi-script';
+import moment from 'moment';
+import {
+  Link,
+  useNavigate,
+} from 'react-router-dom';
+import Swal from 'sweetalert2';
+
+import AccessAlarmOutlinedIcon from '@mui/icons-material/AccessAlarmOutlined';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import { CircularProgress } from '@mui/material';
+import { red } from '@mui/material/colors';
 import {
   useSession,
   useSupabaseClient,
-  useSessionContext,
-} from "@supabase/auth-helpers-react";
-import Loading from "../../Shared/Loading/Loading";
-import { CircularProgress } from "@mui/material";
-import { red } from "@mui/material/colors";
-import "react-datetime-picker/dist/DateTimePicker.css";
-import "react-calendar/dist/Calendar.css";
-import RightArrowWhite from "../../../assets/Dashboard/RightArrowWhite.png";
-import Swal from "sweetalert2";
-import { gapi } from "gapi-script";
-import DashboardPrimaryButton from "../Shared/DashboardPrimaryButton";
-import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-import googlemeet from "../../../assets/icons/googlemeet.png";
-import zoom from "../../../assets/icons/zoom-240.png";
+} from '@supabase/auth-helpers-react';
+
+import RightArrowWhite from '../../../assets/Dashboard/RightArrowWhite.png';
+import googlemeet from '../../../assets/icons/googlemeet.png';
+import zoom from '../../../assets/icons/zoom-240.png';
+import { AuthContext } from '../../../contexts/AuthProvider';
+import Loading from '../../Shared/Loading/Loading';
+import DashboardPrimaryButton from '../Shared/DashboardPrimaryButton';
 
 const ScheduleTask = ({ taskData, week }) => {
   // let matching = false;
@@ -1546,7 +1555,8 @@ const ScheduleTask = ({ taskData, week }) => {
                     taskId: taskId,
                   };
                   const response = await axios.post(
-                    `${process.env.REACT_APP_BACKEND_API}/events`,
+                   // `${process.env.REACT_APP_BACKEND_API}/events`,
+                    `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events`,
                     postData
                   );
 

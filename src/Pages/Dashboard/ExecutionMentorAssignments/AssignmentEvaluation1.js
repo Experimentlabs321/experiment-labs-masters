@@ -1,10 +1,17 @@
-import React, { useContext, useState } from "react";
-import Layout from "../Layout";
-import { Link, useParams } from "react-router-dom";
-import AssignmentUpNev from "./AssignmentUpNev";
-import AssignmentRightNev from "./AssignmentRightNev";
-import axios from "axios";
-import { useEffect } from "react";
+import React, {
+  useEffect,
+  useState,
+} from 'react';
+
+import axios from 'axios';
+import {
+  Link,
+  useParams,
+} from 'react-router-dom';
+
+import Layout from '../Layout';
+import AssignmentRightNev from './AssignmentRightNev';
+import AssignmentUpNev from './AssignmentUpNev';
 
 const AssignmentEvaluation1 = () => {
   const [selectedTab, setSelectedTab] = useState("mentorAssignments");
@@ -21,9 +28,8 @@ const AssignmentEvaluation1 = () => {
 
   useEffect(() => {
     axios
-      .get(
-        `${process.env.REACT_APP_BACKEND_API}/getSingleSubmitAssignment/${id}`
-      )
+      //.get(`${process.env.REACT_APP_BACKEND_API}/getSingleSubmitAssignment/${id}`)
+      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/${id}`)
       .then((response) => {
         setAssignment(response?.data);
       })

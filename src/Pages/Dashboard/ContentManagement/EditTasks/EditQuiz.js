@@ -1,15 +1,20 @@
-import required from "../../../../assets/ContentManagement/required.png";
-import React, { useEffect, useState } from "react";
-import Layout from "../../Layout";
-import { Link, useParams } from "react-router-dom";
-import TextEditor from "../../../Shared/TextEditor/TextEditor";
-import axios from "axios";
-import { toast } from "react-hot-toast";
-import QuizResult from "../QuizResult";
-import QuizEvaluationParameter from "../QuizEvaluationParameter";
-import ManageQuestionBank from "../ManageQuestionBank";
-import ManageQuestion from "../ManageQuestion";
-import Loading from "../../../Shared/Loading/Loading";
+import React, {
+  useEffect,
+  useState,
+} from 'react';
+
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
+import { useParams } from 'react-router-dom';
+
+import required from '../../../../assets/ContentManagement/required.png';
+import Loading from '../../../Shared/Loading/Loading';
+import TextEditor from '../../../Shared/TextEditor/TextEditor';
+import Layout from '../../Layout';
+import ManageQuestion from '../ManageQuestion';
+import ManageQuestionBank from '../ManageQuestionBank';
+import QuizEvaluationParameter from '../QuizEvaluationParameter';
+import QuizResult from '../QuizResult';
 
 const EditQuiz = () => {
   const [selectedTab, setSelectedTab] = useState("Quiz General Information");
@@ -54,9 +59,8 @@ const EditQuiz = () => {
 
   useEffect(() => {
     axios
-      .get(
-        `${process.env.REACT_APP_BACKEND_API}/chapter/${quizData?.chapterId}`
-      )
+     // .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${quizData?.chapterId}`)
+      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${quizData?.chapterId}`)
       .then((response) => {
         setChapter(response?.data);
       })

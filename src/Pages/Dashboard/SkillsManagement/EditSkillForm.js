@@ -1,8 +1,9 @@
-import React, { useEffect } from "react";
-import Parameters from "./Parameters";
-import Swal from "sweetalert2";
-import { toast } from "react-hot-toast";
-import axios from "axios";
+import React, { useEffect } from 'react';
+
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
+
+import Parameters from './Parameters';
 
 const EditSkillForm = ({
   setIsOpenSkillAddForm,
@@ -79,18 +80,21 @@ const EditSkillForm = ({
         }
       );
       if (newSkill?.data?.acknowledged) {
-        fetch(`${process.env.REACT_APP_BACKEND_API}/deleteSkill`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            organizationId: userInfo?.organizationId,
-            categoryName: selectedSkillCategory?.categoryName,
-            courseId: selectedCourse?._id,
-            skillName: selectedSkill?.skillName,
-          }),
-        })
+        fetch(
+          //`${process.env.REACT_APP_BACKEND_API}/deleteSkill`,
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/skillCategories/skills`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              organizationId: userInfo?.organizationId,
+              categoryName: selectedSkillCategory?.categoryName,
+              courseId: selectedCourse?._id,
+              skillName: selectedSkill?.skillName,
+            }),
+          })
           .then((result) => {
             if (result?.ok) {
               const remainingSkills = selectedSkillCategory?.skills?.filter(
@@ -102,20 +106,20 @@ const EditSkillForm = ({
               });
               const selectedCategorySkills = currentCategory?.skills
                 ? [
-                    ...currentCategory?.skills,
-                    {
-                      skillName: event?.target?.skillName?.value,
-                      parameters: [...parameters],
-                      description: event?.target?.description?.value,
-                    },
-                  ]
+                  ...currentCategory?.skills,
+                  {
+                    skillName: event?.target?.skillName?.value,
+                    parameters: [...parameters],
+                    description: event?.target?.description?.value,
+                  },
+                ]
                 : [
-                    {
-                      skillName: event?.target?.skillName?.value,
-                      parameters: [...parameters],
-                      description: event?.target?.description?.value,
-                    },
-                  ];
+                  {
+                    skillName: event?.target?.skillName?.value,
+                    parameters: [...parameters],
+                    description: event?.target?.description?.value,
+                  },
+                ];
               setSelectedSkillCategory({
                 categoryName: currentCategory?.categoryName,
                 skills: selectedCategorySkills,
@@ -174,15 +178,15 @@ const EditSkillForm = ({
                 />
                 <p className="mt-[-38px] text-base font-semibold text-[#fff] mb-4">
                   {itemDetails?.uploadIcon ? itemDetails?.uploadIcon : "Upload Icon"}
-                  
+
                 </p>
               </div>
               <div className="w-full pl-8">
                 <div className="grid grid-cols-1 gap-x-6 gap-y-4 mt-2 sm:grid-cols-2 w-full">
                   <div>
                     <label className="text-[16px] font-[600]" htmlFor="case">
-                    {itemDetails?.skillCategory ? itemDetails?.skillCategory : "Skill Category"}
-                      
+                      {itemDetails?.skillCategory ? itemDetails?.skillCategory : "Skill Category"}
+
                     </label>
                     <select
                       defaultValue={selectedSkillCategory?.categoryName}
@@ -197,18 +201,18 @@ const EditSkillForm = ({
                         <>
                           {skillCategory?.categoryName !==
                             selectedSkillCategory?.categoryName && (
-                            <option value={skillCategory?.categoryName}>
-                              {skillCategory?.categoryName}
-                            </option>
-                          )}
+                              <option value={skillCategory?.categoryName}>
+                                {skillCategory?.categoryName}
+                              </option>
+                            )}
                         </>
                       ))}
                     </select>
                   </div>
                   <div>
                     <label className="text-[16px] font-[600]" htmlFor="case">
-                    {itemDetails?.skillName ? itemDetails?.skillName : "Skill Name"}
-                      
+                      {itemDetails?.skillName ? itemDetails?.skillName : "Skill Name"}
+
                     </label>
                     <input
                       id="skillName"
@@ -220,7 +224,7 @@ const EditSkillForm = ({
                   </div>
                   <>
                     <Parameters
-                    itemDetails={itemDetails}
+                      itemDetails={itemDetails}
                       parameters={parameters}
                       setParameters={setParameters}
                       skillCategories={skillCategories}
@@ -233,8 +237,8 @@ const EditSkillForm = ({
             <div className="flex items-center text-center">
               <div>
                 <p className="w-[145px] text-[16px] font-[600]">
-                {itemDetails?.description ? itemDetails?.description : "Description"}
-                  </p>
+                  {itemDetails?.description ? itemDetails?.description : "Description"}
+                </p>
               </div>
               <div class="w-full pl-8 mt-4 flex justify-center items-center col-span-2 ">
                 <textarea

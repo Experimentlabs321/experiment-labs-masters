@@ -1,15 +1,21 @@
-import React, { useContext, useEffect, useState } from "react";
-import NotificationIcon from "../../../assets/Dashboard/NotificationIcon.svg";
-import NotificationIconMobile from "../../../assets/Dashboard/NotificationIconMobile.svg";
-import SearchIcon from "../../../assets/Dashboard/SearchIcon.png";
-import SearchIconMobile from "../../../assets/Dashboard/SearchIconMobile.svg";
-import CreateYourPortfolio from "../../../assets/Dashboard/CreateYourPortfolio.png";
-import classNames from "classnames";
-import { AuthContext } from "../../../contexts/AuthProvider";
-import axios from "axios";
-import { Link } from "react-router-dom";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+
+import axios from 'axios';
+import classNames from 'classnames';
+import { Link } from 'react-router-dom';
+
 import LockIcon from '@mui/icons-material/Lock';
 
+import NotificationIcon from '../../../assets/Dashboard/NotificationIcon.svg';
+import NotificationIconMobile
+  from '../../../assets/Dashboard/NotificationIconMobile.svg';
+import SearchIcon from '../../../assets/Dashboard/SearchIcon.png';
+import SearchIconMobile from '../../../assets/Dashboard/SearchIconMobile.svg';
+import { AuthContext } from '../../../contexts/AuthProvider';
 
 const RedeemGifts = ({
   setState,
@@ -81,7 +87,8 @@ const RedeemGifts = ({
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_API}/getRedemptionAccess/${userInfo?.organizationId}/${userInfo?._id}`
+        //`${process.env.REACT_APP_BACKEND_API}/getRedemptionAccess/${userInfo?.organizationId}/${userInfo?._id}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/redemptionAccesses/organizationId/${userInfo?.organizationId}/userId/${userInfo?._id}`
       )
       .then((response) => {
         const AllAccessItems = response?.data.accessItems

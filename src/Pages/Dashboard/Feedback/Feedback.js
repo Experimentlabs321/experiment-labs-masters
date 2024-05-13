@@ -1,32 +1,30 @@
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../Layout";
-import Badge from "@mui/material/Badge";
-import MailIcon from "@mui/icons-material/Mail";
-import SearchIcon from "@mui/icons-material/Search";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-/* import Category1 from './Category1'; */
+import React, {
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 
-import updateimg from "../../../assets/PointsRedemptions/Upload.svg";
-import editimg from "../../../assets/PointsRedemptions/edit.svg";
-import deleteimg from "../../../assets/PointsRedemptions/delete.svg";
-import Filterimg from "../../../assets/PointsRedemptions/Filter.svg";
-import undo from "../../../assets/PointsRedemptions/Sync-retry.svg";
-import ToggleOnIcon from "@mui/icons-material/ToggleOn";
-import ToggleOffIcon from "@mui/icons-material/ToggleOff";
 //import RedemptionCategory from './RedemptionCategory';
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
+import Swal from 'sweetalert2';
 
-import axios from "axios";
-import Swal from "sweetalert2";
-import { toast } from "react-hot-toast";
-import AddSharpIcon from "@mui/icons-material/AddSharp";
+import AddSharpIcon from '@mui/icons-material/AddSharp';
+import SearchIcon from '@mui/icons-material/Search';
+import ToggleOffIcon from '@mui/icons-material/ToggleOff';
+import ToggleOnIcon from '@mui/icons-material/ToggleOn';
+
 //import SelectRedemptionCategory from './RedemptionLogicsComponents/SelectRedemptionCategory';
 //import AddRedemptionPointItemForm from './RedemptionLogicsComponents/AddRedemptionPointItemForm';
-import UploadingImg from "../../../assets/PointsRedemptions/uploadimg.png";
-import { AuthContext } from "../../../contexts/AuthProvider";
-import SelectFeedbackCategory from "./SelectFeedbackCategory";
-import AddFeedbackItemForm from "./AddFeedbackItemForm";
-import EditFeedbackItemForm from "./EditFeedbackItemForm";
-import ExpertMentorStudentFeedback from "../ExpertMentorDashboard/ExpertMentorStudentFeedback";
+import UploadingImg from '../../../assets/PointsRedemptions/uploadimg.png';
+import { AuthContext } from '../../../contexts/AuthProvider';
+import ExpertMentorStudentFeedback
+  from '../ExpertMentorDashboard/ExpertMentorStudentFeedback';
+import Layout from '../Layout';
+import AddFeedbackItemForm from './AddFeedbackItemForm';
+import EditFeedbackItemForm from './EditFeedbackItemForm';
+import SelectFeedbackCategory from './SelectFeedbackCategory';
+
 //import EditRedemptionItemForm from './RedemptionLogicsComponents/EditRedemptionItemForm';
 
 const Feedback = () => {
@@ -68,30 +66,30 @@ const Feedback = () => {
     }
     setLoading(false);
   }, [userInfo]);
-//console.log(itemDetails)
+  //console.log(itemDetails)
 
-const [itemFeedbackSettingDetails, setItemFeedbackSettingDetails] = useState();
+  const [itemFeedbackSettingDetails, setItemFeedbackSettingDetails] = useState();
 
-useEffect(() => {
+  useEffect(() => {
     if (userInfo) {
-        setLoading(true);
-        axios
-            .get(
-                `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getFeedbackSubDetailsByOrganizationAndName/feedbackSettings/organizationsId/${userInfo?.organizationId}`
-            )
-            .then((response) => {
+      setLoading(true);
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getFeedbackSubDetailsByOrganizationAndName/feedbackSettings/organizationsId/${userInfo?.organizationId}`
+        )
+        .then((response) => {
 
-                console.log(response)
-                setItemFeedbackSettingDetails(response?.data);
+          console.log(response)
+          setItemFeedbackSettingDetails(response?.data);
 
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
     setLoading(false);
-}, [userInfo]);
-console.log(itemFeedbackSettingDetails)
+  }, [userInfo]);
+  console.log(itemFeedbackSettingDetails)
   useEffect(() => {
     axios
       .get(
@@ -108,7 +106,8 @@ console.log(itemFeedbackSettingDetails)
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_API}/feedback_categories/${userInfo?.organizationId}`
+        //`${process.env.REACT_APP_BACKEND_API}/feedback_categories/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/feedbackCategories/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
         setOrgFeedback(response?.data?.courses);
@@ -151,8 +150,8 @@ console.log(itemFeedbackSettingDetails)
     };
     console.log(deleteData);
     await Swal.fire({
-      title:itemFeedbackSettingDetails?.areYouSure ? itemFeedbackSettingDetails?.areYouSure : "Are you sure?",
-      text:itemFeedbackSettingDetails?.onceDeletedTheItemWillNotRecover ? itemFeedbackSettingDetails?.onceDeletedTheItemWillNotRecover : "Once deleted, the item will not recover!",
+      title: itemFeedbackSettingDetails?.areYouSure ? itemFeedbackSettingDetails?.areYouSure : "Are you sure?",
+      text: itemFeedbackSettingDetails?.onceDeletedTheItemWillNotRecover ? itemFeedbackSettingDetails?.onceDeletedTheItemWillNotRecover : "Once deleted, the item will not recover!",
       icon: "warning",
       buttons: true,
       showCancelButton: true,
@@ -160,17 +159,20 @@ console.log(itemFeedbackSettingDetails)
       confirmButtonText: "Delete",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        fetch(`${process.env.REACT_APP_BACKEND_API}/deleteFeedbackItem`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(deleteData),
-        })
+        fetch(
+         // `${process.env.REACT_APP_BACKEND_API}/deleteFeedbackItem`,
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/feedbackCategories/feedbackItems`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(deleteData),
+          })
           .then((result) => {
             console.log(result);
             if (result?.ok) {
-              toast.success(itemFeedbackSettingDetails?.itemDeletedSuccessfully ? itemFeedbackSettingDetails?.itemDeletedSuccessfully :"Item Deleted Successfully!");
+              toast.success(itemFeedbackSettingDetails?.itemDeletedSuccessfully ? itemFeedbackSettingDetails?.itemDeletedSuccessfully : "Item Deleted Successfully!");
               const remainingItems =
                 selectedFeedbackCategory?.feedbackItems?.filter(
                   (item) => item?.feedbackItemName !== name
@@ -209,13 +211,13 @@ console.log(itemFeedbackSettingDetails)
       <Layout>
         <div className="flex items-center justify-between container mx-auto px-4 gap-7 pt-20 lg:pt-10 ">
           <div className="UserManagement origin-top-left rotate-[-0.51deg] text-zinc-500 text-[30px] font-medium">
-          {itemDetails?.feedback ? itemDetails?.feedback : "Feedback" }
-            
+            {itemDetails?.feedback ? itemDetails?.feedback : "Feedback"}
+
           </div>
           <div className="Input w-[425px] h-16 relative bg-slate-100 rounded-[40px] shadow-inner">
             <input
               className="Search w-[329px] left-[32px] top-[12px] absolute text-zinc-500 text-[20px] font-light leading-10 bg-transparent focus:outline-0"
-              placeholder={itemDetails?.search ? itemDetails?.search : "Search" }
+              placeholder={itemDetails?.search ? itemDetails?.search : "Search"}
             />
             <div className="Button w-10 h-10 left-[373px] top-[12px] absolute bg-zinc-500 rounded-[32px] shadow">
               <SearchIcon className="Search1 w-6 h-6 left-[8px] top-[8px] absolute text-white" />
@@ -233,10 +235,10 @@ console.log(itemFeedbackSettingDetails)
               : "bg-white border-2 border-gray-400 text-black"
               }`}
           >
-            {itemDetails?.liveClassFeedback ? itemDetails?.liveClassFeedback : "Live class Feedback" }
-            
+            {itemDetails?.liveClassFeedback ? itemDetails?.liveClassFeedback : "Live class Feedback"}
+
           </button>
-     {/*      <button
+          {/*      <button
             onClick={() => setCurrentPage("Doubt class feedback")}
             className={`px-4 py-2 text-lg font-semibold rounded-lg ${currentPage === "Doubt class feedback"
               ? "bg-[#3E4DAC] text-white"
@@ -252,13 +254,13 @@ console.log(itemFeedbackSettingDetails)
               : "bg-white border-2 border-gray-400 text-black"
               }`}
           >
-            {itemDetails?.feedbackSettings ? itemDetails?.feedbackSettings : "Feedback Settings" }
-            
+            {itemDetails?.feedbackSettings ? itemDetails?.feedbackSettings : "Feedback Settings"}
+
           </button>
 
 
         </div>
-       {/*  {
+        {/*  {
           currentPage === "Doubt class feedback" && <>
           
           </>
@@ -266,7 +268,7 @@ console.log(itemFeedbackSettingDetails)
         } */}
         {
           currentPage === "Live class Feedback" && <>
-          <ExpertMentorStudentFeedback admin={"admin"}/>
+            <ExpertMentorStudentFeedback admin={"admin"} />
           </>
 
         }
@@ -278,16 +280,16 @@ console.log(itemFeedbackSettingDetails)
             <div className="px-4 mt-[40px]">
               <div>
                 <h1 className=" text-[#737373] text-[24px] font-[500] mb-2 ">
-                {itemFeedbackSettingDetails?.selectCourse ? itemFeedbackSettingDetails?.selectCourse : "Select Course" }
-                  
+                  {itemFeedbackSettingDetails?.selectCourse ? itemFeedbackSettingDetails?.selectCourse : "Select Course"}
+
                 </h1>
                 <div className="flex flex-wrap">
                   {!courses[0] && (
                     <div
                       className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
                     >
-                      {itemFeedbackSettingDetails?.noCourseAddedYet ? itemFeedbackSettingDetails?.noCourseAddedYet : "No course added yet!" }
-                      
+                      {itemFeedbackSettingDetails?.noCourseAddedYet ? itemFeedbackSettingDetails?.noCourseAddedYet : "No course added yet!"}
+
                     </div>
                   )}
                   {courses?.map((item, index) => (
@@ -306,8 +308,8 @@ console.log(itemFeedbackSettingDetails)
               </div>
               <div className="flex items-center gap-5 mt-5">
                 <p className="text-xl font-medium text-zinc-500">
-                {itemFeedbackSettingDetails?.setFeedbacks ? itemFeedbackSettingDetails?.setFeedbacks : "Set Feedbacks" }
-                   :{" "}
+                  {itemFeedbackSettingDetails?.setFeedbacks ? itemFeedbackSettingDetails?.setFeedbacks : "Set Feedbacks"}
+                  :{" "}
                 </p>
                 <button style={buttonStyle} onClick={handleToggle}>
                   {isToggled ? (
@@ -320,7 +322,7 @@ console.log(itemFeedbackSettingDetails)
 
               {isToggled && (
                 <SelectFeedbackCategory
-                itemFeedbackSettingDetails={itemFeedbackSettingDetails}
+                  itemFeedbackSettingDetails={itemFeedbackSettingDetails}
                   setFeedbackCategories={setFeedbackCategories}
                   feedbackCategories={feedbackCategories}
                   selectedFeedbackCategory={selectedFeedbackCategory}
@@ -339,7 +341,7 @@ console.log(itemFeedbackSettingDetails)
                       Swal.fire({
                         icon: "error",
                         title: "Oops...",
-                        text:itemFeedbackSettingDetails?.pleaseAddAtLeastOneCategory ? itemFeedbackSettingDetails?.pleaseAddAtLeastOneCategory : "Please add at least one category!",
+                        text: itemFeedbackSettingDetails?.pleaseAddAtLeastOneCategory ? itemFeedbackSettingDetails?.pleaseAddAtLeastOneCategory : "Please add at least one category!",
                       });
                       return;
                     }
@@ -353,8 +355,8 @@ console.log(itemFeedbackSettingDetails)
                     <AddSharpIcon sx={{ fontSize: 150 }} />
                   </div>
                   <div className="text-[#8F8F8F] pb-5  mt-[-10px] font-medium text-base">
-                  {itemFeedbackSettingDetails?.addDetails ? itemFeedbackSettingDetails?.addDetails : "Add Details" }
-                    
+                    {itemFeedbackSettingDetails?.addDetails ? itemFeedbackSettingDetails?.addDetails : "Add Details"}
+
                   </div>
                 </div>
               )}
@@ -404,8 +406,8 @@ console.log(itemFeedbackSettingDetails)
                             setIsOpenFeedbackItemAddForm(false);
                           }}
                         >
-                          {itemFeedbackSettingDetails?.editItem ? itemFeedbackSettingDetails?.editItem : "Edit Item" }
-                          
+                          {itemFeedbackSettingDetails?.editItem ? itemFeedbackSettingDetails?.editItem : "Edit Item"}
+
                         </li>
                         <li
                           className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
@@ -413,8 +415,8 @@ console.log(itemFeedbackSettingDetails)
                             handleItemDelete(item?.feedbackItemName)
                           }
                         >
-                          {itemFeedbackSettingDetails?.deleteItem ? itemFeedbackSettingDetails?.deleteItem : "Delete Item" }
-                          
+                          {itemFeedbackSettingDetails?.deleteItem ? itemFeedbackSettingDetails?.deleteItem : "Delete Item"}
+
                         </li>
                       </ul>
                     )}
@@ -443,7 +445,7 @@ console.log(itemFeedbackSettingDetails)
             </div>
             {isOpenFeedbackItemAddForm && (
               <AddFeedbackItemForm
-              itemFeedbackSettingDetails={itemFeedbackSettingDetails}
+                itemFeedbackSettingDetails={itemFeedbackSettingDetails}
                 setIsOpenFeedbackItemAddForm={setIsOpenFeedbackItemAddForm}
                 UploadingImg={UploadingImg}
                 selectedFeedbackCategory={selectedFeedbackCategory}
@@ -458,7 +460,7 @@ console.log(itemFeedbackSettingDetails)
 
             {isOpenFeedbackItemEditForm && selectedFeedback?.feedbackItemName && (
               <EditFeedbackItemForm
-              itemFeedbackSettingDetails={itemFeedbackSettingDetails}
+                itemFeedbackSettingDetails={itemFeedbackSettingDetails}
                 selectedFeedback={selectedFeedback}
                 setIsOpenFeedbackItemEditForm={setIsOpenFeedbackItemEditForm}
                 setIsOpenFeedbackItemAddForm={setIsOpenFeedbackItemAddForm}

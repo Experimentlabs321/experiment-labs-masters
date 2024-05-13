@@ -1,9 +1,15 @@
-import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
-import { toast } from "react-hot-toast";
-import Swal from "sweetalert2";
-import { AuthContext } from "../../../../../contexts/AuthProvider";
-import DialogLayout from "../../../Shared/DialogLayout";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
+import Swal from 'sweetalert2';
+
+import { AuthContext } from '../../../../../contexts/AuthProvider';
+import DialogLayout from '../../../Shared/DialogLayout';
 
 const SelectEarningCategory = ({
   setEarningCategories,
@@ -77,7 +83,7 @@ const SelectEarningCategory = ({
     );
 
     if (updatedCategory?.data?.acknowledged) {
-      toast.success(itemDetails?.categoryUpdatedSuccessfully ? itemDetails?.categoryUpdatedSuccessfully :"Category Updated Successfully");
+      toast.success(itemDetails?.categoryUpdatedSuccessfully ? itemDetails?.categoryUpdatedSuccessfully : "Category Updated Successfully");
       const updatedCategoriesArray = [...earningCategories];
       const selectedIndex = updatedCategoriesArray.findIndex(
         (category) =>
@@ -108,17 +114,20 @@ const SelectEarningCategory = ({
           categoryName: name,
           courseId: selectedCourse?._id,
         });
-        fetch(`${process.env.REACT_APP_BACKEND_API}/earning/deleteCategory`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            organizationId: userInfo?.organizationId,
-            categoryName: name,
-            courseId: selectedCourse?._id,
-          }),
-        })
+        fetch(
+        //  `${process.env.REACT_APP_BACKEND_API}/earning/deleteCategory`,
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/earningCategories/categories`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              organizationId: userInfo?.organizationId,
+              categoryName: name,
+              courseId: selectedCourse?._id,
+            }),
+          })
           .then((response) => {
             if (!response.ok) {
               throw new Error(`Request failed with status: ${response.status}`);
@@ -204,7 +213,7 @@ const SelectEarningCategory = ({
           <div className="w-full flex items-center justify-center mt-[20px]">
             <input
               type="submit"
-              value={itemDetails?.update ? itemDetails?.update :"Update"}
+              value={itemDetails?.update ? itemDetails?.update : "Update"}
               className="py-[15px] px-[48px] cursor-pointer text-[20px] font-[700] rounded-[8px] bg-[#3E4DAC] text-white "
             />
           </div>
@@ -278,7 +287,7 @@ const SelectEarningCategory = ({
                       className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
                     >
                       {itemDetails?.editCategoryName ? itemDetails?.editCategoryName : "Edit Category Name"}
-                      
+
                     </li>
                     <li
                       className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
@@ -289,7 +298,7 @@ const SelectEarningCategory = ({
                       }}
                     >
                       {itemDetails?.deleteCategory ? itemDetails?.deleteCategory : "Delete Category"}
-                      
+
                     </li>
                   </ul>
                 )}

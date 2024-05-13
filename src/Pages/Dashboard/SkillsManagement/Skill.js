@@ -1,17 +1,27 @@
-import React, { useContext, useEffect, useState } from "react";
-import UploadingImg from "../../../assets/PointsRedemptions/uploadimg.png";
-import Layout from "../Layout";
-import Badge from "@mui/material/Badge";
-import SearchIcon from "@mui/icons-material/Search";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import axios from "axios";
-import { AuthContext } from "../../../contexts/AuthProvider";
-import AddSharpIcon from "@mui/icons-material/AddSharp";
-import Swal from "sweetalert2";
-import SelectEarningCategory from "../PointsAndRedemptions/Components/EarningLogics/SelectEarningCategory";
-import AddEarningPointItemForm from "../PointsAndRedemptions/Components/EarningLogics/AddEarningPointItemForm";
-import { toast } from "react-hot-toast";
-import EditEarningPointItemForm from "../PointsAndRedemptions/Components/EarningLogics/EditEarningPointItemForm";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
+import Swal from 'sweetalert2';
+
+import AddSharpIcon from '@mui/icons-material/AddSharp';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import SearchIcon from '@mui/icons-material/Search';
+import Badge from '@mui/material/Badge';
+
+import UploadingImg from '../../../assets/PointsRedemptions/uploadimg.png';
+import { AuthContext } from '../../../contexts/AuthProvider';
+import Layout from '../Layout';
+import AddEarningPointItemForm
+  from '../PointsAndRedemptions/Components/EarningLogics/AddEarningPointItemForm';
+import EditEarningPointItemForm
+  from '../PointsAndRedemptions/Components/EarningLogics/EditEarningPointItemForm';
+import SelectEarningCategory
+  from '../PointsAndRedemptions/Components/EarningLogics/SelectEarningCategory';
 
 const Skill = () => {
   const { userInfo } = useContext(AuthContext);
@@ -45,7 +55,8 @@ const Skill = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_API}/earning_categories/${userInfo?.organizationId}`
+        // `${process.env.REACT_APP_BACKEND_API}/earning_categories/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/earningCategories/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
         setOrgEarningLogics(response?.data?.courses);
@@ -91,13 +102,16 @@ const Skill = () => {
       confirmButtonText: "Delete",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        fetch(`${process.env.REACT_APP_BACKEND_API}/deleteItem`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(deleteData),
-        })
+        fetch(
+        //  `${process.env.REACT_APP_BACKEND_API}/deleteItem`,
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/earningCategories/earningItems`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(deleteData),
+          })
           .then((result) => {
             console.log(result);
             if (result?.ok) {
@@ -156,11 +170,10 @@ const Skill = () => {
               {courses?.map((item, index) => (
                 <button
                   key={index}
-                  className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 ${
-                    selectedCourse?._id === item?._id
+                  className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 ${selectedCourse?._id === item?._id
                       ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
                       : "text-[#949494]"
-                  }`}
+                    }`}
                   onClick={() => handleSelectCourse(item)}
                 >
                   {item?.courseFullName}
