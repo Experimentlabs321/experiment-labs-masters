@@ -350,6 +350,8 @@ const FilesTask = ({ taskData, count, setCount }) => {
             openQuiz={openQuiz}
             taskData={taskData}
             questions={taskData?.completionParameter?.questions}
+            count={count}
+            setCount={setCount}
           />
         )}
         <div className="px-4 py-20 textEditor">

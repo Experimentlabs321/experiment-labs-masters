@@ -11,6 +11,8 @@ const Quiz = ({
   setOpenQuiz,
   openQuiz,
   setCompletionStatus,
+  count,
+  setCount,
 }) => {
   const { user, userInfo } = useContext(AuthContext);
   const [openTask, setOpenTask] = useState(
@@ -106,6 +108,7 @@ const Quiz = ({
       Loading().close();
       // setCompletionStatus(true);
       if (submitCompletion?.data?.acknowledged) {
+        setCount(count + 1);
         setCompletionStatus(true);
         Swal.fire({
           icon: "success",
