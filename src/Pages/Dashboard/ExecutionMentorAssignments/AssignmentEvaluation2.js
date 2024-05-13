@@ -109,9 +109,8 @@ const AssignmentEvaluation2 = () => {
   useEffect(() => {
     Loading();
     axios
-      .get(
-        `${process.env.REACT_APP_BACKEND_API}/getSingleSubmitAssignment/${id}`
-      )
+     // .get(`${process.env.REACT_APP_BACKEND_API}/getSingleSubmitAssignment/${id}`)
+      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/${id}`)
       .then((response) => {
         setAssignment(response?.data);
         setSelectedFile(response?.data?.submitter?.result?.attachFile)

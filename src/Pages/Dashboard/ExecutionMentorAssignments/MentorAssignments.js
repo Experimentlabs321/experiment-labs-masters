@@ -1,12 +1,19 @@
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../Layout";
-import { Link, useParams } from "react-router-dom";
-import AssignmentUpNev from "./AssignmentUpNev";
-import AssignmentRightNev from "./AssignmentRightNev";
-import eye from "../../../assets/ExecutionMentor/eye.svg";
-import axios from "axios";
-import { AuthContext } from "../../../contexts/AuthProvider";
-import { CircularProgress } from "@mui/material";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+
+import axios from 'axios';
+import { Link } from 'react-router-dom';
+
+import { CircularProgress } from '@mui/material';
+
+import eye from '../../../assets/ExecutionMentor/eye.svg';
+import { AuthContext } from '../../../contexts/AuthProvider';
+import Layout from '../Layout';
+import AssignmentUpNev from './AssignmentUpNev';
+
 const MentorAssignments = () => {
   const [selectedTab, setSelectedTab] = useState("mentorAssignments");
   const [pendingEvaluations, setPendingEvaluations] = useState();
@@ -60,8 +67,11 @@ const MentorAssignments = () => {
   useEffect(() => {
     
     axios
+      // .get(
+      //   `${process.env.REACT_APP_BACKEND_API}/getSubmitAssignment/${userInfo.organizationId}`
+      // )
       .get(
-        `${process.env.REACT_APP_BACKEND_API}/getSubmitAssignment/${userInfo.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/organizationId/${userInfo.organizationId}`
       )
       .then((response) => {
         setAssignments(response?.data?.slice().reverse());

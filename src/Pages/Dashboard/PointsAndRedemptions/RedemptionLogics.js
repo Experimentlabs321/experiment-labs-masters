@@ -1,28 +1,29 @@
 //PointsRedemptions.js
 
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../Layout";
-import Badge from "@mui/material/Badge";
-import MailIcon from "@mui/icons-material/Mail";
-import SearchIcon from "@mui/icons-material/Search";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-/* import Category1 from './Category1'; */
+import React, {
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 
-import updateimg from "../../../assets/PointsRedemptions/Upload.svg";
-import editimg from "../../../assets/PointsRedemptions/edit.svg";
-import deleteimg from "../../../assets/PointsRedemptions/delete.svg";
-import Filterimg from "../../../assets/PointsRedemptions/Filter.svg";
-import undo from "../../../assets/PointsRedemptions/Sync-retry.svg";
-import RedemptionCategory from "./RedemptionCategory";
-import { AuthContext } from "../../../contexts/AuthProvider";
-import axios from "axios";
-import Swal from "sweetalert2";
-import { toast } from "react-hot-toast";
-import AddSharpIcon from "@mui/icons-material/AddSharp";
-import SelectRedemptionCategory from "./RedemptionLogicsComponents/SelectRedemptionCategory";
-import AddRedemptionPointItemForm from "./RedemptionLogicsComponents/AddRedemptionPointItemForm";
-import UploadingImg from "../../../assets/PointsRedemptions/uploadimg.png";
-import EditRedemptionItemForm from "./RedemptionLogicsComponents/EditRedemptionItemForm";
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
+import Swal from 'sweetalert2';
+
+import AddSharpIcon from '@mui/icons-material/AddSharp';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import SearchIcon from '@mui/icons-material/Search';
+import Badge from '@mui/material/Badge';
+
+import UploadingImg from '../../../assets/PointsRedemptions/uploadimg.png';
+import { AuthContext } from '../../../contexts/AuthProvider';
+import Layout from '../Layout';
+import AddRedemptionPointItemForm
+  from './RedemptionLogicsComponents/AddRedemptionPointItemForm';
+import EditRedemptionItemForm
+  from './RedemptionLogicsComponents/EditRedemptionItemForm';
+import SelectRedemptionCategory
+  from './RedemptionLogicsComponents/SelectRedemptionCategory';
 
 const RedemptionLogics = () => {
   const { userInfo } = useContext(AuthContext);
@@ -81,7 +82,8 @@ const RedemptionLogics = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_API}/redemption_categories/${userInfo?.organizationId}`
+        // `${process.env.REACT_APP_BACKEND_API}/redemption_categories/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/redemptionCategories/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
         setOrgRedemptionLogics(response?.data?.courses);
@@ -127,13 +129,16 @@ const RedemptionLogics = () => {
       confirmButtonText: "Delete",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        fetch(`${process.env.REACT_APP_BACKEND_API}/deleteRedemptionItem`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(deleteData),
-        })
+        fetch(
+        //  `${process.env.REACT_APP_SERVERLESS_API}/deleteRedemptionItem`,
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/redemptionCategories/redemptionItems`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(deleteData),
+          })
           .then((result) => {
             console.log(result);
             if (result?.ok) {
@@ -247,8 +252,8 @@ const RedemptionLogics = () => {
                 <button
                   key={index}
                   className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 ${selectedCourse?._id === item?._id
-                      ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
-                      : "text-[#949494]"
+                    ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
+                    : "text-[#949494]"
                     }`}
                   onClick={() => handleSelectCourse(item)}
                 >
@@ -275,7 +280,7 @@ const RedemptionLogics = () => {
                 Swal.fire({
                   icon: "error",
                   title: "Oops...",
-                  text:itemDetails?.pleaseAddAtLeastOneCategory ? itemDetails?.pleaseAddAtLeastOneCategory : "Please add at least one category!",
+                  text: itemDetails?.pleaseAddAtLeastOneCategory ? itemDetails?.pleaseAddAtLeastOneCategory : "Please add at least one category!",
                 });
                 return;
               }
@@ -378,7 +383,7 @@ const RedemptionLogics = () => {
         </div>
         {isOpenRedemptionItemAddForm && (
           <AddRedemptionPointItemForm
-          itemDetails={itemDetails}
+            itemDetails={itemDetails}
             setIsOpenRedemptionItemAddForm={setIsOpenRedemptionItemAddForm}
             UploadingImg={UploadingImg}
             selectedRedemptionCategory={selectedRedemptionCategory}
@@ -394,7 +399,7 @@ const RedemptionLogics = () => {
         {isOpenRedemptionItemEditForm &&
           selectedRedemptionLogic?.redemptionItemName && (
             <EditRedemptionItemForm
-            itemDetails={itemDetails}
+              itemDetails={itemDetails}
               selectedRedemptionLogic={selectedRedemptionLogic}
               setIsOpenRedemptionItemEditForm={setIsOpenRedemptionItemEditForm}
               setIsOpenRedemptionItemAddForm={setIsOpenRedemptionItemAddForm}

@@ -1,7 +1,13 @@
-import React, { useContext, useEffect, useState } from "react";
-import StatementBg from "../../../assets/Dashboard/PointsStatementBg.png";
-import axios from "axios";
-import { AuthContext } from "../../../contexts/AuthProvider";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+
+import axios from 'axios';
+
+import StatementBg from '../../../assets/Dashboard/PointsStatementBg.png';
+import { AuthContext } from '../../../contexts/AuthProvider';
 
 const Statement = () => {
   /* const data = [
@@ -83,7 +89,8 @@ const Statement = () => {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACKEND_API}/getSubmitAssignment/all/${userInfo._id}`)
+    //  .get(`${process.env.REACT_APP_BACKEND_API}/getSubmitAssignment/all/${userInfo._id}`)
+      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/submitterId/${userInfo._id}`)
       .then((response) => {
 
         // setAssignment(response?.data)
@@ -105,11 +112,12 @@ const Statement = () => {
 
   useEffect(() => {
     axios
-      .get(
+    /*   .get(
        
        `${process.env.REACT_APP_BACKEND_API}/getRedemptionAccess/${userInfo?.organizationId}/${userInfo?._id}`
        
-        )
+        ) */
+        .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/redemptionAccesses/organizationId/${userInfo?.organizationId}/userId/${userInfo?._id}`)
       .then((response) => {
 
         const AllAccessItems = response?.data.accessItems
@@ -122,7 +130,7 @@ const Statement = () => {
       .catch((error) => console.error(error));
   }, [userInfo?.organizationId]);
   console.log(redemptionAccessCollection)
-  console.log(`${process.env.REACT_APP_BACKEND_API}/getRedemptionAccess/${userInfo?.organizationId}/${userInfo?._id}`)
+  //console.log(`${process.env.REACT_APP_BACKEND_API}/getRedemptionAccess/${userInfo?.organizationId}/${userInfo?._id}`)
   //////////////////////
 
   const [items, setItems] = useState([]);

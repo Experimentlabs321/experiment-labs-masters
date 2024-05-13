@@ -416,7 +416,7 @@ const Payment = () => {
                 templateType: "emailAction",
                 templateName: "learnerSignUp",
                 organizationId: organizationData?._id,
-                learner_name : name,
+                learner_name: name,
               }
             );
           }
@@ -462,7 +462,7 @@ const Payment = () => {
                   templateType: "emailAction",
                   templateName: "learnerSignUp",
                   organizationId: organizationData?._id,
-                  learner_name : newName,
+                  learner_name: newName,
                 }
               );
             }
@@ -525,6 +525,10 @@ const Payment = () => {
                     </div>
                   </div>
                 </div>
+                <div className="bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4 max-w-[340px] mt-6" role="alert">
+                  <p className="font-bold">Warning</p>
+                  <p>After Payment Success wait till it takes you to My Courses or you will not be added to the Course/Bundle</p>
+                </div>
               </div>
               <div className="max-w-[350px] min-w-[350px]">
                 {!batchesData[0] ? (
@@ -568,11 +572,10 @@ const Payment = () => {
                           {batchesData?.map((item, index) => (
                             <option
                               key={index}
-                              className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 m-1 ${
-                                selectedBatch?._id === item?._id
-                                  ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
-                                  : "text-[#949494]"
-                              }`}
+                              className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 m-1 ${selectedBatch?._id === item?._id
+                                ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
+                                : "text-[#949494]"
+                                }`}
                               value={index}
                               // onClick={() => handleSelectCourse(item)}
                               onMouseDown={() => setSelectedBatch(item)}
@@ -722,8 +725,8 @@ const Payment = () => {
                                   ₹
                                   {selectedBatch?.price
                                     ? Math.round(
-                                        +selectedBatch?.price - +couponDiscount
-                                      )
+                                      +selectedBatch?.price - +couponDiscount
+                                    )
                                     : "N/A"}
                                 </td>
                               </tr>
@@ -741,8 +744,8 @@ const Payment = () => {
                             ₹
                             {selectedBatch?.price
                               ? Math.round(
-                                  +selectedBatch?.price - +couponDiscount
-                                )
+                                +selectedBatch?.price - +couponDiscount
+                              )
                               : "N/A"}
                           </h4>
                         </div>

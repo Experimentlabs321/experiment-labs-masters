@@ -1,19 +1,15 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import Statement from "./Statement";
-import RightArrowBlack from "../../../assets/Dashboard/RightArrowBlack.png";
-import DashboardPrimaryButton from "../Shared/DashboardPrimaryButton";
-import LabPointsImg from "../../../assets/Dashboard/LabPoints.png";
-import LabPointsCardBottomImg from "../../../assets/Dashboard/LabPointsCardBottomImg.png";
-import LabPointsCardTopImg from "../../../assets/Dashboard/LabPointsCardTopImg.png";
-import MilestonesStar from "../../../assets/Dashboard/MilestonesStar.png";
-import MilestonesBg from "../../../assets/Dashboard/MilestonesBg.png";
-import Milestones from "../../../assets/Dashboard/Milestones.png";
-import { useParams } from "react-router-dom";
-import { AuthContext } from "../../../contexts/AuthProvider";
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import axios from "axios";
-import MyLabPoints from "./MyLabPoints";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
+
+import { AuthContext } from '../../../contexts/AuthProvider';
+import MyLabPoints from './MyLabPoints';
+import Statement from './Statement';
 
 const LabPoints = () => {
   const { id } = useParams();
@@ -24,9 +20,8 @@ const LabPoints = () => {
 
   useEffect(() => {
     axios
-      .get(
-        `${process.env.REACT_APP_BACKEND_API}/getSubmitAssignment/all/${userInfo._id}`
-      )
+     // .get(`${process.env.REACT_APP_BACKEND_API}/getSubmitAssignment/all/${userInfo._id}`)
+      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/submitterId/${userInfo._id}`)
       .then((response) => {
         // setAssignment(response?.data)
 
@@ -191,9 +186,8 @@ const LabPoints = () => {
 
   useEffect(() => {
     axios
-      .get(
-        `${process.env.REACT_APP_BACKEND_API}/getRedemptionAccess/${userInfo?.organizationId}/${userInfo?._id}`
-      )
+      //.get(`${process.env.REACT_APP_BACKEND_API}/getRedemptionAccess/${userInfo?.organizationId}/${userInfo?._id}`)
+      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/redemptionAccesses/organizationId/${userInfo?.organizationId}/userId/${userInfo?._id}`)
       .then((response) => {
         const AllAccessItems = response?.data.accessItems;
         const RedemptionItem = {};

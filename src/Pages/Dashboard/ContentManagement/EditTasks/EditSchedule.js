@@ -1,19 +1,27 @@
-import React, { useContext, useEffect, useState } from "react";
+import 'react-datetime-picker/dist/DateTimePicker.css';
+import 'react-calendar/dist/Calendar.css';
+import 'react-clock/dist/Clock.css';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 
-import { Link, useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 
-import "react-datetime-picker/dist/DateTimePicker.css";
-import "react-calendar/dist/Calendar.css";
-import "react-clock/dist/Clock.css";
-import toast from "react-hot-toast";
+import axios from 'axios';
+import toast from 'react-hot-toast';
+import {
+  Link,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
 
-import required from "../../../../assets/ContentManagement/required.png";
+import required from '../../../../assets/ContentManagement/required.png';
+import { AuthContext } from '../../../../contexts/AuthProvider';
+import Loading from '../../../Shared/Loading/Loading';
+import Layout from '../../Layout';
 
-import "react-big-calendar/lib/css/react-big-calendar.css";
-import { AuthContext } from "../../../../contexts/AuthProvider";
-import Layout from "../../Layout";
-import Loading from "../../../Shared/Loading/Loading";
 let global;
 const customStyles = {
   overlay: {
@@ -59,9 +67,8 @@ const EditSchedule = ({ taskData }) => {
   // Save current location before redirecting to Google sign-in
   useEffect(() => {
     axios
-      .get(
-        `${process.env.REACT_APP_BACKEND_API}/chapter/${scheduleData?.chapterId}`
-      )
+    //  .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${scheduleData?.chapterId}`)
+      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${scheduleData?.chapterId}`)
       .then((response) => {
         setChapter(response?.data);
       })

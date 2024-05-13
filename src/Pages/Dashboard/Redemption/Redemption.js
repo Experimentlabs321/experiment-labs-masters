@@ -1,11 +1,17 @@
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../Layout";
-import RedeemGifts from "./RedeemGifts";
-import PointsStatistics from "./PointsStatistics";
-import RedemptionProduct from "./RedemptionProduct";
-import { AuthContext } from "../../../contexts/AuthProvider";
-import axios from "axios";
-import RedemptionCongratulation from "./RedemptionCongratulation";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+
+import axios from 'axios';
+
+import { AuthContext } from '../../../contexts/AuthProvider';
+import Layout from '../Layout';
+import RedeemGifts from './RedeemGifts';
+import RedemptionCongratulation from './RedemptionCongratulation';
+import RedemptionProduct from './RedemptionProduct';
+
 const cheaps = [
   "Skill support",
   "Training",
@@ -84,7 +90,8 @@ const Redemption = () => {
   useEffect(() => {
     axios
         .get(
-            `${process.env.REACT_APP_BACKEND_API}/redemptionCollections/${userInfo?.organizationId}`
+           // `${process.env.REACT_APP_BACKEND_API}/redemptionCollections/${userInfo?.organizationId}`
+            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/redemptionCategories/organizationId/${userInfo?.organizationId}`
         )
         .then((response) => {
           setRedemptionCollection(response?.data);

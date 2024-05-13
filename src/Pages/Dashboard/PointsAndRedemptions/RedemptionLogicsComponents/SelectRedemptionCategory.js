@@ -1,14 +1,16 @@
 //SelectRedemptionCategory
 
-import axios from "axios";
-import React, { useContext, useState } from "react";
-import { toast } from "react-hot-toast";
-import Swal from "sweetalert2";
+import React, {
+  useContext,
+  useState,
+} from 'react';
 
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
+import Swal from 'sweetalert2';
 
-import { AuthContext } from "../../../../contexts/AuthProvider";
-import DialogLayout from "../../Shared/DialogLayout";
-
+import { AuthContext } from '../../../../contexts/AuthProvider';
+import DialogLayout from '../../Shared/DialogLayout';
 
 const SelectRedemptionCategory = ({
   setRedemptionCategories,
@@ -33,7 +35,8 @@ const SelectRedemptionCategory = ({
       return;
     }
     const newCategory = await axios.post(
-      `${process.env.REACT_APP_BACKEND_API}/redemption_categories`,
+     // `${process.env.REACT_APP_BACKEND_API}/redemption_categories`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/redemptionCategories`,
       {
         categoryName: `category ${redemptionCategories?.length + 1}`,
         courseId: selectedCourse?._id,
@@ -84,7 +87,8 @@ const SelectRedemptionCategory = ({
       courseId: selectedCourse?._id,
     });
     const updatedCategory = await axios.put(
-      `${process.env.REACT_APP_BACKEND_API}/redemption_categories/categoryName`,
+     // `${process.env.REACT_APP_BACKEND_API}/redemption_categories/categoryName`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/redemptionCategories/categoryName`,
       update
     );
 
@@ -120,7 +124,10 @@ const SelectRedemptionCategory = ({
           categoryName: name,
           courseId: selectedCourse?._id,
         });
-        fetch(`${process.env.REACT_APP_BACKEND_API}/redemption/deleteCategory`, {
+        fetch(
+        //  `${process.env.REACT_APP_BACKEND_API}/redemption/deleteCategory`, 
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/redemptionCategories/categories`, 
+          {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
