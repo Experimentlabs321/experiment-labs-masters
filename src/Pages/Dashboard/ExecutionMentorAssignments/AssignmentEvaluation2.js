@@ -682,7 +682,7 @@ const AssignmentEvaluation2 = () => {
     };
   }, [assignment?.fileUrl, cancelTokenSource]);
 
-  console.log(assignment?.submitter?.result);
+  console.log(assignment?.fileUrl);
   return (
     <div>
       <Layout>
