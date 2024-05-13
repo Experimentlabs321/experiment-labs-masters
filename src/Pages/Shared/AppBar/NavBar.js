@@ -266,7 +266,7 @@ const NavBar = (props) => {
   const handleDashboard = () => {
     const Role = localStorage.getItem("role");
     if (Role === "admin") {
-      navigate("/userManagement");
+      navigate("/adminDashboardHome");
     } else if (Role === "execution mentor") {
       navigate("/executionMentorDashboard");
     } else if (Role === "unpaid student") {
@@ -432,7 +432,7 @@ const NavBar = (props) => {
   const navigates = () => {
     const Role = localStorage.getItem("role");
     if (Role === "admin") {
-      navigate("/userManagement");
+      navigate("/adminDashboardHome");
     } else if (Role === "execution mentor") {
       navigate("/executionMentorDashboard");
     } else if (Role === "unpaid student") {
