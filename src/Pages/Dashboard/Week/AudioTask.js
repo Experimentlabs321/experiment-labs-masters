@@ -1,13 +1,13 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../../../contexts/AuthProvider";
 
-const AudioTask = ({ taskData }) => {
-  const {userInfo} = useContext(AuthContext);
-  if(userInfo.role !== 'admin'){
+const AudioTask = ({ taskData, count, setCount }) => {
+  const { userInfo } = useContext(AuthContext);
+  if (userInfo.role !== "admin") {
     window.addEventListener("contextmenu", (e) => {
       e.preventDefault();
     });
-  };
+  }
   return (
     <div>
       {taskData?.additionalFiles && (

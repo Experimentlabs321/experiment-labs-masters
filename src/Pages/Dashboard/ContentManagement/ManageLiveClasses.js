@@ -771,8 +771,9 @@ const ManageLiveClasses = () => {
                     <input
                       className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                       name="duration"
-                      type="text"
+                      type="number"
                       placeholder="time"
+                      min={30}
                     />
 
                     {/*    <input
