@@ -120,7 +120,7 @@ const UpdateOrganization = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.target;
-
+    Loading();
     const orgInfo = {
       organizationName: orgData?.organizationName,
       email: orgData?.email,
@@ -154,6 +154,7 @@ const UpdateOrganization = () => {
     );
 
     if (updateOrg?.data?.acknowledged) {
+      Loading().close();
       toast.success("Organization edited Successfully");
       navigate(-1);
       // event.target.reset();

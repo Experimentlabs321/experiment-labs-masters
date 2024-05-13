@@ -122,13 +122,14 @@ const AssignmentEvaluation2 = () => {
 
   useEffect(() => {
     if (assignment)
+    Loading();
       axios
         .get(
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/assignments/taskId/${assignment?.taskId}`
         )
         .then((response) => {
           const ass = response?.data;
-
+          Loading().close();
           // console.log(response);
           setMainAssignments(ass);
           // setNewValueAssignment(ass)
@@ -139,11 +140,13 @@ const AssignmentEvaluation2 = () => {
   console.log(assignment);
 
   useEffect(() => {
+    Loading();
     axios
       .get(
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/assignments/taskId/${assignment?.taskId}`
       )
       .then((response) => {
+        Loading().close();
         if (
           mainAssignments?.skillParameterData ||
           mainAssignments?.earningParameterData
@@ -423,9 +426,9 @@ const AssignmentEvaluation2 = () => {
     );
 
     if (addFeedback?.data?.acknowledged) {
+      Loading().close();
       toast.success("Feedback added Successfully");
       event.target.reset();
-      Loading().close();
       setOpen1(false);
       navigate(`/mentorAssignments`);
     } else {
