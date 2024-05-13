@@ -1,25 +1,17 @@
 // import mammoth from "mammoth";
-import React, {
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useContext, useEffect, useRef, useState } from "react";
 
-import axios from 'axios';
-import { saveAs } from 'file-saver';
-import { useNavigate } from 'react-router-dom';
-import Swal from 'sweetalert2';
+import axios from "axios";
+import { saveAs } from "file-saver";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import {
-  Box,
-  LinearProgress,
-} from '@mui/material';
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import { Box, LinearProgress } from "@mui/material";
 
-import { AuthContext } from '../../../contexts/AuthProvider';
-import Loading from '../../Shared/Loading/Loading';
-import Quiz from './SubFile/Shared/Quiz';
+import { AuthContext } from "../../../contexts/AuthProvider";
+import Loading from "../../Shared/Loading/Loading";
+import Quiz from "./SubFile/Shared/Quiz";
 
 const ReadingTask = ({ taskData, count, setCount }) => {
   const navigate = useNavigate();
@@ -227,7 +219,7 @@ const ReadingTask = ({ taskData, count, setCount }) => {
     return () => {
       clearInterval(timer);
     };
-  }, []); 
+  }, []);
   return (
     <div>
       {completionStatus ? (
@@ -247,13 +239,16 @@ const ReadingTask = ({ taskData, count, setCount }) => {
 
       {!iframeLoaded && (
         <div className=" flex justify-center  w-full  ">
-           <div className='flex flex-col items-center gap-3'>
+          <div className="flex flex-col items-center gap-3">
             <p className="mt-20">Loading...</p>
-            <Box sx={{ width: '500px' }}>
-              <LinearProgress sx={{ height: '20px', borderRadius: '10px', }} variant="determinate" value={progress} />
+            <Box sx={{ width: "500px" }}>
+              <LinearProgress
+                sx={{ height: "20px", borderRadius: "10px" }}
+                variant="determinate"
+                value={progress}
+              />
             </Box>
-          </div> 
-
+          </div>
 
           {/* <CircularProgress className="w-full mx-auto" /> */}
         </div>
@@ -266,7 +261,7 @@ const ReadingTask = ({ taskData, count, setCount }) => {
           style={{ display: iframeLoaded ? "block" : "none" }}
         >
           <div className="container mx-auto relative">
-          {/*   {isOverlayVisible && (
+            {/*   {isOverlayVisible && (
               <div
                 className="fixed top-0 left-0 w-full h-full z-[9999] bg-transparent"
                 onClick={handleCompletion}
@@ -275,10 +270,10 @@ const ReadingTask = ({ taskData, count, setCount }) => {
 
             {additionalFile &&
               (taskData?.additionalFiles.endsWith(".png") ||
-                taskData?.additionalFiles.endsWith(".jpg") ||
-                taskData?.additionalFiles.endsWith(".jpeg") ||
-                taskData?.additionalFiles.endsWith(".gif") ||
-                taskData?.additionalFiles.endsWith(".bmp") ? (
+              taskData?.additionalFiles.endsWith(".jpg") ||
+              taskData?.additionalFiles.endsWith(".jpeg") ||
+              taskData?.additionalFiles.endsWith(".gif") ||
+              taskData?.additionalFiles.endsWith(".bmp") ? (
                 <div className="">
                   <img
                     src={taskData?.additionalFiles}
@@ -357,6 +352,8 @@ const ReadingTask = ({ taskData, count, setCount }) => {
           openQuiz={openQuiz}
           taskData={taskData}
           questions={taskData?.completionParameter?.questions}
+          count={count}
+          setCount={setCount}
         />
       )}
       <div className="px-4 py-20 textEditor">

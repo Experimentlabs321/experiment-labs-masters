@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import TextEditor from "../../../../Shared/TextEditor/TextEditor";
+import JoditEditor from "jodit-react";
 
 const QuestionForm = ({
   questions,
@@ -13,6 +14,7 @@ const QuestionForm = ({
   const [defaultNumber, setDefaultNumber] = useState(
     selectedQuestionData?.defaultMarks
   );
+  const editor = useRef(null);
 
   useEffect(() => {
     setQuestion(selectedQuestionData?.questionTitle);
@@ -44,7 +46,11 @@ const QuestionForm = ({
   console.log(selectedQuestionData);
 
   return (
-    <div id={`key-${selectedQuestionData?.questionNo}`} className={`mt-10 `}>
+    <div
+      key={selectedQuestionData?.questionNo}
+      id={`key-${selectedQuestionData?.questionNo}`}
+      className={`mt-10 `}
+    >
       {selectedQuestionData && (
         <div className="  mb-[45px] bg-[#F7F7F7] p-5 rounded-lg">
           <h1 className="text-2xl underline font-bold">
@@ -63,10 +69,18 @@ const QuestionForm = ({
                     id={`textEditor-${selectedQuestionData.questionTitle}`}
                     className="bg-white text-black textEditor"
                   >
-                    <TextEditor
+                    {/* <TextEditor
                       onBlur={() => handleQuestionBlur()}
                       setValue={setQuestion}
                       value={selectedQuestionData?.questionTitle}
+                    /> */}
+                    <JoditEditor
+                      value={selectedQuestionData?.questionTitle}
+                      onBlur={() => handleQuestionBlur()}
+                      ref={editor}
+                      onChange={(content) => {
+                        setQuestion(content);
+                      }}
                     />
                   </div>
                 </div>

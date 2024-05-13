@@ -7,7 +7,7 @@ import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
 import { Navigate, useNavigate } from "react-router-dom";
 
-const AssignmentTask = ({ taskData }) => {
+const AssignmentTask = ({ taskData, count, setCount }) => {
   const { userInfo } = useContext(AuthContext);
   const navigate = useNavigate();
   const [view, setView] = useState("Instructions");
@@ -17,7 +17,7 @@ const AssignmentTask = ({ taskData }) => {
     });
   }
   const [isFixed, setIsFixed] = useState(false);
-console.log(taskData)
+  console.log(taskData);
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 200) {
@@ -45,7 +45,7 @@ console.log(taskData)
     } catch (error) {
       console.log(error);
     }
-  }
+  };
   return (
     <div>
       <div className="px-4">
@@ -64,56 +64,68 @@ console.log(taskData)
           >
             Download Template File
           </a>
-          {userInfo?.role === "admin" && <button onClick={() => handleRemoveTemplate(taskData?._id)} type='button' className="p-4 bg-orange-500 rounded-lg text-white font-bold">Remove Template File</button>}
+          {userInfo?.role === "admin" && (
+            <button
+              onClick={() => handleRemoveTemplate(taskData?._id)}
+              type="button"
+              className="p-4 bg-orange-500 rounded-lg text-white font-bold"
+            >
+              Remove Template File
+            </button>
+          )}
         </div>
       )}
       <div className=" border-b-[1px] mt-[40px] ">
         <div
-          className={`flex px-4 ${isFixed && window.innerWidth <= 768
-            ? "fixed top-[100px] bg-white"
-            : ""
-            }`}
+          className={`flex px-4 ${
+            isFixed && window.innerWidth <= 768
+              ? "fixed top-[100px] bg-white"
+              : ""
+          }`}
           style={
             window.innerWidth <= 768
               ? {
-                overflowY: "scroll",
-                scrollbarWidth: "thin",
-                scrollbarColor: "darkgray lightgray",
-              }
+                  overflowY: "scroll",
+                  scrollbarWidth: "thin",
+                  scrollbarColor: "darkgray lightgray",
+                }
               : {}
           }
         >
           <button
             onClick={() => setView("Instructions")}
-            className={`${view === "Instructions" && "border-b-2 border-black"
-              } text-[22px] font-[500] mr-[120px] pb-[10px]`}
+            className={`${
+              view === "Instructions" && "border-b-2 border-black"
+            } text-[22px] font-[500] mr-[120px] pb-[10px]`}
           >
             Instructions
           </button>
-          {
-            (userInfo.role !== "admin") && <>
+          {userInfo.role !== "admin" && (
+            <>
               <button
                 onClick={() => setView("Submission")}
-                className={`${view === "Submission" && "border-b-2 border-black"
-                  } text-[22px] font-[500] mr-[120px] pb-[10px]`}
+                className={`${
+                  view === "Submission" && "border-b-2 border-black"
+                } text-[22px] font-[500] mr-[120px] pb-[10px]`}
               >
                 Submission
               </button>
               <button
                 onClick={() => setView("Review Submission")}
-                className={`${view === "Review Submission" && "border-b-2 border-black"
-                  } text-[22px] font-[500] mr-[120px] pb-[10px]`}
+                className={`${
+                  view === "Review Submission" && "border-b-2 border-black"
+                } text-[22px] font-[500] mr-[120px] pb-[10px]`}
               >
                 Review Submission
               </button>
             </>
-          }
-
+          )}
 
           <button
             onClick={() => setView("My Submission")}
-            className={`${view === "My Submission" && "border-b-2 border-black"
-              } text-[22px] font-[500] pb-[10px]`}
+            className={`${
+              view === "My Submission" && "border-b-2 border-black"
+            } text-[22px] font-[500] pb-[10px]`}
           >
             {userInfo?.role === "admin"
               ? "Assignment Template"
@@ -125,7 +137,9 @@ console.log(taskData)
         {view === "Instructions" && (
           <Instructions instructions={taskData?.instructions} />
         )}
-        {view === "Submission" && <Submission taskData={taskData} />}
+        {view === "Submission" && (
+          <Submission taskData={taskData} count={count} setCount={setCount} />
+        )}
         {view === "Review Submission" && (
           <ReviewSubmission taskData={taskData} />
         )}
