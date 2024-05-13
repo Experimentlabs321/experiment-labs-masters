@@ -6,7 +6,7 @@ import { useContext } from "react";
 import { AuthContext } from "../../../../../contexts/AuthProvider";
 import Loading from "../../../../Shared/Loading/Loading";
 
-const Submission = ({ taskData }) => {
+const Submission = ({ taskData, count, setCount }) => {
   const [fileLoading, setFileLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState();
   // upload file
@@ -18,11 +18,11 @@ const Submission = ({ taskData }) => {
   const [course, setCourse] = useState({});
   const [batch, setBatch] = useState({});
   const [submissionData, setSubmissionData] = useState({});
-  console.log(userInfo)
+  console.log(userInfo);
   useEffect(() => {
     axios
       .get(
-       // `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${taskData?._id}/${userInfo?._id}`
+        // `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${taskData?._id}/${userInfo?._id}`
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/taskId/${taskData?._id}/submitterId/${userInfo?._id}`
       )
       .then((response) => {
@@ -32,17 +32,15 @@ const Submission = ({ taskData }) => {
   }, [userInfo?._id, taskData]);
 
   const checkSubmit = () => {
-
     axios
       .get(
-       // `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${taskData?._id}/${userInfo?._id}`
+        // `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${taskData?._id}/${userInfo?._id}`
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/taskId/${taskData?._id}/submitterId/${userInfo?._id}`
       )
       .then((response) => {
         setSubmissionData(response?.data[response?.data?.length - 1]);
       })
       .catch((error) => console.error(error));
-
   };
 
   useEffect(() => {
@@ -112,15 +110,14 @@ const Submission = ({ taskData }) => {
       submitter: userInfo,
       submissionDateTime: new Date(),
     };
-    console.log(user?.email , "shihab77023@gmail.com", userInfo?.organizationId);
- 
+    console.log(user?.email, "shihab77023@gmail.com", userInfo?.organizationId);
 
     console.log(manageAssignment);
 
     if (manageAssignment && fileUrl) {
       console.log(manageAssignment);
       const newAssignment = await axios.post(
-       // `${process.env.REACT_APP_BACKEND_API}/submitAssignment`,
+        // `${process.env.REACT_APP_BACKEND_API}/submitAssignment`,
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions`,
         manageAssignment
       );
@@ -171,13 +168,13 @@ const Submission = ({ taskData }) => {
           {
             //from: user?.email,
             // to: `naman.j@experimentlabs.in,gaurav@experimentlabs.in`,
-             to: course?.creator?.email,
-          
+            to: course?.creator?.email,
+
             templateType: "emailAction",
             templateName: "assignmentSubmission",
             organizationId: userInfo?.organizationId,
             user_name: userInfo?.name,
-            task_name:taskData?.taskName,
+            task_name: taskData?.taskName,
             // learner_name: "",
             // course_name: "",
             // site_name: "",
@@ -189,8 +186,8 @@ const Submission = ({ taskData }) => {
 
         console.log(newNotification);
         toast.success("Assignment Submitted Successfully");
+        setCount(count + 1);
         checkSubmit();
-
       }
 
       Loading().close();
@@ -289,7 +286,9 @@ const Submission = ({ taskData }) => {
                     </div>
                     <p className="text-[18px] font-[700] my-[30px] ">
                       Drag & Drop Files or{" "}
-                      <span className=" text-[#3E4DAC] underline cursor-pointer">Browse</span>
+                      <span className=" text-[#3E4DAC] underline cursor-pointer">
+                        Browse
+                      </span>
                     </p>
                     {selectedFile && (
                       <p className="text-[18px] font-[700] mb-[30px] ">

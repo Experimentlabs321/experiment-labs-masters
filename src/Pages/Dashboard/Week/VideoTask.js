@@ -397,6 +397,8 @@ const VideoTask = ({ taskData, count, setCount }) => {
           openQuiz={openQuiz}
           taskData={taskData}
           questions={taskData?.completionParameter?.questions}
+          count={count}
+          setCount={setCount}
         />
       )}
     </div>
