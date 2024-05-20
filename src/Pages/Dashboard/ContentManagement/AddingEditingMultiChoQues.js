@@ -127,23 +127,23 @@ const AddingEditingMultiChoQues = ({
     );
 
     if (newQuestion?.status === 200) {
-      const updatedQuizObject = { ...quizData };
-      updatedQuizObject.questions.push({
-        questionId: newQuestion?.data?.insertedId,
-      });
-      setQuizData(updatedQuizObject);
-      await delete updatedQuizObject?._id;
-      Loading();
-      const newTask = await axios.put(
-        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/quizes/taskId/${quizData?._id}`,
-        updatedQuizObject
-      );
+      toast.success("Question Added Successfully!");
+      Loading().close();
+      // const updatedQuizObject = { ...quizData };
+      // updatedQuizObject.questions.push({
+      //   questionId: newQuestion?.data?.insertedId,
+      // });
+      // setQuizData(updatedQuizObject);
+      // await delete updatedQuizObject?._id;
+      // Loading();
+      // const newTask = await axios.put(
+      //   `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/quizes/taskId/${quizData?._id}`,
+      //   updatedQuizObject
+      // );
 
-      if (newTask?.data?.result?.acknowledged) {
-        toast.success("Question Added Successfully!");
-        Loading().close();
-        // setOpenAddFromQuesBank(false);
-      }
+      // if (newTask?.data?.result?.acknowledged) {
+      //   // setOpenAddFromQuesBank(false);
+      // }
     }
 
     console.log(newQuestion, addQuestion);

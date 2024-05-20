@@ -222,10 +222,15 @@ const WeekConfiguration = ({
       combinedWeightageList?.forEach((element) => {
         total = total + parseInt(element?.earningWeightPercentage);
       });
-      return total;
+      return total || 0;
     };
 
-    if (totalAddedCombinedWeighted() === 100) {
+    console.log(totalAddedCombinedWeighted());
+
+    if (
+      totalAddedCombinedWeighted() === 100 ||
+      totalAddedCombinedWeighted() === 0
+    ) {
       const newWeek = await axios.put(
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/weeks/${currentWeek?._id}`,
         week
