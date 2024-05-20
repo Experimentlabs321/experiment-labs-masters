@@ -1,33 +1,27 @@
 //AssignmentEvaluation2.js
 
-import React, {
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React, { useContext, useEffect, useState } from "react";
 
-import axios from 'axios';
-import { saveAs } from 'file-saver';
-import { toast } from 'react-hot-toast';
-import {
-  useNavigate,
-  useParams,
-} from 'react-router-dom';
+import axios from "axios";
+import { saveAs } from "file-saver";
+import { toast } from "react-hot-toast";
+import { useNavigate, useParams } from "react-router-dom";
 
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import CloseIcon from '@mui/icons-material/Close';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import IconButton from '@mui/material/IconButton';
-import { styled } from '@mui/material/styles';
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import CloseIcon from "@mui/icons-material/Close";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import IconButton from "@mui/material/IconButton";
+import { styled } from "@mui/material/styles";
 
-import arrowRight from '../../../assets/ExecutionMentor/arrowRight.svg';
-import { AuthContext } from '../../../contexts/AuthProvider';
-import Loading from '../../Shared/Loading/Loading';
-import uploadFileToS3 from '../../UploadComponent/s3Uploader';
-import Layout from '../Layout';
-import AssignmentUpNev from './AssignmentUpNev';
-import EditResult from './EditResult';
+import arrowRight from "../../../assets/ExecutionMentor/arrowRight.svg";
+import { AuthContext } from "../../../contexts/AuthProvider";
+import Loading from "../../Shared/Loading/Loading";
+import uploadFileToS3 from "../../UploadComponent/s3Uploader";
+import Layout from "../Layout";
+import AssignmentUpNev from "./AssignmentUpNev";
+import EditResult from "./EditResult";
+import { Box, LinearProgress } from "@mui/material";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -78,8 +72,8 @@ const AssignmentEvaluation2 = () => {
     const file = event.target.files[0];
     setSelectedFile(file);
   };
-  
-  console.log(selectedFile)
+
+  console.log(selectedFile);
   const handleTabClick = (tab) => {
     setSelectedTab(tab);
   };
@@ -109,11 +103,13 @@ const AssignmentEvaluation2 = () => {
   useEffect(() => {
     Loading();
     axios
-     // .get(`${process.env.REACT_APP_BACKEND_API}/getSingleSubmitAssignment/${id}`)
-      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/${id}`)
+      // .get(`${process.env.REACT_APP_BACKEND_API}/getSingleSubmitAssignment/${id}`)
+      .get(
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/${id}`
+      )
       .then((response) => {
         setAssignment(response?.data);
-        setSelectedFile(response?.data?.submitter?.result?.attachFile)
+        setSelectedFile(response?.data?.submitter?.result?.attachFile);
         Loading().close();
         // console.log(response?.data.taskName)
       })
@@ -121,20 +117,19 @@ const AssignmentEvaluation2 = () => {
   }, [id]);
 
   useEffect(() => {
-    if (assignment)
-    Loading();
-      axios
-        .get(
-          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/assignments/taskId/${assignment?.taskId}`
-        )
-        .then((response) => {
-          const ass = response?.data;
-          Loading().close();
-          // console.log(response);
-          setMainAssignments(ass);
-          // setNewValueAssignment(ass)
-        })
-        .catch((error) => console.error(error));
+    if (assignment) Loading();
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/assignments/taskId/${assignment?.taskId}`
+      )
+      .then((response) => {
+        const ass = response?.data;
+        Loading().close();
+        // console.log(response);
+        setMainAssignments(ass);
+        // setNewValueAssignment(ass)
+      })
+      .catch((error) => console.error(error));
   }, [assignment]);
 
   console.log(assignment);
@@ -210,8 +205,8 @@ const AssignmentEvaluation2 = () => {
         //  const parameters = skillsName.parameters.map((item) => item?.parameterName === parameter?.parameterName)
         skillsName?.parameters?.map(
           (par) =>
-          (par.parameterValue =
-            categoryValue / skillsName?.parameters?.length)
+            (par.parameterValue =
+              categoryValue / skillsName?.parameters?.length)
         );
         //  parameters.parameterValue = +(e.target?.value);
 
@@ -383,7 +378,7 @@ const AssignmentEvaluation2 = () => {
      */
   const handleSubmitFeedback1 = async (event) => {
     event.preventDefault();
-      setOpen1(false);
+    setOpen1(false);
     const feedback = event.target.feedback.value;
     Loading();
     let fileUrl = "";
@@ -459,7 +454,7 @@ const AssignmentEvaluation2 = () => {
   };
   const handleSubmitFeedback = async (event) => {
     event.preventDefault();
-     setOpen(false);
+    setOpen(false);
     const feedback = event.target.feedback.value;
     let fileUrl = "";
     if (selectedFile) {
@@ -494,8 +489,8 @@ const AssignmentEvaluation2 = () => {
     console.log(sendMail);
 
     const addFeedback = await axios.post(
-    //  `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${id}/addReview`,
-    `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/${id}/review`,
+      //  `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${id}/addReview`,
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/${id}/review`,
       manageFeedback
     );
 
@@ -686,6 +681,30 @@ const AssignmentEvaluation2 = () => {
   }, [assignment?.fileUrl, cancelTokenSource]);
 
   console.log(assignment?.fileUrl);
+  const [iframeLoader, setIframeLoaded] = useState(false);
+  const [progress, setProgress] = useState(5);
+  const [key, setKey] = useState(0);
+  useEffect(() => {
+    while (!iframeLoader) {
+      const timer = setInterval(() => {
+        setProgress((oldProgress) => {
+          if (oldProgress === 100) {
+            return 0;
+          }
+          const diff = Math.random() * 10;
+          return !iframeLoader
+            ? Math.min(oldProgress + diff, 100)
+            : oldProgress;
+        });
+      }, 5000);
+
+      console.log(key);
+
+      return () => {
+        clearInterval(timer);
+      };
+    }
+  }, [iframeLoader]);
   return (
     <div>
       <Layout>
@@ -767,24 +786,22 @@ const AssignmentEvaluation2 = () => {
               </div>
 
               <div>
-                {
-                  !assignment?.submitter?.result && (
-                    <div className="flex gap-5 mt-5">
-                      <button
-                        onClick={() => handleAcceptOrReject("Accepted")}
-                        className="bg-[green] hover:bg-opacity-70 p-2 rounded-2xl px-5 text-[#fff]"
-                      >
-                        Accept
-                      </button>
-                      <button
-                        onClick={() => handleAcceptOrReject("Rejected")}
-                        className="bg-[red] hover:bg-opacity-70 p-2 rounded-2xl px-5 text-[#fff]"
-                      >
-                        Reject
-                      </button>
-                    </div>
-                  )
-                }
+                {!assignment?.submitter?.result && (
+                  <div className="flex gap-5 mt-5">
+                    <button
+                      onClick={() => handleAcceptOrReject("Accepted")}
+                      className="bg-[green] hover:bg-opacity-70 p-2 rounded-2xl px-5 text-[#fff]"
+                    >
+                      Accept
+                    </button>
+                    <button
+                      onClick={() => handleAcceptOrReject("Rejected")}
+                      className="bg-[red] hover:bg-opacity-70 p-2 rounded-2xl px-5 text-[#fff]"
+                    >
+                      Reject
+                    </button>
+                  </div>
+                )}
 
                 {feedback && (
                   <div className=" ">
@@ -846,7 +863,11 @@ const AssignmentEvaluation2 = () => {
                       cols="50"
                       placeholder="Write feedback"
                       name="feedback"
-                      defaultValue={assignment?.submitter?.result?.feedback ? assignment?.submitter?.result?.feedback : assignment?.submitter?.result?.status}
+                      defaultValue={
+                        assignment?.submitter?.result?.feedback
+                          ? assignment?.submitter?.result?.feedback
+                          : assignment?.submitter?.result?.status
+                      }
                     />
                   </div>
                   <div className="mb-10">
@@ -864,7 +885,6 @@ const AssignmentEvaluation2 = () => {
                         <input
                           className="w-full h-full flex items-center text-[#3E4DAC] text-base font-semibold mt-4"
                           type="file"
-
                         />
                         <p className="w-[105px] h-full bg-[#FFDB70] text-[] text-base font-semibold flex gap-2 justify-center items-center">
                           Browse
@@ -880,9 +900,9 @@ const AssignmentEvaluation2 = () => {
                             cancelTokenSource
                               ? null
                               : () =>
-                                handleDownload(
-                                  assignment?.submitter?.result?.attachFile
-                                )
+                                  handleDownload(
+                                    assignment?.submitter?.result?.attachFile
+                                  )
                           }
                           disabled={cancelTokenSource !== null}
                         >
@@ -953,7 +973,11 @@ const AssignmentEvaluation2 = () => {
                       cols="50"
                       placeholder="Write feedback"
                       name="feedback"
-                      defaultValue={assignment?.submitter?.result?.feedback ? assignment?.submitter?.result?.feedback : assignment?.submitter?.result?.status}
+                      defaultValue={
+                        assignment?.submitter?.result?.feedback
+                          ? assignment?.submitter?.result?.feedback
+                          : assignment?.submitter?.result?.status
+                      }
                     />
                   </div>
                   <div className="mb-10">
@@ -986,9 +1010,9 @@ const AssignmentEvaluation2 = () => {
                             cancelTokenSource
                               ? null
                               : () =>
-                                handleDownload(
-                                  assignment?.submitter?.result?.attachFile
-                                )
+                                  handleDownload(
+                                    assignment?.submitter?.result?.attachFile
+                                  )
                           }
                           disabled={cancelTokenSource !== null}
                         >
@@ -1037,10 +1061,10 @@ const AssignmentEvaluation2 = () => {
                 <>
                   <p>PDF/MOV</p>
                   {assignment?.fileUrl.endsWith(".png") ||
-                    assignment?.fileUrl.endsWith(".jpg") ||
-                    assignment?.fileUrl.endsWith(".jpeg") ||
-                    assignment?.fileUrl.endsWith(".gif") ||
-                    assignment?.fileUrl.endsWith(".bmp") ? (
+                  assignment?.fileUrl.endsWith(".jpg") ||
+                  assignment?.fileUrl.endsWith(".jpeg") ||
+                  assignment?.fileUrl.endsWith(".gif") ||
+                  assignment?.fileUrl.endsWith(".bmp") ? (
                     <div className="">
                       <img
                         src={assignment?.fileUrl}
@@ -1049,13 +1073,41 @@ const AssignmentEvaluation2 = () => {
                       />
                     </div>
                   ) : (
-                    <iframe
-                      className="h-[68vh] mx-auto border-x-[30px] mt-[40px] border-t-[30px] border-b-[50px] rounded-lg border-[#292929]"
-                      src={`https://docs.google.com/viewer?url=${assignment?.fileUrl}&embedded=true`}
-                      width="90%"
-                      height="80vh"
-                      title="W3Schools Free Online Web Tutorials"
-                    ></iframe>
+                    <>
+                      {!iframeLoader && (
+                        <div className=" flex justify-center  w-full  ">
+                          <div className="flex flex-col items-center gap-3">
+                            <p className="mt-20">Loading...</p>
+                            <Box sx={{ width: "500px" }}>
+                              <LinearProgress
+                                className=" animate-pulse"
+                                sx={{ height: "20px", borderRadius: "10px" }}
+                                variant="determinate"
+                                value={progress}
+                              />
+                            </Box>
+                          </div>
+
+                          {/* <CircularProgress className="w-full mx-auto" /> */}
+                        </div>
+                      )}
+                      <iframe
+                        key={!iframeLoader && progress}
+                        style={{ display: iframeLoader ? "block" : "none" }}
+                        className="h-[68vh] mx-auto border-x-[30px] mt-[40px] border-t-[30px] border-b-[50px] rounded-lg border-[#292929]"
+                        src={`https://docs.google.com/viewer?url=${assignment?.fileUrl}&embedded=true`}
+                        width="90%"
+                        height="80vh"
+                        onLoad={() => {
+                          console.log("iframe loaded");
+                          setProgress(100);
+                          setInterval(() => {
+                            setIframeLoaded(true);
+                          }, 500);
+                        }}
+                        title="Assignment"
+                      ></iframe>
+                    </>
                   )}
                 </>
               )}
@@ -1070,45 +1122,46 @@ const AssignmentEvaluation2 = () => {
 
             {(mainAssignments?.skillParameterData ||
               mainAssignments?.earningParameterData) && (
-                <>
-                  {!assignment?.submitter.result && (
-                    <form onSubmit={handleSubmit}>
-                      <div className=" ms-10 my-10">
-                        {/* <p className="text-2xl font-bold mb-10">SkillParameter</p> */}
+              <>
+                {!assignment?.submitter.result && (
+                  <form onSubmit={handleSubmit}>
+                    <div className=" ms-10 my-10">
+                      {/* <p className="text-2xl font-bold mb-10">SkillParameter</p> */}
 
-                        <div className=" flex ">
-                          {!pointGiven && (
-                            <div className="">
-                              {mainAssignments?.skillParameterData?.map(
-                                (mainAssignment) => (
-                                  <div
-                                    className={` p-3 flex gap-2 items-center justify-between rounded-md h-[60px] mb-5 ${selectedCategoryName ===
-                                      mainAssignment.categoryName
+                      <div className=" flex ">
+                        {!pointGiven && (
+                          <div className="">
+                            {mainAssignments?.skillParameterData?.map(
+                              (mainAssignment) => (
+                                <div
+                                  className={` p-3 flex gap-2 items-center justify-between rounded-md h-[60px] mb-5 ${
+                                    selectedCategoryName ===
+                                    mainAssignment.categoryName
                                       ? "bg-[#F0F7FF]"
                                       : " border"
-                                      }`}
-                                  >
-                                    <div className="">
-                                      <p>{mainAssignment.categoryName}</p>
-                                      <p className="text-[#B7B7B7] text-[10px] font-bold">
-                                        Marks
-                                      </p>
-                                    </div>
-                                    <img
-                                      onClick={() =>
-                                        handleClickCategory(
-                                          mainAssignment.categoryName
-                                        )
-                                      }
-                                      src={arrowRight}
-                                      alt=""
-                                    />
+                                  }`}
+                                >
+                                  <div className="">
+                                    <p>{mainAssignment.categoryName}</p>
+                                    <p className="text-[#B7B7B7] text-[10px] font-bold">
+                                      Marks
+                                    </p>
                                   </div>
-                                )
-                              )}
-                            </div>
-                          )}
-                          {/*   {
+                                  <img
+                                    onClick={() =>
+                                      handleClickCategory(
+                                        mainAssignment.categoryName
+                                      )
+                                    }
+                                    src={arrowRight}
+                                    alt=""
+                                  />
+                                </div>
+                              )
+                            )}
+                          </div>
+                        )}
+                        {/*   {
 
                               </div>
                               <img
@@ -1142,208 +1195,211 @@ const AssignmentEvaluation2 = () => {
                                             )
                                         } */}
 
-                          <div className=" ms-5">
-                            {mainAssignments?.skillParameterData?.map((data) => (
-                              <>
-                                {data?.categoryName === selectedCategoryName && (
-                                  <>
-                                    {data?.skills?.map((skill) => (
-                                      <>
-                                        <div
-                                          className={`flex items-center justify-between p-2 mb-5  w-[100%] h-[60px] ${selectedSkillName === skill.skillName
+                        <div className=" ms-5">
+                          {mainAssignments?.skillParameterData?.map((data) => (
+                            <>
+                              {data?.categoryName === selectedCategoryName && (
+                                <>
+                                  {data?.skills?.map((skill) => (
+                                    <>
+                                      <div
+                                        className={`flex items-center justify-between p-2 mb-5  w-[100%] h-[60px] ${
+                                          selectedSkillName === skill.skillName
                                             ? "bg-[#F0F7FF]"
                                             : ""
-                                            }`}
-                                          style={{
-                                            borderRadius: "5px",
-                                            border: "1px solid #D9D9D9",
-                                          }}
-                                        >
-                                          <div className="text-xs font-semibold flex items-center gap-2 ">
-                                            <label htmlFor={skill.skillName}>
-                                              {skill.skillName}
-                                            </label>
-                                          </div>
-                                          <div className=" flex gap-2 ms-5">
-                                            <div className="flex flex-col">
-                                              <input
-                                                required
-                                                className="w-[50px] h-[25px] text-[14px] font-semibold border rounded-lg text-center"
-                                                name={skill?.skillName}
-                                                type="number"
-                                                onChange={(e) =>
-                                                  handleSkillValue(e, skill)
-                                                }
-                                                placeholder="mark"
-                                              />
-                                              {error2 && (
-                                                <>
-                                                  <span className="text-[red] text-[10px]">
-                                                    error
-                                                  </span>
-                                                </>
-                                              )}
-                                            </div>
-
-                                            <p>/{skill?.skillValue}</p>
-
-                                            <p
-                                              onClick={() =>
-                                                handleClickSkill(skill.skillName)
-                                              }
-                                            >
-                                              <ArrowForwardIcon />
-                                            </p>
-                                          </div>
+                                        }`}
+                                        style={{
+                                          borderRadius: "5px",
+                                          border: "1px solid #D9D9D9",
+                                        }}
+                                      >
+                                        <div className="text-xs font-semibold flex items-center gap-2 ">
+                                          <label htmlFor={skill.skillName}>
+                                            {skill.skillName}
+                                          </label>
                                         </div>
-                                      </>
-                                    ))}
-                                  </>
-                                )}
-                              </>
-                            ))}
-                          </div>
+                                        <div className=" flex gap-2 ms-5">
+                                          <div className="flex flex-col">
+                                            <input
+                                              required
+                                              className="w-[50px] h-[25px] text-[14px] font-semibold border rounded-lg text-center"
+                                              name={skill?.skillName}
+                                              type="number"
+                                              onChange={(e) =>
+                                                handleSkillValue(e, skill)
+                                              }
+                                              placeholder="mark"
+                                            />
+                                            {error2 && (
+                                              <>
+                                                <span className="text-[red] text-[10px]">
+                                                  error
+                                                </span>
+                                              </>
+                                            )}
+                                          </div>
 
-                          <div className=" ms-5">
-                            {mainAssignments?.skillParameterData?.map((data) => (
-                              <>
-                                {data?.categoryName === selectedCategoryName && (
-                                  <>
-                                    {data?.skills?.map((skill) => (
-                                      <>
-                                        {skill.skillName ===
-                                          selectedSkillName && (
-                                            <>
-                                              {skill?.parameters?.map(
-                                                (parameter) => (
-                                                  <>
-                                                    <div
-                                                      className={`flex items-center justify-between p-2 mb-5  w-[100%] h-[60px] ${selectedSkillName ===
-                                                        skill.skillName
-                                                        ? "bg-[#F0F7FF]"
-                                                        : ""
-                                                        }`}
-                                                      style={{
-                                                        borderRadius: "5px",
-                                                        border: "1px solid #D9D9D9",
-                                                      }}
+                                          <p>/{skill?.skillValue}</p>
+
+                                          <p
+                                            onClick={() =>
+                                              handleClickSkill(skill.skillName)
+                                            }
+                                          >
+                                            <ArrowForwardIcon />
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </>
+                                  ))}
+                                </>
+                              )}
+                            </>
+                          ))}
+                        </div>
+
+                        <div className=" ms-5">
+                          {mainAssignments?.skillParameterData?.map((data) => (
+                            <>
+                              {data?.categoryName === selectedCategoryName && (
+                                <>
+                                  {data?.skills?.map((skill) => (
+                                    <>
+                                      {skill.skillName ===
+                                        selectedSkillName && (
+                                        <>
+                                          {skill?.parameters?.map(
+                                            (parameter) => (
+                                              <>
+                                                <div
+                                                  className={`flex items-center justify-between p-2 mb-5  w-[100%] h-[60px] ${
+                                                    selectedSkillName ===
+                                                    skill.skillName
+                                                      ? "bg-[#F0F7FF]"
+                                                      : ""
+                                                  }`}
+                                                  style={{
+                                                    borderRadius: "5px",
+                                                    border: "1px solid #D9D9D9",
+                                                  }}
+                                                >
+                                                  <div className="text-xs font-semibold flex items-center gap-2 ">
+                                                    <label
+                                                      htmlFor={
+                                                        parameter.parameterName
+                                                      }
                                                     >
-                                                      <div className="text-xs font-semibold flex items-center gap-2 ">
-                                                        <label
-                                                          htmlFor={
-                                                            parameter.parameterName
-                                                          }
-                                                        >
-                                                          {parameter.parameterName}
-                                                        </label>
-                                                      </div>
-                                                      <div className=" flex gap-2 ms-5">
-                                                        <div className="flex flex-col">
-                                                          <input
-                                                            required
-                                                            className="w-[50px] h-[25px] text-[14px] font-semibold border rounded-lg text-center"
-                                                            name={
-                                                              parameter.parameterName
-                                                            }
-                                                            type="number"
-                                                            // defaultValue={categoryValue / (skill?.parameters.length)}
-                                                            defaultValue={
-                                                              changeCategoryName ===
-                                                                selectedSkillName
-                                                                ? categoryValue /
-                                                                skill?.parameters
-                                                                  ?.length
-                                                                : ""
-                                                            }
-                                                            onChange={(e) =>
-                                                              handleParameterValue(
-                                                                e,
-                                                                parameter,
-                                                                skill
-                                                              )
-                                                            }
-                                                          // placeholder={categoryValue/(skill?.parameters.length)}
-                                                          />
-                                                          {error && (
-                                                            <>
-                                                              {categoryValue /
-                                                                skill?.parameters
-                                                                  ?.length >
-                                                                parameter.parameterValue && (
-                                                                  <span className="text-[red] text-[10px]">
-                                                                    error
-                                                                  </span>
-                                                                )}
-                                                            </>
+                                                      {parameter.parameterName}
+                                                    </label>
+                                                  </div>
+                                                  <div className=" flex gap-2 ms-5">
+                                                    <div className="flex flex-col">
+                                                      <input
+                                                        required
+                                                        className="w-[50px] h-[25px] text-[14px] font-semibold border rounded-lg text-center"
+                                                        name={
+                                                          parameter.parameterName
+                                                        }
+                                                        type="number"
+                                                        // defaultValue={categoryValue / (skill?.parameters.length)}
+                                                        defaultValue={
+                                                          changeCategoryName ===
+                                                          selectedSkillName
+                                                            ? categoryValue /
+                                                              skill?.parameters
+                                                                ?.length
+                                                            : ""
+                                                        }
+                                                        onChange={(e) =>
+                                                          handleParameterValue(
+                                                            e,
+                                                            parameter,
+                                                            skill
+                                                          )
+                                                        }
+                                                        // placeholder={categoryValue/(skill?.parameters.length)}
+                                                      />
+                                                      {error && (
+                                                        <>
+                                                          {categoryValue /
+                                                            skill?.parameters
+                                                              ?.length >
+                                                            parameter.parameterValue && (
+                                                            <span className="text-[red] text-[10px]">
+                                                              error
+                                                            </span>
                                                           )}
-                                                          {error1 && (
-                                                            <>
-                                                              <span className="text-[red] text-[10px]">
-                                                                error
-                                                              </span>
-                                                            </>
-                                                          )}
-                                                        </div>
-
-                                                        <p>
-                                                          /
-                                                          {parameter.parameterValue}
-                                                        </p>
-                                                      </div>
+                                                        </>
+                                                      )}
+                                                      {error1 && (
+                                                        <>
+                                                          <span className="text-[red] text-[10px]">
+                                                            error
+                                                          </span>
+                                                        </>
+                                                      )}
                                                     </div>
-                                                  </>
-                                                )
-                                              )}
-                                            </>
+
+                                                    <p>
+                                                      /
+                                                      {parameter.parameterValue}
+                                                    </p>
+                                                  </div>
+                                                </div>
+                                              </>
+                                            )
                                           )}
-                                      </>
-                                    ))}
-                                  </>
-                                )}
-                              </>
-                            ))}
-                          </div>
+                                        </>
+                                      )}
+                                    </>
+                                  ))}
+                                </>
+                              )}
+                            </>
+                          ))}
                         </div>
                       </div>
+                    </div>
 
-                      <div className=" ms-10 my-10">
-                        {/* <p className="text-2xl font-bold mb-10">
+                    <div className=" ms-10 my-10">
+                      {/* <p className="text-2xl font-bold mb-10">
                           earningParameter
                         </p> */}
 
-                        <div className=" flex ">
-                          {!pointGiven && (
-                            <div className="">
-                              {mainAssignments?.earningParameterData?.map(
-                                (mainAssignment) => (
-                                  <div
-                                    className={` p-3 flex gap-2 items-center justify-between rounded-md h-[60px] mb-5 ${selectedEarningCategoryCategoryName ===
-                                      mainAssignment.categoryName
+                      <div className=" flex ">
+                        {!pointGiven && (
+                          <div className="">
+                            {mainAssignments?.earningParameterData?.map(
+                              (mainAssignment) => (
+                                <div
+                                  className={` p-3 flex gap-2 items-center justify-between rounded-md h-[60px] mb-5 ${
+                                    selectedEarningCategoryCategoryName ===
+                                    mainAssignment.categoryName
                                       ? "bg-[#F0F7FF]"
                                       : " border"
-                                      }`}
-                                  >
-                                    <div className="">
-                                      <p>{mainAssignment.categoryName}</p>
-                                      <p className="text-[#B7B7B7] text-[10px] font-bold">
-                                        Marks
-                                      </p>
-                                    </div>
-                                    <img
-                                      onClick={() =>
-                                        handleClickEarningCategory(
-                                          mainAssignment.categoryName
-                                        )
-                                      }
-                                      src={arrowRight}
-                                      alt=""
-                                    />
+                                  }`}
+                                >
+                                  <div className="">
+                                    <p>{mainAssignment.categoryName}</p>
+                                    <p className="text-[#B7B7B7] text-[10px] font-bold">
+                                      Marks
+                                    </p>
                                   </div>
-                                )
-                              )}
-                            </div>
-                          )}
-                          {/*  {
+                                  <img
+                                    onClick={() =>
+                                      handleClickEarningCategory(
+                                        mainAssignment.categoryName
+                                      )
+                                    }
+                                    src={arrowRight}
+                                    alt=""
+                                  />
+                                </div>
+                              )
+                            )}
+                          </div>
+                        )}
+                        {/*  {
                                             pointGiven && (
                                                 <div>
                                                     <div className=" bg-[#F0F7FF] p-3 flex gap-2 items-center justify-between rounded-md ">
@@ -1359,105 +1415,106 @@ const AssignmentEvaluation2 = () => {
                                             )
                                         } */}
 
-                          <div className=" ms-5">
-                            {mainAssignments?.earningParameterData?.map(
-                              (data) => (
-                                <>
-                                  {data?.categoryName ===
-                                    selectedEarningCategoryCategoryName && (
+                        <div className=" ms-5">
+                          {mainAssignments?.earningParameterData?.map(
+                            (data) => (
+                              <>
+                                {data?.categoryName ===
+                                  selectedEarningCategoryCategoryName && (
+                                  <>
+                                    {data?.earningItems?.map((earningItem) => (
                                       <>
-                                        {data?.earningItems?.map((earningItem) => (
-                                          <>
-                                            <div
-                                              className={`flex items-center justify-between p-2 mb-5  w-[100%] h-[60px] ${selectedEarningCategoryCategoryName ===
-                                                data?.categoryName
-                                                ? "bg-[#F0F7FF]"
-                                                : " border"
-                                                }`}
-                                              style={{
-                                                borderRadius: "5px",
-                                                border: "1px solid #D9D9D9",
-                                              }}
+                                        <div
+                                          className={`flex items-center justify-between p-2 mb-5  w-[100%] h-[60px] ${
+                                            selectedEarningCategoryCategoryName ===
+                                            data?.categoryName
+                                              ? "bg-[#F0F7FF]"
+                                              : " border"
+                                          }`}
+                                          style={{
+                                            borderRadius: "5px",
+                                            border: "1px solid #D9D9D9",
+                                          }}
+                                        >
+                                          <div className="text-xs font-semibold flex items-center gap-2 ">
+                                            <label
+                                              htmlFor={
+                                                earningItem.earningItemName
+                                              }
                                             >
-                                              <div className="text-xs font-semibold flex items-center gap-2 ">
-                                                <label
-                                                  htmlFor={
-                                                    earningItem.earningItemName
-                                                  }
-                                                >
-                                                  {earningItem.earningItemName}
-                                                </label>
-                                              </div>
-                                              <div className=" flex gap-2 ms-5">
-                                                <div className="flex flex-col">
-                                                  <input
-                                                    className="w-[50px] h-[25px] text-[14px] font-semibold border rounded-lg text-center"
-                                                    name={
-                                                      earningItem.earningItemName
-                                                    }
-                                                    type="number"
-                                                    //   value={skill?.skillValue}
-                                                    onChange={(e) =>
-                                                      handleEarningParameterValue(
-                                                        e,
-                                                        earningItem
-                                                      )
-                                                    }
-                                                    placeholder="mark"
-                                                  />
-                                                  {error3 && (
-                                                    <span className="text-[red] text-[10px]">
-                                                      error
-                                                    </span>
-                                                  )}
-                                                </div>
-
-                                                <p>/{earningItem.itemValue}</p>
-
-                                                {/* <p onClick={() => handleClickSkill(earningItem.earningItemName)}><ArrowForwardIcon /></p> */}
-                                              </div>
+                                              {earningItem.earningItemName}
+                                            </label>
+                                          </div>
+                                          <div className=" flex gap-2 ms-5">
+                                            <div className="flex flex-col">
+                                              <input
+                                                className="w-[50px] h-[25px] text-[14px] font-semibold border rounded-lg text-center"
+                                                name={
+                                                  earningItem.earningItemName
+                                                }
+                                                type="number"
+                                                //   value={skill?.skillValue}
+                                                onChange={(e) =>
+                                                  handleEarningParameterValue(
+                                                    e,
+                                                    earningItem
+                                                  )
+                                                }
+                                                placeholder="mark"
+                                              />
+                                              {error3 && (
+                                                <span className="text-[red] text-[10px]">
+                                                  error
+                                                </span>
+                                              )}
                                             </div>
-                                          </>
-                                        ))}
+
+                                            <p>/{earningItem.itemValue}</p>
+
+                                            {/* <p onClick={() => handleClickSkill(earningItem.earningItemName)}><ArrowForwardIcon /></p> */}
+                                          </div>
+                                        </div>
                                       </>
-                                    )}
-                                </>
-                              )
-                            )}
-                          </div>
+                                    ))}
+                                  </>
+                                )}
+                              </>
+                            )
+                          )}
                         </div>
                       </div>
+                    </div>
 
-                      {/* <div className="mt-5 flex gap-3 justify-center mb-20"> */}
+                    {/* <div className="mt-5 flex gap-3 justify-center mb-20"> */}
 
-                      <div className="mt-5 flex gap-3 justify-center mb-20">
-                        <input
-                          style={{
-                            borderRadius: "8.856px",
-                            border: "1px solid #CECECE",
-                          }}
-                          className="px-[30px] py-3 bg-[#3E4DAC] hover:bg-opacity-70 text-[#fff] cursor-pointer text-xl font-bold rounded-lg"
-                          type="submit"
-                          value="Save"
-                        />
-                        <input
-                          style={{
-                            borderRadius: "8.856px",
-                            border: "1px solid #CECECE",
-                            background: "#FF557A",
-                          }}
-                          className=" px-[30px] py-3 bg-[#3E4DAC] hover:bg-opacity-70 text-[#fff] cursor-pointer text-xl font-bold rounded-lg"
-                          type="submit"
-                          value="Save all"
-                        />
-                      </div>
-                    </form>
-                  )}
-                  {assignment?.submitter.result && (
-                    <EditResult submittedAssignment={assignment} />
-                  )}
-                </>
-              )}
+                    <div className="mt-5 flex gap-3 justify-center mb-20">
+                      <input
+                        style={{
+                          borderRadius: "8.856px",
+                          border: "1px solid #CECECE",
+                        }}
+                        className="px-[30px] py-3 bg-[#3E4DAC] hover:bg-opacity-70 text-[#fff] cursor-pointer text-xl font-bold rounded-lg"
+                        type="submit"
+                        value="Save"
+                      />
+                      <input
+                        style={{
+                          borderRadius: "8.856px",
+                          border: "1px solid #CECECE",
+                          background: "#FF557A",
+                        }}
+                        className=" px-[30px] py-3 bg-[#3E4DAC] hover:bg-opacity-70 text-[#fff] cursor-pointer text-xl font-bold rounded-lg"
+                        type="submit"
+                        value="Save all"
+                      />
+                    </div>
+                  </form>
+                )}
+                {assignment?.submitter.result && (
+                  <EditResult submittedAssignment={assignment} />
+                )}
+              </>
+            )}
           </div>
 
           {/*  <div>

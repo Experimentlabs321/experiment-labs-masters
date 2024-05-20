@@ -37,6 +37,8 @@ const ManageQuestion = ({
   selectedBatches,
   quizData,
   setQuizData,
+  countForReloadData,
+  setCountForReloadData,
 }) => {
   const [selectedTab, setSelectedTab] = useState("Questions");
 
@@ -247,7 +249,7 @@ const ManageQuestion = ({
     await delete updatedQuizObject?._id;
     Loading();
     const newTask = await axios.put(
-      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/quizes/taskId/${quizData?._id}`,
+      `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/quizes/taskId/${quizData?._id}`,
       updatedQuizObject
     );
 
@@ -295,6 +297,9 @@ const ManageQuestion = ({
   const [questionsForSelectedBatches, setQuestionsForSelectedBatches] =
     useState([]);
   const [quizQuestions, setQuizQuestions] = useState([]);
+  const [quizQuestionsWithBatches, setQuizQuestionsWithBatches] = useState(
+    quizData?.questions
+  );
   const [count, setCount] = useState(0);
   const [totalAddedPoints, setTotalAddedPoints] = useState(0);
 
@@ -411,6 +416,7 @@ const ManageQuestion = ({
 
   useEffect(() => {
     if (quizData?.questions && quizData?.questions[0]) {
+      setQuizQuestionsWithBatches(quizData?.questions);
       const findBatch = batchesData?.find(
         (item) => item?._id === quizData?.questions[0]?.batchId
       );
@@ -423,7 +429,7 @@ const ManageQuestion = ({
     if (userInfo?.organizationId)
       axios
         .get(
-          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/questionBank/organizationId/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVER_API}/api/v1/questionBank/organizationId/${userInfo?.organizationId}`
         )
         .then((response) => {
           if (response?.data) setQuestionBankQuestions(response?.data);
@@ -516,45 +522,39 @@ const ManageQuestion = ({
       const updatedQuestions = quizData?.questions?.filter(
         (item) => item?.questionId !== id
       );
-      const updatedQuizObject = { ...quizData };
-      updatedQuizObject.questions = updatedQuestions;
-      console.log(updatedQuestions, id);
-      await delete updatedQuizObject?._id;
-      const newQuiz = await axios.put(
-        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/quizes/taskId/${quizData?._id}`,
-        updatedQuizObject
-      );
-      console.log(newQuiz);
-      if (newQuiz?.data?.updateResult?.acknowledged) {
-        setQuizQuestions(quizQuestions?.filter((item) => item?._id !== id));
-        Loading().close();
-        toast.success("Quiz Updated Successfully");
-        // e.target.reset();
-      }
-
-      // await axios
-      //   .delete(`http://localhost:5000/api/v1/questionBank/questionId/${id}`)
-      //   .then((result) => {
-      //     console.log(result);
-      //     if (result?.status === 200) {
-      //       Swal.fire({
-      //         title: "Deleted!",
-      //         text: "Question has been deleted.",
-      //         icon: "success",
-      //       });
-      //       const remainingQuestion = quizQuestions.filter(
-      //         (item) => item._id !== id
-      //       );
-      //       setQuizQuestions(remainingQuestion);
-      //     } else {
-      //       toast.error("Oops...! Something went wrong.");
-      //     }
-      //   })
-      //   .catch((error) => {
-      //     toast.error("Oops...! Something went wrong.");
-      //     console.error(error);
-      //     Loading().close();
-      //   });
+      // const updatedQuizObject = { ...quizData };
+      // updatedQuizObject.questions = updatedQuestions;
+      // console.log(updatedQuestions, id);
+      // await delete updatedQuizObject?._id;
+      axios
+        .put(
+          `${process.env.REACT_APP_SERVER_API}/api/v1/quizzes/quizId/${quizData?._id}`,
+          { questions: updatedQuestions }
+        )
+        .then((response) => {
+          console.log(response);
+          Loading().close();
+          setQuizQuestions(quizQuestions?.filter((item) => item?._id !== id));
+          toast.success("Quiz Updated Successfully");
+          setCountForReloadData(countForReloadData + 1);
+          setSelectedOptionsQuestionFromQuesBank(updatedQuestions);
+          setQuizQuestionsWithBatches(updatedQuestions);
+        })
+        .catch((error) => {
+          Loading().close();
+          console.log(error);
+        });
+      // const newQuiz = await axios.put(
+      //   `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/quizes/taskId/${quizData?._id}`,
+      //   updatedQuizObject
+      // );
+      // console.log(newQuiz);
+      // if (newQuiz?.data?.updateResult?.acknowledged) {
+      //   setQuizQuestions(quizQuestions?.filter((item) => item?._id !== id));
+      //   Loading().close();
+      //   toast.success("Quiz Updated Successfully");
+      //   // e.target.reset();
+      // }
     }
   };
 
@@ -577,40 +577,70 @@ const ManageQuestion = ({
           );
           Loading();
           // Update the chapters state based on the rearrangement
-          setQuizQuestions((prevQuestions) => {
-            // Clone the previous chapters array to avoid mutation
-            const updatedQuestions = [...prevQuestions];
-            const quizQue = [...quizData?.questions];
-            const prevQuizQue = [...quizData?.questions];
-            // Rearrange the chapters
-            const [movedQuestion] = updatedQuestions.splice(oldIndex, 1);
-            const [movedQue] = quizQue.splice(newIndex, 1);
-            updatedQuestions.splice(newIndex, 0, movedQuestion);
-            quizQue.splice(oldIndex, 0, movedQue);
-            return updatedQuestions;
-          });
+          const updateQuestions = async () => {
+            setQuizQuestionsWithBatches((prevQuestions) => {
+              console.log(prevQuestions);
+              const updatedQuestions = [...prevQuestions];
+              const [movedQuestion] = updatedQuestions.splice(oldIndex, 1);
+              updatedQuestions.splice(newIndex, 0, movedQuestion);
+              console.log(updatedQuestions);
+              try {
+                axios
+                  .put(
+                    `${process.env.REACT_APP_SERVER_API}/api/v1/quizzes/quizId/${quizData?._id}`,
+                    { questions: updatedQuestions }
+                  )
+                  .then((response) => {
+                    console.log(response);
+                    Loading().close();
+                    toast.success("Quiz Updated Successfully");
+                  })
+                  .catch((error) => {
+                    Loading().close();
+                    console.log(error);
+                  });
+              } catch (error) {
+                Loading().close();
+                console.log(error);
+              }
+              return updatedQuestions;
+            });
+            setQuizQuestions((prevQuestions) => {
+              const updatedQuestions = [...prevQuestions];
+              const [movedQuestion] = updatedQuestions.splice(oldIndex, 1);
+              updatedQuestions.splice(newIndex, 0, movedQuestion);
+              console.log(updatedQuestions);
+              return updatedQuestions;
+            });
+          };
+          try {
+            await updateQuestions();
+          } catch (error) {
+            Loading().close();
+            console.log(error);
+          }
           // setQuizData(async (prevQuiz) => {
           const quizId = quizData?._id;
-          const previousQuiz = { ...quizData };
-          const quizQue = [...previousQuiz?.questions];
+          // const previousQuiz = { ...quizData };
+          // const quizQue = [...previousQuiz?.questions];
           // Rearrange the chapters
-          const [movedQue] = quizQue?.splice(oldIndex, 1);
-          quizQue.splice(newIndex, 0, movedQue);
-          previousQuiz.questions = quizQue;
-          delete previousQuiz?._id;
-          const newQuiz = await axios.put(
-            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/quizes/taskId/${quizId}`,
-            previousQuiz
-          );
-          console.log(newQuiz);
-          if (newQuiz?.data?.updateResult?.acknowledged) {
-            Loading().close();
-            toast.success("Quiz Updated Successfully");
-            // e.target.reset();
-          }
-          previousQuiz._id = quizId;
+          // const [movedQue] = quizQue?.splice(oldIndex, 1);
+          // quizQue.splice(newIndex, 0, movedQue);
+          // previousQuiz.questions = quizQue;
+          // delete previousQuiz?._id;
+          // const newQuiz = await axios.put(
+          //   `${process.env.REACT_APP_SERVER_API}/api/v1/quizzes/quizId/${quizId}`,
+          //   { questions: ques }
+          // );
+          // console.log(newQuiz);
+          // if (newQuiz?.data?.updateResult?.acknowledged) {
+          //   Loading().close();
+          //   toast.success("Quiz Updated Successfully");
+          //   // e.target.reset();
+          // }
+          // previousQuiz._id = quizId;
 
-          console.log(previousQuiz);
+          // console.log(previousQuiz);
           //   return previousQuiz;
           // });
           // setCount(count + 1);
