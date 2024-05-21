@@ -5,8 +5,6 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 import DialogLayoutForFromControl from "../Shared/DialogLayoutForFromControl";
-import { elements } from "chart.js";
-
 const taskTypes = [
   "Classes",
   "Assignment",
@@ -306,17 +304,17 @@ const WeekConfiguration = ({
   return (
     <div
       className={`relative inline-block ${
-        Role === "admin" ? "mt-[40px]" : "mt-[140px]"
-      }  basis-1/2 mb-[10px] flex items-center gap-[32px] `}
+        Role === "admin" ? " mt-[10px] md:mt-[20px] md:basis-1/2" : "mt-[120px]"
+      }  mb-[10px] flex items-center gap-[14px] md:gap-[32px] `}
     >
       <div className="">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="cursor-pointer bg-[#FFDB70] text-[15px] font-[600] py-[20px] px-[25px] rounded-[15px] flex items-center justify-center shadow-[0px_2px_4px_0px_#00000026]"
+          className="cursor-pointer bg-[#FFDB70] text-[12px] md:text-[15px] font-sans font-[600] py-[10px] md:py-[20px] px-[15px] md:px-[25px] rounded-[15px] flex items-center justify-center shadow-[0px_2px_4px_0px_#00000026]"
         >
           {currentWeek?.weekName}
           <svg
-            className="ml-[20px]"
+            className=" ml-[14px] md:ml-[20px]"
             xmlns="http://www.w3.org/2000/svg"
             width="13"
             height="14"
@@ -358,6 +356,7 @@ const WeekConfiguration = ({
                         "currentWeek",
                         JSON.stringify(option)
                       );
+                      setIsOpen(false);
                     }}
                   >
                     {option?.weekName}

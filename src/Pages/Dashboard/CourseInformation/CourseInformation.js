@@ -1,16 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import Completed from "../../../assets/Dashboard/Completed.png";
-import InProgress from "../../../assets/Dashboard/InProgress.png";
-import Pending from "../../../assets/Dashboard/Pending.png";
-import ReadingTask from "../../../assets/Dashboard/ReadingTask.png";
-import ClassesTask from "../../../assets/Dashboard/ClassesTask.png";
-import AssignmentTask from "../../../assets/Dashboard/AssignmentTask.png";
-import QuizTask from "../../../assets/Dashboard/QuizTask.png";
-import LiveTestTask from "../../../assets/Dashboard/LiveTestTask.png";
-import VideoTask from "../../../assets/Dashboard/VideoTask.png";
-import AudioTask from "../../../assets/Dashboard/AudioTask.png";
-import FilesTask from "../../../assets/Dashboard/FilesTask.png";
-import ScheduleTask from "../../../assets/Dashboard/ScheduleTask.png";
+import React, { useContext, useEffect, useState } from "react";
 import Layout from "./Layout/Layout";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import DialogLayout from "../Shared/DialogLayout";
@@ -27,8 +15,6 @@ import axios from "axios";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
-import { ReactSortable } from "react-sortablejs";
-import Sortable from "sortablejs";
 import WeekDetails from "./WeekDetails";
 import BatchConfiguration from "./BatchConfiguration";
 import WeekConfiguration from "./WeekConfiguration";
@@ -38,8 +24,6 @@ import lock from "../../../assets/Dashboard/lockIcon.png";
 import { CircularProgress } from "@mui/material";
 
 const CourseInformation = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [preview, setPreview] = useState(false);
   const [addChapterOpen, setAddChapterOpen] = useState(false);
   const [editChapterOpen, setEditChapterOpen] = useState(false);
   const [addTaskOpen, setAddTaskOpen] = useState(false);
@@ -52,8 +36,6 @@ const CourseInformation = () => {
   localStorage.setItem("currentWeek", JSON.stringify(weeks[0]));
   const [clickedTask, setClickedTask] = useState({});
   const Role = localStorage.getItem("role");
-  const [selectedOption, setSelectedOption] = useState("Category");
-  const options = ["Category name"];
   const { user, userInfo } = useContext(AuthContext);
   const [batchesData, setBatchesData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -150,15 +132,6 @@ const CourseInformation = () => {
       window.removeEventListener("resize", updateToggleButton);
     };
   }, []);
-
-  const toggleOptions = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const selectOption = (option) => {
-    setSelectedOption(option);
-    setIsOpen(false);
-  };
 
   const handleAddChapter = async (event) => {
     event.preventDefault();
@@ -342,133 +315,6 @@ const CourseInformation = () => {
     });
   };
 
-  /*  const handleChapterDelete = async (id) => {
-     Swal.fire({
-       title: "Are you sure?",
-       text: "You won't be able to revert this!",
-       icon: "warning",
-       showCancelButton: true,
-       confirmButtonColor: "#3085d6",
-       cancelButtonColor: "#d33",
-       confirmButtonText: "Yes, delete it!",
-     }).then(async (result) => {
-       if (result.isConfirmed) {
-         Loading();
-         if (chapters?.length === 1) {
-           Swal.fire({
-             icon: "error",
-             title: "Oops...",
-             text: "There only one chapter. Delete is not possible!",
-           });
-           return;
-         }
- 
-         console.log(id);
- 
-         await axios
-           .delete(
-             `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/chapterId/${id}`
-           )
-           .then((result) => {
-             console.log(result);
-             if (result?.status === 200) {
-               Swal.fire({
-                 title: "Deleted!",
-                 text: "Your file has been deleted.",
-                 icon: "success",
-               });
-               const remainingWeeks = chapters.filter(
-                 (chapter) => chapter._id !== id
-               );
-               setChapters(remainingWeeks);
-             } else {
-               toast.error("Oops...! Something went wrong.");
-             }
-           })
-           .catch((error) => {
-             toast.error("Oops...! Something went wrong.");
-             console.error(error);
-             Loading().close();
-           });
-       }
-     });
-   }; */
-
-  const handleChapterDelete = async (id) => {
-    const { value: accept } = await Swal.fire({
-      title: "Delete Chapter",
-      html: `
-        <div style="text-align: center;">
-          <i class="fas fa-exclamation-triangle fa-3x" style="color: red;"></i>
-        </div>
-        <br>
-       
-        <div>
-          <p>You won't be able to revert this!</p>
-        </div>
-        <br>
-        <div>
-          <input type="checkbox" id="terms" name="terms" value="accepted">
-          <label for="terms" style="color: red;">Please be cautious, all the tasks under this chapter will be deleted</label>
-        </div>
-      
-      `,
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-      icon: "warning", // Add warning icon
-      preConfirm: () => {
-        if (!document.getElementById("terms").checked) {
-          Swal.showValidationMessage(
-            "You need to agree with the terms and conditions"
-          );
-        }
-      },
-    });
-
-    if (accept) {
-      // Proceed with deletion
-      Loading();
-      if (chapters?.length === 1) {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "There is only one chapter. Delete is not possible!",
-        });
-        return;
-      }
-
-      console.log(id);
-
-      await axios
-        .delete(
-          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/chapterId/${id}`
-        )
-        .then((result) => {
-          console.log(result);
-          if (result?.status === 200) {
-            Swal.fire({
-              title: "Deleted!",
-              text: "Your file has been deleted.",
-              icon: "success",
-            });
-            const remainingWeeks = chapters.filter(
-              (chapter) => chapter._id !== id
-            );
-            setChapters(remainingWeeks);
-          } else {
-            toast.error("Oops...! Something went wrong.");
-          }
-        })
-        .catch((error) => {
-          toast.error("Oops...! Something went wrong.");
-          console.error(error);
-          Loading().close();
-        });
-    }
-  };
-
   useEffect(() => {
     if (id)
       axios
@@ -482,7 +328,9 @@ const CourseInformation = () => {
   useEffect(() => {
     if (id)
       axios
-        .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/weeks/courseId/${id}`)
+        .get(
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/weeks/courseId/${id}`
+        )
         .then((response) => {
           setWeeks(response?.data);
           const currentDateTime = new Date();
@@ -591,12 +439,12 @@ const CourseInformation = () => {
           )}
           {Role === "admin" && (
             <div>
-              <div className="pt-[110px] border-b-2 ">
-                <div className="container mx-auto px-4 flex items-center justify-between ">
-                  <div className="flex items-center pt-[30px] pb-[40px] ">
+              <div className=" pt-[90px] md:pt-[110px] pb-[10px] border-b-2 ">
+                <div className="container mx-auto px-2 md:px-4 flex items-center justify-between flex-wrap ">
+                  <div className="flex items-center pt-[30px] pb-[20px] md:pb-[40px] ">
                     <Link
                       to="/courseAccess"
-                      className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline"
+                      className="text-[#168DE3] font-sans mr-[30px] text-[12px] md:text-[20px] font-[400] underline"
                     >
                       My Courses
                     </Link>
@@ -616,62 +464,11 @@ const CourseInformation = () => {
                         stroke-linejoin="round"
                       />
                     </svg>
-                    <button className=" font-sans mr-[30px] text-[20px] font-[400] ">
+                    <button className=" font-sans mr-[30px] text-[12px] md:text-[20px] font-[400] ">
                       {courseData?.courseFullName}
                     </button>
                   </div>
-                  <div className="flex items-center mt-[-10px] ">
-                    {/*  <div className="flex items-center text-black text-[16px] font-[600] mr-[32px] ">
-                      <h1 className="mr-[16px]">Preview Mode</h1>
-                      {preview ? (
-                        <svg
-                          className="cursor-pointer"
-                          onClick={() => setPreview(!preview)}
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="58"
-                          height="27"
-                          viewBox="0 0 58 27"
-                          fill="none"
-                        >
-                          <rect
-                            width="57.8422"
-                            height="26.7841"
-                            rx="13.392"
-                            fill="#9747FF"
-                          />
-                          <circle
-                            cx="44.4512"
-                            cy="13.3916"
-                            r="10.1153"
-                            fill="white"
-                          />
-                        </svg>
-                      ) : (
-                        <svg
-                          className="cursor-pointer"
-                          onClick={() => setPreview(!preview)}
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="58"
-                          height="28"
-                          viewBox="0 0 58 28"
-                          fill="none"
-                        >
-                          <rect
-                            y="0.608398"
-                            width="57.8422"
-                            height="26.7841"
-                            rx="13.392"
-                            fill="#A3A3A3"
-                          />
-                          <circle
-                            cx="13.3926"
-                            cy="14"
-                            r="10.1153"
-                            fill="white"
-                          />
-                        </svg>
-                      )}
-                    </div> */}
+                  <div className="flex items-center">
                     {/* Add task dialog start */}
                     <DialogLayout
                       open={addTaskOpen}
@@ -756,10 +553,10 @@ const CourseInformation = () => {
                     <>
                       <button
                         onClick={() => setAddChapterOpen(true)}
-                        className="flex items-center bg-[#FF557A] text-[16px] font-[700] text-white p-[16px] rounded-[20px] mr-[32px] "
+                        className="flex items-center bg-[#FF557A] text-[10px] md:text-[16px] font-[700] text-white p-[10px] md:p-[16px] rounded-[20px] mr-[32px] "
                       >
                         <svg
-                          className="mr-[16px]"
+                          className="mr-[16px] hidden md:block"
                           xmlns="http://www.w3.org/2000/svg"
                           width="25"
                           height="24"
@@ -771,14 +568,14 @@ const CourseInformation = () => {
                             fill="white"
                           />
                         </svg>
-                        <h1 className="mr-[12px]">Add Chapter</h1>
+                        <h1 className="md:mr-[12px]">Add Chapter</h1>
                       </button>
                       <Link
                         to={`/editCourse/${id}`}
-                        className="flex items-center bg-[#3E4DAC] text-[16px] font-[700] text-white p-[16px] rounded-[20px] "
+                        className="flex items-center bg-[#3E4DAC] text-[10px] md:text-[16px] font-[700] text-white p-[10px] md:p-[16px] rounded-[20px] "
                       >
                         <svg
-                          className="mr-[16px]"
+                          className="mr-[16px] hidden md:block"
                           xmlns="http://www.w3.org/2000/svg"
                           width="16"
                           height="16"
@@ -790,7 +587,7 @@ const CourseInformation = () => {
                             fill="white"
                           />
                         </svg>
-                        <h1 className="mr-[12px]">Edit Course</h1>
+                        <h1 className="md:mr-[12px]">Edit Course</h1>
                       </Link>
                     </>
                   </div>
@@ -812,8 +609,8 @@ const CourseInformation = () => {
               </div>
             ))}
           </div> */}
-          <div className="px-4">
-            <div className="flex items-center ">
+          <div className="px-2 md:px-4">
+            <div className="flex items-center flex-wrap ">
               <WeekConfiguration
                 weeks={weeks}
                 setWeeks={setWeeks}
