@@ -1,25 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
-import logo from "../../../../assets/Logos/Group 2859890.png";
-import PersonProfilePic from "../../../../assets/Dashboard/PersonProfilePic.png";
 import MyHelmet from "../../../../Components/MyHelmet/MyHelpmet";
 import Aside from "./Aside";
 import axios from "axios";
 import { AuthContext } from "../../../../contexts/AuthProvider";
-// import io from "socket.io-client";
-
-// const socket = io("${process.env.REACT_APP_SERVER_API}");
 
 const Layout = ({ children }) => {
-  const [toggleButton, setToggleButton] = useState(true);
   const [screenSmall, setScreenSmall] = useState(false);
   const [windowWidth, setWindowWidth] = useState(0);
-  const [notifications, setNotifications] = useState([]);
-  const Role = localStorage.getItem("role");
   const { userInfo } = useContext(AuthContext);
   const [orgData, setOrgData] = useState({});
   const getInitials = () => {
-    const firstNameInitial =
-      userInfo?.name?.charAt(0)?.toUpperCase() || "";
+    const firstNameInitial = userInfo?.name?.charAt(0)?.toUpperCase() || "";
     const lastNameInitial = userInfo?.lastName?.charAt(0)?.toUpperCase() || "";
     return `${firstNameInitial}${lastNameInitial}`;
   };
@@ -39,35 +30,6 @@ const Layout = ({ children }) => {
     }
     // Your existing useEffect logic...
   }, [userInfo, backgroundColor]);
-  // useEffect(() => {
-  //   socket.on("connection", () => console.log("socket connected"));
-  //   console.log("something");
-  //   socket.on("notification", (newNotification) => {
-  //     setNotifications((prevNotifications) => [
-  //       newNotification,
-  //       ...prevNotifications,
-  //     ]);
-  //   });
-
-  //   fetchNotifications();
-
-  //   return () => {
-  //     socket.off("notification");
-  //   };
-  // }, []);
-
-  const fetchNotifications = async () => {
-    try {
-      axios
-        .get(`${process.env.REACT_APP_SERVER_API}/api/v1/notifications`)
-        .then((response) => {
-          setNotifications(response?.data);
-        })
-        .catch((error) => console.error(error));
-    } catch (error) {
-      console.error("Error fetching notifications:", error);
-    }
-  };
   useEffect(() => {
     axios
       .get(
@@ -88,10 +50,6 @@ const Layout = ({ children }) => {
       setScreenSmall(true);
     }
   }, [windowWidth]);
-
-  const handleClick = () => {
-    setToggleButton(!toggleButton);
-  };
   // console.log(notifications);
   return (
     <>
@@ -99,7 +57,7 @@ const Layout = ({ children }) => {
       <div>
         <div className=" font-sansita">
           <nav className={`bg-[#151718] fixed z-30 w-full }`}>
-            <div className="px-[10px] py-[18px] lg:px-10 lg:pl-3">
+            <div className="px-[10px] py-[10px] md:py-[18px] lg:px-10 lg:pl-3">
               <div className={`flex items-center justify-between `}>
                 {/* <button
                   id="toggleSidebarMobile"
@@ -123,39 +81,27 @@ const Layout = ({ children }) => {
                   </svg>
                 </button> */}
                 <div>
-                  {/* <img className="h-6 lg:h-8  " src={logo} alt="icon" /> */}
                   <img
+                    className=" h-12 lg:h-16  "
+                    src={orgData?.org_logo}
+                    alt="icon"
+                  />
+                  {/* <img
                     className="h-6 lg:h-8"
                     // className="w-[100px]"
                     src={orgData?.org_logo}
                     alt="icon"
-                  />
+                  /> */}
                 </div>
                 <div className="flex items-center justify-center">
-                  {/*  <div className="flex flex-col items-center justify-center lg:mr-[60px] mr-[20px] ">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="40"
-                      height="39"
-                      viewBox="0 0 40 39"
-                      fill="none"
-                    >
-                      <path
-                        d="M28.2999 25.9923V26.5641L28.7042 26.9684L31.1793 29.4435H8.855L11.33 26.9684L11.7344 26.5641V25.9923V17.9396C11.7344 13.4606 14.0619 10.0183 17.9196 9.10425L18.9818 8.85258V7.76098V6.66581C18.9818 6.09147 19.4428 5.63046 20.0171 5.63046C20.5915 5.63046 21.0525 6.09147 21.0525 6.66581V7.76098V8.8517L22.1136 9.104C25.9571 10.0178 28.2999 13.4779 28.2999 17.9396V25.9923ZM21.2288 33.8149C20.904 34.1008 20.4792 34.2751 20.0171 34.2751C19.5489 34.2751 19.123 34.1011 18.799 33.8149H21.2288Z"
-                        stroke="white"
-                        stroke-width="2.76093"
-                      />
-                    </svg>
-                    <h1 className="text-white mt-[6px] text-[14px] font-[500] ">
-                      Notification
-                    </h1>
-                  </div> */}
-                  {
-                    userInfo?.profileImg ? <img
-                    className="w-[59px] h-[59px] md:w-[64px] md:h-[64px]  lg:w-[80px] rounded-full lg:h-[82px]"
-                    src={userInfo?.profileImg}
-                    alt="user"
-                  /> : <div className="w-[59px] h-[59px] md:w-[64px] md:h-[64px]  lg:w-[80px] rounded-full lg:h-[82px] object-contain object-center  overflow-hidden">
+                  {userInfo?.profileImg ? (
+                    <img
+                      className="w-[48px] h-[48px] md:w-[64px] md:h-[64px]  rounded-full"
+                      src={userInfo?.profileImg}
+                      alt="user"
+                    />
+                  ) : (
+                    <div className="w-[48px] h-[48px] md:w-[64px] md:h-[64px]  rounded-full object-contain object-center  overflow-hidden">
                       <div
                         className="w-full h-full flex items-center text-red-50 justify-center text-xl md:text-3xl font-bold"
                         style={{ backgroundColor }}
@@ -163,8 +109,7 @@ const Layout = ({ children }) => {
                         {getInitials()}
                       </div>
                     </div>
-                  }
-
+                  )}
                 </div>
               </div>
             </div>

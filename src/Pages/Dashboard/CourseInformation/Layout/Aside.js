@@ -10,7 +10,7 @@ import DiscussionsDark from "../../../../assets/Dashboard/DiscussionsDark.png";
 import CourseAccessIconLight from "../../../../assets/Dashboard/CourseAccessIconLight.svg";
 import CourseAccessIconDark from "../../../../assets/Dashboard/CourseAccessIconDark.svg";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useEffect } from "react";
 import axios from "axios";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -38,7 +38,7 @@ const Aside = () => {
 
     // Add click event listener
     document.addEventListener("mousedown", handleClickOutside);
-    
+
     return () => {
       // Clean up the event listener on component unmount
       document.removeEventListener("mousedown", handleClickOutside);
@@ -75,12 +75,12 @@ const Aside = () => {
     <>
       <button
         onClick={() => setToggleButton(true)}
-        className="text-black bg-blue font-normal rounded-r-[15px] ml-[-10px] flex items-center px-[20px] pt-[10px] pb-[5px] absolute top-[95px] z-10  group"
+        className="text-black bg-blue font-normal rounded-r-[15px] ml-[-10px] flex items-center px-[20px] pt-[10px] pb-[5px] absolute top-[68px] z-10  group"
       >
         <MenuIcon /> <h1 className="ml-3 text-[12px] font-[500]">Open menu</h1>
       </button>
       <aside
-      ref={asideRef}
+        ref={asideRef}
         id="sidebar"
         className={` fixed ${
           toggleButton ? " lg:flex" : "hidden"
@@ -90,7 +90,7 @@ const Aside = () => {
         <div className=" flex-1 flex flex-col min-h-0 pt-0">
           <div className="flex-1 flex flex-col pb-4 overflow-y-auto">
             <div className="flex-1 space-y-1">
-              <ul className="space-y-2 px-[22px] pt-[110px] pb-2 text-white">
+              <ul className="space-y-2 px-[22px] pt-[70px] md:pt-[110px] pb-2 text-white">
                 <li className="lg:hidden block">
                   <button
                     onClick={() => setToggleButton(false)}
@@ -343,11 +343,13 @@ const Aside = () => {
                   </Link>
                 </li>
                 <li>
-                  <button className="flex gap-2 justify-items-center items-center ml-3 text-[18px] font-[500] mt-5" onClick={()=>navigate(-1)}>
-                    <ArrowBackIcon/>
-                  Go Back
+                  <button
+                    className="flex gap-2 justify-items-center items-center ml-3 text-[18px] font-[500] mt-5"
+                    onClick={() => navigate(-1)}
+                  >
+                    <ArrowBackIcon />
+                    Go Back
                   </button>
-                  
                 </li>
                 {/* <li>
                   <Link

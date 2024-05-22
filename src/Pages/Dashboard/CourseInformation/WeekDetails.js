@@ -49,6 +49,8 @@ const WeekDetails = ({
   const { user, userInfo } = useContext(AuthContext);
   const [clickedChapter, setClickedChapter] = useState({});
   const [openTopics, setOpenTopics] = useState([]);
+  const [screenSmall, setScreenSmall] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(0);
 
   const containerRef = useRef(null);
   let sortable;
@@ -310,12 +312,34 @@ const WeekDetails = ({
     Loading().close();
   };
 
+  useEffect(() => {
+    window.addEventListener("resize", () => {
+      setWindowWidth(window.innerWidth);
+    });
+    if (windowWidth >= 1024) {
+      setScreenSmall(false);
+    } else {
+      setScreenSmall(true);
+    }
+  }, [windowWidth, chapters]);
+
+  console.log(screenSmall, windowWidth, window.innerWidth);
+
   return (
-    <div ref={Role === "admin" ? containerRef : null}>
+    <div
+      ref={Role === "admin" && window.innerWidth >= 1024 ? containerRef : null}
+    >
       {chapters?.map((chapter, index) => {
         const chapterIndex = index;
         return (
-          <div key={chapter?._id} className="sortable-chapter">
+          <div
+            key={chapter?._id}
+            className={`${
+              Role === "admin" &&
+              window.innerWidth >= 1024 &&
+              "sortable-chapter"
+            }`}
+          >
             <div className="relative">
               <div
                 onClick={() => {
@@ -330,16 +354,18 @@ const WeekDetails = ({
                     setOpenTopics([...openTopics, chapter?._id]);
                   }
                 }}
-                className="flex items-center justify-between mt-[60px]"
+                className="flex items-center justify-between mt-[15px] md:mt-[30px]"
               >
                 <div className="flex items-center ">
-                  <div className="w-[85px] rounded-full flex items-center justify-center h-[85px] bg-[#E1E6FF] ">
-                    <h1 className="text-[35px] font-[600] ">{index + 1}</h1>
+                  <div className=" min-w-[65px] md:min-w-[85px]  min-h-[65px] md:min-h-[85px] rounded-full flex items-center justify-center bg-[#E1E6FF] ">
+                    <h1 className=" text-[25px] md:text-[35px] font-[600] ">
+                      {index + 1}
+                    </h1>
                   </div>
-                  <h1 className="text-[23px] font-[700] lg:ml-[40px] mx-5 cursor-pointer">
-                    {chapter?.chapterName}{" "}
+                  <div className=" text-[16px] md:text-[23px] font-[700] lg:ml-[40px] mx-2 md:mx-5 cursor-pointer flex items-center ">
+                    <h1>{chapter?.chapterName} </h1>
                     {Role === "admin" && (
-                      <>
+                      <div className="flex items-center ">
                         <button
                           onClick={() => {
                             setEditChapterOpen(true);
@@ -348,7 +374,7 @@ const WeekDetails = ({
                               index: index,
                             });
                           }}
-                          className="ml-[24px]"
+                          className=" ml-[14px] md:ml-[24px]"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -365,7 +391,7 @@ const WeekDetails = ({
                         </button>
                         <button
                           onClick={() => handleChapterDelete(chapter?._id)}
-                          className=" bg-sky-950 p-[6px] rounded-full ml-[24px]"
+                          className=" bg-sky-950 p-[6px] rounded-full ml-[14px] md:ml-[24px]"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -380,9 +406,9 @@ const WeekDetails = ({
                             />
                           </svg>
                         </button>
-                      </>
+                      </div>
                     )}
-                  </h1>
+                  </div>
                 </div>
                 {Role === "admin" ? (
                   <div className="relative flex items-center">
@@ -392,7 +418,7 @@ const WeekDetails = ({
                       //   else setClickedChapter(chapter);
                       // }}
                       // onBlur={() => setClickedChapter(null)}
-                      className=" mr-[25px] "
+                      className=" md:mr-[25px] "
                     >
                       <KeyboardArrowDownIcon />
                     </button>
@@ -428,7 +454,7 @@ const WeekDetails = ({
                         else setClickedChapter(chapter);
                       }}
                       onBlur={() => setClickedChapter(null)}
-                      className="  "
+                      className=" hidden md:block"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -446,7 +472,7 @@ const WeekDetails = ({
                   </div>
                 ) : (
                   <div className="relative flex items-center">
-                    <button className=" mr-[25px] ">
+                    <button className=" mr-[12px] md:mr-[25px] ">
                       <KeyboardArrowDownIcon />
                     </button>
                   </div>
@@ -462,12 +488,14 @@ const WeekDetails = ({
                   openTopics?.find((item) => item === chapter?._id)
                     ? ""
                     : "hidden"
-                } sub-items`}
+                } ${
+                  Role === "admin" && window.innerWidth >= 1024 && "sub-items"
+                }`}
               >
                 {Role === "admin" &&
                   chapter?.tasks?.map((task, taskIndex) => (
                     <div key={task?.taskId} className="relative ">
-                      <div className="flex items-center justify-between my-[60px] relative z-10 ">
+                      <div className="flex items-center justify-between my-[20px] md:my-[60px] relative z-10 ">
                         <div className="flex gap-5 lg:gap-0 items-center w-full">
                           {toggleButton && (
                             <div className="w-[85px] flex items-center justify-center ">
@@ -502,68 +530,68 @@ const WeekDetails = ({
                           <div className="flex w-full items-center">
                             {task?.taskType === "Reading" && (
                               <img
-                                className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
+                                className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
                                 src={ReadingTask}
                                 alt="Task"
                               />
                             )}
                             {task?.taskType === "Classes" && (
                               <img
-                                className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
+                                className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
                                 src={ClassesTask}
                                 alt="Task"
                               />
                             )}
                             {task?.taskType === "Assignment" && (
                               <img
-                                className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
+                                className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
                                 src={AssignmentTask}
                                 alt="Task"
                               />
                             )}
                             {task?.taskType === "Quiz" && (
                               <img
-                                className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
+                                className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
                                 src={QuizTask}
                                 alt="Task"
                               />
                             )}
                             {task?.taskType === "Live Test" && (
                               <img
-                                className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
+                                className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
                                 src={LiveTestTask}
                                 alt="Task"
                               />
                             )}
                             {task?.taskType === "Video" && (
                               <img
-                                className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
+                                className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
                                 src={VideoTask}
                                 alt="Task"
                               />
                             )}
                             {task?.taskType === "Audio" && (
                               <img
-                                className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
+                                className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
                                 src={AudioTask}
                                 alt="Task"
                               />
                             )}
                             {task?.taskType === "Files" && (
                               <img
-                                className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
+                                className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
                                 src={FilesTask}
                                 alt="Task"
                               />
                             )}
                             {task?.taskType === "Schedule" && (
                               <img
-                                className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
+                                className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
                                 src={ScheduleTask}
                                 alt="Schedule"
                               />
                             )}
-                            <div className="">
+                            <div className="z-0">
                               <Link
                                 onClick={() => {
                                   localStorage.setItem(
@@ -584,48 +612,18 @@ const WeekDetails = ({
                                   );
                                 }}
                                 to={`/taskDetails/${task?.taskId}?taskType=${task?.taskType}`}
-                                className="text-[#3E4DAC] text-[22px] font-[700] "
+                                className="text-[#3E4DAC] text-[14px] md:text-[22px] font-[700] "
                               >
                                 {task?.taskName}
                               </Link>
-                              <p className="text-[#626262] text-[18px] font-[500] ">
+                              <p className="text-[#626262] text-[10px] md:text-[18px] font-[500] ">
                                 {task?.taskType}
                               </p>
                             </div>
                           </div>
-                          {!toggleButton && (
-                            <div className="mx-2 flex items-center justify-center ">
-                              {Role !== "admin" && (
-                                <>
-                                  {task?.participants?.find(
-                                    (item) =>
-                                      item?.participantId === userInfo?._id
-                                  ) ? (
-                                    <>
-                                      {task?.participants?.find(
-                                        (item) =>
-                                          item?.participantId === userInfo?._id
-                                      )?.status === "Completed" ? (
-                                        <img src={Completed} alt="Completed" />
-                                      ) : (
-                                        <img
-                                          src={InProgress}
-                                          alt="InProgress"
-                                        />
-                                      )}
-                                    </>
-                                  ) : (
-                                    <>
-                                      <img src={Pending} alt="Pending" />
-                                    </>
-                                  )}
-                                </>
-                              )}
-                            </div>
-                          )}
                         </div>
                         {Role === "admin" && (
-                          <div className="max-w-[200px] flex gap-2 flex-wrap ">
+                          <div className="hidden max-w-[200px] md:flex gap-2 flex-wrap ">
                             {task?.batches?.map((batch) => (
                               <h1 className="p-1 bg-slate-200 font-sans rounded-md">
                                 {batch?.batchName}
@@ -641,7 +639,7 @@ const WeekDetails = ({
                                 else setClickedTask(task);
                               }}
                               onBlur={() => setClickedTask(null)}
-                              className=" mr-[25px] "
+                              className=" md:mr-[25px] "
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -657,7 +655,7 @@ const WeekDetails = ({
                               </svg>
                             </button>
                             {clickedTask === task && (
-                              <ul className="absolute right-5 top-[35px] w-max border  bg-[#141414] border-t-0 p-2 rounded-[8px] mt-1 transform translate-y-[-10px] shadow-[0px_2px_4px_0px_#00000026]">
+                              <ul className="absolute z-10 right-5 top-[18px] md:top-[35px] w-max border  bg-[#141414] border-t-0 p-1 md:p-2 rounded-[8px] mt-1 transform translate-y-[-10px] shadow-[0px_2px_4px_0px_#00000026]">
                                 <li
                                   onMouseDown={() => {
                                     localStorage.setItem(
@@ -680,12 +678,12 @@ const WeekDetails = ({
                                       `/editTask/${task?.taskId}?taskType=${task?.taskType}`
                                     );
                                   }}
-                                  className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600] "
+                                  className="cursor-pointer p-1 md:p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[10px] md:text-[13px] font-[600] "
                                 >
                                   Edit Task
                                 </li>
                                 <li
-                                  className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600] "
+                                  className="cursor-pointer p-1 md:p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[10px] md:text-[13px] font-[600] "
                                   onMouseDown={() => {
                                     // handleTaskDelete(task, chapter);
                                     setDeleteTaskPopup(true);
@@ -699,12 +697,14 @@ const WeekDetails = ({
                                 </li>
                               </ul>
                             )}
-                            <MenuIcon className=" cursor-move" />
+                            <button className=" hidden md:block cursor-move">
+                              <MenuIcon />
+                            </button>
                           </div>
                         )}
                       </div>
                       {chapter?.tasks?.length - 1 !== taskIndex && (
-                        <hr className="w-[2px] pt-[150px] bg-[#C7C7C7] absolute bottom-[-100px] lg:left-[175px] left-[20px]" />
+                        <hr className="w-[2px] pt-[68px] md:pt-[150px] bg-[#C7C7C7] absolute bottom-[-45px] md:bottom-[-100px] md:left-[175px] left-[38px]" />
                       )}
                     </div>
                   ))}
@@ -738,7 +738,7 @@ const WeekDetails = ({
 
                     return (
                       <div key={task?.taskId} className="relative">
-                        <div className="flex items-center justify-between my-[60px] relative z-10">
+                        <div className="flex items-center justify-between my-[20px] md:my-[60px] relative z-10">
                           {toggleButton && (
                             <div className="w-[85px] flex items-center justify-center ">
                               {Role !== "admin" && (
@@ -787,69 +787,71 @@ const WeekDetails = ({
                             </div>
                           )}
                           <div className="flex w-full items-center">
-                            {task?.taskType === "Reading" && (
-                              <img
-                                className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
-                                src={ReadingTask}
-                                alt="Task"
-                              />
-                            )}
-                            {task?.taskType === "Classes" && (
-                              <img
-                                className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
-                                src={ClassesTask}
-                                alt="Task"
-                              />
-                            )}
-                            {task?.taskType === "Assignment" && (
-                              <img
-                                className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
-                                src={AssignmentTask}
-                                alt="Task"
-                              />
-                            )}
-                            {task?.taskType === "Quiz" && (
-                              <img
-                                className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
-                                src={QuizTask}
-                                alt="Task"
-                              />
-                            )}
-                            {task?.taskType === "Live Test" && (
-                              <img
-                                className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
-                                src={LiveTestTask}
-                                alt="Task"
-                              />
-                            )}
-                            {task?.taskType === "Video" && (
-                              <img
-                                className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
-                                src={VideoTask}
-                                alt="Task"
-                              />
-                            )}
-                            {task?.taskType === "Audio" && (
-                              <img
-                                className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
-                                src={AudioTask}
-                                alt="Task"
-                              />
-                            )}
-                            {task?.taskType === "Files" && (
-                              <img
-                                className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
-                                src={FilesTask}
-                                alt="Task"
-                              />
-                            )}
-                            {task?.taskType === "Schedule" && (
-                              <img
-                                className="lg:ml-[60px] w-[40px] lg:w-[65px] mr-[30px] "
-                                src={ScheduleTask}
-                                alt="Task"
-                              />
-                            )}
+                            <>
+                              {task?.taskType === "Reading" && (
+                                <img
+                                  className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
+                                  src={ReadingTask}
+                                  alt="Task"
+                                />
+                              )}
+                              {task?.taskType === "Classes" && (
+                                <img
+                                  className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
+                                  src={ClassesTask}
+                                  alt="Task"
+                                />
+                              )}
+                              {task?.taskType === "Assignment" && (
+                                <img
+                                  className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
+                                  src={AssignmentTask}
+                                  alt="Task"
+                                />
+                              )}
+                              {task?.taskType === "Quiz" && (
+                                <img
+                                  className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
+                                  src={QuizTask}
+                                  alt="Task"
+                                />
+                              )}
+                              {task?.taskType === "Live Test" && (
+                                <img
+                                  className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
+                                  src={LiveTestTask}
+                                  alt="Task"
+                                />
+                              )}
+                              {task?.taskType === "Video" && (
+                                <img
+                                  className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
+                                  src={VideoTask}
+                                  alt="Task"
+                                />
+                              )}
+                              {task?.taskType === "Audio" && (
+                                <img
+                                  className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
+                                  src={AudioTask}
+                                  alt="Task"
+                                />
+                              )}
+                              {task?.taskType === "Files" && (
+                                <img
+                                  className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
+                                  src={FilesTask}
+                                  alt="Task"
+                                />
+                              )}
+                              {task?.taskType === "Schedule" && (
+                                <img
+                                  className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
+                                  src={ScheduleTask}
+                                  alt="Task"
+                                />
+                              )}
+                            </>
                             {courseData?.enableDrip && (
                               <div className="">
                                 {isPreviousTaskCompleted &&
@@ -874,7 +876,7 @@ const WeekDetails = ({
                                       );
                                     }}
                                     to={`/taskDetails/${task?.taskId}?taskType=${task?.taskType}`}
-                                    className="text-[#3E4DAC] text-[22px] font-[700]"
+                                    className="text-[#3E4DAC] text-[14px] md:text-[22px] font-[700]"
                                   >
                                     {task?.taskName}
                                   </Link>
@@ -883,17 +885,16 @@ const WeekDetails = ({
                                     onClick={() =>
                                       toast.error("Complete The Previous Task")
                                     }
-                                    className="text-[#3E4DAC] text-[22px] font-[700]"
+                                    className="text-[#3E4DAC] text-[14px] md:text-[22px] font-[700]"
                                   >
                                     {task?.taskName}
                                   </span>
                                 )}
-                                <p className="text-[#626262] text-[18px] font-[500]">
+                                <p className="text-[#626262] text-[10px] md:text-[18px] font-[500]">
                                   {task?.taskType}
                                 </p>
                               </div>
                             )}
-
                             {!courseData?.enableDrip && (
                               <div className="">
                                 {(isPreviousTaskCompleted &&
@@ -919,7 +920,7 @@ const WeekDetails = ({
                                       );
                                     }}
                                     to={`/taskDetails/${task?.taskId}?taskType=${task?.taskType}`}
-                                    className="text-[#3E4DAC] text-[22px] font-[700]"
+                                    className="text-[#3E4DAC] text-[14px] md:text-[22px] font-[700]"
                                   >
                                     {task?.taskName}
                                   </Link>
@@ -928,12 +929,12 @@ const WeekDetails = ({
                                     onClick={() =>
                                       toast.error("Complete The Previous Task")
                                     }
-                                    className="text-[#3E4DAC] text-[22px] font-[700]"
+                                    className="text-[#3E4DAC] text-[14px] md:text-[22px] font-[700]"
                                   >
                                     {task?.taskName}
                                   </span>
                                 )}
-                                <p className="text-[#626262] text-[18px] font-[500]">
+                                <p className="text-[#626262] text-[10px] md:text-[18px] font-[500]">
                                   {task?.taskType}
                                 </p>
                               </div>
@@ -988,7 +989,7 @@ const WeekDetails = ({
                           )}
                         </div>
                         {chapter?.tasks?.length - 1 !== taskIndex && (
-                          <hr className="w-[2px] pt-[150px] bg-[#C7C7C7] absolute bottom-[-100px] lg:left-[175px] left-[20px]" />
+                          <hr className="w-[2px] pt-[68px] md:pt-[150px] bg-[#C7C7C7] absolute bottom-[-45px] md:bottom-[-100px] md:left-[175px] left-[38px]" />
                         )}
                       </div>
                     );

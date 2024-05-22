@@ -41,8 +41,8 @@ const StartQuizDialog = ({
             <CloseIcon />
           </IconButton>
           <div className="text-center text-[21px] font-[600] w-full py-[20px] ">
-            <h1 className="text-white">{taskData?.quizName}</h1>
-            <p className="text-[#8595FF]">
+            <h1 className="text-white font-sans">{taskData?.quizName}</h1>
+            <p className="text-[#8595FF] font-sans">
               Quiz - {taskData?.points} Total points
             </p>
           </div>
@@ -73,6 +73,13 @@ const StartQuizDialog = ({
               </h1>
               {question?.questionType === "Multiple choice" && (
                 <>
+                  {question?.additionalFiles && (
+                    <img
+                      className="max-w-full"
+                      src={question?.additionalFiles}
+                      alt="Additional File"
+                    />
+                  )}
                   <p
                     className=" text-[18px] font-[700] pt-4 "
                     dangerouslySetInnerHTML={{

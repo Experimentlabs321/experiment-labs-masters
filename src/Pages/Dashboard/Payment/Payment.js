@@ -525,10 +525,10 @@ const Payment = () => {
                     </div>
                   </div>
                 </div>
-                <div className="bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4 max-w-[340px] mt-6" role="alert">
+                {/* <div className="bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4 max-w-[340px] mt-6" role="alert">
                   <p className="font-bold">Warning</p>
                   <p>After Payment Success wait till it takes you to My Courses or you will not be added to the Course/Bundle</p>
-                </div>
+                </div> */}
               </div>
               <div className="max-w-[350px] min-w-[350px]">
                 {!batchesData[0] ? (

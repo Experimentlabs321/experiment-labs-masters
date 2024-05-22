@@ -1,5 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
-import DialogLayout from "../Shared/DialogLayout";
+import React, { useContext, useState } from "react";
 import { useParams } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
@@ -21,26 +20,12 @@ const BatchConfiguration = ({
   const rootUrl = window.location.origin;
   const [isOpenBatches, setIsOpenBatches] = useState(false);
   const [addBatchOpen, setAddBatchOpen] = useState(false);
-  const [participant, setParticipant] = useState("");
   const [participants, setParticipants] = useState([]);
   const [participantsData, setParticipantsData] = useState([]);
   const [showEditBatchDialog, setShowEditBatchDialog] = useState(false);
 
   const { id } = useParams();
-  const { user, userInfo, createUser } = useContext(AuthContext);
-
-  const handleOptionChangeBatch = (event) => {
-    const optionValue = event.target.value;
-    const isChecked = event.target.checked;
-
-    if (isChecked) {
-      setSelectedBatches([...selectedBatches, { batchName: optionValue }]);
-    } else {
-      setSelectedBatches(
-        selectedBatches.filter((option) => option?.batchName !== optionValue)
-      );
-    }
-  };
+  const { userInfo } = useContext(AuthContext);
 
   const handleAddBatch = async (event) => {
     event.preventDefault();
@@ -195,48 +180,6 @@ const BatchConfiguration = ({
     });
   };
 
-  const handleAddParticipant = (e) => {
-    e.preventDefault();
-    if (e.key === "Enter") {
-      e.preventDefault();
-      if (e.target.value.length > 0) {
-        if (
-          e.target.value === "" ||
-          participants.indexOf(e.target.value) !== -1
-        ) {
-          e.target.value = "";
-          return;
-        }
-        setParticipants([...participants, e.target.value]);
-        e.target.value = "";
-      }
-    }
-    if (e.key === ",") {
-      if (e.target.value.length > 0) {
-        if (
-          e.target.value === "" ||
-          participants.indexOf(
-            e.target.value.substring(0, e.target.value.length - 1)
-          ) !== -1 ||
-          e.target.value === ","
-        ) {
-          e.target.value = "";
-          return;
-        }
-        setParticipants([
-          ...participants,
-          e.target.value.substring(0, e.target.value.length - 1),
-        ]);
-        e.target.value = "";
-      }
-    }
-  };
-  const removeParticipant = (participant) => {
-    const newParameters = participants.filter(
-      (tag) => tag?.email !== participant?.email
-    );
-    setParticipants(newParameters);
-  };
   const getCurrentDate = () => {
     const today = new Date();
     const year = today.getFullYear();
@@ -248,15 +191,15 @@ const BatchConfiguration = ({
   return (
     <div
       className={`relative inline-block ${
-        Role === "admin" ? "mt-[40px]" : "mt-[140px]"
-      } basis-1/2 mb-[10px] flex items-center gap-[32px] `}
+        Role === "admin" ? " mt-[10px] md:mt-[20px] md:basis-1/2" : "mt-[120px]"
+      } mb-[10px] flex items-center gap-[14px] md:gap-[32px] `}
     >
       <div>
         <button
           onClick={() => {
             setIsOpenBatches(!isOpenBatches);
           }}
-          className="cursor-pointer bg-[#FFDB70] text-[15px] font-[600] py-[20px] px-[25px] rounded-[15px] flex items-center justify-center shadow-[0px_2px_4px_0px_#00000026]"
+          className="cursor-pointer bg-[#FFDB70] text-[12px] md:text-[15px] font-sans font-[600] py-[10px] md:py-[20px] px-[15px] md:px-[25px] rounded-[15px] flex items-center justify-center shadow-[0px_2px_4px_0px_#00000026]"
         >
           {selectedBatches[0] ? (
             selectedBatches?.map((batch) => (
