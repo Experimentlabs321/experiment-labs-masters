@@ -208,7 +208,7 @@ export const NotificationProvider = ({ children }) => {
     if (user?.email) {
       axios
         .get(
-          `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/users?email=${user?.email}`
+          `${process.env.REACT_APP_SERVER_API}/api/v1/users?email=${user?.email}`
         )
         .then(async (userInfo) => {
           try {
@@ -218,6 +218,7 @@ export const NotificationProvider = ({ children }) => {
                   `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/announcements/getAnnouncement/organizationId/${userInfo?.data?.organizationId}`
                 )
                 .then(async (response) => {
+                  console.log(response);
                   if (response?.data?.announcements) {
                     response?.data?.announcements?.reverse();
                     setAnnouncements(response?.data?.announcements);
