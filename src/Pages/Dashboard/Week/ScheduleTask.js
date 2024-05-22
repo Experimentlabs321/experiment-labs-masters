@@ -1206,6 +1206,8 @@ const ScheduleTask = ({ taskData, week }) => {
               const zoomSchedule = {
                 start_time: formattedDateTime,
                 duration: meetingLength,
+                studentName: stdName ? stdName : userInfo?.name,
+                courseName: course?.courseFullName,
               };
               const newZoomSchedule = await axios.post(
                 `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/meeting/organizationId/${userInfo?.organizationId}`,
