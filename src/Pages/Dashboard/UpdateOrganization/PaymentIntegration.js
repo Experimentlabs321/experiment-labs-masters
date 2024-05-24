@@ -61,7 +61,7 @@ const PaymentIntegration = ({ paymentInstance, setPaymentInstance, orgData }) =>
     return (
         <div className="px-4 mt-4">
             <form onSubmit={handleSubmit} className='mt-5'>
-                <div className='flex gap-10'>
+                <div className='flex flex-col lg:flex-row gap-10'>
                     <div>
                         <label
                             htmlFor="textInput"

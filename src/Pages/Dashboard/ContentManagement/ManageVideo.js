@@ -245,7 +245,7 @@ const ManageVideo = () => {
       <Layout>
         <div>
           <div className=" border-b-2 ">
-            <div className="container mx-auto px-4 flex items-center justify-between ">
+            <div className="container lg:mx-auto ml-4 px-4 flex flex-col lg:flex-row lg:mt-0 mt-20 items-center justify-between ">
               <div className="flex items-center pt-[30px] pb-[30px] ">
                 <Link
                   to="/courseAccess"
@@ -295,7 +295,7 @@ const ManageVideo = () => {
                   {chapter?.chapterName}
                 </button>
               </div>
-              <div className="flex items-center mt-[-10px] ">
+              <div className="flex items-center mt-[-10px] lg:mb-0 mb-3">
                 <div className="flex items-center text-black text-[16px] font-[600] mr-[32px] ">
                   <h1 className="mr-[16px]">Preview Mode</h1>
                   {preview ? (
@@ -384,7 +384,7 @@ const ManageVideo = () => {
             </form>
           </DialogLayout>
           <form onSubmit={handleSubmit}>
-            <div className="flex  me-20 py-[35px] ps-[40px]">
+            <div className="flex flex-col lg:flex-row lg:gap-0 gap-3 me-20 py-[35px] ps-[40px]">
               <div className="w-full">
                 <div className="">
                   <div className="flex items-center gap-4">

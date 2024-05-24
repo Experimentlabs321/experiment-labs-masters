@@ -168,7 +168,7 @@ const CreateBundle = () => {
   return (
     <div>
       <Layout>
-        <div className="text-[#3E4DAC] text-[26px] font-bold border-b border-b-[#A4A4A4] py-[35px] ps-[40px]">
+        <div className="text-[#3E4DAC] mt-20 lg:mt-0 text-[26px] font-bold border-b border-b-[#A4A4A4] py-[35px] ps-[40px]">
           <p>Create/Edit Bundle</p>
         </div>
         <form onSubmit={handleSubmit} className="">
@@ -273,7 +273,7 @@ const CreateBundle = () => {
                 )}
               </div>
             </div>
-            <div className="dropdown-menu mb-[45px] flex justify-between me-10">
+            <div className="dropdown-menu mb-[45px] flex flex-col lg:flex-row gap-3 lg:gap-0 justify-between me-10">
               <div>
                 <div className="">
                   <div className="flex items-center gap-4">

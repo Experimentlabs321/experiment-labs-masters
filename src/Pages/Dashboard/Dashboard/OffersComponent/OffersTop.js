@@ -253,7 +253,7 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
 
   return (
     <>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between lg:mt-0 mt-20">
         <h1 className="text-3xl font-bold mb-4">Offers</h1>
         <button
           onClick={() => setOpen(true)}

@@ -326,7 +326,7 @@ const MentorAssignments = () => {
             <CircularProgress className="w-full mx-auto" />
           </div>
         )}
-        <div className="">
+        <div className="lg:block hidden">
           <AssignmentUpNev page={"assignment"} />
         </div>
 
@@ -385,7 +385,7 @@ const MentorAssignments = () => {
                 </Link> */}
               </>
               <select
-                className="p-2 border rounded"
+                className="p-2 border rounded w-[90%]"
                 value={selectedCourse?._id}
                 onChange={(e) => {
                   const course = courses?.find((c) => c._id === e.target.value);
@@ -405,7 +405,7 @@ const MentorAssignments = () => {
               </select>
 
               <select
-                className="p-2 border rounded"
+                className="p-2 border rounded w-[90%]"
                 value={selectedBatch?._id}
                 onChange={(e) => {
                   const batch = batchesData.find(
@@ -426,7 +426,7 @@ const MentorAssignments = () => {
                 ))}
               </select>
               <select
-                className="p-2 border rounded"
+                className="p-2 border rounded w-[90%]"
                 // value={selectedBatch?._id}
                 onChange={(e) => {
                   setSelectedStatus(e.currentTarget.value);
@@ -449,7 +449,7 @@ const MentorAssignments = () => {
               </select>
 
               <button
-                className="bg-sky-500 hover:bg-opacity-70 text-white px-4 py-2 rounded"
+                className="bg-sky-500 hover:bg-opacity-70 text-white px-4 py-2 rounded w-[50%]"
                 onClick={applyFilters}
               >
                 {itemDetails?.applyFilters

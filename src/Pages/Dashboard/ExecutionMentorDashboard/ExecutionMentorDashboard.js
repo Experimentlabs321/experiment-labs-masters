@@ -82,7 +82,7 @@ const ExecutionMentorDashboard = () => {
         </div>
 
         <div className="flex mt-24">
-          <div className="w-full ms-10 mt-10">
+          <div className="w-full mx-10 mt-10">
             <div
               className=" flex items-center text-[#fff]"
               style={{
@@ -364,9 +364,9 @@ const ExecutionMentorDashboard = () => {
             </div>
           </div>
 
-          <div>
+        {/*   <div>
             <AssignmentRightNev />
-          </div>
+          </div> */}
         </div>
       </Layout>
     </div>

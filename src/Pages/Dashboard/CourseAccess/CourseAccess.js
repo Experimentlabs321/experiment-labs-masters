@@ -215,9 +215,9 @@ const CourseAccess = () => {
     <div>
       <Layout>
         <div className="px-4">
-          <div className="flex items-center justify-between pt-20 lg:pt-[40px]  ">
+          <div className="flex flex-col lg:flex-row gap-3 lg:gap-0 items-center justify-between pt-20 lg:pt-[40px]  ">
             <h1 className="text-[28px] font-[700] ">My courses</h1>
-            <div className="flex items-center ">
+            <div className="flex flex-col lg:flex-row gap-3 lg:gap-0 items-center ">
               <div className="relative">
                 <img
                   className="absolute top-[16px] left-[12px]"
@@ -246,7 +246,7 @@ const CourseAccess = () => {
                 <div className="">
                   <Link
                     to="/createBundle"
-                    className="w-[210.40px] ml-[100px] h-[46.40px] px-4 py-3 bg-[#3E4DAC] rounded-[8.86px] justify-start items-center gap-2 inline-flex"
+                    className="w-[210.40px] lg:ml-[100px] h-[46.40px] px-4 py-3 bg-[#3E4DAC] rounded-[8.86px] justify-start items-center gap-2 inline-flex"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -270,7 +270,7 @@ const CourseAccess = () => {
                 <div className="">
                   <Link
                     to="/createCourse"
-                    className="w-[206.40px] ml-[100px] h-[46.40px] px-4 py-3 bg-[#3E4DAC] rounded-[8.86px] justify-start items-center gap-2 inline-flex"
+                    className="w-[206.40px] lg:ml-[100px] h-[46.40px] px-4 py-3 bg-[#3E4DAC] rounded-[8.86px] justify-start items-center gap-2 inline-flex"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

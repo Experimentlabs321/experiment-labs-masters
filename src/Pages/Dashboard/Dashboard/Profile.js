@@ -274,16 +274,16 @@ const Profile = () => {
   return (
     <div>
       <Layout>
-        <div className="px-8 pt-8 pb-0">
+        <div className="px-8 pt-8 pb-0 lg:mt-0 mt-20">
           <h1 className="font-bold text-2xl ">Profile Details</h1>
           {profileInfo?._id && (
-            <form onSubmit={handleSubmit} className="ms-[40px]  mt-8">
+            <form onSubmit={handleSubmit} className="lg:ms-[40px]  mt-8">
               <div className="grid grid-cols-1  gap-5 px-3">
                 <div className="mt-3">
                   <p className="font-semibold text-lg">Name</p>
                   <input
                     required
-                    className="mt-2 border rounded-md w-[500px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
+                    className="mt-2 border rounded-md  lg:w-[500px] w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
                     name="userName"
                     type="text"
                     value={profileInfo?.name}
@@ -293,7 +293,7 @@ const Profile = () => {
                   <p className="font-semibold text-lg">Email</p>
                   <input
                     required
-                    className="mt-2 border rounded-md w-[500px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
+                    className="mt-2 border rounded-md lg:w-[500px] w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
                     name="userEmail"
                     type="text"
                     value={profileInfo?.email}
@@ -303,7 +303,7 @@ const Profile = () => {
                   <p className="font-semibold text-lg">Mobile</p>
                   <input
                     required
-                    className="mt-2 border rounded-md w-[500px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
+                    className="mt-2 border rounded-md lg:w-[500px] w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
                     name="userPhone"
                     type="text"
                     value={profileInfo?.phone}
@@ -313,7 +313,7 @@ const Profile = () => {
                   <p className="font-semibold text-lg">Role</p>
                   <input
                     required
-                    className="mt-2 border rounded-md w-[500px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
+                    className="mt-2 border rounded-md lg:w-[500px] w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
                     name="userRole"
                     type="text"
                     value={profileInfo?.role}
@@ -363,7 +363,7 @@ const Profile = () => {
         </div>
         <div
           style={{ height: "70vh" }}
-          className="overflow-x-auto mx-24"
+          className="overflow-x-auto lg:mx-24 mx-5"
         >
           <table className="min-w-full font-sans bg-white border border-gray-300 table-fixed">
             <thead className="bg-gray-800 text-white sticky top-0">

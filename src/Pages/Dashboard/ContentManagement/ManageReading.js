@@ -230,7 +230,7 @@ const ManageReading = () => {
       <Layout>
         <div>
           <div className=" border-b-2 ">
-            <div className="container mx-auto px-4 flex items-center justify-between ">
+            <div className="container ml-4 lg:mx-auto px-4 flex flex-col lg:flex-row items-center justify-between mt-20 lg:mt-0 lg:mb-0 mb-3">
               <div className="flex items-center pt-[30px] pb-[30px] ">
                 <Link
                   to="/courseAccess"
@@ -335,11 +335,11 @@ const ManageReading = () => {
           <ReadingTask readingData={readingData} chapterId={id} />
         </div>
         <div className={`${preview ? "hidden" : "block"}`}>
-          <div className="text-[#3E4DAC] text-[26px] font-bold  py-[35px] ps-[40px]">
+          <div className="text-[#3E4DAC] text-[26px] font-bold  py-[35px] ps-[20px]">
             <p>Manage Reading in {chapter?.chapterName}</p>
           </div>
           <form onSubmit={handleSubmit}>
-            <div className="flex  me-20 py-[35px] ps-[40px]">
+            <div className="flex flex-col lg:flex-row me-20 py-[35px] ps-[30px]">
               <div className="w-full">
                 <div className="">
                   <div className="flex items-center gap-4">
@@ -416,7 +416,7 @@ const ManageReading = () => {
                 </div>
               </div>
               <div className="w-full">
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 mt-5 lg:mt-0">
                   <p className="h-2 w-2 bg-black rounded-full"></p>
                   <p className="font-bold text-lg me-[36px]">
                     Reading Material{" "}
@@ -434,7 +434,7 @@ const ManageReading = () => {
                 <div dangerouslySetInnerHTML={{ __html: readingMaterial }} /> */}
               </div>
             </div>
-            <div className="me-20 py-[35px] ps-[40px]">
+            <div className="me-20 py-[35px] ps-[30px]">
               <div>
                 <div className="flex items-center gap-4">
                   <p className="h-2 w-2 bg-black rounded-full"></p>
@@ -471,7 +471,7 @@ const ManageReading = () => {
             </div>
            
 
-            <div className="ml-[40px] space-y-4 mb-8">
+            <div className="ml-[30px] space-y-4 mb-8">
               <fieldset>
                 <div className="flex items-center gap-4 mb-5">
                   <p className="h-2 w-2 bg-black rounded-full"></p>
@@ -518,7 +518,7 @@ const ManageReading = () => {
               </fieldset>
 
             </div>
-            <div className="ml-[40px] space-y-4 mb-8">
+            <div className="ml-[30px] space-y-4 mb-8">
               <fieldset>
                 <div className="flex items-center gap-4 mb-5">
                   <p className="h-2 w-2 bg-black rounded-full"></p>
