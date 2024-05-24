@@ -196,7 +196,11 @@ const OffersTable = ({ offerData, setOfferData, getAllOffers, isLoading }) => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <table className="min-w-full border bg-white rounded-lg">
+         <div
+          style={{ height: "70vh" }}
+          className="overflow-x-auto "
+        >
+<table className="min-w-full border bg-white rounded-lg">
           <thead>
             <tr className="border-b">
               <th className="py-2 px-4 text-left">CREATED ON</th>
@@ -290,6 +294,8 @@ const OffersTable = ({ offerData, setOfferData, getAllOffers, isLoading }) => {
             {/* Add more rows as needed */}
           </tbody>
         </table>
+        </div>
+        
       </div>
       <DialogLayoutForFromControl
         open={updateOpen}

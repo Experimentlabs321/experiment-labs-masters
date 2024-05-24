@@ -60,7 +60,7 @@ const General = ({
   return (
     <div>
       <div className="dropdown-menu mt-[71px] mb-[45px] border-b-2 ">
-        <div className="flex justify-between me-10 mb-20">
+        <div className="flex flex-col lg:flex-row justify-between me-10 mb-20">
           <div>
             <div className="">
               <div className="flex items-center gap-4">
@@ -74,7 +74,7 @@ const General = ({
                 defaultValue={
                   assignmentData ? assignmentData?.assignmentName : ""
                 }
-                className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                className="mt-6 ms-6 border rounded-md lg:w-[430px] w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                 name="assignmentName"
                 type="text"
                 placeholder="Eg. Excel with Shekhar Gupta"
@@ -140,7 +140,7 @@ const General = ({
                     ? assignmentData?.assignmentTotalPointsMarks
                     : ""
                 }
-                className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                className="mt-6 ms-6 border rounded-md lg:w-[430px] w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                 name="assignmentTotalPointsMarks"
                 type="text"
                 placeholder="Eg. 40 point"
@@ -284,7 +284,7 @@ const General = ({
                 <h1 className="text-xl font-bold">
                   {singleSchedule?.batchName}
                 </h1>
-                <div className="flex">
+                <div className="flex flex-col lg:flex-row">
                   <div className="mb-12 basis-1/2 flex flex-col">
                     <div className="flex items-center gap-4">
                       <p className="h-2 w-2 bg-black rounded-full"></p>

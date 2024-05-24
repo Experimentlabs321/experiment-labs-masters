@@ -262,7 +262,7 @@ const EditSchedule = ({ taskData }) => {
       <Layout>
         <div>
           <div className=" border-b-2 ">
-            <div className="container mx-auto px-4 flex items-center justify-between ">
+            <div className="container flex-col lg:flex-row gap-3 lg:gap-0 mt-20 lg:mt-0 ml-4 lg:mx-auto px-4 flex items-center justify-between ">
               <div className="flex items-center pt-[30px] pb-[30px] ">
                 <Link
                   to="/courseAccess"
@@ -272,7 +272,7 @@ const EditSchedule = ({ taskData }) => {
                 </Link>
                 <svg
                   className="mr-[30px]"
-                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns="http://www.w3.org/2000/svg"  
                   width="24"
                   height="25"
                   viewBox="0 0 24 25"
@@ -363,8 +363,8 @@ const EditSchedule = ({ taskData }) => {
             </div>
           </div>
         </div>
-        <form onSubmit={handleSubmit} className="ms-[40px]  mt-12">
-          <div className="grid grid-cols-2 gap-10">
+        <form onSubmit={handleSubmit} className="ms-[30px]  mt-12">
+          <div className="grid lg:grid-cols-2 grid-cols-1 gap-10">
             <div className="">
               <div className="flex items-center gap-4">
                 <p className="h-2 w-2 bg-black rounded-full"></p>
@@ -378,7 +378,7 @@ const EditSchedule = ({ taskData }) => {
                             assignmentData ? assignmentData?.scheduleName : ""
                           } */
                 defaultValue={scheduleData?.scheduleName}
-                className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
+                className="mt-6 ms-6 border rounded-md lg:w-[430px] w-[80%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
                 name="scheduleName"
                 type="text"
                 placeholder="schedule Name"
@@ -397,7 +397,7 @@ const EditSchedule = ({ taskData }) => {
                             assignmentData ? assignmentData?.scheduleName : ""
                           } */
                 defaultValue={scheduleData?.calendarSubjectName}
-                className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
+                className="mt-6 ms-6 border rounded-md lg:w-[430px] w-[80%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
                 name="calendarSubjectName"
                 type="text"
                 placeholder="Calendar Subject Name"
@@ -414,7 +414,7 @@ const EditSchedule = ({ taskData }) => {
               <input
                 required
                 defaultValue={scheduleData?.dateRange}
-                className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
+                className="mt-6 ms-6 border rounded-md lg:w-[430px] w-[80%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
                 name="dateRange"
                 type="number"
               />
@@ -429,7 +429,7 @@ const EditSchedule = ({ taskData }) => {
 
               <input
                 required
-                className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
+                className="mt-6 ms-6 border rounded-md lg:w-[430px] w-[80%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
                 name="minimumTime"
                 type="time"
                 defaultValue={scheduleData?.minimumTime}
@@ -444,7 +444,7 @@ const EditSchedule = ({ taskData }) => {
 
               <input
                 required
-                className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
+                className="mt-6 ms-6 border rounded-md lg:w-[430px] w-[80%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
                 name="maximumTime"
                 type="time"
                 defaultValue={scheduleData?.maximumTime}
@@ -462,7 +462,7 @@ const EditSchedule = ({ taskData }) => {
 
               <input
                 required
-                className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
+                className="mt-6 ms-6 border rounded-md lg:w-[430px] w-[80%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
                 name="meetingDuration"
                 type="number"
                 defaultValue={scheduleData?.meetingDuration}

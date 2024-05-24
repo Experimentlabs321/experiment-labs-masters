@@ -80,11 +80,11 @@ const MyStudents = () => {
       setTableWidth(`${updatedWidth}px`);
     };
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
 
     // Cleanup the event listener when the component unmounts
     return () => {
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
@@ -191,8 +191,8 @@ const MyStudents = () => {
   return (
     <div>
       <Layout>
-        <div className="p-4">
-          <div className="px-4 my-5 flex items-center gap-4">
+        <div className="p-4 mt-20 lg:mt-0">
+          <div className="px-4 my-5  flex items-center gap-4">
             <button
               onClick={() => setCurrentPage("My Learners")}
               className={`px-4 py-2 text-lg font-semibold rounded-lg ${
@@ -239,7 +239,7 @@ const MyStudents = () => {
                     className="block w-full px-4 py-2 mt-2 rounded-md border bg-white border-[#B7B7B7] focus:border-blue-500 focus:outline-none focus:ring"
                   />
                 </div>
-                <div className="flex space-x-4 my-4">
+                <div className="flex flex-col lg:flex-row gap-3 lg:gap-0 lg:space-x-4 my-4">
                   {/* Course Filter Dropdown */}
                   <select
                     className="p-2 border rounded"
@@ -314,7 +314,7 @@ const MyStudents = () => {
                 </div>
               </div>
               <div
-                style={{ width: tableWidth, height: "70vh" }}
+                style={{  height: "70vh" }}
                 className="overflow-x-auto"
               >
                 <table className="min-w-full font-sans bg-white border border-gray-300">

@@ -251,7 +251,7 @@ const EditVideo = () => {
       <Layout>
         <div>
           <div className=" hidden lg:block border-b-2 ">
-            <div className="container mx-auto px-4 flex items-center justify-between ">
+            <div className="container mx-auto px-4 flex items-center justify-between flex-col lg:flex-row lg:gap-0 gap-3 mt-20 lg:mt-0 ">
               <div className="flex items-center pt-[30px] pb-[30px] ">
                 <Link
                   to="/courseAccess"

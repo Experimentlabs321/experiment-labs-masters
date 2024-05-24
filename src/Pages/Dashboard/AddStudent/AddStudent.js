@@ -359,13 +359,13 @@ const AddStudent = () => {
       {/* <Layout> */}
       <div className="p-4 mx-auto w-full">
         <div className="grid grid-flow-col mt-10 border-b border-[#D9D9D9] pb-2">
-          <button>
+       {/*    <button>
             <img
-              // onClick={handleBack}
+               onClick={handleBack}
               src={backIcon}
               alt=""
             />
-          </button>
+          </button> */}
           <p className=" text-left text-[20px] text-[#3F3F3F] font-medium tracking-wider">
             {itemDetails?.addStudent ? itemDetails?.addStudent : "Add Student"}
           </p>

@@ -132,7 +132,7 @@ const BulkUpload = ({itemDetails}) => {
   return (
     <div className="w-full">
       <p className="text-[17px] mt-6 mb-2 font-medium">{itemDetails?.uploadFile ? itemDetails?.uploadFile : "Upload File"}(xlsx)</p>
-      <div className="flex items-center">
+      <div className="flex flex-col lg:flex-row items-center">
         <div
           className="w-[220px] h-[220px] bg-[#F6F7FF] flex flex-col items-center justify-center rounded-lg "
           onDragEnter={handleDragEnter}

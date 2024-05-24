@@ -107,7 +107,7 @@ const ManageQuiz = () => {
       <Layout>
         <div>
           <div className=" border-b-2 ">
-            <div className="container mx-auto px-4 flex items-center justify-between ">
+            <div className="container lg:mx-auto px-4 flex flex-col lg:flex-row items-center justify-between lg:mt-0 mt-20 mx-3 ">
               <div className="flex items-center pt-[30px] pb-[30px] ">
                 <Link
                   to="/courseAccess"
@@ -157,7 +157,7 @@ const ManageQuiz = () => {
                   {chapter?.chapterName}
                 </button>
               </div>
-              <div className="flex items-center mt-[-10px] ">
+              <div className="flex items-center mt-[-10px] mb-2 lg:mt-0">
                 <div className="flex items-center text-black text-[16px] font-[600] mr-[32px] ">
                   <h1 className="mr-[16px]">Preview Mode</h1>
                   {preview ? (
@@ -208,10 +208,10 @@ const ManageQuiz = () => {
             </div>
           </div>
         </div>
-        <div className="text-[#3E4DAC] text-[26px] font-bold  py-[35px] ps-[40px]">
-          <p>Manage Quiz in Topic 1</p>
+        <div className="text-[#3E4DAC] text-[26px] font-bold  py-[35px] ps-[20px]">
+          <p>Manage Quiz in {chapter?.chapterName}</p>
         </div>
-        <div className="px-10 flex  justify-between pb-3 text-lg">
+        <div className="px-10 flex flex-col lg:flex-row gap-3 lg:gap-0 justify-between pb-3 text-lg">
           <button
             onClick={() => handleTabClick("Quiz General Information")}
             style={{

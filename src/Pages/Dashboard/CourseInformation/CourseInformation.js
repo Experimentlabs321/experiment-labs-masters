@@ -476,11 +476,11 @@ const CourseInformation = () => {
                       width={600}
                       title={
                         <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
-                          Add Task
+                        Add Task
                         </p>
                       }
                     >
-                      <div className="px-[32px] py-[24px] grid grid-cols-3 gap-[70px]">
+                      <div className="px-[32px] py-[24px] grid lg:grid-cols-3 grid-cols-2 lg:gap-[70px] gap-[20px]">
                         {TaskTypeInfo?.map((taskType) => (
                           <Link
                             to={taskType?.route}

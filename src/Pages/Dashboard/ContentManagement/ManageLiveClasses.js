@@ -390,7 +390,7 @@ const ManageLiveClasses = () => {
   return (
     <div>
       <Layout>
-        <div className="text-[#3E4DAC] text-[26px] font-bold  py-[35px] ps-[40px]">
+        <div className="text-[#3E4DAC] text-[26px] font-bold  py-[35px] mt-20 lg:mt-0  ps-[40px]">
           <p>Manage Classes in Topic 1</p>
         </div>
         <form onSubmit={handleSubmit} className="ms-[40px]  mt-12">
@@ -402,15 +402,15 @@ const ManageLiveClasses = () => {
               1
             </h1>
             <p className="text-[25px] font-bold">General </p>
-            {!isOpenGeneral && <img className="w-6" src={arrowright}></img>}
+            {!isOpenGeneral && <img alt='arrow' className="w-6" src={arrowright}/>}
 
-            {isOpenGeneral && <img src={arrowDown}></img>}
+            {isOpenGeneral && <img alt='arrow' src={arrowDown}/>}
 
             <i className={`dropdown-arrow ${isOpenGeneral ? "open" : ""}`}></i>
           </div>
           {isOpenGeneral && (
             <div className="dropdown-menu mt-[71px] mb-[45px] border-b-2  ">
-              <div className="flex items-start gap-40">
+              <div className="flex flex-col lg:flex-row items-start gap-10 lg:gap-40">
                 <div className="">
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
@@ -433,7 +433,7 @@ const ManageLiveClasses = () => {
                     <p className="font-bold text-lg me-[36px]">Select Mentors</p>
                     <img src={required} alt="required" />
                   </div>
-                  <ul className="flex gap-4 flex-wrap ">
+                  <ul className="flex flex-col lg:flex-row gap-4 flex-wrap ">
                     {mentors?.map((option, index) => {
                       return (
                         <>
@@ -548,7 +548,7 @@ const ManageLiveClasses = () => {
               </div>
 
 
-              <div className="flex items-start mt-[50px] gap-40">
+              <div className="flex flex-col lg:flex-row items-start mt-[50px] lg:gap-40 gap-10">
                 <div>
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
@@ -726,10 +726,10 @@ const ManageLiveClasses = () => {
             </h1>
             <p className="text-[25px] font-bold">Class Timings</p>
             {!isOpenclassTimings && (
-              <img className="w-6" src={arrowright}></img>
+              <img alt='arrow' className="w-6" src={arrowright}></img>
             )}
 
-            {isOpenclassTimings && <img src={arrowDown}></img>}
+            {isOpenclassTimings && <img alt='arrow' src={arrowDown}></img>}
 
             <i
               className={`dropdown-arrow ${isOpenclassTimings ? "open" : ""}`}
@@ -738,8 +738,8 @@ const ManageLiveClasses = () => {
 
           {isOpenclassTimings && (
             <div className="dropdown-menu  mb-[45px] border-b-2 ">
-              <div className="flex justify-between mb-20">
-                <div className=" ms-5">
+              <div className="flex flex-col lg:flex-row justify-between mb-20">
+                <div className="">
                   <div className="mt-20 flex flex-col">
                     <div className="flex items-center gap-4">
                       <p className="h-2 w-2 bg-black rounded-full"></p>
@@ -752,7 +752,7 @@ const ManageLiveClasses = () => {
 
                     <input
                       required
-                      className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                      className="mt-6 ms-6 border rounded-md lg:w-[100%] w-[80%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                       name="courseStartingDateTime"
                       type="datetime-local"
                       placeholder="Eg. Entrepreneurship Lab"
