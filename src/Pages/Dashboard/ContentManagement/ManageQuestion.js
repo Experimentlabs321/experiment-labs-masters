@@ -1291,8 +1291,8 @@ const ManageQuestion = ({
                   </div>
                 )}
               </div>
-
-              {/* <div className="flex justify-between mt-20 mb-10">
+              <>
+                {/* <div className="flex justify-between mt-20 mb-10">
                 <div className="flex ">
                   {!allSelect && (
                     <div className="flex  p-2">
@@ -1335,6 +1335,7 @@ const ManageQuestion = ({
                   )}
                 </div>
               </div> */}
+              </>
 
               <div className=" mt-10 flex items-center">
                 <div className="flex items-center gap-4">
