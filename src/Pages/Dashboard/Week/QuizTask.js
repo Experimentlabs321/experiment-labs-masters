@@ -460,7 +460,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
     }
   }, [chapter, taskData, userInfo, participationData]);
 
-  console.log(givenAnswers, questions[currentQuestion]);
+  console.log(taskData);
 
   return (
     <div>

@@ -1,26 +1,16 @@
-import required from "../../../assets/ContentManagement/required.png";
 import chevronright from "../../../assets/ContentManagement/chevronright.svg";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
 import SearchIcon from "@mui/icons-material/Search";
-
 import bxseditalt from "../../../assets/ContentManagement/bxseditalt.svg";
 import Vector from "../../../assets/ContentManagement/Vector.svg";
 import trash from "../../../assets/ContentManagement/trash.svg";
-import back from "../../../assets/ContentManagement/back.svg";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import Typography from "@mui/material/Typography";
 import PropTypes from "prop-types";
-import arrow from "../../../assets/SkillsManagement/arrow.svg";
-import { Link, useParams } from "react-router-dom";
-import AddingEditingCalQues from "./AddingEditingCalQues";
-import Layout from "../Layout";
+import { useParams } from "react-router-dom";
 import DialogLayoutForFromControl from "../Shared/DialogLayoutForFromControl";
 import AddingEditingMultiChoQues from "./AddingEditingMultiChoQues";
 import axios from "axios";
@@ -1211,6 +1201,15 @@ const ManageQuestion = ({
                                                         {question?.defaultMarks}{" "}
                                                         points
                                                       </h1>
+                                                      {question?.additionalFiles && (
+                                                        <img
+                                                          className="max-w-full"
+                                                          src={
+                                                            question?.additionalFiles
+                                                          }
+                                                          alt="Additional File"
+                                                        />
+                                                      )}
                                                       <p
                                                         className=" text-[18px] font-[700] pt-4 "
                                                         dangerouslySetInnerHTML={{
@@ -1292,8 +1291,8 @@ const ManageQuestion = ({
                   </div>
                 )}
               </div>
-
-              {/* <div className="flex justify-between mt-20 mb-10">
+              <>
+                {/* <div className="flex justify-between mt-20 mb-10">
                 <div className="flex ">
                   {!allSelect && (
                     <div className="flex  p-2">
@@ -1336,6 +1335,7 @@ const ManageQuestion = ({
                   )}
                 </div>
               </div> */}
+              </>
 
               <div className=" mt-10 flex items-center">
                 <div className="flex items-center gap-4">

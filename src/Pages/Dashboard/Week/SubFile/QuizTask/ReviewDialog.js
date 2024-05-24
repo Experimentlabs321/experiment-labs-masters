@@ -96,6 +96,13 @@ const ReviewDialog = ({
                 </>
               )}
 
+              {question?.additionalFiles && (
+                <img
+                  className="max-w-full"
+                  src={question?.additionalFiles}
+                  alt="Additional File"
+                />
+              )}
               <p
                 className=" text-[18px] font-[700] pt-4 "
                 dangerouslySetInnerHTML={{

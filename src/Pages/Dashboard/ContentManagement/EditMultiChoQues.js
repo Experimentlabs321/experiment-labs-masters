@@ -1,18 +1,16 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import Layout from "../Layout";
 import arrowDown from "../../../assets/SkillsManagement/arrow.svg";
 import arrowright from "../../../assets/SkillsManagement/arrowright.svg";
 import required from "../../../assets/ContentManagement/required.png";
 import back from "../../../assets/ContentManagement/back.svg";
-import { Link } from "react-router-dom";
-import Level from "../Dashboard/Level";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import TextEditor from "../../Shared/TextEditor/TextEditor";
 import Loading from "../../Shared/Loading/Loading";
-import MultiChoQuesOption from "./MultiChoQuesOption";
 import JoditEditor from "jodit-react";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import uploadFileToS3 from "../../UploadComponent/s3Uploader";
 
 const EditMultiChoQues = ({
   editQues,
@@ -24,6 +22,41 @@ const EditMultiChoQues = ({
   quizData,
   setQuizData,
 }) => {
+  // upload file
+  const [dragActive, setDragActive] = useState(true);
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleDragEnter = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    //setDragActive(false);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+
+    const file = e.dataTransfer.files[0];
+    setSelectedFile(file);
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setSelectedFile(file);
+  };
+
   const [selectedTab, setSelectedTab] = useState("addingEditingMultiChoQues");
   const { userInfo } = useContext(AuthContext);
 
@@ -112,6 +145,8 @@ const EditMultiChoQues = ({
     Loading();
     event.preventDefault();
     const form = event.target;
+    let fileUrl = "";
+    if (selectedFile) fileUrl = await uploadFileToS3(selectedFile);
 
     const questionName = form.questionName?.value;
 
@@ -121,6 +156,7 @@ const EditMultiChoQues = ({
 
     const addQuestion = {
       questionName,
+      additionalFiles: fileUrl,
       questionText,
       defaultMarks,
       shuffleTheChoices: isShuffleChecked,
@@ -135,7 +171,7 @@ const EditMultiChoQues = ({
     };
 
     const newQuestion = await axios.put(
-      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/questionBank/questionId/${editingQueInfo?._id}`,
+      `${process.env.REACT_APP_SERVER_API}/api/v1/questionBank/questionId/${editingQueInfo?._id}`,
       addQuestion
     );
 
@@ -231,6 +267,80 @@ const EditMultiChoQues = ({
                     type="text"
                     placeholder="Eg. Entrepreneurship Lab"
                   />
+                </div>
+
+                <div className="w-full mt-20">
+                  <div className=" flex flex-col">
+                    <div className="flex items-center gap-4">
+                      <p className="h-2 w-2 bg-black rounded-full"></p>
+                      <p className="font-bold text-lg me-[36px]">
+                        Upload Files
+                      </p>
+                    </div>
+
+                    <div
+                      className="w-3/4 h-[253px] bg-[#F6F7FF] flex flex-col items-center justify-center rounded-b-lg mt-6 ms-6"
+                      onDragEnter={handleDragEnter}
+                      onDragLeave={handleDragLeave}
+                      onDragOver={handleDragOver}
+                      onDrop={handleDrop}
+                      style={{
+                        border: "0.917px dashed #000",
+                        background: "#F6F7FF",
+                      }}
+                    >
+                      {dragActive ? (
+                        <>
+                          <CloudUploadIcon />
+                          <p className="text-[17px] font-semibold mt-3 mb-3">
+                            Drag and drop{" "}
+                          </p>
+                          <p className="text-sm font-medium mb-3">Or</p>
+                        </>
+                      ) : (
+                        selectedFile && (
+                          <p>Selected file: {selectedFile.name}</p>
+                        )
+                      )}
+                      {selectedFile && (
+                        <p className=" text-center break-words max-w-full overflow-hidden">
+                          Selected file: {selectedFile.name}
+                        </p>
+                      )}
+                      {editingQueInfo?.additionalFiles && !selectedFile && (
+                        <p className=" text-center break-words max-w-full overflow-hidden">
+                          {editingQueInfo?.additionalFiles}
+                        </p>
+                      )}
+                      {!selectedFile && (
+                        <>
+                          <div className="flex gap-2 justify-center w-full">
+                            <label
+                              className="flex items-center px-5 py-2 rounded-lg bg-[#FFDB70] text-xs font-bold"
+                              htmlFor="input-file-upload"
+                            >
+                              Browser
+                            </label>
+                            <input
+                              className="w-[1%]"
+                              style={{ fontSize: "0", opacity: "0" }}
+                              type="file"
+                              // defaultValue={
+                              //   editingQueInfo?.additionalFiles
+                              //     ? editingQueInfo?.additionalFiles
+                              //     : ""
+                              // }
+                              accept=".jpg, .jpeg, .png"
+                              name="input-file-upload"
+                              id="input-file-upload"
+                              onChange={handleFileChange}
+                              multiple
+                            />
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
                 </div>
 
                 <div className="mt-20">

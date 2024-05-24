@@ -1,23 +1,16 @@
-import React, {
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
-
-import axios from 'axios';
-import { Link } from 'react-router-dom';
-
-import { CircularProgress } from '@mui/material';
-
-import eye from '../../../assets/ExecutionMentor/eye.svg';
-import { AuthContext } from '../../../contexts/AuthProvider';
-import Layout from '../Layout';
-import AssignmentUpNev from './AssignmentUpNev';
+import React, { useContext, useEffect, useState } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
+import { CircularProgress } from "@mui/material";
+import eye from "../../../assets/ExecutionMentor/eye.svg";
+import { AuthContext } from "../../../contexts/AuthProvider";
+import Layout from "../Layout";
+import AssignmentUpNev from "./AssignmentUpNev";
+import Loading from "../../Shared/Loading/Loading";
 
 const MentorAssignments = () => {
-  const [selectedTab, setSelectedTab] = useState("mentorAssignments");
-  const [pendingEvaluations, setPendingEvaluations] = useState();
-  const [countSubmittedResult, setCountSubmittedResult] = useState(0);
+  const { userInfo } = useContext(AuthContext);
+
   const [tableWidth, setTableWidth] = useState("100%");
   const [courses, setCourses] = useState([]);
   const [batchesData, setBatchesData] = useState([]);
@@ -27,21 +20,13 @@ const MentorAssignments = () => {
   const [allMyStudents, setAllMyStudents] = useState([]);
   const [filteredAssignments, setFilteredAssignment] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
- /*  console.log(selectedCourse)
-  console.log(selectedBatch)
-  console.log(selectedStatus) */
-
-  const handleTabClick = (tab) => {
-    setSelectedTab(tab);
-  };
-  ///
   const [assignments, setAssignments] = useState([]);
-
-
-  const { userInfo } = useContext(AuthContext);
+  const [mentors, setMentors] = useState([]);
   const [loading, setLoading] = useState(false);
   const [itemDetails, setItemDetails] = useState();
+  const [selectedMentor, setSelectedMentor] = useState({});
+  const [selectAllStatus, setSelectAllStatus] = useState(false);
+  const [selectedSubmissions, setSelectedSubmissions] = useState([]);
 
   useEffect(() => {
     if (userInfo) {
@@ -52,7 +37,6 @@ const MentorAssignments = () => {
         )
         .then((response) => {
           setItemDetails(response?.data);
-
         })
         .finally(() => {
           setLoading(false);
@@ -60,40 +44,38 @@ const MentorAssignments = () => {
     }
     setLoading(false);
   }, [userInfo]);
- // console.log(itemDetails)
-
-  //console.log(userInfo);
 
   useEffect(() => {
-    
     axios
-      // .get(
-      //   `${process.env.REACT_APP_BACKEND_API}/getSubmitAssignment/${userInfo.organizationId}`
-      // )
       .get(
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/organizationId/${userInfo.organizationId}`
       )
       .then((response) => {
         setAssignments(response?.data?.slice().reverse());
-        setFilteredAssignment(response?.data?.slice().reverse());
+        if (userInfo?.role === "admin")
+          setFilteredAssignment(response?.data?.slice().reverse());
+        else {
+          setFilteredAssignment(
+            response?.data
+              ?.slice()
+              .reverse()
+              ?.filter((item) => item?.mentor?.mentorId === userInfo?._id)
+          );
+        }
         //console.log(response?.data[0]);
         const ass = response?.data;
-        setIsLoading(false)
+        setIsLoading(false);
         // setPendingEvaluations(ass.length)
       })
-      .catch((error) => {console.error(error)
-        setIsLoading(false)});
+      .catch((error) => {
+        console.error(error);
+        setIsLoading(false);
+      });
     setIsLoading(false);
   }, [userInfo]);
-  //console.log(userInfo.organizationId);
 
   const filteredData = assignments.filter((item) => !item?.submitter.result);
-  //setPendingEvaluations(filteredData.length)
 
-  //console.log(assignments);
-  // console.log(countSubmittedResult)
-
-  /////////////////////////////
   useEffect(() => {
     // Calculate the desired width (e.g., 200px less than the screen width)
     const screenWidth = window.innerWidth;
@@ -115,6 +97,7 @@ const MentorAssignments = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
   useEffect(() => {
     axios
       .get(
@@ -122,10 +105,12 @@ const MentorAssignments = () => {
       )
       .then((response) => {
         setCourses(response?.data);
-        setIsLoading(false)
+        setIsLoading(false);
       })
-      .catch((error) => {console.error(error)
-        setIsLoading(false)});
+      .catch((error) => {
+        console.error(error);
+        setIsLoading(false);
+      });
   }, [userInfo]);
 
   useEffect(() => {
@@ -136,10 +121,12 @@ const MentorAssignments = () => {
         )
         .then((response) => {
           setBatchesData(response?.data);
-          setIsLoading(false)
+          setIsLoading(false);
         })
-        .catch((error) => {console.error(error)
-          setIsLoading(false)});
+        .catch((error) => {
+          console.error(error);
+          setIsLoading(false);
+        });
   }, [selectedCourse]);
 
   useEffect(() => {
@@ -149,11 +136,23 @@ const MentorAssignments = () => {
       )
       .then((response) => {
         setAllMyStudents(response?.data);
-        setIsLoading(false)
-
+        setIsLoading(false);
       })
-      .catch((error) => {console.error(error)
-        setIsLoading(false)});
+      .catch((error) => {
+        console.error(error);
+        setIsLoading(false);
+      });
+  }, [userInfo]);
+
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/mentors/organizationId/${userInfo?.organizationId}`
+      )
+      .then((response) => {
+        setMentors(response?.data);
+      })
+      .catch((error) => console.error(error));
   }, [userInfo]);
 
   const applyFilters = () => {
@@ -178,42 +177,146 @@ const MentorAssignments = () => {
     }
 
     // status
-    var matchingAssignments = assignments?.filter(assignment =>
-      filtered?.some(filteredStudent => assignment?.submitter?._id === filteredStudent?._id)
+    var matchingAssignments = assignments?.filter((assignment) =>
+      filtered?.some(
+        (filteredStudent) => assignment?.submitter?._id === filteredStudent?._id
+      )
     );
     if (selectedStatus === "Submitted") {
-      matchingAssignments = matchingAssignments?.filter((assignment) => (assignment?.submitter?.result))
+      matchingAssignments = matchingAssignments?.filter(
+        (assignment) => assignment?.submitter?.result
+      );
     }
     if (selectedStatus === "Pending") {
-      matchingAssignments = matchingAssignments?.filter((assignment) => (!assignment?.submitter?.result))
+      matchingAssignments = matchingAssignments?.filter(
+        (assignment) => !assignment?.submitter?.result
+      );
     }
     if (matchingAssignments) {
       setFilteredAssignment(matchingAssignments);
-    }
-    else {
-      console.log("none")
+    } else {
+      console.log("none");
       setFilteredAssignment(assignments);
     }
-
-
   };
+
   function formatDateTime(dateTimeString) {
     const dateObject = new Date(dateTimeString);
 
     const options = {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: true // Use 12-hour format with AM/PM
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true, // Use 12-hour format with AM/PM
     };
 
-    return dateObject.toLocaleString('en-US', options);
+    return dateObject.toLocaleString("en-US", options);
   }
 
-  console.log(filteredAssignments)
+  const handleAddOrUpdateMentor = async (submissionId, mentorId) => {
+    Loading();
+
+    const mentorData = mentors?.find((item) => item?._id === mentorId);
+
+    console.log(mentorData);
+
+    const sendMentorData = {
+      mentorId: mentorData?._id,
+      mentorEmail: mentorData?.email,
+      mentorRole: mentorData?.role,
+    };
+
+    console.log(sendMentorData);
+
+    if (sendMentorData?.mentorEmail) {
+      const newAssign = await axios.put(
+        // `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/assignments`,
+        `http://localhost:5000/api/v1/assignmentSubmissions/submissionId/${submissionId}/assign-mentor`,
+        { mentor: sendMentorData }
+      );
+      console.log(newAssign);
+      // if (newAssignment?.data?.result?.acknowledged) {
+      //   toast.success("Assignment added Successfully");
+      //   const newNotification = await axios.post(
+      //     `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/notifications/addNotification`,
+      //     {
+      //       message: `New assignment added in course ${course?.courseFullName}.`,
+      //       dateTime: new Date(),
+      //       redirectLink: `/questLevels/${course?._id}?week=${chapter?.weekId}`,
+      //       recipient: {
+      //         type: "Students",
+      //         organizationId: orgData?._id,
+      //         courseId: course?._id,
+      //         batches: selectedBatches,
+      //       },
+      //       type: "Create Task",
+      //       readBy: [],
+      //       notificationTriggeredBy: user?.email,
+      //     }
+      //   );
+      //   console.log(newNotification);
+      //   navigate(-1);
+      // }
+
+      // console.log(manageAssignment);
+    }
+    Loading().close();
+  };
+
+  const handleAddOrUpdateMentorToMultipleSubmission = async (mentorId) => {
+    Loading();
+
+    const mentorData = mentors?.find((item) => item?._id === mentorId);
+
+    console.log(mentorData);
+
+    const sendMentorData = {
+      mentorId: mentorData?._id,
+      mentorEmail: mentorData?.email,
+      mentorRole: mentorData?.role,
+    };
+
+    console.log(sendMentorData);
+
+    if (sendMentorData?.mentorEmail) {
+      const newAssign = await axios.put(
+        // `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/assignments`,
+        `http://localhost:5000/api/v1/assignmentSubmissions/assign-mentor`,
+        { mentor: sendMentorData, submissionIds: selectedSubmissions }
+      );
+      console.log(newAssign);
+      // if (newAssignment?.data?.result?.acknowledged) {
+      //   toast.success("Assignment added Successfully");
+      //   const newNotification = await axios.post(
+      //     `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/notifications/addNotification`,
+      //     {
+      //       message: `New assignment added in course ${course?.courseFullName}.`,
+      //       dateTime: new Date(),
+      //       redirectLink: `/questLevels/${course?._id}?week=${chapter?.weekId}`,
+      //       recipient: {
+      //         type: "Students",
+      //         organizationId: orgData?._id,
+      //         courseId: course?._id,
+      //         batches: selectedBatches,
+      //       },
+      //       type: "Create Task",
+      //       readBy: [],
+      //       notificationTriggeredBy: user?.email,
+      //     }
+      //   );
+      //   console.log(newNotification);
+      //   navigate(-1);
+      // }
+
+      // console.log(manageAssignment);
+    }
+    Loading().close();
+  };
+
+  console.log(filteredAssignments);
 
   return (
     <div>
@@ -230,34 +333,19 @@ const MentorAssignments = () => {
         <div className="flex mt-24">
           <div className="w-full mx-5">
             <div className="flex justify-between">
-
-
               <div className="mt-10 text-[#F50000] text-lg font-medium">
-                <p>{itemDetails?.pendingEvaluations ? itemDetails?.pendingEvaluations : "Total Pending evaluations"}  - {filteredData.length}</p>
+                <p>
+                  {itemDetails?.pendingEvaluations
+                    ? itemDetails?.pendingEvaluations
+                    : "Total Pending evaluations"}{" "}
+                  - {filteredData.length}
+                </p>
               </div>
             </div>
-            {/*  <div>
-              <input
-                onChange={(e) => {
-                  setFilteredAssignment(
-                    filteredAssignments?.filter((student) => {
-                      return Object.keys(student).some((key) =>
-                        student[key]
-                          ?.toString()
-                          .toLowerCase()
-                          .includes(e.target.value.toString().toLowerCase())
-                      );
-                    })
-                  );
-                }}
-                name="Search"
-                placeholder="Search"
-                className="block w-full px-4 py-2 mt-2 rounded-md border bg-white border-[#B7B7B7] focus:border-blue-500 focus:outline-none focus:ring"
-              />
-            </div> */}
 
-            <div className=" flex flex-col lg:flex-row lg:gap-10 gap-5 pb-3 text-lg mt-10">
-              {/*       <Link
+            <div className=" flex gap-10 pb-3 text-lg mt-10">
+              <>
+                {/*       <Link
                   to="/mentorAssignments"
                   onClick={() => handleTabClick("Assignments")}
                   style={{
@@ -273,7 +361,7 @@ const MentorAssignments = () => {
                 >
                   Assignments
                 </Link> */}
-              {/*   <Link
+                {/*   <Link
                   to="/assignmentsQuiz"
                   onClick={() => handleTabClick("Quiz")}
                   style={{
@@ -295,6 +383,7 @@ const MentorAssignments = () => {
                 >
                   Live Test
                 </Link> */}
+              </>
               <select
                 className="p-2 border rounded w-[90%]"
                 value={selectedCourse?._id}
@@ -303,7 +392,11 @@ const MentorAssignments = () => {
                   setSelectedCourse(course);
                 }}
               >
-                <option value="">{itemDetails?.selectCourse ? itemDetails?.selectCourse : "Select Course"}</option>
+                <option value="">
+                  {itemDetails?.selectCourse
+                    ? itemDetails?.selectCourse
+                    : "Select Course"}
+                </option>
                 {courses?.map((course) => (
                   <option key={course._id} value={course._id}>
                     {course?.courseFullName}
@@ -321,7 +414,11 @@ const MentorAssignments = () => {
                   setSelectedBatch(batch);
                 }}
               >
-                <option value="">{itemDetails?.selectBatch ? itemDetails?.selectBatch : "Select Batch"}</option>
+                <option value="">
+                  {itemDetails?.selectBatch
+                    ? itemDetails?.selectBatch
+                    : "Select Batch"}
+                </option>
                 {batchesData?.map((batch) => (
                   <option key={batch?._id} value={batch?._id}>
                     {batch?.batchName}
@@ -332,33 +429,123 @@ const MentorAssignments = () => {
                 className="p-2 border rounded w-[90%]"
                 // value={selectedBatch?._id}
                 onChange={(e) => {
-
                   setSelectedStatus(e.currentTarget.value);
                 }}
               >
-                <option value="">{itemDetails?.selectStatus ? itemDetails?.selectStatus : "Select Status"} </option>
+                <option value="">
+                  {itemDetails?.selectStatus
+                    ? itemDetails?.selectStatus
+                    : "Select Status"}{" "}
+                </option>
 
                 <option value="Submitted">
-                {itemDetails?.submitted ? itemDetails?.submitted : "Submitted"}
-                  
+                  {itemDetails?.submitted
+                    ? itemDetails?.submitted
+                    : "Submitted"}
                 </option>
-                <option value="Pending" >
-                {itemDetails?.pending ? itemDetails?.pending : "Pending"}
-                  
+                <option value="Pending">
+                  {itemDetails?.pending ? itemDetails?.pending : "Pending"}
                 </option>
-
               </select>
 
               <button
                 className="bg-sky-500 hover:bg-opacity-70 text-white px-4 py-2 rounded w-[50%]"
                 onClick={applyFilters}
               >
-                {itemDetails?.applyFilters ? itemDetails?.applyFilters : "Apply Filters"}
-                
+                {itemDetails?.applyFilters
+                  ? itemDetails?.applyFilters
+                  : "Apply Filters"}
               </button>
             </div>
-
-            {/*  <div className="flex ms-10 justify-between items-center text-lg font-bold mt-10 mb-7">
+            {userInfo?.role === "admin" && (
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4">
+                  <h1>Filter By Mentor:</h1>
+                  <select
+                    className="p-2 border rounded"
+                    onChange={async (e) => {
+                      e.preventDefault();
+                      setSelectedMentor(e.target.value);
+                      // await applyFilters();
+                      const filterAssignment = filteredAssignments?.filter(
+                        (item) => item?.mentor?.mentorId === e.target.value
+                      );
+                      setFilteredAssignment(filterAssignment);
+                    }}
+                  >
+                    {userInfo?.role === "admin" && (
+                      <>
+                        <option className="hidden" value="">
+                          Select Mentor
+                        </option>
+                        {mentors?.map((mentor) => (
+                          <option key={mentor._id} value={mentor._id}>
+                            {mentor?.name}
+                          </option>
+                        ))}
+                      </>
+                    )}
+                    {userInfo?.role !== "admin" && (
+                      <option className="hidden">{userInfo?.name}</option>
+                    )}
+                  </select>
+                </div>
+                <div>
+                  <input
+                    type="checkbox"
+                    id="selectAll"
+                    checked={
+                      selectedSubmissions?.length ===
+                      filteredAssignments?.length
+                    }
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelectAllStatus(true);
+                        let allSubmissionId = [];
+                        filteredAssignments?.forEach((item) => {
+                          allSubmissionId.push(item?._id);
+                        });
+                        setSelectedSubmissions(allSubmissionId);
+                      } else {
+                        setSelectAllStatus(false);
+                        setSelectedSubmissions([]);
+                      }
+                    }}
+                  />
+                  <label
+                    className=" text-base font-semibold  p-2"
+                    htmlFor="selectAll"
+                  >
+                    Select All
+                  </label>
+                </div>
+                {selectedSubmissions?.length > 0 && (
+                  <div className="flex items-center gap-4">
+                    <h1>Assign to:</h1>
+                    <select
+                      className="p-2 border rounded"
+                      onChange={(e) => {
+                        e.preventDefault();
+                        handleAddOrUpdateMentorToMultipleSubmission(
+                          e.target.value
+                        );
+                      }}
+                    >
+                      <option className="hidden" value="">
+                        Select Mentor
+                      </option>
+                      {mentors?.map((mentor) => (
+                        <option key={mentor._id} value={mentor._id}>
+                          {mentor?.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+              </div>
+            )}
+            <>
+              {/*  <div className="flex ms-10 justify-between items-center text-lg font-bold mt-10 mb-7">
                             <div className="flex items-center gap-4">
                                 <p className="h-2 w-2 bg-black rounded-full"></p>
                                 <p className="">
@@ -375,12 +562,12 @@ const MentorAssignments = () => {
                             </p>
                         </div> */}
 
-            {/*   <div className="flex justify-between items-center ms-10 mt-10 text-lg font-bold">
+              {/*   <div className="flex justify-between items-center ms-10 mt-10 text-lg font-bold">
               <p>Grade method</p>
               <p>Name of the Lab</p>
             </div> */}
 
-            {/*  <div className="grid grid-cols-3 gap-3 ms-5 my-10">
+              {/*  <div className="grid grid-cols-3 gap-3 ms-5 my-10">
               {assignments?.map((assignment) => (
                 <div className="bg-[#F0F7FF] rounded-[20px] flex gap-2 flex-col items-center py-5">
                   <p className="text-lg text-center font-bold">
@@ -415,67 +602,164 @@ const MentorAssignments = () => {
                 </div>
               ))}
             </div> */}
+            </>
             <div
-
-              className="h-[70vh] overflow-y-auto mt-5 lg:w-full w-[90%] "
+              style={{
+                maxWidth: `${window.innerWidth - 370}px`,
+              }}
+              className={`h-[60vh] w-fit overflow-y-auto mt-5 border`}
             >
-              <table className="min-w-full font-sans bg-white border border-gray-300">
+              <table className={` font-sans bg-white border border-gray-300`}>
                 <thead className="bg-gray-800 text-white sticky top-0">
                   <tr>
-                    <th className="py-3 px-6 border-b text-left">{itemDetails?.studentName ? itemDetails?.studentName : "Student Name"}</th>
-                    <th className="py-3 px-6 border-b text-left"> {itemDetails?.assignmentName ? itemDetails?.assignmentName : "Assignment Name"}</th>
-                    <th className="py-3 px-6 border-b text-left">{itemDetails?.submissionDate ? itemDetails?.submissionDate : "Submission Date"}</th>
-                    <th className="py-3 px-6 border-b text-center">{itemDetails?.status ? itemDetails?.status : "Status"}</th>
-                    <th className="py-3 px-6 border-b text-left"> {itemDetails?.viewAssignment ? itemDetails?.viewAssignment : "View Assignment"} </th>
+                    <th className="py-3 px-6 border-b text-left whitespace-nowrap ">
+                      Student Name
+                    </th>
+                    <th className="py-3 px-6 border-b text-left whitespace-nowrap">
+                      Assignment Name
+                    </th>
+                    <th className="py-3 px-6 border-b text-left whitespace-nowrap">
+                      Submission Date
+                    </th>
+                    <th className="py-3 px-6 border-b text-center whitespace-nowrap">
+                      Submission Status
+                    </th>
+                    <th className="py-3 px-6 border-b text-left whitespace-nowrap">
+                      View Assignment
+                    </th>
+                    <th className="py-3 px-6 border-b text-left whitespace-nowrap">
+                      Assigned Mentor
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {
-                    filteredAssignments?.map((assignment, index) => {
+                  {filteredAssignments?.map((assignment, index) => {
+                    return (
+                      <tr
+                        key={assignment?._id}
+                        className={
+                          index % 2 === 0 ? "bg-gray-100" : "bg-gray-50"
+                        }
+                      >
+                        <td className="py-4 px-6 border-b text-left whitespace-nowrap">
+                          {userInfo?.role === "admin" && (
+                            <input
+                              className="mr-2"
+                              type="checkbox"
+                              id={`assignment-${assignment?._id}`}
+                              name={`assignment-${assignment?._id}`}
+                              value={`${assignment?._id}`}
+                              checked={selectedSubmissions?.includes(
+                                assignment?._id
+                              )}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setSelectAllStatus(true);
+                                  setSelectedSubmissions([
+                                    ...selectedSubmissions,
+                                    assignment?._id,
+                                  ]);
+                                } else {
+                                  setSelectAllStatus(false);
+                                  let allSubmissionId =
+                                    selectedSubmissions?.filter(
+                                      (item) => item !== assignment?._id
+                                    );
+                                  setSelectedSubmissions(allSubmissionId);
+                                }
+                              }}
+                            />
+                          )}
+                          {assignment?.submitter?.name}
+                        </td>
+                        <td className="py-4 px-6 border-b text-left">
+                          {assignment?.taskName}
+                        </td>
+                        <td className="py-4 px-6 border-b text-left">
+                          {formatDateTime(assignment?.submissionDateTime)}
+                        </td>
 
-                      return (
-                        <tr
-                          key={assignment?._id}
-                          className={index % 2 === 0 ? "bg-gray-100" : "bg-gray-50"}
-                        >
-                          <td className="py-4 px-6 border-b text-left">
-                            {assignment?.submitter?.name}
-                          </td>
-                          <td className="py-4 px-6 border-b text-left">
-                            {assignment?.taskName}
-                          </td>
-                          <td className="py-4 px-6 border-b text-left">
-                            {formatDateTime(assignment?.submissionDateTime)}
-                          </td>
-
-                          <td className="py-4 px-6 border-b text-left">
-                            {assignment?.submitter?.result ? (
-                              <span className="text-green font-semibold">
-                                &#x2713; {itemDetails?.evaluated ? itemDetails?.evaluated : "Evaluated"} 
-                              </span>
-                            ) : (
-                              <span className="text-red-600 font-semibold">
-                                &#x2717; {itemDetails?.pending ? itemDetails?.pending : "Pending"} 
-                              </span>
+                        <td className="py-4 px-6 border-b text-left">
+                          {assignment?.submitter?.result ? (
+                            <span className="text-green font-semibold">
+                              &#x2713;{" "}
+                              {itemDetails?.evaluated
+                                ? itemDetails?.evaluated
+                                : "Evaluated"}
+                            </span>
+                          ) : (
+                            <span className="text-red-600 font-semibold">
+                              &#x2717;{" "}
+                              {itemDetails?.pending
+                                ? itemDetails?.pending
+                                : "Pending"}
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-4 px-6 border-b text-left">
+                          <Link
+                            to={`/assignmentEvaluation2/${assignment?._id}`}
+                            className="flex gap-2 bg-[#081765] hover:bg-opacity-70 text-[#fff] p-2 rounded-md mb-2 mt-3"
+                          >
+                            <img src={eye} alt="eye" />
+                            <p className="text-base font-normal">
+                              {itemDetails?.view ? itemDetails?.view : "View"}
+                            </p>
+                          </Link>
+                        </td>
+                        <td className="py-4 px-6 border-b text-left">
+                          <select
+                            className="p-2 border rounded"
+                            defaultValue={
+                              mentors?.find(
+                                (item) =>
+                                  item?._id === assignment?.mentor?.mentorId
+                              )?._id
+                            }
+                            onChange={(e) => {
+                              e.preventDefault();
+                              handleAddOrUpdateMentor(
+                                assignment?._id,
+                                e.target.value
+                              );
+                            }}
+                          >
+                            {userInfo?.role === "admin" && (
+                              <>
+                                <option className="hidden" value="">
+                                  {mentors?.find(
+                                    (item) =>
+                                      item?._id === assignment?.mentor?.mentorId
+                                  )?.name || "Select Mentor"}
+                                </option>
+                                {mentors?.map((mentor) => (
+                                  <option
+                                    className={`${
+                                      mentors?.find(
+                                        (item) =>
+                                          item?._id ===
+                                          assignment?.mentor?.mentorId
+                                      )?._id === mentor?._id && "hidden"
+                                    }`}
+                                    key={mentor._id}
+                                    value={mentor._id}
+                                  >
+                                    {mentor?.name}
+                                  </option>
+                                ))}
+                              </>
                             )}
-                          </td>
-                          <td className="py-4 px-6 border-b text-left">
-                            <Link
-                              to={`/assignmentEvaluation2/${assignment?._id}`}
-                              className="flex gap-2 bg-[#081765] hover:bg-opacity-70 text-[#fff] p-2 rounded-md mb-2 mt-3"
-                            >
-                              <img src={eye} alt="eye" />
-                              <p className="text-base font-normal">{itemDetails?.view ? itemDetails?.view : "View"}</p>
-                            </Link>
-                          </td>
-                        </tr>
-                      );
-                    })
-                  }
-
-
+                            {userInfo?.role !== "admin" && (
+                              <option className="hidden">
+                                {userInfo?.name}
+                              </option>
+                            )}
+                          </select>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
-
               </table>
             </div>
           </div>

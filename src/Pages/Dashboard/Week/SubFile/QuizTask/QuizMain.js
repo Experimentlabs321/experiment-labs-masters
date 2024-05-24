@@ -105,6 +105,12 @@ const QuizMain = ({
         <h1 className="text-[30px] font-[600] mt-[70px] ">
           {taskData?.quizName}
         </h1>
+        <p
+          className=" pt-2 "
+          dangerouslySetInnerHTML={{
+            __html: taskData?.quizDescription,
+          }}
+        ></p>
         <div className="mt-[95px] flex items-center justify-between">
           <div className="">
             <h1 className="text-[20px] font-[500]">Submit your Quiz</h1>
