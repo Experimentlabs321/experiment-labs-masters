@@ -268,7 +268,7 @@ const QuizGeneralInformation = () => {
       {selectedTab === "Quiz General Information" && (
         <div className="mx-10 my-20">
           <form onSubmit={handleSubmit}>
-            <div className="flex">
+            <div className="flex flex-col lg:flex-row">
               <div className="w-full">
                 <div className="">
                   <div className="flex items-center gap-4">
@@ -301,7 +301,7 @@ const QuizGeneralInformation = () => {
                   </div>
                 </div>
                 <div className="w-[80%]">
-                  <div className="flex justify-between mt-16">
+                  <div className="flex flex-col lg:flex-row justify-between mt-16 lg:gap-0 gap-3">
                     <div className=" ">
                       <div className="flex items-center gap-4">
                         <p className="h-2 w-2 bg-black rounded-full"></p>
@@ -401,7 +401,7 @@ const QuizGeneralInformation = () => {
                   />
                 </div>
 
-                <div className="flex justify-between mt-16">
+                <div className="flex justify-between flex-col lg:flex-row lg:gap-0 gap-3 mt-16">
                   <div>
                     <div className="flex items-center gap-4">
                       <p className="h-2 w-2 bg-black rounded-full"></p>
@@ -437,7 +437,7 @@ const QuizGeneralInformation = () => {
                       </select>
                     </div>
                   </div>
-                  <div className="ms-16">
+                  <div className="lg:ms-16">
                     <div className="flex items-center gap-4">
                       <p className="h-2 w-2 bg-black rounded-full"></p>
                       <p className="font-semibold text-[#000000]  py-2">

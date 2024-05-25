@@ -56,7 +56,7 @@ const QuestionForm = ({
           <h1 className="text-2xl underline font-bold">
             Question {selectedQuestionData?.questionNo}
           </h1>
-          <div className="mb-[45px] flex gap-10 me-5">
+          <div className="mb-[45px] flex flex-col lg:flex-row gap-10 me-5">
             <div className=" basis-1/2">
               <div className="mt-10">
                 <div className="flex items-center gap-4">

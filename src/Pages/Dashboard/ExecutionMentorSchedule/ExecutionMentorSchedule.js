@@ -632,7 +632,7 @@ const ExecutionMentorSchedule = () => {
         </div> */}
 
         <div className="flex">
-          <div className="w-full mx-10 mt-10">
+          <div className="w-full lg:mx-10 lg:mt-10 mt-20">
             {/* <div className="mt-10">
               {
                 agenda ?    <Calendar
@@ -755,8 +755,8 @@ const ExecutionMentorSchedule = () => {
                     // dayRender={handleDayRender}
                     />
                   </div>
-                  <form onSubmit={handleSubmit} className="ms-[40px]  mt-12">
-                    <div className="grid grid-cols-2 gap-10">
+                  <form onSubmit={handleSubmit} className="lg:ms-[40px] mx-5  mt-12">
+                    <div className="grid lg:grid-cols-2 grid-cols-1 gap-10">
                       <div className="">
                         <div className="flex items-center gap-4">
                           <p className="h-2 w-2 bg-black rounded-full"></p>
@@ -768,7 +768,7 @@ const ExecutionMentorSchedule = () => {
 
                         <input
                           required
-                          className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
+                          className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
                           name="dateRange"
                           type="number"
                           defaultValue={adminCalendarInfo?.dateRange}
@@ -786,7 +786,7 @@ const ExecutionMentorSchedule = () => {
 
                         <input
                           required
-                          className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
+                          className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
                           name="minimumTime"
                           type="time"
                           defaultValue={adminCalendarInfo?.minimumTime}
@@ -803,7 +803,7 @@ const ExecutionMentorSchedule = () => {
 
                         <input
                           required
-                          className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
+                          className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
                           name="maximumTime"
                           type="time"
                           defaultValue={adminCalendarInfo?.maximumTime}
@@ -821,7 +821,7 @@ const ExecutionMentorSchedule = () => {
 
                         <input
                           required
-                          className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
+                          className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
                           name="meetingDuration"
                           type="number"
                           defaultValue={adminCalendarInfo?.meetingDuration}
@@ -875,7 +875,7 @@ const ExecutionMentorSchedule = () => {
 
                         <select
                           required
-                          className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1]"
+                          className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1]"
                           name="meetingType"
                           defaultValue={adminCalendarInfo?.meetingType}
                           onChange={(e) => setMeetingTypee(e.target.value)}

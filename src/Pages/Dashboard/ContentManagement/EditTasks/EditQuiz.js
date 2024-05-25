@@ -152,8 +152,8 @@ const EditQuiz = () => {
     <div>
       <Layout>
         <>
-          <div className="text-[#3E4DAC] text-[26px] font-bold  py-[35px] ps-[40px]">
-            <p>Manage Quiz in Topic 1</p>
+          <div className="text-[#3E4DAC] text-[26px] font-bold  py-[35px] ps-[40px] mt-20 lg:mt-0">
+            <p>Manage Quiz in {chapter?.chapterName}</p>
           </div>
           <div className="px-10 flex items-center gap-10 pb-3 text-lg">
             <button
@@ -220,7 +220,7 @@ const EditQuiz = () => {
         {selectedTab === "Quiz General Information" && (
           <div className="mx-10 my-20">
             <form onSubmit={handleSubmit}>
-              <div className="flex">
+              <div className="flex flex-col lg:flex-row lg:gap-0 gap-3">
                 <div className="w-full">
                   <div className="">
                     <div className="flex items-center gap-4">
@@ -257,7 +257,7 @@ const EditQuiz = () => {
                     </div>
                   </div>
                   <div className="w-[80%]">
-                    <div className="flex justify-between mt-16">
+                    <div className="flex justify-between flex-col lg:flex-row lg:gap-0 gap-3 mt-16">
                       <div className=" ">
                         <div className="flex items-center gap-4">
                           <p className="h-2 w-2 bg-black rounded-full"></p>
@@ -358,7 +358,7 @@ const EditQuiz = () => {
                     />
                   </div>
 
-                  <div className="flex justify-between mt-16">
+                  <div className="flex flex-col lg:flex-row justify-between mt-16">
                     <div>
                       <div className="flex items-center gap-4">
                         <p className="h-2 w-2 bg-black rounded-full"></p>
@@ -394,7 +394,7 @@ const EditQuiz = () => {
                         </select>
                       </div>
                     </div>
-                    <div className="ms-16">
+                    <div className="lg:ms-16">
                       <div className="flex items-center gap-4">
                         <p className="h-2 w-2 bg-black rounded-full"></p>
                         <p className="font-semibold text-[#000000]  py-2">

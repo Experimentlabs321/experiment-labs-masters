@@ -145,7 +145,7 @@ const AdminStatistics = ({ itemDetails }) => {
         </div>
       )}
 
-      <div className="flex gap-5">
+      <div className="lg:flex grid grid-cols-2 gap-5">
         <Link
           to="/myStudents"
           className="w-[160px] justify-center items-stretch shadow-sm bg-[#8064F0] flex flex-col px-2 rounded-md py-4"
@@ -213,7 +213,7 @@ const AdminStatistics = ({ itemDetails }) => {
 
         <Link
           to="/mentorAssignments"
-          className="w-[160px] justify-center ms-10 items-stretch shadow-sm bg-[#6278FF] flex flex-col px-2 rounded-md py-4"
+          className="w-[160px] justify-center lg:ms-10 items-stretch shadow-sm bg-[#6278FF] flex flex-col px-2 rounded-md py-4"
         >
           <div className="justify-between items-stretch flex gap-5">
             <div className="text-white text-sm font-medium tracking-widest">

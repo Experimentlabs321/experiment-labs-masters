@@ -221,7 +221,7 @@ const EditCourse = () => {
           }
           alt=""
         />
-        <div className="text-[#3E4DAC] text-[26px] font-bold border-b border-b-[#A4A4A4] py-[35px] ps-[40px]">
+        <div className="text-[#3E4DAC] text-[26px] mt-20 lg:mt-0 font-bold border-b border-b-[#A4A4A4] py-[35px] ps-[40px]">
           <p>Create/Edit Course </p>
         </div>
         <form onSubmit={handleSubmit} className=" ms-10  mt-12">
@@ -245,7 +245,7 @@ const EditCourse = () => {
             ></i>
           </div>
           {isOpenGeneralCourseInfo && (
-            <div className="dropdown-menu mt-[71px] mb-[45px] flex justify-between me-10">
+            <div className="dropdown-menu mt-[71px] mb-[45px] flex flex-col lg:flex-row gap-3 lg:gap-0 justify-between me-10">
               <div>
                 <div className="">
                   <div className="flex items-center gap-4">
@@ -348,19 +348,19 @@ const EditCourse = () => {
                     </p>
                   </div>
                   <div className="flex">
-                    <button
-                      onMouseDown={async () => {
-                        try {
-                          await navigator.clipboard.writeText(
-                            `${rootUrl}/payment/${id}`
-                          );
-                          toast.success("Url Copied!");
-                        } catch (err) {
-                          console.error("Unable to copy to clipboard", err);
-                        }
-                      }}
-                      className="mt-6 ms-6 border rounded-l-md w-fit h-[50px] p-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                    >{`${rootUrl}/payment/${id}`}</button>
+                  <button
+  onMouseDown={async () => {
+    try {
+      await navigator.clipboard.writeText(`${rootUrl}/payment/${id}`);
+      toast.success("Url Copied!");
+    } catch (err) {
+      console.error("Unable to copy to clipboard", err);
+    }
+  }}
+  className="mt-6 ms-6 border rounded-l-md lg:w-fit w-[80%] h-[50px] p-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] overflow-hidden text-ellipsis whitespace-nowrap"
+>
+  {`${rootUrl}/payment/${id}`}
+</button>
                     <button
                       className="mt-6 border rounded-r-md w-fit h-[50px] p-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                       onClick={async () => {
@@ -485,7 +485,7 @@ const EditCourse = () => {
                   </div>
                   <div>
                     {isOpenaddcoursecategory && (
-                      <div className="modal-overla w-[438px] h-[325px] rounded-md mt-3 bg-[#fff] border">
+                      <div className="modal-overla lg:w-[438px] w-[100%] h-[325px] rounded-md mt-3 bg-[#fff] border">
                         <div className="modal-content">
                           <div className="border-b flex justify-between items-center pt-6 px-10 pb-5 text-[#3E4DAC] text-xl font-bold">
                             <p>Add Course Category</p>
@@ -506,7 +506,7 @@ const EditCourse = () => {
 
                             <div>
                               <input
-                                className="mt-6 border rounded-md w-[358px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                                className="mt-6 border rounded-md lg:w-[358px] w-[100%] lg:h-[50px] h-[40px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                                 name="courseCategory"
                                 type="text"
                                 placeholder="Eg. Entrepreneurship Lab"
@@ -516,7 +516,7 @@ const EditCourse = () => {
                               <div className="flex justify-center mt-5">
 
                                 <button
-                                  className="px-[20px] py-3 bg-[#3E4DAC] hover:bg-opacity-70 text-[#fff] cursor-pointer text-xl font-bold rounded-lg"
+                                  className="px-[20px] lg:py-3 py-2 bg-[#3E4DAC] hover:bg-opacity-70 text-[#fff] cursor-pointer text-xl font-bold rounded-lg"
                                   onClick={handleSubmitCourseCategory}>Add</button>
 
 
@@ -662,7 +662,7 @@ const EditCourse = () => {
           </div>
 
           {isOpenCourseFormat && (
-            <div className="dropdown-menu mt-[71px] mb-[45px] flex justify-between me-10">
+            <div className="dropdown-menu mt-[71px] mb-[45px] flex flex-col lg:flex-row gap-3 lg:gap-0 justify-between me-10">
               <div>
                 <div className="">
                   <div className="flex items-center gap-4">
@@ -867,7 +867,7 @@ const EditCourse = () => {
           </div>
 
           {isOpenCompletionTracking && (
-            <div className="dropdown-menu mt-[71px] mb-[45px] flex justify-between ms-10">
+            <div className="dropdown-menu mt-[71px] mb-[45px] flex flex-col lg:flex-row gap-3 lg:gap-0 justify-between ">
               <div>
                 <div className="">
                   <div className="flex items-center gap-4">

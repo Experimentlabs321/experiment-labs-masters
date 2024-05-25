@@ -60,7 +60,7 @@ const AdminDashboardHome = () => {
             background:
               "linear-gradient(91deg, #4A56A9 11.84%, #4250AC 78.46%)",
           }}
-          className=" lg:flex items-center justify-between mt-[10px] lg:ps-[40px] py-5 "
+          className=" lg:flex items-center justify-between lg:mt-[10px] mt-24 lg:ps-[40px] py-5 "
         >
           <div className="lg:ms-10 flex items-center justify-center">
             <img

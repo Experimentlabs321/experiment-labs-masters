@@ -21,6 +21,10 @@ const General = ({
   enableDrip,
   setTaskDrip,
   taskDrip,
+  executionMentors,
+  setExecutionMentors,
+  selectedMentors,
+  setSelectedMentors,
 }) => {
   // upload file
   const [dragActive, setDragActive] = useState(true);
@@ -55,12 +59,35 @@ const General = ({
     const file = e.target.files[0];
     setSelectedFile(file);
   };
+  const handleOptionChangeMentor = (event, optionValue) => {
+    // const optionValue = event.target.value;
+    const isChecked = event.target.checked;
+
+    if (isChecked) {
+      setSelectedMentors([
+        ...selectedMentors,
+        { mentorEmail: optionValue?.email, mentorId: optionValue?._id },
+      ]);
+      // if (selectedMentors) {
+      // } else {
+      //   setSelectedMentors([
+      //     { mentorEmail: optionValue?.email, mentorId: optionValue?._id },
+      //   ]);
+      // }
+    } else {
+      setSelectedMentors(
+        selectedMentors.filter(
+          (option) => option?.mentorId !== optionValue?._id
+        )
+      );
+    }
+  };
 
   console.log(schedule);
   return (
     <div>
       <div className="dropdown-menu mt-[71px] mb-[45px] border-b-2 ">
-        <div className="flex justify-between me-10 mb-20">
+        <div className="flex flex-col lg:flex-row justify-between me-10 mb-20">
           <div>
             <div className="">
               <div className="flex items-center gap-4">
@@ -74,34 +101,12 @@ const General = ({
                 defaultValue={
                   assignmentData ? assignmentData?.assignmentName : ""
                 }
-                className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                className="mt-6 ms-6 border rounded-md lg:w-[430px] w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                 name="assignmentName"
                 type="text"
                 placeholder="Eg. Excel with Shekhar Gupta"
               />
             </div>
-
-            {/* <div className="mt-12 flex flex-col">
-              <div className="flex items-center gap-4">
-                <p className="h-2 w-2 bg-black rounded-full"></p>
-                <p className="font-bold text-lg me-[36px]">
-                  {" "}
-                  Assignment Starting Date and Time{" "}
-                </p>
-                <img src={required} alt="required" />
-              </div>
-
-              <input
-                required
-                defaultValue={
-                  assignmentData ? assignmentData?.AssignmentEndingDateTime : ""
-                }
-                className="mt-6 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                name="AssignmentStartingDateTime"
-                type="datetime-local"
-                placeholder="Eg. Entrepreneurship Lab"
-              />
-            </div> */}
 
             <div className="mt-12">
               <div className="flex items-center gap-4">
@@ -140,36 +145,12 @@ const General = ({
                     ? assignmentData?.assignmentTotalPointsMarks
                     : ""
                 }
-                className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                className="mt-6 ms-6 border rounded-md lg:w-[430px] w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                 name="assignmentTotalPointsMarks"
                 type="text"
                 placeholder="Eg. 40 point"
               />
             </div>
-
-            {/* <div className="mt-12 flex flex-col">
-              <div className="flex items-center gap-4">
-                <p className="h-2 w-2 bg-black rounded-full"></p>
-                <p className="font-bold text-lg me-[36px]">
-                  {" "}
-                  Assignment Ending Date and Time{" "}
-                </p>
-                <img src={required} alt="required" />
-              </div>
-
-              <input
-                required
-                defaultValue={
-                  assignmentData
-                    ? assignmentData?.AssignmentStartingDateTime
-                    : ""
-                }
-                className="mt-6 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                name="AssignmentEndingDateTime"
-                type="datetime-local"
-                placeholder="Eg. Entrepreneurship Lab"
-              />
-            </div> */}
 
             <div className="w-full mt-12">
               <div className=" flex flex-col">
@@ -284,7 +265,7 @@ const General = ({
                 <h1 className="text-xl font-bold">
                   {singleSchedule?.batchName}
                 </h1>
-                <div className="flex">
+                <div className="flex flex-col lg:flex-row">
                   <div className="mb-12 basis-1/2 flex flex-col">
                     <div className="flex items-center gap-4">
                       <p className="h-2 w-2 bg-black rounded-full"></p>
@@ -344,6 +325,42 @@ const General = ({
             ))}
           </>
         )}
+        <div className="mb-5">
+          <div className="flex items-center gap-4">
+            <p className="h-2 w-2 bg-black rounded-full"></p>
+            <p className="font-bold text-lg me-[36px]">Select Mentor</p>
+            {/* <img src={required} alt="" /> */}
+          </div>
+          <ul className="flex gap-4 flex-wrap ">
+            {executionMentors?.map((option, index) => {
+              return (
+                <>
+                  <li
+                    key={index}
+                    className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] "
+                  >
+                    <input
+                      type="checkbox"
+                      id="student"
+                      name={option?._id}
+                      value={option?._id}
+                      checked={selectedMentors?.find(
+                        (item) => item?.mentorId === option?._id
+                      )}
+                      onChange={(e) => handleOptionChangeMentor(e, option)}
+                      className=" mb-1"
+                    />
+                    <div className="flex mb-1 items-center">
+                      <label className="ms-4" htmlFor={option?._id}>
+                        {option?.name}
+                      </label>
+                    </div>
+                  </li>
+                </>
+              );
+            })}
+          </ul>
+        </div>
         <div className="mb-8">
           <ContentStage
             contentStage={contentStage}

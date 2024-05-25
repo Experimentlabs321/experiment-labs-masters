@@ -23,7 +23,7 @@ const OnGoingClasses = () => {
           <AssignmentUpNev page={"liveClasses"} />
         </div>
 
-        <div className="flex mt-24">
+        <div className="flex mt-24 mx-10">
           <div className="w-full">
             <div className="flex justify-between items-center">
               <div className="px-10 flex gap-10 pb-3 text-lg mt-10  ">
@@ -392,9 +392,9 @@ const OnGoingClasses = () => {
             </div>
           </div>
 
-          <div>
+         {/*  <div>
             <AssignmentRightNev />
-          </div>
+          </div> */}
         </div>
       </Layout>
     </div>
