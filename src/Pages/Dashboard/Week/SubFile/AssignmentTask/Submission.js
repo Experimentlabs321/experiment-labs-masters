@@ -105,12 +105,14 @@ const Submission = ({ taskData, count, setCount }) => {
       taskName: taskData?.taskName,
       chapterName: localStorage.getItem("chapter"),
       courseName: localStorage.getItem("course"),
+      chapterId: taskData?.chapterId,
+      courseId: taskData?.courseId,
+      batchId: batch[0]?._id,
       weekName: JSON.parse(localStorage.getItem("currentWeek"))?.weekName,
       fileUrl: fileUrl,
       submitter: userInfo,
       submissionDateTime: new Date(),
     };
-    console.log(user?.email, "shihab77023@gmail.com", userInfo?.organizationId);
 
     console.log(manageAssignment);
 
@@ -121,7 +123,6 @@ const Submission = ({ taskData, count, setCount }) => {
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions`,
         manageAssignment
       );
-      console.log(newAssignment);
 
       const sendData = {
         participantChapter: {
@@ -191,11 +192,9 @@ const Submission = ({ taskData, count, setCount }) => {
       }
 
       Loading().close();
-
-      console.log(manageAssignment);
     }
   };
-  console.log(taskData);
+  console.log(taskData?.courseId, taskData?.chapterId, batch[0]?._id);
 
   return (
     <div>

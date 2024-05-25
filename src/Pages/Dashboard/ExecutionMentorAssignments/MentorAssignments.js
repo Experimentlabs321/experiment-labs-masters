@@ -155,49 +155,86 @@ const MentorAssignments = () => {
       .catch((error) => console.error(error));
   }, [userInfo]);
 
+  // const applyFilters = () => {
+  //   let filtered = allMyStudents;
+  //   console.log(selectedStatus);
+
+  //   // Apply course filter
+  //   if (selectedCourse?._id) {
+  //     filtered = filtered?.filter((student) =>
+  //       student.courses?.some(
+  //         (course) => course?.courseId === selectedCourse?._id
+  //       )
+  //     );
+  //   }
+  //   //console.log(filtered);
+
+  //   // Apply batch filter
+  //   if (selectedBatch?._id) {
+  //     filtered = filtered?.filter((student) =>
+  //       student.courses?.some((batch) => batch?.batchId === selectedBatch?._id)
+  //     );
+  //   }
+
+  //   // status
+  //   var matchingAssignments = assignments?.filter((assignment) =>
+  //     filtered?.some(
+  //       (filteredStudent) => assignment?.submitter?._id === filteredStudent?._id
+  //     )
+  //   );
+  //   if (selectedStatus === "Submitted") {
+  //     matchingAssignments = matchingAssignments?.filter(
+  //       (assignment) => assignment?.submitter?.result
+  //     );
+  //   }
+  //   if (selectedStatus === "Pending") {
+  //     matchingAssignments = matchingAssignments?.filter(
+  //       (assignment) => !assignment?.submitter?.result
+  //     );
+  //   }
+  //   if (matchingAssignments) {
+  //     setFilteredAssignment(matchingAssignments);
+  //   } else {
+  //     console.log("none");
+  //     setFilteredAssignment(assignments);
+  //   }
+  // };
+
   const applyFilters = () => {
-    let filtered = allMyStudents;
+    let filtered = assignments;
     console.log(selectedStatus);
 
     // Apply course filter
     if (selectedCourse?._id) {
-      filtered = filtered?.filter((student) =>
-        student.courses?.some(
-          (course) => course?.courseId === selectedCourse?._id
-        )
+      filtered = filtered?.filter(
+        (submission) => submission?.courseId === selectedCourse?._id
       );
     }
     //console.log(filtered);
 
     // Apply batch filter
     if (selectedBatch?._id) {
-      filtered = filtered?.filter((student) =>
-        student.courses?.some((batch) => batch?.batchId === selectedBatch?._id)
+      filtered = filtered?.filter(
+        (submission) => submission?.batchId === selectedBatch?._id
       );
     }
 
-    // status
-    var matchingAssignments = assignments?.filter((assignment) =>
-      filtered?.some(
-        (filteredStudent) => assignment?.submitter?._id === filteredStudent?._id
-      )
-    );
     if (selectedStatus === "Submitted") {
-      matchingAssignments = matchingAssignments?.filter(
+      filtered = filtered?.filter(
         (assignment) => assignment?.submitter?.result
       );
     }
     if (selectedStatus === "Pending") {
-      matchingAssignments = matchingAssignments?.filter(
+      filtered = filtered?.filter(
         (assignment) => !assignment?.submitter?.result
       );
     }
-    if (matchingAssignments) {
-      setFilteredAssignment(matchingAssignments);
-    } else {
-      console.log("none");
-      setFilteredAssignment(assignments);
-    }
+    setFilteredAssignment(filtered);
+    // if (matchingAssignments) {
+    // } else {
+    //   console.log("none");
+    //   setFilteredAssignment(assignments);
+    // }
   };
 
   function formatDateTime(dateTimeString) {
@@ -343,7 +380,7 @@ const MentorAssignments = () => {
               </div>
             </div>
 
-            <div className=" flex gap-10 pb-3 text-lg mt-10">
+            <div className=" flex flex-col md:flex-row gap-10 pb-3 text-lg mt-10">
               <>
                 {/*       <Link
                   to="/mentorAssignments"
@@ -458,7 +495,7 @@ const MentorAssignments = () => {
               </button>
             </div>
             {userInfo?.role === "admin" && (
-              <div className="flex items-center gap-4">
+              <div className="flex flex-col md:flex-row items-center gap-4">
                 <div className="flex items-center gap-4">
                   <h1>Filter By Mentor:</h1>
                   <select
@@ -489,35 +526,6 @@ const MentorAssignments = () => {
                       <option className="hidden">{userInfo?.name}</option>
                     )}
                   </select>
-                </div>
-                <div>
-                  <input
-                    type="checkbox"
-                    id="selectAll"
-                    checked={
-                      selectedSubmissions?.length ===
-                      filteredAssignments?.length
-                    }
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        setSelectAllStatus(true);
-                        let allSubmissionId = [];
-                        filteredAssignments?.forEach((item) => {
-                          allSubmissionId.push(item?._id);
-                        });
-                        setSelectedSubmissions(allSubmissionId);
-                      } else {
-                        setSelectAllStatus(false);
-                        setSelectedSubmissions([]);
-                      }
-                    }}
-                  />
-                  <label
-                    className=" text-base font-semibold  p-2"
-                    htmlFor="selectAll"
-                  >
-                    Select All
-                  </label>
                 </div>
                 {selectedSubmissions?.length > 0 && (
                   <div className="flex items-center gap-4">
@@ -605,7 +613,9 @@ const MentorAssignments = () => {
             </>
             <div
               style={{
-                maxWidth: `${window.innerWidth - 370}px`,
+                maxWidth: `${
+                  window.innerWidth - (window.innerWidth > 1024 ? 370 : 40)
+                }px`,
               }}
               className={`h-[60vh] w-fit overflow-y-auto mt-5 border`}
             >
@@ -614,6 +624,35 @@ const MentorAssignments = () => {
                   <tr>
                     <th className="py-3 px-6 border-b text-left whitespace-nowrap ">
                       Student Name
+                      <div>
+                        <input
+                          type="checkbox"
+                          id="selectAll"
+                          checked={
+                            selectedSubmissions?.length ===
+                            filteredAssignments?.length
+                          }
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectAllStatus(true);
+                              let allSubmissionId = [];
+                              filteredAssignments?.forEach((item) => {
+                                allSubmissionId.push(item?._id);
+                              });
+                              setSelectedSubmissions(allSubmissionId);
+                            } else {
+                              setSelectAllStatus(false);
+                              setSelectedSubmissions([]);
+                            }
+                          }}
+                        />
+                        <label
+                          className=" text-base font-semibold  p-2"
+                          htmlFor="selectAll"
+                        >
+                          Select All
+                        </label>
+                      </div>
                     </th>
                     <th className="py-3 px-6 border-b text-left whitespace-nowrap">
                       Assignment Name
