@@ -135,10 +135,11 @@ const AdminCalendarSchedule = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/getCalendarInfoByEmail/email/${userInfo?.email}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/email/${userInfo?.email}`
       )
       .then((response) => {
-        setAdminCalendarInfo(response?.data);
+        console.log(response);
+        setAdminCalendarInfo(response?.data?.data);
       })
 
       .catch((error) => console.error(error));
@@ -228,15 +229,17 @@ const AdminCalendarSchedule = () => {
     const meetingDuration = adminCalendarInfo?.meetingDuration;
     const offDays = adminCalendarInfo?.offDays;
     const meetingType = adminCalendarInfo?.meetingType;
-
-    const calendarInfo = { ...adminCalendarInfo };
+    const calendarInfo = { ...adminCalendarInfo,email : userInfo?.email };
+    console.log(adminCalendarInfo);
+    calendarInfo.syncedMail =  session?.user?.email;
     calendarInfo.events = relevantEvents;
     delete calendarInfo._id;
     console.log(calendarInfo);
     const newSchedule = await axios.post(
-      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/updateOrInsertCalendarInfo/email/${calendarInfo?.email}`,
-      calendarInfo
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo`,
+      {calendarInfo : calendarInfo}
     );
+    console.log(newSchedule);
     const manageSchedule = {
       scheduleName,
       taskName: scheduleName,
@@ -940,7 +943,7 @@ const AdminCalendarSchedule = () => {
                   </div>
 
                   <div className="flex items-center gap-10 justify-center mt-20 mb-10">
-                    {/* <button className="bg-sky-600 px-4 py-3 text-white text-lg rounded-lg" onClick={() => signOut()}>Sign out </button> */}
+                   <button className="bg-sky-600 px-4 py-3 text-white text-lg rounded-lg" onClick={() => signOut()}>Sign out </button> 
                     <button
                       className="px-[30px] py-3 bg-[#FF557A] text-[#fff] text-xl font-bold rounded-lg ms-20 "
                       type="submit"
