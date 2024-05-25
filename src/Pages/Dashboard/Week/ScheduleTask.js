@@ -70,14 +70,14 @@ const ScheduleTask = ({ taskData, week }) => {
       const busyStartDateTime = new Date(busySlot.start.dateTime);
       const busyEndDateTime = new Date(busySlot.end.dateTime);
 
-      // console.log("Checking Busy Start:", busyStartDateTimeString);
-      // console.log("Checking Busy End:", busyEndDateTimeString);
+      console.log("Checking Busy Start:", busyStartDateTimeString);
+      console.log("Checking Busy End:", busyEndDateTimeString);
       if (
         inputDateTime >= busyStartDateTime &&
-        inputDateTime <= busyEndDateTime
+        inputDateTime < busyEndDateTime
       ) {
         // if (inputTimeString >= busyStartTime && inputTimeString >= busyEndTime)
-        console.log("busy start and end: ", typeof busyStartTime, busyEndTime);
+        console.log("busy start and end: ", busyStartTime, busyEndTime);
         return true;
       }
       // Check if the input date matches the busy date and if input time falls within the busy time range
@@ -194,8 +194,8 @@ const ScheduleTask = ({ taskData, week }) => {
       const startTime = event.start?.dateTime
         ? new Date(event.start.dateTime)
         : event.start_time
-        ? new Date(event.start_time)
-        : null;
+          ? new Date(event.start_time)
+          : null;
 
       console.log("from :", from, "to :", to, "start :", startTime);
       // Ensure both startTime and endTime are valid Date objects before comparing
@@ -212,10 +212,10 @@ const ScheduleTask = ({ taskData, week }) => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/getCalendarInfoByEmail/email/${taskData?.adminCalenderEmail}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/email/${taskData?.adminCalenderEmail}`
       )
       .then((response) => {
-        setAdminCalendarInfo(response?.data);
+        setAdminCalendarInfo(response?.data?.data);
 
         const currentDate = new Date(); // Current date
         const endDate = new Date(); // Create a new Date object for the end date
@@ -461,7 +461,8 @@ const ScheduleTask = ({ taskData, week }) => {
         if (!startDateTime || !endDateTime) {
           return null; // Skip events without a valid start or end dateTime
         }
-
+        const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        console.log(userTimeZone);
         // Convert the start and end times to the Asia/Kolkata time zone
         const options = {
           timeZone: "Asia/Kolkata",
@@ -548,7 +549,7 @@ const ScheduleTask = ({ taskData, week }) => {
     }
     return timeSlots;
   };
-  useEffect(() => {}, [userRequesterEvents]);
+  useEffect(() => { }, [userRequesterEvents]);
   // Function to filter out busy time slots
   const filterBusyTimeSlots = (allTimeSlots, busyTimeSlots, reservedEvent) => {
     return allTimeSlots.filter((timeSlot) => {
@@ -748,11 +749,10 @@ const ScheduleTask = ({ taskData, week }) => {
             body: `grant_type=refresh_token&refresh_token=${refreshToken}&client_id=${process.env.REACT_APP_google_clientId}&client_secret=${process.env.REACT_APP_google_clientSecret}`,
           })
             .then((response) => response.json())
-            .then((data) => {
+            .then(async(data) => {
               var event = {
-                summary: `${
-                  stdName ? stdName : userInfo?.name
-                } ${calendarSubjectName}`,
+                summary: `${stdName ? stdName : userInfo?.name
+                  } ${calendarSubjectName}`,
                 location: "",
                 start: {
                   dateTime: selectedTimeDatee,
@@ -794,6 +794,77 @@ const ScheduleTask = ({ taskData, week }) => {
                   },
                   // Add other event properties as needed
                 };
+                var rrescheduledEvent = {
+                  title: `${stdName ? stdName : userInfo?.name
+                    } ${calendarSubjectName} `,
+                  start: {
+                    dateTime: selectedTimeDatee,
+                    timeZone: "UTC",
+                  },
+                  end: {
+                    dateTime: endDateTimeUTC,
+                    timeZone: "UTC",
+                  },
+                  organization: {
+                    organizationId: userInfo?.organizationId,
+                    organizationName: userInfo?.organizationName,
+                  },
+                  attendees: [
+                    // { email: "naman.j@experimentlabs.in" },
+                    // { email: "gaurav@experimentlabs.in" },
+                    { email: requesterStd ? requesterStd : user?.email },
+                    // { email: "alrafi4@gmail.com" },
+                    {
+                      email: adminMail,
+                    },
+                  ],
+                  // Assuming "weekData" is something specific to your application and not part of the standard Calendar API response
+                  weekData: currentWeek,
+                  hangoutLink: data.hangoutLink, // Access directly from data
+                  requester: requesterStd ? requesterStd : user?.email,
+                  studentName: stdName ? stdName : userInfo?.name,
+                  eventId: eventId,
+                  taskId: taskId,
+                  // Access directly from data
+                };
+                rrescheduledEvent.start_time = rrescheduledEvent?.start?.dateTime?.toISOString();
+
+                // Output the modified rrescheduledEvent object to verify the new field addition
+                console.log(rrescheduledEvent);
+                const InfoCalendar = { email: adminCalendarInfo?.email?.email, event: rrescheduledEvent };
+                console.log({ calendarInfo: InfoCalendar });
+                const newSchedule = await axios.put(
+                  `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/events`,
+                  { calendarInfo: InfoCalendar }
+                );
+                console.log(newSchedule);
+                if (newSchedule?.data?.data?.success === false) {
+                  if (newSchedule?.data?.message === 'Requested slot has been booked!') {
+                    Loading().close();
+                    await Swal.fire({
+                      icon: "error",
+                      title: "Oops...",
+                      text: "Requested slot has been booked! Please try another slot.",
+                    });
+                  }
+                  else if (newSchedule?.data?.message === 'Calendar info not found!') {
+                    Loading().close();
+                    await Swal.fire({
+                      icon: "error",
+                      title: "Oops...",
+                      text: "Calendar info not found! Please try again.",
+                    });
+                  }
+                  else {
+                    Loading().close();
+                    await Swal.fire({
+                      icon: "error",
+                      title: "Oops...",
+                      text: "Something went wrong! Please try again.",
+                    });
+                  }
+                }
+                else{
                 fetch(
                   `https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events/${eventId}?sendUpdates=none`,
                   {
@@ -809,9 +880,8 @@ const ScheduleTask = ({ taskData, week }) => {
                   .then(async (data) => {
                     console.log("Event updated:", data);
                     var rescheduledEvent = {
-                      title: `${
-                        stdName ? stdName : userInfo?.name
-                      } ${calendarSubjectName} `,
+                      title: `${stdName ? stdName : userInfo?.name
+                        } ${calendarSubjectName} `,
                       start: {
                         dateTime: selectedTimeDatee,
                         timeZone: "UTC",
@@ -838,9 +908,12 @@ const ScheduleTask = ({ taskData, week }) => {
                       hangoutLink: data.hangoutLink, // Access directly from data
                       requester: requesterStd ? requesterStd : user?.email,
                       studentName: stdName ? stdName : userInfo?.name,
-                      eventId: eventId, // Access directly from data
+                      eventId: eventId,
+                      taskId: taskId,
+                      // Access directly from data
                     };
-                    console.log(rescheduledEvent);
+
+                    
                     console.log(eventDBid);
                     const updateResponse = await axios.put(
                       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/${eventDBid}`,
@@ -982,20 +1055,26 @@ const ScheduleTask = ({ taskData, week }) => {
                           ...filteredEvent,
                           { ...rescheduledEvent, eventDBid: eventDBid },
                         ];
-                        delete calendarInfo._id;
-                        console.log(calendarInfo);
-                        const newSchedule = await axios.post(
-                          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/updateOrInsertCalendarInfo/email/${calendarInfo?.email}`,
-                          calendarInfo
-                        );
+                        // rescheduledEvent.start_time = rescheduledEvent?.start?.dateTime?.toISOString();
 
+                        // // Output the modified rescheduledEvent object to verify the new field addition
+                        // console.log(rescheduledEvent);
+                        // delete calendarInfo._id;
+                        // console.log(calendarInfo);
+                        // const InfoCalendar = { email: calendarInfo?.email, event: rescheduledEvent };
+                        // console.log({ calendarInfo: InfoCalendar });
+                        // const newSchedule = await axios.put(
+                        //   `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/events`,
+                        //   { calendarInfo: InfoCalendar }
+                        // );
+                        // console.log(newSchedule);
                         // console.log("new event created ", newEvent);
+                        Loading().close();
                         await Swal.fire({
                           icon: "success",
                           title: "Event Rescheduled!",
                           text: "The event has been successfully rescheduled.",
                         });
-                        Loading().close();
                         navigate("/courseAccess");
                       }
                     }
@@ -1006,104 +1085,133 @@ const ScheduleTask = ({ taskData, week }) => {
                     console.error("Error updating event:", error);
                     // Handle error
                   });
+                }
               } else {
                 function initiate() {
                   const sendData = async (event) => {
-                    const response = await axios.post(
-                      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events`,
-                      event
+                    event.start_time = event?.start?.dateTime?.toISOString();
+                    const InfoCalendar = { email: adminCalendarInfo?.email, event: event };
+                    console.log({ calendarInfo: InfoCalendar });
+                    const newSchedule = await axios.put(
+                      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/events`,
+                      { calendarInfo: InfoCalendar }
                     );
-
-                    if (response?.data?.acknowledged) {
-                      const sendMail = await axios.post(
-                        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
-                        {
-                          //  from: `${userInfo?.email}`,
-                          //    to: `${user?.email},${adminMail}`,
-                          to: `${user?.email}`,
-                          templateType: "emailAction",
-                          templateName: "sheduleTaskStudent",
-                          organizationId: userInfo?.organizationId,
-                          start_time: eventStartTime,
-                          end_time: eventEndTime,
-                          meeting_link: event?.hangoutLink,
-                          admin_name: adminName,
-                          site_email: adminMail,
-                          meeting_date: date,
-                          /*  subject: `Event request`,
-                          message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
-                            }`, */
-                        }
-                      );
-                      const sendMailAdmin = await axios.post(
-                        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
-                        {
-                          //  from: `${userInfo?.email}`,
-                          //    to: `${user?.email},${adminMail}`,
-                          to: `${adminMail}`,
-                          templateType: "emailAction",
-                          templateName: "sheduleTask",
-                          organizationId: userInfo?.organizationId,
-                          start_time: eventStartTime,
-                          end_time: eventEndTime,
-                          meeting_link: event?.hangoutLink,
-                          learner_name: stdName ? stdName : userInfo?.name,
-                          learner_email: requesterStd
-                            ? requesterStd
-                            : user?.email,
-                          meeting_date: date,
-                          /*  subject: `Event request`,
-                          message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
-                            }`, */
-                        }
-                      );
-
-                      const newNotification = await axios.post(
-                        `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/notifications/addNotification`,
-                        {
-                          message: `${userInfo?.name} of ${batch[0]?.batchName} batch ${course?.courseFullName} course booked an event of schedule task ${taskData?.taskName}.`,
-                          dateTime: new Date(),
-                          recipient: {
-                            type: "Admins",
-                            organizationId: userInfo?.organizationId,
-                          },
-                          type: "Event",
-                          readBy: [],
-                          triggeredBy: user?.email,
-                          redirectLink: `/taskDetails/${taskData?._id}?taskType=Schedule`,
-                        }
-                      );
-                      console.log(newNotification);
-                      console.log("send ", sendMail);
-                      console.log("Admin Mail ", adminMail);
-                      if (
-                        sendMail?.data?.success &&
-                        sendMailAdmin?.data?.success
-                      ) {
-                        const newEvent = await axios.post(
-                          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/${taskData?._id}/addEvent`,
-                          { ...event, eventDBid: response?.data?.insertedId }
-                        );
-                        const calendarInfo = { ...adminCalendarInfo };
-                        calendarInfo.events = [
-                          ...relevantEvents,
-                          { ...event, eventDBid: response?.data?.insertedId },
-                        ];
-                        delete calendarInfo._id;
-                        console.log(calendarInfo);
-                        const newSchedule = await axios.post(
-                          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/updateOrInsertCalendarInfo/email/${calendarInfo?.email}`,
-                          calendarInfo
-                        );
-                        // console.log("new event created ", newEvent);
+                    console.log(newSchedule);
+                    if (newSchedule?.data?.success === false) {
+                      if (newSchedule?.data?.message === 'Requested slot has been booked!') {
                         Loading().close();
                         await Swal.fire({
-                          icon: "success",
-                          title: "Request Sent!",
-                          text: "Your meeting is confirmed. Please go to the Dashboard to access the meeting link",
+                          icon: "error",
+                          title: "Oops...",
+                          text: "Requested slot has been booked! Please try another slot.",
                         });
+                      }
+                      else if (newSchedule?.data?.message === 'Calendar info not found!') {
+                        Loading().close();
+                        await Swal.fire({
+                          icon: "error",
+                          title: "Oops...",
+                          text: "Calendar info not found! Please try again.",
+                        });
+                      }
+                      else {
+                        Loading().close();
+                        await Swal.fire({
+                          icon: "error",
+                          title: "Oops...",
+                          text: "Something went wrong! Please try again.",
+                        });
+                      }
+                    } else {
+                      const response = await axios.post(
+                        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events`,
+                        event
+                      );
 
-                        navigate("/courseAccess");
+                      if (response?.data?.acknowledged) {
+                        const sendMail = await axios.post(
+                          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
+                          {
+                            //  from: `${userInfo?.email}`,
+                            //    to: `${user?.email},${adminMail}`,
+                            to: `${user?.email}`,
+                            templateType: "emailAction",
+                            templateName: "sheduleTaskStudent",
+                            organizationId: userInfo?.organizationId,
+                            start_time: eventStartTime,
+                            end_time: eventEndTime,
+                            meeting_link: event?.hangoutLink,
+                            admin_name: adminName,
+                            site_email: adminMail,
+                            meeting_date: date,
+                            /*  subject: `Event request`,
+                            message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
+                              }`, */
+                          }
+                        );
+                        const sendMailAdmin = await axios.post(
+                          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
+                          {
+                            //  from: `${userInfo?.email}`,
+                            //    to: `${user?.email},${adminMail}`,
+                            to: `${adminMail}`,
+                            templateType: "emailAction",
+                            templateName: "sheduleTask",
+                            organizationId: userInfo?.organizationId,
+                            start_time: eventStartTime,
+                            end_time: eventEndTime,
+                            meeting_link: event?.hangoutLink,
+                            learner_name: stdName ? stdName : userInfo?.name,
+                            learner_email: requesterStd
+                              ? requesterStd
+                              : user?.email,
+                            meeting_date: date,
+                            /*  subject: `Event request`,
+                            message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
+                              }`, */
+                          }
+                        );
+
+                        const newNotification = await axios.post(
+                          `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/notifications/addNotification`,
+                          {
+                            message: `${userInfo?.name} of ${batch[0]?.batchName} batch ${course?.courseFullName} course booked an event of schedule task ${taskData?.taskName}.`,
+                            dateTime: new Date(),
+                            recipient: {
+                              type: "Admins",
+                              organizationId: userInfo?.organizationId,
+                            },
+                            type: "Event",
+                            readBy: [],
+                            triggeredBy: user?.email,
+                            redirectLink: `/taskDetails/${taskData?._id}?taskType=Schedule`,
+                          }
+                        );
+                        console.log(newNotification);
+                        console.log("send ", sendMail);
+                        console.log("Admin Mail ", adminMail);
+                        if (
+                          sendMail?.data?.success &&
+                          sendMailAdmin?.data?.success
+                        ) {
+                          const newEvent = await axios.post(
+                            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/${taskData?._id}/addEvent`,
+                            { ...event, eventDBid: response?.data?.insertedId }
+                          );
+                          const calendarInfo = { ...adminCalendarInfo };
+                          calendarInfo.events = [
+                            ...relevantEvents,
+                            { ...event, eventDBid: response?.data?.insertedId },
+                          ];
+                          Loading().close();
+                          await Swal.fire({
+                            icon: "success",
+                            title: "Request Sent!",
+                            text: "Your meeting is confirmed. Please go to the Dashboard to access the meeting link",
+                          });
+
+                          navigate("/courseAccess");
+                        }
                       }
                     }
                   };
@@ -1121,9 +1229,8 @@ const ScheduleTask = ({ taskData, week }) => {
                       (response) => {
                         console.log(response);
                         var event = {
-                          title: `${
-                            stdName ? stdName : userInfo?.name
-                          } ${calendarSubjectName}`,
+                          title: `${stdName ? stdName : userInfo?.name
+                            } ${calendarSubjectName}`,
                           start: {
                             dateTime: selectedTimeDatee,
                             timeZone: "UTC",
@@ -1152,6 +1259,7 @@ const ScheduleTask = ({ taskData, week }) => {
                           requester: requesterStd ? requesterStd : user?.email,
                           studentName: stdName ? stdName : userInfo?.name,
                           eventId: response?.result?.id,
+                          taskId: taskId,
                         };
                         sendData(event);
                         return [true, response];
@@ -1275,6 +1383,14 @@ const ScheduleTask = ({ taskData, week }) => {
                     meetingType: "Zoom",
                     taskId: taskId,
                   };
+                  const InfoCalendar = { email: adminCalendarInfo?.email, event: postData };
+                  console.log({ calendarInfo: InfoCalendar });
+                  const newSchedule = await axios.put(
+                    `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/events`,
+                    { calendarInfo: InfoCalendar }
+                  );
+                  console.log(newSchedule);
+
                   const updateResponse = await axios.put(
                     `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/${eventDBid}`,
                     postData
@@ -1368,9 +1484,8 @@ const ScheduleTask = ({ taskData, week }) => {
                       sendMailAdmin?.data?.success
                     ) {
                       const updatedEvent = {
-                        summary: `${
-                          stdName ? stdName : userInfo?.name
-                        } ${calendarSubjectName}`,
+                        summary: `${stdName ? stdName : userInfo?.name
+                          } ${calendarSubjectName}`,
                         description: `Join Zoom Meeting: ${adminUrl}\nStart the Meeting: ${studentUrl}`,
                         location: newZoomSchedule.join_url, // Zoom meeting link as location
                         start: {
@@ -1429,11 +1544,19 @@ const ScheduleTask = ({ taskData, week }) => {
                         { ...postData, eventDBid: eventDBid, eventId: eventId },
                       ];
                       delete calendarInfo._id;
+                      console.log(postData);
                       console.log(calendarInfo);
-                      const newSchedule = await axios.post(
-                        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/updateOrInsertCalendarInfo/email/${calendarInfo?.email}`,
-                        calendarInfo
-                      );
+                      // const newSchedule = await axios.post(
+                      //   `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/updateOrInsertCalendarInfo/email/${calendarInfo?.email}`,
+                      //   calendarInfo
+                      // );
+                      // const InfoCalendar = { email: calendarInfo?.email, event: postData };
+                      // console.log(InfoCalendar);
+                      // const newSchedule = await axios.put(
+                      //   `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/events`,
+                      //   { calendarInfo: InfoCalendar }
+                      // );
+                      // console.log(newSchedule);
                       Loading().close();
                       // console.log("new event created ", newEvent);
                       await Swal.fire({
@@ -1447,14 +1570,31 @@ const ScheduleTask = ({ taskData, week }) => {
                   }
                 } catch (error) {
                   console.error("An error occurred:", error);
-                  // Handle the error appropriately, perhaps show an error message to the user
-                  Loading().close();
-                  // Optional: Error alert
-                  await Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: "Something went wrong! Please try again.",
-                  });
+                  console.log(error?.response?.data?.message);
+                  if (error?.response?.data?.message === 'Requested slot has been booked!') {
+                    Loading().close();
+                    await Swal.fire({
+                      icon: "error",
+                      title: "Oops...",
+                      text: "Requested slot has been booked! Please try another slot.",
+                    });
+                  }
+                  else if (error?.response?.data?.message === 'Calendar info not found!') {
+                    Loading().close();
+                    await Swal.fire({
+                      icon: "error",
+                      title: "Oops...",
+                      text: "Calendar info not found! Please try again.",
+                    });
+                  }
+                  else {
+                    Loading().close();
+                    await Swal.fire({
+                      icon: "error",
+                      title: "Oops...",
+                      text: "Something went wrong! Please try again.",
+                    });
+                  }
                 }
               }
               // if(newZoomSchedule?.data?.acknowledged){
@@ -1556,8 +1696,15 @@ const ScheduleTask = ({ taskData, week }) => {
                     meetingType: "Zoom",
                     taskId: taskId,
                   };
+                  const InfoCalendar = { email: adminCalendarInfo?.email, event: postData };
+                  console.log({ calendarInfo: InfoCalendar });
+                  const newSchedule = await axios.put(
+                    `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/events`,
+                    { calendarInfo: InfoCalendar }
+                  );
+                  console.log(newSchedule);
                   const response = await axios.post(
-                   // `${process.env.REACT_APP_BACKEND_API}/events`,
+                    // `${process.env.REACT_APP_BACKEND_API}/events`,
                     `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events`,
                     postData
                   );
@@ -1685,12 +1832,14 @@ const ScheduleTask = ({ taskData, week }) => {
                               eventId: responseData.result.id,
                             },
                           ];
+                          console.log(postData)
                           delete calendarInfo._id;
                           console.log(calendarInfo);
-                          const newSchedule = await axios.post(
-                            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/updateOrInsertCalendarInfo/email/${calendarInfo?.email}`,
-                            calendarInfo
-                          );
+                          // const newSchedule = await axios.post(
+                          //   `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/updateOrInsertCalendarInfo/email/${calendarInfo?.email}`,
+                          //   calendarInfo
+                          // );
+
                         } catch (error) {
                           console.error(
                             "Failed to create Google Calendar event:",
@@ -1716,14 +1865,31 @@ const ScheduleTask = ({ taskData, week }) => {
                   }
                 } catch (error) {
                   console.error("An error occurred:", error);
-                  // Handle the error appropriately, perhaps show an error message to the user
-                  Loading().close();
-                  // Optional: Error alert
-                  await Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: "Something went wrong! Please try again.",
-                  });
+                  console.log(error?.response?.data?.message);
+                  if (error?.response?.data?.message === 'Requested slot has been booked!') {
+                    Loading().close();
+                    await Swal.fire({
+                      icon: "error",
+                      title: "Oops...",
+                      text: "Requested slot has been booked! Please try another slot.",
+                    });
+                  }
+                  else if (error?.response?.data?.message === 'Calendar info not found!') {
+                    Loading().close();
+                    await Swal.fire({
+                      icon: "error",
+                      title: "Oops...",
+                      text: "Calendar info not found! Please try again.",
+                    });
+                  }
+                  else {
+                    Loading().close();
+                    await Swal.fire({
+                      icon: "error",
+                      title: "Oops...",
+                      text: "Something went wrong! Please try again.",
+                    });
+                  }
                 }
               }
               // if(newZoomSchedule?.data?.acknowledged){
@@ -1860,9 +2026,8 @@ const ScheduleTask = ({ taskData, week }) => {
               </div>
             )}
             <table
-              className={`min-w-full leading-normal ${
-                isLoading ? "opacity-50" : ""
-              }`}
+              className={`min-w-full leading-normal ${isLoading ? "opacity-50" : ""
+                }`}
             >
               <thead>
                 <tr>
@@ -1905,8 +2070,8 @@ const ScheduleTask = ({ taskData, week }) => {
         <>
           <>
             {userInfo?.role === "admin" &&
-            taskData?.events?.length > 0 &&
-            isReschedule === false ? (
+              taskData?.events?.length > 0 &&
+              isReschedule === false ? (
               <>
                 <div className="flex gap-5 my-5">
                   <p>
@@ -1949,7 +2114,7 @@ const ScheduleTask = ({ taskData, week }) => {
                                 <p className="font-medium text-sm flex justify-between mt-2 gap-2">
                                   <div className="flex justify-between gap-2">
                                     <AccessAlarmOutlinedIcon fontSize="small" />
-                                    <span className="font-semibold text-[14px]">
+                                    <span className="font-semibold text-[12px]">
                                       Starts{" "}
                                     </span>
                                   </div>
@@ -1965,7 +2130,7 @@ const ScheduleTask = ({ taskData, week }) => {
                                 <p className="font-medium text-sm flex justify-between mt-2 gap-2">
                                   <div className="flex justify-between  gap-2">
                                     <AccessAlarmOutlinedIcon fontSize="small" />
-                                    <span className="font-semibold text-[14px]">
+                                    <span className="font-semibold text-[12px]">
                                       Ends{" "}
                                     </span>
                                   </div>
@@ -1986,7 +2151,7 @@ const ScheduleTask = ({ taskData, week }) => {
                                 <p className="font-medium text-sm flex justify-between mt-2 gap-2">
                                   <div className="flex justify-between gap-2">
                                     <AccessAlarmOutlinedIcon fontSize="small" />
-                                    <span className="font-semibold text-[14px]">
+                                    <span className="font-semibold text-[12px]">
                                       Starts{" "}
                                     </span>
                                   </div>
@@ -2001,7 +2166,7 @@ const ScheduleTask = ({ taskData, week }) => {
                                 <p className="font-medium text-sm flex justify-between mt-2 gap-2">
                                   <div className="flex justify-between  gap-2">
                                     <AccessAlarmOutlinedIcon fontSize="small" />
-                                    <span className="font-semibold text-[14px]">
+                                    <span className="font-semibold text-[12px]">
                                       Ends{" "}
                                     </span>
                                   </div>
@@ -2156,7 +2321,7 @@ const ScheduleTask = ({ taskData, week }) => {
                         className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
                         name="time"
                         id="time"
-                        // defaultValue={taskData?.minimumTime}
+                      // defaultValue={taskData?.minimumTime}
                       >
                         <option className="hidden">Select Time</option>
                         {generateTimeOptions()}
@@ -2233,7 +2398,7 @@ const ScheduleTask = ({ taskData, week }) => {
                 {userRequesterEvents?.map((event, index) => (
                   <div
                     key={index}
-                    className=" shadow-lg outline-double outline-offset-2 outline-2 outline-emerald-500  w-[320px] rounded p-2 "
+                    className=" shadow-lg outline-double outline-offset-2 outline-2 outline-emerald-500  w-[350px] rounded p-2 "
                   >
                     <p className="flex gap-1 items-center text-sm">
                       <FiberManualRecordIcon
@@ -2435,7 +2600,7 @@ const ScheduleTask = ({ taskData, week }) => {
                         className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
                         name="time"
                         id="time"
-                        // defaultValue={taskData?.minimumTime}
+                      // defaultValue={taskData?.minimumTime}
                       >
                         <option className="hidden">Select Time</option>
                         {generateTimeOptions()}
