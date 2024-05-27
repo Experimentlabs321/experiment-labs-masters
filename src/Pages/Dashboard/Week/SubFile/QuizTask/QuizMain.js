@@ -17,7 +17,7 @@ const QuizMain = ({
     return (
       <>
         <hr className="my-[65px]" />
-        <div className="flex items-center justify-between">
+        <div className="lg:flex items-center justify-between grid grid-cols-2 gap-10">
           <div className="flex flex-col justify-between h-full gap-[20px]">
             <h1 className="text-[20px] font-[500]">Results</h1>
             <p className="text-[18px] font-[400] text-[#6B6B6B]">

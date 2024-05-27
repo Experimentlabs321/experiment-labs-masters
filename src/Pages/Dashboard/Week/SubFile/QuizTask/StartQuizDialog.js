@@ -49,8 +49,8 @@ const StartQuizDialog = ({
         </Toolbar>
       </AppBar>
       <div>
-        <div className=" max-w-[1262px] pt-[80px] mx-auto flex justify-between">
-          <div className="w-[625px]">
+        <div className=" max-w-[1262px] pt-[80px] lg:mx-auto lg:flex lg:justify-between ms-5 ">
+          <div className="lg:w-[625px] w-[95%]">
             <h1 className="text-[#FF557A] text-center h-[50px] text-[22px] font-[700] ">
               Question {currentQuestion + 1}
             </h1>
@@ -161,7 +161,7 @@ const StartQuizDialog = ({
                     }}
                     className={`bg-[#FF557A] ${
                       currentQuestion === 0 && "opacity-[0.5]"
-                    }  text-white px-[21px] py-[14px] text-[12px] font-[700] text-center rounded-[8px] z-[1] shadow-[0px_4px_0px_0px_#F08323] lg:shadow-[0px_7px_0px_0px_#F08323] flex items-center gap-[7px]`}
+                    }  text-white px-[21px] ms-5 lg:ms-0 py-[14px] text-[12px] font-[700] text-center rounded-[8px] z-[1] shadow-[0px_4px_0px_0px_#F08323] lg:shadow-[0px_7px_0px_0px_#F08323] flex items-center gap-[7px]`}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -211,7 +211,7 @@ const StartQuizDialog = ({
               </div>
             </div>
           </div>
-          <div className="w-[500px]">
+          <div className="lg:w-[500px] w-[95%]">
             <div className="bg-[#ECF4F7] rounded-[8px] mt-[50px]">
               <h1 className=" text-[#282828] text-[18px] font-[700] text-center py-[30px] ">
                 Question Bank

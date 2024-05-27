@@ -77,20 +77,20 @@ const ExecutionMentorDashboard = () => {
   return (
     <div>
       <Layout>
-        <div className="">
+        <div className="lg:block hidden">
           <AssignmentUpNev page={""} />
         </div>
 
-        <div className="flex mt-24">
-          <div className="w-full mx-10 mt-10">
+        <div className="flex mt-24 ">
+          <div className="w-full lg:mx-10 ms-8 mt-10">
             <div
-              className=" flex items-center text-[#fff]"
+              className="lg:w-full w-[90%]  flex lg:flex-row flex-col items-center lg:justify-between text-[#fff]"
               style={{
                 borderRadius: "20px",
                 background: "linear-gradient(129deg, #6176FA 0%, #394694 100%)",
               }}
             >
-              <div className="p-5 ">
+              <div className="p-5 w-[100%] ">
                 <p className="flex gap-5 text-[35px] font-bold">
                   Welcome back, {userInfo.name}{" "}
                   <span>
@@ -109,7 +109,7 @@ const ExecutionMentorDashboard = () => {
                   </Link>
                 </p>
               </div>
-              <div className="">
+           
                 <div className="w-full">
                   <img
                     className="w-[100%]"
@@ -117,11 +117,11 @@ const ExecutionMentorDashboard = () => {
                     alt="HumaaansSpace"
                   />
                 </div>
-              </div>
+             
             </div>
 
             <div className="mt-10 flex gap-10">
-              <div className="w-full">
+              <div className="lg:w-full w-[90%]">
                 <div className="flex justify-between items-center mb-5">
                   <p className="text-[15px] font-bold">Your Performance</p>
                   <p>
@@ -155,7 +155,7 @@ const ExecutionMentorDashboard = () => {
                 </div>
               </div>
 
-              <div className="w-[50%]">
+             {/*  <div className="w-[50%]">
                 <div className="flex justify-between items-center">
                   <p className="text-[15px] font-bold">Progress</p>
                   <p className="flex items-center gap-2 text-[13px] font-bold text-[#8A8A8A]">
@@ -230,10 +230,10 @@ const ExecutionMentorDashboard = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
 
-            <div className="flex justify-between items-center my-10">
+          {/*   <div className="flex justify-between items-center my-10">
               <p className="text-[15px] font-bold">
                 Performance of the Students
               </p>
@@ -246,18 +246,18 @@ const ExecutionMentorDashboard = () => {
                   <img src={arrowDown} alt="arrowDown" />
                 </span>
               </Link>
-            </div>
+            </div> */}
 
-            <div className="w-[100%] h-[30px] text-[#fff] flex ">
+          {/*   <div className="w-[100%] h-[30px] text-[#fff] flex ">
               <div className="w-[70%] bg-[#081765] flex items-center justify-center rounded-s-xl">
                 70%
               </div>
               <div className="w-[10%] bg-[#2063DA] flex items-center justify-center rounded-s-xl ms-[-10px]"></div>
               <div className="w-[5%] bg-[#BEC9FF] flex items-center justify-center rounded-s-xl ms-[-10px]"></div>
               <div className="w-[15%] bg-[#F0F7FF] flex items-center justify-center rounded-xl ms-[-10px]"></div>
-            </div>
+            </div> */}
 
-            <div className="grid grid-cols-2 gap-10 mt-10">
+            {/* <div className="grid grid-cols-2 gap-10 mt-10">
               <div className=" bg-[#081765] text-[#fff] p-2 flex justify-between items-center rounded-xl text-sm font-semibold">
                 <p>Students, who are right on track</p>
                 <p className="flex items-center gap-4">
@@ -297,8 +297,8 @@ const ExecutionMentorDashboard = () => {
                   </span>
                 </p>
               </div>
-            </div>
-            <div className="flex justify-between items-center my-10">
+            </div> */}
+          {/*   <div className="flex justify-between items-center my-10">
               <p className="text-[15px] font-bold">
                 Students who need more guidance and attention
               </p>
@@ -311,9 +311,9 @@ const ExecutionMentorDashboard = () => {
                   <img src={arrowDown} alt="arrowDown" />
                 </span>
               </Link>
-            </div>
+            </div> */}
 
-            <div className="flex gap-5 w-full">
+           {/*  <div className="flex gap-5 w-full">
               <div className="w-[100%] flex justify-between py-5 mt-5 rounded-[20px] text-[#fff] bg-[#E90000]">
                 <div className="flex gap-3 ">
                   <div className=" w-[40px] bg-[#fff] text-[#000] rounded-full flex items-center justify-center ms-5">
@@ -361,7 +361,7 @@ const ExecutionMentorDashboard = () => {
                   <p>View Profile</p>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
 
         {/*   <div>
