@@ -247,7 +247,7 @@ const EditFiles = () => {
       <Layout>
         <div>
           <div className=" border-b-2 ">
-            <div className="container mx-auto px-4 flex items-center justify-between ">
+            <div className="container flex-col lg:flex-row gap-3 lg:gap-0 mt-20 lg:mt-0 ml-4 lg:mx-auto px-4 flex items-center justify-between ">
               <div className="flex items-center pt-[30px] pb-[30px] ">
                 <Link
                   to="/courseAccess"
@@ -297,7 +297,7 @@ const EditFiles = () => {
                   {chapter?.chapterName}
                 </button>
               </div>
-              <div className="flex items-center mt-[-10px] ">
+              <div className="flex items-center mt-[-10px] lg:mb-0 mb-3">
                 <div className="flex items-center text-black text-[16px] font-[600] mr-[32px] ">
                   <h1 className="mr-[16px]">Preview Mode</h1>
                   {preview ? (
@@ -356,7 +356,7 @@ const EditFiles = () => {
             <p>Manage File in {chapter?.chapterName}</p>
           </div>
           <form onSubmit={handleSubmit}>
-            <div className="flex  me-20 py-[35px] ps-[40px]">
+            <div className="flex flex-col lg:flex-row gap-3 lg:gap-0  me-20 py-[35px] ps-[40px]">
               <div className="w-full">
                 <div className="w-full">
                   <div className="">

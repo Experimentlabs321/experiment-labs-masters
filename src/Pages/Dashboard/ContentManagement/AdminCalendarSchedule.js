@@ -135,10 +135,11 @@ const AdminCalendarSchedule = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/getCalendarInfoByEmail/email/${userInfo?.email}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/email/${userInfo?.email}`
       )
       .then((response) => {
-        setAdminCalendarInfo(response?.data);
+        console.log(response);
+        setAdminCalendarInfo(response?.data?.data);
       })
 
       .catch((error) => console.error(error));
@@ -228,15 +229,17 @@ const AdminCalendarSchedule = () => {
     const meetingDuration = adminCalendarInfo?.meetingDuration;
     const offDays = adminCalendarInfo?.offDays;
     const meetingType = adminCalendarInfo?.meetingType;
-
-    const calendarInfo = { ...adminCalendarInfo };
+    const calendarInfo = { ...adminCalendarInfo,email : userInfo?.email };
+    console.log(adminCalendarInfo);
+    calendarInfo.syncedMail =  session?.user?.email;
     calendarInfo.events = relevantEvents;
     delete calendarInfo._id;
     console.log(calendarInfo);
     const newSchedule = await axios.post(
-      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/updateOrInsertCalendarInfo/email/${calendarInfo?.email}`,
-      calendarInfo
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo`,
+      {calendarInfo : calendarInfo}
     );
+    console.log(newSchedule);
     const manageSchedule = {
       scheduleName,
       taskName: scheduleName,
@@ -549,7 +552,7 @@ const AdminCalendarSchedule = () => {
       <Layout>
         <div>
           <div className=" border-b-2 ">
-            <div className="container mx-auto px-4 flex items-center justify-between ">
+            <div className="container flex-col lg:flex-row gap-3 lg:gap-0 mt-20 lg:mt-0 ml-4 lg:mx-auto px-4 flex items-center justify-between ">
               <div className="flex items-center pt-[30px] pb-[30px] ">
                 <Link
                   to="/courseAccess"
@@ -600,7 +603,7 @@ const AdminCalendarSchedule = () => {
                   {chapter?.chapterName}
                 </button>
               </div>
-              <div className="flex items-center mt-[-10px] ">
+              <div className="flex items-center mt-[-10px] lg:mb-0 mb-3 ">
                 <div className="flex items-center text-black text-[16px] font-[600] mr-[32px] ">
                   <h1 className="mr-[16px]">Preview Mode</h1>
                   {preview ? (
@@ -692,7 +695,7 @@ const AdminCalendarSchedule = () => {
                   />
                 </div>
                 <form onSubmit={handleSubmit} className="ms-[40px]  mt-12">
-                  <div className="grid grid-cols-2 gap-10">
+                  <div className="grid lg:grid-cols-2 grid-cols-1 gap-10">
                     <div className="">
                       <div className="flex items-center gap-4">
                         <p className="h-2 w-2 bg-black rounded-full"></p>
@@ -707,7 +710,7 @@ const AdminCalendarSchedule = () => {
                         /*   defaultValue={
                             assignmentData ? assignmentData?.scheduleName : ""
                           } */
-                        className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
+                        className="mt-6 ms-6 border rounded-md lg:w-[430px] w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
                         name="scheduleName"
                         type="text"
                         placeholder="schedule Name"
@@ -727,7 +730,7 @@ const AdminCalendarSchedule = () => {
                         /*   defaultValue={
                             assignmentData ? assignmentData?.scheduleName : ""
                           } */
-                        className="mt-6 ms-6 border rounded-md w-[430px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
+                        className="mt-6 ms-6 border rounded-md lg:w-[430px] w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
                         name="calendarSubjectName"
                         type="text"
                         placeholder="Calendar Subject Name"
@@ -940,7 +943,7 @@ const AdminCalendarSchedule = () => {
                   </div>
 
                   <div className="flex items-center gap-10 justify-center mt-20 mb-10">
-                    {/* <button className="bg-sky-600 px-4 py-3 text-white text-lg rounded-lg" onClick={() => signOut()}>Sign out </button> */}
+                   <button className="bg-sky-600 px-4 py-3 text-white text-lg rounded-lg" onClick={() => signOut()}>Sign out </button> 
                     <button
                       className="px-[30px] py-3 bg-[#FF557A] text-[#fff] text-xl font-bold rounded-lg ms-20 "
                       type="submit"

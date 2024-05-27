@@ -166,7 +166,7 @@ const UpdateOrganization = () => {
   return (
     <div>
       <Layout>
-        <div className="px-4 mt-4 flex items-center gap-4 flex-wrap">
+        <div className="px-4 lg:mt-4 mt-24 lg:flex items-center gap-4 flex-wrap grid grid-cols-2 ">
           <button
             onClick={() => setCurrentPage("organizationTheme")}
             className={`px-4 py-2 text-lg font-semibold rounded-lg ${
@@ -262,7 +262,7 @@ const UpdateOrganization = () => {
               : {orgData?._id}
             </h1>
             <form onSubmit={handleSubmit} className="px-4 mt-1">
-              <div className="flex gap-4">
+              <div className="flex flex-col lg:flex-row gap-4">
                 <div className="flex flex-col mt-5 basis-1/2">
                   <label className="font-bold text-lg">
                     {itemDetails?.favicon ? itemDetails?.favicon : "Favicon"}
@@ -315,7 +315,7 @@ const UpdateOrganization = () => {
                 </div>
               </div>
 
-              <div className="flex gap-4">
+              <div className="flex flex-col lg:flex-row gap-4">
                 <div className="flex flex-col mt-5 basis-1/2">
                   <label className="font-bold text-lg">
                     {itemDetails?.logo ? itemDetails?.logo : "Logo"}
@@ -366,7 +366,7 @@ const UpdateOrganization = () => {
                   )}
                 </div>
               </div>
-              <div className="flex gap-4">
+              <div className="flex flex-col lg:flex-row gap-4">
                 <div className="flex flex-col mt-5 basis-1/2">
                   <label className="font-bold text-lg">
                     {itemDetails?.logoForLoginPage
@@ -419,7 +419,7 @@ const UpdateOrganization = () => {
                   )}
                 </div>
               </div>
-              <div className="flex gap-4">
+              <div className="flex flex-col lg:flex-row gap-4">
                 <div className="flex flex-col mt-5 basis-1/2">
                   <label className="font-bold text-lg">
                     {itemDetails?.loginTitle
@@ -448,7 +448,7 @@ const UpdateOrganization = () => {
                 </div>
               </div>
 
-              <div className="flex gap-4">
+              <div className="flex flex-col lg:flex-row gap-4">
                 <div className="flex flex-col mt-5 basis-1/2">
                   <label className="font-bold text-lg">
                     {itemDetails?.loginSidebarImage
@@ -502,7 +502,7 @@ const UpdateOrganization = () => {
                 </div>
               </div>
 
-              <div className="flex gap-4">
+              <div className="flex flex-col lg:flex-row gap-4">
                 <div className="flex flex-col mt-5 basis-1/2">
                   <label className="font-bold text-lg">
                     {itemDetails?.paymentNavbarLogo
@@ -557,7 +557,7 @@ const UpdateOrganization = () => {
                 </div>
               </div>
 
-              <div className="flex gap-4">
+              <div className="flex flex-col lg:flex-row gap-4">
                 <div className="flex flex-col mt-5 basis-1/2">
                   <label className="font-bold text-lg">
                     {itemDetails?.progressiveWebAppLogo
@@ -612,7 +612,7 @@ const UpdateOrganization = () => {
                 </div>
               </div>
 
-              <div className="flex gap-4">
+              <div className="flex flex-col lg:flex-row gap-4">
                 <div className="flex flex-col mt-5 basis-1/2">
                   <label className="font-bold text-lg">
                     {itemDetails?.progressiveWebAppSplashScreenLogo
@@ -665,7 +665,7 @@ const UpdateOrganization = () => {
                   )}
                 </div>
               </div>
-              <div className="flex gap-4">
+              <div className="flex flex-col lg:flex-row gap-4">
                 <div className="flex flex-col mt-5 basis-1/2">
                   <label className="font-bold text-lg">
                     {itemDetails?.organizationRootUrl

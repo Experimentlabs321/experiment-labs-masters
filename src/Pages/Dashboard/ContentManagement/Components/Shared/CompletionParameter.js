@@ -40,9 +40,9 @@ const CompletionParameter = ({ setCompletionParameter }) => {
     });
   }, [selectedCompletionParameter, numberOfQuestion, questions, passMarks]);
   return (
-    <div>
-      <p className="text-[25px] font-bold mb-10">Completion Parameter</p>
-      <div className="flex ">
+    <div className="">
+      <p className="text-[25px] font-bold mb-2">Completion Parameter</p>
+      <div className="flex flex-col lg:flex-row ms-3">
         <div className=" flex basis-1/2 flex-col justify-center ">
           <div className="flex items-center gap-4">
             <p className="h-2 w-2 bg-black rounded-full"></p>
@@ -84,7 +84,7 @@ const CompletionParameter = ({ setCompletionParameter }) => {
           </div>
         </div>
         {selectedCompletionParameter === "With Quiz" && (
-          <div className=" flex basis-1/2 flex-col justify-center ">
+          <div className=" flex basis-1/2 flex-col justify-center mt-2 :mt-0 ">
             <div className="flex items-center gap-4 mb-2">
               <p className="h-2 w-2 bg-black rounded-full"></p>
               <p className="font-bold text-lg me-[36px]">Number of question</p>

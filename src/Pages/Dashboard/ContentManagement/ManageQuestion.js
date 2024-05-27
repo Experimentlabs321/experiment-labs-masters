@@ -717,7 +717,7 @@ const ManageQuestion = ({
         <div className="mx-10 my-20">
           {!addQues && !editQues && (
             <div>
-              <div className="flex justify-between">
+              <div className="flex flex-col lg:flex-row lg:gap-0 gap-5 justify-between">
                 <div className=" flex items-center">
                   <div className="flex items-center justify-between border rounded-2xl  h-[40px] px-5 text-[#535353]  bg-[#F6F7FF] ">
                     <div className="flex gap-2">
@@ -736,7 +736,7 @@ const ManageQuestion = ({
                   <div ref={dropdownRef} className=" ">
                     <div
                       onClick={toggleDropdownCourseSelection}
-                      className="custom-dropdown flex justify-between items-center gap-2 cursor-pointer h-[40px]  px-2 text-base text-[#fff] bg-[#3E4DAC] font-bold"
+                      className="custom-dropdown w-[200px] flex justify-between items-center gap-2 cursor-pointer h-[40px]  px-2 text-base text-[#fff] bg-[#3E4DAC] font-bold"
                       style={{
                         borderRadius: "8px",
                         border: "1px solid #B7B7B7",
@@ -1291,8 +1291,8 @@ const ManageQuestion = ({
                   </div>
                 )}
               </div>
-
-              {/* <div className="flex justify-between mt-20 mb-10">
+              <>
+                {/* <div className="flex justify-between mt-20 mb-10">
                 <div className="flex ">
                   {!allSelect && (
                     <div className="flex  p-2">
@@ -1335,6 +1335,7 @@ const ManageQuestion = ({
                   )}
                 </div>
               </div> */}
+              </>
 
               <div className=" mt-10 flex items-center">
                 <div className="flex items-center gap-4">
@@ -1377,9 +1378,9 @@ const ManageQuestion = ({
                 </ul>
               </div>
 
-              <div className="flex justify-between text-lg font-medium mb-10">
+              <div className="flex justify-between flex-col lg:flex-row lg:gap-0 gap-5 text-lg font-medium mb-10">
                 <div className="flex gap-2 items-center">
-                  <p>
+                  <p className="font-semibold">
                     {" "}
                     Total Questions :{" "}
                     <span className="text-[#3E4DAC]">
@@ -1388,7 +1389,7 @@ const ManageQuestion = ({
                   </p>
                 </div>
                 <div className="flex items-center gap-6">
-                  <p>
+                  <p className="font-semibold">
                     Total Added Marks/Points :{" "}
                     <span
                       className={`${
@@ -1408,8 +1409,8 @@ const ManageQuestion = ({
               </div>
 
               <div className="">
-                <div className="w-[100%] mt-2">
-                  <table className="w-full border">
+                <div className="lg:w-[100%] w-[350px] overflow-x-auto mt-2 ">
+                  <table className="w-full overflow-x-auto mt-2 border">
                     <thead className="bg-[#FFFDEA]  ">
                       <tr className="text-[#3E4DAC] text-base font-bold">
                         <th className="py-5">Question No</th>

@@ -1,6 +1,6 @@
 //AssignmentUpNev
 
-import React, { useContext, useState,useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import ChatIcon from "../../../assets/ExecutionMentor/ChatIcon.svg";
 import Rectangle5 from "../../../assets/ExecutionMentor/Rectangle5.svg";
@@ -13,8 +13,7 @@ const AssignmentUpNev = (props) => {
 
   const { userInfo, user } = useContext(AuthContext);
   const getInitials = () => {
-    const firstNameInitial =
-      userInfo?.name?.charAt(0)?.toUpperCase() || "";
+    const firstNameInitial = userInfo?.name?.charAt(0)?.toUpperCase() || "";
     const lastNameInitial = userInfo?.lastName?.charAt(0)?.toUpperCase() || "";
     return `${firstNameInitial}${lastNameInitial}`;
   };
@@ -71,12 +70,14 @@ const AssignmentUpNev = (props) => {
           </>
         )}
         <div>
-          {
-            userInfo?.profileImg ? <img
+          {userInfo?.profileImg ? (
+            <img
               className="w-[59px] h-[59px] md:w-[64px] md:h-[64px]  lg:w-[69px] rounded-full lg:h-[72px]"
               src={userInfo?.profileImg}
               alt="user"
-            /> : <div className="w-[59px] h-[59px] md:w-[64px] md:h-[64px]  lg:w-[69px] rounded-full lg:h-[72px] object-contain object-center  overflow-hidden">
+            />
+          ) : (
+            <div className="w-[59px] h-[59px] md:w-[64px] md:h-[64px]  lg:w-[69px] rounded-full lg:h-[72px] object-contain object-center  overflow-hidden">
               <div
                 className="w-full h-full flex items-center text-red-50 justify-center text-xl md:text-2xl font-bold"
                 style={{ backgroundColor }}
@@ -84,10 +85,10 @@ const AssignmentUpNev = (props) => {
                 {getInitials()}
               </div>
             </div>
-          }
-          <div>
+          )}
+          {/* <div>
             <p className="text-lg font-medium">{userInfo.name}</p>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

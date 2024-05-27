@@ -236,8 +236,8 @@ const EditReading = () => {
       <Layout>
         <div>
           <div className=" hidden lg:block border-b-2 ">
-            <div className="container mx-auto px-4 flex items-center justify-between ">
-              <div className="flex items-center pt-[30px] pb-[30px] ">
+            <div className="container mx-auto px-4 flex flex-col lg:flex-row items-center justify-between lg:mt-0 mt-20 ">
+              <div className="flex items-center pt-[30px] pb-[30px]  ">
                 <Link
                   to="/courseAccess"
                   className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline "

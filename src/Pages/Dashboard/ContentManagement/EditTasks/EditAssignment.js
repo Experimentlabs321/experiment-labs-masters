@@ -48,6 +48,8 @@ const EditAssignment = () => {
   const [contentStage, setContentStage] = useState([]);
   const [orgData, setOrgData] = useState({});
   const [taskDrip, setTaskDrip] = useState(false);
+  const [executionMentors, setExecutionMentors] = useState([]);
+  const [selectedMentors, setSelectedMentors] = useState([]);
 
   useEffect(() => {
     if (id)
@@ -59,6 +61,11 @@ const EditAssignment = () => {
           setAssignmentData(response?.data);
           setSelectedBatches(
             response?.data?.batches ? response?.data?.batches : selectedBatches
+          );
+          setSelectedMentors(
+            response?.data?.executionMentors
+              ? response?.data?.executionMentors
+              : selectedMentors
           );
           setSchedule(
             response?.data?.schedule ? response?.data?.schedule : schedule
@@ -158,6 +165,20 @@ const EditAssignment = () => {
         .catch((error) => console.error(error));
   }, [userInfo]);
 
+  useEffect(() => {
+    axios
+      .get(
+        // `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users//mentors/organizationId/${userInfo?.organizationId}/role/execution mentor`
+        `http://localhost:5000/api/v1/users/mentors/organizationId/${userInfo?.organizationId}/role/execution mentor`
+      )
+      .then((response) => {
+        setExecutionMentors(response?.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [userInfo]);
+
   const handleOptionChangeBatch = (event, optionValue) => {
     // const optionValue = event.target.value;
     const isChecked = event.target.checked;
@@ -230,6 +251,7 @@ const EditAssignment = () => {
       schedule: schedule,
       contentStage,
       taskDrip,
+      executionMentors: selectedMentors,
     };
 
     setAssignmentData(manageAssignment);
@@ -253,8 +275,8 @@ const EditAssignment = () => {
     <div>
       <Layout>
         <div>
-          <div className=" border-b-2 ">
-            <div className="container mx-auto px-4 flex items-center justify-between ">
+          <div className=" border-b-2 mt-20 lg:mt-0">
+            <div className="container flex-col lg:flex-row gap-3 lg:gap-0 lg:mx-auto ml-4 px-4 flex items-center justify-between ">
               <div className="flex items-center pt-[30px] pb-[30px] ">
                 <Link
                   to="/courseAccess"
@@ -304,7 +326,7 @@ const EditAssignment = () => {
                   {chapter?.chapterName}
                 </button>
               </div>
-              <div className="flex items-center mt-[-10px] ">
+              <div className="flex items-center mt-[-10px] lg:mb-0 mb-3 ">
                 <div className="flex items-center text-black text-[16px] font-[600] mr-[32px] ">
                   <h1 className="mr-[16px]">Preview Mode</h1>
                   {preview ? (
@@ -399,6 +421,10 @@ const EditAssignment = () => {
                 enableDrip={course?.enableDrip}
                 taskDrip={taskDrip}
                 setTaskDrip={setTaskDrip}
+                executionMentors={executionMentors}
+                setExecutionMentors={setExecutionMentors}
+                selectedMentors={selectedMentors}
+                setSelectedMentors={setSelectedMentors}
               />
             )}
             {(orgData?.showPointsAndRedemptions ||

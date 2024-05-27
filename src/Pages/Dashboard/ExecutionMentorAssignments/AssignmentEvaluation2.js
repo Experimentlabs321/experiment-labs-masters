@@ -708,13 +708,13 @@ const AssignmentEvaluation2 = () => {
   return (
     <div>
       <Layout>
-        <div className="">
+        <div className="lg:block hidden">
           <AssignmentUpNev />
         </div>
 
         <div className="flex mt-32 me-10">
           <div className="w-full">
-            <div className="flex justify-between gap-10">
+            <div className="flex  justify-between lg:gap-10">
               <div className="px-10 grid gap-10 pb-3 text-lg mt-10">
                 <p className="text-lg font-bold">Assignment</p>
                 <div className="mt-5">
@@ -858,9 +858,9 @@ const AssignmentEvaluation2 = () => {
                 <form className=" m-5" onSubmit={handleSubmitFeedback}>
                   <div>
                     <textarea
-                      className="p-5 border rounded-xl m-5"
+                      className="p-5 border rounded-xl m-5  w-[90%]"
                       rows="6"
-                      cols="50"
+                      cols="30"
                       placeholder="Write feedback"
                       name="feedback"
                       defaultValue={
@@ -883,7 +883,7 @@ const AssignmentEvaluation2 = () => {
                     >
                       <div className=" flex items-center">
                         <input
-                          className="w-full h-full flex items-center text-[#3E4DAC] text-base font-semibold mt-4"
+                          className=" h-full flex items-center text-[#3E4DAC] text-base font-semibold mt-4"
                           type="file"
                         />
                         <p className="w-[105px] h-full bg-[#FFDB70] text-[] text-base font-semibold flex gap-2 justify-center items-center">
@@ -968,7 +968,7 @@ const AssignmentEvaluation2 = () => {
                 <form className=" m-5" onSubmit={handleSubmitFeedback1}>
                   <div>
                     <textarea
-                      className="p-5 border rounded-xl m-5"
+                      className="p-5 border rounded-xl m-5 lg:w-[90%] w-[90%]"
                       rows="6"
                       cols="50"
                       placeholder="Write feedback"

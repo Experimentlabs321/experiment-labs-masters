@@ -75,7 +75,7 @@ const SES = ({ orgData }) => {
     return (
         <div className="flex items-center justify-center w-full my-4">
             <div className="w-full">
-                <div className="flex justify-between items-center mb-4">
+                <div className="flex flex-col lg:flex-row gap-3 justify-between items-center mb-4">
                     <h2 className="text-2xl font-semibold text-gray-800">AWS SES Integration</h2>
                     <div className='flex gap-6'>
                         <button onClick={() => setShowTestSendForm(!showTestSendForm)} className="py-2 px-4 bg-blue hover:bg-blue-700 focus:outline-none focus:bg-blue-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition duration-300">
@@ -89,7 +89,7 @@ const SES = ({ orgData }) => {
                 {showForm && <SESCreateTemplate setShowForm={setShowForm} orgData={orgData} email={sesEmail} fetchSESIntegrationData={fetchSESIntegrationData} />}
                 {showTestSendForm && <SESSendTestEmail setShowTestSendForm={setShowTestSendForm} email={sesEmail} orgData={orgData} fetchSESIntegrationData={fetchSESIntegrationData} />}
                 <form>
-                    <div className="grid grid-cols-4 gap-6 mb-4">
+                    <div className="grid lg:grid-cols-4 grid-cols-2 gap-6 mb-4">
                         <div>
                             <label className="block text-gray-700 w-full font-bold mb-2" htmlFor={`accessKeyId`}>
                                 SES Email

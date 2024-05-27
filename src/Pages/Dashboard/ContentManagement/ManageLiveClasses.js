@@ -256,8 +256,8 @@ const ManageLiveClasses = () => {
             <i className={`dropdown-arrow ${isOpenGeneral ? "open" : ""}`}></i>
           </div>
           {isOpenGeneral && (
-            <div className="dropdown-menu mt-[71px] mb-[45px] border-b-2">
-              <div className="flex items-start gap-40">
+            <div className="dropdown-menu mt-[71px] mb-[45px] border-b-2  ">
+              <div className="flex flex-col lg:flex-row items-start gap-10 lg:gap-40">
                 <div className="">
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
@@ -280,7 +280,7 @@ const ManageLiveClasses = () => {
                     <p className="font-bold text-lg">Select Mentors</p>
                     <img src={required} alt="required" />
                   </div>
-                  <ul className="flex flex-col gap-1 ms-6">
+                  <ul className="flex flex-col lg:flex-row gap-4 flex-wrap ">
                     {mentors?.map((option, index) => {
                       return (
                         <div key={index}>
@@ -327,7 +327,8 @@ const ManageLiveClasses = () => {
                 </div>
               </div>
 
-              <div className="flex items-start mt-[50px] gap-40">
+
+              <div className="flex flex-col lg:flex-row items-start mt-[50px] lg:gap-40 gap-10">
                 <div>
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
@@ -482,8 +483,8 @@ const ManageLiveClasses = () => {
 
           {isOpenClassTimings && (
             <div className="dropdown-menu  mb-[45px] border-b-2 ">
-              <div className="flex justify-between mb-20">
-                <div className=" ms-5">
+              <div className="flex flex-col lg:flex-row justify-between mb-20">
+                <div className="">
                   <div className="mt-20 flex flex-col">
                     <div className="flex items-center gap-4">
                       <p className="h-2 w-2 bg-black rounded-full"></p>
@@ -496,7 +497,7 @@ const ManageLiveClasses = () => {
 
                     <input
                       required
-                      className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                      className="mt-6 ms-6 border rounded-md lg:w-[100%] w-[80%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                       name="courseStartingDateTime"
                       type="datetime-local"
                       placeholder="Eg. Entrepreneurship Lab"
