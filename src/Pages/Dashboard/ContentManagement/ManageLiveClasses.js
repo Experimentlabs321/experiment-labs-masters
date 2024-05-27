@@ -1,42 +1,22 @@
 //ManageLiveClasses
-
-import React, {
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
-
-import axios from 'axios';
-import PropTypes from 'prop-types';
-import toast from 'react-hot-toast';
-import {
-  useLocation,
-  useNavigate,
-  useParams,
-} from 'react-router-dom';
-
-import CloseIcon from '@mui/icons-material/Close';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import IconButton from '@mui/material/IconButton';
-import { styled } from '@mui/material/styles';
-
-import required from '../../../assets/ContentManagement/required.png';
-import arrowDown from '../../../assets/SkillsManagement/arrow.svg';
-import arrowright from '../../../assets/SkillsManagement/arrowright.svg';
-import { AuthContext } from '../../../contexts/AuthProvider';
-import Loading from '../../Shared/Loading/Loading';
-import Layout from '../Layout';
-import ItemEarningParameter from './Components/Shared/ItemEarningParameter';
-import SkillBasedParameter from './Components/Shared/SkillBasedParameter';
+import React, { useContext, useEffect, useState } from "react";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useNavigate, useParams } from "react-router-dom";
+import required from "../../../assets/ContentManagement/required.png";
+import arrowDown from "../../../assets/SkillsManagement/arrow.svg";
+import arrowright from "../../../assets/SkillsManagement/arrowright.svg";
+import { AuthContext } from "../../../contexts/AuthProvider";
+import Loading from "../../Shared/Loading/Loading";
+import Layout from "../Layout";
+import ItemEarningParameter from "./Components/Shared/ItemEarningParameter";
+import SkillBasedParameter from "./Components/Shared/SkillBasedParameter";
 
 const ManageLiveClasses = () => {
   const { id } = useParams();
-  const [isOpenGeneral, setisOpenGeneral] = useState(true);
-  const [isOpenRoomSettings, setisOpenRoomSettings] = useState(false);
-  const [isOpenlockSettings, setisOpenlockSettings] = useState(false);
-  const [isOpenclassTimings, setisOpenclassTimings] = useState(false);
-  const [isOpenevaluationParameter, setisOpenevaluationParameter] =
+  const [isOpenGeneral, setIsOpenGeneral] = useState(true);
+  const [isOpenClassTimings, setIsOpenClassTimings] = useState(false);
+  const [isOpenEvaluationParameter, setsOpenEvaluationParameter] =
     useState(false);
   const [orgData, setOrgData] = useState({});
   // ----   code by shihab   ----
@@ -46,11 +26,7 @@ const ManageLiveClasses = () => {
   const [earningCategories, setEarningCategories] = useState([]);
   const [skillParameterData, setSkillParameterData] = useState([]);
   const [earningParameterData, setEarningParameterData] = useState([]);
-  const [instructions, setInstructions] = useState("");
   const [course, setCourse] = useState({});
-  const [preview, setPreview] = useState(false);
-  const [submitPermission, setSubmitPermission] = useState(false);
-  const [classesData, setClassesData] = useState({});
   const [batchesData, setBatchesData] = useState([]);
   const [selectedBatch, setSelectedBatch] = useState({});
   const [mentors, setMentors] = useState([]);
@@ -59,88 +35,19 @@ const ManageLiveClasses = () => {
   const [enableDrip, setEnableDrip] = useState();
 
   const toggleDropdownGeneral = () => {
-    setisOpenGeneral(!isOpenGeneral);
+    setIsOpenGeneral(!isOpenGeneral);
   };
-  const toggleDropdownRoomSettings = () => {
-    setisOpenRoomSettings(!isOpenRoomSettings);
+  const toggleDropdownClassTimings = () => {
+    setIsOpenClassTimings(!isOpenClassTimings);
   };
-  const toggleDropdownlockSettings = () => {
-    setisOpenlockSettings(!isOpenlockSettings);
+  const toggleDropdownEvaluationParameter = () => {
+    setsOpenEvaluationParameter(!isOpenEvaluationParameter);
   };
-  const toggleDropdownclassTimings = () => {
-    setisOpenclassTimings(!isOpenclassTimings);
-  };
-  const toggleDropdownevaluationParameter = () => {
-    setisOpenevaluationParameter(!isOpenevaluationParameter);
-  };
-
-  /////////////////////////  Add new Item earningparameter
-  const BootstrapDialogearningparameter = styled(Dialog)(({ theme }) => ({
-    "& .MuiDialogContent-root": {
-      padding: theme.spacing(2),
-    },
-    "& .MuiDialogActions-root": {
-      padding: theme.spacing(1),
-    },
-  }));
-
-  function BootstrapDialogTitleearningparameter(props) {
-    const { children, onClose, ...other } = props;
-
-    return (
-      <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
-        {children}
-        {onClose ? (
-          <IconButton
-            aria-label="close"
-            onClick={onClose}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        ) : null}
-      </DialogTitle>
-    );
-  }
-
-  BootstrapDialogTitleearningparameter.propTypes = {
-    children: PropTypes.node,
-    onClose: PropTypes.func.isRequired,
-  };
-
-  const [openearningparameter, setOpenearningparameter] = React.useState(false);
-
-  const handleClickOpenearningparameter = () => {
-    setOpenearningparameter(true);
-  };
-  const handleCloseearningparameter = () => {
-    setOpenearningparameter(false);
-  };
-
-  //zoom part
-
-  const location = useLocation();
-  const [isConnected, setIsConnected] = useState(false);
-
-  useEffect(() => {
-    console.log(id);
-    const queryParams = new URLSearchParams(location.search);
-    const code = queryParams.get("code");
-    console.log(code);
-    if (code) {
-      exchangeCodeForToken(code);
-    }
-  }, [location.search]);
 
   useEffect(() => {
     axios
-    .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${id}`)
-     // .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
+      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${id}`)
+      // .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
       .then((response) => {
         setChapter(response?.data);
         const fetchData = {
@@ -230,168 +137,102 @@ const ManageLiveClasses = () => {
 
   const navigate = useNavigate();
 
-  const connectZoom = async () => {
-    const clientIdValue = orgData?.zoom_clientId;
-    const redirectURI = orgData?.zoom_redirectUri; // Make sure it matches the URI registered in your Zoom app
-    // console.log("Clicked ===========>", clientIdValue);
-    // console.log("Clicked ===========>", redirectURI);
-    window.location.href = `https://zoom.us/oauth/authorize?response_type=code&client_id=${clientIdValue}&redirect_uri=${redirectURI}`;
-  };
-
-  const exchangeCodeForToken = async (code) => {
-    let manageClass = JSON.parse(localStorage.getItem("manageClass"));
-    console.log("Came Here 239");
-    console.log(manageClass);
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/classes`,
-        // `http://localhost:5000/api/v1/classes`,
-        {
-          authCode: code,
-          manageClass: {
-            topic: manageClass?.className,
-            // start_time: manageClass?.courseStartingDateTime,
-            duration: +manageClass?.duration,
-            password: manageClass?.password,
-            type: 1,
-          },
-          clientID: manageClass?.clientID,
-          clientSecret: manageClass?.clientSecret,
-          redirectURI: manageClass?.redirectURI
-        }
-      );
-      console.log("Came Here 254 ===============>", response);
-      setIsConnected(true);
-      console.log("Meeting created: ==================>", response.data.meeting);
-      const meetingData = response.data.meeting;
-      manageClass = { ...manageClass, meetingData: meetingData };
-      const { clientID, clientSecret, redirectURI, ...newManageClass } = manageClass;
-      const newClass = await axios.post(
-        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/classes`,
-        // `http://localhost:5000/api/v1/tasks/taskType/classes`,
-        newManageClass
-      );
-
-      console.log("New Class ====================>", newClass);
-
-      if (newClass?.data?.result?.acknowledged) {
-        toast.success("Class added Successfully");
-        Loading().close();
-        navigate(-2);
-      }
-    } catch (error) {
-      console.error("Error creating meeting:", error);
-      Loading().close();
-    }
-
-  };
-
-
-
   const handleSubmit = async (event) => {
     event.preventDefault();
-    Loading();
+    // Loading();
     const form = event.target;
 
     const className = form.className?.value;
-    // const classType = form.classType?.value;
-    // const instanceType = form.instanceType?.value;
-    // const roomNumber = form.roomNumber?.value;
-    // const location = form.location?.value;
-    // const agenda = form.agenda?.value;
     const password = form.password?.value;
-    // const email = form.email?.value;
     const duration = +form.duration?.value;
-    // const sessionmayberecorded = +form.sessionmayberecorded?.value;
-    // const waitformoderator = +form.waitformoderator?.value;
-    // const disablewebcams = +form.disablewebcams?.value;
-    // const disablemicrophones = +form.disablemicrophones?.value;
-    // const disableprivatechat = +form.disableprivatechat?.value;
-    // const disablepublicchat = +form.disablepublicchat?.value;
-    // const disablesharednotes = +form.disablesharednotes?.value;
-    // const hideuserlist = +form.hideuserlist?.value;
     const courseStartingDateTime = form.courseStartingDateTime?.value;
-    // const courseEndDateTime = form.courseEndDateTime?.value;
-    // const itemEarningParameter = form.itemEarningParameter?.value;
-    // const itemEarningParameter1 = form.itemEarningParameter1?.value;
+    const start_url = form.startUrl.value || "";
+    const join_url = form.joinUrl.value || "";
     const week = await JSON.parse(localStorage.getItem("currentWeek"));
-    const manageClass = {
-      taskName: className,
-      // classType,
-      // instanceType,
-      // roomNumber,
-      // location,
-      // agenda,
-      // taskName: agenda,
-      taskType: "Classes",
-      password,
-      // email,
-      duration,
-      clientID: orgData?.zoom_clientId,
-      clientSecret: orgData?.zoom_clientSecret,
-      redirectURI: orgData?.zoom_redirectUri,
-      // sessionmayberecorded,
-      // waitformoderator,
-      // disablewebcams,
-      // disablemicrophones,
-      // disableprivatechat,
-      // disablepublicchat,
-      // disablesharednotes,
-      // hideuserlist,
-      taskDrip,
-      courseStartingDateTime,
-      skillParameterData: skillParameterData,
-      earningParameterData: earningParameterData,
-      chapterId: id,
-      courseId: chapter?.courseId,
-      weekId: week?._id,
-      mentors: selectedMentors,
-      batches: [
-        {
-          batchName: selectedBatch?.batchName,
-          batchId: selectedBatch?._id,
+
+    const classData = {
+      organizationId: orgData._id,
+      classInfo: {
+        taskName: className,
+        taskType: "Classes",
+        password,
+        duration,
+        taskDrip,
+        courseStartingDateTime,
+        skillParameterData: skillParameterData || [],
+        earningParameterData: earningParameterData || [],
+        chapterId: id,
+        courseId: chapter?.courseId,
+        weekId: week?._id,
+        mentors: selectedMentors || [],
+        batches: [
+          {
+            batchName: selectedBatch?.batchName,
+            batchId: selectedBatch?._id,
+          },
+        ],
+        meetingData: {
+          topic: className,
+          duration,
+          password,
+          timezone: "Asia/Kolkata",
+          start_url,
+          join_url,
+          created_at: new Date(),
+          host_email: userInfo?.email,
         },
-      ],
+      },
     };
-    localStorage.setItem("manageClass", JSON.stringify(manageClass));
-    // console.log(JSON.parse(localStorage.getItem('manageClass')));
-    await connectZoom();
 
-    const newNotification = await axios.post(
-      `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/notifications/addNotification`,
-      {
-        message: `New reading material added in course ${course?.courseFullName}.`,
-        dateTime: new Date(),
-        redirectLink: `/questLevels/${course?._id}?week=${chapter?.weekId}`,
-        recipient: {
-          type: "Students",
-          organizationId: orgData?._id,
-          courseId: course?._id,
-          batches: [
-            {
-              batchName: selectedBatch?.batchName,
-              batchId: selectedBatch?._id,
-            },
-          ],
-        },
-        type: "Create Task",
-        readBy: [],
-        notificationTriggeredBy: user?.email,
-      }
+    // console.log(classData);
+
+    const newClass = await axios.post(
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v2/classes`,
+      { classData }
     );
-    console.log(newNotification);
 
+    if (
+      newClass?.data?.data?.chapterResult?.modifiedCount === 1 &&
+      newClass?.data?.data?.classResult?.insertedId &&
+      newClass?.data?.data?.courseResult?.modifiedCount === 1
+    ) {
+      toast.success("Class created successfully!");
+      navigate(-1);
+    } else {
+      toast.error(newClass?.data?.message);
+    }
 
+    // console.log(newClass?.data?.data);
 
+    // const newNotification = await axios.post(
+    //   `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/notifications/addNotification`,
+    //   {
+    //     message: `New Class material added in course ${course?.courseFullName}.`,
+    //     dateTime: new Date(),
+    //     redirectLink: `/questLevels/${course?._id}?week=${chapter?.weekId}`,
+    //     recipient: {
+    //       type: "Students",
+    //       organizationId: orgData?._id,
+    //       courseId: course?._id,
+    //       batches: [
+    //         {
+    //           batchName: selectedBatch?.batchName,
+    //           batchId: selectedBatch?._id,
+    //         },
+    //       ],
+    //     },
+    //     type: "Create Task",
+    //     readBy: [],
+    //     notificationTriggeredBy: user?.email,
+    //   }
+    // );
   };
-
-  console.log(mentors);
 
   return (
     <div>
       <Layout>
         <div className="text-[#3E4DAC] text-[26px] font-bold  py-[35px] ps-[40px]">
-          <p>Manage Classes in Topic 1</p>
+          <p>Manage Classes in {chapter.chapterName}</p>
         </div>
         <form onSubmit={handleSubmit} className="ms-[40px]  mt-12">
           <div
@@ -402,14 +243,20 @@ const ManageLiveClasses = () => {
               1
             </h1>
             <p className="text-[25px] font-bold">General </p>
-            {!isOpenGeneral && <img className="w-6" src={arrowright}></img>}
+            {!isOpenGeneral && (
+              <img
+                className="w-6"
+                src={arrowright}
+                alt="right arrow icon"
+              ></img>
+            )}
 
-            {isOpenGeneral && <img src={arrowDown}></img>}
+            {isOpenGeneral && <img src={arrowDown} alt="down arrow icon"></img>}
 
             <i className={`dropdown-arrow ${isOpenGeneral ? "open" : ""}`}></i>
           </div>
           {isOpenGeneral && (
-            <div className="dropdown-menu mt-[71px] mb-[45px] border-b-2  ">
+            <div className="dropdown-menu mt-[71px] mb-[45px] border-b-2">
               <div className="flex items-start gap-40">
                 <div className="">
                   <div className="flex items-center gap-4">
@@ -428,16 +275,16 @@ const ManageLiveClasses = () => {
                 </div>
 
                 <div>
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
-                    <p className="font-bold text-lg me-[36px]">Select Mentors</p>
+                    <p className="font-bold text-lg">Select Mentors</p>
                     <img src={required} alt="required" />
                   </div>
-                  <ul className="flex gap-4 flex-wrap ">
+                  <ul className="flex flex-col gap-1 ms-6">
                     {mentors?.map((option, index) => {
                       return (
-                        <>
-                          <li className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] ms-6">
+                        <div key={index}>
+                          <li className="cursor-pointer flex items-center py-2 text-[#6A6A6A] text-[14px] font-[400]">
                             <input
                               type="checkbox"
                               id="student"
@@ -446,16 +293,20 @@ const ManageLiveClasses = () => {
                               checked={selectedMentors.find(
                                 (item) => item?.mentorEmail === option?.email
                               )}
-                              onChange={(e) => handleOptionChangeBatch(e, option)}
-                              className=" mb-1"
+                              onChange={(e) =>
+                                handleOptionChangeBatch(e, option)
+                              }
                             />
-                            <div className="flex mb-1 items-center">
-                              <label className="ms-4" htmlFor={option?.batchName}>
+                            <div className="flex items-center">
+                              <label
+                                className="ms-1"
+                                htmlFor={option?.batchName}
+                              >
                                 {option?.name}
                               </label>
                             </div>
                           </li>
-                        </>
+                        </div>
                       );
                     })}
                   </ul>
@@ -465,88 +316,16 @@ const ManageLiveClasses = () => {
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
                     <p className="font-bold text-lg">Password</p>
-                    <img src={required} alt="required" />
                   </div>
 
                   <input
-                    required
                     className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                     name="password"
                     type="text"
                     placeholder="Password"
                   />
                 </div>
-
-                {/* <div className="">
-                  <div className="flex items-center gap-4">
-                    <p className="h-2 w-2 bg-black rounded-full"></p>
-                    <p className="font-bold text-lg me-[36px]">Class Type</p>
-                    <img src={required} alt="required" />
-                  </div>
-
-                  <div
-                    className=" flex gap-2  mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]  "
-                    style={{
-                      boxShadow: " 0px 2px 4px 0px rgba(0, 0, 0, 0.15)",
-                    }}
-                  >
-                    <select
-                      required
-                      className="w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold focus:outline-0"
-                      name="classType"
-                    >
-                      <option className="" value="Online">
-                        Online
-                      </option>
-                      <option className="text-[#6A6A6A] " value="Offline">
-                        {" "}
-                        Offline
-                      </option>
-                      <option className="text-[#6A6A6A]" value="Offline">
-                        {" "}
-                        Hybrid
-                      </option>
-                    </select>
-                  </div>
-                </div> */}
-
-                {/* <div className="me-20">
-                  <div className="flex items-center gap-4">
-                    <p className="h-2 w-2 bg-black rounded-full"></p>
-                    <p className="font-bold text-lg me-[36px]">Instance Type</p>
-                    <img src={required} alt="required" />
-                  </div>
-
-                  <div
-                    className=" flex gap-2  mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF]  "
-                    style={{
-                      boxShadow: " 0px 2px 4px 0px rgba(0, 0, 0, 0.15)",
-                    }}
-                  >
-                    <select
-                      required
-                      className="w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold focus:outline-0"
-                      name="instanceType"
-                    >
-                      <option className="" value="Room with recordings">
-                        Room with recordings
-                      </option>
-                      <option className="text-[#6A6A6A]" value="Room Only">
-                        {" "}
-                        Room Only
-                      </option>
-                      <option
-                        className="text-[#6A6A6A]"
-                        value="Recordings Only"
-                      >
-                        {" "}
-                        Recordings Only
-                      </option>
-                    </select>
-                  </div>
-                </div> */}
               </div>
-
 
               <div className="flex items-start mt-[50px] gap-40">
                 <div>
@@ -558,8 +337,8 @@ const ManageLiveClasses = () => {
                   <ul className="flex gap-4 flex-wrap ">
                     {batchesData?.map((option, index) => {
                       return (
-                        <>
-                          <li className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] ">
+                        <div key={index}>
+                          <li className="ms-6 cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] ">
                             <input
                               type="radio"
                               id="student"
@@ -572,16 +351,18 @@ const ManageLiveClasses = () => {
                               className=" mb-1"
                             />
                             <div className="flex mb-1 items-center">
-                              <label className="ms-4" htmlFor={option?.batchName}>
+                              <label
+                                className="ms-4"
+                                htmlFor={option?.batchName}
+                              >
                                 {option?.batchName}
                               </label>
                             </div>
                           </li>
-                        </>
+                        </div>
                       );
                     })}
                   </ul>
-
                 </div>
                 <div className="space-y-4 mb-8">
                   <fieldset>
@@ -603,8 +384,9 @@ const ManageLiveClasses = () => {
                         />
                         <label
                           htmlFor="radioYes"
-                          className={`ml-2 text-sm font-medium ${enableDrip ? "text-gray-400" : "text-gray-900"
-                            }`}
+                          className={`ml-2 text-sm font-medium ${
+                            enableDrip ? "text-gray-400" : "text-gray-900"
+                          }`}
                         >
                           Yes
                         </label>
@@ -622,8 +404,9 @@ const ManageLiveClasses = () => {
                         />
                         <label
                           htmlFor="radioNo"
-                          className={`ml-2 text-sm font-medium ${enableDrip ? "text-gray-400" : "text-gray-900"
-                            }`}
+                          className={`ml-2 text-sm font-medium ${
+                            enableDrip ? "text-gray-400" : "text-gray-900"
+                          }`}
                         >
                           No
                         </label>
@@ -639,104 +422,65 @@ const ManageLiveClasses = () => {
                 </div>
               </div>
 
-              {/* <div className="flex justify-between mt-[90px] mb-20">
-                <div className="">
+              <div className="flex items-start mt-[50px] gap-40 mb-8">
+                <div>
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
                     <p className="font-bold text-lg me-[36px]">
-                      Location (For offline & Hybrid)
+                      Start URL (Admin)
                     </p>
-                    <img src={required} alt="required" />
                   </div>
-                  <div className="flex items-center justify-between  mt-6 ms-6 border rounded-md w-[100%] h-[50px] px-5 text-[#535353]  bg-[#F6F7FF] ">
-                    <div className="flex gap-2">
-                      <SearchIcon />
-                      <input
-                        className="focus:outline-0 text-[#535353]  bg-[#F6F7FF]"
-                        name="location"
-                        type="text"
-                        placeholder="Search Location"
-                      />
-                    </div>
-
-                    <MyLocationIcon />
-                  </div>
-                </div>
-                <div className="me-20">
-                  <div className="flex items-center gap-4">
-                    <p className="h-2 w-2 bg-black rounded-full"></p>
-                    <p className="font-bold text-lg me-[36px]">Room Number</p>
-                  </div>
-
                   <input
                     className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                    name="roomNumber"
-                    type="text"
-                    placeholder="Number"
+                    name="startUrl"
+                    type="url"
+                    placeholder="Start URL"
                   />
                 </div>
-              </div> */}
-
-              <div className="">
-                {/* <div className="">
+                <div>
                   <div className="flex items-center gap-4">
                     <p className="h-2 w-2 bg-black rounded-full"></p>
-                    <p className="font-bold text-lg me-[36px]">Agenda</p>
-                    <img src={required} alt="required" />
+                    <p className="font-bold text-lg me-[36px]">
+                      Join URL (Student)
+                    </p>
                   </div>
-                  <div className="flex items-center justify-between  mt-6 ms-6 border rounded-md w-[100%] h-[50px] px-5 text-[#535353]  bg-[#F6F7FF] ">
-                    <div className="flex gap-2">
-                      <input
-                        className="focus:outline-0 text-[#535353]  bg-[#F6F7FF]"
-                        name="agenda"
-                        type="text"
-                        placeholder=" Agenda"
-                      />
-                    </div>
-                  </div>
-                </div> */}
-
-
-                {/* <div className="me-20">
-                  <div className="flex items-center gap-4">
-                    <p className="h-2 w-2 bg-black rounded-full"></p>
-                    <p className="font-bold text-lg me-[36px]">Email</p>
-                    <img src={required} alt="required" />
-                  </div>
-
                   <input
-                    required
                     className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                    name="email"
-                    type="email"
-                    placeholder="Email"
+                    name="joinUrl"
+                    type="url"
+                    placeholder="Join URL"
                   />
-                </div> */}
+                </div>
               </div>
-
             </div>
           )}
 
           <div
             className="select-option flex items-center gap-[40px] mt-12"
-            onClick={toggleDropdownclassTimings}
+            onClick={toggleDropdownClassTimings}
           >
             <h1 className=" h-[60px] w-[60px] bg-[#E1E6FF] rounded-full flex justify-center items-center text-[25px]">
               2
             </h1>
             <p className="text-[25px] font-bold">Class Timings</p>
-            {!isOpenclassTimings && (
-              <img className="w-6" src={arrowright}></img>
+            {!isOpenClassTimings && (
+              <img
+                className="w-6"
+                src={arrowright}
+                alt="arrow right icon"
+              ></img>
             )}
 
-            {isOpenclassTimings && <img src={arrowDown}></img>}
+            {isOpenClassTimings && (
+              <img src={arrowDown} alt="arrow down icon"></img>
+            )}
 
             <i
-              className={`dropdown-arrow ${isOpenclassTimings ? "open" : ""}`}
+              className={`dropdown-arrow ${isOpenClassTimings ? "open" : ""}`}
             ></i>
           </div>
 
-          {isOpenclassTimings && (
+          {isOpenClassTimings && (
             <div className="dropdown-menu  mb-[45px] border-b-2 ">
               <div className="flex justify-between mb-20">
                 <div className=" ms-5">
@@ -757,7 +501,6 @@ const ManageLiveClasses = () => {
                       type="datetime-local"
                       placeholder="Eg. Entrepreneurship Lab"
                     />
-                    {/* <input required className='mt-4 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='courseStartingTime' type="time" placeholder='Eg. Entrepreneurship Lab' /> */}
                   </div>
                 </div>
 
@@ -769,21 +512,13 @@ const ManageLiveClasses = () => {
                       <img src={required} alt="required" />
                     </div>
                     <input
+                      required
                       className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                       name="duration"
                       type="number"
                       placeholder="time"
                       min={30}
                     />
-
-                    {/*    <input
-                      required
-                      className="mt-6 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                      name="courseEndDateTime"
-                      type="datetime-local"
-                      placeholder="Eg. Entrepreneurship Lab"
-                    /> */}
-                    {/* <input required className='mt-4 ms-6 border rounded-md w-[307px] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] ' name='courseStartingTime' type="time" placeholder='Eg. Entrepreneurship Lab' /> */}
                   </div>
                 </div>
               </div>
@@ -792,28 +527,35 @@ const ManageLiveClasses = () => {
 
           {(orgData?.showPointsAndRedemptions ||
             orgData?.showSkillsManagement) && (
-              <div
-                className="select-option flex items-center gap-[40px] mt-12"
-                onClick={toggleDropdownevaluationParameter}
-              >
-                <h1 className=" h-[60px] w-[60px] bg-[#E1E6FF] rounded-full flex justify-center items-center text-[25px]">
-                  3
-                </h1>
-                <p className="text-[25px] font-bold">Evaluation Parameter</p>
-                {!isOpenevaluationParameter && (
-                  <img className="w-6" src={arrowright}></img>
-                )}
+            <div
+              className="select-option flex items-center gap-[40px] mt-12"
+              onClick={toggleDropdownEvaluationParameter}
+            >
+              <h1 className=" h-[60px] w-[60px] bg-[#E1E6FF] rounded-full flex justify-center items-center text-[25px]">
+                3
+              </h1>
+              <p className="text-[25px] font-bold">Evaluation Parameter</p>
+              {!isOpenEvaluationParameter && (
+                <img
+                  className="w-6"
+                  src={arrowright}
+                  alt="right arrow icon"
+                ></img>
+              )}
 
-                {isOpenevaluationParameter && <img src={arrowDown}></img>}
+              {isOpenEvaluationParameter && (
+                <img src={arrowDown} alt="down arrow icon"></img>
+              )}
 
-                <i
-                  className={`dropdown-arrow ${isOpenevaluationParameter ? "open" : ""
-                    }`}
-                ></i>
-              </div>
-            )}
+              <i
+                className={`dropdown-arrow ${
+                  isOpenEvaluationParameter ? "open" : ""
+                }`}
+              ></i>
+            </div>
+          )}
 
-          {isOpenevaluationParameter && (
+          {isOpenEvaluationParameter && (
             <div className="dropdown-menu mt-[71px] mb-[45px] ">
               {orgData?.showSkillsManagement && (
                 <SkillBasedParameter
@@ -836,14 +578,8 @@ const ManageLiveClasses = () => {
             <input
               type="submit"
               value="Save"
-              onClick={() => setSubmitPermission(true)}
               className="px-[30px] py-3 bg-[#3E4DAC] hover:bg-opacity-70 text-[#fff] cursor-pointer text-xl font-bold rounded-lg"
             />
-            {/* <input
-              type="submit"
-              value="Save & Display"
-              className="px-[30px] py-3 bg-[#FF557A] text-[#fff] text-xl font-bold rounded-lg ms-20"
-            /> */}
           </div>
         </form>
       </Layout>
