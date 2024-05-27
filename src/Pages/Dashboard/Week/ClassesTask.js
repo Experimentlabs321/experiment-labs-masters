@@ -3,46 +3,46 @@ import LiveClass from "../../../assets/Dashboard/LiveClass.png";
 import HttpsIcon from "@mui/icons-material/Https";
 import Swal from "sweetalert2";
 import axios from "axios";
-import Button from '@mui/material/Button';
-import { styled } from '@mui/material/styles';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
-import Typography from '@mui/material/Typography';
+import Button from "@mui/material/Button";
+import { styled } from "@mui/material/styles";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import Typography from "@mui/material/Typography";
 import { AuthContext } from "../../../contexts/AuthProvider";
-import Rating from '@mui/material/Rating';
+import Rating from "@mui/material/Rating";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import FeedbackPopup from "./FeedbackPopup";
+import CopyToClipBoard from "../../../Components/CopyToClipBoard/CopyToClipBoard";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-  '& .MuiDialogContent-root': {
+  "& .MuiDialogContent-root": {
     padding: theme.spacing(2),
   },
-  '& .MuiDialogActions-root': {
+  "& .MuiDialogActions-root": {
     padding: theme.spacing(1),
   },
 }));
 
 const ClassesTask = ({ taskData }) => {
   const { id } = useParams();
-  console.log(id)
+  console.log(id);
   const [isOpen, setIsOpen] = useState(false);
   const { userInfo, user } = useContext(AuthContext);
-  if (userInfo.role !== 'admin') {
+  if (userInfo.role !== "admin") {
     window.addEventListener("contextmenu", (e) => {
       e.preventDefault();
     });
-  };
+  }
   const [selectedOption, setSelectedOption] = useState("Category");
   const [feedbacks, setFeedbacks] = useState();
   const [feedbackGiven, setFeedbackGiven] = useState();
   const options = ["Category name"];
   //feedback//
-
 
   ////
   const toggleOptions = () => {
@@ -53,8 +53,6 @@ const ClassesTask = ({ taskData }) => {
     setSelectedOption(option);
     setIsOpen(false);
   };
-
-
 
   const [minutes, setMinutes] = useState(15);
 
@@ -73,7 +71,7 @@ const ClassesTask = ({ taskData }) => {
   useEffect(() => {
     // Function that you want to run every 30 seconds
     const intervalFunction = () => {
-      console.log('This will run every 30 seconds!', new Date(), minutes);
+      console.log("This will run every 30 seconds!", new Date(), minutes);
       // Add your repeating logic here
       const currentDateTime = new Date();
       const timeDifferenceInMilliseconds = providedDateTime - currentDateTime;
@@ -88,7 +86,6 @@ const ClassesTask = ({ taskData }) => {
   }, []);
 
   // console.log(minutes, -1 * taskData?.duration);
-
 
   const [openTask, setOpenTask] = useState(
     JSON.parse(localStorage.getItem("task"))
@@ -138,8 +135,10 @@ const ClassesTask = ({ taskData }) => {
         )}
       </div>
       <div className="h-full flex flex-col items-center justify-center ">
+        {/* will show only when meeting is not expired and won't show in student side */}
+        {(!(minutes < -1 * (taskData?.duration + 10)) && userInfo.role!=="user") && <CopyToClipBoard fieldName={"Join URL"} textToCopy={taskData?.meetingData?.join_url} />}
         <div
-          className="  border-x-[30px] mt-[40px] border-t-[30px] border-b-[50px] rounded-lg border-[#292929] w-[865px] h-[500px] bg-[#434343] flex items-center justify-center flex-col "
+          className="border-x-[30px] mt-[40px] border-t-[30px] border-b-[50px] rounded-lg border-[#292929] w-[865px] h-[500px] bg-[#434343] flex items-center justify-center flex-col "
           width="865px"
           height="500px"
         >
@@ -163,6 +162,7 @@ const ClassesTask = ({ taskData }) => {
                   onClick={() => handleCompletion()}
                   href={taskData?.meetingData?.join_url}
                   target="_blank"
+                  rel="noreferrer"
                   className={`bg-[#3E4DAC] cursor-pointer px-8 py-4 text-white w-[150px] h-[50px] text-[16px] font-[600] text-center rounded-[8px] z-[1] shadow-[0px_4px_0px_0px_#CA5F98] lg:shadow-[0px_8px_0px_0px_#CA5F98]`}
                 >
                   Join
@@ -235,12 +235,7 @@ const ClassesTask = ({ taskData }) => {
             fill="#292929"
           />
         </svg>
-        <FeedbackPopup
-          taskData={taskData}
-
-        />
-
-
+        <FeedbackPopup taskData={taskData} />
       </div>
     </div>
   );

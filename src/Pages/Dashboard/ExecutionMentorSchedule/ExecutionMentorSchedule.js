@@ -74,11 +74,11 @@ const ExecutionMentorSchedule = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/getCalendarInfoByEmail/email/${user?.email}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/email/${user?.email}`
       )
       .then((response) => {
-        setAdminCalendarInfo(response?.data);
-        setSelectedHoliday(response?.data?.offDays);
+        setAdminCalendarInfo(response?.data?.data);
+        setSelectedHoliday(response?.data?.data?.offDays);
       })
 
       .catch((error) => console.error(error));
@@ -269,16 +269,17 @@ const ExecutionMentorSchedule = () => {
       minimumTime,
       meetingDuration: meetingDuration,
       meetingType: meetingType,
-      events: relevantEvents,
+      events: relevantEvents || [],
       adminMail: userInfo?.email,
       syncedMail: session?.user?.email,
+      email: userInfo?.email,
     };
     setAssignmentData(manageSchedule);
-    // console.log(manageSchedule);
+    console.log(manageSchedule);
     if (submitPermission) {
       const newSchedule = await axios.post(
-        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/updateOrInsertCalendarInfo/email/${userInfo?.email}`,
-        manageSchedule
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo`,
+        { calendarInfo: manageSchedule }
       );
       console.log(newSchedule);
       if (newSchedule?.status === 200) {
@@ -287,7 +288,7 @@ const ExecutionMentorSchedule = () => {
       } else {
         toast.error("Something went wrong");
       }
-      console.log(manageSchedule);
+      
     }
   };
   // console.log("Start", start);
@@ -751,7 +752,7 @@ const ExecutionMentorSchedule = () => {
                         meridiem: "short",
                       }}
                       timeZone={timeZone} // Use timeZone state
-                      // dayRender={handleDayRender}
+                    // dayRender={handleDayRender}
                     />
                   </div>
                   <form onSubmit={handleSubmit} className="lg:ms-[40px] mx-5  mt-12">

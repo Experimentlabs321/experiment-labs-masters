@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
@@ -155,49 +155,86 @@ const MentorAssignments = () => {
       .catch((error) => console.error(error));
   }, [userInfo]);
 
+  // const applyFilters = () => {
+  //   let filtered = allMyStudents;
+  //   console.log(selectedStatus);
+
+  //   // Apply course filter
+  //   if (selectedCourse?._id) {
+  //     filtered = filtered?.filter((student) =>
+  //       student.courses?.some(
+  //         (course) => course?.courseId === selectedCourse?._id
+  //       )
+  //     );
+  //   }
+  //   //console.log(filtered);
+
+  //   // Apply batch filter
+  //   if (selectedBatch?._id) {
+  //     filtered = filtered?.filter((student) =>
+  //       student.courses?.some((batch) => batch?.batchId === selectedBatch?._id)
+  //     );
+  //   }
+
+  //   // status
+  //   var matchingAssignments = assignments?.filter((assignment) =>
+  //     filtered?.some(
+  //       (filteredStudent) => assignment?.submitter?._id === filteredStudent?._id
+  //     )
+  //   );
+  //   if (selectedStatus === "Submitted") {
+  //     matchingAssignments = matchingAssignments?.filter(
+  //       (assignment) => assignment?.submitter?.result
+  //     );
+  //   }
+  //   if (selectedStatus === "Pending") {
+  //     matchingAssignments = matchingAssignments?.filter(
+  //       (assignment) => !assignment?.submitter?.result
+  //     );
+  //   }
+  //   if (matchingAssignments) {
+  //     setFilteredAssignment(matchingAssignments);
+  //   } else {
+  //     console.log("none");
+  //     setFilteredAssignment(assignments);
+  //   }
+  // };
+
   const applyFilters = () => {
-    let filtered = allMyStudents;
+    let filtered = assignments;
     console.log(selectedStatus);
 
     // Apply course filter
     if (selectedCourse?._id) {
-      filtered = filtered?.filter((student) =>
-        student.courses?.some(
-          (course) => course?.courseId === selectedCourse?._id
-        )
+      filtered = filtered?.filter(
+        (submission) => submission?.courseId === selectedCourse?._id
       );
     }
     //console.log(filtered);
 
     // Apply batch filter
     if (selectedBatch?._id) {
-      filtered = filtered?.filter((student) =>
-        student.courses?.some((batch) => batch?.batchId === selectedBatch?._id)
+      filtered = filtered?.filter(
+        (submission) => submission?.batchId === selectedBatch?._id
       );
     }
 
-    // status
-    var matchingAssignments = assignments?.filter((assignment) =>
-      filtered?.some(
-        (filteredStudent) => assignment?.submitter?._id === filteredStudent?._id
-      )
-    );
     if (selectedStatus === "Submitted") {
-      matchingAssignments = matchingAssignments?.filter(
+      filtered = filtered?.filter(
         (assignment) => assignment?.submitter?.result
       );
     }
     if (selectedStatus === "Pending") {
-      matchingAssignments = matchingAssignments?.filter(
+      filtered = filtered?.filter(
         (assignment) => !assignment?.submitter?.result
       );
     }
-    if (matchingAssignments) {
-      setFilteredAssignment(matchingAssignments);
-    } else {
-      console.log("none");
-      setFilteredAssignment(assignments);
-    }
+    setFilteredAssignment(filtered);
+    // if (matchingAssignments) {
+    // } else {
+    //   console.log("none");
+    //   setFilteredAssignment(assignments);
+    // }
   };
 
   function formatDateTime(dateTimeString) {
@@ -318,6 +355,41 @@ const MentorAssignments = () => {
 
   console.log(filteredAssignments);
 
+  const [selectedParticipants, setSelectedParticipants] = useState([]);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const availableParticipants = [
+    "Participant 1",
+    "Participant 2",
+    "Participant 3",
+    "Participant 4",
+  ]; // Example list of participants
+  const dropdownRef = useRef(null);
+
+  const handleSelectChange = (participant) => {
+    setSelectedParticipants((prevState) =>
+      prevState.includes(participant)
+        ? prevState.filter((item) => item !== participant)
+        : [...prevState, participant]
+    );
+  };
+
+  const handleToggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setIsDropdownOpen(false);
+    }
+  };
+
+  React.useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div>
       <Layout>
@@ -343,7 +415,7 @@ const MentorAssignments = () => {
               </div>
             </div>
 
-            <div className=" flex gap-10 pb-3 text-lg mt-10">
+            <div className=" flex flex-col md:flex-row gap-10 pb-3 text-lg mt-10">
               <>
                 {/*       <Link
                   to="/mentorAssignments"
@@ -458,7 +530,7 @@ const MentorAssignments = () => {
               </button>
             </div>
             {userInfo?.role === "admin" && (
-              <div className="flex items-center gap-4">
+              <div className="flex flex-col md:flex-row items-center gap-4">
                 <div className="flex items-center gap-4">
                   <h1>Filter By Mentor:</h1>
                   <select
@@ -489,35 +561,6 @@ const MentorAssignments = () => {
                       <option className="hidden">{userInfo?.name}</option>
                     )}
                   </select>
-                </div>
-                <div>
-                  <input
-                    type="checkbox"
-                    id="selectAll"
-                    checked={
-                      selectedSubmissions?.length ===
-                      filteredAssignments?.length
-                    }
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        setSelectAllStatus(true);
-                        let allSubmissionId = [];
-                        filteredAssignments?.forEach((item) => {
-                          allSubmissionId.push(item?._id);
-                        });
-                        setSelectedSubmissions(allSubmissionId);
-                      } else {
-                        setSelectAllStatus(false);
-                        setSelectedSubmissions([]);
-                      }
-                    }}
-                  />
-                  <label
-                    className=" text-base font-semibold  p-2"
-                    htmlFor="selectAll"
-                  >
-                    Select All
-                  </label>
                 </div>
                 {selectedSubmissions?.length > 0 && (
                   <div className="flex items-center gap-4">
@@ -605,7 +648,9 @@ const MentorAssignments = () => {
             </>
             <div
               style={{
-                maxWidth: `${window.innerWidth - 370}px`,
+                maxWidth: `${
+                  window.innerWidth - (window.innerWidth > 1024 ? 370 : 40)
+                }px`,
               }}
               className={`h-[60vh] w-fit overflow-y-auto mt-5 border`}
             >
@@ -614,6 +659,35 @@ const MentorAssignments = () => {
                   <tr>
                     <th className="py-3 px-6 border-b text-left whitespace-nowrap ">
                       Student Name
+                      <div>
+                        <input
+                          type="checkbox"
+                          id="selectAll"
+                          checked={
+                            selectedSubmissions?.length ===
+                            filteredAssignments?.length
+                          }
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectAllStatus(true);
+                              let allSubmissionId = [];
+                              filteredAssignments?.forEach((item) => {
+                                allSubmissionId.push(item?._id);
+                              });
+                              setSelectedSubmissions(allSubmissionId);
+                            } else {
+                              setSelectAllStatus(false);
+                              setSelectedSubmissions([]);
+                            }
+                          }}
+                        />
+                        <label
+                          className=" text-base font-semibold  p-2"
+                          htmlFor="selectAll"
+                        >
+                          Select All
+                        </label>
+                      </div>
                     </th>
                     <th className="py-3 px-6 border-b text-left whitespace-nowrap">
                       Assignment Name
@@ -755,6 +829,73 @@ const MentorAssignments = () => {
                               </option>
                             )}
                           </select>
+                          <div className="basis-1/2 px-2">
+                            <div className="relative" ref={dropdownRef}>
+                              <div
+                                className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] cursor-pointer"
+                                onClick={handleToggleDropdown}
+                              >
+                                {selectedParticipants.length === 0
+                                  ? "Select Participants"
+                                  : selectedParticipants.join(", ")}
+                              </div>
+                              {isDropdownOpen && (
+                                <div className="absolute mt-2 w-full rounded-md shadow-lg bg-white z-10">
+                                  <ul className="max-h-48 overflow-auto rounded-md py-1 text-base leading-6 shadow-xs focus:outline-none sm:text-sm sm:leading-5">
+                                    {availableParticipants.map(
+                                      (participant, index) => (
+                                        <li
+                                          key={index}
+                                          className="flex items-center p-2"
+                                        >
+                                          <input
+                                            type="checkbox"
+                                            checked={selectedParticipants.includes(
+                                              participant
+                                            )}
+                                            onChange={() =>
+                                              handleSelectChange(participant)
+                                            }
+                                            className="form-checkbox h-5 w-5 text-indigo-600 transition duration-150 ease-in-out"
+                                          />
+                                          <span className="ml-2 text-gray-700">
+                                            {participant}
+                                          </span>
+                                        </li>
+                                      )
+                                    )}
+                                  </ul>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          {selectedParticipants.length > 0 && (
+                            <>
+                              <h1 className="text-[18px] px-2 font-[700] mt-[16px] mb-[4px]">
+                                Selected Participants
+                              </h1>
+                              <div className="tag-container my-2 flex flex-wrap w-full rounded-lg border-2 p-2 mx-2">
+                                {selectedParticipants.map(
+                                  (participant, index) => (
+                                    <div
+                                      key={index}
+                                      className="m-1 h-fit rounded-lg border-2 py-1 px-2"
+                                    >
+                                      {participant}
+                                      <span
+                                        className="cursor-pointer pl-1 text-xl font-bold"
+                                        onClick={() =>
+                                          handleSelectChange(participant)
+                                        }
+                                      >
+                                        ×
+                                      </span>
+                                    </div>
+                                  )
+                                )}
+                              </div>
+                            </>
+                          )}
                         </td>
                       </tr>
                     );

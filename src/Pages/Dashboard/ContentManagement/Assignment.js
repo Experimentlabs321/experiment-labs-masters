@@ -1,27 +1,19 @@
-import React, {
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React, { useContext, useEffect, useState } from "react";
 
-import axios from 'axios';
-import { toast } from 'react-hot-toast';
-import {
-  Link,
-  useNavigate,
-  useParams,
-} from 'react-router-dom';
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
-import arrowDown from '../../../assets/SkillsManagement/arrow.svg';
-import arrowright from '../../../assets/SkillsManagement/arrowright.svg';
-import { AuthContext } from '../../../contexts/AuthProvider';
-import Loading from '../../Shared/Loading/Loading';
-import uploadFileToS3 from '../../UploadComponent/s3Uploader';
-import Layout from '../Layout';
-import AssignmentTask from '../Week/AssignmentTask';
-import General from './Components/Assignment/General';
-import ItemEarningParameter from './Components/Shared/ItemEarningParameter';
-import SkillBasedParameter from './Components/Shared/SkillBasedParameter';
+import arrowDown from "../../../assets/SkillsManagement/arrow.svg";
+import arrowright from "../../../assets/SkillsManagement/arrowright.svg";
+import { AuthContext } from "../../../contexts/AuthProvider";
+import Loading from "../../Shared/Loading/Loading";
+import uploadFileToS3 from "../../UploadComponent/s3Uploader";
+import Layout from "../Layout";
+import AssignmentTask from "../Week/AssignmentTask";
+import General from "./Components/Assignment/General";
+import ItemEarningParameter from "./Components/Shared/ItemEarningParameter";
+import SkillBasedParameter from "./Components/Shared/SkillBasedParameter";
 
 const Assignment = () => {
   const [isOpenGeneral, setisOpenGeneral] = useState(true);
@@ -60,10 +52,12 @@ const Assignment = () => {
   const [taskDrip, setTaskDrip] = useState(false);
   const [enableDrip, setEnableDrip] = useState();
   const [isLoading, setIsLoading] = useState(true);
+  const [executionMentors, setExecutionMentors] = useState([]);
+  const [selectedMentors, setSelectedMentors] = useState([]);
 
   useEffect(() => {
     axios
-    
+
       //.get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
       .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${id}`)
       .then((response) => {
@@ -154,6 +148,22 @@ const Assignment = () => {
       });
   }, [userInfo]);
 
+  useEffect(() => {
+    axios
+      .get(
+        // `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users//mentors/organizationId/${userInfo?.organizationId}/role/execution mentor`
+        `http://localhost:5000/api/v1/users/mentors/organizationId/${userInfo?.organizationId}/role/execution mentor`
+      )
+      .then((response) => {
+        setExecutionMentors(response?.data);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setIsLoading(false);
+      });
+  }, [userInfo]);
+
   const handleOptionChangeBatch = (event, optionValue) => {
     // const optionValue = event.target.value;
     const isChecked = event.target.checked;
@@ -226,6 +236,7 @@ const Assignment = () => {
       schedule: schedule,
       contentStage,
       taskDrip,
+      executionMentors: selectedMentors,
     };
 
     setAssignmentData(manageAssignment);
@@ -264,20 +275,6 @@ const Assignment = () => {
     }
     Loading().close();
   };
-
-  console.log({
-    message: `New reading material added in course ${course?.courseFullName}.`,
-    dateTime: new Date(),
-    recipient: {
-      type: "Students",
-      organizationId: orgData?._id,
-      courseId: course?._id,
-      batches: selectedBatches,
-    },
-    type: "Create Task",
-    readBy: [],
-    notificationTriggeredBy: user?.email,
-  });
 
   return (
     <div>
@@ -428,6 +425,10 @@ const Assignment = () => {
                 enableDrip={course?.enableDrip}
                 taskDrip={taskDrip}
                 setTaskDrip={setTaskDrip}
+                executionMentors={executionMentors}
+                setExecutionMentors={setExecutionMentors}
+                selectedMentors={selectedMentors}
+                setSelectedMentors={setSelectedMentors}
               />
             )}
             {(orgData?.showPointsAndRedemptions ||
