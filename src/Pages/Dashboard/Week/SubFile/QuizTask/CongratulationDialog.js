@@ -50,13 +50,13 @@ const CongratulationDialog = ({
           </div>
         </Toolbar>
       </AppBar>
-      <div className="max-w-[1023px] pt-[80px] mx-auto flex justify-between">
+      <div className="max-w-[1023px] pt-[80px] lg:mx-auto ms-5 flex flex-col lg:flex-row justify-between mb-5">
         <img
-          className="w-auto h-fit mt-[100px]"
+          className="w-auto h-fit mt-[100px] lg:block hidden"
           src={CongratulationsLeft}
           alt="CongratulationsLeft"
         />
-        <div className="flex flex-col items-center bg-[#0E0534] p-[32px] w-[520px] rounded-[11px]">
+        <div className="flex flex-col items-center bg-[#0E0534] p-[32px] lg:w-[520px] w-[95%] rounded-[11px]">
           <h1 className="text-[#FFDB70] text-[28px] font-[700] text-center mb-[32px] ">
             Congratulations
           </h1>
@@ -70,7 +70,7 @@ const CongratulationDialog = ({
               questions correctly.
             </p>
           </div>
-          <div className="w-[453.97px] h-[122.47px] bg-yellow-50 rounded-[9.21px] flex items-center justify-between py-[30px] px-[40px] mt-[45px] bg-[#FFFCE0]">
+          <div className="lg:w-[453.97px] w-[90%] h-[122.47px] bg-yellow-50 rounded-[9.21px] flex items-center justify-between py-[30px] px-[40px] mt-[45px] bg-[#FFFCE0]">
             <div className="mx-auto">
               <div className="flex-col justify-start items-center inline-flex">
                 <h1 className="text-zinc-800 text-[16.90px] font-semibold">
@@ -114,7 +114,7 @@ const CongratulationDialog = ({
           </button>
         </div>
         <img
-          className="w-auto h-fit mt-[100px]"
+          className="w-auto h-fit mt-[100px] lg:block hidden"
           src={CongratulationsRight}
           alt="CongratulationsRight"
         />

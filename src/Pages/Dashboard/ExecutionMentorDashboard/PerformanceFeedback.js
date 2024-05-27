@@ -80,20 +80,12 @@ const PerformanceFeedback = () => {
     return (
         <div>
             <Layout>
-
-
-
-                <div className=''>
-
+                <div className='lg:block hidden'>
                     <AssignmentUpNev page={''} />
-
                 </div>
 
-
-                <div className="flex mt-24">
-                    <div className="w-full ms-10 mt-10">
-
-
+                <div className="flex mt-24 ">
+                    <div className="w-full lg:mx-10 mx-5   mt-10">
 
                         <div className="w-full ">
                             <div className="flex justify-between items-center mb-5">
@@ -169,10 +161,10 @@ const PerformanceFeedback = () => {
                     </div>
 
 
-                    <div>
+                   {/*  <div>
                         <AssignmentRightNev />
 
-                    </div>
+                    </div> */}
 
 
                 </div>

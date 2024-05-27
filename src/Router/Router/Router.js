@@ -48,7 +48,7 @@ import AddingEditingEssayQues from "../../Pages/Dashboard/ContentManagement/Addi
 import AddingEditingMatchingQues from "../../Pages/Dashboard/ContentManagement/AddingEditingMatchingQues";
 import AddingEditingSelectMissingQues from "../../Pages/Dashboard/ContentManagement/AddingEditingSelectMissingQues";
 import AddingEditingTrueFalseQues from "../../Pages/Dashboard/ContentManagement/AddingEditingTrueFalseQues";
-import OnGoingClasses from "../../Pages/Dashboard/ExecutionMentorLiveClasses/OnGoingClasses";
+
 import UpComingClasses from "../../Pages/Dashboard/ExecutionMentorLiveClasses/UpComingClasses";
 import ExecutionMentorSchedule from "../../Pages/Dashboard/ExecutionMentorSchedule/ExecutionMentorSchedule";
 import ExecutionMentorDashboard from "../../Pages/Dashboard/ExecutionMentorDashboard/ExecutionMentorDashboard";
@@ -129,6 +129,7 @@ import EditBundle from "../../Pages/Dashboard/ContentManagement/EditBundle";
 import BundlePayment from "../../Pages/Dashboard/Payment/BundlePayment";
 import SalesAndRevenue from "../../Pages/Dashboard/SalesAndRevenue/SalesAndRevenue";
 import TaskDetails from "../../Pages/Dashboard/Week/Layout/TaskDetails";
+import PastClasses from "../../Pages/Dashboard/ExecutionMentorLiveClasses/PastClasses";
 import Mentors from "../../Pages/Dashboard/Mentors/Mentors";
 const router = createBrowserRouter([
   {
@@ -425,7 +426,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/liveClasses",
-    element: <OnGoingClasses />,
+    element: <PastClasses />,
   },
   {
     path: "/upcomingClasses",

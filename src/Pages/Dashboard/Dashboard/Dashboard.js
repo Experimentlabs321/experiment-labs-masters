@@ -412,7 +412,7 @@ const Dashboard = () => {
                     Lab Journey
                   </h1>
 
-                  <div className="pt-[40px] px-[30px] w-full hidden lg:inline-block relative">
+                  <div className="pt-[40px] px-[30px] w-full  relative">
                     {weeks?.map((singleData, i) => (
                       <Level
                         selectedCourse={selectedCourse}
@@ -425,7 +425,7 @@ const Dashboard = () => {
                       />
                     ))}
                   </div>
-                  <div className="mt-[20px] bg-[#D7ECFF] labJourney rounded-lg px-[10px] flex lg:hidden overflow-x-scroll h-[155px]">
+                 {/*  <div className="mt-[20px] bg-[#D7ECFF] labJourney rounded-lg px-[10px] flex lg:hidden overflow-x-scroll h-[155px]">
                     {data?.map((singleData, i) => (
                       <div
                         className={`${i % 2 === 0
@@ -476,7 +476,7 @@ const Dashboard = () => {
                         </h1>
                       </div>
                     ))}
-                  </div>
+                  </div> */}
                 </div>
               )}
               {dashboardTheme?.showSchedule && (
