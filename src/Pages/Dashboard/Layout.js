@@ -1,56 +1,39 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import MyHelmet from "../../Components/MyHelmet/MyHelpmet";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import logo from "../../assets/Logos/Group 2859890.png";
 import users from "../../assets/PointsRedemptions/users.svg";
 import usersDark from "../../assets/Dashboard/usersDark.png";
-import enroll from "../../assets/PointsRedemptions/enroll.svg";
 import book from "../../assets/PointsRedemptions/book.svg";
-import dollar from "../../assets/PointsRedemptions/dollar.svg";
-import message from "../../assets/PointsRedemptions/message.svg";
-import shield from "../../assets/PointsRedemptions/shield.svg";
-import sliders from "../../assets/PointsRedemptions/sliders.svg";
-import award from "../../assets/PointsRedemptions/award.svg";
-import pentool from "../../assets/PointsRedemptions/pen-tool.svg";
 import gift from "../../assets/PointsRedemptions/gift.svg";
 import feather from "../../assets/PointsRedemptions/feather.svg";
 import DashboardIconLight from "../../assets/Dashboard/DashboardIconLight.svg";
 import DashboardIconDark from "../../assets/Dashboard/DashboardIconDark.svg";
 import SalesLight from "../../assets/Dashboard/SalesIconLight.png";
 import SalesDark from "../../assets/Dashboard/SalesIconDark.png";
-import LeaderBoardIconLight from "../../assets/Dashboard/LeaderBoardIconLight.svg";
-import LeaderBoardIconDark from "../../assets/Dashboard/LeaderBoardIconDark.svg";
+import MentorLight from "../../assets/Dashboard/MentorLight.png";
+import MentorDark from "../../assets/Dashboard/MentorDark.png";
 import EarningIconLight from "../../assets/Dashboard/EarningIconLight.svg";
 import EarningIconDark from "../../assets/Dashboard/EarningIconDark.svg";
 import RedemptionIconLight from "../../assets/Dashboard/RedemptionIconLight.svg";
 import RedemptionIconDark from "../../assets/Dashboard/RedemptionIconDark.svg";
 import SkillAnalysisIconLight from "../../assets/Dashboard/SkillAnalysisIconLight.svg";
 import SkillAnalysisIconDark from "../../assets/Dashboard/SkillAnalysisIconDark.svg";
-import CareerAnalysisIconLight from "../../assets/Dashboard/CareerAnalysisIconLight.svg";
-import CareerAnalysisIconDark from "../../assets/Dashboard/CareerAnalysisIconDark.svg";
 import AnnouncementsIconLight from "../../assets/Dashboard/AnnouncementsLight.png";
 import AnnouncementsIconDark from "../../assets/Dashboard/AnnouncementsDark.png";
 import CourseAccessIconLight from "../../assets/Dashboard/CourseAccessIconLight.svg";
 import CourseAccessIconDark from "../../assets/Dashboard/CourseAccessIconDark.svg";
-import bookLight from "../../assets/Dashboard/BookmarksLight.png";
 import bookDark from "../../assets/Dashboard/bookDark.png";
 import giftDark from "../../assets/Dashboard/giftDark.png";
 import featherDark from "../../assets/Dashboard/featherDark.png";
 import feedbackDark from "../../assets/Dashboard/feedbackDark.png";
 import feedbackLight from "../../assets/Dashboard/feedbackLight.png";
-import userPhoto from "../../assets/Dashboard/UserImage.png";
 import liveClass from "../../assets/ExecutionMentor/liveClass.svg";
 import liveClass1 from "../../assets/ExecutionMentor/liveClass1.svg";
 import Schedule from "../../assets/ExecutionMentor/Schedule.svg";
 import Schedule1 from "../../assets/ExecutionMentor/Schedule1.svg";
 import dashboard from "../../assets/ExecutionMentor/dashboard.svg";
-import Quizzes from "../../assets/ExecutionMentor/Quizzes.svg";
-import Exams from "../../assets/ExecutionMentor/Exams.svg";
 import Assignments from "../../assets/ExecutionMentor/Assignments.svg";
 import Assignments1 from "../../assets/ExecutionMentor/Assignments1.svg";
-import Batches from "../../assets/ExecutionMentor/Batches.svg";
-import Doubts from "../../assets/ExecutionMentor/Doubts.svg";
-import Doubts1 from "../../assets/ExecutionMentor/Doubts1.svg";
 import redemption from "../../assets/UnpaidStudentDashboard/redemption.svg";
 import redemption1 from "../../assets/UnpaidStudentDashboard/redemption1.svg";
 import courseAccess from "../../assets/UnpaidStudentDashboard/courseAccess.svg";
@@ -61,11 +44,8 @@ import ShowcasePage from "../../assets/ExpertMentorDashboard/ShowcasePage.svg";
 import ShowcasePage1 from "../../assets/ExpertMentorDashboard/ShowcasePage1.svg";
 import Feedback from "../../assets/ExpertMentorDashboard/Feedback.svg";
 import Feedback1 from "../../assets/ExpertMentorDashboard/Feedback1.svg";
-import MentorClub from "../../assets/ExpertMentorDashboard/MentorClub.svg";
-import incomeGateway from "../../assets/ExpertMentorDashboard/IncomeGateway.svg";
 import StudentProgress from "../../assets/ExpertMentorDashboard/StudentProgress.svg";
 import StudentProgress1 from "../../assets/ExpertMentorDashboard/StudentProgress1.svg";
-import back from "../../assets/ContentManagement/back.svg";
 import ArrowLeftIcon from "../../assets/Dashboard/dashboard_arrow-left.png";
 import { Badge } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
@@ -1566,6 +1546,42 @@ const Layout = ({ children }) => {
                                 {organizationNavDetails?.myLearners?.newName
                                   ? organizationNavDetails?.myLearners?.newName
                                   : "My Learners"}
+                              </span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              style={
+                                location.pathname === "/mentors"
+                                  ? {
+                                      background:
+                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                    }
+                                  : {}
+                              }
+                              to="/mentors"
+                              className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
+                            >
+                              {location.pathname === "/mentors" ? (
+                                <img
+                                  className=""
+                                  src={MentorLight}
+                                  alt="icon"
+                                />
+                              ) : (
+                                <img className="" src={MentorDark} alt="icon" />
+                              )}
+
+                              <span
+                                className={`${
+                                  location.pathname === "/mentors"
+                                    ? "text-[#fff]"
+                                    : "text-[#8F8F8F]"
+                                } ml-3 text-[18px] font-[500]`}
+                              >
+                                {organizationNavDetails?.mentors?.newName
+                                  ? organizationNavDetails?.mentors?.newName
+                                  : "Mentors"}
                               </span>
                             </Link>
                           </li>
