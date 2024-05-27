@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
@@ -354,6 +354,41 @@ const MentorAssignments = () => {
   };
 
   console.log(filteredAssignments);
+
+  const [selectedParticipants, setSelectedParticipants] = useState([]);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const availableParticipants = [
+    "Participant 1",
+    "Participant 2",
+    "Participant 3",
+    "Participant 4",
+  ]; // Example list of participants
+  const dropdownRef = useRef(null);
+
+  const handleSelectChange = (participant) => {
+    setSelectedParticipants((prevState) =>
+      prevState.includes(participant)
+        ? prevState.filter((item) => item !== participant)
+        : [...prevState, participant]
+    );
+  };
+
+  const handleToggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setIsDropdownOpen(false);
+    }
+  };
+
+  React.useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div>
@@ -794,6 +829,73 @@ const MentorAssignments = () => {
                               </option>
                             )}
                           </select>
+                          <div className="basis-1/2 px-2">
+                            <div className="relative" ref={dropdownRef}>
+                              <div
+                                className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] cursor-pointer"
+                                onClick={handleToggleDropdown}
+                              >
+                                {selectedParticipants.length === 0
+                                  ? "Select Participants"
+                                  : selectedParticipants.join(", ")}
+                              </div>
+                              {isDropdownOpen && (
+                                <div className="absolute mt-2 w-full rounded-md shadow-lg bg-white z-10">
+                                  <ul className="max-h-48 overflow-auto rounded-md py-1 text-base leading-6 shadow-xs focus:outline-none sm:text-sm sm:leading-5">
+                                    {availableParticipants.map(
+                                      (participant, index) => (
+                                        <li
+                                          key={index}
+                                          className="flex items-center p-2"
+                                        >
+                                          <input
+                                            type="checkbox"
+                                            checked={selectedParticipants.includes(
+                                              participant
+                                            )}
+                                            onChange={() =>
+                                              handleSelectChange(participant)
+                                            }
+                                            className="form-checkbox h-5 w-5 text-indigo-600 transition duration-150 ease-in-out"
+                                          />
+                                          <span className="ml-2 text-gray-700">
+                                            {participant}
+                                          </span>
+                                        </li>
+                                      )
+                                    )}
+                                  </ul>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          {selectedParticipants.length > 0 && (
+                            <>
+                              <h1 className="text-[18px] px-2 font-[700] mt-[16px] mb-[4px]">
+                                Selected Participants
+                              </h1>
+                              <div className="tag-container my-2 flex flex-wrap w-full rounded-lg border-2 p-2 mx-2">
+                                {selectedParticipants.map(
+                                  (participant, index) => (
+                                    <div
+                                      key={index}
+                                      className="m-1 h-fit rounded-lg border-2 py-1 px-2"
+                                    >
+                                      {participant}
+                                      <span
+                                        className="cursor-pointer pl-1 text-xl font-bold"
+                                        onClick={() =>
+                                          handleSelectChange(participant)
+                                        }
+                                      >
+                                        ×
+                                      </span>
+                                    </div>
+                                  )
+                                )}
+                              </div>
+                            </>
+                          )}
                         </td>
                       </tr>
                     );
