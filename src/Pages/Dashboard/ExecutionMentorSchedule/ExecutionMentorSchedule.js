@@ -29,6 +29,7 @@ import toast from "react-hot-toast";
 
 import required from "../../../assets/ContentManagement/required.png";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import AdminAllSchedule from "./AdminAllSchedule";
 
 const ExecutionMentorSchedule = () => {
   const { agenda } = useParams();
@@ -37,7 +38,7 @@ const ExecutionMentorSchedule = () => {
   const [loading, setLoading] = useState(false);
   const [itemDetails, setItemDetails] = useState();
   const [timeZone, setTimeZone] = useState("UTC");
-
+  const [currentPage, setCurrentPage] = useState("All Admin Events");
   const [chapter, setChapter] = useState({});
   const [course, setCourse] = useState({});
   const [preview, setPreview] = useState(false);
@@ -70,15 +71,17 @@ const ExecutionMentorSchedule = () => {
     adminCalendarInfo?.meetingType || ""
   );
   console.log(calendarEvents);
+  console.log(session);
 
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/email/${user?.email}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/email/${userInfo?.email}`
       )
       .then((response) => {
-        setAdminCalendarInfo(response?.data?.data);
-        setSelectedHoliday(response?.data?.data?.offDays);
+        console.log(response)
+        setAdminCalendarInfo(response?.data);
+        setSelectedHoliday(response?.data?.offDays);
       })
 
       .catch((error) => console.error(error));
@@ -88,11 +91,11 @@ const ExecutionMentorSchedule = () => {
     setPreviousLocation(window.location.pathname);
   }, []);
 
-  useEffect(() => {
-    if (calendarfetch === true) {
-      googleSignIn();
-    }
-  }, [calendarfetch]);
+  // useEffect(() => {
+  //   if (calendarfetch === true) {
+  //     googleSignIn();
+  //   }
+  // }, [calendarfetch]);
   // useEffect(() => {
   //   axios
   //     .get(
@@ -142,31 +145,31 @@ const ExecutionMentorSchedule = () => {
     setLoading(false);
   }, [userInfo]);
   //console.log(itemDetails)
-  useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/events`)
-      .then((response) => {
-        console.log(response?.data);
-        let filteredEvent = [];
-        response?.data?.forEach((element) => {
-          if (
-            element?.organization?.organizationId === userInfo?.organizationId
-          ) {
-            let event = {
-              _id: element?._id,
-              title: element?.title,
-              start: new Date(element?.start),
-              end: new Date(element?.end),
-              organization: element?.organization,
-              attendees: element?.attendees,
-              weekData: element?.weekData,
-            };
-            filteredEvent = [...filteredEvent, event];
-          }
-        });
-        setEvents(filteredEvent);
-      });
-  }, [userInfo]);
+  // useEffect(() => {
+  //   axios
+  //     .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/events`)
+  //     .then((response) => {
+  //       console.log(response?.data);
+  //       let filteredEvent = [];
+  //       response?.data?.forEach((element) => {
+  //         if (
+  //           element?.organization?.organizationId === userInfo?.organizationId
+  //         ) {
+  //           let event = {
+  //             _id: element?._id,
+  //             title: element?.title,
+  //             start: new Date(element?.start),
+  //             end: new Date(element?.end),
+  //             organization: element?.organization,
+  //             attendees: element?.attendees,
+  //             weekData: element?.weekData,
+  //           };
+  //           filteredEvent = [...filteredEvent, event];
+  //         }
+  //       });
+  //       setEvents(filteredEvent);
+  //     });
+  // }, [userInfo]);
   // console.log(events);
   const handleOptionChangeBatch = (event, optionValue) => {
     // const optionValue = event.target.value;
@@ -288,27 +291,13 @@ const ExecutionMentorSchedule = () => {
       } else {
         toast.error("Something went wrong");
       }
-      
+
     }
   };
   // console.log("Start", start);
   // console.log("End", end);
   // console.log("Event", eventName);
   // console.log("Description", eventDescription);
-
-  useEffect(() => {
-    // Ensure session exists before attempting to fetch calendar data
-    if (session?.provider_token) {
-      fetchAndDisplayGoogleCalendarEvents();
-      fetchPrimaryCalendarInfo();
-    } else {
-      // Attempt to sign in if no valid session exists
-      googleSignIn();
-    }
-  }, []);
-  if (isLoading) {
-    return <></>;
-  }
   const googleSignIn = async () => {
     const preAuthUrl = window.location.pathname; // You might want to store the full location object or pathname
     localStorage.setItem("preAuthUrl", preAuthUrl);
@@ -328,6 +317,7 @@ const ExecutionMentorSchedule = () => {
         // If there is no error, the sign-in is successful
         // console.log("Google Sign-In successful!");
         navigate(previousLocation);
+        setCurrentPage('Schedule Settings')
         // console.log(calendarEvents); // Log calendarEvents here or perform any other actions
       }
     } catch (error) {
@@ -335,13 +325,27 @@ const ExecutionMentorSchedule = () => {
       alert("Unexpected error. Please try again.");
     }
   };
-  if (googleSignIn) {
-    // console.log("done signin");
+  useEffect(() => {
+    // Ensure session exists before attempting to fetch calendar data
+    if (session?.provider_token) {
+      fetchAndDisplayGoogleCalendarEvents();
+      fetchPrimaryCalendarInfo();
+    }
+    //  else {
+    //   if (currentPage === "Schedule Settings") 
+    //   { googleSignIn(); }
+    // }
+  }, [currentPage]);
+  if (isLoading) {
+    return <></>;
   }
+
+ 
   async function signOut() {
     await supabase.auth.signOut();
   }
   async function fetchPrimaryCalendarInfo() {
+    if(currentPage === 'Schedule Settings'){
     try {
       const response = await fetch(
         "https://www.googleapis.com/calendar/v3/users/me/calendarList/primary",
@@ -367,7 +371,9 @@ const ExecutionMentorSchedule = () => {
       setCalendarFetch(true); // Consider a more descriptive state variable name or error handling strategy
     }
   }
+  }
   async function fetchGoogleCalendarEvents() {
+   if(currentPage === 'Schedule Settings'){
     const currentDate = new Date().toISOString();
     const url = new URL(
       "https://www.googleapis.com/calendar/v3/calendars/primary/events"
@@ -399,17 +405,21 @@ const ExecutionMentorSchedule = () => {
     console.log(data);
 
     return { events: data.items || [], timeZone };
+   }
   }
   async function fetchAndDisplayGoogleCalendarEvents() {
-    try {
-      const events = await fetchGoogleCalendarEvents();
-      setCalendarError(false);
-      setCalendarEvents(events.events || []); // Use events.events to ensure it's an array
-    } catch (error) {
-      console.error(error);
-      setCalendarError(true);
-      setCalendarEvents([]); // Set calendarEvents to an empty array on error
+    if(currentPage === 'Schedule Settings'){
+      try {
+        const events = await fetchGoogleCalendarEvents();
+        setCalendarError(false);
+        setCalendarEvents(events.events || []); // Use events.events to ensure it's an array
+      } catch (error) {
+        console.error(error);
+        setCalendarError(true);
+        setCalendarEvents([]); // Set calendarEvents to an empty array on error
+      }
     }
+
   }
   function renderEventContent(eventInfo) {
     // console.log(eventInfo);
@@ -490,62 +500,61 @@ const ExecutionMentorSchedule = () => {
       </div>
     );
   }
-
   const handleDateClick = (date) => {
     setSelectedDate(date);
     setStart(date);
     setEnd(date);
     setIsModalOpen(true);
   };
-  async function createCalendarEvent() {
-    console.log("Creating calendar event");
-    const event = {
-      summary: eventName,
-      description: eventDescription,
-      start: {
-        dateTime: start.toISOString(),
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      },
-      end: {
-        dateTime: end.toISOString(),
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      },
-    };
+  // async function createCalendarEvent() {
+  //   console.log("Creating calendar event");
+  //   const event = {
+  //     summary: eventName,
+  //     description: eventDescription,
+  //     start: {
+  //       dateTime: start.toISOString(),
+  //       timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  //     },
+  //     end: {
+  //       dateTime: end.toISOString(),
+  //       timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  //     },
+  //   };
 
-    try {
-      const response = await fetch(
-        "https://www.googleapis.com/calendar/v3/calendars/primary/events",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${session.provider_token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(event),
-        }
-      );
+  //   try {
+  //     const response = await fetch(
+  //       "https://www.googleapis.com/calendar/v3/calendars/primary/events",
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           Authorization: `Bearer ${session.provider_token}`,
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify(event),
+  //       }
+  //     );
 
-      console.log("Response status:", response.status);
+  //     console.log("Response status:", response.status);
 
-      // Store the response text in a variable
-      const responseBody = await response.text();
-      console.log("Response body:", responseBody);
+  //     // Store the response text in a variable
+  //     const responseBody = await response.text();
+  //     console.log("Response body:", responseBody);
 
-      if (!response.ok) {
-        throw new Error(
-          `Failed to create Google Calendar event: ${response.statusText}`
-        );
-      }
+  //     if (!response.ok) {
+  //       throw new Error(
+  //         `Failed to create Google Calendar event: ${response.statusText}`
+  //       );
+  //     }
 
-      // Parse the response text as JSON
-      const data = JSON.parse(responseBody);
-      console.log("API response:", data);
-      alert("Event created, check your Google Calendar!");
-    } catch (error) {
-      console.error("Error creating event:", error.message);
-      alert("Error creating event. Please try again.");
-    }
-  }
+  //     // Parse the response text as JSON
+  //     const data = JSON.parse(responseBody);
+  //     console.log("API response:", data);
+  //     alert("Event created, check your Google Calendar!");
+  //   } catch (error) {
+  //     console.error("Error creating event:", error.message);
+  //     alert("Error creating event. Please try again.");
+  //   }
+  // }
 
   const days = [
     {
@@ -624,305 +633,270 @@ const ExecutionMentorSchedule = () => {
   //     </div>
   //   );
   // }
+  console.log(itemDetails);
   return (
     <div>
       <Layout>
         {/* <div className="">
           <AssignmentUpNev page={"schedule"} />
         </div> */}
+        <div className="flex items-center justify-between container mx-auto px-4 gap-7 pt-20 lg:pt-10 ">
+          <div className="UserManagement origin-top-left rotate-[-0.51deg] text-zinc-500 text-[30px] font-medium">
+            Schedule
+          </div>
+          {/* <Badge className="mr-4" badgeContent={1} color="error">
+            <NotificationsIcon color="action" />
+          </Badge> */}
+        </div>
+        <div className="px-4 my-5 flex items-center gap-4">
+          <button
+            onClick={() => setCurrentPage("All Admin Events")}
+            className={`px-4 py-2 text-lg font-semibold rounded-lg ${currentPage === "All Admin Events"
+              ? "bg-[#3E4DAC] text-white"
+              : "bg-white border-2 border-gray-400 text-black"
+              }`}
+          >
+            {itemDetails?.adminEvents ? itemDetails?.adminEvents : "All Admin Events"}
 
-        <div className="flex">
-          <div className="w-full lg:mx-10 lg:mt-10 mt-20">
-            {/* <div className="mt-10">
-              {
-                agenda ?    <Calendar
-              
-                defaultView="agenda" // Set 'agenda' as the default view
-                localizer={localizer}
-                events={events}
-                step={60}
-                startAccessor="start"
-                endAccessor="end"
-                style={{ height: 750, maxWidth: 900 }}
-              />
-              :
-              <Calendar
-              
-            
-              localizer={localizer}
-              events={events}
-              step={60}
-              startAccessor="start"
-              endAccessor="end"
-              style={{ height: 750, maxWidth: 900 }}
-            />
-              }
-        
-            </div> */}
-            {/* <div className="mt-5">
-              {
-                agenda ? <FullCalendar
+          </button>
+          {/*      <button
+            onClick={() => setCurrentPage("Doubt class feedback")}
+            className={`px-4 py-2 text-lg font-semibold rounded-lg ${currentPage === "Doubt class feedback"
+              ? "bg-[#3E4DAC] text-white"
+              : "bg-white border-2 border-gray-400 text-black"
+              }`}
+          >
+            Doubt class feedback
+          </button> */}
+          <button
+            onClick={() => setCurrentPage("Schedule Settings")}
+            className={`px-4 py-2 text-lg font-semibold rounded-lg ${currentPage === "Schedule Settings"
+              ? "bg-[#3E4DAC] text-white"
+              : "bg-white border-2 border-gray-400 text-black"
+              }`}
+          >
+            {currentPage === 'Schedule Settings' && session ? 'Schedule Settings' : "Schedule Settings"}
 
-                  height="600px"
-                  plugins={[dayGridPlugin, listPlugin, interactionPlugin]}
-                  initialView="list"
-                  selectMirror={true}
-                  headerToolbar={{
-                    start: 'title',
-                    center: 'today',
-                    end: 'dayGridMonth,dayGridWeek,dayGridDay,list'
-                  }}
-                  eventContent={renderEventContent}
-                  events={events?.map((event) => ({
-                    title: event?.title,
-                    start: event?.start,
-                    end: event?.end,
-                    link: event?.meeting,
-                    meeting: extractMeetLink(event?.title),
-                  }))}
-                  // dateClick={(info) => handleDateClick(info.date)}
-                  eventTimeFormat={{
-                    hour: 'numeric',
-                    minute: '2-digit',
-                    meridiem: 'short',
-                    hour12: true,
-                  }}
-                  timeZone="UTC" // Set the appropriate time zone
-                />
-                  :
-                  <FullCalendar
-
-                    height="600px"
-                    plugins={[dayGridPlugin, listPlugin, interactionPlugin]}
-                    initialView="dayGridMonth"
-                    selectMirror={true}
-                    headerToolbar={{
-                      start: 'title',
-                      center: 'today',
-                      end: 'dayGridMonth,dayGridWeek,dayGridDay,list'
-                    }}
-                    eventContent={renderEventContent}
-                    events={events?.map((event) => ({
-                      title: event?.title,
-                      start: event?.start,
-                      end: event?.end,
-                      link: event?.meeting,
-                      meeting: extractMeetLink(event?.title),
-                    }))}
-                    // dateClick={(info) => handleDateClick(info.date)}
-                    eventTimeFormat={{
-                      hour: 'numeric',
-                      minute: '2-digit',
-                      meridiem: 'short',
-                      hour12: true,
-                    }}
-                    timeZone="UTC" // Set the appropriate time zone
-                  />
-              }
+          </button>
 
 
-            </div> */}
-            <div>
-              {session && session.user ? (
-                <>
-                  <div className="my-6 px-5">
-                    <h2>My Calendar Events</h2>
-                    <FullCalendar
-                      height="600px"
-                      plugins={[dayGridPlugin, listPlugin, interactionPlugin]}
-                      initialView="dayGridMonth"
-                      selectMirror={true}
-                      headerToolbar={{
-                        start: "title",
-                        center: "today",
-                        end: "dayGridMonth,dayGridWeek,dayGridDay,list",
-                      }}
-                      eventContent={renderEventContent}
-                      events={calendarEvents?.map((event) => ({
-                        title: event?.summary,
-                        start: event?.start.dateTime,
-                        end: event?.end.dateTime,
-                        link: event?.hangoutLink,
-                        description: event?.description,
-                      }))}
-                      dateClick={(info) => handleDateClick(info.date)}
-                      eventTimeFormat={{
-                        hour: "numeric",
-                        minute: "2-digit",
-                        meridiem: "short",
-                      }}
-                      timeZone={timeZone} // Use timeZone state
-                    // dayRender={handleDayRender}
-                    />
-                  </div>
-                  <form onSubmit={handleSubmit} className="lg:ms-[40px] mx-5  mt-12">
-                    <div className="grid lg:grid-cols-2 grid-cols-1 gap-10">
-                      <div className="">
-                        <div className="flex items-center gap-4">
-                          <p className="h-2 w-2 bg-black rounded-full"></p>
-                          <p className="font-bold text-lg me-[36px]">
-                            Date range
-                          </p>
-                          <img src={required} alt="required" />
-                        </div>
+        </div>
+        {
+          currentPage === "All Admin Events" && <>
+            <AdminAllSchedule />
+          </>
 
-                        <input
-                          required
-                          className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
-                          name="dateRange"
-                          type="number"
-                          defaultValue={adminCalendarInfo?.dateRange}
+        }
+        {
+          currentPage === "Schedule Settings" && <>
+            <div className="flex">
+              <div className="w-full lg:mx-10 lg:mt-10 mt-20">
+
+                <div>
+                  {session && session.user && calendarEvents?.length > 0 ? (
+                    <>
+                      <div className="my-6 px-5">
+                        <h2>My Calendar Events</h2>
+                        <FullCalendar
+                          height="600px"
+                          plugins={[dayGridPlugin, listPlugin, interactionPlugin]}
+                          initialView="dayGridMonth"
+                          selectMirror={true}
+                          headerToolbar={{
+                            start: "title",
+                            center: "today",
+                            end: "dayGridMonth,dayGridWeek,dayGridDay,list",
+                          }}
+                          eventContent={renderEventContent}
+                          events={calendarEvents?.map((event) => ({
+                            title: event?.summary,
+                            start: event?.start.dateTime,
+                            end: event?.end.dateTime,
+                            link: event?.hangoutLink,
+                            description: event?.description,
+                          }))}
+                          dateClick={(info) => handleDateClick(info.date)}
+                          eventTimeFormat={{
+                            hour: "numeric",
+                            minute: "2-digit",
+                            meridiem: "short",
+                          }}
+                          timeZone={timeZone} // Use timeZone state
+                        // dayRender={handleDayRender}
                         />
                       </div>
+                      <form onSubmit={handleSubmit} className="lg:ms-[40px] mx-5  mt-12">
+                        <div className="grid lg:grid-cols-2 grid-cols-1 gap-10">
+                          <div className="">
+                            <div className="flex items-center gap-4">
+                              <p className="h-2 w-2 bg-black rounded-full"></p>
+                              <p className="font-bold text-lg me-[36px]">
+                                Date range
+                              </p>
+                              <img src={required} alt="required" />
+                            </div>
 
-                      <div className="">
-                        <div className="flex items-center gap-4">
-                          <p className="h-2 w-2 bg-black rounded-full"></p>
-                          <p className="font-bold text-lg me-[36px]">
-                            Minimum Time
-                          </p>
-                          <img src={required} alt="required" />
-                        </div>
-
-                        <input
-                          required
-                          className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
-                          name="minimumTime"
-                          type="time"
-                          defaultValue={adminCalendarInfo?.minimumTime}
-                        />
-                      </div>
-                      <div className="">
-                        <div className="flex items-center gap-4">
-                          <p className="h-2 w-2 bg-black rounded-full"></p>
-                          <p className="font-bold text-lg me-[36px]">
-                            Maximum Time
-                          </p>
-                          <img src={required} alt="required" />
-                        </div>
-
-                        <input
-                          required
-                          className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
-                          name="maximumTime"
-                          type="time"
-                          defaultValue={adminCalendarInfo?.maximumTime}
-                        />
-                      </div>
-
-                      <div className="">
-                        <div className="flex items-center gap-4">
-                          <p className="h-2 w-2 bg-black rounded-full"></p>
-                          <p className="font-bold text-lg me-[36px]">
-                            Meeting Duration Length
-                          </p>
-                          <img src={required} alt="required" />
-                        </div>
-
-                        <input
-                          required
-                          className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
-                          name="meetingDuration"
-                          type="number"
-                          defaultValue={adminCalendarInfo?.meetingDuration}
-                        />
-                      </div>
-                      <div className="">
-                        <div className="flex items-center gap-4">
-                          <p className="h-2 w-2 bg-black rounded-full"></p>
-                          <p className="font-bold text-lg me-[36px]">
-                            Select holidays
-                          </p>
-                          <img src={required} alt="icon" />
-                        </div>
-                        <ul className="flex gap-4 flex-wrap ">
-                          {days?.map((day, index) => (
-                            <li
-                              key={index}
-                              className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] "
-                            >
-                              <input
-                                type="checkbox"
-                                id={"student" + index} // Updated to avoid duplicate IDs
-                                name={day?.day}
-                                value={day?.day}
-                                checked={selectedHoliday?.includes(day?.day)} // Simplified check
-                                onChange={(e) => handleOptionChangeHoliday(day)}
-                                className="mb-1"
-                              />
-                              <div className="flex mb-1 items-center">
-                                <label
-                                  className="ms-4"
-                                  htmlFor={"student" + index}
-                                >
-                                  {" "}
-                                  {/* Updated for */}
-                                  {day?.day}
-                                </label>
-                              </div>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                      <div className="">
-                        <div className="flex items-center gap-4">
-                          <p className="h-2 w-2 bg-black rounded-full"></p>
-                          <p className="font-bold text-lg me-[36px]">
-                            Meeting Type
-                          </p>
-                          <img src={required} alt="required" />
-                        </div>
-
-                        <select
-                          required
-                          className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1]"
-                          name="meetingType"
-                          defaultValue={adminCalendarInfo?.meetingType}
-                          onChange={(e) => setMeetingTypee(e.target.value)}
-                        >
-                          <option disabled selected value="">
-                            Select a Meeting Type
-                          </option>
-                          <option value="Zoom">Zoom</option>
-                          <option value="Meet">Google Meet</option>
-                        </select>
-
-                        {meetingTypee === "Zoom" && (
-                          <div className="text-red-500 text-center mt-4">
-                            <p>Zoom Recordings will expire in 30 days.</p>
+                            <input
+                              required
+                              className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
+                              name="dateRange"
+                              type="number"
+                              defaultValue={adminCalendarInfo?.dateRange}
+                            />
                           </div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-10 justify-center mt-20 mb-10">
-                      {/* <button className="bg-sky-600 px-4 py-3 text-white text-lg rounded-lg" onClick={() => signOut()}>Sign out </button> */}
+
+                          <div className="">
+                            <div className="flex items-center gap-4">
+                              <p className="h-2 w-2 bg-black rounded-full"></p>
+                              <p className="font-bold text-lg me-[36px]">
+                                Minimum Time
+                              </p>
+                              <img src={required} alt="required" />
+                            </div>
+
+                            <input
+                              required
+                              className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
+                              name="minimumTime"
+                              type="time"
+                              defaultValue={adminCalendarInfo?.minimumTime}
+                            />
+                          </div>
+                          <div className="">
+                            <div className="flex items-center gap-4">
+                              <p className="h-2 w-2 bg-black rounded-full"></p>
+                              <p className="font-bold text-lg me-[36px]">
+                                Maximum Time
+                              </p>
+                              <img src={required} alt="required" />
+                            </div>
+
+                            <input
+                              required
+                              className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
+                              name="maximumTime"
+                              type="time"
+                              defaultValue={adminCalendarInfo?.maximumTime}
+                            />
+                          </div>
+
+                          <div className="">
+                            <div className="flex items-center gap-4">
+                              <p className="h-2 w-2 bg-black rounded-full"></p>
+                              <p className="font-bold text-lg me-[36px]">
+                                Meeting Duration Length
+                              </p>
+                              <img src={required} alt="required" />
+                            </div>
+
+                            <input
+                              required
+                              className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1] "
+                              name="meetingDuration"
+                              type="number"
+                              defaultValue={adminCalendarInfo?.meetingDuration}
+                            />
+                          </div>
+                          <div className="">
+                            <div className="flex items-center gap-4">
+                              <p className="h-2 w-2 bg-black rounded-full"></p>
+                              <p className="font-bold text-lg me-[36px]">
+                                Select holidays
+                              </p>
+                              <img src={required} alt="icon" />
+                            </div>
+                            <ul className="flex gap-4 flex-wrap ">
+                              {days?.map((day, index) => (
+                                <li
+                                  key={index}
+                                  className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] "
+                                >
+                                  <input
+                                    type="checkbox"
+                                    id={"student" + index} // Updated to avoid duplicate IDs
+                                    name={day?.day}
+                                    value={day?.day}
+                                    checked={selectedHoliday?.includes(day?.day)} // Simplified check
+                                    onChange={(e) => handleOptionChangeHoliday(day)}
+                                    className="mb-1"
+                                  />
+                                  <div className="flex mb-1 items-center">
+                                    <label
+                                      className="ms-4"
+                                      htmlFor={"student" + index}
+                                    >
+                                      {" "}
+                                      {/* Updated for */}
+                                      {day?.day}
+                                    </label>
+                                  </div>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                          <div className="">
+                            <div className="flex items-center gap-4">
+                              <p className="h-2 w-2 bg-black rounded-full"></p>
+                              <p className="font-bold text-lg me-[36px]">
+                                Meeting Type
+                              </p>
+                              <img src={required} alt="required" />
+                            </div>
+
+                            <select
+                              required
+                              className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#f6f7ffa1]"
+                              name="meetingType"
+                              defaultValue={adminCalendarInfo?.meetingType}
+                              onChange={(e) => setMeetingTypee(e.target.value)}
+                            >
+                              <option disabled selected value="">
+                                Select a Meeting Type
+                              </option>
+                              <option value="Zoom">Zoom</option>
+                              {/* <option value="Meet">Google Meet</option> */}
+                            </select>
+
+                            {meetingTypee === "Zoom" && (
+                              <div className="text-red-500 text-center mt-4">
+                                <p>Zoom Recordings will expire in 30 days.</p>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-10 justify-center mt-20 mb-10">
+                          <button className="bg-sky-600 px-4 py-3 text-white text-lg rounded-lg" onClick={() => signOut()}>Sign out </button>
+                          <button
+                            className="px-[30px] py-3 bg-[#FF557A] text-[#fff] text-xl font-bold rounded-lg ms-20 "
+                            type="submit"
+                            onClick={() => setSubmitPermission(true)}
+                          >
+                            Save
+                          </button>
+                        </div>
+                      </form>
+                    </>
+                  ) : (
+                    <div className="grid justify-center items-center">
                       <button
-                        className="px-[30px] py-3 bg-[#FF557A] text-[#fff] text-xl font-bold rounded-lg ms-20 "
-                        type="submit"
-                        onClick={() => setSubmitPermission(true)}
+                        className="bg-sky-600 px-4 py-2 text-white text-lg rounded-lg"
+                        onClick={() => googleSignIn()}
                       >
-                        Save
+                        Sync with google{" "}
                       </button>
                     </div>
-                  </form>
-                </>
-              ) : (
-                <div className="grid justify-center items-center">
-                  <button
-                    className="bg-sky-600 px-5 py-3 text-white text-lg rounded-lg"
-                    onClick={() => googleSignIn()}
-                  >
-                    Sync with google{" "}
-                  </button>
+                  )}
                 </div>
-              )}
-            </div>
-          </div>
+              </div>
 
-          {/* <div>
+              {/* <div>
             <AssignmentRightNev />
           </div> */}
-        </div>
+            </div>
+          </>
+
+        }
+
       </Layout>
     </div>
   );
