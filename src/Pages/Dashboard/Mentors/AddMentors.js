@@ -76,8 +76,8 @@ export default function AddMentors() {
       };
 
       const newUser = await axios.post(
-        // `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/addOrUpdateUserWithCourse`,
-        `http://localhost:5000/api/v1/users/addOrUpdateMentor`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/addOrUpdateMentor`,
+        // `http://localhost:5000/api/v1/users/addOrUpdateMentor`,
         {
           user: userData,
         }
