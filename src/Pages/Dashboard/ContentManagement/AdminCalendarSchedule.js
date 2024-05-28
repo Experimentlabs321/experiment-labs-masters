@@ -96,11 +96,11 @@ const AdminCalendarSchedule = () => {
     setPreviousLocation(window.location.pathname);
   }, []);
 
-  useEffect(() => {
-    if (calendarfetch === true) {
-      googleSignIn();
-    }
-  }, [calendarfetch]);
+  // useEffect(() => {
+  //   if (calendarfetch === true) {
+  //     googleSignIn();
+  //   }
+  // }, [calendarfetch]);
   useEffect(() => {
     axios
       .get(
@@ -139,7 +139,7 @@ const AdminCalendarSchedule = () => {
       )
       .then((response) => {
         console.log(response);
-        setAdminCalendarInfo(response?.data?.data);
+        setAdminCalendarInfo(response?.data);
       })
 
       .catch((error) => console.error(error));
@@ -303,7 +303,7 @@ const AdminCalendarSchedule = () => {
       fetchPrimaryCalendarInfo();
     } else {
       // Attempt to sign in if no valid session exists
-      googleSignIn();
+      // googleSignIn();
     }
   }, []);
   if (isLoading) {
@@ -662,7 +662,7 @@ const AdminCalendarSchedule = () => {
             <p>Manage Schedule in {chapter?.chapterName}</p>
           </div>
           <div>
-            {session ? (
+            {session && calendarEvents?.length > 0  ?  (
               <>
                 <div className="my-6 px-5">
                   <h2>Your Calendar Events</h2>
