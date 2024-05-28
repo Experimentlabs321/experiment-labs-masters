@@ -1,4 +1,4 @@
-//UpcomingClasses
+//DoubtClearingClasses
 
 import React, { useContext, useEffect, useState } from "react";
 
@@ -6,7 +6,7 @@ import active from "../../../assets/ExecutionMentor/active.svg";
 import clock from "../../../assets/ExecutionMentor/clock.svg";
 import list from "../../../assets/ExecutionMentor/list.svg";
 
-const UpComingClasses = () => {
+const DoubtClearingClasses = () => {
   return (
     <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 mx-5 my-10">
       <div
@@ -107,4 +107,4 @@ const UpComingClasses = () => {
   );
 };
 
-export default UpComingClasses;
+export default DoubtClearingClasses;

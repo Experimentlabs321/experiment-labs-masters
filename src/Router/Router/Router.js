@@ -5,7 +5,6 @@ import Home from "../../Pages/Home/Home/Home";
 import SciencePage from "../../Pages/SciencePage/SciencePage/SciencePage";
 import ExperienceUnionPage from "../../Pages/ExperienceUnion/ExperienceUnionPage/ExperienceUnionPage";
 import Register from "../../Pages/Login/Register/Register";
-import Login from "../../Pages/Login/Login/Login";
 import CommercePage from "../../Pages/CommercePage/CommercePage/CommercePage";
 import HumanitiesPage from "../../Pages/HumanitiesPage/HumanitiesPage/HumanitiesPage";
 import ExperienceUnionCommercePage from "../../Pages/ExperienceUnionCommerce/ExperienceUnionPage/ExperienceUnionCommercePage";
@@ -39,7 +38,6 @@ import ManageFile from "../../Pages/Dashboard/ContentManagement/ManageFile";
 import ManageVideo from "../../Pages/Dashboard/ContentManagement/ManageVideo";
 import ManageAudio from "../../Pages/Dashboard/ContentManagement/ManageAudio";
 import ManageQuiz from "../../Pages/Dashboard/ContentManagement/ManageQuiz";
-import QuizGeneralInformation from "../../Pages/Dashboard/ContentManagement/QuizGeneralInformation";
 import QuizResult from "../../Pages/Dashboard/ContentManagement/QuizResult";
 import QuizEvaluationParameter from "../../Pages/Dashboard/ContentManagement/QuizEvaluationParameter";
 import ManageQuestionBank from "../../Pages/Dashboard/ContentManagement/ManageQuestionBank";
@@ -50,7 +48,7 @@ import AddingEditingEssayQues from "../../Pages/Dashboard/ContentManagement/Addi
 import AddingEditingMatchingQues from "../../Pages/Dashboard/ContentManagement/AddingEditingMatchingQues";
 import AddingEditingSelectMissingQues from "../../Pages/Dashboard/ContentManagement/AddingEditingSelectMissingQues";
 import AddingEditingTrueFalseQues from "../../Pages/Dashboard/ContentManagement/AddingEditingTrueFalseQues";
-import OnGoingClasses from "../../Pages/Dashboard/ExecutionMentorLiveClasses/OnGoingClasses";
+
 import UpComingClasses from "../../Pages/Dashboard/ExecutionMentorLiveClasses/UpComingClasses";
 import ExecutionMentorSchedule from "../../Pages/Dashboard/ExecutionMentorSchedule/ExecutionMentorSchedule";
 import ExecutionMentorDashboard from "../../Pages/Dashboard/ExecutionMentorDashboard/ExecutionMentorDashboard";
@@ -131,6 +129,8 @@ import EditBundle from "../../Pages/Dashboard/ContentManagement/EditBundle";
 import BundlePayment from "../../Pages/Dashboard/Payment/BundlePayment";
 import SalesAndRevenue from "../../Pages/Dashboard/SalesAndRevenue/SalesAndRevenue";
 import TaskDetails from "../../Pages/Dashboard/Week/Layout/TaskDetails";
+import PastClasses from "../../Pages/Dashboard/ExecutionMentorLiveClasses/PastClasses";
+import Mentors from "../../Pages/Dashboard/Mentors/Mentors";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -409,6 +409,10 @@ const router = createBrowserRouter([
     element: <MentorAssignments />,
   },
   {
+    path: "/mentors",
+    element: <Mentors />,
+  },
+  {
     path: "/assignmentEvaluation1/:id",
     element: <AssignmentEvaluation1 />,
   },
@@ -422,7 +426,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/liveClasses",
-    element: <OnGoingClasses />,
+    element: <PastClasses />,
   },
   {
     path: "/upcomingClasses",

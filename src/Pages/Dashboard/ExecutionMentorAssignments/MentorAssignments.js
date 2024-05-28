@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
@@ -7,6 +7,7 @@ import { AuthContext } from "../../../contexts/AuthProvider";
 import Layout from "../Layout";
 import AssignmentUpNev from "./AssignmentUpNev";
 import Loading from "../../Shared/Loading/Loading";
+import toast from "react-hot-toast";
 
 const MentorAssignments = () => {
   const { userInfo } = useContext(AuthContext);
@@ -27,6 +28,10 @@ const MentorAssignments = () => {
   const [selectedMentor, setSelectedMentor] = useState({});
   const [selectAllStatus, setSelectAllStatus] = useState(false);
   const [selectedSubmissions, setSelectedSubmissions] = useState([]);
+  const [editOrAssignMentor, setEditOrAssignMentor] = useState({});
+  const [selectedMentorsForEditOrAssign, setSelectedMentorsForEditOrAssign] =
+    useState([]);
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
     if (userInfo) {
@@ -51,15 +56,29 @@ const MentorAssignments = () => {
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/organizationId/${userInfo.organizationId}`
       )
       .then((response) => {
-        setAssignments(response?.data?.slice().reverse());
-        if (userInfo?.role === "admin")
+        if (userInfo?.role === "admin") {
+          setAssignments(response?.data?.slice().reverse());
           setFilteredAssignment(response?.data?.slice().reverse());
-        else {
+        } else {
+          setAssignments(
+            response?.data
+              ?.slice()
+              .reverse()
+              ?.filter((item) =>
+                item?.mentors?.find(
+                  (mentor) => mentor?.mentorId === userInfo?._id
+                )
+              )
+          );
           setFilteredAssignment(
             response?.data
               ?.slice()
               .reverse()
-              ?.filter((item) => item?.mentor?.mentorId === userInfo?._id)
+              ?.filter((item) =>
+                item?.mentors?.find(
+                  (mentor) => mentor?.mentorId === userInfo?._id
+                )
+              )
           );
         }
         //console.log(response?.data[0]);
@@ -72,7 +91,7 @@ const MentorAssignments = () => {
         setIsLoading(false);
       });
     setIsLoading(false);
-  }, [userInfo]);
+  }, [userInfo, count]);
 
   const filteredData = assignments.filter((item) => !item?.submitter.result);
 
@@ -147,58 +166,14 @@ const MentorAssignments = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/mentors/organizationId/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/mentors/organizationId/${userInfo?.organizationId}/role/execution mentor`
+        // `http://localhost:5000/api/v1/users/mentors/organizationId/${userInfo?.organizationId}/role/execution mentor`
       )
       .then((response) => {
         setMentors(response?.data);
       })
       .catch((error) => console.error(error));
   }, [userInfo]);
-
-  // const applyFilters = () => {
-  //   let filtered = allMyStudents;
-  //   console.log(selectedStatus);
-
-  //   // Apply course filter
-  //   if (selectedCourse?._id) {
-  //     filtered = filtered?.filter((student) =>
-  //       student.courses?.some(
-  //         (course) => course?.courseId === selectedCourse?._id
-  //       )
-  //     );
-  //   }
-  //   //console.log(filtered);
-
-  //   // Apply batch filter
-  //   if (selectedBatch?._id) {
-  //     filtered = filtered?.filter((student) =>
-  //       student.courses?.some((batch) => batch?.batchId === selectedBatch?._id)
-  //     );
-  //   }
-
-  //   // status
-  //   var matchingAssignments = assignments?.filter((assignment) =>
-  //     filtered?.some(
-  //       (filteredStudent) => assignment?.submitter?._id === filteredStudent?._id
-  //     )
-  //   );
-  //   if (selectedStatus === "Submitted") {
-  //     matchingAssignments = matchingAssignments?.filter(
-  //       (assignment) => assignment?.submitter?.result
-  //     );
-  //   }
-  //   if (selectedStatus === "Pending") {
-  //     matchingAssignments = matchingAssignments?.filter(
-  //       (assignment) => !assignment?.submitter?.result
-  //     );
-  //   }
-  //   if (matchingAssignments) {
-  //     setFilteredAssignment(matchingAssignments);
-  //   } else {
-  //     console.log("none");
-  //     setFilteredAssignment(assignments);
-  //   }
-  // };
 
   const applyFilters = () => {
     let filtered = assignments;
@@ -253,28 +228,21 @@ const MentorAssignments = () => {
     return dateObject.toLocaleString("en-US", options);
   }
 
-  const handleAddOrUpdateMentor = async (submissionId, mentorId) => {
+  const handleAddOrUpdateMentor = async (submissionId, index) => {
     Loading();
 
-    const mentorData = mentors?.find((item) => item?._id === mentorId);
-
-    console.log(mentorData);
-
-    const sendMentorData = {
-      mentorId: mentorData?._id,
-      mentorEmail: mentorData?.email,
-      mentorRole: mentorData?.role,
-    };
-
-    console.log(sendMentorData);
-
-    if (sendMentorData?.mentorEmail) {
+    if (selectedMentorsForEditOrAssign?.length > 0) {
+      console.log(selectedMentorsForEditOrAssign);
       const newAssign = await axios.put(
-        // `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/assignments`,
-        `http://localhost:5000/api/v1/assignmentSubmissions/submissionId/${submissionId}/assign-mentor`,
-        { mentor: sendMentorData }
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/submissionId/${submissionId}/assign-mentor`,
+        // `http://localhost:5000/api/v1/assignmentSubmissions/submissionId/${submissionId}/assign-mentor`,
+        { mentors: selectedMentorsForEditOrAssign }
       );
-      console.log(newAssign);
+      if (newAssign) {
+        toast.success("Mentor Added Successfully!");
+        filteredAssignments[index].mentors = selectedMentorsForEditOrAssign;
+        setEditOrAssignMentor({});
+      }
       // if (newAssignment?.data?.result?.acknowledged) {
       //   toast.success("Assignment added Successfully");
       //   const newNotification = await axios.post(
@@ -316,15 +284,29 @@ const MentorAssignments = () => {
       mentorRole: mentorData?.role,
     };
 
+    const initialMentor = {
+      mentorId: selectedMentor?._id,
+      mentorEmail: selectedMentor?.email,
+      mentorRole: selectedMentor?.role,
+    };
+
     console.log(sendMentorData);
 
     if (sendMentorData?.mentorEmail) {
       const newAssign = await axios.put(
-        // `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/assignments`,
-        `http://localhost:5000/api/v1/assignmentSubmissions/assign-mentor`,
-        { mentor: sendMentorData, submissionIds: selectedSubmissions }
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/assign-mentor`,
+        // `http://localhost:5000/api/v1/assignmentSubmissions/assign-mentor`,
+        {
+          updateMentor: sendMentorData,
+          submissionIds: selectedSubmissions,
+          initialMentor,
+        }
       );
-      console.log(newAssign);
+      if (newAssign) {
+        toast.success("Mentor Added Successfully!");
+        setCount(count + 1);
+        setSelectedSubmissions([]);
+      }
       // if (newAssignment?.data?.result?.acknowledged) {
       //   toast.success("Assignment added Successfully");
       //   const newNotification = await axios.post(
@@ -354,6 +336,59 @@ const MentorAssignments = () => {
   };
 
   console.log(filteredAssignments);
+
+  const [selectedParticipants, setSelectedParticipants] = useState([]);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const availableParticipants = [
+    "Participant 1",
+    "Participant 2",
+    "Participant 3",
+    "Participant 4",
+  ]; // Example list of participants
+  const dropdownRef = useRef(null);
+
+  const handleMentorSelectChange = (mentor, e) => {
+    console.log(e.target.checked, mentor);
+    if (e.target.checked) {
+      setSelectedMentorsForEditOrAssign([
+        ...selectedMentorsForEditOrAssign,
+        {
+          mentorId: mentor?._id,
+          mentorEmail: mentor?.email,
+          mentorRole: mentor?.role,
+        },
+      ]);
+    } else {
+      const data = selectedMentorsForEditOrAssign?.filter(
+        (item) => item?.mentorId !== mentor?._id
+      );
+      console.log(data);
+      setSelectedMentorsForEditOrAssign(data);
+    }
+    console.log(selectedMentorsForEditOrAssign);
+    // setSelectedMentorsForEditOrAssign((prevState) =>
+    //   prevState.includes(mentor)
+    //     ? prevState.filter((item) => item?._id !== mentor?._id)
+    //     : [...prevState, mentor]
+    // );
+  };
+
+  const handleToggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setIsDropdownOpen(false);
+    }
+  };
+
+  React.useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div>
@@ -502,10 +537,15 @@ const MentorAssignments = () => {
                     className="p-2 border rounded"
                     onChange={async (e) => {
                       e.preventDefault();
-                      setSelectedMentor(e.target.value);
+                      setSelectedMentor(
+                        mentors?.find((item) => item?._id === e.target.value)
+                      );
                       // await applyFilters();
                       const filterAssignment = filteredAssignments?.filter(
-                        (item) => item?.mentor?.mentorId === e.target.value
+                        (item) =>
+                          item?.mentors?.some(
+                            (mentor) => mentor?.mentorId === e.target.value
+                          )
                       );
                       setFilteredAssignment(filterAssignment);
                     }}
@@ -747,7 +787,7 @@ const MentorAssignments = () => {
                           </Link>
                         </td>
                         <td className="py-4 px-6 border-b text-left">
-                          <select
+                          {/* <select
                             className="p-2 border rounded"
                             defaultValue={
                               mentors?.find(
@@ -793,7 +833,133 @@ const MentorAssignments = () => {
                                 {userInfo?.name}
                               </option>
                             )}
-                          </select>
+                          </select> */}
+
+                          <div className=" flex gap-1">
+                            <div>
+                              {editOrAssignMentor?._id !== assignment?._id && (
+                                <div className="flex gap-1">
+                                  <div
+                                    className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] p-2 cursor-pointer"
+                                    onClick={handleToggleDropdown}
+                                  >
+                                    {assignment?.mentors?.length > 0 ? (
+                                      assignment?.mentors?.map(
+                                        (mentor, idx) => (
+                                          <span className=" whitespace-nowrap">
+                                            {assignment?.mentors?.length >
+                                            idx + 1
+                                              ? `${
+                                                  mentors?.find(
+                                                    (item) =>
+                                                      item?.email ===
+                                                      mentor?.mentorEmail
+                                                  )?.name
+                                                }, `
+                                              : mentors?.find(
+                                                  (item) =>
+                                                    item?.email ===
+                                                    mentor?.mentorEmail
+                                                )?.name}
+                                          </span>
+                                        )
+                                      )
+                                    ) : (
+                                      <span className=" whitespace-nowrap">
+                                        Mentor not assigned!
+                                      </span>
+                                    )}
+                                  </div>
+                                  {userInfo?.role === "admin" && (
+                                    <button
+                                      onClick={() => {
+                                        setEditOrAssignMentor(assignment);
+                                        setSelectedMentorsForEditOrAssign(
+                                          assignment?.mentors
+                                            ? assignment?.mentors
+                                            : []
+                                        );
+                                      }}
+                                      className="px-3 py-1 bg-blue text-white rounded"
+                                    >
+                                      Edit
+                                    </button>
+                                  )}
+                                </div>
+                              )}
+                              {editOrAssignMentor?._id === assignment?._id &&
+                                userInfo?.role === "admin" && (
+                                  <div className="flex gap-1">
+                                    <div className=" w-full rounded-md shadow-lg bg-white">
+                                      <ul className="max-h-48 overflow-auto rounded-md py-1 text-base leading-6 shadow-xs focus:outline-none sm:text-sm sm:leading-5 flex">
+                                        {mentors?.map((mentor, idx) => (
+                                          <li
+                                            key={mentor?._id + idx}
+                                            className="flex items-center p-2"
+                                          >
+                                            <input
+                                              type="checkbox"
+                                              checked={selectedMentorsForEditOrAssign?.find(
+                                                (item) =>
+                                                  item?.mentorId === mentor?._id
+                                              )}
+                                              onChange={(e) =>
+                                                handleMentorSelectChange(
+                                                  mentor,
+                                                  e
+                                                )
+                                              }
+                                              className="form-checkbox h-5 w-5 text-indigo-600 transition duration-150 ease-in-out"
+                                            />
+                                            <span className="ml-2 whitespace-nowrap text-gray-700">
+                                              {mentor?.name}
+                                            </span>
+                                          </li>
+                                        ))}
+                                      </ul>
+                                    </div>
+                                    <button
+                                      onClick={() =>
+                                        handleAddOrUpdateMentor(
+                                          assignment?._id,
+                                          index
+                                        )
+                                      }
+                                      className="px-3 py-1 bg-blue text-white rounded"
+                                    >
+                                      Save
+                                    </button>
+                                  </div>
+                                )}
+                            </div>
+                          </div>
+                          {selectedParticipants.length > 0 && (
+                            <>
+                              <h1 className="text-[18px] px-2 font-[700] mt-[16px] mb-[4px]">
+                                Selected Participants
+                              </h1>
+                              <div className="tag-container my-2 flex flex-wrap w-full rounded-lg border-2 p-2 mx-2">
+                                {selectedParticipants.map(
+                                  (participant, index) => (
+                                    <div
+                                      key={index}
+                                      className="m-1 h-fit rounded-lg border-2 py-1 px-2"
+                                    >
+                                      {participant}
+                                      <span
+                                        className="cursor-pointer pl-1 text-xl font-bold"
+                                        onClick={() =>
+                                          handleMentorSelectChange(participant)
+                                        }
+                                      >
+                                        ×
+                                      </span>
+                                    </div>
+                                  )
+                                )}
+                              </div>
+                            </>
+                          )}
                         </td>
                       </tr>
                     );
