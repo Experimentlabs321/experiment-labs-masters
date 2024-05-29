@@ -64,37 +64,43 @@ export default function AddMentors() {
   const handleAddMentor = async (event) => {
     event.preventDefault();
     Loading();
-    try {
-      const form = event?.target;
-      const userData = {
-        name: form.name.value,
-        email: form.email.value,
-        phone: phone,
-        organizationId: userInfo?.organizationId,
-        organizationName: userInfo?.organizationName,
-        role: form.role.value,
-        profileImg: mentorProfileImg,
-      };
+    if (!phone)
+      Swal.fire({
+        title: "Please add mentor phone mentor!",
+        icon: "warning",
+      });
+    if (phone)
+      try {
+        const form = event?.target;
+        const userData = {
+          name: form.name.value,
+          email: form.email.value,
+          phone: phone,
+          organizationId: userInfo?.organizationId,
+          organizationName: userInfo?.organizationName,
+          role: form.role.value,
+          profileImg: mentorProfileImg,
+        };
 
-      const newUser = await axios.post(
-        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/addOrUpdateMentor`,
-        // `http://localhost:5000/api/v1/users/addOrUpdateMentor`,
-        {
-          user: userData,
+        const newUser = await axios.post(
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/addOrUpdateMentor`,
+          // `http://localhost:5000/api/v1/users/addOrUpdateMentor`,
+          {
+            user: userData,
+          }
+        );
+
+        if (newUser) {
+          Swal.fire({
+            title: "New mentor added successfully!",
+            icon: "success",
+          });
+          form.reset();
+          // Loading().close();
         }
-      );
-
-      if (newUser) {
-        Swal.fire({
-          title: "New mentor added successfully!",
-          icon: "success",
-        });
-        form.reset();
+      } catch (error) {
         Loading().close();
       }
-    } catch (error) {
-      Loading().close();
-    }
   };
 
   return (
