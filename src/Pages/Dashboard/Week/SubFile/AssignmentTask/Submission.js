@@ -107,6 +107,7 @@ const Submission = ({ taskData, count, setCount }) => {
       courseName: localStorage.getItem("course"),
       chapterId: taskData?.chapterId,
       courseId: taskData?.courseId,
+      mentors: taskData?.executionMentors,
       batchId: batch[0]?._id,
       weekName: JSON.parse(localStorage.getItem("currentWeek"))?.weekName,
       fileUrl: fileUrl,

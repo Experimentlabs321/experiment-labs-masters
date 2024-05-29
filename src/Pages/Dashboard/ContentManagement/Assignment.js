@@ -57,7 +57,6 @@ const Assignment = () => {
 
   useEffect(() => {
     axios
-
       //.get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
       .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${id}`)
       .then((response) => {
@@ -151,8 +150,8 @@ const Assignment = () => {
   useEffect(() => {
     axios
       .get(
-        // `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users//mentors/organizationId/${userInfo?.organizationId}/role/execution mentor`
-        `http://localhost:5000/api/v1/users/mentors/organizationId/${userInfo?.organizationId}/role/execution mentor`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/mentors/organizationId/${userInfo?.organizationId}/role/execution mentor`
+        // `http://localhost:5000/api/v1/users/mentors/organizationId/${userInfo?.organizationId}/role/execution mentor`
       )
       .then((response) => {
         setExecutionMentors(response?.data);
