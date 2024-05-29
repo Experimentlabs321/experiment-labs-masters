@@ -215,7 +215,7 @@ const ScheduleTask = ({ taskData, week }) => {
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/email/${taskData?.adminCalenderEmail}`
       )
       .then((response) => {
-        setAdminCalendarInfo(response?.data?.data);
+        setAdminCalendarInfo(response?.data);
 
         const currentDate = new Date(); // Current date
         const endDate = new Date(); // Create a new Date object for the end date
@@ -1374,6 +1374,7 @@ const ScheduleTask = ({ taskData, week }) => {
                 try {
                   const postData = {
                     ...newZoomSchedule?.data,
+                    summary: `${userInfo?.name} ${calendarSubjectName}`,
                     requester: requesterStd ? requesterStd : user?.email,
                     studentName: stdName ? stdName : userInfo?.name,
                     organization: {
@@ -1687,6 +1688,7 @@ const ScheduleTask = ({ taskData, week }) => {
                 try {
                   const postData = {
                     ...newZoomSchedule?.data,
+                    summary: `${userInfo?.name} ${calendarSubjectName}`,
                     requester: user?.email,
                     studentName: userInfo?.name,
                     organization: {
