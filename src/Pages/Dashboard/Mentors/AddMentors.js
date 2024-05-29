@@ -5,6 +5,7 @@ import PhoneInput from "react-phone-number-input";
 import Loading from "../../Shared/Loading/Loading";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 export default function AddMentors() {
   const { userInfo } = useContext(AuthContext);
@@ -83,10 +84,14 @@ export default function AddMentors() {
         }
       );
 
-      console.log(newUser);
-
-      form.reset();
-      Loading().close();
+      if (newUser) {
+        Swal.fire({
+          title: "New mentor added successfully!",
+          icon: "success",
+        });
+        form.reset();
+        Loading().close();
+      }
     } catch (error) {
       Loading().close();
     }
