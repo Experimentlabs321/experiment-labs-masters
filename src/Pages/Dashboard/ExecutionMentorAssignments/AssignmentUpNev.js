@@ -7,9 +7,10 @@ import Rectangle5 from "../../../assets/ExecutionMentor/Rectangle5.svg";
 import notification from "../../../assets/ExecutionMentor/notification.svg";
 import { AuthContext } from "../../../contexts/AuthProvider";
 
-const AssignmentUpNev = (props) => {
+const AssignmentUpNev = ({page,setAddTaskOpen}) => {
   //console.log(props.page)
-  const page = props.page;
+  //const page = props.page;
+
 
   const { userInfo, user } = useContext(AuthContext);
   const getInitials = () => {
@@ -57,8 +58,9 @@ const AssignmentUpNev = (props) => {
         )}
         {page === "liveClasses" && (
           <>
-            <p className="bg-[#E6F2FE] rounded-3xl p-2 text-base text-[#0277FB] font-normal">
+            <p onClick={()=>setAddTaskOpen(true)} className="bg-[#E6F2FE] rounded-3xl cursor-pointer p-2 text-base text-[#0277FB] font-normal">
               <span className="me-2 ">+</span>Schedule a class
+                
             </p>
           </>
         )}
