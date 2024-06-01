@@ -100,6 +100,8 @@ const ScheduleTask = ({ taskData, week }) => {
   const adminMail = taskData?.usersession?.user?.email;
   const adminName = taskData?.usersession?.user?.user_metadata?.name;
   const meetingLength = taskData?.meetingDuration;
+  const courseName = taskData?.courseName;
+  const batchName = taskData?.batches[0]?.batchName;
   console.log("Meeting duration : ", Number(meetingLength));
   // console.log(adminMail);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
@@ -749,10 +751,9 @@ const ScheduleTask = ({ taskData, week }) => {
             body: `grant_type=refresh_token&refresh_token=${refreshToken}&client_id=${process.env.REACT_APP_google_clientId}&client_secret=${process.env.REACT_APP_google_clientSecret}`,
           })
             .then((response) => response.json())
-            .then(async(data) => {
+            .then(async (data) => {
               var event = {
-                summary: `${stdName ? stdName : userInfo?.name
-                  } ${calendarSubjectName}`,
+                summary: `${stdName ? stdName : userInfo?.name} ${calendarSubjectName}`,
                 location: "",
                 start: {
                   dateTime: selectedTimeDatee,
@@ -795,8 +796,7 @@ const ScheduleTask = ({ taskData, week }) => {
                   // Add other event properties as needed
                 };
                 var rrescheduledEvent = {
-                  title: `${stdName ? stdName : userInfo?.name
-                    } ${calendarSubjectName} `,
+                  title: `${stdName ? stdName : userInfo?.name} ${calendarSubjectName} `,
                   start: {
                     dateTime: selectedTimeDatee,
                     timeZone: "UTC",
@@ -825,6 +825,8 @@ const ScheduleTask = ({ taskData, week }) => {
                   studentName: stdName ? stdName : userInfo?.name,
                   eventId: eventId,
                   taskId: taskId,
+                  courseName: course?.courseFullName,
+                  batchName: taskData?.batches[0]?.batchName,
                   // Access directly from data
                 };
                 rrescheduledEvent.start_time = rrescheduledEvent?.start?.dateTime?.toISOString();
@@ -864,227 +866,229 @@ const ScheduleTask = ({ taskData, week }) => {
                     });
                   }
                 }
-                else{
-                fetch(
-                  `https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events/${eventId}?sendUpdates=none`,
-                  {
-                    method: "PATCH", // Method to update the event
-                    headers: {
-                      Authorization: `Bearer ${newAccessToken}`,
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(updatedEvent),
-                  }
-                )
-                  .then((response) => response.json()) // Convert the response to JSON
-                  .then(async (data) => {
-                    console.log("Event updated:", data);
-                    var rescheduledEvent = {
-                      title: `${stdName ? stdName : userInfo?.name
-                        } ${calendarSubjectName} `,
-                      start: {
-                        dateTime: selectedTimeDatee,
-                        timeZone: "UTC",
+                else {
+                  fetch(
+                    `https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events/${eventId}?sendUpdates=none`,
+                    {
+                      method: "PATCH", // Method to update the event
+                      headers: {
+                        Authorization: `Bearer ${newAccessToken}`,
+                        "Content-Type": "application/json",
                       },
-                      end: {
-                        dateTime: endDateTimeUTC,
-                        timeZone: "UTC",
-                      },
-                      organization: {
-                        organizationId: userInfo?.organizationId,
-                        organizationName: userInfo?.organizationName,
-                      },
-                      attendees: [
-                        // { email: "naman.j@experimentlabs.in" },
-                        // { email: "gaurav@experimentlabs.in" },
-                        { email: requesterStd ? requesterStd : user?.email },
-                        // { email: "alrafi4@gmail.com" },
-                        {
-                          email: adminMail,
-                        },
-                      ],
-                      // Assuming "weekData" is something specific to your application and not part of the standard Calendar API response
-                      weekData: currentWeek,
-                      hangoutLink: data.hangoutLink, // Access directly from data
-                      requester: requesterStd ? requesterStd : user?.email,
-                      studentName: stdName ? stdName : userInfo?.name,
-                      eventId: eventId,
-                      taskId: taskId,
-                      // Access directly from data
-                    };
-
-                    
-                    console.log(eventDBid);
-                    const updateResponse = await axios.put(
-                      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/${eventDBid}`,
-                      rescheduledEvent
-                    );
-                    // const updateResponse = await axios.put(
-                    //   `${process.env.REACT_APP_SERVER_API}/api/v1/events/${eventDBid}`,
-                    //   {
-                    //     "title": "Tanvir Sohan <> Experiment Labs <> Doubt clearing <> ",
-                    //     "start": {
-                    //       "dateTime": "2024-04-09T07:00:00.000Z",
-                    //       "timeZone": "UTC"
-                    //     },
-                    //     "end": {
-                    //       "dateTime": "2024-04-09T08:00:00.000Z",
-                    //       "timeZone": "UTC"
-                    //     },
-                    //     "organization": {
-                    //       "organizationId": "64cbbd756f0ef101bc957231",
-                    //       "organizationName": "Shihab International"
-                    //     },
-                    //     "attendees": [
-                    //       {
-                    //         "email": "so2han67@gmail.com"
-                    //       },
-                    //       {
-                    //         "email": "team32programming@gmail.com"
-                    //       }
-                    //     ],
-                    //     "weekData": null,
-                    //     "hangoutLink": "https://meet.google.com/rgf-dvvc-bxh",
-                    //     "requester": "so2han67@gmail.com",
-                    //     "eventId": "0kh2gidugamp50s33mpm0cto24"
-                    //   }
-                    // );
-
-                    console.log("res ", updateResponse?.data);
-                    if (updateResponse?.data?.acknowledged) {
-                      const sendMail = await axios.post(
-                        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
-                        {
-                          //  from: `${userInfo?.email}`,
-                          //    to: `${user?.email},${adminMail}`,
-                          to: `${requesterStd ? requesterStd : user?.email}`,
-                          templateType: "emailAction",
-                          templateName: "sheduleTaskStudent",
-                          organizationId: userInfo?.organizationId,
-                          start_time: eventStartTime,
-                          end_time: eventEndTime,
-                          meeting_link: rescheduledEvent?.hangoutLink,
-                          admin_name: adminName,
-                          site_email: adminMail,
-                          meeting_date: date,
-                          /*  subject: `Event request`,
-                          message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
-                            }`, */
-                        }
-                      );
-                      const sendMailAdmin = await axios.post(
-                        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
-                        {
-                          //  from: `${userInfo?.email}`,
-                          //    to: `${user?.email},${adminMail}`,
-                          to: `${adminMail}`,
-                          templateType: "emailAction",
-                          templateName: "sheduleTask",
-                          organizationId: userInfo?.organizationId,
-                          start_time: eventStartTime,
-                          end_time: eventEndTime,
-                          meeting_link: rescheduledEvent?.hangoutLink,
-                          learner_name: stdName ? stdName : userInfo?.name,
-                          learner_email: requesterStd
-                            ? requesterStd
-                            : user?.email,
-                          meeting_date: date,
-                          /*  subject: `Event request`,
-                          message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
-                            }`, */
-                        }
-                      );
-
-                      if (userInfo?.role === "admin") {
-                        const newNotification = await axios.post(
-                          `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/notifications/addNotification`,
-                          {
-                            message: `${userInfo?.name} rescheduled an event of schedule task "${taskData?.taskName}" in course ${course?.courseFullName}`,
-                            dateTime: new Date(),
-                            recipient: {
-                              type: "Specific Student",
-                              recipientEmail: requesterStd,
-                              organizationId: userInfo?.organizationId,
-                            },
-                            type: "Event",
-                            readBy: [],
-                            triggeredBy: user?.email,
-                            redirectLink: `/taskDetails/${taskData?._id}?taskType=Schedule`,
-                          }
-                        );
-                        console.log(newNotification);
-                      } else {
-                        const newNotification = await axios.post(
-                          `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/notifications/addNotification`,
-                          {
-                            message: `${userInfo?.name} of ${batch[0]?.batchName} batch ${course?.courseFullName} course rescheduled an event of schedule task ${taskData?.taskName}.`,
-                            dateTime: new Date(),
-                            recipient: {
-                              type: "Admins",
-                              organizationId: userInfo?.organizationId,
-                            },
-                            type: "Event",
-                            readBy: [],
-                            triggeredBy: user?.email,
-                            redirectLink: `/taskDetails/${taskData?._id}?taskType=Schedule`,
-                          }
-                        );
-                        console.log(newNotification);
-                      }
-                      console.log("send ", sendMail);
-                      console.log("Admin Mail ", sendMailAdmin);
-                      if (
-                        sendMail?.data?.success &&
-                        sendMailAdmin?.data?.success
-                      ) {
-                        console.log({
-                          ...rescheduledEvent,
-                          eventDBid: eventDBid,
-                        });
-                        const newRescheduleEvent = await axios.put(
-                          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/${taskData?._id}/updateEvent`,
-                          { ...rescheduledEvent, eventDBid: eventDBid }
-                        );
-                        console.log(newRescheduleEvent);
-
-                        const filteredEvent = relevantEvents?.filter(
-                          (item) => item?.eventId !== rescheduledEvent?.eventId
-                        );
-                        const calendarInfo = { ...adminCalendarInfo };
-                        calendarInfo.events = [
-                          ...filteredEvent,
-                          { ...rescheduledEvent, eventDBid: eventDBid },
-                        ];
-                        // rescheduledEvent.start_time = rescheduledEvent?.start?.dateTime?.toISOString();
-
-                        // // Output the modified rescheduledEvent object to verify the new field addition
-                        // console.log(rescheduledEvent);
-                        // delete calendarInfo._id;
-                        // console.log(calendarInfo);
-                        // const InfoCalendar = { email: calendarInfo?.email, event: rescheduledEvent };
-                        // console.log({ calendarInfo: InfoCalendar });
-                        // const newSchedule = await axios.put(
-                        //   `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/events`,
-                        //   { calendarInfo: InfoCalendar }
-                        // );
-                        // console.log(newSchedule);
-                        // console.log("new event created ", newEvent);
-                        Loading().close();
-                        await Swal.fire({
-                          icon: "success",
-                          title: "Event Rescheduled!",
-                          text: "The event has been successfully rescheduled.",
-                        });
-                        navigate("/courseAccess");
-                      }
+                      body: JSON.stringify(updatedEvent),
                     }
+                  )
+                    .then((response) => response.json()) // Convert the response to JSON
+                    .then(async (data) => {
+                      console.log("Event updated:", data);
+                      var rescheduledEvent = {
+                        title: `${stdName ? stdName : userInfo?.name
+                          } ${calendarSubjectName} `,
+                        start: {
+                          dateTime: selectedTimeDatee,
+                          timeZone: "UTC",
+                        },
+                        end: {
+                          dateTime: endDateTimeUTC,
+                          timeZone: "UTC",
+                        },
+                        organization: {
+                          organizationId: userInfo?.organizationId,
+                          organizationName: userInfo?.organizationName,
+                        },
+                        attendees: [
+                          // { email: "naman.j@experimentlabs.in" },
+                          // { email: "gaurav@experimentlabs.in" },
+                          { email: requesterStd ? requesterStd : user?.email },
+                          // { email: "alrafi4@gmail.com" },
+                          {
+                            email: adminMail,
+                          },
+                        ],
+                        // Assuming "weekData" is something specific to your application and not part of the standard Calendar API response
+                        weekData: currentWeek,
+                        hangoutLink: data.hangoutLink, // Access directly from data
+                        requester: requesterStd ? requesterStd : user?.email,
+                        studentName: stdName ? stdName : userInfo?.name,
+                        eventId: eventId,
+                        taskId: taskId,
+                        courseName: course?.courseFullName,
+                        batchName: batchName,
+                        // Access directly from data
+                      };
 
-                    // Other UI updates or state resets after successful rescheduling
-                  })
-                  .catch((error) => {
-                    console.error("Error updating event:", error);
-                    // Handle error
-                  });
+
+                      console.log(eventDBid);
+                      const updateResponse = await axios.put(
+                        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/${eventDBid}`,
+                        rescheduledEvent
+                      );
+                      // const updateResponse = await axios.put(
+                      //   `${process.env.REACT_APP_SERVER_API}/api/v1/events/${eventDBid}`,
+                      //   {
+                      //     "title": "Tanvir Sohan <> Experiment Labs <> Doubt clearing <> ",
+                      //     "start": {
+                      //       "dateTime": "2024-04-09T07:00:00.000Z",
+                      //       "timeZone": "UTC"
+                      //     },
+                      //     "end": {
+                      //       "dateTime": "2024-04-09T08:00:00.000Z",
+                      //       "timeZone": "UTC"
+                      //     },
+                      //     "organization": {
+                      //       "organizationId": "64cbbd756f0ef101bc957231",
+                      //       "organizationName": "Shihab International"
+                      //     },
+                      //     "attendees": [
+                      //       {
+                      //         "email": "so2han67@gmail.com"
+                      //       },
+                      //       {
+                      //         "email": "team32programming@gmail.com"
+                      //       }
+                      //     ],
+                      //     "weekData": null,
+                      //     "hangoutLink": "https://meet.google.com/rgf-dvvc-bxh",
+                      //     "requester": "so2han67@gmail.com",
+                      //     "eventId": "0kh2gidugamp50s33mpm0cto24"
+                      //   }
+                      // );
+
+                      console.log("res ", updateResponse?.data);
+                      if (updateResponse?.data?.acknowledged) {
+                        const sendMail = await axios.post(
+                          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
+                          {
+                            //  from: `${userInfo?.email}`,
+                            //    to: `${user?.email},${adminMail}`,
+                            to: `${requesterStd ? requesterStd : user?.email}`,
+                            templateType: "emailAction",
+                            templateName: "sheduleTaskStudent",
+                            organizationId: userInfo?.organizationId,
+                            start_time: eventStartTime,
+                            end_time: eventEndTime,
+                            meeting_link: rescheduledEvent?.hangoutLink,
+                            admin_name: adminName,
+                            site_email: adminMail,
+                            meeting_date: date,
+                            /*  subject: `Event request`,
+                            message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
+                              }`, */
+                          }
+                        );
+                        const sendMailAdmin = await axios.post(
+                          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
+                          {
+                            //  from: `${userInfo?.email}`,
+                            //    to: `${user?.email},${adminMail}`,
+                            to: `${adminMail}`,
+                            templateType: "emailAction",
+                            templateName: "sheduleTask",
+                            organizationId: userInfo?.organizationId,
+                            start_time: eventStartTime,
+                            end_time: eventEndTime,
+                            meeting_link: rescheduledEvent?.hangoutLink,
+                            learner_name: stdName ? stdName : userInfo?.name,
+                            learner_email: requesterStd
+                              ? requesterStd
+                              : user?.email,
+                            meeting_date: date,
+                            /*  subject: `Event request`,
+                            message: `A event is going to held for doubt clearing starting at ${eventStartTime} and ends at ${eventEndTime}. Meeting link ${event?.hangoutLink
+                              }`, */
+                          }
+                        );
+
+                        if (userInfo?.role === "admin") {
+                          const newNotification = await axios.post(
+                            `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/notifications/addNotification`,
+                            {
+                              message: `${userInfo?.name} rescheduled an event of schedule task "${taskData?.taskName}" in course ${course?.courseFullName}`,
+                              dateTime: new Date(),
+                              recipient: {
+                                type: "Specific Student",
+                                recipientEmail: requesterStd,
+                                organizationId: userInfo?.organizationId,
+                              },
+                              type: "Event",
+                              readBy: [],
+                              triggeredBy: user?.email,
+                              redirectLink: `/taskDetails/${taskData?._id}?taskType=Schedule`,
+                            }
+                          );
+                          console.log(newNotification);
+                        } else {
+                          const newNotification = await axios.post(
+                            `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/notifications/addNotification`,
+                            {
+                              message: `${userInfo?.name} of ${batch[0]?.batchName} batch ${course?.courseFullName} course rescheduled an event of schedule task ${taskData?.taskName}.`,
+                              dateTime: new Date(),
+                              recipient: {
+                                type: "Admins",
+                                organizationId: userInfo?.organizationId,
+                              },
+                              type: "Event",
+                              readBy: [],
+                              triggeredBy: user?.email,
+                              redirectLink: `/taskDetails/${taskData?._id}?taskType=Schedule`,
+                            }
+                          );
+                          console.log(newNotification);
+                        }
+                        console.log("send ", sendMail);
+                        console.log("Admin Mail ", sendMailAdmin);
+                        if (
+                          sendMail?.data?.success &&
+                          sendMailAdmin?.data?.success
+                        ) {
+                          console.log({
+                            ...rescheduledEvent,
+                            eventDBid: eventDBid,
+                          });
+                          const newRescheduleEvent = await axios.put(
+                            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/${taskData?._id}/updateEvent`,
+                            { ...rescheduledEvent, eventDBid: eventDBid }
+                          );
+                          console.log(newRescheduleEvent);
+
+                          const filteredEvent = relevantEvents?.filter(
+                            (item) => item?.eventId !== rescheduledEvent?.eventId
+                          );
+                          const calendarInfo = { ...adminCalendarInfo };
+                          calendarInfo.events = [
+                            ...filteredEvent,
+                            { ...rescheduledEvent, eventDBid: eventDBid },
+                          ];
+                          // rescheduledEvent.start_time = rescheduledEvent?.start?.dateTime?.toISOString();
+
+                          // // Output the modified rescheduledEvent object to verify the new field addition
+                          // console.log(rescheduledEvent);
+                          // delete calendarInfo._id;
+                          // console.log(calendarInfo);
+                          // const InfoCalendar = { email: calendarInfo?.email, event: rescheduledEvent };
+                          // console.log({ calendarInfo: InfoCalendar });
+                          // const newSchedule = await axios.put(
+                          //   `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/events`,
+                          //   { calendarInfo: InfoCalendar }
+                          // );
+                          // console.log(newSchedule);
+                          // console.log("new event created ", newEvent);
+                          Loading().close();
+                          await Swal.fire({
+                            icon: "success",
+                            title: "Event Rescheduled!",
+                            text: "The event has been successfully rescheduled.",
+                          });
+                          navigate("/courseAccess");
+                        }
+                      }
+
+                      // Other UI updates or state resets after successful rescheduling
+                    })
+                    .catch((error) => {
+                      console.error("Error updating event:", error);
+                      // Handle error
+                    });
                 }
               } else {
                 function initiate() {
@@ -1260,6 +1264,8 @@ const ScheduleTask = ({ taskData, week }) => {
                           studentName: stdName ? stdName : userInfo?.name,
                           eventId: response?.result?.id,
                           taskId: taskId,
+                          courseName: course?.courseFullName,
+                          batchName: batchName,
                         };
                         sendData(event);
                         return [true, response];
@@ -1317,6 +1323,7 @@ const ScheduleTask = ({ taskData, week }) => {
                 studentName: stdName ? stdName : userInfo?.name,
                 courseName: course?.courseFullName,
               };
+              console.log(zoomSchedule);
               const newZoomSchedule = await axios.post(
                 `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/meeting/organizationId/${userInfo?.organizationId}`,
                 zoomSchedule
@@ -1383,6 +1390,8 @@ const ScheduleTask = ({ taskData, week }) => {
                     },
                     meetingType: "Zoom",
                     taskId: taskId,
+                    courseName:  course?.courseFullName,
+                    batchName: batchName,
                   };
                   const InfoCalendar = { email: adminCalendarInfo?.email, event: postData };
                   console.log({ calendarInfo: InfoCalendar });
@@ -1630,6 +1639,8 @@ const ScheduleTask = ({ taskData, week }) => {
               const zoomSchedule = {
                 start_time: formattedDateTime,
                 duration: meetingLength,
+                studentName: stdName ? stdName : userInfo?.name,
+                courseName: course?.courseFullName,
               };
               const newZoomSchedule = await axios.post(
                 `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/meeting/organizationId/${userInfo?.organizationId}`,
@@ -1697,6 +1708,8 @@ const ScheduleTask = ({ taskData, week }) => {
                     },
                     meetingType: "Zoom",
                     taskId: taskId,
+                    courseName:  course?.courseFullName,
+                    batchName: batchName,
                   };
                   const InfoCalendar = { email: adminCalendarInfo?.email, event: postData };
                   console.log({ calendarInfo: InfoCalendar });
