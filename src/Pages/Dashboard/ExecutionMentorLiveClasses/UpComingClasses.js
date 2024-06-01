@@ -27,7 +27,7 @@ const UpComingClasses = ({ classes }) => {
 
     return { hours, minutes };
   };
-  console.log(filteredClasses)
+ 
   return (
     <div>
       <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 mx-5 my-10 h-[700px] overflow-y-auto">
@@ -47,7 +47,7 @@ const UpComingClasses = ({ classes }) => {
             return (
               <div
                 key={cls.id} // Assuming each class has a unique id
-                className="p-5"
+                className="p-5 h-[250px]"
                 style={{
                   borderRadius: "10px",
                   border: "1px solid #EFEFEF",
@@ -101,7 +101,7 @@ const UpComingClasses = ({ classes }) => {
             );
           })
         ) : (
-          <p>No classes available</p>
+          <p className="text-center mt-10 text-[red]">No classes available</p>
         )}
       </div>
     </div>
