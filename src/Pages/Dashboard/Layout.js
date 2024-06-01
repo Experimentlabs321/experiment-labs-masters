@@ -1785,7 +1785,7 @@ const Layout = ({ children }) => {
                                     }
                                   : {}
                               }
-                              to="/schedule"
+                              to="/mentorSchedule"
                               className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
                             >
                               {location.pathname === "/schedule" ? (
