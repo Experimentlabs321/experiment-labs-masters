@@ -5,6 +5,8 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import AddStudent from "../AddStudent/AddStudent";
+import Loading from "../../Shared/Loading/Loading";
+import toast from "react-hot-toast";
 
 const MyStudents = () => {
   const { paidStudents } = useParams();
@@ -12,8 +14,6 @@ const MyStudents = () => {
   const [allMyStudents, setAllMyStudents] = useState([]);
   const [filteredStudents, setFilteredStudents] = useState([]);
   const [tableWidth, setTableWidth] = useState("100%");
-  const [courseFilter, setCourseFilter] = useState("");
-  const [batchFilter, setBatchFilter] = useState("");
   const [courses, setCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState({});
   const [batchesData, setBatchesData] = useState([]);
@@ -22,6 +22,14 @@ const MyStudents = () => {
   const [selectedValidationStatus, setSelectedValidationStatus] = useState("");
   const [loading, setLoading] = useState(false);
   const [itemDetails, setItemDetails] = useState();
+  const [executionMentors, setExecutionMentors] = useState([]);
+  const [editOrAssignExecutionMentor, setEditOrAssignExecutionMentor] =
+    useState({});
+  const [
+    selectedExecutionMentorsForEditOrAssign,
+    setSelectedExecutionMentorsForEditOrAssign,
+  ] = useState([]);
+
   useEffect(() => {
     if (userInfo) {
       setLoading(true);
@@ -30,10 +38,8 @@ const MyStudents = () => {
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getMyLearnersSubDetailsByOrganizationAndName/myLearners/organizationsId/${userInfo?.organizationId}`
         )
         .then((response) => {
-
-          console.log(response)
+          console.log(response);
           setItemDetails(response?.data);
-
         })
         .finally(() => {
           setLoading(false);
@@ -41,7 +47,7 @@ const MyStudents = () => {
     }
     setLoading(false);
   }, [userInfo]);
- // console.log(itemDetails)
+  // console.log(itemDetails)
 
   useEffect(() => {
     axios
@@ -80,11 +86,11 @@ const MyStudents = () => {
       setTableWidth(`${updatedWidth}px`);
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     // Cleanup the event listener when the component unmounts
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -108,7 +114,19 @@ const MyStudents = () => {
         }
       })
       .catch((error) => console.error(error));
-  }, [userInfo,paidStudents]);
+  }, [userInfo, paidStudents]);
+
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/mentors/organizationId/${userInfo?.organizationId}/role/execution mentor`
+        // `http://localhost:5000/api/v1/users/mentors/organizationId/${userInfo?.organizationId}/role/execution mentor`
+      )
+      .then((response) => {
+        setExecutionMentors(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [userInfo]);
 
   const applyFilters = async (topic, batch, status) => {
     let filtered = allMyStudents;
@@ -186,8 +204,67 @@ const MyStudents = () => {
     return daysDifference;
   };
 
-  
-    console.log(filteredStudents?.reverse())
+  const handleExecutionMentorSelectChange = (mentor, e) => {
+    console.log(e.target.checked, mentor);
+    if (e.target.checked) {
+      setSelectedExecutionMentorsForEditOrAssign([
+        {
+          mentorId: mentor?._id,
+          mentorEmail: mentor?.email,
+          mentorRole: mentor?.role,
+        },
+      ]);
+    } else {
+      setSelectedExecutionMentorsForEditOrAssign([]);
+    }
+  };
+
+  const handleAddOrUpdateMentor = async (learnerId, index) => {
+    Loading();
+
+    if (selectedExecutionMentorsForEditOrAssign?.length > 0) {
+      console.log(selectedExecutionMentorsForEditOrAssign);
+      const newAssign = await axios.put(
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/learnerId/${learnerId}/assign-executionMentor`,
+        // `http://localhost:5000/api/v1/users/learnerId/${learnerId}/assign-executionMentor`,
+        { executionMentors: selectedExecutionMentorsForEditOrAssign }
+      );
+
+      console.log(newAssign);
+      if (newAssign) {
+        toast.success("Mentor Added Successfully!");
+        filteredStudents[index].executionMentors =
+          selectedExecutionMentorsForEditOrAssign;
+        setEditOrAssignExecutionMentor({});
+      }
+      // if (newAssignment?.data?.result?.acknowledged) {
+      //   toast.success("Assignment added Successfully");
+      //   const newNotification = await axios.post(
+      //     `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/notifications/addNotification`,
+      //     {
+      //       message: `New assignment added in course ${course?.courseFullName}.`,
+      //       dateTime: new Date(),
+      //       redirectLink: `/questLevels/${course?._id}?week=${chapter?.weekId}`,
+      //       recipient: {
+      //         type: "Students",
+      //         organizationId: orgData?._id,
+      //         courseId: course?._id,
+      //         batches: selectedBatches,
+      //       },
+      //       type: "Create Task",
+      //       readBy: [],
+      //       notificationTriggeredBy: user?.email,
+      //     }
+      //   );
+      //   console.log(newNotification);
+      //   navigate(-1);
+      // }
+
+      // console.log(manageAssignment);
+    }
+    Loading().close();
+  };
+
   return (
     <div>
       <Layout>
@@ -201,8 +278,9 @@ const MyStudents = () => {
                   : "bg-white border-2 border-gray-400 text-black"
               }`}
             >
-              {itemDetails?.myLearners ? itemDetails?.myLearners : "My Learners"}
-              
+              {itemDetails?.myLearners
+                ? itemDetails?.myLearners
+                : "My Learners"}
             </button>
             <button
               onClick={() => setCurrentPage("Add Learners")}
@@ -212,13 +290,18 @@ const MyStudents = () => {
                   : "bg-white border-2 border-gray-400 text-black"
               }`}
             >
-              {itemDetails?.addLearners ? itemDetails?.addLearners : "Add Learners"}
-              
+              {itemDetails?.addLearners
+                ? itemDetails?.addLearners
+                : "Add Learners"}
             </button>
           </div>
           {currentPage === "My Learners" ? (
             <>
-              <h1 className="text-xl font-bold">{itemDetails?.myLearners ? itemDetails?.myLearners : "My Learners"}</h1>
+              <h1 className="text-xl font-bold">
+                {itemDetails?.myLearners
+                  ? itemDetails?.myLearners
+                  : "My Learners"}
+              </h1>
               <div>
                 <div>
                   <input
@@ -235,7 +318,9 @@ const MyStudents = () => {
                       );
                     }}
                     name="Search"
-                    placeholder={itemDetails?.search ? itemDetails?.search : "Search"}
+                    placeholder={
+                      itemDetails?.search ? itemDetails?.search : "Search"
+                    }
                     className="block w-full px-4 py-2 mt-2 rounded-md border bg-white border-[#B7B7B7] focus:border-blue-500 focus:outline-none focus:ring"
                   />
                 </div>
@@ -254,7 +339,11 @@ const MyStudents = () => {
                       applyFilters(course, "", selectedValidationStatus);
                     }}
                   >
-                    <option value="">{itemDetails?.selectCourse ? itemDetails?.selectCourse : "Select Course"}</option>
+                    <option value="">
+                      {itemDetails?.selectCourse
+                        ? itemDetails?.selectCourse
+                        : "Select Course"}
+                    </option>
                     {courses?.map((course) => (
                       <option key={course._id} value={course._id}>
                         {course?.courseFullName}
@@ -278,7 +367,11 @@ const MyStudents = () => {
                       );
                     }}
                   >
-                    <option value="">{itemDetails?.selectBatch ? itemDetails?.selectBatch : "Select Batch"}</option>
+                    <option value="">
+                      {itemDetails?.selectBatch
+                        ? itemDetails?.selectBatch
+                        : "Select Batch"}
+                    </option>
                     {batchesData?.map((batch) => (
                       <option key={batch?._id} value={batch?._id}>
                         {batch?.batchName}
@@ -298,10 +391,20 @@ const MyStudents = () => {
                       );
                     }}
                   >
-                    <option value="">{itemDetails?.selectValidation ? itemDetails?.selectValidation : "Select Validation"}</option>
-                    <option value="Paid">{itemDetails?.paid ? itemDetails?.paid : "Paid"}</option>
-                    <option value="Unpaid">{itemDetails?.unpaid ? itemDetails?.unpaid : "Unpaid"}</option>
-                    <option value="Expired">{itemDetails?.expired ? itemDetails?.expired : "Expired"}</option>
+                    <option value="">
+                      {itemDetails?.selectValidation
+                        ? itemDetails?.selectValidation
+                        : "Select Validation"}
+                    </option>
+                    <option value="Paid">
+                      {itemDetails?.paid ? itemDetails?.paid : "Paid"}
+                    </option>
+                    <option value="Unpaid">
+                      {itemDetails?.unpaid ? itemDetails?.unpaid : "Unpaid"}
+                    </option>
+                    <option value="Expired">
+                      {itemDetails?.expired ? itemDetails?.expired : "Expired"}
+                    </option>
                   </select>
 
                   {/* Apply Filters Button */}
@@ -314,22 +417,38 @@ const MyStudents = () => {
                 </div>
               </div>
               <div
-                style={{  height: "70vh" }}
-                className="overflow-x-auto"
+                style={{
+                  maxWidth: `${
+                    window.innerWidth - (window.innerWidth > 1024 ? 370 : 40)
+                  }px`,
+                }}
+                // style={{ height: "70vh" }}
+                className="overflow-x-auto h-[60vh] overscroll-y-auto"
               >
-                <table className="min-w-full font-sans bg-white border border-gray-300">
+                <table className=" min-w-full font-sans bg-white border border-gray-300">
                   <thead className="bg-gray-800 text-white sticky top-0">
                     <tr>
-                      <th className="py-3 px-6 border-b text-left">{itemDetails?.name ? itemDetails?.name : "Name"}</th>
-                      <th className="py-3 px-6 border-b text-left">{itemDetails?.email ? itemDetails?.email : "Email"}</th>
-                      <th className="py-3 px-6 border-b text-left">{itemDetails?.phone ? itemDetails?.phone : "Phone"}</th>
                       <th className="py-3 px-6 border-b text-left">
-                      {itemDetails?.joiningDate ? itemDetails?.joiningDate : "Joining Date"}
-                        
+                        {itemDetails?.name ? itemDetails?.name : "Name"}
                       </th>
                       <th className="py-3 px-6 border-b text-left">
-                      {itemDetails?.paidOrUnpaid ? itemDetails?.paidOrUnpaid : "Paid/Unpaid"}
-                        
+                        {itemDetails?.email ? itemDetails?.email : "Email"}
+                      </th>
+                      <th className="py-3 px-6 border-b text-left">
+                        {itemDetails?.phone ? itemDetails?.phone : "Phone"}
+                      </th>
+                      <th className="py-3 px-6 border-b text-left">
+                        {itemDetails?.joiningDate
+                          ? itemDetails?.joiningDate
+                          : "Joining Date"}
+                      </th>
+                      <th className="py-3 px-6 border-b text-left">
+                        {itemDetails?.paidOrUnpaid
+                          ? itemDetails?.paidOrUnpaid
+                          : "Paid/Unpaid"}
+                      </th>
+                      <th className="py-3 px-6 border-b text-left">
+                        Assign Mentor
                       </th>
                     </tr>
                   </thead>
@@ -381,22 +500,140 @@ const MyStudents = () => {
                                 selectedValidationStatus === "Expired") ? (
                                 <Link to={`/profile/${student?.email}`}>
                                   <span className="text-orange-600 font-semibold">
-                                    &#9888; {itemDetails?.expired ? itemDetails?.expired : "Expired"}
+                                    &#9888;{" "}
+                                    {itemDetails?.expired
+                                      ? itemDetails?.expired
+                                      : "Expired"}
                                   </span>
                                 </Link>
                               ) : (
                                 <Link to={`/profile/${student?.email}`}>
                                   {student?.courses && student?.courses[0] ? (
                                     <span className="text-green font-semibold">
-                                      &#x2713; {itemDetails?.paid ? itemDetails?.paid : "Paid"}
+                                      &#x2713;{" "}
+                                      {itemDetails?.paid
+                                        ? itemDetails?.paid
+                                        : "Paid"}
                                     </span>
                                   ) : (
                                     <span className="text-red-600 font-semibold">
-                                      &#x2717; {itemDetails?.unpaid ? itemDetails?.unpaid : "Unpaid"}
+                                      &#x2717;{" "}
+                                      {itemDetails?.unpaid
+                                        ? itemDetails?.unpaid
+                                        : "Unpaid"}
                                     </span>
                                   )}
                                 </Link>
                               )}
+                            </td>
+                            <td className="py-4 px-6 border-b text-left">
+                              <div className=" flex gap-1">
+                                <div>
+                                  {editOrAssignExecutionMentor?._id !==
+                                    student?._id && (
+                                    <div className="flex gap-1">
+                                      <div
+                                        className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] p-2 cursor-pointer"
+                                        // onClick={handleToggleDropdown}
+                                      >
+                                        {student?.executionMentors?.length >
+                                        0 ? (
+                                          student?.executionMentors?.map(
+                                            (mentor, idx) => (
+                                              <span className=" whitespace-nowrap">
+                                                {student?.executionMentors
+                                                  ?.length >
+                                                idx + 1
+                                                  ? `${
+                                                      executionMentors?.find(
+                                                        (item) =>
+                                                          item?.email ===
+                                                          mentor?.mentorEmail
+                                                      )?.name
+                                                    }, `
+                                                  : executionMentors?.find(
+                                                      (item) =>
+                                                        item?.email ===
+                                                        mentor?.mentorEmail
+                                                    )?.name}
+                                              </span>
+                                            )
+                                          )
+                                        ) : (
+                                          <span className=" whitespace-nowrap">
+                                            Mentor not assigned!
+                                          </span>
+                                        )}
+                                      </div>
+                                      {userInfo?.role === "admin" && (
+                                        <button
+                                          onClick={() => {
+                                            setEditOrAssignExecutionMentor(
+                                              student
+                                            );
+                                            setSelectedExecutionMentorsForEditOrAssign(
+                                              student?.executionMentors
+                                                ? student?.executionMentors
+                                                : []
+                                            );
+                                          }}
+                                          className="px-3 py-1 bg-blue text-white rounded"
+                                        >
+                                          Edit
+                                        </button>
+                                      )}
+                                    </div>
+                                  )}
+                                  {editOrAssignExecutionMentor?._id ===
+                                    student?._id &&
+                                    userInfo?.role === "admin" && (
+                                      <div className="flex gap-1 items-end">
+                                        <div className=" w-full rounded-md shadow-lg bg-white">
+                                          <ul className="max-h-48 overflow-auto rounded-md py-1 text-base leading-6 shadow-xs focus:outline-none sm:text-sm sm:leading-5 ">
+                                            {executionMentors?.map(
+                                              (mentor, idx) => (
+                                                <li
+                                                  key={mentor?._id + idx}
+                                                  className="flex items-center p-2"
+                                                >
+                                                  <input
+                                                    type="radio"
+                                                    checked={
+                                                      selectedExecutionMentorsForEditOrAssign[0]
+                                                        ?.mentorId ===
+                                                      mentor?._id
+                                                    }
+                                                    onChange={(e) =>
+                                                      handleExecutionMentorSelectChange(
+                                                        mentor,
+                                                        e
+                                                      )
+                                                    }
+                                                    className="form-checkbox h-5 w-5 text-indigo-600 transition duration-150 ease-in-out"
+                                                  />
+                                                  <span className="ml-2 whitespace-nowrap text-gray-700">
+                                                    {mentor?.name}
+                                                  </span>
+                                                </li>
+                                              )
+                                            )}
+                                          </ul>
+                                        </div>
+                                        <button
+                                          onClick={() =>
+                                            handleAddOrUpdateMentor(
+                                              student?._id,
+                                              index
+                                            )
+                                          }
+                                          className="px-3 py-1 bg-blue text-white rounded"
+                                        >
+                                          Save
+                                        </button>
+                                      </div>
+                                    )}
+                                </div>
+                              </div>
                             </td>
                           </tr>
                         );
