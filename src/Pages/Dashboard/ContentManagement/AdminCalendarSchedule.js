@@ -132,6 +132,7 @@ const AdminCalendarSchedule = () => {
           setCourse(response?.data);
         });
   }, [chapter]);
+  console.log(course);
   useEffect(() => {
     axios
       .get(
@@ -244,6 +245,7 @@ const AdminCalendarSchedule = () => {
       scheduleName,
       taskName: scheduleName,
       chapterId: chapter?._id,
+      courseName : course?.courseFullName,
       courseId: chapter?.courseId,
       batches: selectedBatches,
       offDays: offDays,

@@ -131,6 +131,7 @@ import SalesAndRevenue from "../../Pages/Dashboard/SalesAndRevenue/SalesAndReven
 import TaskDetails from "../../Pages/Dashboard/Week/Layout/TaskDetails";
 import PastClasses from "../../Pages/Dashboard/ExecutionMentorLiveClasses/PastClasses";
 import Mentors from "../../Pages/Dashboard/Mentors/Mentors";
+import ExecutionMentorMainSchedule from "../../Pages/Dashboard/ExecutionMentorSchedule/ExecutionMentorMainSchedule";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -435,6 +436,10 @@ const router = createBrowserRouter([
   {
     path: "/schedule",
     element: <ExecutionMentorSchedule />,
+  },
+  {
+    path: "/mentorSchedule",
+    element: <ExecutionMentorMainSchedule />,
   },
   {
     path: "/schedule/:agenda",
