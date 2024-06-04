@@ -275,9 +275,10 @@ const PastClasses = () => {
                   })}
                 </div>
               ) : (
-                <p className="text-center mt-10 text-[red]">
-                  No classes available
-                </p>
+                <p className="text-center font-medium text-sky-400 mt-5 ">
+                No classes available
+              </p>
+              
               ))}
             {selectedTab === "upcomingClasses" && (
               <UpComingClasses classes={classes} />

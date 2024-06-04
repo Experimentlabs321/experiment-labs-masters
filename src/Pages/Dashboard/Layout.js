@@ -1778,7 +1778,7 @@ const Layout = ({ children }) => {
                           <li>
                             <Link
                               style={
-                                location.pathname === "/schedule"
+                                location.pathname === "/mentorSchedule"
                                   ? {
                                       background:
                                         "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
@@ -1788,7 +1788,7 @@ const Layout = ({ children }) => {
                               to="/mentorSchedule"
                               className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
                             >
-                              {location.pathname === "/schedule" ? (
+                              {location.pathname === "/mentorSchedule" ? (
                                 <img className="" src={Schedule} alt="icon" />
                               ) : (
                                 <img className="" src={Schedule1} alt="icon" />
@@ -1796,7 +1796,7 @@ const Layout = ({ children }) => {
 
                               <span
                                 className={`${
-                                  location.pathname === "/schedule"
+                                  location.pathname === "/mentorSchedule"
                                     ? "text-white"
                                     : "text-[#8F8F8F]"
                                 } ml-3 text-[18px] font-[500]`}
