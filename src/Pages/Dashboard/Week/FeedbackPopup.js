@@ -28,18 +28,13 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 const FeedbackPopup = ({ taskData }) => {
-  //console.log(taskData)
-  //console.log(taskData?.meetingData?.created_at)
+  
   const { id } = useParams();
-  // console.log(id)
-  const [isOpen, setIsOpen] = useState(false);
+
   const { userInfo, user } = useContext(AuthContext);
 
-  const [selectedOption, setSelectedOption] = useState("Category");
   const [feedbacks, setFeedbacks] = useState();
   const [feedbackGiven, setFeedbackGiven] = useState();
-  const options = ["Category name"];
-  //feedback//
   const [open, setOpen] = useState(false);
   const [getFeedback, setGetFeedback] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState();
@@ -72,13 +67,14 @@ const FeedbackPopup = ({ taskData }) => {
   const handleClose = () => {
     setOpen(false);
   };
-  // console.log(taskData)
+   console.log(taskData?.courseId)
 
   useEffect(() => {
     axios
-     // .get(`${process.env.REACT_APP_BACKEND_API}/chapters/${id}`)
-      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${id}`)
+      .get(`${process.env.REACT_APP_BACKEND_API}/chapters/${id}`)
+     // .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${id}`)
       .then((response) => {
+       
         setCourseId(response?.data?.map((item) => item.courseId));
       })
       .catch((error) => console.error(error));
@@ -99,23 +95,26 @@ const FeedbackPopup = ({ taskData }) => {
       })
       .catch((error) => console.error(error));
   }, [id, taskData?._id, userInfo?._id]);
-  console.log(taskData);
-  console.log(taskData?._id);
-  //console.log(previousFeedback)
+  //  console.log(courseId);
+  // console.log(taskData?._id);
+  // //console.log(previousFeedback)
 
-  console.log(feedbacks);
-  console.log(existing);
-  console.log(isDurationEnded);
+  // console.log(feedbacks);
+  // console.log(existing);
+  // console.log(isDurationEnded);
 
   useEffect(() => {
     axios
       .get(
        // `${process.env.REACT_APP_BACKEND_API}/feedback_categories/${userInfo?.organizationId}`
-        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/feedbackCategories/organizationId/${userInfo?.organizationId}`
+       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/feedbackCategories/organizationId/${userInfo?.organizationId}`
+      
       )
       .then((response) => {
+       // setFeedbacks(response?.data);
         const feedbacks = response?.data?.courses?.find(
-          (data) => data?.courseId === courseId[0]
+         // (data) => data?.courseId === courseId[0]
+          (data) => data?.courseId === taskData?.courseId
         );
 
         if (feedbacks && !existing && isDurationEnded && !getFeedback) {
@@ -129,7 +128,7 @@ const FeedbackPopup = ({ taskData }) => {
         setSelectedCategory(feedbacks?.categories[0].categoryName);
       })
       .catch((error) => console.error(error));
-  }, [userInfo?.organizationId, courseId, existing]);
+  }, [userInfo?.organizationId, courseId, existing,getFeedback,isDurationEnded,taskData?.courseId]);
 
   // console.log(feedbacks)
   // console.log(existing)
@@ -189,11 +188,11 @@ const FeedbackPopup = ({ taskData }) => {
     if (feedbackGiven) {
       let foundZero = false; // Initialize foundZero variable
 
-      feedbackGiven.categories.forEach((category) => {
+      feedbackGiven.categories?.forEach((category) => {
         if (category.rating === "0") {
           foundZero = true;
         } else {
-          category.feedbackItems.forEach((item) => {
+          category.feedbackItems?.forEach((item) => {
             if (item.itemRating === "0") {
               foundZero = true;
             }
@@ -257,7 +256,7 @@ const FeedbackPopup = ({ taskData }) => {
       console.error("Error occurred while submitting feedback:", error);
     }
   };
-
+  console.log(feedbacks)
   return (
     <form>
       {/*     <Button variant="outlined" onClick={handleClickOpen}>
@@ -269,7 +268,7 @@ const FeedbackPopup = ({ taskData }) => {
         open={open}
       >
         <DialogTitle sx={{ m: 0, p: 5 }} id="customized-dialog-title">
-          Give feedback "{taskData?.className}"
+          Give feedback "{taskData?.taskName}"
         </DialogTitle>
 
         <DialogContent dividers>
