@@ -24,17 +24,12 @@ const MentorAllSchedule = () => {
   const { userInfo, user } = useContext(AuthContext);
   const [userRequesterEvents, setUserRequesterEvents] = useState([]);
 
-  const [mentors, setMentors] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
- 
   const [events, setEvents] = useState([]);
 
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-  const [editOrAssignMentor, setEditOrAssignMentor] = useState({});
-  const [selectedMentorsForEditOrAssign, setSelectedMentorsForEditOrAssign] =
-    useState([]);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+
   
   useEffect(() => {
     if (!userInfo?.email) {
@@ -45,7 +40,7 @@ const MentorAllSchedule = () => {
       .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/mentorEmail/${userInfo?.email}`)
       .then((response) => {
         Loading().close();
-        console.log(response?.data);
+       
         setUserRequesterEvents(response?.data);
         setEvents(response?.data);
         const currentDate = new Date(getCurrentDate()).getTime();
@@ -178,7 +173,7 @@ const MentorAllSchedule = () => {
   }).filter(event => new Date(event?.start_time) > now);
   console.log(sortedEvents)
   const excludedEventId = sortedEvents[0]?._id;
-  console.log(excludedEventId)
+
   const filteredEvents = userRequesterEvents.filter(event => event?._id !== excludedEventId);
 
   function getEditedEvents(events) {
@@ -192,13 +187,14 @@ const MentorAllSchedule = () => {
     });
   }
   const editedEvents = getEditedEvents(filteredEvents);
-  console.log(editedEvents);
+  console.log(sortedEvents);
+   console.log(sortedEvents);
 
 
 
 
   return (
-    <div>
+    <div className='flex justify-center'>
       {userRequesterEvents?.length > 0 ? (
         // Render content specific to events where the user is the requester
         <>
@@ -208,7 +204,7 @@ const MentorAllSchedule = () => {
               maxWidth: `${window.innerWidth - (window.innerWidth > 1024 ? 370 : 40)
                 }px`,
             }}
-            className={`h-[70vh] w-fit overflow-y-auto mt-5 border`}
+            className={`h-[70vh] w-fit overflow-y-auto mt-5 border `}
           >
             <table className={` font-sans bg-white border border-gray-300`}>
               <thead className="bg-gray-800 text-white sticky top-0">
