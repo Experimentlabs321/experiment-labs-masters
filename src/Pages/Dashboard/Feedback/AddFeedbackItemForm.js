@@ -1,15 +1,11 @@
 //AddFeedbackItemForm
 
-import React, {
-  useEffect,
-  useState,
-} from 'react';
-
-import axios from 'axios';
-import { toast } from 'react-hot-toast';
-import Swal from 'sweetalert2';
-
-import uploadFileToS3 from '../../UploadComponent/s3Uploader';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import Swal from "sweetalert2";
+import uploadFileToS3 from "../../UploadComponent/s3Uploader";
+import DynamicForm from "./FormBuilder";
 
 const AddFeedbackItemForm = ({
   setIsOpenFeedbackItemAddForm,
@@ -21,15 +17,19 @@ const AddFeedbackItemForm = ({
   selectedCourse,
   userInfo,
   courseId,
-  itemFeedbackSettingDetails
+  itemFeedbackSettingDetails,
 }) => {
-  const [itemValue, setItemValue] = useState(0);
-  const [minimumValue, setMinimumValue] = useState(0);
-  const [selectedIcon, setSelectedIcon] = useState(null);
   const [course, setCourse] = useState();
   const [selectedRatingOption, setSelectedRatingOption] = useState("5");
   //const [selectedAccessOption, setSelectedAccessOption] = useState("Execution mentor");
   const [selectedFile, setSelectedFile] = useState(null);
+  const [showFormRole, setShowFormRole] = useState("user");
+  const [formFieldsForUser, setFormFieldsForUser] = useState([]);
+  const [formFieldsForExpertMentor, setFormFieldsForExpertMentor] = useState(
+    []
+  );
+  const [formFieldsForExecutionMentor, setFormFieldsForExecutionMentor] =
+    useState([]);
 
   const handleRatingOptionChange = (event) => {
     setSelectedRatingOption(event.target.value);
@@ -91,32 +91,39 @@ const AddFeedbackItemForm = ({
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text:itemFeedbackSettingDetails?.theItemNameIsAlreadyExist ? itemFeedbackSettingDetails?.theItemNameIsAlreadyExist : "The item name is already exist!",
+        text: itemFeedbackSettingDetails?.theItemNameIsAlreadyExist
+          ? itemFeedbackSettingDetails?.theItemNameIsAlreadyExist
+          : "The item name is already exist!",
       });
       return;
     }
 
     const newItem = await axios.post(
-    //  `${process.env.REACT_APP_BACKEND_API}/feedbackItems`,
+      //  `${process.env.REACT_APP_BACKEND_API}/feedbackItems`,
       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/feedbackCategories/feedbackItems`,
       {
         organizationId: userInfo?.organizationId,
         categoryName: selectedFeedbackCategory?.categoryName,
         rating: selectedFeedbackCategory?.rating,
-
         courseId: selectedCourse?._id,
         feedbackItem: {
           feedbackItemName: event?.target?.feedbackItemName?.value,
           itemRating: selectedRatingOption,
-
           selectedIcon: fileUrl,
           giveAccess: selectedAccessOptions,
+          userFormFields: formFieldsForUser,
+          expertMentorFormFields: formFieldsForExpertMentor,
+          executionMentorFormFields: formFieldsForExecutionMentor,
         },
       }
     );
 
     if (newItem?.data?.acknowledged) {
-      toast.success(itemFeedbackSettingDetails?.itemAddedSuccessfully ? itemFeedbackSettingDetails?.itemAddedSuccessfully :"Item added Successfully");
+      toast.success(
+        itemFeedbackSettingDetails?.itemAddedSuccessfully
+          ? itemFeedbackSettingDetails?.itemAddedSuccessfully
+          : "Item added Successfully"
+      );
       const selectedCategoryItems = selectedFeedbackCategory?.feedbackItems
         ? [
             ...selectedFeedbackCategory?.feedbackItems,
@@ -179,16 +186,18 @@ const AddFeedbackItemForm = ({
                     alt="UploadingImg"
                   />
                   <p className="mt-[-60px] text-base font-semibold text-[#fff] mb-4">
-                  {itemFeedbackSettingDetails?.uploadIcon ? itemFeedbackSettingDetails?.uploadIcon : "Upload Icon" }
-                    
+                    {itemFeedbackSettingDetails?.uploadIcon
+                      ? itemFeedbackSettingDetails?.uploadIcon
+                      : "Upload Icon"}
                   </p>
 
                   <label
                     className="mt-[-16px] flex items-center px-5 py-2 rounded-lg bg-[#FFDB70] text-xs font-bold"
                     htmlFor="input-file-upload"
                   >
-                    {itemFeedbackSettingDetails?.browser ? itemFeedbackSettingDetails?.browser : "Browser" }
-                    
+                    {itemFeedbackSettingDetails?.browser
+                      ? itemFeedbackSettingDetails?.browser
+                      : "Browser"}
                   </label>
                   <input
                     className="w-[1%]"
@@ -207,8 +216,9 @@ const AddFeedbackItemForm = ({
                 <div className="grid grid-cols-1 gap-x-6 gap-y-4 mt-2 sm:grid-cols-2 w-full">
                   <div>
                     <label className="text-[16px] font-[600]" htmlFor="case">
-                    {itemFeedbackSettingDetails?.feedbackCategory ? itemFeedbackSettingDetails?.feedbackCategory : "Feedback Category" }
-                      
+                      {itemFeedbackSettingDetails?.feedbackCategory
+                        ? itemFeedbackSettingDetails?.feedbackCategory
+                        : "Feedback Category"}
                     </label>
                     <select
                       onChange={(e) =>
@@ -221,7 +231,7 @@ const AddFeedbackItemForm = ({
                       }
                       name="redemptionCategory"
                       id="redemptionCategory"
-                      className="block w-full px-2 py-2 mt-2 bg-white rounded-md border border-[#B7B7B7] focus:border-blue-500 focus:outline-none focus:ring"
+                      className="block w-full px-2 py-2 mt-2 bg-white rounded-md border border-[#B7B7B7] focus:border-sky-500 focus:outline-none focus:ring"
                     >
                       <option value={selectedFeedbackCategory?.categoryName}>
                         {selectedFeedbackCategory?.categoryName}
@@ -240,21 +250,23 @@ const AddFeedbackItemForm = ({
                   </div>
                   <div>
                     <label className="text-[16px] font-[600]" htmlFor="case">
-                    {itemFeedbackSettingDetails?.feedbackItemName ? itemFeedbackSettingDetails?.feedbackItemName : "Feedback Item Name" }
-                      
+                      {itemFeedbackSettingDetails?.feedbackItemName
+                        ? itemFeedbackSettingDetails?.feedbackItemName
+                        : "Feedback Item Name"}
                     </label>
                     <input
                       id="feedbackItemName"
                       name="feedbackItemName"
                       placeholder="Feedback Item"
-                      className="block w-full p-2 mt-2 rounded-md bg-white border border-[#B7B7B7] focus:border-blue-500 focus:outline-none focus:ring"
+                      className="block w-full p-2 mt-2 rounded-md bg-white border border-[#B7B7B7] focus:border-sky-500 focus:outline-none focus:ring"
                     />
                   </div>
 
                   <div className=" flex flex-col justify-center ">
                     <p className="font-semibold text-[#000000]  py-2">
-                    {itemFeedbackSettingDetails?.itemRating ? itemFeedbackSettingDetails?.itemRating : "Item Rating" }
-                      
+                      {itemFeedbackSettingDetails?.itemRating
+                        ? itemFeedbackSettingDetails?.itemRating
+                        : "Item Rating"}
                     </p>
                     <div className=" flex gap-7 items-center  h-[40px]   text-[#535353] ">
                       <div className="flex items-center">
@@ -297,8 +309,9 @@ const AddFeedbackItemForm = ({
 
                   <div className="flex flex-col justify-center">
                     <p className="font-semibold text-[#000000] py-2">
-                    {itemFeedbackSettingDetails?.giveAccess ? itemFeedbackSettingDetails?.giveAccess : "Give Access" }
-                      
+                      {itemFeedbackSettingDetails?.giveAccess
+                        ? itemFeedbackSettingDetails?.giveAccess
+                        : "Give Access"}
                     </p>
                     <div className="flex gap-7 items-center h-[40px] text-[#535353]">
                       <div className="flex items-center">
@@ -319,8 +332,9 @@ const AddFeedbackItemForm = ({
                           htmlFor="ExecutionMentor"
                           className="peer-checked/draft: font-normal"
                         >
-                           {itemFeedbackSettingDetails?.executionMentor ? itemFeedbackSettingDetails?.executionMentor : "Execution mentor" }
-                          
+                          {itemFeedbackSettingDetails?.executionMentor
+                            ? itemFeedbackSettingDetails?.executionMentor
+                            : "Execution mentor"}
                         </label>
                       </div>
 
@@ -342,17 +356,82 @@ const AddFeedbackItemForm = ({
                           htmlFor="ExpertMentor"
                           className="peer-checked/published: font-normal"
                         >
-                          {itemFeedbackSettingDetails?.expertMentor ? itemFeedbackSettingDetails?.expertMentor : "Expert mentor" }
-                          
+                          {itemFeedbackSettingDetails?.expertMentor
+                            ? itemFeedbackSettingDetails?.expertMentor
+                            : "Expert mentor"}
                         </label>
                       </div>
                     </div>
                   </div>
                 </div>
+                <div className="space-x-4 mt-5">
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setShowFormRole("user");
+                    }}
+                    className={`px-4 py-2 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-75 ${
+                      showFormRole === "user"
+                        ? "bg-sky-500 hover:bg-sky-700 focus:ring-sky-400"
+                        : "bg-gray-400 hover:bg-gray-500 focus:ring-gray-300"
+                    }`}
+                  >
+                    Students
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setShowFormRole("execution mentor");
+                    }}
+                    className={`px-4 py-2 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-75 ${
+                      showFormRole === "execution mentor"
+                        ? "bg-sky-500 hover:bg-sky-700 focus:ring-sky-400"
+                        : "bg-gray-400 hover:bg-gray-500 focus:ring-gray-300"
+                    }`}
+                  >
+                    Execution Mentor
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setShowFormRole("expert mentor");
+                    }}
+                    className={`px-4 py-2 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-75 ${
+                      showFormRole === "expert mentor"
+                        ? "bg-sky-500 hover:bg-sky-700 focus:ring-sky-400"
+                        : "bg-gray-400 hover:bg-gray-500 focus:ring-gray-300"
+                    }`}
+                  >
+                    Expert Mentor
+                  </button>
+                </div>
+                {showFormRole === "user" && (
+                  <DynamicForm
+                    formFields={formFieldsForUser}
+                    setFormFields={setFormFieldsForUser}
+                  />
+                )}
+                {showFormRole === "execution mentor" && (
+                  <DynamicForm
+                    formFields={formFieldsForExecutionMentor}
+                    setFormFields={setFormFieldsForExecutionMentor}
+                  />
+                )}
+                {showFormRole === "expert mentor" && (
+                  <DynamicForm
+                    formFields={formFieldsForExpertMentor}
+                    setFormFields={setFormFieldsForExpertMentor}
+                  />
+                )}
+
                 <div className=" mt-5  ">
                   <input
                     type="submit"
-                    value={itemFeedbackSettingDetails?.proceed ? itemFeedbackSettingDetails?.proceed : "Proceed" }
+                    value={
+                      itemFeedbackSettingDetails?.proceed
+                        ? itemFeedbackSettingDetails?.proceed
+                        : "Proceed"
+                    }
                     className="bg-[#2EB0FB] cursor-pointer rounded-lg p-2 font-semibold text-[#fff]"
                   />
                 </div>
