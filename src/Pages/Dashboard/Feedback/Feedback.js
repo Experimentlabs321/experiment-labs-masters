@@ -1,29 +1,24 @@
-import React, {
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React, { useContext, useEffect, useState } from "react";
 
 //import RedemptionCategory from './RedemptionCategory';
-import axios from 'axios';
-import { toast } from 'react-hot-toast';
-import Swal from 'sweetalert2';
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import Swal from "sweetalert2";
 
-import AddSharpIcon from '@mui/icons-material/AddSharp';
-import SearchIcon from '@mui/icons-material/Search';
-import ToggleOffIcon from '@mui/icons-material/ToggleOff';
-import ToggleOnIcon from '@mui/icons-material/ToggleOn';
+import AddSharpIcon from "@mui/icons-material/AddSharp";
+import SearchIcon from "@mui/icons-material/Search";
+import ToggleOffIcon from "@mui/icons-material/ToggleOff";
+import ToggleOnIcon from "@mui/icons-material/ToggleOn";
 
 //import SelectRedemptionCategory from './RedemptionLogicsComponents/SelectRedemptionCategory';
 //import AddRedemptionPointItemForm from './RedemptionLogicsComponents/AddRedemptionPointItemForm';
-import UploadingImg from '../../../assets/PointsRedemptions/uploadimg.png';
-import { AuthContext } from '../../../contexts/AuthProvider';
-import ExpertMentorStudentFeedback
-  from '../ExpertMentorDashboard/ExpertMentorStudentFeedback';
-import Layout from '../Layout';
-import AddFeedbackItemForm from './AddFeedbackItemForm';
-import EditFeedbackItemForm from './EditFeedbackItemForm';
-import SelectFeedbackCategory from './SelectFeedbackCategory';
+import UploadingImg from "../../../assets/PointsRedemptions/uploadimg.png";
+import { AuthContext } from "../../../contexts/AuthProvider";
+import ExpertMentorStudentFeedback from "../ExpertMentorDashboard/ExpertMentorStudentFeedback";
+import Layout from "../Layout";
+import AddFeedbackItemForm from "./AddFeedbackItemForm";
+import EditFeedbackItemForm from "./EditFeedbackItemForm";
+import SelectFeedbackCategory from "./SelectFeedbackCategory";
 
 //import EditRedemptionItemForm from './RedemptionLogicsComponents/EditRedemptionItemForm';
 
@@ -58,7 +53,6 @@ const Feedback = () => {
         )
         .then((response) => {
           setItemDetails(response?.data);
-
         })
         .finally(() => {
           setLoading(false);
@@ -68,7 +62,8 @@ const Feedback = () => {
   }, [userInfo]);
   //console.log(itemDetails)
 
-  const [itemFeedbackSettingDetails, setItemFeedbackSettingDetails] = useState();
+  const [itemFeedbackSettingDetails, setItemFeedbackSettingDetails] =
+    useState();
 
   useEffect(() => {
     if (userInfo) {
@@ -78,10 +73,8 @@ const Feedback = () => {
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getFeedbackSubDetailsByOrganizationAndName/feedbackSettings/organizationsId/${userInfo?.organizationId}`
         )
         .then((response) => {
-
-          console.log(response)
+          console.log(response);
           setItemFeedbackSettingDetails(response?.data);
-
         })
         .finally(() => {
           setLoading(false);
@@ -89,7 +82,7 @@ const Feedback = () => {
     }
     setLoading(false);
   }, [userInfo]);
-  console.log(itemFeedbackSettingDetails)
+  console.log(itemFeedbackSettingDetails);
   useEffect(() => {
     axios
       .get(
@@ -140,6 +133,7 @@ const Feedback = () => {
     }
     setIsOpenFeedbackItemAddForm(false);
   };
+  console.log(feedbackCategories);
 
   const handleItemDelete = async (name) => {
     const deleteData = {
@@ -150,8 +144,12 @@ const Feedback = () => {
     };
     console.log(deleteData);
     await Swal.fire({
-      title: itemFeedbackSettingDetails?.areYouSure ? itemFeedbackSettingDetails?.areYouSure : "Are you sure?",
-      text: itemFeedbackSettingDetails?.onceDeletedTheItemWillNotRecover ? itemFeedbackSettingDetails?.onceDeletedTheItemWillNotRecover : "Once deleted, the item will not recover!",
+      title: itemFeedbackSettingDetails?.areYouSure
+        ? itemFeedbackSettingDetails?.areYouSure
+        : "Are you sure?",
+      text: itemFeedbackSettingDetails?.onceDeletedTheItemWillNotRecover
+        ? itemFeedbackSettingDetails?.onceDeletedTheItemWillNotRecover
+        : "Once deleted, the item will not recover!",
       icon: "warning",
       buttons: true,
       showCancelButton: true,
@@ -160,7 +158,7 @@ const Feedback = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         fetch(
-         // `${process.env.REACT_APP_BACKEND_API}/deleteFeedbackItem`,
+          // `${process.env.REACT_APP_BACKEND_API}/deleteFeedbackItem`,
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/feedbackCategories/feedbackItems`,
           {
             method: "DELETE",
@@ -168,11 +166,16 @@ const Feedback = () => {
               "Content-Type": "application/json",
             },
             body: JSON.stringify(deleteData),
-          })
+          }
+        )
           .then((result) => {
             console.log(result);
             if (result?.ok) {
-              toast.success(itemFeedbackSettingDetails?.itemDeletedSuccessfully ? itemFeedbackSettingDetails?.itemDeletedSuccessfully : "Item Deleted Successfully!");
+              toast.success(
+                itemFeedbackSettingDetails?.itemDeletedSuccessfully
+                  ? itemFeedbackSettingDetails?.itemDeletedSuccessfully
+                  : "Item Deleted Successfully!"
+              );
               const remainingItems =
                 selectedFeedbackCategory?.feedbackItems?.filter(
                   (item) => item?.feedbackItemName !== name
@@ -212,7 +215,6 @@ const Feedback = () => {
         <div className="flex items-center justify-between container mx-auto px-4 gap-7 pt-20 lg:pt-10 ">
           <div className="UserManagement origin-top-left rotate-[-0.51deg] text-zinc-500 text-[30px] font-medium">
             {itemDetails?.feedback ? itemDetails?.feedback : "Feedback"}
-
           </div>
           <div className="Input w-[425px] h-16 relative bg-slate-100 rounded-[40px] shadow-inner">
             <input
@@ -230,13 +232,15 @@ const Feedback = () => {
         <div className="px-4 my-5 flex items-center gap-4">
           <button
             onClick={() => setCurrentPage("Live class Feedback")}
-            className={`px-4 py-2 text-lg font-semibold rounded-lg ${currentPage === "Live class Feedback"
-              ? "bg-[#3E4DAC] text-white"
-              : "bg-white border-2 border-gray-400 text-black"
-              }`}
+            className={`px-4 py-2 text-lg font-semibold rounded-lg ${
+              currentPage === "Live class Feedback"
+                ? "bg-[#3E4DAC] text-white"
+                : "bg-white border-2 border-gray-400 text-black"
+            }`}
           >
-            {itemDetails?.liveClassFeedback ? itemDetails?.liveClassFeedback : "Live class Feedback"}
-
+            {itemDetails?.liveClassFeedback
+              ? itemDetails?.liveClassFeedback
+              : "Live class Feedback"}
           </button>
           {/*      <button
             onClick={() => setCurrentPage("Doubt class feedback")}
@@ -249,16 +253,16 @@ const Feedback = () => {
           </button> */}
           <button
             onClick={() => setCurrentPage("Feedback Settings")}
-            className={`px-4 py-2 text-lg font-semibold rounded-lg ${currentPage === "Feedback Settings"
-              ? "bg-[#3E4DAC] text-white"
-              : "bg-white border-2 border-gray-400 text-black"
-              }`}
+            className={`px-4 py-2 text-lg font-semibold rounded-lg ${
+              currentPage === "Feedback Settings"
+                ? "bg-[#3E4DAC] text-white"
+                : "bg-white border-2 border-gray-400 text-black"
+            }`}
           >
-            {itemDetails?.feedbackSettings ? itemDetails?.feedbackSettings : "Feedback Settings"}
-
+            {itemDetails?.feedbackSettings
+              ? itemDetails?.feedbackSettings
+              : "Feedback Settings"}
           </button>
-
-
         </div>
         {/*  {
           currentPage === "Doubt class feedback" && <>
@@ -266,39 +270,39 @@ const Feedback = () => {
           </>
 
         } */}
-        {
-          currentPage === "Live class Feedback" && <>
+        {currentPage === "Live class Feedback" && (
+          <>
             <ExpertMentorStudentFeedback admin={"admin"} />
           </>
+        )}
 
-        }
-
-
-        {
-          currentPage === "Feedback Settings" &&
+        {currentPage === "Feedback Settings" && (
           <>
             <div className="px-4 mt-[40px]">
               <div>
                 <h1 className=" text-[#737373] text-[24px] font-[500] mb-2 ">
-                  {itemFeedbackSettingDetails?.selectCourse ? itemFeedbackSettingDetails?.selectCourse : "Select Course"}
-
+                  {itemFeedbackSettingDetails?.selectCourse
+                    ? itemFeedbackSettingDetails?.selectCourse
+                    : "Select Course"}
                 </h1>
                 <div className="flex flex-wrap">
                   {!courses[0] && (
                     <div
                       className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
                     >
-                      {itemFeedbackSettingDetails?.noCourseAddedYet ? itemFeedbackSettingDetails?.noCourseAddedYet : "No course added yet!"}
-
+                      {itemFeedbackSettingDetails?.noCourseAddedYet
+                        ? itemFeedbackSettingDetails?.noCourseAddedYet
+                        : "No course added yet!"}
                     </div>
                   )}
                   {courses?.map((item, index) => (
                     <button
                       key={index}
-                      className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 ${selectedCourse?._id === item?._id
-                        ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
-                        : "text-[#949494]"
-                        }`}
+                      className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 ${
+                        selectedCourse?._id === item?._id
+                          ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
+                          : "text-[#949494]"
+                      }`}
                       onClick={() => handleSelectCourse(item)}
                     >
                       {item?.courseFullName}
@@ -308,7 +312,9 @@ const Feedback = () => {
               </div>
               <div className="flex items-center gap-5 mt-5">
                 <p className="text-xl font-medium text-zinc-500">
-                  {itemFeedbackSettingDetails?.setFeedbacks ? itemFeedbackSettingDetails?.setFeedbacks : "Set Feedbacks"}
+                  {itemFeedbackSettingDetails?.setFeedbacks
+                    ? itemFeedbackSettingDetails?.setFeedbacks
+                    : "Set Feedbacks"}
                   :{" "}
                 </p>
                 <button style={buttonStyle} onClick={handleToggle}>
@@ -341,7 +347,9 @@ const Feedback = () => {
                       Swal.fire({
                         icon: "error",
                         title: "Oops...",
-                        text: itemFeedbackSettingDetails?.pleaseAddAtLeastOneCategory ? itemFeedbackSettingDetails?.pleaseAddAtLeastOneCategory : "Please add at least one category!",
+                        text: itemFeedbackSettingDetails?.pleaseAddAtLeastOneCategory
+                          ? itemFeedbackSettingDetails?.pleaseAddAtLeastOneCategory
+                          : "Please add at least one category!",
                       });
                       return;
                     }
@@ -355,8 +363,9 @@ const Feedback = () => {
                     <AddSharpIcon sx={{ fontSize: 150 }} />
                   </div>
                   <div className="text-[#8F8F8F] pb-5  mt-[-10px] font-medium text-base">
-                    {itemFeedbackSettingDetails?.addDetails ? itemFeedbackSettingDetails?.addDetails : "Add Details"}
-
+                    {itemFeedbackSettingDetails?.addDetails
+                      ? itemFeedbackSettingDetails?.addDetails
+                      : "Add Details"}
                   </div>
                 </div>
               )}
@@ -395,7 +404,8 @@ const Feedback = () => {
                       />
                     </svg>
                   </button>
-                  {selectedFeedback?.feedbackItemName === item?.feedbackItemName &&
+                  {selectedFeedback?.feedbackItemName ===
+                    item?.feedbackItemName &&
                     FeedbackThreeDot && (
                       <ul className="absolute right-0 top-[40px] w-max border  bg-white p-2 rounded-[8px] mt-1 transform translate-y-[-10px] shadow-[0px_2px_4px_0px_#00000026] z-10 ">
                         <li
@@ -406,8 +416,9 @@ const Feedback = () => {
                             setIsOpenFeedbackItemAddForm(false);
                           }}
                         >
-                          {itemFeedbackSettingDetails?.editItem ? itemFeedbackSettingDetails?.editItem : "Edit Item"}
-
+                          {itemFeedbackSettingDetails?.editItem
+                            ? itemFeedbackSettingDetails?.editItem
+                            : "Edit Item"}
                         </li>
                         <li
                           className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
@@ -415,8 +426,9 @@ const Feedback = () => {
                             handleItemDelete(item?.feedbackItemName)
                           }
                         >
-                          {itemFeedbackSettingDetails?.deleteItem ? itemFeedbackSettingDetails?.deleteItem : "Delete Item"}
-
+                          {itemFeedbackSettingDetails?.deleteItem
+                            ? itemFeedbackSettingDetails?.deleteItem
+                            : "Delete Item"}
                         </li>
                       </ul>
                     )}
@@ -458,26 +470,25 @@ const Feedback = () => {
               />
             )}
 
-            {isOpenFeedbackItemEditForm && selectedFeedback?.feedbackItemName && (
-              <EditFeedbackItemForm
-                itemFeedbackSettingDetails={itemFeedbackSettingDetails}
-                selectedFeedback={selectedFeedback}
-                setIsOpenFeedbackItemEditForm={setIsOpenFeedbackItemEditForm}
-                setIsOpenFeedbackItemAddForm={setIsOpenFeedbackItemAddForm}
-                UploadingImg={UploadingImg}
-                selectedFeedbackCategory={selectedFeedbackCategory}
-                feedbackCategories={feedbackCategories}
-                setSelectedFeedbackCategory={setSelectedFeedbackCategory}
-                setFeedbackCategories={setFeedbackCategories}
-                selectedCourse={selectedCourse}
-                userInfo={userInfo}
-                courseId={selectedCourse?._id}
-              />
-            )}
+            {isOpenFeedbackItemEditForm &&
+              selectedFeedback?.feedbackItemName && (
+                <EditFeedbackItemForm
+                  itemFeedbackSettingDetails={itemFeedbackSettingDetails}
+                  selectedFeedback={selectedFeedback}
+                  setIsOpenFeedbackItemEditForm={setIsOpenFeedbackItemEditForm}
+                  setIsOpenFeedbackItemAddForm={setIsOpenFeedbackItemAddForm}
+                  UploadingImg={UploadingImg}
+                  selectedFeedbackCategory={selectedFeedbackCategory}
+                  feedbackCategories={feedbackCategories}
+                  setSelectedFeedbackCategory={setSelectedFeedbackCategory}
+                  setFeedbackCategories={setFeedbackCategories}
+                  selectedCourse={selectedCourse}
+                  userInfo={userInfo}
+                  courseId={selectedCourse?._id}
+                />
+              )}
           </>
-        }
-
-
+        )}
       </Layout>
     </div>
   );
