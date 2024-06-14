@@ -144,15 +144,15 @@ const StudentList = ({
               </tr>
             </thead>
             <tbody>
-              {sortedStudents.map((student) => {
-                const present = localParticipants.some(
-                  (par) => par.participant.email === student.email || student.present
+              {sortedStudents?.map((student) => {
+                const present = localParticipants?.some(
+                  (par) => par.participant.email === student?.email || student?.present
                 );
 
                 return (
-                  <tr key={student.email} className="border border-gray-300">
-                    <td className="border border-gray-300 p-2">{student.name}</td>
-                    <td className="border border-gray-300 p-2">{student.email}</td>
+                  <tr key={student?.email} className="border border-gray-300">
+                    <td className="border border-gray-300 p-2">{student?.name}</td>
+                    <td className="border border-gray-300 p-2">{student?.email}</td>
                     <td
                       className={`border border-gray-300 p-2 ${
                         present ? "bg-lime-900 text-white" : "bg-red-500 text-white"
@@ -164,9 +164,9 @@ const StudentList = ({
                         }`}
                         onChange={(e) => {
                           if (e.target.value === "absent") {
-                            handleAbsent(student.email, student._id);
+                            handleAbsent(student?.email, student._id);
                           } else if (e.target.value === "present") {
-                            handlePresent(student.email, student._id);
+                            handlePresent(student?.email, student._id);
                           }
                         }}
                         value={present ? "present" : "absent"}

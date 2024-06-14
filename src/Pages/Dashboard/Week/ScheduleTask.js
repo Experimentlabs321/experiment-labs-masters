@@ -93,7 +93,7 @@ const ScheduleTask = ({ taskData, week }) => {
 
     setMatching(isMatch);
     // matching = isMatch; // Update the global variable based on the match result
-    console.log("Matching:", matching);
+  //  console.log("Matching:", matching);
   };
   const calendarSubjectName = taskData?.calendarSubjectName;
   const taskId = taskData?._id;
@@ -113,7 +113,7 @@ const ScheduleTask = ({ taskData, week }) => {
   const session = useSession();
   const [selectedDate, setSelectedDate] = useState("");
   const supabase = useSupabaseClient();
-  console.log("Task data ", taskData);
+ // console.log("Task data ", taskData);
   const { user, userInfo } = useContext(AuthContext);
   const [ismeetingType, setIsMeetingType] = useState(true);
   const [meetingType, setMeetingType] = useState(null);
@@ -153,7 +153,7 @@ const ScheduleTask = ({ taskData, week }) => {
     setStdName(name);
     setIsReschedule(true);
   };
-  console.log(userInfo);
+  //console.log(userInfo);
   const navigate = useNavigate();
   const [date, setDate] = useState(""); // State for the date
   const [time, setTime] = useState(""); // State for the time
@@ -257,7 +257,7 @@ const ScheduleTask = ({ taskData, week }) => {
       .catch((error) => console.error(error));
   }, [taskData, userInfo]);
 
-  console.log(adminCalendarInfo, relevantEvents);
+  //console.log(adminCalendarInfo, relevantEvents);
 
   useEffect(() => {
     // Assuming taskData is already available when the component mounts
@@ -330,7 +330,7 @@ const ScheduleTask = ({ taskData, week }) => {
     }
   }, [taskData, userInfo?.role]);
 
-  console.log(zoomInfo);
+  //console.log(zoomInfo);
   const handleDateChange = (event) => {
     const selectedDate = event.target.value;
 
@@ -442,7 +442,7 @@ const ScheduleTask = ({ taskData, week }) => {
     }
   };
 
-  console.log("input time ", time);
+  //console.log("input time ", time);
 
   useEffect(() => {
     const busyTimeSlots = adminCalendarInfo?.events
@@ -493,7 +493,7 @@ const ScheduleTask = ({ taskData, week }) => {
       })
       .filter(Boolean);
 
-    console.log("Busy Time Slots:", busyTimeSlots);
+   // console.log("Busy Time Slots:", busyTimeSlots);
 
     setBusyTimeSlots(busyTimeSlots);
   }, [taskData, matching,adminCalendarInfo?.events]);
@@ -527,7 +527,7 @@ const ScheduleTask = ({ taskData, week }) => {
     setUserRequesterEvents(userRequesterEvents);
     console.log("my events ", userRequesterEvents);
   }, [taskData, user, adminCalendarInfo]);
-  console.log("my events ", userRequesterEvents);
+  //console.log("my events ", userRequesterEvents);
 
   useEffect(() => {
     if (userRequesterEvents?.length > 0)
@@ -545,7 +545,7 @@ const ScheduleTask = ({ taskData, week }) => {
           console.error(error);
         });
   }, [userRequesterEvents, userInfo?.organizationId]);
-  console.log(userZoomInfo?.recording_files);
+ // console.log(userZoomInfo?.recording_files);
   const generateAllTimeSlots = (start, end) => {
     const timeSlots = [];
     let currentTime = new Date(start);
@@ -704,7 +704,7 @@ const ScheduleTask = ({ taskData, week }) => {
       }) + " (KST)"; // Korea Standard Time
     return `India-time: ${kolkataTime}`;
   };
-  console.log(adminMail);
+  //console.log(adminMail);
   const addEvent = async () => {
     if (checkTime) {
       Swal.fire({
@@ -785,7 +785,7 @@ const ScheduleTask = ({ taskData, week }) => {
                   },
                 },
               };
-              console.log(data);
+             // console.log(data);
               const newAccessToken = data.access_token;
               if (isReschedule && eventId) {
                 const updatedEvent = {
@@ -971,6 +971,8 @@ const ScheduleTask = ({ taskData, week }) => {
                             templateType: "emailAction",
                             templateName: "resheduleTaskStudent",
                             organizationId: userInfo?.organizationId,
+                            learner_name:userInfo?.name,
+                            schedule_name:taskData?.taskName,
                             start_time: eventStartTime,
                             end_time: eventEndTime,
                             meeting_link: rescheduledEvent?.hangoutLink,
@@ -1148,6 +1150,8 @@ const ScheduleTask = ({ taskData, week }) => {
                             templateType: "emailAction",
                             templateName: "sheduleTaskStudent",
                             organizationId: userInfo?.organizationId,
+                            learner_name:userInfo?.name,
+                            schedule_name:taskData?.taskName,
                             start_time: eventStartTime,
                             end_time: eventEndTime,
                             meeting_link: event?.hangoutLink,

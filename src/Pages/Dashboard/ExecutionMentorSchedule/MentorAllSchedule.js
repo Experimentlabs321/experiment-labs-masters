@@ -36,6 +36,9 @@ const MentorAllSchedule = () => {
     useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+
+
+  
   useEffect(() => {
     if (!userInfo?.email) {
       return;
@@ -45,7 +48,7 @@ const MentorAllSchedule = () => {
       .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/mentorEmail/${userInfo?.email}`)
       .then((response) => {
         Loading().close();
-        console.log(response?.data);
+       
         setUserRequesterEvents(response?.data);
         setEvents(response?.data);
         const currentDate = new Date(getCurrentDate()).getTime();
@@ -192,7 +195,8 @@ const MentorAllSchedule = () => {
     });
   }
   const editedEvents = getEditedEvents(filteredEvents);
-  console.log(editedEvents);
+  console.log(sortedEvents);
+   console.log(sortedEvents);
 
 
 
@@ -209,7 +213,7 @@ const MentorAllSchedule = () => {
               maxWidth: `${window.innerWidth - (window.innerWidth > 1024 ? 370 : 40)
                 }px`,
             }}
-            className={`h-[70vh] w-fit overflow-y-auto mt-5 border`}
+            className={`h-[70vh] w-fit overflow-y-auto mt-5 border `}
           >
             <table className={` font-sans bg-white border border-gray-300`}>
               <thead className="bg-gray-800 text-white sticky top-0">
