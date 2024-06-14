@@ -24,10 +24,18 @@ const MentorAllSchedule = () => {
   const { userInfo, user } = useContext(AuthContext);
   const [userRequesterEvents, setUserRequesterEvents] = useState([]);
 
+  const [mentors, setMentors] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   const [events, setEvents] = useState([]);
 
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+  const [editOrAssignMentor, setEditOrAssignMentor] = useState({});
+  const [selectedMentorsForEditOrAssign, setSelectedMentorsForEditOrAssign] =
+    useState([]);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
 
 
   
@@ -44,12 +52,12 @@ const MentorAllSchedule = () => {
         setUserRequesterEvents(response?.data);
         setEvents(response?.data);
         const currentDate = new Date(getCurrentDate()).getTime();
-        const filteredEvents = response?.data.filter(event => {
-          // Check for both date structures
-          const eventStartDate = new Date(event.start?.dateTime || event.start_time).getTime();
-          return eventStartDate >= currentDate;
-        });
-        
+        // const filteredEvents = response?.data.filter(event => {
+        //   // Check for both date structures
+        //   const eventStartDate = new Date(event.start?.dateTime || event.start_time).getTime();
+        //   return eventStartDate >= currentDate;
+        // });
+
 
       })
       .catch((error) => {
@@ -60,9 +68,9 @@ const MentorAllSchedule = () => {
         Loading().close();
       });
   }, [userInfo]);
-  
 
-  
+
+
   // Helper function to get today's date in YYYY-MM-DD format
   const getCurrentDate = () => {
     const today = new Date();
@@ -166,15 +174,15 @@ const MentorAllSchedule = () => {
   }, [fromDate, toDate, events]);
 
   const now = new Date();
-  const sortedEvents = userRequesterEvents.slice().sort((a, b) => {
+  const sortedEvents = userRequesterEvents?.slice()?.sort((a, b) => {
     const dateA = new Date(a?.start_time);
     const dateB = new Date(b?.start_time);
     return dateA - dateB;
   }).filter(event => new Date(event?.start_time) > now);
   console.log(sortedEvents)
   const excludedEventId = sortedEvents[0]?._id;
-
-  const filteredEvents = userRequesterEvents.filter(event => event?._id !== excludedEventId);
+  console.log(excludedEventId)
+  const filteredEvents = userRequesterEvents?.filter(event => event?._id !== excludedEventId);
 
   function getEditedEvents(events) {
     return events.sort((a, b) => {
@@ -194,7 +202,8 @@ const MentorAllSchedule = () => {
 
 
   return (
-    <div className='flex justify-center'>
+    <div>
+
       {userRequesterEvents?.length > 0 ? (
         // Render content specific to events where the user is the requester
         <>

@@ -19,7 +19,7 @@ const TechnicalUpdate = ({
   const [date, setDate] = useState(""); // State for the date
   const [time, setTime] = useState(""); // State for the time
   const [currentWeek, setCurrentWeek] = useState(null);
-  const [reservedEvent, setReservedEvent] = useState(null);
+  const [reservedEvent, setReservedEvent] = useState([]);
   const {
     addChallenges,
     challengesHeaderText,
@@ -70,7 +70,7 @@ const TechnicalUpdate = ({
             item?.organization?.organizationId === userInfo?.organizationId &&
             item?.weekData?._id === currentWeek?._id
         );
-        setReservedEvent(findEvent);
+        setReservedEvent(findEvent || []);
         setStartTime(new Date(findEvent?.start));
       })
       .catch((error) => console.error(error));

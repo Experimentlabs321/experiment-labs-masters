@@ -132,6 +132,7 @@ import TaskDetails from "../../Pages/Dashboard/Week/Layout/TaskDetails";
 import PastClasses from "../../Pages/Dashboard/ExecutionMentorLiveClasses/PastClasses";
 import Mentors from "../../Pages/Dashboard/Mentors/Mentors";
 import ExecutionMentorMainSchedule from "../../Pages/Dashboard/ExecutionMentorSchedule/ExecutionMentorMainSchedule";
+import MentorCalendar from "../../Pages/Dashboard/Mentors/MentorCalendar";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -412,6 +413,10 @@ const router = createBrowserRouter([
   {
     path: "/mentors",
     element: <Mentors />,
+  },
+  {
+    path: "/mentorCalendar/:email",
+    element: <MentorCalendar />,
   },
   {
     path: "/assignmentEvaluation1/:id",

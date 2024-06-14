@@ -31,6 +31,8 @@ import required from "../../../assets/ContentManagement/required.png";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import AdminAllSchedule from "./AdminAllSchedule";
 import MentorAllSchedule from "./MentorAllSchedule";
+import ExecutionMentorCreateClass from "../ExecutionMentorLiveClasses/ExecutionMentorCreateClass";
+import ExecutionMentorCreateSchedule from "./ExecutionMentorCreateSchedule";
 
 const ExecutionMentorMainSchedule = () => {
 
@@ -61,7 +63,8 @@ const ExecutionMentorMainSchedule = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [calendarId, setCalendarId] = useState("");
   const session = useSession();
-  const [rafi, setRafi] = useState(null);
+  const [addTaskOpen, setAddTaskOpen] = useState(false);
+  
   const [calendarError, setCalendarError] = useState(false);
   global = session;
   const supabase = useSupabaseClient();
@@ -82,7 +85,7 @@ const ExecutionMentorMainSchedule = () => {
       .then((response) => {
         console.log(response)
         setAdminCalendarInfo(response?.data);
-        setSelectedHoliday(response?.data?.offDays);
+        setSelectedHoliday(response?.offDays || []);
       })
 
       .catch((error) => console.error(error));
@@ -257,6 +260,7 @@ const ExecutionMentorMainSchedule = () => {
       return eventStart >= currDate && eventStart <= endDate;
     });
     console.log(relevantEvents);
+    console.log(selectedHoliday);
     event.preventDefault();
     const currentDate = getCurrentDate();
     const form = event.target;
@@ -341,75 +345,75 @@ const ExecutionMentorMainSchedule = () => {
     return <></>;
   }
 
- 
+
   async function signOut() {
     await supabase.auth.signOut();
   }
   async function fetchPrimaryCalendarInfo() {
-    if(currentPage === 'Schedule Settings'){
-    try {
-      const response = await fetch(
-        "https://www.googleapis.com/calendar/v3/users/me/calendarList/primary",
-        {
-          method: "GET",
-          headers: {
-            Authorization: "Bearer " + session.provider_token,
-          },
+    if (currentPage === 'Schedule Settings') {
+      try {
+        const response = await fetch(
+          "https://www.googleapis.com/calendar/v3/users/me/calendarList/primary",
+          {
+            method: "GET",
+            headers: {
+              Authorization: "Bearer " + session.provider_token,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch primary calendar information");
         }
-      );
+        const calendarInfo = await response.json();
+        const primaryCalendarTimeZone = calendarInfo.timeZone;
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch primary calendar information");
+        // Now that we have the calendar's timezone, set it for FullCalendar
+        setTimeZone(primaryCalendarTimeZone);
+      } catch (error) {
+        console.error(error.message);
+        // Optionally, handle errors such as setting a default timezone or user notification
+        setCalendarFetch(true); // Consider a more descriptive state variable name or error handling strategy
       }
-      const calendarInfo = await response.json();
-      const primaryCalendarTimeZone = calendarInfo.timeZone;
-
-      // Now that we have the calendar's timezone, set it for FullCalendar
-      setTimeZone(primaryCalendarTimeZone);
-    } catch (error) {
-      console.error(error.message);
-      // Optionally, handle errors such as setting a default timezone or user notification
-      setCalendarFetch(true); // Consider a more descriptive state variable name or error handling strategy
     }
-  }
   }
   async function fetchGoogleCalendarEvents() {
-   if(currentPage === 'Schedule Settings'){
-    const currentDate = new Date().toISOString();
-    const url = new URL(
-      "https://www.googleapis.com/calendar/v3/calendars/primary/events"
-    );
+    if (currentPage === 'Schedule Settings') {
+      const currentDate = new Date().toISOString();
+      const url = new URL(
+        "https://www.googleapis.com/calendar/v3/calendars/primary/events"
+      );
 
-    url.searchParams.append("timeMin", currentDate);
-    url.searchParams.append("singleEvents", true);
-    url.searchParams.append("orderBy", "startTime");
+      url.searchParams.append("timeMin", currentDate);
+      url.searchParams.append("singleEvents", true);
+      url.searchParams.append("orderBy", "startTime");
 
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + session.provider_token,
-      },
-    });
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + session.provider_token,
+        },
+      });
 
-    console.log(session);
+      console.log(session);
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch Google Calendar events");
+      if (!response.ok) {
+        throw new Error("Failed to fetch Google Calendar events");
+      }
+
+      const data = await response.json();
+
+      // Extract time zone from the first event (assuming all events have the same time zone)
+      const timeZone =
+        data.items.length > 0 ? data.items[0].start.timeZone : "UTC";
+
+      console.log(data);
+
+      return { events: data.items || [], timeZone };
     }
-
-    const data = await response.json();
-
-    // Extract time zone from the first event (assuming all events have the same time zone)
-    const timeZone =
-      data.items.length > 0 ? data.items[0].start.timeZone : "UTC";
-
-    console.log(data);
-
-    return { events: data.items || [], timeZone };
-   }
   }
   async function fetchAndDisplayGoogleCalendarEvents() {
-    if(currentPage === 'Schedule Settings'){
+    if (currentPage === 'Schedule Settings') {
       try {
         const events = await fetchGoogleCalendarEvents();
         setCalendarError(false);
@@ -641,13 +645,22 @@ const ExecutionMentorMainSchedule = () => {
         {/* <div className="">
           <AssignmentUpNev page={"schedule"} />
         </div> */}
-        <div className="flex items-center justify-between container mx-auto px-4 gap-7 pt-20 lg:pt-10 ">
-          <div className="UserManagement origin-top-left rotate-[-0.51deg] text-zinc-500 text-[30px] font-medium">
+        <div className="flex items-center justify-between container mx-auto px-4 gap-7 pt-20 lg:pt-10 font-semibold ">
+          <div className="UserManagement origin-top-left rotate-[-0.51deg]  text-[30px] ">
             Schedule
           </div>
+          <p onClick={()=>setAddTaskOpen(true)} className="flex text-left bg-[#E6F2FE] mx-4 w-[15%] rounded-3xl cursor-pointer p-2 text-base text-[#0277FB] ">
+            <span className="me-2 text-xl">+</span>Create Schedule
+          </p>
           {/* <Badge className="mr-4" badgeContent={1} color="error">
             <NotificationsIcon color="action" />
           </Badge> */}
+        </div>
+        <div>
+          <ExecutionMentorCreateSchedule
+            addTaskOpen={addTaskOpen}
+            setAddTaskOpen={setAddTaskOpen}
+          />
         </div>
         <div className="px-4 my-5 flex items-center gap-4">
           <button
@@ -661,7 +674,7 @@ const ExecutionMentorMainSchedule = () => {
 
           </button>
 
-          {/* <button
+          <button
             onClick={() => setCurrentPage("Schedule Settings")}
             className={`px-4 py-2 text-lg font-semibold rounded-lg ${currentPage === "Schedule Settings"
               ? "bg-[#3E4DAC] text-white"
@@ -670,7 +683,7 @@ const ExecutionMentorMainSchedule = () => {
           >
             {currentPage === 'Schedule Settings' && session ? 'Schedule Settings' : "Schedule Settings"}
 
-          </button> */}
+          </button>
 
 
         </div>
@@ -680,7 +693,7 @@ const ExecutionMentorMainSchedule = () => {
           </>
 
         }
-        {/* {
+        {
           currentPage === "Schedule Settings" && <>
             <div className="flex">
               <div className="w-full lg:mx-10 lg:mt-10 mt-20">
@@ -819,6 +832,7 @@ const ExecutionMentorMainSchedule = () => {
                                       htmlFor={"student" + index}
                                     >
                                       {" "}
+                                      {/* Updated for */}
                                       {day?.day}
                                     </label>
                                   </div>
@@ -846,7 +860,7 @@ const ExecutionMentorMainSchedule = () => {
                                 Select a Meeting Type
                               </option>
                               <option value="Zoom">Zoom</option>
-                              <option value="Meet">Google Meet</option>
+                              {/* <option value="Meet">Google Meet</option> */}
                             </select>
 
                             {meetingTypee === "Zoom" && (
@@ -881,12 +895,13 @@ const ExecutionMentorMainSchedule = () => {
                 </div>
               </div>
 
-            
+              {/* <div>
+            <AssignmentRightNev />
+          </div> */}
             </div>
           </>
 
-        } */}
-
+        }
       </Layout>
     </div>
   );
