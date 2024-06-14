@@ -155,7 +155,7 @@ const Dashboard = () => {
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/weeks/courseId/${selectedCourse?._id}`
       )
       .then((response) => {
-        setWeeks(response?.data);
+        setWeeks(response?.data || []);
         setIsLoading(false)
       })
       .catch((error) => {
@@ -184,7 +184,7 @@ const Dashboard = () => {
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/weekId/${currentWeek?._id}`
       )
       .then((response) => {
-        setChapters(response?.data);
+        setChapters(response?.data || []);
         setIsLoading(false)
       })
       .catch((error) => {

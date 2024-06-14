@@ -22,7 +22,7 @@ const DashboardCourses = ({ myCoursesChecked, allCoursesChecked, courseAccessUrl
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
-        setCourses(response?.data);
+        setCourses(response?.data || []);
       })
       .catch((error) => console.error(error));
 
