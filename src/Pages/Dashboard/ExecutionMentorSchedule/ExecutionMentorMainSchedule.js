@@ -33,6 +33,8 @@ import AdminAllSchedule from "./AdminAllSchedule";
 import MentorAllSchedule from "./MentorAllSchedule";
 import ExecutionMentorCreateClass from "../ExecutionMentorLiveClasses/ExecutionMentorCreateClass";
 import ExecutionMentorCreateSchedule from "./ExecutionMentorCreateSchedule";
+import ExecutionMentorBookSchedule from "./ExecutionMentorBookSchedule";
+import MentorScheduleList from "./MentorScheduleList";
 
 const ExecutionMentorMainSchedule = () => {
 
@@ -64,7 +66,8 @@ const ExecutionMentorMainSchedule = () => {
   const [calendarId, setCalendarId] = useState("");
   const session = useSession();
   const [addTaskOpen, setAddTaskOpen] = useState(false);
-  
+  const [addBookOpen, setAddBookOpen] = useState(false);
+
   const [calendarError, setCalendarError] = useState(false);
   global = session;
   const supabase = useSupabaseClient();
@@ -649,19 +652,32 @@ const ExecutionMentorMainSchedule = () => {
           <div className="UserManagement origin-top-left rotate-[-0.51deg]  text-[30px] ">
             Schedule
           </div>
-          <p onClick={()=>setAddTaskOpen(true)} className="flex text-left bg-[#E6F2FE] mx-4 w-[15%] rounded-3xl cursor-pointer p-2 text-base text-[#0277FB] ">
-            <span className="me-2 text-xl">+</span>Create Schedule
-          </p>
+          <div className="flex xl:gap-2  2xl:justify-between ">
+            <p onClick={() => setAddTaskOpen(true)} className="flex text-left bg-[#E6F2FE] mx-4  rounded-3xl cursor-pointer p-2 text-base text-[#0277FB] ">
+              <span className="me-2 text-xl">+</span>Create Schedule
+            </p>
+            {/* <p onClick={() => setAddBookOpen(true)} className="flex text-left bg-[#E6F2FE] mx-4  rounded-3xl cursor-pointer p-2 text-base text-[#0277FB] ">
+              <span className="me-2 text-xl">+</span>Book Schedule
+            </p> */}
+          </div>
           {/* <Badge className="mr-4" badgeContent={1} color="error">
             <NotificationsIcon color="action" />
           </Badge> */}
         </div>
+
         <div>
           <ExecutionMentorCreateSchedule
             addTaskOpen={addTaskOpen}
             setAddTaskOpen={setAddTaskOpen}
           />
         </div>
+        {/* <div>
+          <ExecutionMentorBookSchedule
+            addBookOpen={addBookOpen}
+            setAddBookOpen={setAddBookOpen}
+          />
+        </div> */}
+
         <div className="px-4 my-5 flex items-center gap-4">
           <button
             onClick={() => setCurrentPage("All Mentor Events")}
@@ -670,10 +686,19 @@ const ExecutionMentorMainSchedule = () => {
               : "bg-white border-2 border-gray-400 text-black"
               }`}
           >
-            {itemDetails?.adminEvents ? itemDetails?.adminEvents : "All Mentor Events"}
+            {itemDetails?.adminEvents ? itemDetails?.adminEvents : "My Events"}
 
           </button>
+          <button
+            onClick={() => setCurrentPage("Schedule List")}
+            className={`px-4 py-2 text-lg font-semibold rounded-lg ${currentPage === "Schedule List"
+              ? "bg-[#3E4DAC] text-white"
+              : "bg-white border-2 border-gray-400 text-black"
+              }`}
+          >
+            {currentPage === 'Schedule List' ? 'Scheduled by me' : "Scheduled by me"}
 
+          </button>
           <button
             onClick={() => setCurrentPage("Schedule Settings")}
             className={`px-4 py-2 text-lg font-semibold rounded-lg ${currentPage === "Schedule Settings"
@@ -686,10 +711,17 @@ const ExecutionMentorMainSchedule = () => {
           </button>
 
 
+
         </div>
         {
           currentPage === "All Mentor Events" && <>
             <MentorAllSchedule />
+          </>
+
+        }
+        {
+          currentPage === "Schedule List" && <>
+            <MentorScheduleList />
           </>
 
         }

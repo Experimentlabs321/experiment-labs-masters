@@ -9,6 +9,7 @@ import arrowright from "../../../assets/SkillsManagement/arrowright.svg";
 import required from "../../../assets/ContentManagement/required.png";
 import arrowDown from "../../../assets/SkillsManagement/arrow.svg";
 import DialogLayoutForFromControl from "../Shared/DialogLayoutForFromControl";
+import Loading from "../../Shared/Loading/Loading";
 
 const ExecutionMentorCreateSchedule = ({ addTaskOpen, setAddTaskOpen }) => {
     
@@ -27,18 +28,18 @@ const ExecutionMentorCreateSchedule = ({ addTaskOpen, setAddTaskOpen }) => {
     const [course, setCourse] = useState({});
     const [selectedHoliday, setSelectedHoliday] = useState([]);
     const [batchesData, setBatchesData] = useState([]);
-    const [selectedBatch, setSelectedBatch] = useState({});
+    const [selectedBatch, setSelectedBatch] = useState([]);
     const [mentors, setMentors] = useState([]);
     const [calendarEvents, setCalendarEvents] = useState([]);
     const [selectedMentors, setSelectedMentors] = useState([]);
     const [taskDrip, setTaskDrip] = useState(false);
     const [enableDrip, setEnableDrip] = useState();
-    const [selectedCourse, setSelectedCourse] = useState({});
-    const [selectedWeek, setSelectedWeek] = useState({});
-    const [selectedChapter, setSelectedChapter] = useState({});
+    const [selectedCourse, setSelectedCourse] = useState([]);
+    const [selectedWeek, setSelectedWeek] = useState([]);
+    const [selectedChapter, setSelectedChapter] = useState([]);
     const [courses, setCourses] = useState([]);
-    const [weeks, setWeeks] = useState();
-    const [chapters, setChapters] = useState();
+    const [weeks, setWeeks] = useState([]);
+    const [chapters, setChapters] = useState([]);
     const [adminCalendarInfo, setAdminCalendarInfo] = useState({});
     console.log(userInfo);
     const toggleDropdownGeneral = () => {
@@ -52,45 +53,54 @@ const ExecutionMentorCreateSchedule = ({ addTaskOpen, setAddTaskOpen }) => {
     };
 
     useEffect(() => {
+        Loading();
         axios
             .get(
                 `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
             )
             .then((response) => {
+                Loading().close();
                 setCourses(response?.data || []);
                 // setIsLoading(false);
             })
             .catch((error) => {
+                Loading().close();
                 console.error(error);
                 // setIsLoading(false);
             });
     }, [userInfo]);
 
     useEffect(() => {
+        Loading();
         axios
             .get(
                 `${process.env.REACT_APP_SERVERLESS_API}/api/v1/weeks/courseId/${selectedCourse?._id}`
             )
             .then((response) => {
+                Loading().close();
                 setWeeks(response?.data || []);
                 // setIsLoading(false);
             })
             .catch((error) => {
+                Loading().close();
                 console.error(error);
                 // setIsLoading(false);
             });
     }, [selectedCourse?._id]);
 
     useEffect(() => {
+        Loading()
         axios
             .get(
                 `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/weekId/${selectedWeek?._id}`
             )
             .then((response) => {
+                Loading().close();
                 setChapters(response?.data || []);
                 // setIsLoading(false);
             })
             .catch((error) => {
+                Loading().close();
                 console.error(error);
                 // setIsLoading(false);
             });
@@ -98,16 +108,19 @@ const ExecutionMentorCreateSchedule = ({ addTaskOpen, setAddTaskOpen }) => {
 
 
     useEffect(() => {
+        Loading()
         if (selectedCourse?._id)
             axios
                 .get(
                     `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/courseId/${selectedCourse?._id}`
                 )
                 .then((response) => {
+                    Loading().close();
                     setBatchesData(response?.data);
                     // setIsLoading(false);
                 })
                 .catch((error) => {
+                    Loading().close();
                     console.error(error);
                     // setIsLoading(false);
                 });
@@ -118,7 +131,7 @@ const ExecutionMentorCreateSchedule = ({ addTaskOpen, setAddTaskOpen }) => {
             .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${id}`)
             // .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
             .then((response) => {
-                setChapter(response?.data);
+                setChapter(response?.data || []);
 
                 const fetchData = {
                     organizationId: userInfo?.organizationId,

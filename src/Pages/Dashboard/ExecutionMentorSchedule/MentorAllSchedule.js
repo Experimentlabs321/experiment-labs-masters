@@ -20,6 +20,7 @@ import googlemeet from "../../../assets/icons/googlemeet.png";
 import zoom from "../../../assets/icons/zoom-240.png";
 import eye from "../../../assets/ExecutionMentor/eye.svg";
 import toast from 'react-hot-toast';
+import RecordingMentor from './RecordingMentor';
 const MentorAllSchedule = () => {
   const { userInfo, user } = useContext(AuthContext);
   const [userRequesterEvents, setUserRequesterEvents] = useState([]);
@@ -36,9 +37,9 @@ const MentorAllSchedule = () => {
     useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  const [recordings, setRecordings] = useState({});
 
 
-  
   useEffect(() => {
     if (!userInfo?.email) {
       return;
@@ -48,7 +49,7 @@ const MentorAllSchedule = () => {
       .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/mentorEmail/${userInfo?.email}`)
       .then((response) => {
         Loading().close();
-       
+
         setUserRequesterEvents(response?.data);
         setEvents(response?.data);
         const currentDate = new Date(getCurrentDate()).getTime();
@@ -196,7 +197,8 @@ const MentorAllSchedule = () => {
   }
   const editedEvents = getEditedEvents(filteredEvents);
   console.log(sortedEvents);
-   console.log(sortedEvents);
+
+  console.log(editedEvents);
 
 
 
@@ -237,7 +239,9 @@ const MentorAllSchedule = () => {
                   <th className="py-3 px-6 border-b text-left whitespace-nowrap">
                     Start Url
                   </th>
-
+                  <th className="py-3 px-6 border-b text-left whitespace-nowrap">
+                    Recording
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -303,9 +307,7 @@ const MentorAllSchedule = () => {
                       <Link
                         to={
                           sortedEvents[0]?.meetingType === "Zoom"
-                            ? userInfo?.role === "admin"
-                              ? sortedEvents[0]?.start_url
-                              : sortedEvents[0]?.join_url
+                            ? sortedEvents[0]?.join_url
                             : sortedEvents[0]?.hangoutLink
                         }
                         className="flex gap-2 items-center justify-center py-[6px] px-4 rounded-lg mb-2 mt-3"
@@ -321,6 +323,9 @@ const MentorAllSchedule = () => {
                         ></img>
 
                       </Link>
+                    </td>
+                    <td className="py-4 px-6 border-b text-left">
+                      <RecordingMentor zoomId={sortedEvents[0]?.id}></RecordingMentor>
                     </td>
 
                   </tr>
@@ -424,7 +429,7 @@ const MentorAllSchedule = () => {
                           <Link  // Only show the link if the meeting time is in the future or present
                             to={
                               event?.meetingType === "Zoom"
-                                ? (userInfo?.role === "admin" ? event?.start_url : event?.join_url)
+                                ? event?.join_url
                                 : event?.hangoutLink
                             }
                             className="flex gap-2 items-center justify-center py-[6px] px-4 rounded-lg mb-2 mt-3"
@@ -437,7 +442,9 @@ const MentorAllSchedule = () => {
                           </Link>
                         )}
                       </td>
-
+                      <td className="py-4 px-6 border-b text-left">
+                      {eventStartTime < now ? (<RecordingMentor zoomId={event?.id}></RecordingMentor> ): (<p className='text-left text-sm'>Meeting yet to happen</p>)}
+                      </td>
                     </tr>
                   );
                 })}
