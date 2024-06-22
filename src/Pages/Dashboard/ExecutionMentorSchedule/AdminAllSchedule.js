@@ -380,9 +380,7 @@ const AdminAllSchedule = () => {
                       <Link
                         to={
                           sortedEvents[0]?.meetingType === "Zoom"
-                            ? userInfo?.role === "admin"
-                              ? sortedEvents[0]?.start_url
-                              : sortedEvents[0]?.join_url
+                            ? sortedEvents[0]?.join_url
                             : sortedEvents[0]?.hangoutLink
                         }
                         className="flex gap-2 items-center justify-center py-[6px] px-4 rounded-lg mb-2 mt-3"
@@ -600,7 +598,7 @@ const AdminAllSchedule = () => {
                           <Link  // Only show the link if the meeting time is in the future or present
                             to={
                               event?.meetingType === "Zoom"
-                                ? (userInfo?.role === "admin" ? event?.start_url : event?.join_url)
+                                ? event?.join_url
                                 : event?.hangoutLink
                             }
                             className="flex gap-2 items-center justify-center py-[6px] px-4 rounded-lg mb-2 mt-3"
