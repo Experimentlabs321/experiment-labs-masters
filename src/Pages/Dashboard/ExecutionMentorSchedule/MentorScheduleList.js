@@ -33,10 +33,15 @@ const MentorScheduleList = () => {
     const [dateRange, setDateRange] = useState("");
     const [duration, setDuration] = useState("");
     const [selectedMin, setSelectedMin] = useState("");
+    const [calendarSubjectName, setCalendarSubjectName] = useState("");
+    const [idSchedule, setIdSchedule] = useState(null);
+    const [idWeek, setIdWeek] = useState(null);
     const [selectedAdmin, setSelectedAdmin] = useState("");
     const [selectedMax, setSelectedMax] = useState("");
     const [selectedBatch, setSelectedBatch] = useState("");
     const [meetingType, setMeetingType] = useState("");
+    const [adminName, setAdminName] = useState("");
+    const [syncedMail, setSyncedMail] = useState("");
     const [scheduleEvents, setScheduleEvents] = useState([]);
     useEffect(() => {
         if (!userInfo?._id) {
@@ -69,8 +74,9 @@ const MentorScheduleList = () => {
         const day = String(today.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
     };
-    const handleBooking = (schedule, course, batch, maximum, minimum, e,type,off,range,events,mail,time) => {
+    const handleBooking = (schedule, course, batch, maximum, minimum, e,type,off,range,events,mail,time,name,id,calendarsub,week,sync) => {
         setSelectedSchedule(schedule);
+        console.log("Mail" , mail)
         setSelectedC(course);
         setSelectedBatch(batch);
         setSelectedMax(maximum);
@@ -83,6 +89,11 @@ const MentorScheduleList = () => {
         setSelectedAdmin(mail);
         setDuration(time);
         setAddBookOpen(true);
+        setAdminName(name);
+        setIdSchedule(id);
+        setCalendarSubjectName(calendarsub);
+        setIdWeek(week);
+        setSyncedMail(sync);
     }
     console.log(scheduleList);
 
@@ -103,6 +114,11 @@ const MentorScheduleList = () => {
                     scheduleEvents={scheduleEvents}
                     selectedAdmin={selectedAdmin}
                     durationMeeting={duration}
+                    adminName={adminName}
+                    idSchedule={idSchedule}
+                    calendarSubjectName={calendarSubjectName}
+                    syncedMail={syncedMail}
+                    idWeek={idWeek}
                     addBookOpen={addBookOpen}
                     setAddBookOpen={setAddBookOpen}
                 />
@@ -149,7 +165,7 @@ const MentorScheduleList = () => {
                                                 index % 2 === 0 ? "bg-gray-100" : "bg-gray-50"
                                             }
                                         >
-                                            <td onClick={() => handleBooking(event?.scheduleName || event?.taskName, event?.courseName, event?.batches[0]?.batchName, event?.maximumTime, event?.minimumTime, event?.courseId,event?.meetingType,event?.offDays,event?.dateRange,event?.events,event?.adminCalendarEmail,event?.meetingDuration)} className="cursor-pointer py-4 px-6 border-b text-left whitespace-nowrap">
+                                            <td onClick={() => handleBooking(event?.scheduleName || event?.taskName, event?.courseName, event?.batches[0]?.batchName, event?.maximumTime, event?.minimumTime, event?.courseId,event?.meetingType,event?.offDays,event?.dateRange,event?.events,event?.adminCalenderEmail || event?.adminCalendarEmail,event?.meetingDuration,event?.usersession?.user?.user_metadata?.name,event?._id,event?.calendarSubjectName,event?.weekId,event?.usersession?.user?.email)} className="cursor-pointer py-4 px-6 border-b text-left whitespace-nowrap">
 
                                                 {event?.scheduleName ? event?.scheduleName : event?.taskName}
                                             </td>

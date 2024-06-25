@@ -273,6 +273,7 @@ const ExecutionMentorCreateSchedule = ({ addTaskOpen, setAddTaskOpen }) => {
             taskDrip,
             chapterId: selectedChapter?._id,
             courseId: selectedCourse?._id,
+            courseName : selectedCourse?.courseFullName,
             weekId: selectedWeek?._id,
             batches: [
                 {
@@ -296,6 +297,7 @@ const ExecutionMentorCreateSchedule = ({ addTaskOpen, setAddTaskOpen }) => {
           if(newSchedule.data.result.acknowledged === true){
             toast.success("Schedule created successfully!");
             setAddTaskOpen(false);
+            navigate(-1)
         }
         else{
             toast.error("Schedule not created");
