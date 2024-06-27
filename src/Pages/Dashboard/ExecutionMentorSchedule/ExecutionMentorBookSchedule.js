@@ -1835,11 +1835,32 @@ console.log(selectedAdmin);
     }
     return false;
   };
+  const handleDeleteSchedule = async (id) => {
+    console.log('clicked')
+    const res = await axios.delete(
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/schedule/taskId/${id}`
+    );
+    console.log(res);
+    if (res.data.result.acknowledged) {
+      Swal.fire({
+        title: "Deleted successfully!",
+        icon: "success",
+      });
+      navigate(-1);
+    }
+  };
+  const handleDialogClose = () => {
+    // Your logic here to handle state change when dialog is closed
+    console.log("Dialog closed");
+    setPicked(false);
+    // Add any state changes you want to handle here
+  };
   return (
     <div>
       <DialogLayoutForFromControl
         open={addBookOpen}
         setOpen={setAddBookOpen}
+        onClose={handleDialogClose}
         width={800}
         title={
           <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
@@ -2007,7 +2028,18 @@ console.log(selectedAdmin);
               {orgData?.showPointsAndRedemptions && (
                 <ItemEarningParameter
                   selectedData={earningParameterData}
-                  setSelectedData={setEarningParameterData}
+                  setSelectedData={setEarningParameterData}  const handleDeleteOffer = async (id) => {
+    const res = await axios.delete(
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/offers/${id}`
+    );
+    if (res.data.success) {
+      getAllOffers();
+      Swal.fire({
+        title: "New Offer Deleted successfully!",
+        icon: "success",
+      });
+    }
+  };
                   categories={earningCategories}
                 />
               )}
@@ -2016,8 +2048,9 @@ console.log(selectedAdmin);
 
             <div className="flex items-center justify-center mt-20 mb-10">
               <input
-                type="submit"
-                value="Save"
+                type="button"
+                value="Delete"
+                onClick={() => handleDeleteSchedule(idSchedule)}
                 className="px-[30px] py-3 bg-[#3E4DAC] hover:bg-opacity-70 text-[#fff] cursor-pointer text-xl font-bold rounded-lg"
               />
             </div>
