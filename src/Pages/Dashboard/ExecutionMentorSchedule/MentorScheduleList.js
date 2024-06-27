@@ -51,13 +51,12 @@ const MentorScheduleList = () => {
         axios
             .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/schedules/mentorId/${userInfo?._id}`)
             .then((response) => {
-                Loading().close();
+                
 
                 setScheduleList(response?.data?.data);
 
             })
             .catch((error) => {
-                Loading().close();
                 console.error(error);
             })
             .finally(() => {
