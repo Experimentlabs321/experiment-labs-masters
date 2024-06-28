@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 import DialogLayoutForFromControl from "../Shared/DialogLayoutForFromControl";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
-import { GoogleAuthProvider, onAuthStateChanged } from "firebase/auth";
+import { GoogleAuthProvider } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../Shared/Loading/Loading";
 import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
@@ -18,7 +18,7 @@ import NavbarSkeletonLoader from "./NavbarSkeletonLoader";
 import ForgotPassword from "./ForgotPassword";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
-import ReactPixel from "react-facebook-pixel";
+// import ReactPixel from "react-facebook-pixel";
 
 const Payment = () => {
   const {
@@ -149,11 +149,11 @@ const Payment = () => {
   };
 
   const handleApplyCoupon = (coupon) => {
-    ReactPixel.track("Purchase", {
-      content_type: "course",
-      value: 0.5,
-      currency: "USD",
-    });
+    // ReactPixel.track("Purchase", {
+    //   content_type: "course",
+    //   value: 0.5,
+    //   currency: "USD",
+    // });
     const filteredCoupon = offers.filter(
       (offer) => offer.code === coupon && offer.disabled !== true
     );
@@ -189,11 +189,11 @@ const Payment = () => {
   const handleEnroll = async (data) => {
     // console.log("Went to Line 124");
     // console.log("Data =============>", data);
-    ReactPixel.track("Purchase", {
-      content_type: "course",
-      value: 0.5,
-      currency: "USD",
-    });
+    // ReactPixel.track("Purchase", {
+    //   content_type: "course",
+    //   value: 0.5,
+    //   currency: "USD",
+    // });
     Loading();
     if (+selectedBatch?.price - +couponDiscount === 0) {
       const enrollData = {
@@ -633,40 +633,42 @@ const Payment = () => {
 
                 {selectedBatch?._id && (
                   <>
-                    <div className="mt-3">
-                      <h1 className=" text-black text-base font-[500] ">
-                        Apply Coupon
-                      </h1>
-                      <div className="flex mt-1 border w-full rounded-md bg-white">
-                        <div className="flex justify-between bg-transparent w-full p-2 focus:outline-none">
-                          <input
-                            className="outline-none"
-                            type="text"
-                            placeholder="Enter Coupon Code"
-                            name="coupon"
-                            value={coupon}
-                            onChange={(e) => setCoupon(e.target.value)}
-                          />
-                          <div
-                            onClick={() => {
-                              setCoupon("");
-                              setCouponDiscount(0);
-                            }}
-                            className="cursor-pointer"
-                          >
-                            {coupon.length >= 1 && <HighlightOffRoundedIcon />}
-                          </div>
-                        </div>
-                        <button
-                          onClick={() => handleApplyCoupon(coupon)}
-                          className=" text-[#5e52ff] bg-[#5e52ff0c] p-2 rounded-sm"
-                        >
-                          Apply
-                        </button>
-                      </div>
-                    </div>
                     {offers.length > 0 && (
                       <div className="mt-3">
+                        <div className="mb-3">
+                          <h1 className=" text-black text-base font-[500] ">
+                            Apply Coupon
+                          </h1>
+                          <div className="flex mt-1 border w-full rounded-md bg-white">
+                            <div className="flex justify-between bg-transparent w-full p-2 focus:outline-none">
+                              <input
+                                className="outline-none"
+                                type="text"
+                                placeholder="Enter Coupon Code"
+                                name="coupon"
+                                value={coupon}
+                                onChange={(e) => setCoupon(e.target.value)}
+                              />
+                              <div
+                                onClick={() => {
+                                  setCoupon("");
+                                  setCouponDiscount(0);
+                                }}
+                                className="cursor-pointer"
+                              >
+                                {coupon.length >= 1 && (
+                                  <HighlightOffRoundedIcon />
+                                )}
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => handleApplyCoupon(coupon)}
+                              className=" text-[#5e52ff] bg-[#5e52ff0c] p-2 rounded-sm"
+                            >
+                              Apply
+                            </button>
+                          </div>
+                        </div>
                         <h1 className=" text-gray-400 mb-1 text-base font-[500] ">
                           Applicable Coupons
                         </h1>
