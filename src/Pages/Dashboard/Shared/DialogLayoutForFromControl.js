@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useState, useEffect } from "react";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -11,7 +11,33 @@ const DialogLayoutForFromControl = ({
   width,
   borderRadius,
   close,
+  onClose,
 }) => {
+  // Function to handle the closing of the dialog
+  const handleClose = () => {
+    setOpen(false);
+    if (onClose) {
+      onClose(); // Call the onClose function passed as a prop
+    }
+  };
+
+  useEffect(() => {
+    // Event listener for the "Esc" key
+    const handleEsc = (event) => {
+      if (event.key === "Escape") {
+        handleClose();
+      }
+    };
+
+    // Add the event listener when the component mounts
+    document.addEventListener("keydown", handleEsc);
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+      document.removeEventListener("keydown", handleEsc);
+    };
+  }, []);
+
   return (
     <>
       {open && (
@@ -35,7 +61,7 @@ const DialogLayoutForFromControl = ({
                   {title}
                   <IconButton
                     aria-label="close"
-                    onClick={() => setOpen(false)}
+                    onClick={handleClose}
                     sx={{
                       position: "absolute",
                       right: 20,

@@ -20,13 +20,14 @@ import googlemeet from "../../../assets/icons/googlemeet.png";
 import zoom from "../../../assets/icons/zoom-240.png";
 import eye from "../../../assets/ExecutionMentor/eye.svg";
 import toast from 'react-hot-toast';
+import RecordingMentor from './RecordingMentor';
 const MentorAllSchedule = () => {
   const { userInfo, user } = useContext(AuthContext);
   const [userRequesterEvents, setUserRequesterEvents] = useState([]);
 
   const [mentors, setMentors] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
- 
+
   const [events, setEvents] = useState([]);
 
   const [fromDate, setFromDate] = useState("");
@@ -35,7 +36,10 @@ const MentorAllSchedule = () => {
   const [selectedMentorsForEditOrAssign, setSelectedMentorsForEditOrAssign] =
     useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  
+
+  const [recordings, setRecordings] = useState({});
+
+
   useEffect(() => {
     if (!userInfo?.email) {
       return;
@@ -45,16 +49,16 @@ const MentorAllSchedule = () => {
       .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/mentorEmail/${userInfo?.email}`)
       .then((response) => {
         Loading().close();
-        console.log(response?.data);
+
         setUserRequesterEvents(response?.data);
         setEvents(response?.data);
         const currentDate = new Date(getCurrentDate()).getTime();
-        const filteredEvents = response?.data.filter(event => {
-          // Check for both date structures
-          const eventStartDate = new Date(event.start?.dateTime || event.start_time).getTime();
-          return eventStartDate >= currentDate;
-        });
-        
+        // const filteredEvents = response?.data.filter(event => {
+        //   // Check for both date structures
+        //   const eventStartDate = new Date(event.start?.dateTime || event.start_time).getTime();
+        //   return eventStartDate >= currentDate;
+        // });
+
 
       })
       .catch((error) => {
@@ -65,9 +69,9 @@ const MentorAllSchedule = () => {
         Loading().close();
       });
   }, [userInfo]);
-  
 
-  
+
+
   // Helper function to get today's date in YYYY-MM-DD format
   const getCurrentDate = () => {
     const today = new Date();
@@ -171,7 +175,7 @@ const MentorAllSchedule = () => {
   }, [fromDate, toDate, events]);
 
   const now = new Date();
-  const sortedEvents = userRequesterEvents.slice().sort((a, b) => {
+  const sortedEvents = userRequesterEvents?.slice()?.sort((a, b) => {
     const dateA = new Date(a?.start_time);
     const dateB = new Date(b?.start_time);
     return dateA - dateB;
@@ -179,7 +183,7 @@ const MentorAllSchedule = () => {
   console.log(sortedEvents)
   const excludedEventId = sortedEvents[0]?._id;
   console.log(excludedEventId)
-  const filteredEvents = userRequesterEvents.filter(event => event?._id !== excludedEventId);
+  const filteredEvents = userRequesterEvents?.filter(event => event?._id !== excludedEventId);
 
   function getEditedEvents(events) {
     return events.sort((a, b) => {
@@ -192,6 +196,8 @@ const MentorAllSchedule = () => {
     });
   }
   const editedEvents = getEditedEvents(filteredEvents);
+  console.log(sortedEvents);
+
   console.log(editedEvents);
 
 
@@ -199,6 +205,7 @@ const MentorAllSchedule = () => {
 
   return (
     <div>
+
       {userRequesterEvents?.length > 0 ? (
         // Render content specific to events where the user is the requester
         <>
@@ -208,7 +215,7 @@ const MentorAllSchedule = () => {
               maxWidth: `${window.innerWidth - (window.innerWidth > 1024 ? 370 : 40)
                 }px`,
             }}
-            className={`h-[70vh] w-fit overflow-y-auto mt-5 border`}
+            className={`h-[70vh] w-fit overflow-y-auto mt-5 border `}
           >
             <table className={` font-sans bg-white border border-gray-300`}>
               <thead className="bg-gray-800 text-white sticky top-0">
@@ -232,7 +239,9 @@ const MentorAllSchedule = () => {
                   <th className="py-3 px-6 border-b text-left whitespace-nowrap">
                     Start Url
                   </th>
-
+                  <th className="py-3 px-6 border-b text-left whitespace-nowrap">
+                    Recording
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -298,9 +307,7 @@ const MentorAllSchedule = () => {
                       <Link
                         to={
                           sortedEvents[0]?.meetingType === "Zoom"
-                            ? userInfo?.role === "admin"
-                              ? sortedEvents[0]?.start_url
-                              : sortedEvents[0]?.join_url
+                            ? sortedEvents[0]?.join_url
                             : sortedEvents[0]?.hangoutLink
                         }
                         className="flex gap-2 items-center justify-center py-[6px] px-4 rounded-lg mb-2 mt-3"
@@ -316,6 +323,9 @@ const MentorAllSchedule = () => {
                         ></img>
 
                       </Link>
+                    </td>
+                    <td className="py-4 px-6 border-b text-left">
+                      <RecordingMentor zoomId={sortedEvents[0]?.id}></RecordingMentor>
                     </td>
 
                   </tr>
@@ -419,7 +429,7 @@ const MentorAllSchedule = () => {
                           <Link  // Only show the link if the meeting time is in the future or present
                             to={
                               event?.meetingType === "Zoom"
-                                ? (userInfo?.role === "admin" ? event?.start_url : event?.join_url)
+                                ? event?.join_url
                                 : event?.hangoutLink
                             }
                             className="flex gap-2 items-center justify-center py-[6px] px-4 rounded-lg mb-2 mt-3"
@@ -432,7 +442,9 @@ const MentorAllSchedule = () => {
                           </Link>
                         )}
                       </td>
-
+                      <td className="py-4 px-6 border-b text-left">
+                      {eventStartTime < now ? (<RecordingMentor zoomId={event?.id}></RecordingMentor> ): (<p className='text-left text-sm'>Meeting yet to happen</p>)}
+                      </td>
                     </tr>
                   );
                 })}

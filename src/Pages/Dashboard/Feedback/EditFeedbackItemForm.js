@@ -1,15 +1,13 @@
 //EditFeedbackItemForm
 
-import React, {
-  useEffect,
-  useState,
-} from 'react';
+import React, { useEffect, useState } from "react";
 
-import axios from 'axios';
-import { toast } from 'react-hot-toast';
-import Swal from 'sweetalert2';
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import Swal from "sweetalert2";
 
-import uploadFileToS3 from '../../UploadComponent/s3Uploader';
+import uploadFileToS3 from "../../UploadComponent/s3Uploader";
+import DynamicForm from "./FormBuilder";
 
 const EditFeedbackItemForm = ({
   selectedFeedback,
@@ -37,6 +35,29 @@ const EditFeedbackItemForm = ({
   const [selectedAccessOptions, setSelectedAccessOptions] = useState(
     selectedFeedback?.giveAccess
   );
+  const [showFormRole, setShowFormRole] = useState("user");
+  const [formFieldsForUser, setFormFieldsForUser] = useState([]);
+  const [formFieldsForExpertMentor, setFormFieldsForExpertMentor] = useState(
+    []
+  );
+  const [formFieldsForExecutionMentor, setFormFieldsForExecutionMentor] =
+    useState([]);
+
+  useEffect(() => {
+    setFormFieldsForUser(
+      selectedFeedback?.userFormFields ? selectedFeedback?.userFormFields : []
+    );
+    setFormFieldsForExpertMentor(
+      selectedFeedback?.expertMentorFormFields
+        ? selectedFeedback?.expertMentorFormFields
+        : []
+    );
+    setFormFieldsForExecutionMentor(
+      selectedFeedback?.executionMentorFormFields
+        ? selectedFeedback?.executionMentorFormFields
+        : []
+    );
+  }, [selectedFeedback]);
   /*  const [selectedAccessOption, setSelectedAccessOption] = useState(
         selectedFeedback?.giveAccess
     ); */
@@ -94,6 +115,9 @@ const EditFeedbackItemForm = ({
         itemRating: selectedRatingOption,
         giveAccess: selectedAccessOptions,
         selectedIcon: fileUrl,
+        userFormFields: formFieldsForUser,
+        expertMentorFormFields: formFieldsForExpertMentor,
+        executionMentorFormFields: formFieldsForExecutionMentor,
       },
     };
     console.log(data);
@@ -119,7 +143,11 @@ const EditFeedbackItemForm = ({
       );
 
       if (updatedItem?.data?.acknowledged) {
-        toast.success(itemFeedbackSettingDetails?.itemUpdatedSuccessfully ? itemFeedbackSettingDetails?.itemUpdatedSuccessfully :"Item Updated Successfully");
+        toast.success(
+          itemFeedbackSettingDetails?.itemUpdatedSuccessfully
+            ? itemFeedbackSettingDetails?.itemUpdatedSuccessfully
+            : "Item Updated Successfully"
+        );
         const updateItemsArray = [...selectedFeedbackCategory?.feedbackItems];
         const selectedFeedbackIndex = updateItemsArray?.findIndex(
           (item) =>
@@ -150,8 +178,12 @@ const EditFeedbackItemForm = ({
         setIsOpenFeedbackItemEditForm(false);
         Swal.fire({
           icon: "error",
-          title:itemFeedbackSettingDetails?.itemAlreadyExist ? itemFeedbackSettingDetails?.itemAlreadyExist : "Item already exist!",
-          text:itemFeedbackSettingDetails?.pleaseEnterAnUniqueItemName ? itemFeedbackSettingDetails?.pleaseEnterAnUniqueItemName : "Please enter an unique item name!",
+          title: itemFeedbackSettingDetails?.itemAlreadyExist
+            ? itemFeedbackSettingDetails?.itemAlreadyExist
+            : "Item already exist!",
+          text: itemFeedbackSettingDetails?.pleaseEnterAnUniqueItemName
+            ? itemFeedbackSettingDetails?.pleaseEnterAnUniqueItemName
+            : "Please enter an unique item name!",
         });
         return;
       }
@@ -172,20 +204,21 @@ const EditFeedbackItemForm = ({
       );
       if (newItem?.data?.acknowledged) {
         fetch(
-         // `${process.env.REACT_APP_BACKEND_API}/deleteFeedbackItem`, 
-          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/feedbackCategories/feedbackItems`, 
+          // `${process.env.REACT_APP_BACKEND_API}/deleteFeedbackItem`,
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/feedbackCategories/feedbackItems`,
           {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            organizationId: userInfo?.organizationId,
-            categoryName: selectedFeedbackCategory?.categoryName,
-            courseId: selectedCourse?._id,
-            feedbackItemName: selectedFeedback?.feedbackItemName,
-          }),
-        })
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              organizationId: userInfo?.organizationId,
+              categoryName: selectedFeedbackCategory?.categoryName,
+              courseId: selectedCourse?._id,
+              feedbackItemName: selectedFeedback?.feedbackItemName,
+            }),
+          }
+        )
           .then((result) => {
             if (result?.ok) {
               const remainingItems =
@@ -232,7 +265,11 @@ const EditFeedbackItemForm = ({
               ]);
               setIsOpenFeedbackItemEditForm(false);
               event.target.reset();
-              toast.success(itemFeedbackSettingDetails?.itemUpdatedSuccessfully ? itemFeedbackSettingDetails?.itemUpdatedSuccessfully :"Item Updated Successfully!");
+              toast.success(
+                itemFeedbackSettingDetails?.itemUpdatedSuccessfully
+                  ? itemFeedbackSettingDetails?.itemUpdatedSuccessfully
+                  : "Item Updated Successfully!"
+              );
             }
           })
           .catch((error) => {
@@ -269,16 +306,18 @@ const EditFeedbackItemForm = ({
                     alt="UploadingImg"
                   />
                   <p className="mt-[-60px] text-base font-semibold text-[#fff] mb-4">
-                  {itemFeedbackSettingDetails?.uploadIcon ? itemFeedbackSettingDetails?.uploadIcon : "Upload Icon" }
-                    
+                    {itemFeedbackSettingDetails?.uploadIcon
+                      ? itemFeedbackSettingDetails?.uploadIcon
+                      : "Upload Icon"}
                   </p>
 
                   <label
                     className="mt-[-16px] flex items-center px-5 py-2 rounded-lg bg-[#FFDB70] text-xs font-bold"
                     htmlFor="input-file-upload"
                   >
-                    {itemFeedbackSettingDetails?.browser ? itemFeedbackSettingDetails?.browser : "Browser" }
-                    
+                    {itemFeedbackSettingDetails?.browser
+                      ? itemFeedbackSettingDetails?.browser
+                      : "Browser"}
                   </label>
                   <input
                     className="w-[1%]"
@@ -297,8 +336,9 @@ const EditFeedbackItemForm = ({
                 <div className="grid grid-cols-1 gap-x-6 gap-y-4 mt-2 sm:grid-cols-2 w-full">
                   <div>
                     <label className="text-[16px] font-[600]" htmlFor="case">
-                    {itemFeedbackSettingDetails?.feedbackCategory ? itemFeedbackSettingDetails?.feedbackCategory : "Feedback Category" }
-                      
+                      {itemFeedbackSettingDetails?.feedbackCategory
+                        ? itemFeedbackSettingDetails?.feedbackCategory
+                        : "Feedback Category"}
                     </label>
                     <select
                       defaultValue={selectedFeedbackCategory?.categoryName}
@@ -324,8 +364,9 @@ const EditFeedbackItemForm = ({
 
                   <div>
                     <label className="text-[16px] font-[600]" htmlFor="case">
-                    {itemFeedbackSettingDetails?.itemRating ? itemFeedbackSettingDetails?.itemRating : "Feedback Item Name" }
-                      
+                      {itemFeedbackSettingDetails?.itemRating
+                        ? itemFeedbackSettingDetails?.itemRating
+                        : "Feedback Item Name"}
                     </label>
                     <input
                       id="feedbackItemName"
@@ -338,8 +379,9 @@ const EditFeedbackItemForm = ({
 
                   <div className=" flex flex-col justify-center ">
                     <p className="font-semibold text-[#000000]  py-2">
-                    {itemFeedbackSettingDetails?.browser ? itemFeedbackSettingDetails?.browser : "Item Rating" }
-                      
+                      {itemFeedbackSettingDetails?.browser
+                        ? itemFeedbackSettingDetails?.browser
+                        : "Item Rating"}
                     </p>
                     <div className=" flex gap-7 items-center  h-[40px]   text-[#535353] ">
                       <div>
@@ -382,8 +424,9 @@ const EditFeedbackItemForm = ({
 
                   <div className="flex flex-col justify-center">
                     <p className="font-semibold text-[#000000] py-2">
-                    {itemFeedbackSettingDetails?.giveAccess ? itemFeedbackSettingDetails?.giveAccess : "Give Access" }
-                      
+                      {itemFeedbackSettingDetails?.giveAccess
+                        ? itemFeedbackSettingDetails?.giveAccess
+                        : "Give Access"}
                     </p>
                     <div className="flex gap-7 items-center h-[40px] text-[#535353]">
                       <div className="flex items-center">
@@ -404,8 +447,9 @@ const EditFeedbackItemForm = ({
                           htmlFor="ExecutionMentor"
                           className="peer-checked/draft: font-normal"
                         >
-                          {itemFeedbackSettingDetails?.executionMentor ? itemFeedbackSettingDetails?.executionMentor : "Execution mentor" }
-                          
+                          {itemFeedbackSettingDetails?.executionMentor
+                            ? itemFeedbackSettingDetails?.executionMentor
+                            : "Execution mentor"}
                         </label>
                       </div>
 
@@ -427,17 +471,81 @@ const EditFeedbackItemForm = ({
                           htmlFor="ExpertMentor"
                           className="peer-checked/published: font-normal"
                         >
-                          {itemFeedbackSettingDetails?.expertMentor ? itemFeedbackSettingDetails?.expertMentor : "Expert mentor" }
-                          
+                          {itemFeedbackSettingDetails?.expertMentor
+                            ? itemFeedbackSettingDetails?.expertMentor
+                            : "Expert mentor"}
                         </label>
                       </div>
                     </div>
                   </div>
                 </div>
+                <div className="space-x-4 mt-5">
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setShowFormRole("user");
+                    }}
+                    className={`px-4 py-2 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-75 ${
+                      showFormRole === "user"
+                        ? "bg-sky-500 hover:bg-sky-700 focus:ring-sky-400"
+                        : "bg-gray-400 hover:bg-gray-500 focus:ring-gray-300"
+                    }`}
+                  >
+                    Students
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setShowFormRole("execution mentor");
+                    }}
+                    className={`px-4 py-2 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-75 ${
+                      showFormRole === "execution mentor"
+                        ? "bg-sky-500 hover:bg-sky-700 focus:ring-sky-400"
+                        : "bg-gray-400 hover:bg-gray-500 focus:ring-gray-300"
+                    }`}
+                  >
+                    Execution Mentor
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setShowFormRole("expert mentor");
+                    }}
+                    className={`px-4 py-2 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-75 ${
+                      showFormRole === "expert mentor"
+                        ? "bg-sky-500 hover:bg-sky-700 focus:ring-sky-400"
+                        : "bg-gray-400 hover:bg-gray-500 focus:ring-gray-300"
+                    }`}
+                  >
+                    Expert Mentor
+                  </button>
+                </div>
+                {showFormRole === "user" && (
+                  <DynamicForm
+                    formFields={formFieldsForUser}
+                    setFormFields={setFormFieldsForUser}
+                  />
+                )}
+                {showFormRole === "execution mentor" && (
+                  <DynamicForm
+                    formFields={formFieldsForExecutionMentor}
+                    setFormFields={setFormFieldsForExecutionMentor}
+                  />
+                )}
+                {showFormRole === "expert mentor" && (
+                  <DynamicForm
+                    formFields={formFieldsForExpertMentor}
+                    setFormFields={setFormFieldsForExpertMentor}
+                  />
+                )}
                 <div className=" mt-5  ">
                   <input
                     type="submit"
-                    value={itemFeedbackSettingDetails?.update ? itemFeedbackSettingDetails?.update : "Update" }
+                    value={
+                      itemFeedbackSettingDetails?.update
+                        ? itemFeedbackSettingDetails?.update
+                        : "Update"
+                    }
                     className="bg-[#2EB0FB] cursor-pointer rounded-lg p-2 font-semibold text-[#fff]"
                   />
                 </div>

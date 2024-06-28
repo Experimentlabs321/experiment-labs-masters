@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../Layout";
 import OffersTop from "./OffersComponent/OffersTop";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { red } from "@mui/material/colors";
@@ -318,6 +318,11 @@ const Profile = () => {
                     type="text"
                     value={profileInfo?.role}
                   />
+                </div>
+                <div className="">
+                  <Link to={`/mentorCalendar/${profileInfo?.email}`} className="text-blue-500 hover:text-blue-700">
+                    Go to Mentor Calendar
+                  </Link>
                 </div>
                 <div className="">
                   <p className="font-semibold text-lg ">Device Usage</p>

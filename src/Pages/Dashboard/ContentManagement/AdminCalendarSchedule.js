@@ -91,6 +91,9 @@ const AdminCalendarSchedule = () => {
   const { isLoading } = useSessionContext();
   const [previousLocation, setPreviousLocation] = useState(null);
   const [adminCalendarInfo, setAdminCalendarInfo] = useState({});
+  const [executionMentors, setExecutionMentors] = useState([]);
+  const [selectedMentors, setSelectedMentors] = useState([]);
+
   // Save current location before redirecting to Google sign-in
   useEffect(() => {
     setPreviousLocation(window.location.pathname);
@@ -113,7 +116,7 @@ const AdminCalendarSchedule = () => {
   }, [chapter?.courseId]);
   useEffect(() => {
     axios
-     // .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
+      // .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
       .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${id}`)
       .then((response) => {
         setChapter(response?.data);
@@ -146,6 +149,20 @@ const AdminCalendarSchedule = () => {
       .catch((error) => console.error(error));
   }, [id, userInfo, userInfo?.email]);
   console.log(adminCalendarInfo);
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/mentors/organizationId/${userInfo?.organizationId}/role/execution mentor`
+        // `http://localhost:5000/api/v1/users/mentors/organizationId/${userInfo?.organizationId}/role/execution mentor`
+      )
+      .then((response) => {
+        setExecutionMentors(response?.data);
+        console.log(response?.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [userInfo]);
   const handleOptionChangeBatch = (event, optionValue) => {
     // const optionValue = event.target.value;
     const isChecked = event.target.checked;
@@ -230,22 +247,23 @@ const AdminCalendarSchedule = () => {
     const meetingDuration = adminCalendarInfo?.meetingDuration;
     const offDays = adminCalendarInfo?.offDays;
     const meetingType = adminCalendarInfo?.meetingType;
-    const calendarInfo = { ...adminCalendarInfo,email : userInfo?.email };
+    const calendarInfo = { ...adminCalendarInfo, email: userInfo?.email };
     console.log(adminCalendarInfo);
-    calendarInfo.syncedMail =  session?.user?.email;
+    calendarInfo.syncedMail = session?.user?.email;
     calendarInfo.events = relevantEvents;
     delete calendarInfo._id;
     console.log(calendarInfo);
     const newSchedule = await axios.post(
       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo`,
-      {calendarInfo : calendarInfo}
+      { calendarInfo: calendarInfo }
     );
     console.log(newSchedule);
     const manageSchedule = {
       scheduleName,
       taskName: scheduleName,
       chapterId: chapter?._id,
-      courseName : course?.courseFullName,
+      weekId : chapter?.weekId,
+      courseName: course?.courseFullName,
       courseId: chapter?.courseId,
       batches: selectedBatches,
       offDays: offDays,
@@ -259,6 +277,7 @@ const AdminCalendarSchedule = () => {
       taskDrip,
       calendarSubjectName,
       adminCalenderEmail: calendarInfo?.email,
+      executionMentors: selectedMentors,
     };
     setAssignmentData(manageSchedule);
     console.log(manageSchedule);
@@ -548,6 +567,29 @@ const AdminCalendarSchedule = () => {
       alert("Error creating event. Please try again.");
     }
   }
+  const handleOptionChangeMentor = (event, optionValue) => {
+    // const optionValue = event.target.value;
+    const isChecked = event.target.checked;
+
+    if (isChecked) {
+      setSelectedMentors([
+        ...selectedMentors,
+        { mentorEmail: optionValue?.email, mentorId: optionValue?._id },
+      ]);
+      // if (selectedMentors) {
+      // } else {
+      //   setSelectedMentors([
+      //     { mentorEmail: optionValue?.email, mentorId: optionValue?._id },
+      //   ]);
+      // }
+    } else {
+      setSelectedMentors(
+        selectedMentors.filter(
+          (option) => option?.mentorId !== optionValue?._id
+        )
+      );
+    }
+  };
 
   return (
     <div>
@@ -664,7 +706,7 @@ const AdminCalendarSchedule = () => {
             <p>Manage Schedule in {chapter?.chapterName}</p>
           </div>
           <div>
-            {session && calendarEvents?.length > 0  ?  (
+            {session && calendarEvents?.length > 0 ? (
               <>
                 <div className="my-6 px-5">
                   <h2>Your Calendar Events</h2>
@@ -881,6 +923,42 @@ const AdminCalendarSchedule = () => {
                       })}
                     </ul>
                   </div>
+                  <div className="mb-5">
+                    <div className="flex items-center gap-4">
+                      <p className="h-2 w-2 bg-black rounded-full"></p>
+                      <p className="font-bold text-lg me-[36px]">Select Mentor</p>
+                      {/* <img src={required} alt="" /> */}
+                    </div>
+                    <ul className="flex gap-4 flex-wrap ">
+                      {executionMentors?.map((option, index) => {
+                        return (
+                          <>
+                            <li
+                              key={index}
+                              className="cursor-pointer flex mb-2 items-center py-2 text-[#6A6A6A] text-[14px] font-[400] "
+                            >
+                              <input
+                                type="checkbox"
+                                id="student"
+                                name={option?._id}
+                                value={option?._id}
+                                checked={selectedMentors?.find(
+                                  (item) => item?.mentorId === option?._id
+                                )}
+                                onChange={(e) => handleOptionChangeMentor(e, option)}
+                                className=" mb-1"
+                              />
+                              <div className="flex mb-1 items-center">
+                                <label className="ms-4" htmlFor={option?._id}>
+                                  {option?.name}
+                                </label>
+                              </div>
+                            </li>
+                          </>
+                        );
+                      })}
+                    </ul>
+                  </div>
                   <div className=" space-y-4 mb-8">
                     <fieldset>
                       <div className="flex items-center gap-4 mb-5">
@@ -903,11 +981,10 @@ const AdminCalendarSchedule = () => {
                           />
                           <label
                             htmlFor="radioYes"
-                            className={`ml-2 text-sm font-medium ${
-                              course?.enableDrip
+                            className={`ml-2 text-sm font-medium ${course?.enableDrip
                                 ? "text-gray-400"
                                 : "text-gray-900"
-                            }`}
+                              }`}
                           >
                             Yes
                           </label>
@@ -925,11 +1002,10 @@ const AdminCalendarSchedule = () => {
                           />
                           <label
                             htmlFor="radioNo"
-                            className={`ml-2 text-sm font-medium ${
-                              course?.enableDrip
+                            className={`ml-2 text-sm font-medium ${course?.enableDrip
                                 ? "text-gray-400"
                                 : "text-gray-900"
-                            }`}
+                              }`}
                           >
                             No
                           </label>
@@ -945,7 +1021,7 @@ const AdminCalendarSchedule = () => {
                   </div>
 
                   <div className="flex items-center gap-10 justify-center mt-20 mb-10">
-                   <button className="bg-sky-600 px-4 py-3 text-white text-lg rounded-lg" onClick={() => signOut()}>Sign out </button> 
+                    <button className="bg-sky-600 px-4 py-3 text-white text-lg rounded-lg" onClick={() => signOut()}>Sign out </button>
                     <button
                       className="px-[30px] py-3 bg-[#FF557A] text-[#fff] text-xl font-bold rounded-lg ms-20 "
                       type="submit"

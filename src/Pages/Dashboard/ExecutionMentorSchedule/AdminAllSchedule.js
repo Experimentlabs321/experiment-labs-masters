@@ -181,14 +181,14 @@ const AdminAllSchedule = () => {
   const now = new Date();
 
   // Sort events by start_time where nearest future events come first
-  const sortedEvents = userRequesterEvents.slice().sort((a, b) => {
+  const sortedEvents = userRequesterEvents?.slice()?.sort((a, b) => {
     const dateA = new Date(a.start_time);
     const dateB = new Date(b.start_time);
     return dateA - dateB;
   }).filter(event => new Date(event?.start_time) > now);
   console.log(sortedEvents)
   const excludedEventId = sortedEvents[0]?._id;
-  const filteredEvents = userRequesterEvents.filter(event => event?._id !== excludedEventId);
+  const filteredEvents = userRequesterEvents?.filter(event => event?._id !== excludedEventId);
 
   function getEditedEvents(events) {
     return events.sort((a, b) => {
@@ -283,26 +283,6 @@ const AdminAllSchedule = () => {
       {userRequesterEvents?.length > 0 ? (
         // Render content specific to events where the user is the requester
         <>
-          {/* <div className="flex gap-5 my-5 px-4">
-            <p>
-              <span>From Date :</span>
-              <input
-                className="p-2 border rounded ms-2"
-                type="date"
-                value={fromDate}
-                onChange={(e) => setFromDate(e.target.value)}
-              />
-            </p>
-            <p>
-              <span>To Date :</span>
-              <input
-                className="p-2 border rounded ms-2"
-                type="date"
-                value={toDate}
-                onChange={(e) => setToDate(e.target.value)}
-              />
-            </p>
-          </div> */}
           <div
             style={{
               maxWidth: `${window.innerWidth - (window.innerWidth > 1024 ? 370 : 40)
@@ -343,7 +323,7 @@ const AdminAllSchedule = () => {
                     className="bg-emerald-500 text-white font-medium"
                   >
                     <td className="py-4 px-6 border-b text-left whitespace-nowrap">
-                      {sortedEvents[0].topic ? sortedEvents[0].topic : sortedEvents[0].summary}
+                      <Link to={`/taskDetails/${sortedEvents[0]?.scheduleId || sortedEvents[0]?.taskId}?taskType=Schedule`}>{sortedEvents[0].topic ? sortedEvents[0].topic : sortedEvents[0].summary}</Link>
                     </td>
                     <td className="py-4 px-6 border-b text-left">
                       {sortedEvents[0].studentName}
@@ -400,9 +380,7 @@ const AdminAllSchedule = () => {
                       <Link
                         to={
                           sortedEvents[0]?.meetingType === "Zoom"
-                            ? userInfo?.role === "admin"
-                              ? sortedEvents[0]?.start_url
-                              : sortedEvents[0]?.join_url
+                            ? sortedEvents[0]?.join_url
                             : sortedEvents[0]?.hangoutLink
                         }
                         className="flex gap-2 items-center justify-center py-[6px] px-4 rounded-lg mb-2 mt-3"
@@ -559,7 +537,7 @@ const AdminAllSchedule = () => {
                               }}
                             />
                           )} */}
-                        {event?.topic ? event?.topic : event?.summary}
+                          <Link to={`/taskDetails/${event?.scheduleId || event?.taskId}?taskType=Schedule`}>{event?.topic ? event?.topic : event?.summary}</Link>
                       </td>
                       <td className="py-4 px-6 border-b text-left">
                         {event?.studentName}
@@ -620,7 +598,7 @@ const AdminAllSchedule = () => {
                           <Link  // Only show the link if the meeting time is in the future or present
                             to={
                               event?.meetingType === "Zoom"
-                                ? (userInfo?.role === "admin" ? event?.start_url : event?.join_url)
+                                ? event?.join_url
                                 : event?.hangoutLink
                             }
                             className="flex gap-2 items-center justify-center py-[6px] px-4 rounded-lg mb-2 mt-3"

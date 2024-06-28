@@ -101,7 +101,10 @@ const UpComingClasses = ({ classes }) => {
             );
           })
         ) : (
-          <p className="text-center mt-10 text-[red]">No classes available</p>
+          <p className="text-center font-medium text-sky-400 mt-5 w-full ">
+          No Upcoming classes available
+        </p>
+         
         )}
       </div>
     </div>
