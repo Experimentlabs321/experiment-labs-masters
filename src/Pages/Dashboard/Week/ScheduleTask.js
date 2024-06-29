@@ -93,7 +93,7 @@ const ScheduleTask = ({ taskData, week }) => {
 
     setMatching(isMatch);
     // matching = isMatch; // Update the global variable based on the match result
-  //  console.log("Matching:", matching);
+    //  console.log("Matching:", matching);
   };
   const calendarSubjectName = taskData?.calendarSubjectName;
   const taskId = taskData?._id;
@@ -112,8 +112,9 @@ const ScheduleTask = ({ taskData, week }) => {
   const [userRequesterEvents, setUserRequesterEvents] = useState([]);
   const session = useSession();
   const [selectedDate, setSelectedDate] = useState("");
+  const [isOpenStickyBar, setIsOpenStickyBar] = useState(true);
   const supabase = useSupabaseClient();
- // console.log("Task data ", taskData);
+  // console.log("Task data ", taskData);
   const { user, userInfo } = useContext(AuthContext);
   const [ismeetingType, setIsMeetingType] = useState(true);
   const [meetingType, setMeetingType] = useState(null);
@@ -443,7 +444,36 @@ const ScheduleTask = ({ taskData, week }) => {
   };
 
   //console.log("input time ", time);
+  // const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor) && !/Edg/.test(navigator.userAgent) && !/OPR/.test(navigator.userAgent);
+  // console.log(isChrome);
+  const getBrowserName = () => {
+    const userAgent = navigator.userAgent;
+    const vendor = navigator.vendor;
 
+    if (/OPR/.test(userAgent)) {
+      return "Opera";
+    }
+    if (/Edg/.test(userAgent)) {
+      return "Edge";
+    }
+    if (/Chrome/.test(userAgent) && /Google Inc/.test(vendor)) {
+      return "Chrome";
+    }
+    if (/Safari/.test(userAgent) && /Apple Computer/.test(vendor)) {
+      return "Safari";
+    }
+    if (/Firefox/.test(userAgent)) {
+      return "Firefox";
+    }
+    if (/MSIE|Trident/.test(userAgent)) {
+      return "Internet Explorer";
+    }
+    return "Other";
+  };
+
+  const browserName = getBrowserName();
+  console.log(browserName);
+  const isChrome = browserName === "Chrome";
   useEffect(() => {
     const busyTimeSlots = adminCalendarInfo?.events
       ?.map((event) => {
@@ -467,8 +497,8 @@ const ScheduleTask = ({ taskData, week }) => {
         if (!startDateTime || !endDateTime) {
           return null; // Skip events without a valid start or end dateTime
         }
-        const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        console.log(userTimeZone);
+        // const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        // console.log(userTimeZone);
         // Convert the start and end times to the Asia/Kolkata time zone
         const options = {
           timeZone: 'Asia/Kolkata',
@@ -493,10 +523,10 @@ const ScheduleTask = ({ taskData, week }) => {
       })
       .filter(Boolean);
 
-   // console.log("Busy Time Slots:", busyTimeSlots);
+    console.log("Busy Time Slots:", busyTimeSlots);
 
     setBusyTimeSlots(busyTimeSlots);
-  }, [taskData, matching,adminCalendarInfo?.events]);
+  }, [taskData, matching, adminCalendarInfo?.events]);
 
   const googleSignIn = async () => {
     try {
@@ -545,7 +575,7 @@ const ScheduleTask = ({ taskData, week }) => {
           console.error(error);
         });
   }, [userRequesterEvents, userInfo?.organizationId]);
- // console.log(userZoomInfo?.recording_files);
+  // console.log(userZoomInfo?.recording_files);
   const generateAllTimeSlots = (start, end) => {
     const timeSlots = [];
     let currentTime = new Date(start);
@@ -785,7 +815,7 @@ const ScheduleTask = ({ taskData, week }) => {
                   },
                 },
               };
-             // console.log(data);
+              // console.log(data);
               const newAccessToken = data.access_token;
               if (isReschedule && eventId) {
                 const updatedEvent = {
@@ -971,8 +1001,8 @@ const ScheduleTask = ({ taskData, week }) => {
                             templateType: "emailAction",
                             templateName: "resheduleTaskStudent",
                             organizationId: userInfo?.organizationId,
-                            learner_name:userInfo?.name,
-                            schedule_name:taskData?.taskName,
+                            learner_name: userInfo?.name,
+                            schedule_name: taskData?.taskName,
                             start_time: eventStartTime,
                             end_time: eventEndTime,
                             meeting_link: rescheduledEvent?.hangoutLink,
@@ -1150,8 +1180,8 @@ const ScheduleTask = ({ taskData, week }) => {
                             templateType: "emailAction",
                             templateName: "sheduleTaskStudent",
                             organizationId: userInfo?.organizationId,
-                            learner_name:userInfo?.name,
-                            schedule_name:taskData?.taskName,
+                            learner_name: userInfo?.name,
+                            schedule_name: taskData?.taskName,
                             start_time: eventStartTime,
                             end_time: eventEndTime,
                             meeting_link: event?.hangoutLink,
@@ -1453,12 +1483,12 @@ const ScheduleTask = ({ taskData, week }) => {
                   );
                   console.log(newSchedule);
 
-                  if(newSchedule?.data?.success){
+                  if (newSchedule?.data?.success) {
                     const updateResponse = await axios.put(
                       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/${eventDBid}`,
                       newpostData
                     );
-  
+
                     console.log("res ", updateResponse);
                     if (updateResponse?.data?.acknowledged) {
                       const sendMail = await axios.post(
@@ -1503,7 +1533,7 @@ const ScheduleTask = ({ taskData, week }) => {
                             }`, */
                         }
                       );
-  
+
                       if (userInfo?.role === "admin") {
                         const newNotification = await axios.post(
                           `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/notifications/addNotification`,
@@ -1581,7 +1611,7 @@ const ScheduleTask = ({ taskData, week }) => {
                           .then((response) => response.json()) // Convert the response to JSON
                           .then(async (data) => {
                             console.log("Event updated:", data);
-  
+
                             // Other UI updates or state resets after successful rescheduling
                           })
                           .catch((error) => {
@@ -1591,7 +1621,7 @@ const ScheduleTask = ({ taskData, week }) => {
                         console.log({
                           ...postingData,
                           eventDBid: eventDBid,
-                          
+
                         });
                         const newRescheduleEvent = await axios.put(
                           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/${taskId}/updateEvent`,
@@ -1610,7 +1640,7 @@ const ScheduleTask = ({ taskData, week }) => {
                         //   { calendarInfo: InfoCalendar }
                         // );
                         // console.log(newSchedule);
-                        if(newRescheduleEvent?.status === 200){
+                        if (newRescheduleEvent?.status === 200) {
                           Loading().close();
                           // console.log("new event created ", newEvent);
                           await Swal.fire({
@@ -1618,11 +1648,11 @@ const ScheduleTask = ({ taskData, week }) => {
                             title: "Request Sent!",
                             text: "Your meeting is rescheduled. Please check your email to access the zoom link",
                           });
-    
+
                           navigate("/courseAccess");
                         }
                         Loading().close();
-                        
+
                       }
                     }
                   }
@@ -1794,7 +1824,7 @@ const ScheduleTask = ({ taskData, week }) => {
 
                     try {
                       // Step 2: Create Google Calendar event
-                      
+
                       if (newSchedule?.data?.success) {
                         const response = await gapi.client.request({
                           path: `https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events?conferenceDataVersion=1&sendUpdates=none`,
@@ -2584,107 +2614,122 @@ const ScheduleTask = ({ taskData, week }) => {
                 </div>
               </>
             ) : userInfo?.role === "admin" ? (
-              <div className="w-[250px] lg:w-[355px] min-w-[250px] lg:min-w-min h-[370px] lg:h-[515px]">
-                <h1 className="text-[18px] lg:text-[25px] font-[700] text-center pb-[25px]">
-                  Request {meetingType} slot
-                </h1>
-                <div
-                  style={{
-                    filter: "drop-shadow(3.75217px 3.75217px 0px #000000)",
-                  }}
-                  className="bg-[#0E2749] w-full h-[400px] rounded-[14px] py-[15px] px-[15px] mb-10 lg:p-[30px] flex flex-col justify-between items-center gap-5"
-                >
-                  <div className="w-full relative">
-                    <p className="text-[#C0C0C0] text-[18px] font-[600] pb-[18px]">
-                      Date
-                    </p>
-                    <div className="relative inline-flex w-full">
-                      <input
-                        required
-                        onChange={handleDateChange}
-                        className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
-                        name="date"
-                        id="date"
-                        type="date"
-                        min={getCurrentDate()}
-                        max={maxDateString}
-                      />
-                    </div>
-                    <p className="text-[#C0C0C0] text-[18px] font-[600] py-[18px]">
-                      Time
-                    </p>
-                    <div className="relative inline-flex w-full">
-                      <select
-                        required
-                        onChange={handleTimeChange}
-                        className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
-                        name="time"
-                        id="time"
-                      // defaultValue={taskData?.minimumTime}
+              <>
+                {!isChrome && isOpenStickyBar && (
+                  <div className="w-full rounded-2xl -mt-5 mb-8 bg-amber-500  px-4 py-2 text-white font-semibold font-raleway flex items-center justify-evenly gap-2 md:gap-4 text-[13px] md:text-base">
+                    <div className="">
+                      <a
+                        href="https://www.google.com/chrome/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="no-underline"
                       >
-                        <option className="hidden">Select Time</option>
-                        {generateTimeOptions()}
-                      </select>
+                        Please use Google Chrome browser for better scheduling experience
+                      </a>
                     </div>
-                  </div>
-                  {reservedEvent ? (
-                    <a
-                      href={reservedEvent?.hangoutLink}
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{ boxShadow: "0px 6.32482px 0px #CA5F98" }}
-                      className="bg-[#0F3934] w-full py-[15px] px-[23px] rounded-[13px] text-[12px] lg:text-[18px] font-[700] z-[1]"
+                    <button
+                      onClick={() => setIsOpenStickyBar(false)}
+                      className="px-3 py-1 border-2 font-sans rounded-full "
                     >
-                      <p className="flex items-center justify-center text-white">
-                        Join Meeting{" "}
-                        <img
-                          className="pl-1 w-[21px] lg:w-[32px]"
-                          src={RightArrowWhite}
-                          alt="RightArrowBlack"
-                        />
-                      </p>
-                    </a>
-                  ) : (
-                    <>
-                      {matching || timeRangeError ? (
-                        <>
-                          {timeRangeError ? (
-                            <p className="text-white">
-                              Please choose a time between {minTime} and{" "}
-                              {maxTime}.
-                            </p>
-                          ) : (
-                            <p className="text-white">
-                              Admin is Busy at that time
-                            </p>
-                          )}
-                        </>
-                      ) : (
-                        <DashboardPrimaryButton
-                          bgColor="#3E4DAC"
-                          shadow="0px 6.32482px 0px #CA5F98"
-                          width="full"
-                          onClick={addEvent}
-                          disabled={
-                            !selectedTimeSlot ||
-                            isTimeSlotBusy(selectedTimeSlot) ||
-                            isTimeSlotReserved(selectedTimeSlot)
-                          }
+                      Ok
+                    </button>
+                  </div>
+                )}
+                <div className='grid justify-center justify-items-center items-center'>
+                  <div className="w-[250px] lg:w-[355px] min-w-[250px] lg:min-w-min h-[370px] lg:h-[515px]">
+                    <h1 className="text-[18px] lg:text-[25px] font-[700] text-center pb-[25px]">
+                      Request {meetingType} slot
+                    </h1>
+                    <div
+                      style={{
+                        filter: "drop-shadow(3.75217px 3.75217px 0px #000000)",
+                      }}
+                      className="bg-[#0E2749] w-full h-[400px] rounded-[14px] py-[15px] px-[15px] mb-10 lg:p-[30px] flex flex-col justify-between items-center gap-5"
+                    >
+                      <div className="w-full relative">
+                        <p className="text-[#C0C0C0] text-[18px] font-[600] pb-[18px]">
+                          Date
+                        </p>
+                        <div className="relative inline-flex w-full">
+                          <input
+                            required
+                            onChange={handleDateChange}
+                            className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
+                            name="date"
+                            id="date"
+                            type="date"
+                            min={getCurrentDate()}
+                            max={maxDateString}
+                          />
+                        </div>
+                        <p className="text-[#C0C0C0] text-[18px] font-[600] py-[18px]">
+                          Time
+                        </p>
+                        <div className="relative inline-flex w-full">
+                          <select
+                            required
+                            onChange={handleTimeChange}
+                            className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
+                            name="time"
+                            id="time"
+                          // defaultValue={taskData?.minimumTime}
+                          >
+                            <option className="hidden">Select Time</option>
+                            {generateTimeOptions()}
+                          </select>
+                        </div>
+                      </div>
+                      {reservedEvent ? (
+                        <a
+                          href={reservedEvent?.hangoutLink}
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{ boxShadow: "0px 6.32482px 0px #CA5F98" }}
+                          className="bg-[#0F3934] w-full py-[15px] px-[23px] rounded-[13px] text-[12px] lg:text-[18px] font-[700] z-[1]"
                         >
                           <p className="flex items-center justify-center text-white">
-                            Request Event{" "}
+                            Join Meeting{" "}
                             <img
                               className="pl-1 w-[21px] lg:w-[32px]"
                               src={RightArrowWhite}
                               alt="RightArrowBlack"
                             />
                           </p>
-                        </DashboardPrimaryButton>
+                        </a>
+                      ) : (
+                        <>
+                          {matching ? (
+                            <p className="text-white text-center">
+                              Admin is Busy at that time slot.<br></br>Please choose another slot.
+                            </p>
+                          ) : (
+                            <DashboardPrimaryButton
+                              bgColor="#3E4DAC"
+                              shadow="0px 6.32482px 0px #CA5F98"
+                              width="full"
+                              onClick={addEvent}
+                              disabled={
+                                !selectedTimeSlot ||
+                                isTimeSlotBusy(selectedTimeSlot) ||
+                                isTimeSlotReserved(selectedTimeSlot)
+                              }
+                            >
+                              <p className="flex items-center justify-center text-white">
+                                Request Event{" "}
+                                <img
+                                  className="pl-1 w-[21px] lg:w-[32px]"
+                                  src={RightArrowWhite}
+                                  alt="RightArrowBlack"
+                                />
+                              </p>
+                            </DashboardPrimaryButton>
+                          )}
+                        </>
                       )}
-                    </>
-                  )}
+                    </div>
+                  </div>
                 </div>
-              </div>
+              </>
             ) : (
               <></>
             )}
@@ -2862,124 +2907,126 @@ const ScheduleTask = ({ taskData, week }) => {
                 )}
                 {/* Add any additional content or components specific to user requester events */}
               </div>
-            ) : userInfo?.role === "user" ? (
-              <div className="w-[250px] lg:w-[355px] min-w-[250px] lg:min-w-min h-[370px] lg:h-[515px]">
-                <h1 className="text-[18px] lg:text-[25px] font-[700] text-center pb-[25px]">
-                  Request {meetingType} slot
-                </h1>
-                <div
-                  style={{
-                    filter: "drop-shadow(3.75217px 3.75217px 0px #000000)",
-                  }}
-                  className="bg-[#0E2749] w-full h-[400px] rounded-[14px] py-[15px] px-[15px] mb-10 lg:p-[30px] flex flex-col justify-between items-center gap-5"
-                >
-                  <div className="w-full relative">
-                    <p className="text-[#C0C0C0] text-[18px] font-[600] pb-[18px]">
-                      Date
-                    </p>
-                    <div className="relative inline-flex w-full">
-                      <input
-                        required
-                        onChange={handleDateChange}
-                        className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
-                        name="date"
-                        id="date"
-                        type="date"
-                        min={getCurrentDate()}
-                        max={maxDateString}
-                      />
-                    </div>
-                    <p className="text-[#C0C0C0] text-[18px] font-[600] py-[18px]">
-                      Time
-                    </p>
-                    <div className="relative inline-flex w-full">
-                      <select
-                        required
-                        onChange={handleTimeChange}
-                        className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
-                        name="time"
-                        id="time"
-                      // defaultValue={taskData?.minimumTime}
-                      >
-                        <option className="hidden">Select Time</option>
-                        {generateTimeOptions()}
-                      </select>
-                    </div>
-                    {/* <div className="relative inline-flex w-full">
-                <input
-                  required
-                  onChange={handleBTimeChange}
-                  className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
-                  name="time"
-                  min={taskData?.minimumTime}
-                  max={taskData?.maximumTime}
-                  id="time"
-                  type="time"
-                  defaultValue={taskData?.minimumTime} // Set the default value to 9:00 AM
-                />
-              </div> */}
-                  </div>
-                  {reservedEvent ? (
-                    <a
-                      href={reservedEvent?.hangoutLink}
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{ boxShadow: "0px 6.32482px 0px #CA5F98" }}
-                      className="bg-[#0F3934] w-full py-[15px] px-[23px] rounded-[13px] text-[12px] lg:text-[18px] font-[700] z-[1]"
-                    >
-                      <p className="flex items-center justify-center text-white">
-                        Join Meeting{" "}
-                        <img
-                          className="pl-1 w-[21px] lg:w-[32px]"
-                          src={RightArrowWhite}
-                          alt="RightArrowBlack"
-                        />
-                      </p>
-                    </a>
-                  ) : (
-                    <>
-                      {matching || timeRangeError ? (
-                        <>
-                          {timeRangeError ? (
-                            <p className="text-white">
-                              Please choose a time between {minTime} and{" "}
-                              {maxTime}.
-                            </p>
-                          ) : (
-                            <p className="text-white">
-                              Admin is Busy at that time
-                            </p>
-                          )}
-                        </>
-                      ) : (
-                        <DashboardPrimaryButton
-                          bgColor="#3E4DAC"
-                          shadow="0px 6.32482px 0px #CA5F98"
-                          width="full"
-                          onClick={addEvent}
-                          disabled={
-                            !selectedTimeSlot ||
-                            isTimeSlotBusy(selectedTimeSlot) ||
-                            isTimeSlotReserved(selectedTimeSlot)
-                          }
+            ) :
+              userInfo?.role === "user" ? (
+                <>
+                  {!isChrome && isOpenStickyBar && (
+                    <div className="w-full rounded-2xl -mt-5 mb-8 bg-amber-500  px-4 py-2 text-white font-semibold font-raleway flex items-center justify-evenly gap-2 md:gap-4 text-[13px] md:text-base">
+                      <div className="">
+                        <a
+                          href="https://www.google.com/chrome/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="no-underline"
                         >
-                          <p className="flex items-center justify-center text-white">
-                            Request Event{" "}
-                            <img
-                              className="pl-1 w-[21px] lg:w-[32px]"
-                              src={RightArrowWhite}
-                              alt="RightArrowBlack"
-                            />
-                          </p>
-                        </DashboardPrimaryButton>
-                      )}
-                    </>
+                          Please use Google Chrome browser for better scheduling experience
+                        </a>
+                      </div>
+                      <button
+                        onClick={() => setIsOpenStickyBar(false)}
+                        className="px-3 py-1 border-2 font-sans rounded-full "
+                      >
+                        Ok
+                      </button>
+                    </div>
                   )}
-                </div>
-              </div>
-            ) : (
-              <></>
-            )}
+                  <div className='grid justify-center justify-items-center items-center'>
+                    <div className="w-[250px] lg:w-[355px] min-w-[250px] lg:min-w-min h-[370px] lg:h-[515px]">
+                      <h1 className="text-[18px] lg:text-[25px] font-[700] text-center pb-[25px]">
+                        Request {meetingType} slot
+                      </h1>
+                      <div
+                        style={{
+                          filter: "drop-shadow(3.75217px 3.75217px 0px #000000)",
+                        }}
+                        className="bg-[#0E2749] w-full h-[400px] rounded-[14px] py-[15px] px-[15px] mb-10 lg:p-[30px] flex flex-col justify-between items-center gap-5"
+                      >
+                        <div className="w-full relative">
+                          <p className="text-[#C0C0C0] text-[18px] font-[600] pb-[18px]">
+                            Date
+                          </p>
+                          <div className="relative inline-flex w-full">
+                            <input
+                              required
+                              onChange={handleDateChange}
+                              className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
+                              name="date"
+                              id="date"
+                              type="date"
+                              min={getCurrentDate()}
+                              max={maxDateString}
+                            />
+                          </div>
+                          <p className="text-[#C0C0C0] text-[18px] font-[600] py-[18px]">
+                            Time
+                          </p>
+                          <div className="relative inline-flex w-full">
+                            <select
+                              required
+                              onChange={handleTimeChange}
+                              className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
+                              name="time"
+                              id="time"
+                            >
+                              <option className="hidden">Select Time</option>
+                              {generateTimeOptions()}
+                            </select>
+                          </div>
+                        </div>
+                        {reservedEvent ? (
+                          <a
+                            href={reservedEvent?.hangoutLink}
+                            target="_blank"
+                            rel="noreferrer"
+                            style={{ boxShadow: "0px 6.32482px 0px #CA5F98" }}
+                            className="bg-[#0F3934] w-full py-[15px] px-[23px] rounded-[13px] text-[12px] lg:text-[18px] font-[700] z-[1]"
+                          >
+                            <p className="flex items-center justify-center text-white">
+                              Join Meeting{" "}
+                              <img
+                                className="pl-1 w-[21px] lg:w-[32px]"
+                                src={RightArrowWhite}
+                                alt="RightArrowBlack"
+                              />
+                            </p>
+                          </a>
+                        ) : (
+                          <>
+                            {matching ? (
+                              <p className="text-white text-center">
+                                Admin is Busy at that time slot.<br></br>Please choose another slot.
+                              </p>
+                            ) : (
+                              <DashboardPrimaryButton
+                                bgColor="#3E4DAC"
+                                shadow="0px 6.32482px 0px #CA5F98"
+                                width="full"
+                                onClick={addEvent}
+                                disabled={
+                                  !selectedTimeSlot ||
+                                  isTimeSlotBusy(selectedTimeSlot) ||
+                                  isTimeSlotReserved(selectedTimeSlot)
+                                }
+                              >
+                                <p className="flex items-center justify-center text-white">
+                                  Request Event{" "}
+                                  <img
+                                    className="pl-1 w-[21px] lg:w-[32px]"
+                                    src={RightArrowWhite}
+                                    alt="RightArrowBlack"
+                                  />
+                                </p>
+                              </DashboardPrimaryButton>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <></>
+              )}
           </>
         </>
       )}
