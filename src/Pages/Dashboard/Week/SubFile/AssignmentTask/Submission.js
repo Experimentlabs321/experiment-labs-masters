@@ -200,10 +200,12 @@ const Submission = ({ taskData, count, setCount }) => {
             message: `${userInfo?.name} has submitted assignment of the task ${taskData?.taskName}. Please review the submission.`, */
             }
           );
-          Swal.fire({
-            icon: "success",
-            text: "Please go to review submission to evaluate your assignment.",
-          });
+          if (taskData?.autoEvaluation) {
+            Swal.fire({
+              icon: "success",
+              text: "Please go to review submission to evaluate your assignment.",
+            });
+          }
           console.log(newNotification);
           toast.success("Assignment Submitted Successfully");
           setCount(count + 1);
