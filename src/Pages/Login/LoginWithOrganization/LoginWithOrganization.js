@@ -16,6 +16,7 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { Dialog, useMediaQuery, useTheme } from "@mui/material";
 import app from "../../../firebase/firebase.config";
 
+
 const LoginWithOrganization = () => {
   const { id } = useParams();
   const { user, userInfo, signIn, providerLogin, logOut } =
@@ -35,6 +36,7 @@ const LoginWithOrganization = () => {
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+  
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -146,7 +148,9 @@ const LoginWithOrganization = () => {
 
   const saveUser = async (email) => {
     try {
-      fetch(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/users?email=${email}`)
+      fetch(
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users?email=${email}`
+      )
         .then((res) => res.json())
         .then((data) => {
           Loading().close();

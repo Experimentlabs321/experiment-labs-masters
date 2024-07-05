@@ -105,7 +105,7 @@ const AuthProvider = ({ children }) => {
     return () => {
       unsubscribe();
     };
-  }, [user?.email]);
+  }, []);
 
   useEffect(() => {
     Loading();

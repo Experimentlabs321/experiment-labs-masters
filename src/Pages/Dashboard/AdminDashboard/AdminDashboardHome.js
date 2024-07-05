@@ -1,18 +1,66 @@
 //AdminDashboardHome
 import React, { useContext, useEffect, useState } from "react";
 import Layout from "../Layout";
-import adminDas from "../../../assets/Dashboard/adminDash.png";
+// import adminDas from "../../../assets/Dashboard/adminDash.png";
 import AdminStatistics from "./AdminStatistics";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
 
 import { CircularProgress } from "@mui/material";
+import { useLocation, useNavigate } from "react-router-dom";
+import { jwtVerify } from "jose";
+import Loading from "../../Shared/Loading/Loading";
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
 
 const AdminDashboardHome = () => {
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo, signIn } = useContext(AuthContext);
   const [organization, setOrganization] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [itemDetails, setItemDetails] = useState();
+  const query = useQuery();
+  const token = query.get("token");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const getTokenData = async () => {
+      const newSecret = process.env.REACT_APP_SECRET_LOGIN_KEY;
+      const secret = new TextEncoder().encode(newSecret);
+      try {
+        if (secret && token) {
+          const { payload } = await jwtVerify(token, secret);
+          if (!payload.isProviderLogin) {
+            if (!userInfo.email) {
+              await signIn(payload.email, payload.password).then(() => {
+                saveUser(payload.email);
+              });
+            }
+          }
+        }
+      } catch (error) {
+        console.log({ error });
+        throw new Error(error);
+      }
+    };
+
+    token && getTokenData();
+  }, [token]);
+
+  const saveUser = async (email) => {
+    try {
+      fetch(
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users?email=${email}`
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          localStorage.setItem("role", data?.role);
+          if (data?.role === "admin") navigate("/adminDashboardHome");
+          else navigate("/dashboard");
+        });
+    } catch (error) {}
+  };
+
   useEffect(() => {
     axios
       .get(
@@ -27,6 +75,7 @@ const AdminDashboardHome = () => {
         setIsLoading(false);
       });
   }, [userInfo]);
+
   useEffect(() => {
     if (userInfo) {
       //  setAdminLoading(true);
