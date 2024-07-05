@@ -25,11 +25,7 @@ import DashboardCourses from "./DashboardCourses";
 import { CircularProgress } from "@mui/material";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import zoom from "../../../assets/icons/zoom-240.png";
-import { jwtVerify } from "jose";
-import Loading from "../../Shared/Loading/Loading";
-function useQuery() {
-  return new URLSearchParams(useLocation().search);
-}
+
 const Dashboard = () => {
   const data = [
     {
@@ -102,7 +98,7 @@ const Dashboard = () => {
   const [length, setLength] = useState(data.length);
   const [courses, setCourses] = useState([]);
   const [userRequesterEvents, setUserRequesterEvents] = useState([]);
-  const { userInfo, user, signIn } = useContext(AuthContext);
+  const { userInfo, user } = useContext(AuthContext);
   const [selectedCourse, setSelectedCourse] = useState({});
   const [isOpen, setIsOpen] = useState(false);
   const [weeks, setWeeks] = useState([]);
@@ -113,47 +109,7 @@ const Dashboard = () => {
   const [currentCourseCompletion, setCurrentCourseCompletion] = useState(0);
   const [dashboardTheme, setDashboardTheme] = useState({});
   const [courseAccessUrl, setCourseAccessUrl] = useState(``);
-  const query = useQuery();
-  const token = query.get("token");
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const getTokenData = async () => {
-      const newSecret = process.env.REACT_APP_SECRET_LOGIN_KEY;
-      const secret = new TextEncoder().encode(newSecret);
-      try {
-        if (secret && token) {
-          const { payload } = await jwtVerify(token, secret);
-          if (!payload.isProviderLogin) {
-            if (!userInfo.email) {
-              await signIn(payload.email, payload.password).then(() => {
-                saveUser(payload.email);
-              });
-            }
-          }
-        }
-      } catch (error) {
-        console.log({ error });
-        throw new Error(error);
-      }
-    };
-
-    getTokenData();
-  }, [token]);
-
-  const saveUser = async (email) => {
-    try {
-      fetch(
-        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users?email=${email}`
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          localStorage.setItem("role", data?.role);
-          if (data?.role === "admin") navigate("/adminDashboardHome");
-          else navigate("/dashboard");
-        });
-    } catch (error) {}
-  };
+  
 
   const handleViewAllLevel = () => {
     setViewAllLevel(true);
