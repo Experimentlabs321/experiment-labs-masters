@@ -133,6 +133,7 @@ import PastClasses from "../../Pages/Dashboard/ExecutionMentorLiveClasses/PastCl
 import Mentors from "../../Pages/Dashboard/Mentors/Mentors";
 import ExecutionMentorMainSchedule from "../../Pages/Dashboard/ExecutionMentorSchedule/ExecutionMentorMainSchedule";
 import MentorCalendar from "../../Pages/Dashboard/Mentors/MentorCalendar";
+import PreDashboard from "../../Pages/Shared/PreDashboard/PreDashboard";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -245,6 +246,10 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: <Dashboard />,
+  },
+  {
+    path: "/preDashboard",
+    element: <PreDashboard />,
   },
   {
     path: "/leaderBoard",
