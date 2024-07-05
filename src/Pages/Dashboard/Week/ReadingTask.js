@@ -115,7 +115,7 @@ const ReadingTask = ({ taskData, count, setCount }) => {
       setOverlayVisible(true);
     }
   };
-  console.log(taskData);
+  // console.log(taskData);
   const [downloadProgress, setDownloadProgress] = useState(0);
   const [cancelTokenSource, setCancelTokenSource] = useState(null);
   const [iframeLoaded, setIframeLoaded] = useState(false);

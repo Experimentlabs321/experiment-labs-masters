@@ -85,8 +85,6 @@ const WeekDetails = ({
     }
   }, [chapters]);
 
-  console.log(openTopics);
-
   useEffect(() => {
     const containerElement = containerRef.current;
 
@@ -322,8 +320,6 @@ const WeekDetails = ({
       setScreenSmall(true);
     }
   }, [windowWidth, chapters]);
-
-  console.log(screenSmall, windowWidth, window.innerWidth);
 
   return (
     <div
