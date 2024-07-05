@@ -25,6 +25,10 @@ const General = ({
   setExecutionMentors,
   selectedMentors,
   setSelectedMentors,
+  autoEvaluation,
+  setAutoEvaluation,
+  autoEvaluationInstructions,
+  setAutoEvaluationInstructions,
 }) => {
   // upload file
   const [dragActive, setDragActive] = useState(true);
@@ -422,6 +426,79 @@ const General = ({
               Course Drip Must Be Turned Off to add Task Drip.
             </p>
           )}
+        </div>
+        <div className="space-y-4 mb-8">
+          <fieldset>
+            <div className="flex items-center gap-4 mb-5">
+              <p className="h-2 w-2 bg-black rounded-full"></p>
+              <p className="font-bold text-lg me-[36px]">Auto Evaluation</p>
+              <img src={required} alt="" />
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center">
+                <input
+                  type="radio"
+                  id="autoEvaluationRadioYes"
+                  name="autoEvaluationRadioOption"
+                  checked={autoEvaluation === true}
+                  onChange={() => setAutoEvaluation(true)}
+                  // disabled={enableDrip}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
+                />
+                <label
+                  htmlFor="autoEvaluationRadioYes"
+                  className={`ml-2 text-sm font-medium ${
+                    autoEvaluation ? "text-gray-400" : "text-gray-900"
+                  }`}
+                >
+                  Yes
+                </label>
+              </div>
+
+              <div className="flex items-center">
+                <input
+                  type="radio"
+                  id="autoEvaluationRadioNo"
+                  name="autoEvaluationRadioOption"
+                  checked={autoEvaluation === false}
+                  onChange={() => setAutoEvaluation(false)}
+                  // disabled={enableDrip}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
+                />
+                <label
+                  htmlFor="autoEvaluationRadioNo"
+                  className={`ml-2 text-sm font-medium ${
+                    autoEvaluation ? "text-gray-400" : "text-gray-900"
+                  }`}
+                >
+                  No
+                </label>
+              </div>
+            </div>
+          </fieldset>
+
+          <div className={`mt-12 ${!autoEvaluation && "hidden"}`}>
+            <div className="flex items-center gap-4">
+              <p className="h-2 w-2 bg-black rounded-full"></p>
+              <p className="font-bold text-lg me-[36px]">
+                {" "}
+                Evaluation Instructions
+              </p>
+              <img src={required} alt="required" />
+            </div>
+
+            {/* Text editor */}
+            <div className="py-4 pr-4">
+              <div className="bg-white text-black textEditor">
+                <TextEditor
+                  value={autoEvaluationInstructions}
+                  setValue={setAutoEvaluationInstructions}
+                />
+              </div>
+            </div>
+            {/* <p>{instructions}</p>
+              <div dangerouslySetInnerHTML={{ __html: instructions }} /> */}
+          </div>
         </div>
       </div>
     </div>

@@ -5,6 +5,7 @@ import axios from "axios";
 import { useContext } from "react";
 import { AuthContext } from "../../../../../contexts/AuthProvider";
 import Loading from "../../../../Shared/Loading/Loading";
+import Swal from "sweetalert2";
 
 const Submission = ({ taskData, count, setCount }) => {
   const [fileLoading, setFileLoading] = useState(false);
@@ -115,87 +116,105 @@ const Submission = ({ taskData, count, setCount }) => {
       batchId: batch[0]?._id,
       weekName: JSON.parse(localStorage.getItem("currentWeek"))?.weekName,
       fileUrl: fileUrl,
-      submitter: userInfo,
+      submitter: taskData?.autoEvaluation
+        ? {
+            ...userInfo,
+            result: {
+              attachFile: "",
+              feedback: "",
+              resultSubmitterName: "Admin",
+              resultSubmitterPhotoURL: null,
+              dateAndTime: new Date(),
+            },
+          }
+        : userInfo,
       submissionDateTime: new Date(),
     };
 
-    console.log(manageAssignment);
+    try {
+      if (manageAssignment && fileUrl) {
+        console.log(manageAssignment);
+        const newAssignment = await axios.post(
+          // `${process.env.REACT_APP_BACKEND_API}/submitAssignment`,
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions`,
+          manageAssignment
+        );
 
-    if (manageAssignment && fileUrl) {
-      console.log(manageAssignment);
-      const newAssignment = await axios.post(
-        // `${process.env.REACT_APP_BACKEND_API}/submitAssignment`,
-        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions`,
-        manageAssignment
-      );
-
-      const sendData = {
-        participantChapter: {
-          email: userInfo?.email,
-          participantId: userInfo?._id,
-          status: "In Progress",
-          submissionDateTime: new Date(),
-        },
-        participantTask: {
-          participant: {
+        const sendData = {
+          participantChapter: {
             email: userInfo?.email,
             participantId: userInfo?._id,
             status: "In Progress",
             submissionDateTime: new Date(),
           },
-        },
-      };
-      const submitCompletion = await axios.post(
-        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/Assignment/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`,
-        sendData
-      );
-
-      console.log(submitCompletion);
-
-      if (newAssignment?.data?.acknowledged) {
-        const newNotification = await axios.post(
-          `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/notifications/addNotification`,
-          {
-            message: `${userInfo?.name} has submitted an assignment of the task ${taskData?.taskName} of the course ${course?.courseFullName} batch ${batch[0]?.batchName}.`,
-            dateTime: new Date(),
-            recipient: {
-              type: "Admins",
-              organizationId: userInfo?.organizationId,
+          participantTask: {
+            participant: {
+              email: userInfo?.email,
+              participantId: userInfo?._id,
+              status: "In Progress",
+              submissionDateTime: new Date(),
             },
-            type: "Submission",
-            readBy: [],
-            triggeredBy: user?.email,
-            redirectLink: `/mentorAssignments`,
-          }
+          },
+        };
+        const submitCompletion = await axios.post(
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/Assignment/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`,
+          sendData
         );
-        const sendMail = await axios.post(
-          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
-          // `http://localhost:5000/api/v1/sendMail`,
-          {
-            //from: user?.email,
-            // to: `naman.j@experimentlabs.in,gaurav@experimentlabs.in`,
-            to: course?.creator?.email,
 
-            templateType: "emailAction",
-            templateName: "assignmentSubmission",
-            organizationId: userInfo?.organizationId,
-            user_name: userInfo?.name,
-            task_name: taskData?.taskName,
-            // learner_name: "",
-            // course_name: "",
-            // site_name: "",
-            // site_email: ""
-            /* subject: `Submission of ${taskData?.taskName}`,
+        console.log(submitCompletion);
+
+        if (newAssignment?.data?.acknowledged) {
+          const newNotification = await axios.post(
+            `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/notifications/addNotification`,
+            {
+              message: `${userInfo?.name} has submitted an assignment of the task ${taskData?.taskName} of the course ${course?.courseFullName} batch ${batch[0]?.batchName}.`,
+              dateTime: new Date(),
+              recipient: {
+                type: "Admins",
+                organizationId: userInfo?.organizationId,
+              },
+              type: "Submission",
+              readBy: [],
+              triggeredBy: user?.email,
+              redirectLink: `/mentorAssignments`,
+            }
+          );
+          const sendMail = await axios.post(
+            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
+            // `http://localhost:5000/api/v1/sendMail`,
+            {
+              //from: user?.email,
+              // to: `naman.j@experimentlabs.in,gaurav@experimentlabs.in`,
+              to: course?.creator?.email,
+
+              templateType: "emailAction",
+              templateName: "assignmentSubmission",
+              organizationId: userInfo?.organizationId,
+              user_name: userInfo?.name,
+              task_name: taskData?.taskName,
+              // learner_name: "",
+              // course_name: "",
+              // site_name: "",
+              // site_email: ""
+              /* subject: `Submission of ${taskData?.taskName}`,
             message: `${userInfo?.name} has submitted assignment of the task ${taskData?.taskName}. Please review the submission.`, */
+            }
+          );
+          if (taskData?.autoEvaluation) {
+            Swal.fire({
+              icon: "success",
+              text: "Please go to review submission to evaluate your assignment.",
+            });
           }
-        );
+          console.log(newNotification);
+          toast.success("Assignment Submitted Successfully");
+          setCount(count + 1);
+          checkSubmit();
+        }
 
-        console.log(newNotification);
-        toast.success("Assignment Submitted Successfully");
-        setCount(count + 1);
-        checkSubmit();
+        // Loading().close();
       }
-
+    } catch (error) {
       Loading().close();
     }
   };
