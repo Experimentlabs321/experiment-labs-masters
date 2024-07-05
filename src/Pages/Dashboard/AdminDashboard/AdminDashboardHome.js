@@ -1,7 +1,7 @@
 //AdminDashboardHome
 import React, { useContext, useEffect, useState } from "react";
 import Layout from "../Layout";
-import adminDas from "../../../assets/Dashboard/adminDash.png";
+// import adminDas from "../../../assets/Dashboard/adminDash.png";
 import AdminStatistics from "./AdminStatistics";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
@@ -13,6 +13,7 @@ const AdminDashboardHome = () => {
   const [organization, setOrganization] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [itemDetails, setItemDetails] = useState();
+
   useEffect(() => {
     axios
       .get(
@@ -27,6 +28,7 @@ const AdminDashboardHome = () => {
         setIsLoading(false);
       });
   }, [userInfo]);
+
   useEffect(() => {
     if (userInfo) {
       //  setAdminLoading(true);
