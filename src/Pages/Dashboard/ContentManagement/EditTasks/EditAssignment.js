@@ -50,6 +50,9 @@ const EditAssignment = () => {
   const [taskDrip, setTaskDrip] = useState(false);
   const [executionMentors, setExecutionMentors] = useState([]);
   const [selectedMentors, setSelectedMentors] = useState([]);
+  const [autoEvaluation, setAutoEvaluation] = useState(false);
+  const [autoEvaluationInstructions, setAutoEvaluationInstructions] =
+    useState("");
 
   useEffect(() => {
     if (id)
@@ -93,6 +96,16 @@ const EditAssignment = () => {
             response?.data?.contentStage === undefined
               ? []
               : response?.data?.contentStage
+          );
+          setAutoEvaluation(
+            response?.data?.autoEvaluation
+              ? response?.data?.autoEvaluation
+              : autoEvaluation
+          );
+          setAutoEvaluationInstructions(
+            response?.data?.autoEvaluationInstructions
+              ? response?.data?.autoEvaluationInstructions
+              : autoEvaluationInstructions
           );
         });
   }, [id]);
@@ -168,8 +181,8 @@ const EditAssignment = () => {
   useEffect(() => {
     axios
       .get(
-        // `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users//mentors/organizationId/${userInfo?.organizationId}/role/execution mentor`
-        `http://localhost:5000/api/v1/users/mentors/organizationId/${userInfo?.organizationId}/role/execution mentor`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/mentors/organizationId/${userInfo?.organizationId}/role/execution mentor`
+        // `http://localhost:5000/api/v1/users/mentors/organizationId/${userInfo?.organizationId}/role/execution mentor`
       )
       .then((response) => {
         setExecutionMentors(response?.data);
@@ -252,6 +265,8 @@ const EditAssignment = () => {
       contentStage,
       taskDrip,
       executionMentors: selectedMentors,
+      autoEvaluation: autoEvaluation,
+      autoEvaluationInstructions: autoEvaluationInstructions,
     };
 
     setAssignmentData(manageAssignment);
@@ -425,6 +440,10 @@ const EditAssignment = () => {
                 setExecutionMentors={setExecutionMentors}
                 selectedMentors={selectedMentors}
                 setSelectedMentors={setSelectedMentors}
+                autoEvaluation={autoEvaluation}
+                setAutoEvaluation={setAutoEvaluation}
+                autoEvaluationInstructions={autoEvaluationInstructions}
+                setAutoEvaluationInstructions={setAutoEvaluationInstructions}
               />
             )}
             {(orgData?.showPointsAndRedemptions ||

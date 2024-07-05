@@ -49,6 +49,7 @@ const Aside = ({
   const [selectedOption, setSelectedOption] = useState("Category");
   const [clickedChapter, setClickedChapter] = useState({});
   const options = ["Category name"];
+  const [openTopics, setOpenTopics] = useState([]);
   const { userInfo } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -73,6 +74,12 @@ const Aside = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [setToggleButton]);
+
+  useEffect(() => {
+    if (openTopics?.length === 0) {
+      if (chapters && chapters[0]) setOpenTopics([chapters[0]?._id]);
+    }
+  }, [chapters]);
 
   const toggleOptions = () => {
     setIsOpen(!isOpen);
@@ -274,7 +281,20 @@ const Aside = ({
                   <li key={item?._id} className="">
                     <div>
                       <div
-                        onClick={() => setOpenTopic(item?.chapterName)}
+                        // onClick={() => setOpenTopic(item?.chapterName)}
+
+                        onClick={() => {
+                          const findChapter = openTopics?.find(
+                            (c) => c === item?._id
+                          );
+                          if (findChapter) {
+                            setOpenTopics(
+                              openTopics?.filter((i) => i !== item?._id)
+                            );
+                          } else {
+                            setOpenTopics([...openTopics, item?._id]);
+                          }
+                        }}
                         className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px] cursor-pointer group`}
                       >
                         <div className="min-w-[42px] min-h-[42px] bg-[#D7DDFF] text-black flex items-center justify-center rounded-full ">
@@ -378,7 +398,9 @@ const Aside = ({
                       </div>
                       <div
                         className={` ${
-                          openTopic === item?.chapterName ? "" : "hidden"
+                          openTopics?.find((topic) => topic === item?._id)
+                            ? ""
+                            : "hidden"
                         } sub-items`}
                       >
                         {Role === "admin" &&

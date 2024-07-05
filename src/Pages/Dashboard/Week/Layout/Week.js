@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import logo from "../../../../assets/Logos/Group 2859890.png";
 import PersonProfilePic from "../../../../assets/Dashboard/PersonProfilePic.png";
 import MyHelmet from "../../../../Components/MyHelmet/MyHelpmet";
@@ -8,6 +8,7 @@ import WeekDetail from "../WeekDetail";
 import Navbar from "../../Shared/Navbar";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { AuthContext } from "../../../../contexts/AuthProvider";
 
 const data = [
   {
@@ -64,21 +65,49 @@ const Week = () => {
   const [courseData, setCourseData] = useState({});
   const [openTopic, setOpenTopic] = useState(localStorage.getItem("chapter"));
   const Role = localStorage.getItem("role");
+  const { user, userInfo } = useContext(AuthContext);
   const [count, setCount] = useState(0);
 
   console.log(week);
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/weekId/${id}`)
+      .get(
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/weekId/${id}`
+      )
       .then((response) => {
-        setChapters(response?.data);
+        // setChapters(response?.data);
+        if (Role === "admin") setChapters(response?.data);
+        else {
+          let chapterWithFilteredTask = [];
+          const batchId = userInfo?.courses?.find(
+            (item) => item?.courseId === courseData?._id
+          )?.batchId;
+          console.log(batchId);
+          response?.data?.forEach((item) => {
+            let singleChapter = { ...item };
+            singleChapter.tasks = [];
+            item?.tasks?.forEach((singleTask) => {
+              if (
+                singleTask?.batches?.find(
+                  (singleBatch) => singleBatch?.batchId === batchId
+                )
+              ) {
+                singleChapter.tasks.push(singleTask);
+                console.log(item);
+              }
+            });
+            chapterWithFilteredTask.push(singleChapter);
+          });
+          setChapters(chapterWithFilteredTask);
+          console.log("tasks =======>", chapterWithFilteredTask[0]?.tasks);
+        }
 
         //console.log(response?.data);
         // setOpenTopic(response?.data[0]?.chapterName);
       })
       .catch((error) => console.error(error));
-  }, [id, count]);
+  }, [id, count, Role, userInfo]);
   console.log("Chapters ==============>", chapters);
   //const [toggleButton, setToggleButton] = useState(false);
 
