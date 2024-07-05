@@ -2,14 +2,23 @@ import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
 import Swal from "sweetalert2";
+import WhatsappCreateTemplate from "./WhatsappCreateTemplate";
+import Loading from "../../Shared/Loading/Loading";
 
 const WatiIntegration = ({ watiInstance, setWatiInstance, orgData }) => {
   const { userInfo } = useContext(AuthContext);
-  console.log(watiInstance);
+  console.log(orgData);
   const [accessToken, setAccessToken] = useState(watiInstance?.accessToken);
-  const [key_secret, setKey_secret] = useState(watiInstance?.key_secret);
+  
   const [loading, setLoading] = useState(false);
   const [itemDetails, setItemDetails] = useState();
+  const [showForm, setShowForm] = useState(false);
+
+  const [token, setToken] = useState("");
+  const [selectedTemplate, setSelectedTemplate] = useState({});
+
+  const [email, setEmail] = useState();
+  const [templates, setTemplates] = useState();
   useEffect(() => {
     if (userInfo) {
       setLoading(true);
@@ -27,7 +36,61 @@ const WatiIntegration = ({ watiInstance, setWatiInstance, orgData }) => {
     }
     setLoading(false);
   }, [userInfo]);
-  console.log(itemDetails);
+  console.log(orgData?._id);
+
+  useEffect(() => {
+    axios
+      .get(
+        `http://localhost:5000/api/v1/organizations/whatsapp/e/${orgData?._id}`
+        // `http://localhost:5000/api/v1/organizations/whatsapp/e/64cbbd756f0ef101bc957231`
+      )
+      .then((response) => {
+        console.log(response.data);
+
+        /*   setToken(response.data?.accessKeyId);
+        setTemplateName(response.data?.templateName);
+        setEmail(response.data?.email); */
+        setTemplates(response.data?.whatsappTemplates);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [orgData?._id]);
+
+  const handleTemplateSubmit = async (event) => {
+    event.preventDefault();
+    Loading();
+    // const form = event.target;
+
+    const orgWhatsappInfo = {
+      whatsappIntegration: {
+      
+        accessToken:selectedTemplate?.accessToken,
+        email:selectedTemplate?.email,
+        htmlPart:selectedTemplate?.htmlPart,
+
+        templateType:selectedTemplate?.templateType,
+        textPart:selectedTemplate?.textPart,
+
+        templateName: selectedTemplate?.templateName,
+        
+      },
+    };
+    console.log(orgWhatsappInfo)
+    const updateOrg = await axios.put(
+      //`${process.env.REACT_APP_SERVERLESS_API}/api/v1/organizations/whatsapp/e/${orgData?._id}`,
+      `http://localhost:5000/api/v1/organizations/whatsapp/e/663e1bcdf7168d402bddb048`,
+      orgWhatsappInfo
+    );
+
+    if (updateOrg?.data?.acknowledged) {
+      Swal.fire({
+        title: "Updated successfully!",
+        icon: "success",
+      });
+    }
+    Loading().close();
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -148,19 +211,76 @@ const WatiIntegration = ({ watiInstance, setWatiInstance, orgData }) => {
       </form>
 
       <div>
+        <div className="flex justify-between items-center mb-5">
+          <div>
+            <label
+              className="block text-gray-700 w-full font-bold mb-2"
+              htmlFor="select"
+            >
+              Select Default Template
+            </label>
+            <select
+              className="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+              id="templateName"
+              value={selectedTemplate?._id || ""}
+              onChange={(e) => {
+                const selectedTemplate = templates.find(
+                  (t) => t._id === e.target.value
+                );
+                setSelectedTemplate(selectedTemplate);
+              }}
+            >
+              <option value="">Select a WhatsApp template</option>
+              {templates?.map((template, index) => (
+                <option key={index} value={template._id}>
+                  {template.templateName}
+                </option>
+              ))}
+            </select>
+
+            <div className="flex items-center justify-start mt-4">
+              <button
+                onClick={handleTemplateSubmit}
+                className="px-4 py-2 bg-green hover:bg-green focus:outline-none focus:bg-green text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition duration-300"
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+          <button
+            className="bg-blue text-white p-2 rounded-md mb-5 font-semibold"
+            onClick={() => setShowForm(true)}
+          >
+            Create email template
+          </button>
+        </div>
+
+        {showForm && (
+          <WhatsappCreateTemplate
+            email={userInfo?.email}
+            setShowForm={setShowForm}
+            accessToken={watiInstance?.accessToken}
+            orgData={orgData}
+          />
+        )}
+      </div>
+
+      <div className="flex gap-5">
         <input
+        className=" border p-2 rounded-md"
           type="text"
           placeholder="Phone Number"
           value={phoneNumber}
           onChange={(e) => setPhoneNumber(e.target.value)}
         />
         <input
+        className=" border p-2 rounded-md"
           type="text"
           placeholder="Message"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
-        <button onClick={sendMessage}>Send Message</button>
+        <button className="bg-blue text-white p-2 font-semibold rounded-md" onClick={sendMessage}>Send Message</button>
       </div>
     </div>
   );
