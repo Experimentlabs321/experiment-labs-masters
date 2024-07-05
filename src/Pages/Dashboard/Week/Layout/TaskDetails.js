@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import Navbar from "../../Shared/Navbar";
@@ -13,6 +13,7 @@ import VideoTask from "../VideoTask";
 import AudioTask from "../AudioTask";
 import FilesTask from "../FilesTask";
 import ScheduleTask from "../ScheduleTask";
+import { AuthContext } from "../../../../contexts/AuthProvider";
 
 const TaskDetails = () => {
   const { id } = useParams();
@@ -25,6 +26,7 @@ const TaskDetails = () => {
   const [openTopic, setOpenTopic] = useState("");
   const [toggleButton, setToggleButton] = useState(false);
   const [count, setCount] = useState(0);
+  const { user, userInfo } = useContext(AuthContext);
 
   useEffect(() => {
     // Function to update toggleButton based on device size
@@ -140,6 +142,31 @@ const TaskDetails = () => {
         )
         .then((response) => {
           setChapters(response?.data);
+          if (userInfo?.role === "admin") setChapters(response?.data);
+          else {
+            let chapterWithFilteredTask = [];
+            const batchId = userInfo?.courses?.find(
+              (item) => item?.courseId === courseData?._id
+            )?.batchId;
+            console.log(batchId);
+            response?.data?.forEach((item) => {
+              let singleChapter = { ...item };
+              singleChapter.tasks = [];
+              item?.tasks?.forEach((singleTask) => {
+                if (
+                  singleTask?.batches?.find(
+                    (singleBatch) => singleBatch?.batchId === batchId
+                  )
+                ) {
+                  singleChapter.tasks.push(singleTask);
+                  console.log(item);
+                }
+              });
+              chapterWithFilteredTask.push(singleChapter);
+            });
+            setChapters(chapterWithFilteredTask);
+            console.log("tasks =======>", chapterWithFilteredTask[0]?.tasks);
+          }
         })
         .catch((error) => console.error(error));
   }, [week, count]);

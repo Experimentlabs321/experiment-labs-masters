@@ -50,6 +50,9 @@ const Assignment = () => {
   const [schedule, setSchedule] = useState([]);
   const [orgData, setOrgData] = useState({});
   const [taskDrip, setTaskDrip] = useState(false);
+  const [autoEvaluation, setAutoEvaluation] = useState(false);
+  const [autoEvaluationInstructions, setAutoEvaluationInstructions] =
+    useState("");
   const [enableDrip, setEnableDrip] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [executionMentors, setExecutionMentors] = useState([]);
@@ -236,6 +239,8 @@ const Assignment = () => {
       contentStage,
       taskDrip,
       executionMentors: selectedMentors,
+      autoEvaluation: autoEvaluation,
+      autoEvaluationInstructions: autoEvaluationInstructions,
     };
 
     setAssignmentData(manageAssignment);
@@ -424,6 +429,10 @@ const Assignment = () => {
                 enableDrip={course?.enableDrip}
                 taskDrip={taskDrip}
                 setTaskDrip={setTaskDrip}
+                autoEvaluation={autoEvaluation}
+                setAutoEvaluation={setAutoEvaluation}
+                autoEvaluationInstructions={autoEvaluationInstructions}
+                setAutoEvaluationInstructions={setAutoEvaluationInstructions}
                 executionMentors={executionMentors}
                 setExecutionMentors={setExecutionMentors}
                 selectedMentors={selectedMentors}

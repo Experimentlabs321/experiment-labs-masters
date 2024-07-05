@@ -63,8 +63,6 @@ const ReviewSubmission = (taskData) => {
 
   const review = submittedResult?.submitter?.result?.review;
 
-  console.log(submittedResult?.submitter?.result?.attachFile);
-  console.log(submittedResult);
   const colorData = [
     { progressBarColor: "#F0E823" },
     { progressBarColor: "#23F050" },
@@ -463,6 +461,14 @@ const ReviewSubmission = (taskData) => {
                   <div className=" shadow-lg mb-[45px] ">
                     <div className=" p-[33px] bg-[#F1F3FF] text-[16px] font-[400] rounded-t-[5px] ">
                       <p>{submittedResult?.submitter?.result?.feedback}</p>
+                      {taskData?.taskData?.autoEvaluation && (
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html:
+                              taskData?.taskData?.autoEvaluationInstructions,
+                          }}
+                        />
+                      )}
                       <p>{submittedResult?.submitter?.result?.status}</p>
                     </div>
                     <div className=" py-[16px] px-[25px] flex items-center gap-[20px] ">
