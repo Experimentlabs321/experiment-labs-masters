@@ -39,7 +39,7 @@ const CourseAccess = () => {
     setSelectedOption(option);
     setIsOpen(false);
   };
-  console.log(courses);
+ // console.log(courses);
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const stateParam = queryParams.get("state");
@@ -108,27 +108,27 @@ const CourseAccess = () => {
       });
   }, [userInfo]);
 
-  // useEffect(() => {
-  //   if (selectedOption !== "All") {
-  //     if (stateParams === "myCourses") {
-  //       const filteredCourses = myCourses?.filter(
-  //         (item) => item?.courseCategory === selectedOption
-  //       );
-  //       setShowCourses(filteredCourses);
-  //     } else if (stateParams === "allCourses") {
-  //       const filteredCourses = courses?.filter(
-  //         (item) => item?.courseCategory === selectedOption
-  //       );
-  //       setShowCourses(filteredCourses);
-  //     }
-  //   } else {
-  //     // If selectedOption is "All", show all courses without filtering
-  //     setShowCourses(stateParams === "myCourses" ? myCourses : courses);
-  //   }
-  //   // Set isLoading to false after filtering
-  //   setIsLoading(false);
-  // }, [selectedOption, stateParams, myCourses, courses]);
-  console.log(selectedOption);
+  useEffect(() => {
+    if (selectedOption !== "All") {
+      if (stateParams === "myCourses") {
+        const filteredCourses = myCourses?.filter(
+          (item) => item?.courseCategory === selectedOption
+        );
+        setShowCourses(filteredCourses);
+      } else if (stateParams === "allCourses") {
+        const filteredCourses = courses?.filter(
+          (item) => item?.courseCategory === selectedOption
+        );
+        setShowCourses(filteredCourses);
+      }
+    } else {
+      // If selectedOption is "All", show all courses without filtering
+      setShowCourses(stateParams === "myCourses" ? myCourses : courses);
+    }
+    // Set isLoading to false after filtering
+    setIsLoading(false);
+  }, [selectedOption, stateParams, myCourses, courses]);
+  //console.log(selectedOption);
 
   useEffect(() => {
     if (stateParams === "myCourses") {
@@ -209,7 +209,7 @@ const CourseAccess = () => {
     });
   };
 
-  console.log(bundles);
+  //console.log(bundles);
 
   return (
     <div>
