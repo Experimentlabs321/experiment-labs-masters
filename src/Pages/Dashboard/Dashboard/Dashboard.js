@@ -197,7 +197,7 @@ const Dashboard = () => {
     let totalTask = 0;
     if (chapters) {
       chapters?.forEach((item) => {
-        console.log(item);
+       // console.log(item);
         item?.tasks?.forEach((task) => {
           totalTask++;
           if (task?.participants) {
@@ -214,7 +214,7 @@ const Dashboard = () => {
     }
     setCurrentWeekCompletion(parseInt((totalCompleted / totalTask) * 100));
     setIsLoading(false)
-    console.log(totalCompleted, totalTask);
+  //  console.log(totalCompleted, totalTask);
   }, [chapters, user, userInfo]);
 
   useEffect(() => {
@@ -299,7 +299,7 @@ const Dashboard = () => {
         setIsLoading(false);
       });
   }, [userInfo]);
-  console.log(userRequesterEvents);
+ // console.log(userRequesterEvents);
   const getCurrentDate = () => {
     const today = new Date();
     const year = today.getFullYear();
@@ -360,7 +360,7 @@ const Dashboard = () => {
       second: '2-digit'
     };
     const meetingStart = startDate.toLocaleString(undefined, options);
-    console.log(meetingStart);
+    //console.log(meetingStart);
     // Calculate end date by adding the duration to the start date
     const endDate = new Date(startDate.getTime() + meetingLength * 60000); // 60000 ms in a minute
 
