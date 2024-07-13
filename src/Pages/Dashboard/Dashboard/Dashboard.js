@@ -2,15 +2,15 @@ import React, { useContext, useEffect, useState } from "react";
 import Layout from "../Layout";
 import Level from "./Level";
 import DashboardUserUpdate from "./DashboardUserUpdate";
-import AdjustIcon from "@mui/icons-material/Adjust";
+import AdjustIcon from '@mui/icons-material/Adjust';
 import TechnicalUpdate from "./TechnicalUpdate";
 import UpcomingQuest from "../../../assets/Dashboard/UpcomingQuest.png";
 import RightArrowBlack from "../../../assets/Dashboard/RightArrowBlack.png";
 import DashboardPrimaryButton from "../Shared/DashboardPrimaryButton";
-import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-import AccessAlarmOutlinedIcon from "@mui/icons-material/AccessAlarmOutlined";
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import AccessAlarmOutlinedIcon from '@mui/icons-material/AccessAlarmOutlined';
 import googlemeet from "../../../assets/icons/googlemeet.png";
-import { red } from "@mui/material/colors";
+import { red } from '@mui/material/colors';
 import "./style.css";
 import Lock from "../../../assets/Dashboard/lock.png";
 import axios from "axios";
@@ -23,9 +23,8 @@ import WeekUpdate from "../../../assets/Dashboard/WeekUpdate.png";
 import Challenges from "../../../assets/Dashboard/Challenges.png";
 import DashboardCourses from "./DashboardCourses";
 import { CircularProgress } from "@mui/material";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import zoom from "../../../assets/icons/zoom-240.png";
-
 const Dashboard = () => {
   const data = [
     {
@@ -109,7 +108,6 @@ const Dashboard = () => {
   const [currentCourseCompletion, setCurrentCourseCompletion] = useState(0);
   const [dashboardTheme, setDashboardTheme] = useState({});
   const [courseAccessUrl, setCourseAccessUrl] = useState(``);
-  
 
   const handleViewAllLevel = () => {
     setViewAllLevel(true);
@@ -135,19 +133,19 @@ const Dashboard = () => {
           );
           if (findCourse) {
             setSelectedCourse(findCourse);
-            setIsLoading(false);
+            setIsLoading(false)
           } else {
             setSelectedCourse(response?.data[0]);
-            setIsLoading(false);
+            setIsLoading(false)
           }
         } else {
           setSelectedCourse(response?.data[0]);
-          setIsLoading(false);
+          setIsLoading(false)
         }
       })
       .catch((error) => {
-        console.error(error);
-        setIsLoading(false);
+        console.error(error)
+        setIsLoading(false)
       });
   }, [userInfo]);
 
@@ -158,11 +156,11 @@ const Dashboard = () => {
       )
       .then((response) => {
         setWeeks(response?.data || []);
-        setIsLoading(false);
+        setIsLoading(false)
       })
       .catch((error) => {
-        console.error(error);
-        setIsLoading(false);
+        console.error(error)
+        setIsLoading(false)
       });
   }, [selectedCourse]);
 
@@ -174,7 +172,7 @@ const Dashboard = () => {
       const currentDateTime = new Date();
       if (weekStartDate <= currentDateTime && weekEndDate >= currentDateTime) {
         setCurrentWeek(singleData);
-        setIsLoading(false);
+        setIsLoading(false)
         return;
       }
     });
@@ -187,11 +185,11 @@ const Dashboard = () => {
       )
       .then((response) => {
         setChapters(response?.data || []);
-        setIsLoading(false);
+        setIsLoading(false)
       })
       .catch((error) => {
-        console.error(error);
-        setIsLoading(false);
+        console.error(error)
+        setIsLoading(false)
       });
   }, [currentWeek]);
   useEffect(() => {
@@ -215,7 +213,7 @@ const Dashboard = () => {
       });
     }
     setCurrentWeekCompletion(parseInt((totalCompleted / totalTask) * 100));
-    setIsLoading(false);
+    setIsLoading(false)
     console.log(totalCompleted, totalTask);
   }, [chapters, user, userInfo]);
 
@@ -246,15 +244,61 @@ const Dashboard = () => {
           setCurrentCourseCompletion(
             parseInt((totalCompleted / totalTask) * 100)
           );
-          setIsLoading(false);
+          setIsLoading(false)
         }
       })
       .catch((error) => {
-        console.error(error);
-        setIsLoading(false);
+        console.error(error)
+        setIsLoading(false)
       });
   }, [user, userInfo, selectedCourse]);
+  function isWithinSixtyMinutes(startTime) {
+    const now = new Date();
+    console.log("time now ", now)
+    const start = new Date(startTime);
+    console.log("start time ", start)
+    const diffInMs = start - now;
+    const diffInMinutes = diffInMs / (1000 * 60);
+    return diffInMinutes <= 60;
+  }
+  const handleLinkClick = async (event, userInfo, meetingType, link) => {
+    const scheduleData = await axios.get(
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/schedule/taskId/${event?.scheduleId}`)
+    console.log(scheduleData);
+    const sendData = {
+      participantChapter: {
+        email: userInfo?.email,
+        participantId: userInfo?._id,
+        status: "Completed",
+        completionDateTime: new Date(),
+      },
+      participantTask: {
+        participant: {
+          email: userInfo?.email,
+          participantId: userInfo?._id,
+          status: "Completed",
+          completionDateTime: new Date(),
+        },
+      },
+    };
 
+    try {
+      if(scheduleData?.data?.chapterId){
+        const response = await axios.post(
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/Schedule/taskId/${event?.scheduleId}/chapterId/${scheduleData?.data?.chapterId}`,
+          sendData
+        );
+        console.log(response);
+  
+        if (response.status === 200) {
+          // Navigate to the meeting link
+          window.location.href = link;
+        }
+      }
+    } catch (error) {
+      console.error("Error sending participant data:", error);
+    }
+  };
   const dashboardImages = {
     userImg: Person,
     userImgMobile: PersonForMobile,
@@ -271,11 +315,11 @@ const Dashboard = () => {
       .then((response) => {
         setDashboardTheme(response?.data?.dashboardTheme || {});
         setCourseAccessUrl(response?.data?.courseAccessUrl || "");
-        setIsLoading(false);
+        setIsLoading(false)
       })
       .catch((error) => {
-        console.error(error);
-        setIsLoading(false);
+        console.error(error)
+        setIsLoading(false)
       });
   }, [userInfo]);
   useEffect(() => {
@@ -283,17 +327,13 @@ const Dashboard = () => {
       return;
     }
     axios
-      .get(
-        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/email/${userInfo.email}`
-      )
+      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/email/${userInfo.email}`)
       .then((response) => {
         console.log(response?.data);
         const currentDate = new Date(getCurrentDate()).getTime();
-        const filteredEvents = response?.data.filter((event) => {
+        const filteredEvents = response?.data.filter(event => {
           // Check for both date structures
-          const eventStartDate = new Date(
-            event.start?.dateTime || event.start_time
-          ).getTime();
+          const eventStartDate = new Date(event.start?.dateTime || event.start_time).getTime();
           return eventStartDate >= currentDate;
         });
         setUserRequesterEvents(filteredEvents);
@@ -309,8 +349,8 @@ const Dashboard = () => {
   const getCurrentDate = () => {
     const today = new Date();
     const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const day = String(today.getDate()).padStart(2, "0");
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   };
   function getCurrentDatee() {
@@ -326,16 +366,17 @@ const Dashboard = () => {
       return ["Invalid Date"];
     }
 
-    const formatInTimeZone = (dateTime, timeZone, label) =>
-      `${dateTime.toLocaleString("en-US", {
+    const formatInTimeZone = (dateTime, timeZone, label) => (
+      `${dateTime.toLocaleString('en-US', {
         timeZone,
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-        hour: "numeric",
-        minute: "2-digit",
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
         hour12: true,
-      })} (${label})`;
+      })} (${label})`
+    );
 
     return [
       // formatInTimeZone(utcDateTime, "UTC", "UTC"),
@@ -352,19 +393,17 @@ const Dashboard = () => {
     const startDate = new Date(utcTimeStr);
     const meetingStartTime = new Date(utcTimeStr);
     const currentDateTime = new Date();
-    const meetingEndTime = new Date(
-      meetingStartTime.getTime() + meetingLength * 60000
-    );
+    const meetingEndTime = new Date(meetingStartTime.getTime() + meetingLength * 60000);
 
     // Convert start date to local time in the specified timezone
     const options = {
       timeZone: timezoneStr,
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
     };
     const meetingStart = startDate.toLocaleString(undefined, options);
     console.log(meetingStart);
@@ -373,22 +412,26 @@ const Dashboard = () => {
 
     // Convert end date to local time in the specified timezone
     const meetingEnd = endDate.toLocaleString(undefined, options);
-    if (currentDateTime > meetingEndTime && type === "start") {
-      return "The meeting has already happened.";
-    } else if (currentDateTime < meetingEndTime && type === "start") {
+    if (currentDateTime > meetingEndTime && type === 'start') {
+      return 'The meeting has already happened.'
+    } else if (currentDateTime < meetingEndTime && type === 'start') {
       return meetingStart;
-    } else if (currentDateTime > meetingEndTime && type === "end") {
+    }
+    else if (currentDateTime > meetingEndTime && type === 'end') {
       return "";
-    } else if (currentDateTime < meetingEndTime && type === "end") {
+    }
+    else if (currentDateTime < meetingEndTime && type === 'end') {
       return meetingEnd;
     }
-  };
+  }
   return (
     <div>
       <Layout>
+
         <div className="">
           <div className="grid grid-col-1 lg:grid-cols-3 gap-2">
             <div className="lg:col-span-2 pt-20 lg:pt-10 px-4">
+
               <DashboardUserUpdate
                 dashboardImages={dashboardImages}
                 currentCourseCompletion={currentCourseCompletion}
@@ -403,12 +446,13 @@ const Dashboard = () => {
               />
               {/* <SendEvent /> */}
             </div>
-            <div className={`lg:max-h-[732px]  lg:overflow-y-scroll`}>
+            <div
+              className={`lg:max-h-[732px]  lg:overflow-y-scroll`}
+            >
               {dashboardTheme?.showLabJourney && (
                 <div
-                  className={`mb-3 lg:border-b-2 lg:border-l-2 lg:border-[#E8E8E8] pt-10 pb-10 px-4 text-center lg:max-h-[732px] overflow-x-scroll lg:overflow-y-scroll ${
-                    viewAllLevel ? "labJourney" : "labJourneyRemoveScroll"
-                  } `}
+                  className={`mb-3 lg:border-b-2 lg:border-l-2 lg:border-[#E8E8E8] pt-10 pb-10 px-4 text-center lg:max-h-[732px] overflow-x-scroll lg:overflow-y-scroll ${viewAllLevel ? "labJourney" : "labJourneyRemoveScroll"
+                    } `}
                 >
                   <h1 className="text-[18px] lg:text-[26px] font-[700]">
                     Lab Journey
@@ -488,64 +532,41 @@ const Dashboard = () => {
                     <div className="grid grid-cols-1 my-5 justify-items-center gap-5 items-center">
                       {/* <p>You are the requester in the following events:</p> */}
                       {userRequesterEvents?.map((event, index) => (
-                        <div
-                          key={index}
-                          className=" shadow-lg outline-double outline-offset-2 outline-2 outline-emerald-500  w-[80%] rounded p-2 "
-                        >
-                          <p className="flex gap-1 items-center text-sm">
-                            <FiberManualRecordIcon
-                              sx={{ color: red[400] }}
-                            ></FiberManualRecordIcon>
-                            Meeting with {event?.organization?.organizationName}
-                          </p>
+                        <div key={index} className=" shadow-lg outline-double outline-offset-2 outline-2 outline-emerald-500  w-[80%] rounded p-2 ">
+                          <p className="flex gap-1 items-center text-sm"><FiberManualRecordIcon sx={{ color: red[400] }} ></FiberManualRecordIcon>Meeting with {event?.organization?.organizationName}</p>
                           <div className="flex items-center gap-2">
+
                             <div className="mt-3 mb-1 ">
                               <p className="font-medium text-sm flex justify-between  gap-2 my-1">
                                 <div className="flex justify-between gap-2">
                                   <AccessAlarmOutlinedIcon fontSize="small" />
-                                  <span className="font-semibold text-[14px]">
-                                    Starts{" "}
-                                  </span>
-                                </div>
+                                  <span className="font-semibold text-[14px]">Starts </span></div>
                                 <ul className="text-[13px]">
-                                  {event?.meetingType === "Zoom" ? (
-                                    <li key={index}>
-                                      {formatTimeForZoom(
-                                        event,
-                                        event?.start_time ? "start" : ""
-                                      )}
-                                    </li>
-                                  ) : (
-                                    formatUtcDateTimeStringToListItems(
-                                      event?.start?.dateTime
-                                    )?.map((item, index) => (
-                                      <li key={index}>{item}</li>
-                                    ))
-                                  )}
+
+                                  {
+                                    event?.meetingType === 'Zoom' ?
+                                      <li key={index}>{formatTimeForZoom(event, event?.start_time ? 'start' : '')}</li>
+                                      :
+                                      formatUtcDateTimeStringToListItems(event?.start?.dateTime)?.map((item, index) => (
+                                        <li key={index}>{item}</li>
+                                      ))
+
+                                  }
                                 </ul>
                               </p>
                               <p className="font-medium text-sm flex  justify-between gap-2 mt-2">
-                                <div className="flex  justify-between gap-2">
-                                  <AccessAlarmOutlinedIcon fontSize="small" />
-                                  <span className="font-semibold text-[14px]">
-                                    Ends{" "}
-                                  </span>
-                                </div>
+                                <div className="flex  justify-between gap-2"><AccessAlarmOutlinedIcon fontSize="small" />
+                                  <span className="font-semibold text-[14px]">Ends </span></div>
                                 <ul className="text-[13px]">
-                                  {event?.meetingType === "Zoom" ? (
-                                    <li key={index}>
-                                      {formatTimeForZoom(
-                                        event,
-                                        event?.end_time ? "" : "end"
-                                      )}
-                                    </li>
-                                  ) : (
-                                    formatUtcDateTimeStringToListItems(
-                                      event?.end?.dateTime
-                                    )?.map((item, index) => (
-                                      <li key={index}>{item}</li>
-                                    ))
-                                  )}
+                                  {
+                                    event?.meetingType === 'Zoom' ?
+                                      <li key={index}>{formatTimeForZoom(event, event?.end_time ? '' : 'end')}</li>
+                                      :
+                                      formatUtcDateTimeStringToListItems(event?.end?.dateTime)?.map((item, index) => (
+                                        <li key={index}>{item}</li>
+                                      ))
+
+                                  }
                                 </ul>
                               </p>
                             </div>
@@ -554,64 +575,63 @@ const Dashboard = () => {
                             {/* <Link to={event?.hangoutLink} className="flex gap-2 items-center justify-center py-[6px]">
                               <img src={googlemeet} className="w-[21px] h-[21px]" alt="googlemeet"></img><p>Go to Meet Link</p>
                             </Link> */}
-                            <Link
-                              to={
-                                event?.meetingType === "Zoom"
-                                  ? userInfo?.role === "admin"
-                                    ? event?.start_url
-                                    : event?.join_url
-                                  : event?.hangoutLink
-                              }
-                              className="flex gap-2 items-center justify-center py-[6px]"
-                            >
-                              <img
-                                src={
-                                  event?.meetingType === "Zoom"
-                                    ? zoom
-                                    : googlemeet
-                                }
-                                className="w-[21px] h-[21px]"
-                                alt="googlemeet or zoom"
-                              ></img>
-                              <p>
-                                Go to{" "}
-                                {event?.meetingType === "Zoom"
-                                  ? "zoom"
-                                  : "meet"}{" "}
-                                Link
-                              </p>
-                            </Link>
+                            {isWithinSixtyMinutes(event?.start_time) ? (
+                              <div>
+                                <button
+                                  onClick={() =>
+                                    handleLinkClick(
+                                      event,
+                                      userInfo,
+                                      event?.meetingType,
+                                      event?.meetingType === "Zoom"
+                                        ? userInfo?.role === "admin"
+                                          ? event?.start_url
+                                          : event?.join_url
+                                        : event?.hangoutLink
+                                    )
+                                  }
+                                  className="flex gap-2 items-center justify-center py-[6px] w-full"
+                                >
+                                  <img
+                                    src={event?.meetingType === "Zoom" ? zoom : googlemeet}
+                                    className="w-[21px] h-[21px]"
+                                    alt="googlemeet or zoom"
+                                  />
+                                  <p>
+                                    Go to {event?.meetingType === "Zoom" ? "zoom" : "meet"} Link
+                                  </p>
+                                </button>
+                              </div>
+                            ) : (
+                              <p className="mt-3 text-center">Link will be available 60 minutes before the start time</p>
+                            )}
                           </div>
                         </div>
                       ))}
 
                       {/* Add any additional content or components specific to user requester events */}
                     </div>
-                  ) : (
-                    <p className="text-center font-medium text-sky-400 mt-5 ">
-                      No Upcoming Scheduled Events
-                    </p>
-                  )}
-                </div>
-              )}
+                  )
+                    : <p className="text-center font-medium text-sky-400 mt-5 ">No Upcoming Scheduled Events</p>}
+                </div>)}
             </div>
           </div>
           {(dashboardTheme?.addRequestSlots ||
             dashboardTheme?.addChallenges) && (
-            <div className="lg:grid lg:grid-cols-3 gap-2 mb-[150px] lg:mb-0">
-              {(dashboardTheme?.addRequestSlots ||
-                dashboardTheme?.addChallenges) && (
-                <div className="lg:col-span-2 pt-10 px-4">
-                  <TechnicalUpdate
-                    dashboardImages={dashboardImages}
-                    currentWeekCompletion={currentWeekCompletion}
-                    selectedCourse={selectedCourse}
-                    weeks={weeks}
-                    dashboardTheme={dashboardTheme}
-                  />
-                </div>
-              )}
-              {/* <div className=" lg:border-b-2 lg:border-l-2 lg:border-[#E8E8E8] pt-10 px-4">
+              <div className="lg:grid lg:grid-cols-3 gap-2 mb-[150px] lg:mb-0">
+                {(dashboardTheme?.addRequestSlots ||
+                  dashboardTheme?.addChallenges) && (
+                    <div className="lg:col-span-2 pt-10 px-4">
+                      <TechnicalUpdate
+                        dashboardImages={dashboardImages}
+                        currentWeekCompletion={currentWeekCompletion}
+                        selectedCourse={selectedCourse}
+                        weeks={weeks}
+                        dashboardTheme={dashboardTheme}
+                      />
+                    </div>
+                  )}
+                {/* <div className=" lg:border-b-2 lg:border-l-2 lg:border-[#E8E8E8] pt-10 px-4">
               <div className="w-full flex justify-center">
                 <div className="w-full lg:max-w-[355px] lg:h-[515px]">
                   <h1 className="text-[18px] lg:text-[25px] font-[700] text-center pb-[32px]">
@@ -694,8 +714,8 @@ const Dashboard = () => {
                 </div>
               </div>
             </div> */}
-            </div>
-          )}
+              </div>
+            )}
           <div>
             {dashboardTheme?.addCourses && (
               <DashboardCourses
@@ -706,6 +726,7 @@ const Dashboard = () => {
             )}
           </div>
         </div>
+
       </Layout>
     </div>
   );
