@@ -735,6 +735,41 @@ const ScheduleTask = ({ taskData, week }) => {
     return `India-time: ${kolkataTime}`;
   };
   //console.log(adminMail);
+  const handleLinkClick = async (event, userInfo,task, meetingType, link) => {
+    console.log(task);
+    const sendData = {
+      participantChapter: {
+        email: userInfo?.email,
+        participantId: userInfo?._id,
+        status: "Completed",
+        completionDateTime: new Date(),
+      },
+      participantTask: {
+        participant: {
+          email: userInfo?.email,
+          participantId: userInfo?._id,
+          status: "Completed",
+          completionDateTime: new Date(),
+        },
+      },
+    };
+  
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/Schedule/taskId/${taskId}/chapterId/${task?.chapterId}`,
+        sendData
+      );
+      console.log(response);
+
+      if (response.status === 200) {
+        // Navigate to the meeting link
+        window.location.href = link;
+      }
+    } catch (error) {
+      console.error("Error sending participant data:", error);
+    }
+  };
+  
   const addEvent = async () => {
     if (checkTime) {
       Swal.fire({
@@ -1502,7 +1537,7 @@ const ScheduleTask = ({ taskData, week }) => {
                           organizationId: userInfo?.organizationId,
                           start_time: formattedStartTime,
                           end_time: formattedEndTime,
-                          learner_name:userInfo?.name,
+                          learner_name: userInfo?.name,
                           meeting_link: studentUrl,
                           admin_name: adminName,
                           site_email: adminMail,
@@ -1912,7 +1947,7 @@ const ScheduleTask = ({ taskData, week }) => {
                                   templateName: "sheduleTaskStudent",
                                   organizationId: userInfo?.organizationId,
                                   start_time: formattedStartTime,
-                                  learner_name:userInfo?.name,
+                                  learner_name: userInfo?.name,
                                   end_time: formattedEndTime,
                                   meeting_link: studentUrl,
                                   admin_name: adminName,
@@ -2314,7 +2349,15 @@ const ScheduleTask = ({ taskData, week }) => {
 
     return dateTime.toLocaleTimeString("en-US", options);
   };
-
+  function isWithinSixtyMinutes(startTime) {
+    const now = new Date();
+    console.log("time now ",now)
+    const start = new Date(startTime);
+    console.log("start time ",start)
+    const diffInMs = start - now;
+    const diffInMinutes = diffInMs / (1000 * 60);
+    return diffInMinutes <= 60;
+  }
   const generateTimeOptions = () => {
     const options = [];
     const minTime = taskData?.minimumTime;
@@ -2826,31 +2869,37 @@ const ScheduleTask = ({ taskData, week }) => {
                       </div>
                     )}
                     <div className="grid gap-2 align-middle items-center">
-                      <div className="w-10/12 mx-auto mt-3 text-white bg-sky-500  rounded-md">
-                        <Link
-                          to={
-                            event?.meetingType === "Zoom"
-                              ? userInfo?.role === "admin"
-                                ? event?.start_url
-                                : event?.join_url
-                              : event?.hangoutLink
-                          }
-                          className="flex gap-2 items-center justify-center py-[6px]"
-                        >
-                          <img
-                            src={
-                              event?.meetingType === "Zoom" ? zoom : googlemeet
+                      {isWithinSixtyMinutes(event?.start_time) ? (
+                        <div className="w-10/12 mx-auto mt-3 text-white bg-sky-500 rounded-md">
+                          <button
+                            onClick={() =>
+                              handleLinkClick(
+                                event,
+                                userInfo,
+                                taskData,
+                                event?.meetingType,
+                                event?.meetingType === "Zoom"
+                                  ? userInfo?.role === "admin"
+                                    ? event?.start_url
+                                    : event?.join_url
+                                  : event?.hangoutLink
+                              )
                             }
-                            className="w-[21px] h-[21px]"
-                            alt="googlemeet or zoom"
-                          ></img>
-                          <p>
-                            Go to{" "}
-                            {event?.meetingType === "Zoom" ? "zoom" : "meet"}{" "}
-                            Link
-                          </p>
-                        </Link>
-                      </div>
+                            className="flex gap-2 items-center justify-center py-[6px] w-full"
+                          >
+                            <img
+                              src={event?.meetingType === "Zoom" ? zoom : googlemeet}
+                              className="w-[21px] h-[21px]"
+                              alt="googlemeet or zoom"
+                            />
+                            <p>
+                              Go to {event?.meetingType === "Zoom" ? "zoom" : "meet"} Link
+                            </p>
+                          </button>
+                        </div>
+                      ) : (
+                        <p className="mt-3 text-center">Link will be available 60 minutes before the start time</p>
+                      )}
                       {event?.meetingType !== "Zoom" ? (
                         <p className="mt-1 text-center">Or</p>
                       ) : (

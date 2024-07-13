@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import {
   GoogleAuthProvider,
@@ -16,8 +16,7 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { Dialog, useMediaQuery, useTheme } from "@mui/material";
 import app from "../../../firebase/firebase.config";
 
-const LoginWithOrganization = () => {
-  const { id } = useParams();
+const NormalLogin = () => {
   const { user, userInfo, signIn, providerLogin, logOut } =
     useContext(AuthContext);
   const navigate = useNavigate();
@@ -35,7 +34,9 @@ const LoginWithOrganization = () => {
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-
+  
+  const location = useLocation();
+  const from = location.state?.from || "/";
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -58,14 +59,14 @@ const LoginWithOrganization = () => {
   };
 
   console.log(orgRootUrl);
-  useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/organizations/${id}`)
-      .then((response) => {
-        setOrgData(response?.data);
-      })
-      .catch((error) => console.error(error));
-  }, [id]);
+//   useEffect(() => {
+//     axios
+//       .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/organizations/${id}`)
+//       .then((response) => {
+//         setOrgData(response?.data);
+//       })
+//       .catch((error) => console.error(error));
+//   }, [id]);
   useEffect(() => {
     if (user?.email && redirectUser) {
       if (userInfo?.email && redirectUser) {
@@ -151,10 +152,7 @@ const LoginWithOrganization = () => {
         .then((data) => {
           Loading().close();
           localStorage.setItem("role", data?.role);
-          if (data?.role === "admin") navigate("/adminDashboardHome");
-          else if(data?.role ==='execution mentor') navigate("/executionMentorDashboard");
-          else if(data?.role ==='expert mentor') navigate("/expertMentorDashboard");
-          else navigate("/dashboard");
+          navigate(from, { replace: true });
         });
     } catch (error) {}
   };
@@ -245,10 +243,10 @@ const LoginWithOrganization = () => {
     <div>
       <div className="flex min-h-screen">
         {/* <!-- Container --> */}
-        <div className="flex flex-row w-full">
+        <div className="flex flex-col justify-center justify-items-center w-full">
           {/* <!-- Sidebar --> */}
-          <div className="hidden lg:flex flex-col justify-center bg-[#f7fafc] lg:px-8 xl:px-12 py-2 basis-2/5">
-            <div
+          <div className="hidden lg:flex justify-items-center flex-col justify-center bg-[#f7fafc] lg:px-8 xl:px-12 py-2 basis-2/5">
+            {/* <div
               style={{
                 color: orgData?.titlesColor ? orgData?.titlesColor : "black",
               }}
@@ -269,9 +267,9 @@ const LoginWithOrganization = () => {
                 }
                 alt="showCase"
               />
-            </div>
+            </div> */}
             {/* <p className="font-medium mt-3">© 2023 Experiment Labs</p> */}
-            <a
+            {/* <a
               href={`${
                 orgRootUrl
                   ? orgRootUrl
@@ -289,11 +287,11 @@ const LoginWithOrganization = () => {
                 }
                 alt="brand"
               />
-            </a>
+            </a> */}
           </div>
           {/* <!-- Login --> */}
-          <div className="flex flex-1 flex-col items-center justify-center px-10 relative">
-            <div className="flex lg:hidden justify-center items-center w-full py-4">
+          <div className="flex flex-1 flex-col justify-items-center items-center justify-center px-10 relative">
+            {/* <div className="flex lg:hidden justify-center items-center w-full py-4">
               <div className="flex items-center justify-center space-x-3">
                 <a
                   href={`${
@@ -315,9 +313,9 @@ const LoginWithOrganization = () => {
                   />
                 </a>
               </div>
-            </div>
+            </div> */}
             {/* <!-- Login box --> */}
-            <div className="flex flex-1 flex-col  justify-center space-y-5 max-w-md">
+            <div className="flex flex-1 flex-col justify-items-center  justify-center space-y-5 max-w-md">
               <div className="flex flex-col space-y-2 text-center">
                 <h2 className="text-2xl md:text-4xl font-bold">
                   Login to your account
@@ -404,7 +402,7 @@ const LoginWithOrganization = () => {
                   <p className="font-medium text-lg">
                     Don't have an account?{" "}
                     <Link
-                      to={`/register/${id}`}
+                      to={`/register`}
                       className="text-blue cursor-pointer"
                     >
                       Register
@@ -527,4 +525,4 @@ const LoginWithOrganization = () => {
   );
 };
 
-export default LoginWithOrganization;
+export default NormalLogin;

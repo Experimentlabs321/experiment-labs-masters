@@ -93,6 +93,19 @@ const AdminCalendarSchedule = () => {
   const [adminCalendarInfo, setAdminCalendarInfo] = useState({});
   const [executionMentors, setExecutionMentors] = useState([]);
   const [selectedMentors, setSelectedMentors] = useState([]);
+  const [isRecentSignIn, setIsRecentSignIn] = useState(false);
+
+  useEffect(() => {
+    if (session && session.user && session.user.last_sign_in_at) {
+      const lastSignIn = new Date(session.user.last_sign_in_at);
+      const now = new Date();
+      const fiveMinutesInMillis = 5 * 60 * 1000;
+      const isWithinFiveMinutes = (now - lastSignIn) <= fiveMinutesInMillis;
+      console.log(isWithinFiveMinutes);
+      setIsRecentSignIn(isWithinFiveMinutes);
+    }
+  }, [session]);
+
 
   // Save current location before redirecting to Google sign-in
   useEffect(() => {
@@ -590,7 +603,7 @@ const AdminCalendarSchedule = () => {
       );
     }
   };
-
+  
   return (
     <div>
       <Layout>
@@ -706,7 +719,7 @@ const AdminCalendarSchedule = () => {
             <p>Manage Schedule in {chapter?.chapterName}</p>
           </div>
           <div>
-            {session && calendarEvents?.length > 0 ? (
+            {isRecentSignIn ? (
               <>
                 <div className="my-6 px-5">
                   <h2>Your Calendar Events</h2>
