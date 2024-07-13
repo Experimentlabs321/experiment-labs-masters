@@ -179,32 +179,33 @@ const Submission = ({ taskData, count, setCount }) => {
               redirectLink: `/mentorAssignments`,
             }
           );
-          const sendMail = await axios.post(
-            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
-            // `http://localhost:5000/api/v1/sendMail`,
-            {
-              //from: user?.email,
-              // to: `naman.j@experimentlabs.in,gaurav@experimentlabs.in`,
-              to: course?.creator?.email,
-
-              templateType: "emailAction",
-              templateName: "assignmentSubmission",
-              organizationId: userInfo?.organizationId,
-              user_name: userInfo?.name,
-              task_name: taskData?.taskName,
-              // learner_name: "",
-              // course_name: "",
-              // site_name: "",
-              // site_email: ""
-              /* subject: `Submission of ${taskData?.taskName}`,
-            message: `${userInfo?.name} has submitted assignment of the task ${taskData?.taskName}. Please review the submission.`, */
-            }
-          );
           if (taskData?.autoEvaluation) {
             Swal.fire({
               icon: "success",
               text: "Please go to review submission to evaluate your assignment.",
             });
+          } else {
+            const sendMail = await axios.post(
+              `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
+              // `http://localhost:5000/api/v1/sendMail`,
+              {
+                //from: user?.email,
+                // to: `naman.j@experimentlabs.in,gaurav@experimentlabs.in`,
+                to: course?.creator?.email,
+
+                templateType: "emailAction",
+                templateName: "assignmentSubmission",
+                organizationId: userInfo?.organizationId,
+                user_name: userInfo?.name,
+                task_name: taskData?.taskName,
+                // learner_name: "",
+                // course_name: "",
+                // site_name: "",
+                // site_email: ""
+                /* subject: `Submission of ${taskData?.taskName}`,
+            message: `${userInfo?.name} has submitted assignment of the task ${taskData?.taskName}. Please review the submission.`, */
+              }
+            );
           }
           console.log(newNotification);
           toast.success("Assignment Submitted Successfully");
