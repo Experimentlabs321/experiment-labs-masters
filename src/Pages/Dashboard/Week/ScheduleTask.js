@@ -1862,7 +1862,7 @@ const ScheduleTask = ({ taskData, week }) => {
                         };
 
                         try {
-                          
+
                           // Step 2: Create Google Calendar event
 
                           if (newSchedule?.data?.success) {
@@ -2018,7 +2018,7 @@ const ScheduleTask = ({ taskData, week }) => {
                               }
                             }
                           }
-                          
+
 
 
                         } catch (error) {
