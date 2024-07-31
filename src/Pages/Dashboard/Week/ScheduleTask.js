@@ -23,6 +23,7 @@ import Loading from "../../Shared/Loading/Loading";
 import DashboardPrimaryButton from "../Shared/DashboardPrimaryButton";
 
 const ScheduleTask = ({ taskData, week }) => {
+  console.log(week)
   // let matching = false;
   const [matching, setMatching] = useState(false);
   const matchInputWithBusySlots = (inputDate, inputTime, busyTimeSlots) => {
@@ -87,6 +88,7 @@ const ScheduleTask = ({ taskData, week }) => {
   };
   const calendarSubjectName = taskData?.calendarSubjectName;
   const taskId = taskData?._id;
+  const weeksId = week?._id;
   const adminMail = taskData?.usersession?.user?.email;
   const adminName = taskData?.usersession?.user?.user_metadata?.name;
   const meetingLength = taskData?.meetingDuration;
@@ -732,6 +734,12 @@ const ScheduleTask = ({ taskData, week }) => {
   //console.log(adminMail);
   const handleLinkClick = async (event, userInfo, task, meetingType, link) => {
     console.log(task);
+    const participantData = {
+      email: userInfo?.email,
+      participantId: userInfo?._id,
+      status: "Completed",
+      completionDateTime: new Date(),
+    };
     const sendData = {
       participantChapter: {
         email: userInfo?.email,
@@ -754,9 +762,11 @@ const ScheduleTask = ({ taskData, week }) => {
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/Schedule/taskId/${taskId}/chapterId/${task?.chapterId}`,
         sendData
       );
+      const weekResponse = await axios.post(`http://localhost:5000/api/v1/weeks/${event.weekId}/participants`, { participant: participantData });
       console.log(response);
+      console.log(weekResponse.data.message);
 
-      if (response.status === 200) {
+      if (response.status === 200 && weekResponse.status === 200) {
         // Navigate to the meeting link
         window.location.href = link;
       }
@@ -1395,7 +1405,7 @@ const ScheduleTask = ({ taskData, week }) => {
             const newAccessToken = tokenData.access_token;
             if (isReschedule && eventDBid && zoomMeetingId) {
               try {
-                console.log("My idddddddd",zoomMeetingId)
+                console.log("My idddddddd", zoomMeetingId)
                 // console.log(`http://localhost:5000/api/v1/events/deleteMeeting/organizationId/${userInfo?.organizationId}`);
 
                 const deleteZoomMeetingResponse = await axios.delete(
@@ -1500,7 +1510,7 @@ const ScheduleTask = ({ taskData, week }) => {
                           organizationId: userInfo?.organizationId,
                           organizationName: userInfo?.organizationName,
                         },
-                        weekId: "",
+                        weekId: weeksId,
                         googleCalendarId: eventId,
                         meetingType: "Zoom",
                         scheduleId: taskId,
@@ -1520,6 +1530,7 @@ const ScheduleTask = ({ taskData, week }) => {
                         meetingType: "Zoom",
                         scheduleId: taskId,
                         courseName: course?.courseFullName,
+                        weekId: weeksId,
                         batchName: batchName,
                         googleCalendarId: eventId,
                         executionMentors: userInfo?.executionMentors
@@ -1867,6 +1878,7 @@ const ScheduleTask = ({ taskData, week }) => {
                           meetingType: "Zoom",
                           scheduleId: taskId,
                           courseName: course?.courseFullName,
+                          weekId: weeksId,
                           batchName: batchName,
                           executionMentors: userInfo?.executionMentors
                             ? userInfo?.executionMentors
@@ -1938,7 +1950,7 @@ const ScheduleTask = ({ taskData, week }) => {
                                   organizationId: userInfo?.organizationId,
                                   organizationName: userInfo?.organizationName,
                                 },
-                                weekId: "",
+                                weekId: weeksId,
                                 googleCalendarId: calendarEventId,
                                 meetingType: "Zoom",
                                 scheduleId: taskId,
@@ -1978,6 +1990,7 @@ const ScheduleTask = ({ taskData, week }) => {
                                   meetingType: "Zoom",
                                   taskId: taskId,
                                   courseName: course?.courseFullName,
+                                  weekId: weeksId,
                                   batchName: batchName,
                                   googleCalendarId: calendarEventId,
                                   eventDBid: response?.data?.insertedId,
