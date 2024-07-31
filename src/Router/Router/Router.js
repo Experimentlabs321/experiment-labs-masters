@@ -134,6 +134,8 @@ import Mentors from "../../Pages/Dashboard/Mentors/Mentors";
 import ExecutionMentorMainSchedule from "../../Pages/Dashboard/ExecutionMentorSchedule/ExecutionMentorMainSchedule";
 import MentorCalendar from "../../Pages/Dashboard/Mentors/MentorCalendar";
 import PreDashboard from "../../Pages/Shared/PreDashboard/PreDashboard";
+import PrivateRoute from "../PrivateRoute/PrivateRoute";
+import NormalLogin from "../../Pages/Login/NormalLogin/NormalLogin";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -281,7 +283,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/taskDetails/:id",
-    element: <TaskDetails />,
+    element: <PrivateRoute> <TaskDetails /></PrivateRoute>,
   },
   {
     path: "/careerAnalysis",
@@ -614,6 +616,10 @@ const router = createBrowserRouter([
   {
     path: "/login/:id",
     element: <LoginWithOrganization />,
+  },
+  {
+    path: "/login",
+    element: <NormalLogin></NormalLogin>,
   },
   {
     path: "/register/:id",

@@ -7,16 +7,36 @@ import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import arrowright from "../../../assets/SkillsManagement/arrowright.svg";
 import required from "../../../assets/ContentManagement/required.png";
-import RightArrowWhite from '../../../assets/Dashboard/RightArrowWhite.png';
+import RightArrowWhite from "../../../assets/Dashboard/RightArrowWhite.png";
 import arrowDown from "../../../assets/SkillsManagement/arrow.svg";
 import DialogLayoutForFromControl from "../Shared/DialogLayoutForFromControl";
 import Loading from "../../Shared/Loading/Loading";
 import DashboardPrimaryButton from "../Shared/DashboardPrimaryButton";
 import Swal from "sweetalert2";
-import { gapi } from 'gapi-script';
-import moment from 'moment';
-const ExecutionMentorBookSchedule = ({ selectedSchedule, selectedC, selectedBatch, selectedMax, selectedMin, selected, meetingmedium, offDays, dateRange, scheduleEvents,selectedAdmin, durationMeeting, adminName, idSchedule, calendarSubjectName,syncedMail, addBookOpen, setAddBookOpen,  idWeek }) => {
-console.log(selectedAdmin);
+import { gapi } from "gapi-script";
+import moment from "moment";
+const ExecutionMentorBookSchedule = ({
+  selectedSchedule,
+  selectedC,
+  selectedBatch,
+  selectedMax,
+  selectedMin,
+  selected,
+  meetingmedium,
+  offDays,
+  dateRange,
+  scheduleEvents,
+  selectedAdmin,
+  durationMeeting,
+  adminName,
+  idSchedule,
+  calendarSubjectName,
+  syncedMail,
+  addBookOpen,
+  setAddBookOpen,
+  idWeek,
+}) => {
+  console.log(selectedAdmin);
   const { id } = useParams();
   const [isOpenGeneral, setIsOpenGeneral] = useState(true);
   const [isOpenClassTimings, setIsOpenClassTimings] = useState(false);
@@ -130,7 +150,9 @@ console.log(selectedAdmin);
   const toggleDropdownEvaluationParameter = () => {
     setsOpenEvaluationParameter(!isOpenEvaluationParameter);
   };
-  console.log(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/email/${selectedAdmin}`);
+  console.log(
+    `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/email/${selectedAdmin}`
+  );
   useEffect(() => {
     axios
       .get(
@@ -174,14 +196,6 @@ console.log(selectedAdmin);
   }, [userInfo, selected]);
   console.log(students);
 
-
-
-
-
-
-
-
-
   /*   useEffect(() => {
     if (chapter?.courseId) {
       axios
@@ -195,7 +209,7 @@ console.log(selectedAdmin);
         .catch((error) => console.error(error));
     }
   }, [chapter?.courseId]); */
-  console.log(selectedAdmin)
+  console.log(selectedAdmin);
 
   const navigate = useNavigate();
 
@@ -207,12 +221,12 @@ console.log(selectedAdmin);
   });
 
   function convertTo12Hour(time24) {
-    const [hours, minutes] = time24.split(':');
+    const [hours, minutes] = time24.split(":");
     let hours12 = hours % 12 || 12;
-    let period = hours < 12 || hours === 24 ? 'AM' : 'PM';
+    let period = hours < 12 || hours === 24 ? "AM" : "PM";
     return `${hours12}:${minutes} ${period}`;
   }
-  console.log(selectedStudent)
+  console.log(selectedStudent);
   const handleDateChange = (event) => {
     const selectedDate = event.target.value;
 
@@ -324,62 +338,65 @@ console.log(selectedAdmin);
   useEffect(() => {
     // Extract all requester emails from scheduleEvents
     const requesterEmails = scheduleEvents
-      .map(event => event?.requester) // Extract requester email if it exists
-      .filter(email => email); // Filter out undefined or empty emails
-  
+      .map((event) => event?.requester) // Extract requester email if it exists
+      .filter((email) => email); // Filter out undefined or empty emails
+
     // Filter out the students whose email matches any of the requester emails
-    const filtered = students.filter(student => !requesterEmails.includes(student.email));
-  
+    const filtered = students.filter(
+      (student) => !requesterEmails.includes(student.email)
+    );
+
     setFilteredStudents(filtered);
   }, [students, scheduleEvents]);
-  
+
   console.log("Filtered Students: ", filteredStudents);
   useEffect(() => {
-    const busyTimeSlots = adminCalendarInfo?.events?.map((event) => {
-      // Check if start and end are directly available or nested under different properties
-      const startDateTime = event?.start?.dateTime || event.start_time;
-      const endDateTime =
-        event.end?.dateTime ||
-        event.end_time ||
-        (() => {
-          // If end time is not directly available, calculate it based on duration and start time
-          const duration = event?.duration; // Duration in minutes
-          if (startDateTime && duration) {
-            const endDate = new Date(
-              new Date(startDateTime).getTime() + duration * 60000
-            );
-            return endDate.toISOString();
-          }
-          return null;
-        })();
+    const busyTimeSlots = adminCalendarInfo?.events
+      ?.map((event) => {
+        // Check if start and end are directly available or nested under different properties
+        const startDateTime = event?.start?.dateTime || event.start_time;
+        const endDateTime =
+          event.end?.dateTime ||
+          event.end_time ||
+          (() => {
+            // If end time is not directly available, calculate it based on duration and start time
+            const duration = event?.duration; // Duration in minutes
+            if (startDateTime && duration) {
+              const endDate = new Date(
+                new Date(startDateTime).getTime() + duration * 60000
+              );
+              return endDate.toISOString();
+            }
+            return null;
+          })();
 
-      if (!startDateTime || !endDateTime) {
-        return null; // Skip events without a valid start or end dateTime
-      }
-      const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      console.log(userTimeZone);
-      // Convert the start and end times to the Asia/Kolkata time zone
-      const options = {
-        timeZone: 'Asia/Kolkata',
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-      };
-      console.log(options)
-      const startTime = new Date(startDateTime).toLocaleString(
-        "en-US",
-        options
-      );
-      const endTime = new Date(endDateTime).toLocaleString("en-US", options);
+        if (!startDateTime || !endDateTime) {
+          return null; // Skip events without a valid start or end dateTime
+        }
+        const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        console.log(userTimeZone);
+        // Convert the start and end times to the Asia/Kolkata time zone
+        const options = {
+          timeZone: "Asia/Kolkata",
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        };
+        console.log(options);
+        const startTime = new Date(startDateTime).toLocaleString(
+          "en-US",
+          options
+        );
+        const endTime = new Date(endDateTime).toLocaleString("en-US", options);
 
-      return {
-        start: { dateTime: startTime },
-        end: { dateTime: endTime },
-      };
-    })
+        return {
+          start: { dateTime: startTime },
+          end: { dateTime: endTime },
+        };
+      })
       .filter(Boolean);
 
     // console.log("Busy Time Slots:", busyTimeSlots);
@@ -671,7 +688,6 @@ console.log(selectedAdmin);
               //           // Access directly from data
               //         };
 
-
               //         console.log(eventDBid);
               //         const updateResponse = await axios.put(
               //           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/${eventDBid}`,
@@ -846,11 +862,14 @@ console.log(selectedAdmin);
               //         // Handle error
               //       });
               //   }
-              // } 
+              // }
               function initiate() {
                 const sendData = async (event) => {
                   event.start_time = event?.start?.dateTime?.toISOString();
-                  const InfoCalendar = { email: adminCalendarInfo?.email, event: event };
+                  const InfoCalendar = {
+                    email: adminCalendarInfo?.email,
+                    event: event,
+                  };
                   console.log({ calendarInfo: InfoCalendar });
                   const newSchedule = await axios.put(
                     `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/events`,
@@ -858,23 +877,26 @@ console.log(selectedAdmin);
                   );
                   console.log(newSchedule);
                   if (newSchedule?.data?.success === false) {
-                    if (newSchedule?.data?.message === 'Requested slot has been booked!') {
+                    if (
+                      newSchedule?.data?.message ===
+                      "Requested slot has been booked!"
+                    ) {
                       Loading().close();
                       await Swal.fire({
                         icon: "error",
                         title: "Oops...",
                         text: "Requested slot has been booked! Please try another slot.",
                       });
-                    }
-                    else if (newSchedule?.data?.message === 'Calendar info not found!') {
+                    } else if (
+                      newSchedule?.data?.message === "Calendar info not found!"
+                    ) {
                       Loading().close();
                       await Swal.fire({
                         icon: "error",
                         title: "Oops...",
                         text: "Calendar info not found! Please try again.",
                       });
-                    }
-                    else {
+                    } else {
                       Loading().close();
                       await Swal.fire({
                         icon: "error",
@@ -919,6 +941,7 @@ console.log(selectedAdmin);
                           to: `${selectedAdmin}`,
                           templateType: "emailAction",
                           templateName: "sheduleTask",
+                          schedule_name: selectedSchedule,
                           organizationId: selectedStudent?.organizationId,
                           start_time: eventStartTime,
                           end_time: eventEndTime,
@@ -1039,8 +1062,7 @@ console.log(selectedAdmin);
               Loading().close();
               console.error("Token refresh error:", error);
             });
-        }
-        else if (meetingmedium === "Zoom") {
+        } else if (meetingmedium === "Zoom") {
           try {
             Loading();
             const tokenResponse = await fetch(
@@ -1416,10 +1438,7 @@ console.log(selectedAdmin);
                 ("0" + inputDateTime.getMinutes()).slice(-2),
                 ("0" + inputDateTime.getSeconds()).slice(-2),
               ].join(":");
-            console.log(
-              "Formatted for Zoom (local time):",
-              formattedDateTime
-            );
+            console.log("Formatted for Zoom (local time):", formattedDateTime);
             const zoomSchedule = {
               start_time: formattedDateTime,
               duration: durationMeeting,
@@ -1450,10 +1469,7 @@ console.log(selectedAdmin);
                 minute: "2-digit",
                 second: "2-digit",
               };
-              const meetingStart = startDate.toLocaleString(
-                undefined,
-                options
-              );
+              const meetingStart = startDate.toLocaleString(undefined, options);
 
               // Calculate end date by adding the duration to the start date
               const endDate = new Date(
@@ -1499,7 +1515,10 @@ console.log(selectedAdmin);
                     batchName: selectedBatch,
                     executionMentors: selectedStudent?.executionMentors,
                   };
-                  const InfoCalendar = { email: adminCalendarInfo?.email, event: postingData };
+                  const InfoCalendar = {
+                    email: adminCalendarInfo?.email,
+                    event: postingData,
+                  };
                   console.log({ calendarInfo: InfoCalendar });
                   const newSchedule = await axios.put(
                     `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/events`,
@@ -1510,7 +1529,7 @@ console.log(selectedAdmin);
                   const event = {
                     summary: `${selectedStudent?.name} ${calendarSubjectName}`,
                     description: `Join Zoom Meeting: ${adminUrl}\nStart the Meeting: ${studentUrl}`,
-                    location: '',
+                    location: "",
                     start: {
                       dateTime: meetingStartDate.toISOString(),
                       timeZone: "Asia/Kolkata",
@@ -1522,7 +1541,7 @@ console.log(selectedAdmin);
                     attendees: [
                       { email: selectedStudent?.email },
                       { email: selectedAdmin },
-                      { email: syncedMail}
+                      { email: syncedMail },
                     ],
                     reminders: {
                       useDefault: true,
@@ -1530,7 +1549,6 @@ console.log(selectedAdmin);
                   };
 
                   try {
-
                     if (newSchedule?.data?.success) {
                       const response = await gapi.client.request({
                         path: `https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events?conferenceDataVersion=1&sendUpdates=none`,
@@ -1541,7 +1559,10 @@ console.log(selectedAdmin);
                           Authorization: `Bearer ${newAccessToken}`,
                         },
                       });
-                      console.log("Google Calendar event created successfully:", response);
+                      console.log(
+                        "Google Calendar event created successfully:",
+                        response
+                      );
                       const calendarEventId = response.result.id;
                       if (calendarEventId) {
                         const newpostData = {
@@ -1582,7 +1603,8 @@ console.log(selectedAdmin);
                             studentName: selectedStudent?.name,
                             organization: {
                               organizationId: selectedStudent?.organizationId,
-                              organizationName: selectedStudent?.organizationName,
+                              organizationName:
+                                selectedStudent?.organizationName,
                             },
                             meetingType: "Zoom",
                             taskId: idSchedule,
@@ -1597,7 +1619,7 @@ console.log(selectedAdmin);
                             `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/${idSchedule}/addEvent`,
                             postData
                           );
-                          console.log('new event ', newEvent);
+                          console.log("new event ", newEvent);
                           if (newEvent?.data?.acknowledged) {
                             const sendMail = await axios.post(
                               `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
@@ -1619,7 +1641,7 @@ console.log(selectedAdmin);
                                   }`, */
                               }
                             );
-                            console.log("std mail ", sendMail)
+                            console.log("std mail ", sendMail);
                             const sendMailAdmin = await axios.post(
                               `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
                               {
@@ -1628,6 +1650,7 @@ console.log(selectedAdmin);
                                 to: `${syncedMail}`,
                                 templateType: "emailAction",
                                 templateName: "sheduleTask",
+                                schedule_name: selectedSchedule,
                                 organizationId: selectedStudent?.organizationId,
                                 start_time: formattedStartTime,
                                 end_time: formattedEndTime,
@@ -1640,7 +1663,7 @@ console.log(selectedAdmin);
                                   }`, */
                               }
                             );
-                            console.log("admin mail ",sendMailAdmin);
+                            console.log("admin mail ", sendMailAdmin);
 
                             const newNotification = await axios.post(
                               `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/notifications/addNotification`,
@@ -1649,7 +1672,8 @@ console.log(selectedAdmin);
                                 dateTime: new Date(),
                                 recipient: {
                                   type: "Admins",
-                                  organizationId: selectedStudent?.organizationId,
+                                  organizationId:
+                                    selectedStudent?.organizationId,
                                 },
                                 type: "Event",
                                 readBy: [],
@@ -1658,7 +1682,10 @@ console.log(selectedAdmin);
                               }
                             );
 
-                            if (sendMail?.data?.success && sendMailAdmin?.data?.success) {
+                            if (
+                              sendMail?.data?.success &&
+                              sendMailAdmin?.data?.success
+                            ) {
                               Loading().close();
                               await Swal.fire({
                                 icon: "success",
@@ -1667,33 +1694,34 @@ console.log(selectedAdmin);
                               });
                               navigate(-1);
                             }
-
                           }
                         }
                       }
                     }
-
-
                   } catch (error) {
                     console.error("An error occurred:", error);
                     console.log(error?.response?.data?.message);
-                    if (error?.response?.data?.message === 'Requested slot has been booked!') {
+                    if (
+                      error?.response?.data?.message ===
+                      "Requested slot has been booked!"
+                    ) {
                       Loading().close();
                       await Swal.fire({
                         icon: "error",
                         title: "Oops...",
                         text: "Requested slot has been booked! Please try another slot.",
                       });
-                    }
-                    else if (error?.response?.data?.message === 'Calendar info not found!') {
+                    } else if (
+                      error?.response?.data?.message ===
+                      "Calendar info not found!"
+                    ) {
                       Loading().close();
                       await Swal.fire({
                         icon: "error",
                         title: "Oops...",
                         text: "Calendar info not found! Please try again.",
                       });
-                    }
-                    else {
+                    } else {
                       Loading().close();
                       await Swal.fire({
                         icon: "error",
@@ -1705,27 +1733,29 @@ console.log(selectedAdmin);
                 }
 
                 gapi.load("client", initiate);
-
               } catch (error) {
                 console.error("An error occurred:", error);
                 console.log(error?.response?.data?.message);
-                if (error?.response?.data?.message === 'Requested slot has been booked!') {
+                if (
+                  error?.response?.data?.message ===
+                  "Requested slot has been booked!"
+                ) {
                   Loading().close();
                   await Swal.fire({
                     icon: "error",
                     title: "Oops...",
                     text: "Requested slot has been booked! Please try another slot.",
                   });
-                }
-                else if (error?.response?.data?.message === 'Calendar info not found!') {
+                } else if (
+                  error?.response?.data?.message === "Calendar info not found!"
+                ) {
                   Loading().close();
                   await Swal.fire({
                     icon: "error",
                     title: "Oops...",
                     text: "Calendar info not found! Please try again.",
                   });
-                }
-                else {
+                } else {
                   Loading().close();
                   await Swal.fire({
                     icon: "error",
@@ -1745,7 +1775,6 @@ console.log(selectedAdmin);
             // }
             // console.log(newZoomSchedule);
             Loading().close();
-
           } catch (error) {
             Loading().close();
             console.error(
@@ -1810,7 +1839,7 @@ console.log(selectedAdmin);
     const day = String(today.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
-  console.log("schedule ", scheduleEvents)
+  console.log("schedule ", scheduleEvents);
   const isTimeSlotBusy = (timeSlot) => {
     for (const busySlot of busyTimeSlots) {
       if (
@@ -1836,7 +1865,7 @@ console.log(selectedAdmin);
     return false;
   };
   const handleDeleteSchedule = async (id) => {
-    console.log('clicked')
+    console.log("clicked");
     const res = await axios.delete(
       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/schedule/taskId/${id}`
     );
@@ -1903,7 +1932,6 @@ console.log(selectedAdmin);
                       <p className="font-bold text-lg me-[36px]">
                         Schedule Name
                       </p>
-
                     </div>
                     <input
                       className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
@@ -1918,7 +1946,6 @@ console.log(selectedAdmin);
                     <div className="flex items-center gap-4">
                       <p className="h-2 w-2 bg-black rounded-full"></p>
                       <p className="font-bold text-lg me-[36px]">Course Name</p>
-
                     </div>
                     <input
                       className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
@@ -1932,10 +1959,7 @@ console.log(selectedAdmin);
                   <div className="">
                     <div className="flex items-center gap-4">
                       <p className="h-2 w-2 bg-black rounded-full"></p>
-                      <p className="font-bold text-lg me-[36px]">
-                        BatchName
-                      </p>
-
+                      <p className="font-bold text-lg me-[36px]">BatchName</p>
                     </div>
                     <input
                       className="mt-6 ms-6 border rounded-md w-[100%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
@@ -1973,8 +1997,6 @@ console.log(selectedAdmin);
                       ))}
                     </select>
                   </div>
-
-
                 </div>
 
                 <div className="flex flex-col lg:flex-row items-start mt-[50px] mb-8 lg:gap-40 gap-10">
@@ -1996,8 +2018,10 @@ console.log(selectedAdmin);
                   <div className="">
                     <div className="flex items-center gap-4">
                       <p className="h-2 w-2 bg-black rounded-full"></p>
-                      <p className="font-bold text-lg me-[36px]"> Maximum Time</p>
-
+                      <p className="font-bold text-lg me-[36px]">
+                        {" "}
+                        Maximum Time
+                      </p>
                     </div>
 
                     <input
@@ -2011,10 +2035,8 @@ console.log(selectedAdmin);
                     />
                   </div>
                 </div>
-
               </div>
             )}
-
 
             {/*  {isOpenEvaluationParameter && (
             <div className="dropdown-menu mt-[71px] mb-[45px] ">
@@ -2055,52 +2077,51 @@ console.log(selectedAdmin);
               />
             </div>
           </form>
-                      {
-              picked && (
-                <div className="mt-10 flex justify-items-center justify-center">
-                  <div className="w-[250px] lg:w-[355px] min-w-[250px] lg:min-w-min h-[370px] lg:h-[515px]">
-                    <h1 className="text-[18px] lg:text-[25px] font-[700] text-center pb-[25px]">
-                      Request {meetingmedium} slot
-                    </h1>
-                    <div
-                      style={{
-                        filter: "drop-shadow(3.75217px 3.75217px 0px #000000)",
-                      }}
-                      className="bg-[#0E2749]  w-full h-[400px] rounded-[14px] py-[15px] px-[15px] mb-10 lg:p-[30px] flex flex-col justify-center items-center gap-5"
-                    >
-                      <div className="w-full relative">
-                        <p className="text-[#C0C0C0] text-[18px] font-[600] pb-[18px]">
-                          Date
-                        </p>
-                        <div className="relative inline-flex w-full">
-                          <input
-                            required
-                            onChange={handleDateChange}
-                            className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
-                            name="date"
-                            id="date"
-                            type="date"
-                            min={getCurrentDate()}
-                            max={maxDateString}
-                          />
-                        </div>
-                        <p className="text-[#C0C0C0] text-[18px] font-[600] py-[18px]">
-                          Time
-                        </p>
-                        <div className="relative inline-flex w-full">
-                          <select
-                            required
-                            onChange={handleTimeChange}
-                            className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
-                            name="time"
-                            id="time"
-                          // defaultValue={taskData?.minimumTime}
-                          >
-                            <option className="hidden">Select Time</option>
-                            {generateTimeOptions()}
-                          </select>
-                        </div>
-                        {/* <div className="relative inline-flex w-full">
+          {picked && (
+            <div className="mt-10 flex justify-items-center justify-center">
+              <div className="w-[250px] lg:w-[355px] min-w-[250px] lg:min-w-min h-[370px] lg:h-[515px]">
+                <h1 className="text-[18px] lg:text-[25px] font-[700] text-center pb-[25px]">
+                  Request {meetingmedium} slot
+                </h1>
+                <div
+                  style={{
+                    filter: "drop-shadow(3.75217px 3.75217px 0px #000000)",
+                  }}
+                  className="bg-[#0E2749]  w-full h-[400px] rounded-[14px] py-[15px] px-[15px] mb-10 lg:p-[30px] flex flex-col justify-center items-center gap-5"
+                >
+                  <div className="w-full relative">
+                    <p className="text-[#C0C0C0] text-[18px] font-[600] pb-[18px]">
+                      Date
+                    </p>
+                    <div className="relative inline-flex w-full">
+                      <input
+                        required
+                        onChange={handleDateChange}
+                        className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
+                        name="date"
+                        id="date"
+                        type="date"
+                        min={getCurrentDate()}
+                        max={maxDateString}
+                      />
+                    </div>
+                    <p className="text-[#C0C0C0] text-[18px] font-[600] py-[18px]">
+                      Time
+                    </p>
+                    <div className="relative inline-flex w-full">
+                      <select
+                        required
+                        onChange={handleTimeChange}
+                        className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
+                        name="time"
+                        id="time"
+                        // defaultValue={taskData?.minimumTime}
+                      >
+                        <option className="hidden">Select Time</option>
+                        {generateTimeOptions()}
+                      </select>
+                    </div>
+                    {/* <div className="relative inline-flex w-full">
                 <input
                   required
                   onChange={handleBTimeChange}
@@ -2113,72 +2134,69 @@ console.log(selectedAdmin);
                   defaultValue={taskData?.minimumTime} // Set the default value to 9:00 AM
                 />
               </div> */}
-                      </div>
-                      {reservedEvent ? (
-                        <a
-                          href={reservedEvent?.hangoutLink}
-                          target="_blank"
-                          rel="noreferrer"
-                          style={{ boxShadow: "0px 6.32482px 0px #CA5F98" }}
-                          className="bg-[#0F3934] w-full py-[15px] px-[23px] rounded-[13px] text-[12px] lg:text-[18px] font-[700] z-[1]"
+                  </div>
+                  {reservedEvent ? (
+                    <a
+                      href={reservedEvent?.hangoutLink}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ boxShadow: "0px 6.32482px 0px #CA5F98" }}
+                      className="bg-[#0F3934] w-full py-[15px] px-[23px] rounded-[13px] text-[12px] lg:text-[18px] font-[700] z-[1]"
+                    >
+                      <p className="flex items-center justify-center text-white">
+                        Join Meeting{" "}
+                        <img
+                          className="pl-1 w-[21px] lg:w-[32px]"
+                          src={RightArrowWhite}
+                          alt="RightArrowBlack"
+                        />
+                      </p>
+                    </a>
+                  ) : (
+                    <>
+                      {matching || timeRangeError ? (
+                        <>
+                          {timeRangeError ? (
+                            <p className="text-white">
+                              Please choose a time between {minTime} and{" "}
+                              {maxTime}.
+                            </p>
+                          ) : (
+                            <p className="text-white">
+                              Admin is Busy at that time
+                            </p>
+                          )}
+                        </>
+                      ) : (
+                        <DashboardPrimaryButton
+                          bgColor="#3E4DAC"
+                          shadow="0px 6.32482px 0px #CA5F98"
+                          width="full"
+                          onClick={addEvent}
+                          disabled={
+                            !selectedTimeSlot ||
+                            isTimeSlotBusy(selectedTimeSlot) ||
+                            isTimeSlotReserved(selectedTimeSlot)
+                          }
                         >
                           <p className="flex items-center justify-center text-white">
-                            Join Meeting{" "}
+                            Request Event{" "}
                             <img
                               className="pl-1 w-[21px] lg:w-[32px]"
                               src={RightArrowWhite}
                               alt="RightArrowBlack"
                             />
                           </p>
-                        </a>
-                      ) : (
-                        <>
-                          {matching || timeRangeError ? (
-                            <>
-                              {timeRangeError ? (
-                                <p className="text-white">
-                                  Please choose a time between {minTime} and{" "}
-                                  {maxTime}.
-                                </p>
-                              ) : (
-                                <p className="text-white">
-                                  Admin is Busy at that time
-                                </p>
-                              )}
-                            </>
-                          ) : (
-                            <DashboardPrimaryButton
-                              bgColor="#3E4DAC"
-                              shadow="0px 6.32482px 0px #CA5F98"
-                              width="full"
-                              onClick={addEvent}
-                              disabled={
-                                !selectedTimeSlot ||
-                                isTimeSlotBusy(selectedTimeSlot) ||
-                                isTimeSlotReserved(selectedTimeSlot)
-                              }
-                            >
-                              <p className="flex items-center justify-center text-white">
-                                Request Event{" "}
-                                <img
-                                  className="pl-1 w-[21px] lg:w-[32px]"
-                                  src={RightArrowWhite}
-                                  alt="RightArrowBlack"
-                                />
-                              </p>
-                            </DashboardPrimaryButton>
-                          )}
-                        </>
+                        </DashboardPrimaryButton>
                       )}
-                    </div>
-                  </div>
+                    </>
+                  )}
                 </div>
-              )
-            }
+              </div>
+            </div>
+          )}
         </div>
-        
       </DialogLayoutForFromControl>
-      
     </div>
   );
 };
