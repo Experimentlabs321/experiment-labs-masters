@@ -1429,7 +1429,7 @@ const ScheduleTask = ({ taskData, week }) => {
                 let localDate = new Date(ReformattedDateTime);
 
                 // Add 30 minutes to the localDate
-                localDate.setMinutes(localDate.getMinutes() + 30);
+                localDate.setMinutes(localDate.getMinutes());
 
                 // Convert the updated local date to UTC string without milliseconds
                 const ReformattedDateTimeUTC = localDate.toISOString().split('.')[0] + 'Z';
@@ -1867,7 +1867,7 @@ const ScheduleTask = ({ taskData, week }) => {
                 let localDate = new Date(formattedDateTime);
 
                 // Add 30 minutes to the localDate
-                localDate.setMinutes(localDate.getMinutes() + 30);
+                localDate.setMinutes(localDate.getMinutes());
 
                 // Convert the updated local date to UTC string without milliseconds
                 const formattedDateTimeUTC = localDate.toISOString().split('.')[0] + 'Z';
