@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import Layout from "../Layout";
 import axios from "axios";
 import { Link } from "react-router-dom";
@@ -8,24 +8,34 @@ import { AuthContext } from "../../../contexts/AuthProvider";
 import Loading from "../../Shared/Loading/Loading";
 
 const FindSchedule = () => {
-    const {userInfo} = useContext(AuthContext)
+  const { userInfo } = useContext(AuthContext)
+  const [scheduleUrl,setScheduleUrl] = useState("Empty");
   // const windowsUrl = `${window.location.origin}/taskDetails/${taskData?._id}?taskType=Schedule`
-
+console.log(userInfo)
+const email = userInfo?.email;
   const handleClick = async () => {
-  /*  Loading()
+    Loading()
     try {
-        const response = await axios.post('http://localhost:5000/api/v1/tasks/findschedule',{userInfo});
-      setCourse(response.data);
+      const response = await axios.post(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/findschedule`, {
+        email,
+      });
+      console.log(response.data)
+      const url = response.data.scheduleId;
+      const windowsUrl = `${window.location.origin}/taskDetails/${url}?taskType=Schedule`
+      setScheduleUrl(windowsUrl);
+      // setCourse(response.data);
       Loading().close()
     } catch (error) {
+      console.log(error?.response?.data?.message);
+      setScheduleUrl(error?.response?.data?.message)
       console.error(error);
       Loading().close()
-    }  */
+    }
   };
   console.log(userInfo)
 
   const copyToClipboard = () => {
-    const link = "https://www.youtube.com/";
+    const link = scheduleUrl;
     navigator.clipboard
       .writeText(link)
       .then(() => {
@@ -50,16 +60,16 @@ const FindSchedule = () => {
           </button>
           <div className="flex items-center">
             <Link
-              to={"https://www.youtube.com/"}
-              className="border-2 border-black-500 shadow-md rounded-lg w-[400px] p-2"
+              to={scheduleUrl}
+              className="outline outline-offset-2 outline-2 shadow-md rounded-lg w-auto p-2"
             >
-              https://www.youtube.com/
+              {scheduleUrl}
             </Link>
             <button
               onClick={copyToClipboard}
               className="ml-2 p-2 bg-blue-500  rounded-md"
             >
-              <ContentCopyIcon/>
+              <ContentCopyIcon />
             </button>
           </div>
         </div>

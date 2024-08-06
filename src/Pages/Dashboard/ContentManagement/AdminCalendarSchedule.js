@@ -98,6 +98,7 @@ const AdminCalendarSchedule = () => {
   useEffect(() => {
     if (session && session.user && session.user.last_sign_in_at) {
       const lastSignIn = new Date(session.user.last_sign_in_at);
+      console.log(lastSignIn)
       const now = new Date();
       const fiveMinutesInMillis = 5 * 60 * 1000;
       const isWithinFiveMinutes = (now - lastSignIn) <= fiveMinutesInMillis;
