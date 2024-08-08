@@ -1,41 +1,47 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { jwtVerify } from "jose";
-import Loading from "../../Shared/Loading/Loading";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthProvider";
+import axios from "axios";
+import LoadingComponent from "../Loading/LoadingComponent";
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
 function PreDashboard() {
   const [toggleButton, setToggleButton] = useState(true);
-  const { userInfo, signIn } = useContext(AuthContext);
+  const { signIn } = useContext(AuthContext);
   const query = useQuery();
   const token = query.get("token");
+  const requestedBy = query.get("org");
   const navigate = useNavigate();
 
   useEffect(() => {
-    const getTokenData = async () => {
-      const newSecret = process.env.REACT_APP_SECRET_LOGIN_KEY;
-      const secret = new TextEncoder().encode(newSecret);
+    const handleAuthentication = async () => {
       try {
-        if (secret && token) {
-          const { payload } = await jwtVerify(token, secret);
-          if (!payload.isProviderLogin) {
-            if (!userInfo.email) {
-              await signIn(payload.email, payload.password).then(() => {
-                saveUser(payload.email);
-              });
-            }
+        if (token && requestedBy) {
+          const authData = await axios.post(
+            `http://localhost:5000/api/v1/auth`,
+            // `${process.env.REACT_APP_SERVERLESS_API}/api/v1/auth`,
+            { token, requestedBy }
+          );
+          // console.log({ authData });
+          if (authData.data.success) {
+            signIn(
+              authData.data.credentials.email,
+              authData.data.credentials.password
+            ).then(() => {
+              saveUser(authData.data.credentials.email);
+            });
           }
         }
       } catch (error) {
         console.log({ error });
+        navigate('/')
         throw new Error(error);
       }
     };
 
-    getTokenData();
+    handleAuthentication();
   }, [token]);
 
   const saveUser = async (email) => {
@@ -45,6 +51,7 @@ function PreDashboard() {
       )
         .then((res) => res.json())
         .then((data) => {
+          // console.log({data});
           localStorage.setItem("role", data?.role);
           if (data?.role === "admin") navigate("/adminDashboardHome");
           else navigate("/dashboard");
@@ -145,7 +152,9 @@ function PreDashboard() {
             className="h-full w-full relative lg:ml-[324px]"
           >
             <main className="min-h-[100vh]">
-              <div className="container mx-auto px-4"></div>
+              <div className="container mx-auto px-4">
+                <LoadingComponent />
+              </div>
             </main>
           </div>
         </div>

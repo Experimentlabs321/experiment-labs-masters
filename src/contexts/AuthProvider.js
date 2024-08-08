@@ -8,6 +8,7 @@ import {
   signOut,
   sendPasswordResetEmail,
   updateProfile,
+  signInWithCustomToken,
 } from "firebase/auth";
 import app from "../firebase/firebase.config";
 import axios from "axios";
@@ -85,6 +86,12 @@ const AuthProvider = ({ children }) => {
     return signInWithEmailAndPassword(auth, email, password);
   };
 
+  // signIn with token
+  const signInWithToken = (token) => {
+    setLoading(true);
+    return signInWithCustomToken(auth, token);
+  };
+
   // Login with provider
   const providerLogin = (provider) => {
     setLoading(true);
@@ -141,6 +148,7 @@ const AuthProvider = ({ children }) => {
     setUser,
     auth,
     setLoading,
+    signInWithToken
   };
 
   return (
