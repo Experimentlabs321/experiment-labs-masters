@@ -1930,6 +1930,7 @@ const ScheduleTask = ({ taskData, week }) => {
                                 start_time: newZoomSchedule?.data?.start_time,
                                 duration: newZoomSchedule?.data?.duration,
                                 join_url: studentUrl,
+                                start_url: adminUrl,
                                 topic: `Session with ${userInfo?.name} on ${course?.courseFullName}`,
                                 summary: `${userInfo?.name} ${calendarSubjectName}`,
                                 requester: user?.email,
