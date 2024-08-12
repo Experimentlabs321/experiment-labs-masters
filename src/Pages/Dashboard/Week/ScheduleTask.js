@@ -1838,7 +1838,8 @@ const ScheduleTask = ({ taskData, week }) => {
                 console.error("Error deleting Zoom meeting:", error);
                 console.log(error);
               }
-            } else {
+            } 
+            else {
               try {
                 const inputDateTime = new Date(`${selectedDate}T${time}`);
                 // Manual formatting to "yyyy-MM-ddTHH:mm:ss"
@@ -2003,47 +2004,48 @@ const ScheduleTask = ({ taskData, week }) => {
                           try {
                             // Step 2: Create Google Calendar event
 
-                            if (newSchedule?.data?.success) {
-                              Loading();
-                              const response = await gapi.client.request({
-                                path: `https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events?conferenceDataVersion=1&sendUpdates=none`,
-                                method: "POST",
-                                body: JSON.stringify(event),
-                                headers: {
-                                  "Content-type": "application/json",
-                                  Authorization: `Bearer ${newAccessToken}`,
+                          if (newSchedule?.data?.success) {
+                            Loading();
+                            const response = await gapi.client.request({
+                              path: `https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events?conferenceDataVersion=1&sendUpdates=none`,
+                              method: "POST",
+                              body: JSON.stringify(event),
+                              headers: {
+                                "Content-type": "application/json",
+                                Authorization: `Bearer ${newAccessToken}`,
+                              },
+                            });
+                            console.log(
+                              "Google Calendar event created successfully:",
+                              response
+                            );
+                            const calendarEventId = response.result.id;
+                            if (calendarEventId) {
+                              const newpostData = {
+                                id: newZoomSchedule?.data?.id,
+                                host_email: newZoomSchedule?.data?.host_email,
+                                start_time: newZoomSchedule?.data?.start_time,
+                                duration: newZoomSchedule?.data?.duration,
+                                join_url: studentUrl,
+                                start_url: adminUrl,
+                                topic: `Session with ${userInfo?.name} on ${course?.courseFullName}`,
+                                summary: `${userInfo?.name} ${calendarSubjectName}`,
+                                requester: user?.email,
+                                studentName: userInfo?.name,
+                                organization: {
+                                  organizationId: userInfo?.organizationId,
+                                  organizationName: userInfo?.organizationName,
                                 },
-                              });
-                              console.log(
-                                "Google Calendar event created successfully:",
-                                response
-                              );
-                              const calendarEventId = response.result.id;
-                              if (calendarEventId) {
-                                const newpostData = {
-                                  id: newZoomSchedule?.data?.id,
-                                  host_email: newZoomSchedule?.data?.host_email,
-                                  start_time: newZoomSchedule?.data?.start_time,
-                                  duration: newZoomSchedule?.data?.duration,
-                                  join_url: studentUrl,
-                                  topic: `Session with ${userInfo?.name} on ${course?.courseFullName}`,
-                                  summary: `${userInfo?.name} ${calendarSubjectName}`,
-                                  requester: user?.email,
-                                  studentName: userInfo?.name,
-                                  organization: {
-                                    organizationId: userInfo?.organizationId,
-                                    organizationName: userInfo?.organizationName,
-                                  },
-                                  weekId: weeksId,
-                                  googleCalendarId: calendarEventId,
-                                  meetingType: "Zoom",
-                                  scheduleId: taskId,
-                                  courseName: course?.courseFullName,
-                                  batchName: batchName,
-                                  executionMentors: userInfo?.executionMentors
-                                    ? userInfo?.executionMentors
-                                    : executionMentors,
-                                };
+                                weekId: weeksId,
+                                googleCalendarId: calendarEventId,
+                                meetingType: "Zoom",
+                                scheduleId: taskId,
+                                courseName: course?.courseFullName,
+                                batchName: batchName,
+                                executionMentors: userInfo?.executionMentors
+                                  ? userInfo?.executionMentors
+                                  : executionMentors,
+                              };
 
                                 const response = await axios.post(
                                   // `${process.env.REACT_APP_BACKEND_API}/events`,

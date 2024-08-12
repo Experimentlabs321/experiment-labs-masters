@@ -21,6 +21,7 @@ const Aside = () => {
   const [isCourseThumbnail, setCourseThumbnail] = useState("");
   const [toggleButton, setToggleButton] = useState(false);
   const { id } = useParams();
+  console.log("id", id);
   const navigate = useNavigate();
 
   const asideRef = useRef(null); // Create a ref for the aside element
@@ -82,9 +83,8 @@ const Aside = () => {
       <aside
         ref={asideRef}
         id="sidebar"
-        className={` fixed ${
-          toggleButton ? " lg:flex" : "hidden"
-        } z-20 h-full top-0 bg-[#141414] shadow-lg left-0  lg:flex flex-shrink-0 flex-col w-[324px] transition duration-500 ease-in-out delay-150`}
+        className={` fixed ${toggleButton ? " lg:flex" : "hidden"
+          } z-20 h-full top-0 bg-[#141414] shadow-lg left-0  lg:flex flex-shrink-0 flex-col w-[324px] transition duration-500 ease-in-out delay-150`}
         aria-label="Sidebar"
       >
         <div className=" flex-1 flex flex-col min-h-0 pt-0">
@@ -313,9 +313,9 @@ const Aside = () => {
                     style={
                       location.pathname === "/courseAccess"
                         ? {
-                            background:
-                              "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
-                          }
+                          background:
+                            "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                        }
                         : {}
                     }
                     to="/courseAccess"
@@ -332,16 +332,49 @@ const Aside = () => {
                     )}
 
                     <span
-                      className={`${
-                        location.pathname === "/courseAccess"
+                      className={`${location.pathname === "/courseAccess"
                           ? "text-white"
                           : "text-[#8F8F8F]"
-                      } ml-3 text-[18px] font-[500]`}
+                        } ml-3 text-[18px] font-[500]`}
                     >
                       Course Access
                     </span>
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    style={
+                      location.pathname === `/courseAnalysis/${id}`
+                        ? {
+                          background:
+                            "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                        }
+                        : {}
+                    }
+                    to={`/courseAnalysis/${id}`}
+                    className="text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px] group"
+                  >
+                    {location.pathname === `/courseAnalysis/${id}` ? (
+                      <img
+                        className="bg-white"
+                        src={BookmarksLight}
+                        alt="icon"
+                      />
+                    ) : (
+                      <img className="" src={BookmarksLight} alt="icon" />
+                    )}
+
+                    <span
+                      className={`ml-3 text-[18px] font-[500] ${location.pathname === `/courseAnalysis/${id}`
+                          ? "text-white"
+                          : "text-[#8F8F8F]"
+                        }`}
+                    >
+                      Course Analysis
+                    </span>
+                  </Link>
+                </li>
+
                 <li>
                   <button
                     className="flex gap-2 justify-items-center items-center ml-3 text-[18px] font-[500] mt-5"
