@@ -1838,7 +1838,8 @@ const ScheduleTask = ({ taskData, week }) => {
                 console.error("Error deleting Zoom meeting:", error);
                 console.log(error);
               }
-            } else {
+            } 
+            else {
               try {
                 const inputDateTime = new Date(`${selectedDate}T${time}`);
                 // Manual formatting to "yyyy-MM-ddTHH:mm:ss"

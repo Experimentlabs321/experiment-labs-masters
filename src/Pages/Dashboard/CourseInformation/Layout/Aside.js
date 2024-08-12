@@ -7,7 +7,6 @@ import BookmarksLight from "../../../../assets/Dashboard/BookmarksLight.png";
 import BookmarksDark from "../../../../assets/Dashboard/BookmarksDark.png";
 import DiscussionsLight from "../../../../assets/Dashboard/DiscussionsLight.png";
 import DiscussionsDark from "../../../../assets/Dashboard/DiscussionsDark.png";
-import Science from "../../../../assets/Dashboard/Science.png";
 import CourseAccessIconLight from "../../../../assets/Dashboard/CourseAccessIconLight.svg";
 import CourseAccessIconDark from "../../../../assets/Dashboard/CourseAccessIconDark.svg";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
@@ -357,12 +356,12 @@ const Aside = () => {
                   >
                     {location.pathname === `/courseAnalysis/${id}` ? (
                       <img
-                        className=""
-                        src={Science}
+                        className="bg-white"
+                        src={BookmarksLight}
                         alt="icon"
                       />
                     ) : (
-                      <img className="" src={Science} alt="icon" />
+                      <img className="" src={BookmarksLight} alt="icon" />
                     )}
 
                     <span
