@@ -776,6 +776,21 @@ const ScheduleTask = ({ taskData, week }) => {
     }
   };
 
+  const logToDatabase = async (message, data) => {
+    try {
+      await axios.post(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/logs`, {
+        message : message,
+        data : data,
+        user: user?.email, // Optionally track the user
+      });
+      
+      console.log("Log entry created:", message);
+    } catch (error) {
+      console.log(error);
+      console.error("Failed to log to database:", error);
+    }
+  };
+
   const addEvent = async () => {
     if (checkTime) {
       Swal.fire({
@@ -1444,13 +1459,15 @@ const ScheduleTask = ({ taskData, week }) => {
                   email: adminCalendarInfo?.email,
                   event: matchObject,
                 }
+                logToDatabase("Initiating reschedule check", { emailobject });
                 Loading();
                 const checkScheduleCalendar = await axios.post(
                   `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/matchEvents`, emailobject
                 )
+                logToDatabase("Received reschedule calendar response", checkScheduleCalendar.data);
                 console.log(checkScheduleCalendar?.data?.message);
                 if (checkScheduleCalendar?.data?.message === "You can request") {
-
+                  logToDatabase("Proceeding with you can request in reschedule", { matchObject });
                   const deleteZoomMeetingResponse = await axios.delete(
                     `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/deleteMeeting/organizationId/${userInfo?.organizationId}/meetingId/${zoomMeetingId}`,// Pass the meetingId in the data property
                   );
@@ -1481,10 +1498,12 @@ const ScheduleTask = ({ taskData, week }) => {
                       courseName: course?.courseFullName,
                     };
                     console.log(zoomSchedule);
+                    logToDatabase("Proceeding with Zoom reschedule creation", { zoomSchedule });
                     const newZoomSchedule = await axios.post(
                       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/meeting/organizationId/${userInfo?.organizationId}`,
                       zoomSchedule
                     );
+                    logToDatabase("Zoom reschedule created successfully", newZoomSchedule.data);
                     Loading();
                     if (newZoomSchedule?.data?.uuid) {
                       console.log("zoom schedule ", newZoomSchedule?.data);
@@ -1543,6 +1562,7 @@ const ScheduleTask = ({ taskData, week }) => {
                           start_time: newZoomSchedule?.data?.start_time,
                           duration: newZoomSchedule?.data?.duration,
                           join_url: studentUrl,
+                          start_url: adminUrl,
                           topic: `Session with ${stdName ? stdName : userInfo?.name
                             } on ${course?.courseFullName}`,
                           summary: `${stdName ? stdName : userInfo?.name
@@ -1763,9 +1783,24 @@ const ScheduleTask = ({ taskData, week }) => {
 
                                 navigate("/courseAccess");
                               }
+                              else {
+                                logToDatabase("Error in putting data in schedule collection in reschedule", zoomSchedule);
+                                Loading().close();
+                              }
                               Loading().close();
                             }
+                            else {
+                              logToDatabase("Error in sending mail", zoomSchedule);
+                              Loading().close();
+                            }
+                          } else {
+                            logToDatabase("Error in putting data in event collection in reschedule ", matchObject);
+                            Loading().close();
                           }
+                        }
+                        else {
+                          logToDatabase("Error in putting data in calendarInfo collection in reschedule", matchObject);
+                          Loading().close();
                         }
                       } catch (error) {
                         console.error("An error occurred:", error);
@@ -1812,11 +1847,13 @@ const ScheduleTask = ({ taskData, week }) => {
                     Loading().close();
                   }
                   else {
+                    logToDatabase("Failed to delete the existing Zoom meeting.", { matchObject });
                     Loading().close();
                     console.error("Failed to delete the existing Zoom meeting.");
                   }
                 }
                 else if (checkScheduleCalendar?.data?.message === "Requested slot has been booked!") {
+                  logToDatabase("Schedule calendar check failed no slot in reschedule", checkScheduleCalendar.data);
                   Loading().close();
                   await Swal.fire({
                     icon: "error",
@@ -1825,6 +1862,7 @@ const ScheduleTask = ({ taskData, week }) => {
                   });
                 }
                 else if (checkScheduleCalendar?.data?.message === "Calendar info not found!") {
+                  logToDatabase("Schedule calendar check failed no calendar info in reschedule", checkScheduleCalendar.data);
                   Loading().close();
                   await Swal.fire({
                     icon: "error",
@@ -1838,7 +1876,7 @@ const ScheduleTask = ({ taskData, week }) => {
                 console.error("Error deleting Zoom meeting:", error);
                 console.log(error);
               }
-            } 
+            }
             else {
               try {
                 const inputDateTime = new Date(`${selectedDate}T${time}`);
@@ -1883,17 +1921,21 @@ const ScheduleTask = ({ taskData, week }) => {
                   email: adminCalendarInfo?.email,
                   event: matchObject,
                 }
+                logToDatabase("Initiating schedule check", { emailobject });
                 Loading();
                 const checkScheduleCalendar = await axios.post(
                   `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/matchEvents`, emailobject
                 )
+                logToDatabase("Received schedule calendar response", checkScheduleCalendar.data);
                 console.log(checkScheduleCalendar?.data?.message);
                 if (checkScheduleCalendar?.data?.message === "You can request") {
                   Loading()
+                  logToDatabase("Proceeding with Zoom schedule creation", { zoomSchedule });
                   const newZoomSchedule = await axios.post(
                     `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/meeting/organizationId/${userInfo?.organizationId}`,
                     zoomSchedule
                   );
+                  logToDatabase("Zoom schedule created successfully", newZoomSchedule.data);
                   if (newZoomSchedule?.data?.uuid) {
                     console.log("zoom schedule ", newZoomSchedule?.data);
                     const utcTimeStr = newZoomSchedule?.data?.start_time;
@@ -2004,48 +2046,50 @@ const ScheduleTask = ({ taskData, week }) => {
                           try {
                             // Step 2: Create Google Calendar event
 
-                          if (newSchedule?.data?.success) {
-                            Loading();
-                            const response = await gapi.client.request({
-                              path: `https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events?conferenceDataVersion=1&sendUpdates=none`,
-                              method: "POST",
-                              body: JSON.stringify(event),
-                              headers: {
-                                "Content-type": "application/json",
-                                Authorization: `Bearer ${newAccessToken}`,
-                              },
-                            });
-                            console.log(
-                              "Google Calendar event created successfully:",
-                              response
-                            );
-                            const calendarEventId = response.result.id;
-                            if (calendarEventId) {
-                              const newpostData = {
-                                id: newZoomSchedule?.data?.id,
-                                host_email: newZoomSchedule?.data?.host_email,
-                                start_time: newZoomSchedule?.data?.start_time,
-                                duration: newZoomSchedule?.data?.duration,
-                                join_url: studentUrl,
-                                start_url: adminUrl,
-                                topic: `Session with ${userInfo?.name} on ${course?.courseFullName}`,
-                                summary: `${userInfo?.name} ${calendarSubjectName}`,
-                                requester: user?.email,
-                                studentName: userInfo?.name,
-                                organization: {
-                                  organizationId: userInfo?.organizationId,
-                                  organizationName: userInfo?.organizationName,
+                            if (newSchedule?.data?.success) {
+                              logToDatabase("Added data in calendarInfo collection successfully", { matchObject });
+                              Loading();
+                              const response = await gapi.client.request({
+                                path: `https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events?conferenceDataVersion=1&sendUpdates=none`,
+                                method: "POST",
+                                body: JSON.stringify(event),
+                                headers: {
+                                  "Content-type": "application/json",
+                                  Authorization: `Bearer ${newAccessToken}`,
                                 },
-                                weekId: weeksId,
-                                googleCalendarId: calendarEventId,
-                                meetingType: "Zoom",
-                                scheduleId: taskId,
-                                courseName: course?.courseFullName,
-                                batchName: batchName,
-                                executionMentors: userInfo?.executionMentors
-                                  ? userInfo?.executionMentors
-                                  : executionMentors,
-                              };
+                              });
+                              console.log(
+                                "Google Calendar event created successfully:",
+                                response
+                              );
+                              const calendarEventId = response.result.id;
+                              if (calendarEventId) {
+                                logToDatabase("Added data in google calendar successfully", { matchObject });
+                                const newpostData = {
+                                  id: newZoomSchedule?.data?.id,
+                                  host_email: newZoomSchedule?.data?.host_email,
+                                  start_time: newZoomSchedule?.data?.start_time,
+                                  duration: newZoomSchedule?.data?.duration,
+                                  join_url: studentUrl,
+                                  start_url: adminUrl,
+                                  topic: `Session with ${userInfo?.name} on ${course?.courseFullName}`,
+                                  summary: `${userInfo?.name} ${calendarSubjectName}`,
+                                  requester: user?.email,
+                                  studentName: userInfo?.name,
+                                  organization: {
+                                    organizationId: userInfo?.organizationId,
+                                    organizationName: userInfo?.organizationName,
+                                  },
+                                  weekId: weeksId,
+                                  googleCalendarId: calendarEventId,
+                                  meetingType: "Zoom",
+                                  scheduleId: taskId,
+                                  courseName: course?.courseFullName,
+                                  batchName: batchName,
+                                  executionMentors: userInfo?.executionMentors
+                                    ? userInfo?.executionMentors
+                                    : executionMentors,
+                                };
 
                                 const response = await axios.post(
                                   // `${process.env.REACT_APP_BACKEND_API}/events`,
@@ -2063,6 +2107,7 @@ const ScheduleTask = ({ taskData, week }) => {
                                 //   },
                                 // ];
                                 if (response?.data?.acknowledged) {
+                                  logToDatabase("Added data in event collection successfully", { matchObject });
                                   const postData = {
                                     ...newZoomSchedule?.data,
                                     summary: `${userInfo?.name} ${calendarSubjectName}`,
@@ -2091,6 +2136,7 @@ const ScheduleTask = ({ taskData, week }) => {
                                   );
                                   console.log("new event ", newEvent);
                                   if (newEvent?.data?.acknowledged) {
+                                    logToDatabase("Added data in schedule collection successfully", { matchObject });
                                     const sendMail = await axios.post(
                                       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
                                       {
@@ -2169,11 +2215,28 @@ const ScheduleTask = ({ taskData, week }) => {
                                     Loading().close();
                                     // Navigate or display confirmation as needed
                                   }
+                                  else{
+                                    logToDatabase("Error in putting data in schedule collection ", matchObject);
+                                    Loading().close();
+                                  }
+                                  Loading().close();
+                                }
+                                else {
+                                  logToDatabase("Error in putting data in event collection ", matchObject);
                                   Loading().close();
                                 }
                               }
+                              else {
+                                logToDatabase("Error in google Calendar", matchObject);
+                                Loading().close();
+                              }
+                            }
+                            else {
+                              logToDatabase("Error in putting data in calendarInfo collection", matchObject);
+                              Loading().close();
                             }
                           } catch (error) {
+                            logToDatabase("Error while processing calendarInfo update", { error: error.message, InfoCalendar });
                             console.error("An error occurred:", error);
                             console.log(error?.response?.data?.message);
                             if (
@@ -2206,6 +2269,7 @@ const ScheduleTask = ({ taskData, week }) => {
                             }
                           }
                         } catch (error) {
+
                           console.log("error ", error);
                           console.log(error?.response?.data?.message);
                           if (
@@ -2275,6 +2339,7 @@ const ScheduleTask = ({ taskData, week }) => {
                   }
                 }
                 else if (checkScheduleCalendar?.data?.message === "Requested slot has been booked!") {
+                  logToDatabase("Schedule calendar check failed no slot", checkScheduleCalendar.data);
                   Loading().close();
                   await Swal.fire({
                     icon: "error",
@@ -2283,6 +2348,7 @@ const ScheduleTask = ({ taskData, week }) => {
                   });
                 }
                 else if (checkScheduleCalendar?.data?.message === "Calendar info not found!") {
+                  logToDatabase("Schedule calendar check failed no calendar info", checkScheduleCalendar.data);
                   Loading().close();
                   await Swal.fire({
                     icon: "error",
