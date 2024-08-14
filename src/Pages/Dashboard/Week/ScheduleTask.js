@@ -763,11 +763,11 @@ const ScheduleTask = ({ taskData, week }) => {
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/Schedule/taskId/${taskId}/chapterId/${task?.chapterId}`,
         sendData
       );
-      // const weekResponse = await axios.post(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/weeks/${event.weekId}/participants`, { participant: participantData });
-      // console.log(response);
-      // console.log(weekResponse.data.message);
+      const weekResponse = await axios.post(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/weeks/${event.weekId}/participants`, { participant: participantData });
+      console.log(response);
+      console.log(weekResponse.data.message);
 
-      if (response.status === 200) {
+      if (response.status === 200 && weekResponse.status === 200) {
         // Navigate to the meeting link
         window.location.href = link;
       }
