@@ -53,6 +53,7 @@ import { AuthContext } from "../../contexts/AuthProvider";
 import axios from "axios";
 import { useNotification } from "../../contexts/NotificationContext";
 import Loading from "../Shared/Loading/Loading";
+import WebAssetIcon from '@mui/icons-material/WebAsset';
 
 const Layout = ({ children }) => {
   const [toggleButton, setToggleButton] = useState(true);
@@ -975,6 +976,38 @@ const Layout = ({ children }) => {
                                     <span className=" ml-5 "></span>
                                   </Badge>
                                 </span>
+                              </span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              style={
+                                location.pathname === "/adminAsset"
+                                  ? {
+                                      background:
+                                        "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                                    }
+                                  : {}
+                              }
+                              to="/adminAsset"
+                              className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px]  group`}
+                            >
+                              {location.pathname === "/adminAsset" ? (
+                                <WebAssetIcon/>
+                              ) : (
+                                <WebAssetIcon/>
+                              )}
+
+                              <span
+                                className={`${
+                                  location.pathname === "/adminAsset"
+                                    ? "text-white"
+                                    : "text-[#8F8F8F]"
+                                } ml-3 text-[18px] font-[500]`}
+                              >
+                               Asset Library
+
+                               
                               </span>
                             </Link>
                           </li>

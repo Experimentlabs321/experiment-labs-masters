@@ -58,6 +58,7 @@ const RecordingMentor = ({ zoomId }) => {
             fetchZoomInfos();
         }
     }, [zoomId])
+    
     console.log("zoominfo ",userZoomInfo)
 
     return (
