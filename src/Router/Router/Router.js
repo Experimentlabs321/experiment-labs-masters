@@ -138,6 +138,7 @@ import PrivateRoute from "../PrivateRoute/PrivateRoute";
 import NormalLogin from "../../Pages/Login/NormalLogin/NormalLogin";
 import FindSchedule from "../../Pages/Dashboard/Week/FindSchedule";
 import AdminAssetHome from "../../Pages/Dashboard/AdminAsset/AdminAssetHome";
+import CourseAnalysis from "../../Pages/Dashboard/CourseInformation/CourseAnalysis";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -278,6 +279,10 @@ const router = createBrowserRouter([
   {
     path: "/questLevels/:id",
     element: <CourseInformation />,
+  },
+  {
+    path: "/courseAnalysis/:id",
+    element: <CourseAnalysis />,
   },
   {
     path: "/week/:id",
