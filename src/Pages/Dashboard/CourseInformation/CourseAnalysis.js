@@ -488,11 +488,32 @@ const CourseAnalysis = () => {
             value?.overallCompletionPercentage
               ? value?.overallCompletionPercentage
               : "0"
-          );
+          ) *
+            value?.taskCount;
       });
-      setCompletionPercentage((totalPercentage / 7).toFixed(2));
+      setCompletionPercentage(
+        (totalPercentage / courseDetails?.totalTaskCount).toFixed(2)
+      );
     }
   }, [courseDetails]);
+
+  const percentageColor = (value) => {
+    // Calculate the percentage
+    const percentage = Number(value);
+
+    // Determine the background color based on the percentage
+    let textColorClass = "text-[green]"; // Default to green for 60% and above
+
+    if (percentage < 40) {
+      textColorClass = "text-[red]"; // Red for below 40%
+    } else if (percentage >= 40 && percentage < 60) {
+      textColorClass = "text-[orange]"; // Orange for 40-59.99%
+    }
+
+    return textColorClass;
+  };
+
+  console.log(courseDetails);
 
   return (
     <div>
@@ -669,7 +690,12 @@ const CourseAnalysis = () => {
                     <td className="py-4 px-6 text-left">
                       {courseDetails?.taskTypeDetails?.Assignment?.taskCount}
                     </td>
-                    <td className="py-4 px-6 text-left">
+                    <td
+                      className={`py-4 px-6 text-left ${percentageColor(
+                        courseDetails?.taskTypeDetails?.Assignment
+                          ?.overallCompletionPercentage
+                      )}`}
+                    >
                       {
                         courseDetails?.taskTypeDetails?.Assignment
                           ?.overallCompletionPercentage
@@ -685,7 +711,11 @@ const CourseAnalysis = () => {
                               {task?.taskName}
                             </th>
                             <th className="py-2 px-5 border-b text-left">1</th>
-                            <th className="py-2 px-5 border-b text-left">
+                            <th
+                              className={`py-2 px-5 border-b text-left ${percentageColor(
+                                task?.completionPercentage
+                              )}`}
+                            >
                               {task?.completionPercentage}
                             </th>
                           </tr>
@@ -716,7 +746,12 @@ const CourseAnalysis = () => {
                     <td className="py-4 px-6 text-left">
                       {courseDetails?.taskTypeDetails?.Video?.taskCount}
                     </td>
-                    <td className="py-4 px-6 text-left">
+                    <td
+                      className={`py-4 px-6 text-left ${percentageColor(
+                        courseDetails?.taskTypeDetails?.Video
+                          ?.overallCompletionPercentage
+                      )}`}
+                    >
                       {
                         courseDetails?.taskTypeDetails?.Video
                           ?.overallCompletionPercentage
@@ -732,7 +767,11 @@ const CourseAnalysis = () => {
                               {task?.taskName}
                             </th>
                             <th className="py-2 px-5 border-b text-left">1</th>
-                            <th className="py-2 px-5 border-b text-left">
+                            <th
+                              className={`py-2 px-5 border-b text-left ${percentageColor(
+                                task?.completionPercentage
+                              )}`}
+                            >
                               {task?.completionPercentage}
                             </th>
                           </tr>
@@ -763,7 +802,12 @@ const CourseAnalysis = () => {
                     <td className="py-4 px-6 text-left">
                       {courseDetails?.taskTypeDetails?.Reading?.taskCount}
                     </td>
-                    <td className="py-4 px-6 text-left">
+                    <td
+                      className={`py-4 px-6 text-left ${percentageColor(
+                        courseDetails?.taskTypeDetails?.Reading
+                          ?.overallCompletionPercentage
+                      )}`}
+                    >
                       {
                         courseDetails?.taskTypeDetails?.Reading
                           ?.overallCompletionPercentage
@@ -779,7 +823,11 @@ const CourseAnalysis = () => {
                               {task?.taskName}
                             </th>
                             <th className="py-2 px-5 border-b text-left">1</th>
-                            <th className="py-2 px-5 border-b text-left">
+                            <th
+                              className={`py-2 px-5 border-b text-left ${percentageColor(
+                                task?.completionPercentage
+                              )}`}
+                            >
                               {task?.completionPercentage}
                             </th>
                           </tr>
@@ -810,7 +858,12 @@ const CourseAnalysis = () => {
                     <td className="py-4 px-6 text-left">
                       {courseDetails?.taskTypeDetails?.Classes?.taskCount}
                     </td>
-                    <td className="py-4 px-6 text-left">
+                    <td
+                      className={`py-4 px-6 text-left ${percentageColor(
+                        courseDetails?.taskTypeDetails?.Classes
+                          ?.overallCompletionPercentage
+                      )}`}
+                    >
                       {
                         courseDetails?.taskTypeDetails?.Classes
                           ?.overallCompletionPercentage
@@ -826,7 +879,11 @@ const CourseAnalysis = () => {
                               {task?.taskName}
                             </th>
                             <th className="py-2 px-5 border-b text-left">1</th>
-                            <th className="py-2 px-5 border-b text-left">
+                            <th
+                              className={`py-2 px-5 border-b text-left ${percentageColor(
+                                task?.completionPercentage
+                              )}`}
+                            >
                               {task?.completionPercentage}
                             </th>
                           </tr>
@@ -857,7 +914,12 @@ const CourseAnalysis = () => {
                     <td className="py-4 px-6 text-left">
                       {courseDetails?.taskTypeDetails?.Files?.taskCount}
                     </td>
-                    <td className="py-4 px-6 text-left">
+                    <td
+                      className={`py-4 px-6 text-left ${percentageColor(
+                        courseDetails?.taskTypeDetails?.Files
+                          ?.overallCompletionPercentage
+                      )}`}
+                    >
                       {
                         courseDetails?.taskTypeDetails?.Files
                           ?.overallCompletionPercentage
@@ -873,7 +935,11 @@ const CourseAnalysis = () => {
                               {task?.taskName}
                             </th>
                             <th className="py-2 px-5 border-b text-left">1</th>
-                            <th className="py-2 px-5 border-b text-left">
+                            <th
+                              className={`py-2 px-5 border-b text-left ${percentageColor(
+                                task?.completionPercentage
+                              )}`}
+                            >
                               {task?.completionPercentage}
                             </th>
                           </tr>
@@ -904,7 +970,12 @@ const CourseAnalysis = () => {
                     <td className="py-4 px-6 text-left">
                       {courseDetails?.taskTypeDetails?.Quiz?.taskCount}
                     </td>
-                    <td className="py-4 px-6 text-left">
+                    <td
+                      className={`py-4 px-6 text-left ${percentageColor(
+                        courseDetails?.taskTypeDetails?.Quiz
+                          ?.overallCompletionPercentage
+                      )}`}
+                    >
                       {
                         courseDetails?.taskTypeDetails?.Quiz
                           ?.overallCompletionPercentage
@@ -920,7 +991,11 @@ const CourseAnalysis = () => {
                               {task?.taskName}
                             </th>
                             <th className="py-2 px-5 border-b text-left">1</th>
-                            <th className="py-2 px-5 border-b text-left">
+                            <th
+                              className={`py-2 px-5 border-b text-left ${percentageColor(
+                                task?.completionPercentage
+                              )}`}
+                            >
                               {task?.completionPercentage}
                             </th>
                           </tr>
@@ -951,7 +1026,12 @@ const CourseAnalysis = () => {
                     <td className="py-4 px-6 text-left">
                       {courseDetails?.taskTypeDetails?.Schedule?.taskCount}
                     </td>
-                    <td className="py-4 px-6 text-left">
+                    <td
+                      className={`py-4 px-6 text-left ${percentageColor(
+                        courseDetails?.taskTypeDetails?.Schedule
+                          ?.overallCompletionPercentage
+                      )}`}
+                    >
                       {
                         courseDetails?.taskTypeDetails?.Schedule
                           ?.overallCompletionPercentage
@@ -967,7 +1047,11 @@ const CourseAnalysis = () => {
                               {task?.taskName}
                             </th>
                             <th className="py-2 px-5 border-b text-left">1</th>
-                            <th className="py-2 px-5 border-b text-left">
+                            <th
+                              className={`py-2 px-5 border-b text-left ${percentageColor(
+                                task?.completionPercentage
+                              )}`}
+                            >
                               {task?.completionPercentage}
                             </th>
                           </tr>
