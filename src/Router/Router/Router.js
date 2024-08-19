@@ -136,6 +136,8 @@ import MentorCalendar from "../../Pages/Dashboard/Mentors/MentorCalendar";
 import PreDashboard from "../../Pages/Shared/PreDashboard/PreDashboard";
 import PrivateRoute from "../PrivateRoute/PrivateRoute";
 import NormalLogin from "../../Pages/Login/NormalLogin/NormalLogin";
+import FindSchedule from "../../Pages/Dashboard/Week/FindSchedule";
+import CourseAnalysis from "../../Pages/Dashboard/CourseInformation/CourseAnalysis";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -276,6 +278,10 @@ const router = createBrowserRouter([
   {
     path: "/questLevels/:id",
     element: <CourseInformation />,
+  },
+  {
+    path: "/courseAnalysis/:id",
+    element: <CourseAnalysis />,
   },
   {
     path: "/week/:id",
@@ -692,6 +698,10 @@ const router = createBrowserRouter([
   {
     path: "/salesAndRevenue",
     element: <SalesAndRevenue />,
+  },
+  {
+    path: "/findSchedule",
+    element:<PrivateRoute><FindSchedule /></PrivateRoute> ,
   },
 ]);
 

@@ -24,6 +24,8 @@ import RecordingMentor from './RecordingMentor';
 const MentorAllSchedule = () => {
   const { userInfo, user } = useContext(AuthContext);
   const [userRequesterEvents, setUserRequesterEvents] = useState([]);
+  const [sortedEvents, setSortedEvents] = useState([]);
+  const [filteredEvents, setFilteredEvents] = useState([]);
 
   const [mentors, setMentors] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -51,6 +53,7 @@ const MentorAllSchedule = () => {
         Loading().close();
 
         setUserRequesterEvents(response?.data);
+        console.log("response ", response?.data)
         setEvents(response?.data);
         const currentDate = new Date(getCurrentDate()).getTime();
         // const filteredEvents = response?.data.filter(event => {
@@ -80,71 +83,7 @@ const MentorAllSchedule = () => {
     const day = String(today.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   };
-  // function formatUtcDateTimeStringToListItems(dateTimeString) {
-  //   const utcDateTime = new Date(dateTimeString);
 
-  //   if (isNaN(utcDateTime.getTime())) {
-  //     console.error("Invalid dateTimeString:", dateTimeString);
-  //     return ["Invalid Date"];
-  //   }
-
-  //   const formatInTimeZone = (dateTime, timeZone, label) => (
-  //     `${dateTime.toLocaleString('en-US', {
-  //       timeZone,
-  //       year: 'numeric',
-  //       month: 'short',
-  //       day: 'numeric',
-  //       hour: 'numeric',
-  //       minute: '2-digit',
-  //       hour12: true,
-  //     })} (${label})`
-  //   );
-
-  //   return [
-  //     // formatInTimeZone(utcDateTime, "UTC", "UTC"),
-  //     formatInTimeZone(utcDateTime, "Asia/Kolkata", "India-time"),
-  //     // formatInTimeZone(utcDateTime, "Asia/Seoul", "Korea-time"),
-  //     // formatInTimeZone(utcDateTime, "Asia/Dhaka", "Bangladesh-time"),
-  //   ];
-  // }
-  // const formatTimeForZoom = (event, type) => {
-  //   const utcTimeStr = event?.start_time;
-  //   const timezoneStr = event?.timezone;
-  //   const meetingLength = event?.duration; // Assuming this is in minutes
-  //   const startDate = new Date(utcTimeStr);
-  //   const meetingStartTime = new Date(utcTimeStr);
-  //   const currentDateTime = new Date();
-  //   const meetingEndTime = new Date(meetingStartTime.getTime() + meetingLength * 60000);
-
-  //   // Convert start date to local time in the specified timezone
-  //   const options = {
-  //     timeZone: timezoneStr,
-  //     year: 'numeric',
-  //     month: '2-digit',
-  //     day: '2-digit',
-  //     hour: '2-digit',
-  //     minute: '2-digit',
-  //     second: '2-digit'
-  //   };
-  //   const meetingStart = startDate.toLocaleString(undefined, options);
-  //   console.log(meetingStart);
-  //   // Calculate end date by adding the duration to the start date
-  //   const endDate = new Date(startDate.getTime() + meetingLength * 60000); // 60000 ms in a minute
-
-  //   // Convert end date to local time in the specified timezone
-  //   const meetingEnd = endDate.toLocaleString(undefined, options);
-  //   if (currentDateTime > meetingEndTime && type === 'start') {
-  //     return 'The meeting has already happened.'
-  //   } else if (currentDateTime < meetingEndTime && type === 'start') {
-  //     return meetingStart;
-  //   }
-  //   else if (currentDateTime > meetingEndTime && type === 'end') {
-  //     return "";
-  //   }
-  //   else if (currentDateTime < meetingEndTime && type === 'end') {
-  //     return meetingEnd;
-  //   }
-  // }
   const filterEventsByDate = () => {
     if (!fromDate || !toDate) {
       // If no dates are set, show all events
@@ -175,15 +114,19 @@ const MentorAllSchedule = () => {
   }, [fromDate, toDate, events]);
 
   const now = new Date();
-  const sortedEvents = userRequesterEvents?.slice()?.sort((a, b) => {
-    const dateA = new Date(a?.start_time);
-    const dateB = new Date(b?.start_time);
-    return dateA - dateB;
-  }).filter(event => new Date(event?.start_time) > now);
-  console.log(sortedEvents)
-  const excludedEventId = sortedEvents[0]?._id;
-  console.log(excludedEventId)
-  const filteredEvents = userRequesterEvents?.filter(event => event?._id !== excludedEventId);
+  useEffect(() => {
+    const sorteddEvents = userRequesterEvents?.slice()?.sort((a, b) => {
+      const dateA = new Date(a?.start_time);
+      const dateB = new Date(b?.start_time);
+      return dateA - dateB;
+    }).filter(event => new Date(event?.start_time) > now);
+    setSortedEvents(sorteddEvents);
+    const excludedEventId = sortedEvents[0]?._id;
+    console.log(excludedEventId)
+    const filtereddEvents = userRequesterEvents?.filter(event => event?._id !== excludedEventId);
+    setFilteredEvents(filtereddEvents);
+  }, [userRequesterEvents]);
+
 
   function getEditedEvents(events) {
     return events.sort((a, b) => {
@@ -443,7 +386,7 @@ const MentorAllSchedule = () => {
                         )}
                       </td>
                       <td className="py-4 px-6 border-b text-left">
-                      {eventStartTime < now ? (<RecordingMentor zoomId={event?.id}></RecordingMentor> ): (<p className='text-left text-sm'>Meeting yet to happen</p>)}
+                        {eventStartTime < now ? (<RecordingMentor zoomId={event?.id}></RecordingMentor>) : (<p className='text-left text-sm'>Meeting yet to happen</p>)}
                       </td>
                     </tr>
                   );

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import StarLight from "../../../../assets/Dashboard/StarLight.png";
 import StarDark from "../../../../assets/Dashboard/StarDark.png";
 import WebinarsLight from "../../../../assets/Dashboard/WebinarsLight.png";
@@ -14,13 +14,16 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useEffect } from "react";
 import axios from "axios";
 import MenuIcon from "@mui/icons-material/Menu";
+import { AuthContext } from "../../../../contexts/AuthProvider";
 
 const Aside = () => {
   const [isCourseFullName, setCourseFullName] = useState("");
   const [isCourseDescription, setCourseDescription] = useState("");
   const [isCourseThumbnail, setCourseThumbnail] = useState("");
   const [toggleButton, setToggleButton] = useState(false);
+  const { userInfo } = useContext(AuthContext);
   const { id } = useParams();
+  console.log("id", id);
   const navigate = useNavigate();
 
   const asideRef = useRef(null); // Create a ref for the aside element
@@ -342,6 +345,43 @@ const Aside = () => {
                     </span>
                   </Link>
                 </li>
+                {userInfo?.role === "admin" && (
+                  <li>
+                    <Link
+                      style={
+                        location.pathname === `/courseAnalysis/${id}`
+                          ? {
+                              background:
+                                "linear-gradient(270deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.274309) 35.55%, rgba(0, 0, 0, 0) 100%), #6278FF",
+                            }
+                          : {}
+                      }
+                      to={`/courseAnalysis/${id}`}
+                      className="text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px] group"
+                    >
+                      {location.pathname === `/courseAnalysis/${id}` ? (
+                        <img
+                          className="bg-white"
+                          src={BookmarksLight}
+                          alt="icon"
+                        />
+                      ) : (
+                        <img className="" src={BookmarksLight} alt="icon" />
+                      )}
+
+                      <span
+                        className={`ml-3 text-[18px] font-[500] ${
+                          location.pathname === `/courseAnalysis/${id}`
+                            ? "text-white"
+                            : "text-[#8F8F8F]"
+                        }`}
+                      >
+                        Course Analysis
+                      </span>
+                    </Link>
+                  </li>
+                )}
+
                 <li>
                   <button
                     className="flex gap-2 justify-items-center items-center ml-3 text-[18px] font-[500] mt-5"
