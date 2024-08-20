@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { CircularProgress } from "@mui/material";
 import { AuthContext } from "../../../contexts/AuthProvider";
-import AssignmentStdList from "./AssignmentStdList";
 import ScheduleStdList from "./ScheduleStdList";
 import ClassRecord from "./ClassRecord";
 
@@ -20,25 +19,25 @@ const Schedule = () => {
   const [selectedBatch, setSelectedBatch] = useState("");
   const [classRecordId, setClassRecordId] = useState();
 
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 15;
+
   useEffect(() => {
     if (userInfo) {
       setLoading(true);
       axios
         .get(
-          `http://localhost:5000/api/v1/events/getEventsByOrganizationId/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/getEventsByOrganizationId/${userInfo?.organizationId}`
         )
         .then((response) => {
           setSchedules(response?.data.reverse());
-          setLoading(false);
         })
         .finally(() => {
           setLoading(false);
         });
     }
-    setLoading(false);
   }, [userInfo]);
-
-//console.log(schedules)
 
   useEffect(() => {
     if (userInfo?.organizationId) {
@@ -59,6 +58,7 @@ const Schedule = () => {
     setParticipants(participants);
     setClassId(classId);
   };
+
   const recordView = (id) => {
     setClassRecordOpen(true);
     setClassRecordId(id);
@@ -85,6 +85,15 @@ const Schedule = () => {
     return matchesCourse && matchesBatch;
   });
 
+  // Pagination calculations
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredSchedules.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredSchedules.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   return (
     <div>
@@ -95,12 +104,12 @@ const Schedule = () => {
         participants={participants}
         classId={classId}
       />
-       <ClassRecord
-            classRecordOpen={classRecordOpen}
-            setClassRecordOpen={setClassRecordOpen}
-            classRecordId={classRecordId}
-            organizationId={userInfo?.organizationId}
-          />
+      <ClassRecord
+        classRecordOpen={classRecordOpen}
+        setClassRecordOpen={setClassRecordOpen}
+        classRecordId={classRecordId}
+        organizationId={userInfo?.organizationId}
+      />
       {loading && (
         <div className="flex align-items-center my-5 py-5">
           <CircularProgress className="w-full mx-auto" />
@@ -147,33 +156,12 @@ const Schedule = () => {
               <th className="py-3 px-6 border-b text-left">Schedule name</th>
               <th className="py-3 px-6 border-b text-left">Course name</th>
               <th className="py-3 px-6 border-b text-left">Batches</th>
-              {/* <th className="py-3 px-6 border-b text-left">
-                Schedule start time & date
-              </th> */}
-              {/* <th className="py-3 px-6 border-b text-left">Schedule start date</th> */}
               <th className="py-3 px-6 border-b text-left">Participants</th>
               <th className="py-3 px-6 border-b text-left">Total student</th>
-           
             </tr>
           </thead>
           <tbody>
-            {filteredSchedules?.map((Schedule, index) => {
-              const formattedDate = Schedule?.schedule?.[0]
-                ? new Date(
-                    Schedule.schedule[0].ScheduleStartingDateTime
-                  )?.toLocaleDateString()
-                : "N/A";
-
-              const formattedTime = Schedule?.schedule?.[0]
-                ? new Date(
-                    Schedule.schedule[0].ScheduleEndingDateTime
-                  )?.toLocaleTimeString("en-US", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: true,
-                  })
-                : "N/A";
-
+            {currentItems?.map((Schedule, index) => {
               const batchStudentCounts = Schedule?.batches?.map((batch) => {
                 const studentsInBatch = allUsers?.filter((std) =>
                   std?.courses?.some((data) => data?.batchId === batch?.batchId)
@@ -185,8 +173,11 @@ const Schedule = () => {
                 };
               });
 
-              const totalStudents = batchStudentCounts?.reduce( (acc, batch) => acc + batch.studentCount,0) || 0;
-
+              const totalStudents =
+                batchStudentCounts?.reduce(
+                  (acc, batch) => acc + batch.studentCount,
+                  0
+                ) || 0;
 
               return (
                 <tr
@@ -194,13 +185,10 @@ const Schedule = () => {
                   className={index % 2 === 0 ? "bg-gray-100" : "bg-gray-50"}
                 >
                   <td
-                  onClick={() =>
-                    recordView(Schedule?.eventId)
-                  }
-                  className="py-4 px-6 border-b text-left cursor-pointer">
+                    onClick={() => recordView(Schedule?.eventId)}
+                    className="py-4 px-6 border-b text-left cursor-pointer"
+                  >
                     {Schedule?.taskName}
-                 
-                   
                   </td>
                   <td className="py-4 px-6 border-b text-left">
                     {Schedule?.courseFullName}
@@ -215,10 +203,6 @@ const Schedule = () => {
                           </span>
                         ))}
                   </td>
-                  {/* <td className="py-4 px-6 border-b text-left">
-                    {formattedTime} , {formattedDate}
-                  </td> */}
-                  {/* <td className="py-4 px-6 border-b text-left">{formattedDate}</td> */}
                   <td
                     onClick={() =>
                       Schedule?.batches?.[0] &&
@@ -235,12 +219,26 @@ const Schedule = () => {
                   <td className="py-4 px-6 border-b text-left">
                     {totalStudents}
                   </td>
-              
                 </tr>
               );
             })}
           </tbody>
         </table>
+      </div>
+
+      {/* Pagination Controls */}
+      <div className="flex justify-center my-5">
+        {[...Array(totalPages).keys()].map((number) => (
+          <button
+            key={number}
+            onClick={() => handlePageChange(number + 1)}
+            className={`mx-1 px-3 py-1 border rounded ${
+              number + 1 === currentPage ? "bg-black text-white" : "bg-white"
+            }`}
+          >
+            {number + 1}
+          </button>
+        ))}
       </div>
     </div>
   );

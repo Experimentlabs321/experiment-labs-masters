@@ -400,7 +400,7 @@ const MentorAssignments = () => {
     } 
 
     try {
-      const response = await axios.post('http://localhost:5000/api/v1/assignmentSubmissions/addMultipleResult', submissionIds);
+      const response = await axios.post(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/addMultipleResult`, submissionIds);
 
       console.log(response.data.message === "Result added successfully");
       // You can also add logic to handle success, such as displaying a message or updating state

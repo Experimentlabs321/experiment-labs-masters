@@ -38,13 +38,15 @@ const Videos = () => {
   const [sortOrder, setSortOrder] = useState("desc"); // Default sorting order
   const [file, setFile] = useState();
   const [fileOpen, setFileOpen] = useState(false);
+  const [currentPageNumber, setCurrentPageNumber] = useState(1); // New state for pagination
+  const itemsPerPage = 15; // Define how many items per page
 
   useEffect(() => {
     if (userInfo) {
       setLoading(true);
       axios
         .get(
-          `http://localhost:5000/api/v1/tasks/getVideosByOrganizationId/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/getVideosByOrganizationId/${userInfo?.organizationId}`
         )
         .then((response) => {
           setVideos(response?.data.reverse());
@@ -132,6 +134,18 @@ const Videos = () => {
     return sortOrder === "asc" ? percentageA - percentageB : percentageB - percentageA;
   });
 
+  const totalPages = Math.ceil(sortedVideos.length / itemsPerPage);
+  const paginatedClasses = sortedVideos.slice(
+    (currentPageNumber - 1) * itemsPerPage,
+    currentPageNumber * itemsPerPage
+  );
+
+  const handlePageChange = (pageNumber) => {
+    if (pageNumber > 0 && pageNumber <= totalPages) {
+      setCurrentPageNumber(pageNumber);
+    }
+  };
+
   return (
     <div>
       <ReadingStdList
@@ -197,7 +211,7 @@ const Videos = () => {
             </tr>
           </thead>
           <tbody>
-            {sortedVideos?.map((video, index) => {
+            {paginatedClasses?.map((video, index) => {
             
               const batchStudentCounts = video?.batches?.map((batch) => {
                 const studentsInBatch = allUsers?.filter((std) =>
@@ -289,6 +303,22 @@ const Videos = () => {
           </tbody>
         </table>
       </div>
+       {/* Pagination Controls */}
+       <div className="flex justify-center my-5">
+                  {[...Array(totalPages).keys()].map((number) => (
+                    <button
+                      key={number}
+                      onClick={() => handlePageChange(number + 1)}
+                      className={`mx-1 px-3 py-1 border rounded ${
+                        number + 1 === currentPageNumber
+                          ? "bg-black text-white"
+                          : "bg-white"
+                      }`}
+                    >
+                      {number + 1}
+                    </button>
+                  ))}
+                </div>
     </div>
   );
 };

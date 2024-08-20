@@ -38,12 +38,15 @@ const Reading = () => {
   const [file, setFile] = useState();
   const [fileOpen, setFileOpen] = useState(false);
 
+  const [currentPageNumber, setCurrentPageNumber] = useState(1); // New state for pagination
+  const itemsPerPage = 10; // Define how many items per page
+
   useEffect(() => {
     if (userInfo) {
       setLoading(true);
       axios
         .get(
-          `http://localhost:5000/api/v1/tasks/getReadingByOrganizationId/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/getReadingByOrganizationId/${userInfo?.organizationId}`
         )
         .then((response) => {
           setReadings(response?.data.reverse());
@@ -134,6 +137,17 @@ const Reading = () => {
       : percentageB - percentageA;
   });
 
+  const totalPages = Math.ceil(sortedReadings.length / itemsPerPage);
+  const paginatedClasses = sortedReadings.slice(
+    (currentPageNumber - 1) * itemsPerPage,
+    currentPageNumber * itemsPerPage
+  );
+
+  const handlePageChange = (pageNumber) => {
+    if (pageNumber > 0 && pageNumber <= totalPages) {
+      setCurrentPageNumber(pageNumber);
+    }
+  };
   return (
     <div>
       <ReadingStdList
@@ -191,13 +205,15 @@ const Reading = () => {
               <th className="py-3 px-6 border-b text-left">Course name</th>
               <th className="py-3 px-6 border-b text-left">Batches</th>
 
-              <th className="py-3 px-6 border-b text-left">Complete percentage(%)</th>
+              <th className="py-3 px-6 border-b text-left">
+                Complete percentage(%)
+              </th>
               <th className="py-3 px-6 border-b text-left">Participants</th>
               <th className="py-3 px-6 border-b text-left">Total student</th>
             </tr>
           </thead>
           <tbody>
-            {sortedReadings?.map((reading, index) => {
+            {paginatedClasses?.map((reading, index) => {
               const batchStudentCounts = reading?.batches?.map((batch) => {
                 const studentsInBatch = allUsers?.filter((std) =>
                   std?.courses?.some((data) => data?.batchId === batch?.batchId)
@@ -232,7 +248,6 @@ const Reading = () => {
                 textColorClass = "text-[orange]"; // Orange for 40-59.99%
               }
 
-            
               return (
                 <tr
                   key={reading?._id}
@@ -286,6 +301,23 @@ const Reading = () => {
             })}
           </tbody>
         </table>
+      </div>
+      {/* Pagination Controls */}
+      {/* Pagination Controls */}
+      <div className="flex justify-center my-5">
+        {[...Array(totalPages).keys()].map((number) => (
+          <button
+            key={number}
+            onClick={() => handlePageChange(number + 1)}
+            className={`mx-1 px-3 py-1 border rounded ${
+              number + 1 === currentPageNumber
+                ? "bg-black text-white"
+                : "bg-white"
+            }`}
+          >
+            {number + 1}
+          </button>
+        ))}
       </div>
     </div>
   );

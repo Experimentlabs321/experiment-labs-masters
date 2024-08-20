@@ -32,12 +32,15 @@ const AdminAssetHome = () => {
   const [selectedBatch, setSelectedBatch] = useState("");
   const [sortOrder, setSortOrder] = useState("desc"); // New state to manage sorting order
 
+  const [currentPageNumber, setCurrentPageNumber] = useState(1); // New state for pagination
+  const itemsPerPage = 15; // Define how many items per page
+
   useEffect(() => {
     if (userInfo) {
       setLoading(true);
       axios
         .get(
-          `http://localhost:5000/api/v1/classes/classesByOrganization/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/classes/classesByOrganization/${userInfo?.organizationId}`
         )
         .then((response) => {
           setClasses(response?.data.reverse());
@@ -109,6 +112,18 @@ const AdminAssetHome = () => {
       return percentageB - percentageA;
     }
   });
+
+  const totalPages = Math.ceil(sortedClasses.length / itemsPerPage);
+  const paginatedClasses = sortedClasses.slice(
+    (currentPageNumber - 1) * itemsPerPage,
+    currentPageNumber * itemsPerPage
+  );
+
+  const handlePageChange = (pageNumber) => {
+    if (pageNumber > 0 && pageNumber <= totalPages) {
+      setCurrentPageNumber(pageNumber);
+    }
+  };
 
   return (
     <div>
@@ -277,7 +292,7 @@ const AdminAssetHome = () => {
                           Class start time & date
                         </th>
                         <th className="py-3 px-6 border-b text-left">
-                        Complete percentage(%)
+                          Complete percentage(%)
                         </th>
                         <th className="py-3 px-6 border-b text-left">
                           Participant
@@ -288,7 +303,7 @@ const AdminAssetHome = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {sortedClasses.map((cls, index) => {
+                      {paginatedClasses.map((cls, index) => {
                         const formattedDate = new Date(
                           cls?.courseStartingDateTime
                         )?.toLocaleDateString();
@@ -387,38 +402,30 @@ const AdminAssetHome = () => {
                     </tbody>
                   </table>
                 </div>
+                {/* Pagination Controls */}
+                <div className="flex justify-center my-5">
+                  {[...Array(totalPages).keys()].map((number) => (
+                    <button
+                      key={number}
+                      onClick={() => handlePageChange(number + 1)}
+                      className={`mx-1 px-3 py-1 border rounded ${
+                        number + 1 === currentPageNumber
+                          ? "bg-black text-white"
+                          : "bg-white"
+                      }`}
+                    >
+                      {number + 1}
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
-            {currentPage === "Assignment" && (
-              <Assignment
-                
-              />
-            )}
-            {currentPage === "Schedule" && (
-              <Schedule
-               
-              />
-            )}
-             {currentPage === "Reading" && (
-              <Reading
-               
-              />
-            )}
-             {currentPage === "Videos" && (
-              <Videos
-               
-              />
-            )}
-             {currentPage === "Quiz" && (
-              <Quiz
-               
-              />
-            )}
-             {currentPage === "File" && (
-              <File
-               
-              />
-            )}
+            {currentPage === "Assignment" && <Assignment />}
+            {currentPage === "Schedule" && <Schedule />}
+            {currentPage === "Reading" && <Reading />}
+            {currentPage === "Videos" && <Videos />}
+            {currentPage === "Quiz" && <Quiz />}
+            {currentPage === "File" && <File />}
           </>
         )}
       </Layout>

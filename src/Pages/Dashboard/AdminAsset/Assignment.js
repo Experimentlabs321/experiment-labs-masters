@@ -36,13 +36,15 @@ const Assignment = () => {
   const [selectedBatch, setSelectedBatch] = useState("");
   const [sortOrder, setSortOrder] = useState("desc");
   const [file, setFile] = useState(); 
+  const [currentPageNumber, setCurrentPageNumber] = useState(1); // New state for pagination
+  const itemsPerPage = 15; // Define how many items per page
 
   useEffect(() => {
     if (userInfo) {
       setLoading(true);
       axios
         .get(
-          `http://localhost:5000/api/v1/assignmentSubmissions/assignmentsByOrganization/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/assignmentsByOrganization/${userInfo?.organizationId}`
         )
         .then((response) => {
           setAssignments(response?.data.reverse());
@@ -130,6 +132,18 @@ const Assignment = () => {
     return sortOrder === "asc" ? percentageA - percentageB : percentageB - percentageA;
   });
 
+  const totalPages = Math.ceil(sortedAssignments.length / itemsPerPage);
+  const paginatedClasses = sortedAssignments.slice(
+    (currentPageNumber - 1) * itemsPerPage,
+    currentPageNumber * itemsPerPage
+  );
+
+  const handlePageChange = (pageNumber) => {
+    if (pageNumber > 0 && pageNumber <= totalPages) {
+      setCurrentPageNumber(pageNumber);
+    }
+  };
+
   return (
     <div>
       <AssignmentStdList
@@ -207,7 +221,7 @@ const Assignment = () => {
             </tr>
           </thead>
           <tbody>
-            {sortedAssignments?.map((assignment, index) => {
+            {paginatedClasses?.map((assignment, index) => {
               const formattedDate = assignment?.schedule?.[0]
                 ? new Date(assignment.schedule[0].assignmentStartingDateTime)?.toLocaleDateString()
                 : "N/A";
@@ -327,6 +341,22 @@ const Assignment = () => {
           </tbody>
         </table>
       </div>
+       {/* Pagination Controls */}
+       <div className="flex justify-center my-5">
+                  {[...Array(totalPages).keys()].map((number) => (
+                    <button
+                      key={number}
+                      onClick={() => handlePageChange(number + 1)}
+                      className={`mx-1 px-3 py-1 border rounded ${
+                        number + 1 === currentPageNumber
+                          ? "bg-black text-white"
+                          : "bg-white"
+                      }`}
+                    >
+                      {number + 1}
+                    </button>
+                  ))}
+                </div>
     </div>
   );
 };
