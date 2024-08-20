@@ -208,16 +208,19 @@ const ExecutionMentorSchedule = () => {
     }
   };
   const handleOptionChangeHoliday = (day) => {
-    const isSelected = selectedHoliday.includes(day.day);
-
+    if (!day || !day.day) {
+      console.error('Invalid day object passed:', day);
+      return;
+    }
+  
+    const isSelected = selectedHoliday.includes(day?.day);
+  
     if (isSelected) {
-      // If the day is already selected, remove it from the array
       const updatedSelection = selectedHoliday.filter(
         (selectedDay) => selectedDay !== day.day
       );
       setSelectedHoliday(updatedSelection);
     } else {
-      // If the day is not selected, add it to the array
       setSelectedHoliday((prevSelection) => [...prevSelection, day.day]);
     }
   };
