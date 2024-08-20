@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import AddStudent from "../AddStudent/AddStudent";
 import Loading from "../../Shared/Loading/Loading";
 import toast from "react-hot-toast";
+import { Box, LinearProgress } from "@mui/material";
 
 const MyStudents = () => {
   const { paidStudents } = useParams();
@@ -265,6 +266,24 @@ const MyStudents = () => {
     Loading().close();
   };
 
+  const [progress, setProgress] = React.useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setProgress((oldProgress) => {
+        if (oldProgress === 100) {
+          return 0;
+        }
+        const diff = Math.random() * 10;
+        return Math.min(oldProgress + diff, 100);
+      });
+    }, 2000);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
+
   return (
     <div>
       <Layout>
@@ -416,231 +435,249 @@ const MyStudents = () => {
                   </button> */}
                 </div>
               </div>
-              <div
-                style={{
-                  maxWidth: `${
-                    window.innerWidth - (window.innerWidth > 1024 ? 370 : 40)
-                  }px`,
-                }}
-                // style={{ height: "70vh" }}
-                className="overflow-x-auto h-[60vh] overscroll-y-auto"
-              >
-                <table className=" min-w-full font-sans bg-white border border-gray-300">
-                  <thead className="bg-gray-800 text-white sticky top-0">
-                    <tr>
-                      <th className="py-3 px-6 border-b text-left">
-                        {itemDetails?.name ? itemDetails?.name : "Name"}
-                      </th>
-                      <th className="py-3 px-6 border-b text-left">
-                        {itemDetails?.email ? itemDetails?.email : "Email"}
-                      </th>
-                      <th className="py-3 px-6 border-b text-left">
-                        {itemDetails?.phone ? itemDetails?.phone : "Phone"}
-                      </th>
-                      <th className="py-3 px-6 border-b text-left">
-                        {itemDetails?.joiningDate
-                          ? itemDetails?.joiningDate
-                          : "Joining Date"}
-                      </th>
-                      <th className="py-3 px-6 border-b text-left">
-                        {itemDetails?.paidOrUnpaid
-                          ? itemDetails?.paidOrUnpaid
-                          : "Paid/Unpaid"}
-                      </th>
-                      <th className="py-3 px-6 border-b text-left">
-                        Assign Mentor
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredStudents &&
-                      filteredStudents[0] &&
-                      filteredStudents?.reverse()?.map((student, index) => {
-                        const formattedDate = new Date(
-                          student?.dateCreated
-                        )?.toLocaleDateString();
+              {!filteredStudents[0] && (
+                <div className=" flex justify-center  w-full  ">
+                  <div className="flex flex-col items-center gap-3">
+                    <p className="mt-20">Loading...</p>
+                    <Box sx={{ width: "500px" }}>
+                      <LinearProgress
+                        sx={{ height: "20px", borderRadius: "10px" }}
+                        variant="determinate"
+                        value={progress}
+                      />
+                    </Box>
+                  </div>
 
-                        return (
-                          <tr
-                            key={student?._id}
-                            className={
-                              index % 2 === 0 ? "bg-gray-100" : "bg-gray-50"
-                            }
-                          >
-                            <td className="py-4 px-6 border-b text-left">
-                              <Link to={`/profile/${student?.email}`}>
-                                {student?.name}
-                              </Link>
-                            </td>
-                            <td className="py-4 px-6 border-b text-left">
-                              <Link to={`/profile/${student?.email}`}>
-                                {student?.email}
-                              </Link>
-                            </td>
-                            <td className="py-4 px-6 border-b text-left">
-                              <Link to={`/profile/${student?.email}`}>
-                                {student?.phone}
-                              </Link>
-                            </td>
-                            <td className="py-4 px-6 border-b text-left">
-                              <Link to={`/profile/${student?.email}`}>
-                                {formattedDate}
-                              </Link>
-                            </td>
-                            <td className="py-4 px-6 border-b text-left">
-                              {parseInt(selectedCourse?.expirationDay) -
-                                daysDifferenceFromEnrolled(
-                                  student?.courses?.find(
-                                    (item) =>
-                                      item?.courseId === selectedCourse?._id
-                                  )?.enrollDate
-                                ) <
-                                0 ||
-                              (!selectedCourse?._id &&
-                                selectedValidationStatus === "Expired") ? (
+                  {/* <CircularProgress className="w-full mx-auto" /> */}
+                </div>
+              )}
+              {filteredStudents[0] && (
+                <div
+                  style={{
+                    maxWidth: `${
+                      window.innerWidth - (window.innerWidth > 1024 ? 370 : 40)
+                    }px`,
+                  }}
+                  // style={{ height: "70vh" }}
+                  className="overflow-x-auto h-[60vh] overscroll-y-auto"
+                >
+                  <table className=" min-w-full font-sans bg-white border border-gray-300">
+                    <thead className="bg-gray-800 text-white sticky top-0">
+                      <tr>
+                        <th className="py-3 px-6 border-b text-left">
+                          {itemDetails?.name ? itemDetails?.name : "Name"}
+                        </th>
+                        <th className="py-3 px-6 border-b text-left">
+                          {itemDetails?.email ? itemDetails?.email : "Email"}
+                        </th>
+                        <th className="py-3 px-6 border-b text-left">
+                          {itemDetails?.phone ? itemDetails?.phone : "Phone"}
+                        </th>
+                        <th className="py-3 px-6 border-b text-left">
+                          {itemDetails?.joiningDate
+                            ? itemDetails?.joiningDate
+                            : "Joining Date"}
+                        </th>
+                        <th className="py-3 px-6 border-b text-left">
+                          {itemDetails?.paidOrUnpaid
+                            ? itemDetails?.paidOrUnpaid
+                            : "Paid/Unpaid"}
+                        </th>
+                        <th className="py-3 px-6 border-b text-left">
+                          Assign Mentor
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredStudents &&
+                        filteredStudents[0] &&
+                        filteredStudents?.reverse()?.map((student, index) => {
+                          const formattedDate = new Date(
+                            student?.dateCreated
+                          )?.toLocaleDateString();
+
+                          return (
+                            <tr
+                              key={student?._id}
+                              className={
+                                index % 2 === 0 ? "bg-gray-100" : "bg-gray-50"
+                              }
+                            >
+                              <td className="py-4 px-6 border-b text-left">
                                 <Link to={`/profile/${student?.email}`}>
-                                  <span className="text-orange-600 font-semibold">
-                                    &#9888;{" "}
-                                    {itemDetails?.expired
-                                      ? itemDetails?.expired
-                                      : "Expired"}
-                                  </span>
+                                  {student?.name}
                                 </Link>
-                              ) : (
+                              </td>
+                              <td className="py-4 px-6 border-b text-left">
                                 <Link to={`/profile/${student?.email}`}>
-                                  {student?.courses && student?.courses[0] ? (
-                                    <span className="text-green font-semibold">
-                                      &#x2713;{" "}
-                                      {itemDetails?.paid
-                                        ? itemDetails?.paid
-                                        : "Paid"}
-                                    </span>
-                                  ) : (
-                                    <span className="text-red-600 font-semibold">
-                                      &#x2717;{" "}
-                                      {itemDetails?.unpaid
-                                        ? itemDetails?.unpaid
-                                        : "Unpaid"}
-                                    </span>
-                                  )}
+                                  {student?.email}
                                 </Link>
-                              )}
-                            </td>
-                            <td className="py-4 px-6 border-b text-left">
-                              <div className=" flex gap-1">
-                                <div>
-                                  {editOrAssignExecutionMentor?._id !==
-                                    student?._id && (
-                                    <div className="flex gap-1">
-                                      <div
-                                        className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] p-2 cursor-pointer"
-                                        // onClick={handleToggleDropdown}
-                                      >
-                                        {student?.executionMentors?.length >
-                                        0 ? (
-                                          student?.executionMentors?.map(
-                                            (mentor, idx) => (
-                                              <span className=" whitespace-nowrap">
-                                                {student?.executionMentors
-                                                  ?.length >
-                                                idx + 1
-                                                  ? `${
-                                                      executionMentors?.find(
+                              </td>
+                              <td className="py-4 px-6 border-b text-left">
+                                <Link to={`/profile/${student?.email}`}>
+                                  {student?.phone}
+                                </Link>
+                              </td>
+                              <td className="py-4 px-6 border-b text-left">
+                                <Link to={`/profile/${student?.email}`}>
+                                  {formattedDate}
+                                </Link>
+                              </td>
+                              <td className="py-4 px-6 border-b text-left">
+                                {parseInt(selectedCourse?.expirationDay) -
+                                  daysDifferenceFromEnrolled(
+                                    student?.courses?.find(
+                                      (item) =>
+                                        item?.courseId === selectedCourse?._id
+                                    )?.enrollDate
+                                  ) <
+                                  0 ||
+                                (!selectedCourse?._id &&
+                                  selectedValidationStatus === "Expired") ? (
+                                  <Link to={`/profile/${student?.email}`}>
+                                    <span className="text-orange-600 font-semibold">
+                                      &#9888;{" "}
+                                      {itemDetails?.expired
+                                        ? itemDetails?.expired
+                                        : "Expired"}
+                                    </span>
+                                  </Link>
+                                ) : (
+                                  <Link to={`/profile/${student?.email}`}>
+                                    {student?.courses && student?.courses[0] ? (
+                                      <span className="text-green font-semibold">
+                                        &#x2713;{" "}
+                                        {itemDetails?.paid
+                                          ? itemDetails?.paid
+                                          : "Paid"}
+                                      </span>
+                                    ) : (
+                                      <span className="text-red-600 font-semibold">
+                                        &#x2717;{" "}
+                                        {itemDetails?.unpaid
+                                          ? itemDetails?.unpaid
+                                          : "Unpaid"}
+                                      </span>
+                                    )}
+                                  </Link>
+                                )}
+                              </td>
+                              <td className="py-4 px-6 border-b text-left">
+                                <div className=" flex gap-1">
+                                  <div>
+                                    {editOrAssignExecutionMentor?._id !==
+                                      student?._id && (
+                                      <div className="flex gap-1">
+                                        <div
+                                          className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] p-2 cursor-pointer"
+                                          // onClick={handleToggleDropdown}
+                                        >
+                                          {student?.executionMentors?.length >
+                                          0 ? (
+                                            student?.executionMentors?.map(
+                                              (mentor, idx) => (
+                                                <span className=" whitespace-nowrap">
+                                                  {student?.executionMentors
+                                                    ?.length >
+                                                  idx + 1
+                                                    ? `${
+                                                        executionMentors?.find(
+                                                          (item) =>
+                                                            item?.email ===
+                                                            mentor?.mentorEmail
+                                                        )?.name
+                                                      }, `
+                                                    : executionMentors?.find(
                                                         (item) =>
                                                           item?.email ===
                                                           mentor?.mentorEmail
-                                                      )?.name
-                                                    }, `
-                                                  : executionMentors?.find(
-                                                      (item) =>
-                                                        item?.email ===
-                                                        mentor?.mentorEmail
-                                                    )?.name}
-                                              </span>
+                                                      )?.name}
+                                                </span>
+                                              )
                                             )
-                                          )
-                                        ) : (
-                                          <span className=" whitespace-nowrap">
-                                            Mentor not assigned!
-                                          </span>
+                                          ) : (
+                                            <span className=" whitespace-nowrap">
+                                              Mentor not assigned!
+                                            </span>
+                                          )}
+                                        </div>
+                                        {userInfo?.role === "admin" && (
+                                          <button
+                                            onClick={() => {
+                                              setEditOrAssignExecutionMentor(
+                                                student
+                                              );
+                                              setSelectedExecutionMentorsForEditOrAssign(
+                                                student?.executionMentors
+                                                  ? student?.executionMentors
+                                                  : []
+                                              );
+                                            }}
+                                            className="px-3 py-1 bg-blue text-white rounded"
+                                          >
+                                            Edit
+                                          </button>
                                         )}
                                       </div>
-                                      {userInfo?.role === "admin" && (
-                                        <button
-                                          onClick={() => {
-                                            setEditOrAssignExecutionMentor(
-                                              student
-                                            );
-                                            setSelectedExecutionMentorsForEditOrAssign(
-                                              student?.executionMentors
-                                                ? student?.executionMentors
-                                                : []
-                                            );
-                                          }}
-                                          className="px-3 py-1 bg-blue text-white rounded"
-                                        >
-                                          Edit
-                                        </button>
-                                      )}
-                                    </div>
-                                  )}
-                                  {editOrAssignExecutionMentor?._id ===
-                                    student?._id &&
-                                    userInfo?.role === "admin" && (
-                                      <div className="flex gap-1 items-end">
-                                        <div className=" w-full rounded-md shadow-lg bg-white">
-                                          <ul className="max-h-48 overflow-auto rounded-md py-1 text-base leading-6 shadow-xs focus:outline-none sm:text-sm sm:leading-5 ">
-                                            {executionMentors?.map(
-                                              (mentor, idx) => (
-                                                <li
-                                                  key={mentor?._id + idx}
-                                                  className="flex items-center p-2"
-                                                >
-                                                  <input
-                                                    type="radio"
-                                                    checked={
-                                                      selectedExecutionMentorsForEditOrAssign[0]
-                                                        ?.mentorId ===
-                                                      mentor?._id
-                                                    }
-                                                    onChange={(e) =>
-                                                      handleExecutionMentorSelectChange(
-                                                        mentor,
-                                                        e
-                                                      )
-                                                    }
-                                                    className="form-checkbox h-5 w-5 text-indigo-600 transition duration-150 ease-in-out"
-                                                  />
-                                                  <span className="ml-2 whitespace-nowrap text-gray-700">
-                                                    {mentor?.name}
-                                                  </span>
-                                                </li>
-                                              )
-                                            )}
-                                          </ul>
-                                        </div>
-                                        <button
-                                          onClick={() =>
-                                            handleAddOrUpdateMentor(
-                                              student?._id,
-                                              index
-                                            )
-                                          }
-                                          className="px-3 py-1 bg-blue text-white rounded"
-                                        >
-                                          Save
-                                        </button>
-                                      </div>
                                     )}
+                                    {editOrAssignExecutionMentor?._id ===
+                                      student?._id &&
+                                      userInfo?.role === "admin" && (
+                                        <div className="flex gap-1 items-end">
+                                          <div className=" w-full rounded-md shadow-lg bg-white">
+                                            <ul className="max-h-48 overflow-auto rounded-md py-1 text-base leading-6 shadow-xs focus:outline-none sm:text-sm sm:leading-5 ">
+                                              {executionMentors?.map(
+                                                (mentor, idx) => (
+                                                  <li
+                                                    key={mentor?._id + idx}
+                                                    className="flex items-center p-2"
+                                                  >
+                                                    <input
+                                                      type="radio"
+                                                      checked={
+                                                        selectedExecutionMentorsForEditOrAssign[0]
+                                                          ?.mentorId ===
+                                                        mentor?._id
+                                                      }
+                                                      onChange={(e) =>
+                                                        handleExecutionMentorSelectChange(
+                                                          mentor,
+                                                          e
+                                                        )
+                                                      }
+                                                      className="form-checkbox h-5 w-5 text-indigo-600 transition duration-150 ease-in-out"
+                                                    />
+                                                    <span className="ml-2 whitespace-nowrap text-gray-700">
+                                                      {mentor?.name}
+                                                    </span>
+                                                  </li>
+                                                )
+                                              )}
+                                            </ul>
+                                          </div>
+                                          <button
+                                            onClick={() =>
+                                              handleAddOrUpdateMentor(
+                                                student?._id,
+                                                index
+                                              )
+                                            }
+                                            className="px-3 py-1 bg-blue text-white rounded"
+                                          >
+                                            Save
+                                          </button>
+                                        </div>
+                                      )}
+                                  </div>
                                 </div>
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                  </tbody>
-                </table>
-              </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </>
           ) : (
             <>
