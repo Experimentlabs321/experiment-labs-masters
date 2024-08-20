@@ -560,10 +560,26 @@ const CourseAnalysis = () => {
             </div>
           )}
           <div className="lg:flex grid grid-cols-2 gap-5 p-5">
+            <div className="w-[160px] justify-center items-stretch shadow-sm bg-[#6278FF] flex flex-col px-2 rounded-md py-4 font-sans">
+              <div className="justify-between items-stretch flex gap-5">
+                <div className="text-white text-sm font-medium tracking-widest">
+                  Course Completion Percentage(%)
+                </div>
+                <img
+                  alt="icon"
+                  loading="lazy"
+                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/db26dcaf06bcfb06dcf05364f8b5adebd0dae4e7fd89ad91201a634754a6cda5?"
+                  className="aspect-[0.94] object-contain object-center w-4 overflow-hidden self-center shrink-0 max-w-full my-auto"
+                />
+              </div>
+              <div className="text-white text-3xl font-bold tracking-[2.96px] whitespace-nowrap mt-3">
+                {completionPercentage ? completionPercentage : "0"}
+              </div>
+            </div>
             <div className="w-[160px] justify-center items-stretch shadow-sm bg-[#E8B912] flex flex-col px-2 rounded-md py-4 font-sans">
               <div className="justify-between items-stretch flex gap-5">
                 <div className="text-white text-sm font-medium tracking-widest">
-                  Total Student
+                  Total Enrolled Students
                 </div>
                 <img
                   alt="icon"
@@ -581,7 +597,7 @@ const CourseAnalysis = () => {
             <div className="w-[160px] justify-center items-stretch shadow-sm bg-[#8064F0] flex flex-col px-2 rounded-md py-4 font-sans">
               <div className="justify-between items-stretch flex gap-5">
                 <div className="text-white text-sm font-medium tracking-widest">
-                  Total Week
+                  Total Weeks
                 </div>
                 <img
                   alt="icon"
@@ -599,7 +615,7 @@ const CourseAnalysis = () => {
             <div className="w-[160px] justify-center items-stretch shadow-sm bg-[#0A98EA] flex flex-col px-2 rounded-md py-4 font-sans">
               <div className="justify-between items-stretch flex gap-5">
                 <div className="text-white text-sm font-medium tracking-widest">
-                  Total Chapter
+                  Total Chapters
                 </div>
                 <img
                   alt="icon"
@@ -617,7 +633,7 @@ const CourseAnalysis = () => {
             <div className="w-[160px] justify-center items-stretch shadow-sm bg-[#5c0aea] flex flex-col px-2 rounded-md py-4 font-sans">
               <div className="justify-between items-stretch flex gap-5">
                 <div className="text-white text-sm font-medium tracking-widest">
-                  Total Task
+                  Total Tasks
                 </div>
                 <img
                   alt="icon"
@@ -630,22 +646,6 @@ const CourseAnalysis = () => {
                 {courseDetails?.totalTaskCount
                   ? courseDetails?.totalTaskCount
                   : "0"}
-              </div>
-            </div>
-            <div className="w-[160px] justify-center items-stretch shadow-sm bg-[#6278FF] flex flex-col px-2 rounded-md py-4 font-sans">
-              <div className="justify-between items-stretch flex gap-5">
-                <div className="text-white text-sm font-medium tracking-widest">
-                  Completion Percentage(%)
-                </div>
-                <img
-                  alt="icon"
-                  loading="lazy"
-                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/db26dcaf06bcfb06dcf05364f8b5adebd0dae4e7fd89ad91201a634754a6cda5?"
-                  className="aspect-[0.94] object-contain object-center w-4 overflow-hidden self-center shrink-0 max-w-full my-auto"
-                />
-              </div>
-              <div className="text-white text-3xl font-bold tracking-[2.96px] whitespace-nowrap mt-3">
-                {completionPercentage ? completionPercentage : "0"}
               </div>
             </div>
           </div>
@@ -716,7 +716,7 @@ const CourseAnalysis = () => {
                                 task?.completionPercentage
                               )}`}
                             >
-                              {task?.completionPercentage}
+                              {Number(task?.completionPercentage).toFixed(2)}
                             </th>
                           </tr>
                         )
@@ -772,7 +772,7 @@ const CourseAnalysis = () => {
                                 task?.completionPercentage
                               )}`}
                             >
-                              {task?.completionPercentage}
+                              {Number(task?.completionPercentage).toFixed(2)}
                             </th>
                           </tr>
                         )
@@ -828,7 +828,7 @@ const CourseAnalysis = () => {
                                 task?.completionPercentage
                               )}`}
                             >
-                              {task?.completionPercentage}
+                              {Number(task?.completionPercentage).toFixed(2)}
                             </th>
                           </tr>
                         )
@@ -884,7 +884,7 @@ const CourseAnalysis = () => {
                                 task?.completionPercentage
                               )}`}
                             >
-                              {task?.completionPercentage}
+                              {Number(task?.completionPercentage).toFixed(2)}
                             </th>
                           </tr>
                         )
@@ -940,7 +940,7 @@ const CourseAnalysis = () => {
                                 task?.completionPercentage
                               )}`}
                             >
-                              {task?.completionPercentage}
+                              {Number(task?.completionPercentage).toFixed(2)}
                             </th>
                           </tr>
                         )
@@ -996,7 +996,7 @@ const CourseAnalysis = () => {
                                 task?.completionPercentage
                               )}`}
                             >
-                              {task?.completionPercentage}
+                              {Number(task?.completionPercentage).toFixed(2)}
                             </th>
                           </tr>
                         )
@@ -1052,7 +1052,7 @@ const CourseAnalysis = () => {
                                 task?.completionPercentage
                               )}`}
                             >
-                              {task?.completionPercentage}
+                              {Number(task?.completionPercentage).toFixed(2)}
                             </th>
                           </tr>
                         )
