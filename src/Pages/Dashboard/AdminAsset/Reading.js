@@ -22,11 +22,11 @@ const SortingDropdown = ({ sortOrder, setSortOrder }) => {
   );
 };
 
-const Reading = () => {
+const Reading = ({allUsers}) => {
   const { userInfo } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [readings, setReadings] = useState([]);
-  const [allUsers, setAllUsers] = useState([]);
+  // const [allUsers, setAllUsers] = useState([]);
   const [studentListOpen, setStudentListOpen] = useState(false);
   const [selectedBatchId, setSelectedBatchId] = useState();
   const [participants, setParticipants] = useState();
@@ -50,27 +50,32 @@ const Reading = () => {
         )
         .then((response) => {
           setReadings(response?.data.reverse());
-          setLoading(false);
+         
         })
         .finally(() => {
           setLoading(false);
         });
     }
-    setLoading(false);
+   
   }, [userInfo]);
 
-  useEffect(() => {
-    if (userInfo?.organizationId) {
-      axios
-        .get(
-          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/students/${userInfo?.organizationId}`
-        )
-        .then((response) => {
-          setAllUsers(response?.data);
-        })
-        .catch((error) => console.error(error));
-    }
-  }, [userInfo?.organizationId]);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     if (userInfo?.organizationId) {
+  //       try {
+  //         const response = await axios.get(
+  //           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/students/${userInfo?.organizationId}`
+  //         );
+  //         // Ensure response.data is an array before setting state
+  //         setAllUsers(Array.isArray(response?.data) ? response.data : []);
+  //       } catch (error) {
+  //         console.error(error);
+  //       }
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, [userInfo?.organizationId]);
 
   const listView = (id, participants, classId) => {
     setStudentListOpen(true);
@@ -155,13 +160,26 @@ const Reading = () => {
         setStudentListOpen={setStudentListOpen}
         selectedBatchId={selectedBatchId}
         participants={participants}
+        allUsers={allUsers}
       />
       <FileDownload fileOpen={fileOpen} setFileOpen={setFileOpen} file={file} />
-      {loading && (
+      {loading ? (
         <div className="flex align-items-center my-5 py-5">
           <CircularProgress className="w-full mx-auto" />
         </div>
+      ) : (
+        <>
+          {readings.length === 0 && (
+            <div>
+              <p className="text-center text-lg font-semibold text-[red] mt-32">
+                No Reading exist
+              </p>
+            </div>
+          )}
+        </>
       )}
+       {readings.length > 0 && (
+        <>
       <div className="flex items-center gap-5 my-10">
         <p className=" text-lg font-semibold ms-5">Filter : </p>
         <select
@@ -278,7 +296,12 @@ const Reading = () => {
                       percentage >= 60 ? "text-[green]" : textColorClass
                     } `}
                   >
-                    {`${percentage.toFixed(2)}%`}
+                          {allUsers.length < 1 ? (
+                      <CircularProgress size={20} />
+                    ) : (
+                      `${percentage.toFixed(2)}%`
+                    )}
+                    {/* {`${percentage.toFixed(2)}%`} */}
                   </td>
                   <td
                     onClick={() =>
@@ -294,15 +317,22 @@ const Reading = () => {
                     {reading?.participants?.length || 0}
                   </td>
                   <td className="py-4 px-6 border-b text-left">
-                    {totalStudents}
+                    {allUsers.length < 1 ? (
+                      <CircularProgress size={20} />
+                    ) : (
+                      totalStudents
+                    )}
                   </td>
+                  {/* <td className="py-4 px-6 border-b text-left">
+                    {totalStudents}
+                  </td> */}
                 </tr>
               );
             })}
           </tbody>
         </table>
       </div>
-      {/* Pagination Controls */}
+     
       {/* Pagination Controls */}
       <div className="flex justify-center my-5">
         {[...Array(totalPages).keys()].map((number) => (
@@ -319,6 +349,8 @@ const Reading = () => {
           </button>
         ))}
       </div>
+      </>
+        )}
     </div>
   );
 };
