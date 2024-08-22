@@ -2,19 +2,22 @@ import React, { useState, useEffect } from "react";
 import DialogLayoutForFromControl from "../Shared/DialogLayoutForFromControl";
 import axios from "axios";
 import toast from "react-hot-toast";
-
+import CircularProgress from "@mui/material/CircularProgress"; 
 
 const ReadingStdList = ({
   studentListOpen,
   setStudentListOpen,
   selectedBatchId,
   participants,
+  allUsers
 }) => {
   const [students, setStudents] = useState([]);
   const [localParticipants, setLocalParticipants] = useState([]);
+  const [loading, setLoading] = useState(false); // Loading state
 
   useEffect(() => {
     if (selectedBatchId && studentListOpen) {
+      setLoading(true); // Start loading
       axios
         .get(
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/getAllUserByBatchId/${selectedBatchId}`
@@ -25,13 +28,16 @@ const ReadingStdList = ({
         .catch((error) => {
           console.error(error);
           toast.error("Failed to load student data.");
+        })
+        .finally(() => {
+          setLoading(false); // Stop loading
         });
 
       setLocalParticipants(participants || []);
     }
   }, [selectedBatchId, studentListOpen, participants]);
 
-  const sortedStudents = students.sort((a, b) => {
+  const sortedStudents = allUsers?.sort((a, b) => {
     const isCompletedA = localParticipants.some(
       (par) => par.participant.email === a.email || a.Completed
     );
@@ -62,6 +68,11 @@ const ReadingStdList = ({
         }
       >
         <div className="w-full">
+        {loading ? (
+            <div className="flex align-items-center my-5 py-5">
+              <CircularProgress className="w-full mx-auto" />
+            </div>
+          ) : (
           <table className="w-full border border-collapse border-gray-300">
             <thead>
               <tr className="border border-gray-300">
@@ -99,6 +110,7 @@ const ReadingStdList = ({
               })}
             </tbody>
           </table>
+          )}
         </div>
       </DialogLayoutForFromControl>
     </div>

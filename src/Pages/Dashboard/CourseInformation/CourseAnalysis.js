@@ -24,6 +24,7 @@ import lock from "../../../assets/Dashboard/lockIcon.png";
 import { CircularProgress } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import FileDownload from "../AdminAsset/FileDownload";
 
 const CourseAnalysis = () => {
   const [addChapterOpen, setAddChapterOpen] = useState(false);
@@ -54,7 +55,8 @@ const CourseAnalysis = () => {
     useState([]);
   const [count, setCount] = useState(0);
   const [isOpenTaskType, setIsOpenTaskType] = useState("");
-
+  const [fileOpen, setFileOpen] = useState(false);
+  const [file, setFile] = useState(); 
   const { id } = useParams();
   console.log(id);
   const navigate = useNavigate();
@@ -513,11 +515,22 @@ const CourseAnalysis = () => {
     return textColorClass;
   };
 
+  const fileView = (file) => {
+    setFileOpen(true);
+    setFile(file);
+  };
+
   console.log(courseDetails);
 
   return (
     <div>
       <Layout>
+      <FileDownload
+            fileOpen={fileOpen}
+            setFileOpen={setFileOpen}
+            file={file}
+         
+          />
         <div className="pb-10">
           {isLoading && (
             <div className=" flex align-items-center my-5 py-5">
@@ -707,7 +720,11 @@ const CourseAnalysis = () => {
                       {courseDetails?.taskTypeDetails?.Assignment?.tasks?.map(
                         (task, index) => (
                           <tr key={index} className={"bg-gray-100 "}>
-                            <th className="py-2 px-5 border-b text-left">
+                            <th
+                              onClick={() =>
+                                fileView(task?.file)
+                              }
+                            className="py-2 px-5 border-b text-left cursor-pointer">
                               {task?.taskName}
                             </th>
                             <th className="py-2 px-5 border-b text-left">1</th>
@@ -763,7 +780,10 @@ const CourseAnalysis = () => {
                       {courseDetails?.taskTypeDetails?.Video?.tasks?.map(
                         (task, index) => (
                           <tr key={index} className={"bg-gray-100 "}>
-                            <th className="py-2 px-5 border-b text-left">
+                            <th
+                            
+                            onClick={() => fileView(task?.additionalFiles)}
+                            className="py-2 px-5 border-b text-left">
                               {task?.taskName}
                             </th>
                             <th className="py-2 px-5 border-b text-left">1</th>
