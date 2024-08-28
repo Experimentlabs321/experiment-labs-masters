@@ -56,7 +56,7 @@ const CourseAnalysis = () => {
   const [count, setCount] = useState(0);
   const [isOpenTaskType, setIsOpenTaskType] = useState("");
   const [fileOpen, setFileOpen] = useState(false);
-  const [file, setFile] = useState(); 
+  const [file, setFile] = useState();
   const { id } = useParams();
   console.log(id);
   const navigate = useNavigate();
@@ -525,12 +525,11 @@ const CourseAnalysis = () => {
   return (
     <div>
       <Layout>
-      <FileDownload
-            fileOpen={fileOpen}
-            setFileOpen={setFileOpen}
-            file={file}
-         
-          />
+        <FileDownload
+          fileOpen={fileOpen}
+          setFileOpen={setFileOpen}
+          file={file}
+        />
         <div className="pb-10">
           {isLoading && (
             <div className=" flex align-items-center my-5 py-5">
@@ -721,10 +720,9 @@ const CourseAnalysis = () => {
                         (task, index) => (
                           <tr key={index} className={"bg-gray-100 "}>
                             <th
-                              onClick={() =>
-                                fileView(task?.file)
-                              }
-                            className="py-2 px-5 border-b text-left cursor-pointer">
+                              onClick={() => fileView(task?.file)}
+                              className="py-2 px-5 border-b text-left cursor-pointer"
+                            >
                               {task?.taskName}
                             </th>
                             <th className="py-2 px-5 border-b text-left">1</th>
@@ -781,9 +779,9 @@ const CourseAnalysis = () => {
                         (task, index) => (
                           <tr key={index} className={"bg-gray-100 "}>
                             <th
-                            
-                            onClick={() => fileView(task?.additionalFiles)}
-                            className="py-2 px-5 border-b text-left">
+                              onClick={() => fileView(task?.additionalFiles)}
+                              className="py-2 px-5 border-b text-left"
+                            >
                               {task?.taskName}
                             </th>
                             <th className="py-2 px-5 border-b text-left">1</th>
