@@ -145,7 +145,7 @@ const ManageLiveClasses = () => {
     const className = form.className?.value;
     const password = form.password?.value;
     const duration = +form.duration?.value;
-    const courseStartingDateTime = form.courseStartingDateTime?.value;
+    const courseStartingDateTime = new Date(form.courseStartingDateTime?.value);
     const start_url = form.startUrl.value || "";
     const join_url = form.joinUrl.value || "";
     const week = await JSON.parse(localStorage.getItem("currentWeek"));
@@ -326,7 +326,6 @@ const ManageLiveClasses = () => {
                   />
                 </div>
               </div>
-
 
               <div className="flex flex-col lg:flex-row items-start mt-[50px] lg:gap-40 gap-10">
                 <div>

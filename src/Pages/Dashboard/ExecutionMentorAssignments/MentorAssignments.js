@@ -49,7 +49,8 @@ const MentorAssignments = () => {
     }
     setLoading(false);
   }, [userInfo]);
-
+  console.log(selectedSubmissions);
+  console.log(userInfo.name);
   useEffect(() => {
     axios
       .get(
@@ -177,7 +178,7 @@ const MentorAssignments = () => {
 
   const applyFilters = () => {
     let filtered = assignments;
-    console.log(selectedStatus);
+    // console.log(selectedStatus);
 
     // Apply course filter
     if (selectedCourse?._id) {
@@ -232,7 +233,7 @@ const MentorAssignments = () => {
     Loading();
 
     if (selectedMentorsForEditOrAssign?.length > 0) {
-      console.log(selectedMentorsForEditOrAssign);
+      // console.log(selectedMentorsForEditOrAssign);
       const newAssign = await axios.put(
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/submissionId/${submissionId}/assign-mentor`,
         // `http://localhost:5000/api/v1/assignmentSubmissions/submissionId/${submissionId}/assign-mentor`,
@@ -276,7 +277,7 @@ const MentorAssignments = () => {
 
     const mentorData = mentors?.find((item) => item?._id === mentorId);
 
-    console.log(mentorData);
+    //console.log(mentorData);
 
     const sendMentorData = {
       mentorId: mentorData?._id,
@@ -290,7 +291,7 @@ const MentorAssignments = () => {
       mentorRole: selectedMentor?.role,
     };
 
-    console.log(sendMentorData);
+    // console.log(sendMentorData);
 
     if (sendMentorData?.mentorEmail) {
       const newAssign = await axios.put(
@@ -335,7 +336,7 @@ const MentorAssignments = () => {
     Loading().close();
   };
 
-  console.log(filteredAssignments);
+  // console.log(filteredAssignments);
 
   const [selectedParticipants, setSelectedParticipants] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -348,7 +349,6 @@ const MentorAssignments = () => {
   const dropdownRef = useRef(null);
 
   const handleMentorSelectChange = (mentor, e) => {
-    console.log(e.target.checked, mentor);
     if (e.target.checked) {
       setSelectedMentorsForEditOrAssign([
         ...selectedMentorsForEditOrAssign,
@@ -362,16 +362,17 @@ const MentorAssignments = () => {
       const data = selectedMentorsForEditOrAssign?.filter(
         (item) => item?.mentorId !== mentor?._id
       );
-      console.log(data);
+      //  console.log(data);
       setSelectedMentorsForEditOrAssign(data);
     }
-    console.log(selectedMentorsForEditOrAssign);
+    //console.log(selectedMentorsForEditOrAssign);
     // setSelectedMentorsForEditOrAssign((prevState) =>
     //   prevState.includes(mentor)
     //     ? prevState.filter((item) => item?._id !== mentor?._id)
     //     : [...prevState, mentor]
     // );
   };
+  console.log(selectedMentorsForEditOrAssign);
 
   const handleToggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -389,6 +390,36 @@ const MentorAssignments = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+  const handleEvaluate = async () => {
+    Loading()
+    const submissionIds =
+     {
+      submitterName:userInfo?.name ,
+      submissionIds:selectedSubmissions
+
+    } 
+
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/addMultipleResult`, submissionIds);
+
+      console.log(response.data.message === "Result added successfully");
+      // You can also add logic to handle success, such as displaying a message or updating state
+      if(response.data.message === "Result added successfully"){
+        toast.success("Results added successfully!");
+        Loading().close();
+      }
+      else {
+        toast.error("Failed to add results. Please try again.");
+        Loading().close();
+      }
+      
+    } catch (error) {
+      console.error("There was an error adding the results!", error);
+      // Handle error, e.g., show an error message
+      toast.error("Failed to add results. Please try again.");
+      Loading().close();
+    }
+  };
 
   return (
     <div>
@@ -568,26 +599,31 @@ const MentorAssignments = () => {
                   </select>
                 </div>
                 {selectedSubmissions?.length > 0 && (
-                  <div className="flex items-center gap-4">
-                    <h1>Assign to:</h1>
-                    <select
-                      className="p-2 border rounded"
-                      onChange={(e) => {
-                        e.preventDefault();
-                        handleAddOrUpdateMentorToMultipleSubmission(
-                          e.target.value
-                        );
-                      }}
-                    >
-                      <option className="hidden" value="">
-                        Select Mentor
-                      </option>
-                      {mentors?.map((mentor) => (
-                        <option key={mentor._id} value={mentor._id}>
-                          {mentor?.name}
+                  <div className="flex items-center gap-5">
+                    <div className="flex items-center gap-4">
+                      <h1>Assign to:</h1>
+                      <select
+                        className="p-2 border rounded"
+                        onChange={(e) => {
+                          e.preventDefault();
+                          handleAddOrUpdateMentorToMultipleSubmission(
+                            e.target.value
+                          );
+                        }}
+                      >
+                        <option className="hidden" value="">
+                          Select Mentor
                         </option>
-                      ))}
-                    </select>
+                        {mentors?.map((mentor) => (
+                          <option key={mentor._id} value={mentor._id}>
+                            {mentor?.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <button
+                    className="bg-sky-500 hover:bg-opacity-70 text-white px-4 py-2 rounded w-[50%]"
+                    onClick={handleEvaluate}>Mark as evaluate</button>
                   </div>
                 )}
               </div>

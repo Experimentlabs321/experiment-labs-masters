@@ -137,6 +137,7 @@ import PreDashboard from "../../Pages/Shared/PreDashboard/PreDashboard";
 import PrivateRoute from "../PrivateRoute/PrivateRoute";
 import NormalLogin from "../../Pages/Login/NormalLogin/NormalLogin";
 import FindSchedule from "../../Pages/Dashboard/Week/FindSchedule";
+import AdminAssetHome from "../../Pages/Dashboard/AdminAsset/AdminAssetHome";
 import CourseAnalysis from "../../Pages/Dashboard/CourseInformation/CourseAnalysis";
 const router = createBrowserRouter([
   {
@@ -702,6 +703,10 @@ const router = createBrowserRouter([
   {
     path: "/findSchedule",
     element:<PrivateRoute><FindSchedule /></PrivateRoute> ,
+  },
+  {
+    path: "/adminAsset",
+    element:<AdminAssetHome /> ,
   },
 ]);
 

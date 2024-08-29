@@ -24,6 +24,7 @@ import lock from "../../../assets/Dashboard/lockIcon.png";
 import { CircularProgress } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import FileDownload from "../AdminAsset/FileDownload";
 
 const CourseAnalysis = () => {
   const [addChapterOpen, setAddChapterOpen] = useState(false);
@@ -54,7 +55,8 @@ const CourseAnalysis = () => {
     useState([]);
   const [count, setCount] = useState(0);
   const [isOpenTaskType, setIsOpenTaskType] = useState("");
-
+  const [fileOpen, setFileOpen] = useState(false);
+  const [file, setFile] = useState(); 
   const { id } = useParams();
   console.log(id);
   const navigate = useNavigate();
@@ -488,15 +490,47 @@ const CourseAnalysis = () => {
             value?.overallCompletionPercentage
               ? value?.overallCompletionPercentage
               : "0"
-          );
+          ) *
+            value?.taskCount;
       });
-      setCompletionPercentage((totalPercentage / 7).toFixed(2));
+      setCompletionPercentage(
+        (totalPercentage / courseDetails?.totalTaskCount).toFixed(2)
+      );
     }
   }, [courseDetails]);
+
+  const percentageColor = (value) => {
+    // Calculate the percentage
+    const percentage = Number(value);
+
+    // Determine the background color based on the percentage
+    let textColorClass = "text-[green]"; // Default to green for 60% and above
+
+    if (percentage < 40) {
+      textColorClass = "text-[red]"; // Red for below 40%
+    } else if (percentage >= 40 && percentage < 60) {
+      textColorClass = "text-[orange]"; // Orange for 40-59.99%
+    }
+
+    return textColorClass;
+  };
+
+  const fileView = (file) => {
+    setFileOpen(true);
+    setFile(file);
+  };
+
+  console.log(courseDetails);
 
   return (
     <div>
       <Layout>
+      <FileDownload
+            fileOpen={fileOpen}
+            setFileOpen={setFileOpen}
+            file={file}
+         
+          />
         <div className="pb-10">
           {isLoading && (
             <div className=" flex align-items-center my-5 py-5">
@@ -539,10 +573,26 @@ const CourseAnalysis = () => {
             </div>
           )}
           <div className="lg:flex grid grid-cols-2 gap-5 p-5">
+            <div className="w-[160px] justify-center items-stretch shadow-sm bg-[#6278FF] flex flex-col px-2 rounded-md py-4 font-sans">
+              <div className="justify-between items-stretch flex gap-5">
+                <div className="text-white text-sm font-medium tracking-widest">
+                  Course Completion Percentage(%)
+                </div>
+                <img
+                  alt="icon"
+                  loading="lazy"
+                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/db26dcaf06bcfb06dcf05364f8b5adebd0dae4e7fd89ad91201a634754a6cda5?"
+                  className="aspect-[0.94] object-contain object-center w-4 overflow-hidden self-center shrink-0 max-w-full my-auto"
+                />
+              </div>
+              <div className="text-white text-3xl font-bold tracking-[2.96px] whitespace-nowrap mt-3">
+                {completionPercentage ? completionPercentage : "0"}
+              </div>
+            </div>
             <div className="w-[160px] justify-center items-stretch shadow-sm bg-[#E8B912] flex flex-col px-2 rounded-md py-4 font-sans">
               <div className="justify-between items-stretch flex gap-5">
                 <div className="text-white text-sm font-medium tracking-widest">
-                  Total Student
+                  Total Enrolled Students
                 </div>
                 <img
                   alt="icon"
@@ -560,7 +610,7 @@ const CourseAnalysis = () => {
             <div className="w-[160px] justify-center items-stretch shadow-sm bg-[#8064F0] flex flex-col px-2 rounded-md py-4 font-sans">
               <div className="justify-between items-stretch flex gap-5">
                 <div className="text-white text-sm font-medium tracking-widest">
-                  Total Week
+                  Total Weeks
                 </div>
                 <img
                   alt="icon"
@@ -578,7 +628,7 @@ const CourseAnalysis = () => {
             <div className="w-[160px] justify-center items-stretch shadow-sm bg-[#0A98EA] flex flex-col px-2 rounded-md py-4 font-sans">
               <div className="justify-between items-stretch flex gap-5">
                 <div className="text-white text-sm font-medium tracking-widest">
-                  Total Chapter
+                  Total Chapters
                 </div>
                 <img
                   alt="icon"
@@ -596,7 +646,7 @@ const CourseAnalysis = () => {
             <div className="w-[160px] justify-center items-stretch shadow-sm bg-[#5c0aea] flex flex-col px-2 rounded-md py-4 font-sans">
               <div className="justify-between items-stretch flex gap-5">
                 <div className="text-white text-sm font-medium tracking-widest">
-                  Total Task
+                  Total Tasks
                 </div>
                 <img
                   alt="icon"
@@ -609,22 +659,6 @@ const CourseAnalysis = () => {
                 {courseDetails?.totalTaskCount
                   ? courseDetails?.totalTaskCount
                   : "0"}
-              </div>
-            </div>
-            <div className="w-[160px] justify-center items-stretch shadow-sm bg-[#6278FF] flex flex-col px-2 rounded-md py-4 font-sans">
-              <div className="justify-between items-stretch flex gap-5">
-                <div className="text-white text-sm font-medium tracking-widest">
-                  Completion Percentage(%)
-                </div>
-                <img
-                  alt="icon"
-                  loading="lazy"
-                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/db26dcaf06bcfb06dcf05364f8b5adebd0dae4e7fd89ad91201a634754a6cda5?"
-                  className="aspect-[0.94] object-contain object-center w-4 overflow-hidden self-center shrink-0 max-w-full my-auto"
-                />
-              </div>
-              <div className="text-white text-3xl font-bold tracking-[2.96px] whitespace-nowrap mt-3">
-                {completionPercentage ? completionPercentage : "0"}
               </div>
             </div>
           </div>
@@ -669,7 +703,12 @@ const CourseAnalysis = () => {
                     <td className="py-4 px-6 text-left">
                       {courseDetails?.taskTypeDetails?.Assignment?.taskCount}
                     </td>
-                    <td className="py-4 px-6 text-left">
+                    <td
+                      className={`py-4 px-6 text-left ${percentageColor(
+                        courseDetails?.taskTypeDetails?.Assignment
+                          ?.overallCompletionPercentage
+                      )}`}
+                    >
                       {
                         courseDetails?.taskTypeDetails?.Assignment
                           ?.overallCompletionPercentage
@@ -681,12 +720,20 @@ const CourseAnalysis = () => {
                       {courseDetails?.taskTypeDetails?.Assignment?.tasks?.map(
                         (task, index) => (
                           <tr key={index} className={"bg-gray-100 "}>
-                            <th className="py-2 px-5 border-b text-left">
+                            <th
+                              onClick={() =>
+                                fileView(task?.file)
+                              }
+                            className="py-2 px-5 border-b text-left cursor-pointer">
                               {task?.taskName}
                             </th>
                             <th className="py-2 px-5 border-b text-left">1</th>
-                            <th className="py-2 px-5 border-b text-left">
-                              {task?.completionPercentage}
+                            <th
+                              className={`py-2 px-5 border-b text-left ${percentageColor(
+                                task?.completionPercentage
+                              )}`}
+                            >
+                              {Number(task?.completionPercentage).toFixed(2)}
                             </th>
                           </tr>
                         )
@@ -716,7 +763,12 @@ const CourseAnalysis = () => {
                     <td className="py-4 px-6 text-left">
                       {courseDetails?.taskTypeDetails?.Video?.taskCount}
                     </td>
-                    <td className="py-4 px-6 text-left">
+                    <td
+                      className={`py-4 px-6 text-left ${percentageColor(
+                        courseDetails?.taskTypeDetails?.Video
+                          ?.overallCompletionPercentage
+                      )}`}
+                    >
                       {
                         courseDetails?.taskTypeDetails?.Video
                           ?.overallCompletionPercentage
@@ -728,12 +780,19 @@ const CourseAnalysis = () => {
                       {courseDetails?.taskTypeDetails?.Video?.tasks?.map(
                         (task, index) => (
                           <tr key={index} className={"bg-gray-100 "}>
-                            <th className="py-2 px-5 border-b text-left">
+                            <th
+                            
+                            onClick={() => fileView(task?.additionalFiles)}
+                            className="py-2 px-5 border-b text-left">
                               {task?.taskName}
                             </th>
                             <th className="py-2 px-5 border-b text-left">1</th>
-                            <th className="py-2 px-5 border-b text-left">
-                              {task?.completionPercentage}
+                            <th
+                              className={`py-2 px-5 border-b text-left ${percentageColor(
+                                task?.completionPercentage
+                              )}`}
+                            >
+                              {Number(task?.completionPercentage).toFixed(2)}
                             </th>
                           </tr>
                         )
@@ -763,7 +822,12 @@ const CourseAnalysis = () => {
                     <td className="py-4 px-6 text-left">
                       {courseDetails?.taskTypeDetails?.Reading?.taskCount}
                     </td>
-                    <td className="py-4 px-6 text-left">
+                    <td
+                      className={`py-4 px-6 text-left ${percentageColor(
+                        courseDetails?.taskTypeDetails?.Reading
+                          ?.overallCompletionPercentage
+                      )}`}
+                    >
                       {
                         courseDetails?.taskTypeDetails?.Reading
                           ?.overallCompletionPercentage
@@ -779,8 +843,12 @@ const CourseAnalysis = () => {
                               {task?.taskName}
                             </th>
                             <th className="py-2 px-5 border-b text-left">1</th>
-                            <th className="py-2 px-5 border-b text-left">
-                              {task?.completionPercentage}
+                            <th
+                              className={`py-2 px-5 border-b text-left ${percentageColor(
+                                task?.completionPercentage
+                              )}`}
+                            >
+                              {Number(task?.completionPercentage).toFixed(2)}
                             </th>
                           </tr>
                         )
@@ -810,7 +878,12 @@ const CourseAnalysis = () => {
                     <td className="py-4 px-6 text-left">
                       {courseDetails?.taskTypeDetails?.Classes?.taskCount}
                     </td>
-                    <td className="py-4 px-6 text-left">
+                    <td
+                      className={`py-4 px-6 text-left ${percentageColor(
+                        courseDetails?.taskTypeDetails?.Classes
+                          ?.overallCompletionPercentage
+                      )}`}
+                    >
                       {
                         courseDetails?.taskTypeDetails?.Classes
                           ?.overallCompletionPercentage
@@ -826,8 +899,12 @@ const CourseAnalysis = () => {
                               {task?.taskName}
                             </th>
                             <th className="py-2 px-5 border-b text-left">1</th>
-                            <th className="py-2 px-5 border-b text-left">
-                              {task?.completionPercentage}
+                            <th
+                              className={`py-2 px-5 border-b text-left ${percentageColor(
+                                task?.completionPercentage
+                              )}`}
+                            >
+                              {Number(task?.completionPercentage).toFixed(2)}
                             </th>
                           </tr>
                         )
@@ -857,7 +934,12 @@ const CourseAnalysis = () => {
                     <td className="py-4 px-6 text-left">
                       {courseDetails?.taskTypeDetails?.Files?.taskCount}
                     </td>
-                    <td className="py-4 px-6 text-left">
+                    <td
+                      className={`py-4 px-6 text-left ${percentageColor(
+                        courseDetails?.taskTypeDetails?.Files
+                          ?.overallCompletionPercentage
+                      )}`}
+                    >
                       {
                         courseDetails?.taskTypeDetails?.Files
                           ?.overallCompletionPercentage
@@ -873,8 +955,12 @@ const CourseAnalysis = () => {
                               {task?.taskName}
                             </th>
                             <th className="py-2 px-5 border-b text-left">1</th>
-                            <th className="py-2 px-5 border-b text-left">
-                              {task?.completionPercentage}
+                            <th
+                              className={`py-2 px-5 border-b text-left ${percentageColor(
+                                task?.completionPercentage
+                              )}`}
+                            >
+                              {Number(task?.completionPercentage).toFixed(2)}
                             </th>
                           </tr>
                         )
@@ -904,7 +990,12 @@ const CourseAnalysis = () => {
                     <td className="py-4 px-6 text-left">
                       {courseDetails?.taskTypeDetails?.Quiz?.taskCount}
                     </td>
-                    <td className="py-4 px-6 text-left">
+                    <td
+                      className={`py-4 px-6 text-left ${percentageColor(
+                        courseDetails?.taskTypeDetails?.Quiz
+                          ?.overallCompletionPercentage
+                      )}`}
+                    >
                       {
                         courseDetails?.taskTypeDetails?.Quiz
                           ?.overallCompletionPercentage
@@ -920,8 +1011,12 @@ const CourseAnalysis = () => {
                               {task?.taskName}
                             </th>
                             <th className="py-2 px-5 border-b text-left">1</th>
-                            <th className="py-2 px-5 border-b text-left">
-                              {task?.completionPercentage}
+                            <th
+                              className={`py-2 px-5 border-b text-left ${percentageColor(
+                                task?.completionPercentage
+                              )}`}
+                            >
+                              {Number(task?.completionPercentage).toFixed(2)}
                             </th>
                           </tr>
                         )
@@ -951,7 +1046,12 @@ const CourseAnalysis = () => {
                     <td className="py-4 px-6 text-left">
                       {courseDetails?.taskTypeDetails?.Schedule?.taskCount}
                     </td>
-                    <td className="py-4 px-6 text-left">
+                    <td
+                      className={`py-4 px-6 text-left ${percentageColor(
+                        courseDetails?.taskTypeDetails?.Schedule
+                          ?.overallCompletionPercentage
+                      )}`}
+                    >
                       {
                         courseDetails?.taskTypeDetails?.Schedule
                           ?.overallCompletionPercentage
@@ -967,8 +1067,12 @@ const CourseAnalysis = () => {
                               {task?.taskName}
                             </th>
                             <th className="py-2 px-5 border-b text-left">1</th>
-                            <th className="py-2 px-5 border-b text-left">
-                              {task?.completionPercentage}
+                            <th
+                              className={`py-2 px-5 border-b text-left ${percentageColor(
+                                task?.completionPercentage
+                              )}`}
+                            >
+                              {Number(task?.completionPercentage).toFixed(2)}
                             </th>
                           </tr>
                         )
