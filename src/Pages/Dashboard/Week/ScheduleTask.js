@@ -785,7 +785,7 @@ const ScheduleTask = ({ taskData, week }) => {
       const device = parser.getDevice().type || "Desktop"; // Default to Desktop if no type
       const browser = parser.getBrowser().name || "Unknown";
       const os = parser.getOS().name || "Unknown";
-  
+
       // Prepare log data
       const logData = {
         message: message,
@@ -797,10 +797,10 @@ const ScheduleTask = ({ taskData, week }) => {
         },
         user: user?.email || "anonymous", // Optionally track the user or default to anonymous
       };
-  
+
       // Send log data to the server
       await axios.post(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/logs`, logData);
-  
+
       console.log("Log entry created:", message);
     } catch (error) {
       console.error("Failed to log to database:", error);
@@ -2235,7 +2235,7 @@ const ScheduleTask = ({ taskData, week }) => {
                                     Loading().close();
                                     // Navigate or display confirmation as needed
                                   }
-                                  else{
+                                  else {
                                     logToDatabase("Error in putting data in schedule collection ", matchObject);
                                     Loading().close();
                                   }
@@ -2611,166 +2611,169 @@ const ScheduleTask = ({ taskData, week }) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 my-5 justify-items-center gap-10 items-center">
                   {/* <p>You are the requester in the following events:</p> */}
                   {filteredEvents.length > 0 ? (
-                    filteredEvents.map((event, index) =>
-                      event?.requester ? (
-                        <div
-                          key={index}
-                          className=" shadow-lg outline-double outline-offset-2 outline-2 outline-emerald-500  w-[320px] rounded p-2 "
-                        >
-                          <p className="flex gap-1 items-center text-sm">
-                            <FiberManualRecordIcon
-                              sx={{ color: red[400] }}
-                            ></FiberManualRecordIcon>
-                            Meeting with {event?.requester}
-                          </p>
-                          {event?.meetingType === "Zoom" ? (
-                            <div className="flex items-center gap-2">
-                              <div className="mt-3 mb-1 ">
-                                <p className="font-medium text-sm flex justify-between mt-2 gap-2">
-                                  <div className="flex justify-between gap-2">
-                                    <AccessAlarmOutlinedIcon fontSize="small" />
-                                    <span className="font-semibold text-[12px]">
-                                      Starts{" "}
-                                    </span>
-                                  </div>
-                                  <ul className="text-sm">
-                                    <li key={index}>
-                                      {formatTimeForZoom(
-                                        event,
-                                        event?.start_time ? "start" : ""
-                                      )}
-                                    </li>
-                                  </ul>
-                                </p>
-                                <p className="font-medium text-sm flex justify-between mt-2 gap-2">
-                                  <div className="flex justify-between  gap-2">
-                                    <AccessAlarmOutlinedIcon fontSize="small" />
-                                    <span className="font-semibold text-[12px]">
-                                      Ends{" "}
-                                    </span>
-                                  </div>
-                                  <ul className="text-sm">
-                                    <li key={index}>
-                                      {formatTimeForZoom(
-                                        event,
-                                        event?.end_time ? "" : "end"
-                                      )}
-                                    </li>
-                                  </ul>
-                                </p>
+                    filteredEvents
+                      .slice() // Create a shallow copy to avoid mutating the original array
+                      .reverse() // Reverse the array to map in the opposite direction
+                      .map((event, index) =>
+                        event?.requester ? (
+                          <div
+                            key={index}
+                            className=" shadow-lg outline-double outline-offset-2 outline-2 outline-emerald-500  w-[320px] rounded p-2 "
+                          >
+                            <p className="flex gap-1 items-center text-sm">
+                              <FiberManualRecordIcon
+                                sx={{ color: red[400] }}
+                              ></FiberManualRecordIcon>
+                              Meeting with {event?.requester}
+                            </p>
+                            {event?.meetingType === "Zoom" ? (
+                              <div className="flex items-center gap-2">
+                                <div className="mt-3 mb-1 ">
+                                  <p className="font-medium text-sm flex justify-between mt-2 gap-2">
+                                    <div className="flex justify-between gap-2">
+                                      <AccessAlarmOutlinedIcon fontSize="small" />
+                                      <span className="font-semibold text-[12px]">
+                                        Starts{" "}
+                                      </span>
+                                    </div>
+                                    <ul className="text-sm">
+                                      <li key={index}>
+                                        {formatTimeForZoom(
+                                          event,
+                                          event?.start_time ? "start" : ""
+                                        )}
+                                      </li>
+                                    </ul>
+                                  </p>
+                                  <p className="font-medium text-sm flex justify-between mt-2 gap-2">
+                                    <div className="flex justify-between  gap-2">
+                                      <AccessAlarmOutlinedIcon fontSize="small" />
+                                      <span className="font-semibold text-[12px]">
+                                        Ends{" "}
+                                      </span>
+                                    </div>
+                                    <ul className="text-sm">
+                                      <li key={index}>
+                                        {formatTimeForZoom(
+                                          event,
+                                          event?.end_time ? "" : "end"
+                                        )}
+                                      </li>
+                                    </ul>
+                                  </p>
+                                </div>
                               </div>
-                            </div>
-                          ) : (
-                            <div className="flex items-center gap-2">
-                              <div className="mt-3 mb-1 ">
-                                <p className="font-medium text-sm flex justify-between mt-2 gap-2">
-                                  <div className="flex justify-between gap-2">
-                                    <AccessAlarmOutlinedIcon fontSize="small" />
-                                    <span className="font-semibold text-[12px]">
-                                      Starts{" "}
-                                    </span>
-                                  </div>
-                                  <ul className="text-sm">
-                                    {formatUtcDateTimeStringToListItems(
-                                      event?.start?.dateTime
-                                    )?.map((item, index) => (
-                                      <li key={index}>{item}</li>
-                                    ))}
-                                  </ul>
-                                </p>
-                                <p className="font-medium text-sm flex justify-between mt-2 gap-2">
-                                  <div className="flex justify-between  gap-2">
-                                    <AccessAlarmOutlinedIcon fontSize="small" />
-                                    <span className="font-semibold text-[12px]">
-                                      Ends{" "}
-                                    </span>
-                                  </div>
-                                  <ul className="text-sm">
-                                    {formatUtcDateTimeStringToListItems(
-                                      event?.end?.dateTime
-                                    )?.map((item, index) => (
-                                      <li key={index}>{item}</li>
-                                    ))}
-                                  </ul>
-                                </p>
+                            ) : (
+                              <div className="flex items-center gap-2">
+                                <div className="mt-3 mb-1 ">
+                                  <p className="font-medium text-sm flex justify-between mt-2 gap-2">
+                                    <div className="flex justify-between gap-2">
+                                      <AccessAlarmOutlinedIcon fontSize="small" />
+                                      <span className="font-semibold text-[12px]">
+                                        Starts{" "}
+                                      </span>
+                                    </div>
+                                    <ul className="text-sm">
+                                      {formatUtcDateTimeStringToListItems(
+                                        event?.start?.dateTime
+                                      )?.map((item, index) => (
+                                        <li key={index}>{item}</li>
+                                      ))}
+                                    </ul>
+                                  </p>
+                                  <p className="font-medium text-sm flex justify-between mt-2 gap-2">
+                                    <div className="flex justify-between  gap-2">
+                                      <AccessAlarmOutlinedIcon fontSize="small" />
+                                      <span className="font-semibold text-[12px]">
+                                        Ends{" "}
+                                      </span>
+                                    </div>
+                                    <ul className="text-sm">
+                                      {formatUtcDateTimeStringToListItems(
+                                        event?.end?.dateTime
+                                      )?.map((item, index) => (
+                                        <li key={index}>{item}</li>
+                                      ))}
+                                    </ul>
+                                  </p>
+                                </div>
                               </div>
-                            </div>
-                          )}
-                          <div className="grid gap-2 align-middle items-center">
-                            <div className="w-10/12 mx-auto mt-3 text-white bg-sky-500  rounded-md">
-                              <Link
-                                to={
-                                  event?.meetingType === "Zoom"
-                                    ? userInfo?.role === "admin"
-                                      ? event?.start_url
-                                      : event?.join_url
-                                    : event?.hangoutLink
-                                }
-                                className="flex gap-2 items-center justify-center py-[6px]"
-                              >
-                                <img
-                                  src={
+                            )}
+                            <div className="grid gap-2 align-middle items-center">
+                              <div className="w-10/12 mx-auto mt-3 text-white bg-sky-500  rounded-md">
+                                <Link
+                                  to={
                                     event?.meetingType === "Zoom"
-                                      ? zoom
-                                      : googlemeet
+                                      ? userInfo?.role === "admin"
+                                        ? event?.start_url
+                                        : event?.join_url
+                                      : event?.hangoutLink
                                   }
-                                  className="w-[21px] h-[21px]"
-                                  alt="googlemeet or zoom"
-                                ></img>
-                                <p>
-                                  Go to{" "}
-                                  {event?.meetingType === "Zoom"
-                                    ? "zoom"
-                                    : "meet"}{" "}
-                                  Link
-                                </p>
-                              </Link>
+                                  className="flex gap-2 items-center justify-center py-[6px]"
+                                >
+                                  <img
+                                    src={
+                                      event?.meetingType === "Zoom"
+                                        ? zoom
+                                        : googlemeet
+                                    }
+                                    className="w-[21px] h-[21px]"
+                                    alt="googlemeet or zoom"
+                                  ></img>
+                                  <p>
+                                    Go to{" "}
+                                    {event?.meetingType === "Zoom"
+                                      ? "zoom"
+                                      : "meet"}{" "}
+                                    Link
+                                  </p>
+                                </Link>
+                              </div>
+                              {event?.meetingType !== "Zoom" ? (
+                                <p className="mt-1 text-center">Or</p>
+                              ) : (
+                                <p className="mt-1 text-center">Or</p>
+                              )}
+                              {event?.meetingType !== "Zoom" ? (
+                                <div className="w-10/12 mx-auto mt-1 text-center text-white bg-orange-400  rounded-md">
+                                  <button
+                                    onClick={() =>
+                                      handleRescheduleMeetAdmin(
+                                        event?.eventId || event?.googleCalendarId,
+                                        event?.eventDBid || event?.eventDBId,
+                                        event?.requester,
+                                        event?.studentName
+                                      )
+                                    }
+                                    className="w-10/12 rounded-md  text-center  py-[6px]"
+                                  >
+                                    Reschedule Meet
+                                  </button>
+                                </div>
+                              ) : (
+                                <div className="w-10/12 mx-auto mt-1 text-center text-white bg-orange-400  rounded-md">
+                                  <button
+                                    onClick={() =>
+                                      handleRescheduleZoomAdmin(
+                                        event?.eventId || event?.googleCalendarId,
+                                        event?.eventDBid || event?.eventDBId,
+                                        event?.requester,
+                                        event?.studentName,
+                                        event?.id
+                                      )
+                                    }
+                                    className="w-10/12 rounded-md  text-center  py-[6px]"
+                                  >
+                                    Reschedule Zoom
+                                  </button>
+                                </div>
+                              )}
                             </div>
-                            {event?.meetingType !== "Zoom" ? (
-                              <p className="mt-1 text-center">Or</p>
-                            ) : (
-                              <p className="mt-1 text-center">Or</p>
-                            )}
-                            {event?.meetingType !== "Zoom" ? (
-                              <div className="w-10/12 mx-auto mt-1 text-center text-white bg-orange-400  rounded-md">
-                                <button
-                                  onClick={() =>
-                                    handleRescheduleMeetAdmin(
-                                      event?.eventId || event?.googleCalendarId,
-                                      event?.eventDBid || event?.eventDBId,
-                                      event?.requester,
-                                      event?.studentName
-                                    )
-                                  }
-                                  className="w-10/12 rounded-md  text-center  py-[6px]"
-                                >
-                                  Reschedule Meet
-                                </button>
-                              </div>
-                            ) : (
-                              <div className="w-10/12 mx-auto mt-1 text-center text-white bg-orange-400  rounded-md">
-                                <button
-                                  onClick={() =>
-                                    handleRescheduleZoomAdmin(
-                                      event?.eventId || event?.googleCalendarId,
-                                      event?.eventDBid || event?.eventDBId,
-                                      event?.requester,
-                                      event?.studentName,
-                                      event?.id
-                                    )
-                                  }
-                                  className="w-10/12 rounded-md  text-center  py-[6px]"
-                                >
-                                  Reschedule Zoom
-                                </button>
-                              </div>
-                            )}
                           </div>
-                        </div>
-                      ) : (
-                        <></>
+                        ) : (
+                          <></>
+                        )
                       )
-                    )
                   ) : (
                     <div className="col-span-full text-center">
                       <p className="font-medium">
