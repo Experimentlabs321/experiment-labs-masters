@@ -30,6 +30,16 @@ const MyStudents = () => {
     selectedExecutionMentorsForEditOrAssign,
     setSelectedExecutionMentorsForEditOrAssign,
   ] = useState([]);
+  const [currentPaginationPage, setCurrentPaginationPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [enteredSearchQuery, setEnteredSearchQuery] = useState("");
+  const [paginationPages, setPaginationPages] = useState([]);
+
+  const handlePageChange = (newPage) => {
+    if (newPage > 0 && newPage <= totalPages) {
+      setCurrentPaginationPage(newPage);
+    }
+  };
 
   useEffect(() => {
     if (userInfo) {
@@ -96,26 +106,78 @@ const MyStudents = () => {
   }, []);
 
   useEffect(() => {
+    setLoading(true);
     axios
       .get(
-        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/students/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v2/users/students/${
+          userInfo?.organizationId
+        }?page=${currentPaginationPage}&search=${enteredSearchQuery}&course=${
+          selectedCourse?._id || ""
+        }&batch=${selectedBatch?._id || ""}&status=${
+          selectedValidationStatus || ""
+        }`
+        // `http://localhost:5000/api/v1/users/students/${
+        //   userInfo?.organizationId
+        // }?page=${currentPaginationPage}&search=${enteredSearchQuery}&course=${
+        //   selectedCourse?._id || ""
+        // }&batch=${selectedBatch?._id || ""}&status=${
+        //   selectedValidationStatus || ""
+        // }`
       )
       .then((response) => {
-        response?.data.reverse();
+        console.log(response);
+        // response?.data?.students.reverse();
+        setProgress(100);
         if (paidStudents) {
-          const paidStudents = response?.data?.filter(
+          const paidStudents = response?.data?.students?.filter(
             (student) => student?.courses && student?.courses[0]
           );
           console.log(paidStudents);
           setAllMyStudents(paidStudents);
           setFilteredStudents(paidStudents);
+          setTotalPages(response?.data?.totalPages);
+          setPaginationPages(getPaginationPages());
         } else {
-          setAllMyStudents(response?.data);
-          setFilteredStudents(response?.data);
+          setAllMyStudents(response?.data?.students);
+          setFilteredStudents(response?.data?.students);
+          setTotalPages(response?.data?.totalPages);
+          setPaginationPages(getPaginationPages());
         }
+        setLoading(false);
       })
-      .catch((error) => console.error(error));
-  }, [userInfo, paidStudents]);
+      .catch((error) => {
+        console.error(error);
+        setProgress(100);
+        setLoading(false);
+      });
+  }, [userInfo, paidStudents, currentPaginationPage]);
+
+  const handleSearch = async (e) => {
+    const searchQuery = e.target.value;
+    setEnteredSearchQuery(e.target.value);
+
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v2/users/students/${
+          userInfo?.organizationId
+        }?search=${searchQuery}&course=${selectedCourse?._id || ""}&batch=${
+          selectedBatch?._id || ""
+        }&status=${selectedValidationStatus || ""}`
+      );
+      setProgress(100);
+      const data = await response.json();
+      console.log(data);
+      setFilteredStudents(data.students);
+      setTotalPages(data?.totalPages);
+      setPaginationPages(getPaginationPages());
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching filtered students:", error);
+      setProgress(100);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     axios
@@ -130,60 +192,20 @@ const MyStudents = () => {
   }, [userInfo]);
 
   const applyFilters = async (topic, batch, status) => {
-    let filtered = allMyStudents;
-    console.log(topic, batch, status);
-
-    // Apply course filter
-    if (topic?._id) {
-      filtered = await filtered.filter((student) =>
-        student.courses?.find((course) => course?.courseId === topic?._id)
-      );
-    }
-    console.log(filtered);
-
-    // Apply batch filter
-    if (batch?._id) {
-      filtered = await filtered.filter((student) =>
-        student.courses?.find((b) => b?.batchId === batch._id)
-      );
-    }
-
-    // Apply validation filter
-    if (status) {
-      if (status === "Paid") {
-        filtered = await filtered.filter(
-          (item) => item?.courses && item?.courses[0]
-        );
-      } else if (status === "Unpaid") {
-        filtered = await filtered.filter(
-          (item) => !item?.courses || !item?.courses[0]
-        );
-      } else if (status === "Expired") {
-        filtered = await filtered.filter(
-          (item) => item?.courses && item?.courses[0]
-        );
-        filtered = await filtered.filter((item) => {
-          let flag = false;
-          item?.courses?.map((course) => {
-            if (course?.enrollDate) {
-              const actualCourse = courses?.find(
-                (i) => i?._id === course?.courseId
-              );
-              if (
-                parseInt(actualCourse?.expirationDay) -
-                  daysDifferenceFromEnrolled(course?.enrollDate) <
-                0
-              ) {
-                flag = true;
-              }
-            }
-          });
-          return flag;
-        });
-      }
-    }
-
-    setFilteredStudents(filtered);
+    setLoading(true);
+    const response = await fetch(
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v2/users/students/${
+        userInfo?.organizationId
+      }?course=${topic?._id || ""}&batch=${batch?._id || ""}&status=${
+        status || ""
+      }`
+    );
+    const data = await response.json();
+    setProgress(100);
+    setFilteredStudents(data.students);
+    setTotalPages(data.totalPages);
+    setCurrentPaginationPage(data.currentPage);
+    setLoading(false);
   };
   const formateDate = (dateCreated) => {
     const date = new Date(dateCreated);
@@ -269,20 +291,51 @@ const MyStudents = () => {
   const [progress, setProgress] = React.useState(0);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress((oldProgress) => {
-        if (oldProgress === 100) {
-          return 0;
-        }
-        const diff = Math.random() * 10;
-        return Math.min(oldProgress + diff, 100);
-      });
-    }, 2000);
+    if (loading) {
+      const timer = setInterval(() => {
+        if (loading)
+          setProgress((oldProgress) => {
+            if (oldProgress === 100) {
+              return 0;
+            }
+            const diff = Math.random() * 10;
+            return Math.min(oldProgress + diff, 100);
+          });
+      }, 500);
 
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
+      return () => {
+        clearInterval(timer);
+      };
+    }
+  }, [loading, progress]);
+
+  const getPaginationPages = () => {
+    const pages = [];
+    const maxPagesToShow = 4;
+
+    if (totalPages <= maxPagesToShow) {
+      // Show all pages if the total is less than or equal to maxPagesToShow
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      // Show first two, current page, and last two
+      const startPages = [1, 2];
+      const endPages = [totalPages - 1, totalPages];
+
+      if (currentPaginationPage <= 2) {
+        pages.push(...startPages, "...", ...endPages);
+      } else if (currentPaginationPage >= totalPages - 1) {
+        pages.push(...startPages, "...", ...endPages);
+      } else {
+        pages.push(1, "...", currentPaginationPage, "...", totalPages);
+      }
+    }
+
+    return pages;
+  };
+
+  // const paginationPages = getPaginationPages();
 
   return (
     <div>
@@ -324,22 +377,9 @@ const MyStudents = () => {
               <div>
                 <div>
                   <input
-                    onChange={(e) => {
-                      setFilteredStudents(
-                        allMyStudents?.filter((student) => {
-                          return Object.keys(student).some((key) =>
-                            student[key]
-                              ?.toString()
-                              .toLowerCase()
-                              .includes(e.target.value.toString().toLowerCase())
-                          );
-                        })
-                      );
-                    }}
+                    onChange={handleSearch}
                     name="Search"
-                    placeholder={
-                      itemDetails?.search ? itemDetails?.search : "Search"
-                    }
+                    placeholder="Search"
                     className="block w-full px-4 py-2 mt-2 rounded-md border bg-white border-[#B7B7B7] focus:border-blue-500 focus:outline-none focus:ring"
                   />
                 </div>
@@ -435,7 +475,7 @@ const MyStudents = () => {
                   </button> */}
                 </div>
               </div>
-              {!filteredStudents[0] && (
+              {loading && filteredStudents?.length === 0 && (
                 <div className=" flex justify-center  w-full  ">
                   <div className="flex flex-col items-center gap-3">
                     <p className="mt-20">Loading...</p>
@@ -490,6 +530,7 @@ const MyStudents = () => {
                     </thead>
                     <tbody>
                       {filteredStudents &&
+                        !loading &&
                         filteredStudents[0] &&
                         filteredStudents?.reverse()?.map((student, index) => {
                           const formattedDate = new Date(
@@ -676,8 +717,95 @@ const MyStudents = () => {
                         })}
                     </tbody>
                   </table>
+                  {loading && (
+                    <div className=" flex justify-center  w-full  ">
+                      <div className="flex flex-col items-center gap-3">
+                        <p className="mt-20">Loading...</p>
+                        <Box sx={{ width: "500px" }}>
+                          <LinearProgress
+                            sx={{ height: "20px", borderRadius: "10px" }}
+                            variant="determinate"
+                            value={progress}
+                          />
+                        </Box>
+                      </div>
+
+                      {/* <CircularProgress className="w-full mx-auto" /> */}
+                    </div>
+                  )}
                 </div>
               )}
+              <div class="flex items-center justify-between border-t border-gray-200 bg-white py-3">
+                <div class="">
+                  <div>
+                    <nav
+                      className="isolate inline-flex -space-x-px rounded-md shadow-sm"
+                      aria-label="Pagination"
+                    >
+                      <button
+                        onClick={() =>
+                          handlePageChange(currentPaginationPage - 1)
+                        }
+                        className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                        disabled={currentPaginationPage === 1}
+                      >
+                        <span className="sr-only">Previous</span>
+                        <svg
+                          className="h-5 w-5"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </button>
+
+                      {paginationPages.map((page, index) => (
+                        <button
+                          key={index}
+                          onClick={() =>
+                            typeof page === "number" && handlePageChange(page)
+                          }
+                          className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold ${
+                            page === currentPaginationPage
+                              ? "bg-indigo-600 text-white"
+                              : "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                          } focus:z-20 focus:outline-offset-0 font-sans`}
+                          disabled={typeof page !== "number"}
+                        >
+                          {page}
+                        </button>
+                      ))}
+
+                      <button
+                        onClick={() =>
+                          handlePageChange(currentPaginationPage + 1)
+                        }
+                        className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                        disabled={currentPaginationPage === totalPages}
+                      >
+                        <span className="sr-only">Next</span>
+                        <svg
+                          className="h-5 w-5"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </button>
+                    </nav>
+                  </div>
+                </div>
+              </div>
             </>
           ) : (
             <>
