@@ -533,7 +533,7 @@ const MyStudents = () => {
                       {filteredStudents &&
                         !loading &&
                         filteredStudents[0] &&
-                        filteredStudents?.reverse()?.map((student, index) => {
+                        filteredStudents?.map((student, index) => {
                           const formattedDate = new Date(
                             student?.dateCreated
                           )?.toLocaleDateString();
