@@ -139,9 +139,9 @@ const MentorAllSchedule = () => {
     });
   }
   const editedEvents = getEditedEvents(filteredEvents);
-  console.log(sortedEvents);
+  console.log("sorted ",sortedEvents);
 
-  console.log(editedEvents);
+  console.log("edited ",editedEvents);
 
 
 

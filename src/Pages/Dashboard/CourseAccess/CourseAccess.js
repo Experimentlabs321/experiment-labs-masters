@@ -139,7 +139,7 @@ const CourseAccess = () => {
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/userId/${userInfo._id}`
         )
         .then((response) => {
-          setShowCourses(response?.data);
+          setShowCourses(response?.data || []);
           Loading().close();
         })
         .catch((error) => {
@@ -153,8 +153,8 @@ const CourseAccess = () => {
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
         )
         .then((response) => {
-          setShowCourses(response?.data);
-          setFilterData(response?.data);
+          setShowCourses(response?.data || []);
+          setFilterData(response?.data || []);
           Loading().close();
         })
         .catch((error) => {
@@ -168,7 +168,7 @@ const CourseAccess = () => {
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/bundles/organizationId/${userInfo.organizationId}`
         )
         .then((response) => {
-          setShowCourses(response?.data);
+          setShowCourses(response?.data || []);
           Loading().close();
         })
         .catch((error) => {

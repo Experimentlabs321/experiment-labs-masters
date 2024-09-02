@@ -30,6 +30,8 @@ import toast from "react-hot-toast";
 import required from "../../../assets/ContentManagement/required.png";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import AdminAllSchedule from "./AdminAllSchedule";
+import AdminBookSchedule from "./AdminBookSchedule";
+import AdminScheduleList from "./AdminScheduleList";
 
 const ExecutionMentorSchedule = () => {
   const { agenda } = useParams();
@@ -79,9 +81,9 @@ const ExecutionMentorSchedule = () => {
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/email/${userInfo?.email}`
       )
       .then((response) => {
-        console.log(response);
+        console.log(response)
         setAdminCalendarInfo(response?.data);
-        setSelectedHoliday(response?.data?.offDays || []);
+        setSelectedHoliday(response?.data?.offDays);
       })
 
       .catch((error) => console.error(error));
@@ -208,19 +210,16 @@ const ExecutionMentorSchedule = () => {
     }
   };
   const handleOptionChangeHoliday = (day) => {
-    if (!day || !day.day) {
-      console.error('Invalid day object passed:', day);
-      return;
-    }
-  
-    const isSelected = selectedHoliday.includes(day?.day);
-  
+    const isSelected = selectedHoliday.includes(day.day);
+
     if (isSelected) {
+      // If the day is already selected, remove it from the array
       const updatedSelection = selectedHoliday.filter(
         (selectedDay) => selectedDay !== day.day
       );
       setSelectedHoliday(updatedSelection);
     } else {
+      // If the day is not selected, add it to the array
       setSelectedHoliday((prevSelection) => [...prevSelection, day.day]);
     }
   };
@@ -294,6 +293,7 @@ const ExecutionMentorSchedule = () => {
       } else {
         toast.error("Something went wrong");
       }
+
     }
   };
   // console.log("Start", start);
@@ -319,7 +319,7 @@ const ExecutionMentorSchedule = () => {
         // If there is no error, the sign-in is successful
         // console.log("Google Sign-In successful!");
         navigate(previousLocation);
-        setCurrentPage("Schedule Settings");
+        setCurrentPage('Schedule Settings')
         // console.log(calendarEvents); // Log calendarEvents here or perform any other actions
       }
     } catch (error) {
@@ -334,7 +334,7 @@ const ExecutionMentorSchedule = () => {
       fetchPrimaryCalendarInfo();
     }
     //  else {
-    //   if (currentPage === "Schedule Settings")
+    //   if (currentPage === "Schedule Settings") 
     //   { googleSignIn(); }
     // }
   }, [currentPage]);
@@ -342,11 +342,12 @@ const ExecutionMentorSchedule = () => {
     return <></>;
   }
 
+
   async function signOut() {
     await supabase.auth.signOut();
   }
   async function fetchPrimaryCalendarInfo() {
-    if (currentPage === "Schedule Settings") {
+    if (currentPage === 'Schedule Settings') {
       try {
         const response = await fetch(
           "https://www.googleapis.com/calendar/v3/users/me/calendarList/primary",
@@ -374,7 +375,7 @@ const ExecutionMentorSchedule = () => {
     }
   }
   async function fetchGoogleCalendarEvents() {
-    if (currentPage === "Schedule Settings") {
+    if (currentPage === 'Schedule Settings') {
       const currentDate = new Date().toISOString();
       const url = new URL(
         "https://www.googleapis.com/calendar/v3/calendars/primary/events"
@@ -409,7 +410,7 @@ const ExecutionMentorSchedule = () => {
     }
   }
   async function fetchAndDisplayGoogleCalendarEvents() {
-    if (currentPage === "Schedule Settings") {
+    if (currentPage === 'Schedule Settings') {
       try {
         const events = await fetchGoogleCalendarEvents();
         setCalendarError(false);
@@ -420,6 +421,7 @@ const ExecutionMentorSchedule = () => {
         setCalendarEvents([]); // Set calendarEvents to an empty array on error
       }
     }
+
   }
   function renderEventContent(eventInfo) {
     // console.log(eventInfo);
@@ -651,15 +653,13 @@ const ExecutionMentorSchedule = () => {
         <div className="px-4 my-5 flex items-center gap-4">
           <button
             onClick={() => setCurrentPage("All Admin Events")}
-            className={`px-4 py-2 text-lg font-semibold rounded-lg ${
-              currentPage === "All Admin Events"
-                ? "bg-[#3E4DAC] text-white"
-                : "bg-white border-2 border-gray-400 text-black"
-            }`}
+            className={`px-4 py-2 text-lg font-semibold rounded-lg ${currentPage === "All Admin Events"
+              ? "bg-[#3E4DAC] text-white"
+              : "bg-white border-2 border-gray-400 text-black"
+              }`}
           >
-            {itemDetails?.adminEvents
-              ? itemDetails?.adminEvents
-              : "All Admin Events"}
+            {itemDetails?.adminEvents ? itemDetails?.adminEvents : "All Admin Events"}
+
           </button>
           {/*      <button
             onClick={() => setCurrentPage("Doubt class feedback")}
@@ -671,27 +671,44 @@ const ExecutionMentorSchedule = () => {
             Doubt class feedback
           </button> */}
           <button
-            onClick={() => setCurrentPage("Schedule Settings")}
-            className={`px-4 py-2 text-lg font-semibold rounded-lg ${
-              currentPage === "Schedule Settings"
-                ? "bg-[#3E4DAC] text-white"
-                : "bg-white border-2 border-gray-400 text-black"
-            }`}
+            onClick={() => setCurrentPage("Schedule List")}
+            className={`px-4 py-2 text-lg font-semibold rounded-lg ${currentPage === "Schedule List"
+              ? "bg-[#3E4DAC] text-white"
+              : "bg-white border-2 border-gray-400 text-black"
+              }`}
           >
-            {currentPage === "Schedule Settings" && session
-              ? "Schedule Settings"
-              : "Schedule Settings"}
+            {currentPage === 'Schedule List' && session ? 'Schedule List' : "Schedule List"}
+
           </button>
+          <button
+            onClick={() => setCurrentPage("Schedule Settings")}
+            className={`px-4 py-2 text-lg font-semibold rounded-lg ${currentPage === "Schedule Settings"
+              ? "bg-[#3E4DAC] text-white"
+              : "bg-white border-2 border-gray-400 text-black"
+              }`}
+          >
+            {currentPage === 'Schedule Settings' && session ? 'Schedule Settings' : "Schedule Settings"}
+
+          </button>
+
+
         </div>
-        {currentPage === "All Admin Events" && (
-          <>
+        {
+          currentPage === "All Admin Events" && <>
             <AdminAllSchedule />
           </>
-        )}
-        {currentPage === "Schedule Settings" && (
-          <>
+
+        }
+        {
+          currentPage === "Schedule List" && <>
+            <AdminScheduleList />
+          </>
+        }
+        {
+          currentPage === "Schedule Settings" && <>
             <div className="flex">
               <div className="w-full lg:mx-10 lg:mt-10 mt-20">
+
                 <div>
                   {session && session.user && calendarEvents?.length > 0 ? (
                     <>
@@ -699,11 +716,7 @@ const ExecutionMentorSchedule = () => {
                         <h2>My Calendar Events</h2>
                         <FullCalendar
                           height="600px"
-                          plugins={[
-                            dayGridPlugin,
-                            listPlugin,
-                            interactionPlugin,
-                          ]}
+                          plugins={[dayGridPlugin, listPlugin, interactionPlugin]}
                           initialView="dayGridMonth"
                           selectMirror={true}
                           headerToolbar={{
@@ -726,13 +739,10 @@ const ExecutionMentorSchedule = () => {
                             meridiem: "short",
                           }}
                           timeZone={timeZone} // Use timeZone state
-                          // dayRender={handleDayRender}
+                        // dayRender={handleDayRender}
                         />
                       </div>
-                      <form
-                        onSubmit={handleSubmit}
-                        className="lg:ms-[40px] mx-5  mt-12"
-                      >
+                      <form onSubmit={handleSubmit} className="lg:ms-[40px] mx-5  mt-12">
                         <div className="grid lg:grid-cols-2 grid-cols-1 gap-10">
                           <div className="">
                             <div className="flex items-center gap-4">
@@ -823,12 +833,8 @@ const ExecutionMentorSchedule = () => {
                                     id={"student" + index} // Updated to avoid duplicate IDs
                                     name={day?.day}
                                     value={day?.day}
-                                    checked={selectedHoliday?.includes(
-                                      day?.day
-                                    )} // Simplified check
-                                    onChange={(e) =>
-                                      handleOptionChangeHoliday(day)
-                                    }
+                                    checked={selectedHoliday?.includes(day?.day)} // Simplified check
+                                    onChange={(e) => handleOptionChangeHoliday(day)}
                                     className="mb-1"
                                   />
                                   <div className="flex mb-1 items-center">
@@ -876,12 +882,7 @@ const ExecutionMentorSchedule = () => {
                           </div>
                         </div>
                         <div className="flex items-center gap-10 justify-center mt-20 mb-10">
-                          <button
-                            className="bg-sky-600 px-4 py-3 text-white text-lg rounded-lg"
-                            onClick={() => signOut()}
-                          >
-                            Sign out{" "}
-                          </button>
+                          <button className="bg-sky-600 px-4 py-3 text-white text-lg rounded-lg" onClick={() => signOut()}>Sign out </button>
                           <button
                             className="px-[30px] py-3 bg-[#FF557A] text-[#fff] text-xl font-bold rounded-lg ms-20 "
                             type="submit"
@@ -910,7 +911,9 @@ const ExecutionMentorSchedule = () => {
           </div> */}
             </div>
           </>
-        )}
+
+        }
+
       </Layout>
     </div>
   );

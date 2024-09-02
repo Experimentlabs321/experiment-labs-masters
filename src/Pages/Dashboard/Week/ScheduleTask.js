@@ -21,6 +21,7 @@ import zoom from "../../../assets/icons/zoom-240.png";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import Loading from "../../Shared/Loading/Loading";
 import DashboardPrimaryButton from "../Shared/DashboardPrimaryButton";
+import { UAParser } from "ua-parser-js";
 
 const ScheduleTask = ({ taskData, week }) => {
   console.log("weekId ", week)
@@ -118,6 +119,7 @@ const ScheduleTask = ({ taskData, week }) => {
   const [zoomMeetingId, setZoomMeetingId] = useState(null);
   const [requesterStd, setRequesterStd] = useState(null);
   const [stdName, setStdName] = useState(null);
+  const [clicked, setClicked] = useState(false);
   if (userInfo.role !== "admin") {
     window.addEventListener("contextmenu", (e) => {
       e.preventDefault();
@@ -778,19 +780,37 @@ const ScheduleTask = ({ taskData, week }) => {
 
   const logToDatabase = async (message, data) => {
     try {
-      await axios.post(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/logs`, {
-        message : message,
-        data : data,
-        user: user?.email, // Optionally track the user
-      });
-      
+      // Parse the user agent to get device and browser details
+      const parser = new UAParser();
+      const device = parser.getDevice().type || "Desktop"; // Default to Desktop if no type
+      const browser = parser.getBrowser().name || "Unknown";
+      const os = parser.getOS().name || "Unknown";
+  
+      // Prepare log data
+      const logData = {
+        message: message,
+        data: {
+          ...data,
+          device: device,
+          browser: browser,
+          os: os,
+        },
+        user: user?.email || "anonymous", // Optionally track the user or default to anonymous
+      };
+  
+      // Send log data to the server
+      await axios.post(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/logs`, logData);
+  
       console.log("Log entry created:", message);
     } catch (error) {
-      console.log(error);
       console.error("Failed to log to database:", error);
     }
   };
-
+  const parser = new UAParser();
+  const device = parser.getDevice().type || "Desktop"; // Default to Desktop if no type
+  const browser = parser.getBrowser().name || "Unknown";
+  const os = parser.getOS().name || "Unknown";
+  console.log("Browser:", browser, "\n OS:", os, "\n Device:", device);
   const addEvent = async () => {
     if (checkTime) {
       Swal.fire({
@@ -916,7 +936,7 @@ const ScheduleTask = ({ taskData, week }) => {
                   requester: requesterStd ? requesterStd : user?.email,
                   studentName: stdName ? stdName : userInfo?.name,
                   eventId: eventId,
-                  taskId: taskId,
+                  scheduleId: taskId,
                   courseName: course?.courseFullName,
                   batchName: taskData?.batches[0]?.batchName,
                   executionMentors: userInfo?.executionMentors
@@ -1012,7 +1032,7 @@ const ScheduleTask = ({ taskData, week }) => {
                         requester: requesterStd ? requesterStd : user?.email,
                         studentName: stdName ? stdName : userInfo?.name,
                         eventId: eventId,
-                        taskId: taskId,
+                        scheduleId: taskId,
                         courseName: course?.courseFullName,
                         batchName: batchName,
                         executionMentors: userInfo?.executionMentors
@@ -1380,7 +1400,7 @@ const ScheduleTask = ({ taskData, week }) => {
                           requester: requesterStd ? requesterStd : user?.email,
                           studentName: stdName ? stdName : userInfo?.name,
                           eventId: response?.result?.id,
-                          taskId: taskId,
+                          scheduleId: taskId,
                           courseName: course?.courseFullName,
                           batchName: batchName,
                           executionMentors: userInfo?.executionMentors
@@ -1495,7 +1515,7 @@ const ScheduleTask = ({ taskData, week }) => {
                       start_time: formattedDateTime,
                       duration: meetingLength,
                       studentName: stdName ? stdName : userInfo?.name,
-                      courseName: course?.courseFullName,
+                      courseName: taskData?.courseName,
                     };
                     console.log(zoomSchedule);
                     logToDatabase("Proceeding with Zoom reschedule creation", { zoomSchedule });
@@ -1901,7 +1921,7 @@ const ScheduleTask = ({ taskData, week }) => {
                   start_time: formattedDateTime,
                   duration: meetingLength,
                   studentName: stdName ? stdName : userInfo?.name,
-                  courseName: course?.courseFullName,
+                  courseName: taskData?.courseName,
                 };
                 let localDate = new Date(formattedDateTime);
 
@@ -2119,7 +2139,7 @@ const ScheduleTask = ({ taskData, week }) => {
                                         userInfo?.organizationName,
                                     },
                                     meetingType: "Zoom",
-                                    taskId: taskId,
+                                    scheduleId: taskId,
                                     courseName: course?.courseFullName,
                                     weekId: weeksId,
                                     batchName: batchName,
