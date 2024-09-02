@@ -1940,6 +1940,7 @@ const AdminBookSchedule = ({
             (c) => c._id === e.target.value
         );
         setSelectedStudent(student);
+        setPicked(true);
         setShowModal(true);
 
         // Hide modal after 3 seconds
