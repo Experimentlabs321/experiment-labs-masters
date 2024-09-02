@@ -124,7 +124,7 @@ const AdminCalendarSchedule = () => {
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/courseId/${localStorage.getItem("courseId")}`
       )
       .then((response) => {
-        setBatchesData(response?.data);
+        setBatchesData(response?.data || []);
       })
       .catch((error) => console.error(error));
   }, [chapter?.courseId]);
@@ -133,7 +133,7 @@ const AdminCalendarSchedule = () => {
       // .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
       .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${id}`)
       .then((response) => {
-        setChapter(response?.data);
+        setChapter(response?.data || []);
       })
 
       .catch((error) => console.error(error));
@@ -146,7 +146,7 @@ const AdminCalendarSchedule = () => {
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/${chapter?.courseId}`
         )
         .then((response) => {
-          setCourse(response?.data);
+          setCourse(response?.data || []);
         });
   }, [chapter]);
   console.log(course);
@@ -157,7 +157,7 @@ const AdminCalendarSchedule = () => {
       )
       .then((response) => {
         console.log(response);
-        setAdminCalendarInfo(response?.data);
+        setAdminCalendarInfo(response?.data || []);
       })
 
       .catch((error) => console.error(error));
@@ -170,8 +170,8 @@ const AdminCalendarSchedule = () => {
         // `http://localhost:5000/api/v1/users/mentors/organizationId/${userInfo?.organizationId}/role/execution mentor`
       )
       .then((response) => {
-        setExecutionMentors(response?.data);
-        console.log(response?.data);
+        setExecutionMentors(response?.data || [])
+        console.log(response?.data || [])
       })
       .catch((error) => {
         console.error(error);
@@ -276,9 +276,10 @@ const AdminCalendarSchedule = () => {
       scheduleName,
       taskName: scheduleName,
       chapterId: chapter?._id,
-      weekId : chapter?.weekId,
+      weekId: chapter?.weekId,
       courseName: course?.courseFullName,
       courseId: chapter?.courseId,
+      organizationId: userInfo?.organizationId,
       batches: selectedBatches,
       offDays: offDays,
       dateRange: dateRange,
@@ -604,7 +605,7 @@ const AdminCalendarSchedule = () => {
       );
     }
   };
-  
+
   return (
     <div>
       <Layout>
@@ -996,8 +997,8 @@ const AdminCalendarSchedule = () => {
                           <label
                             htmlFor="radioYes"
                             className={`ml-2 text-sm font-medium ${course?.enableDrip
-                                ? "text-gray-400"
-                                : "text-gray-900"
+                              ? "text-gray-400"
+                              : "text-gray-900"
                               }`}
                           >
                             Yes
@@ -1017,8 +1018,8 @@ const AdminCalendarSchedule = () => {
                           <label
                             htmlFor="radioNo"
                             className={`ml-2 text-sm font-medium ${course?.enableDrip
-                                ? "text-gray-400"
-                                : "text-gray-900"
+                              ? "text-gray-400"
+                              : "text-gray-900"
                               }`}
                           >
                             No
