@@ -136,12 +136,10 @@ const MyStudents = () => {
           setAllMyStudents(paidStudents);
           setFilteredStudents(paidStudents);
           setTotalPages(response?.data?.totalPages);
-          setPaginationPages(getPaginationPages());
         } else {
           setAllMyStudents(response?.data?.students);
           setFilteredStudents(response?.data?.students);
           setTotalPages(response?.data?.totalPages);
-          setPaginationPages(getPaginationPages());
         }
         setLoading(false);
       })
@@ -170,7 +168,6 @@ const MyStudents = () => {
       console.log(data);
       setFilteredStudents(data.students);
       setTotalPages(data?.totalPages);
-      setPaginationPages(getPaginationPages());
       setLoading(false);
     } catch (error) {
       console.error("Error fetching filtered students:", error);
@@ -334,6 +331,10 @@ const MyStudents = () => {
 
     return pages;
   };
+
+  useEffect(() => {
+    setPaginationPages(getPaginationPages());
+  }, [totalPages, currentPaginationPage]);
 
   // const paginationPages = getPaginationPages();
 
