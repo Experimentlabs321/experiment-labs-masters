@@ -27,6 +27,7 @@ const Assignment = ({allUsers}) => {
   const [loading, setLoading] = useState(false);
 
   const [assignments, setAssignments] = useState([]);
+  const [totalStudent, setTotalStudent] = useState([]);
   //const [allUsers, setAllUsers] = useState([]);
   const [studentListOpen, setStudentListOpen] = useState(false);
   const [selectedBatchId, setSelectedBatchId] = useState();
@@ -75,11 +76,12 @@ const Assignment = ({allUsers}) => {
   //   fetchData();
   // }, [userInfo?.organizationId]);
 
-  const listView = (id, participants, classId) => {
+  const listView = (id, participants, classId,totalStudentsData) => {
     setStudentListOpen(true);
     setSelectedBatchId(id);
     setParticipants(participants);
     setClassId(classId);
+    setTotalStudent(totalStudentsData)
   };
   const fileView = (file) => {
     setFileOpen(true);
@@ -160,6 +162,7 @@ const Assignment = ({allUsers}) => {
         participants={participants}
         classId={classId}
         allUsers={allUsers}
+        totalStudent={totalStudent}
         selectedBatch={selectedBatch}
       />
       <FileDownload fileOpen={fileOpen} setFileOpen={setFileOpen} file={file} />
@@ -260,26 +263,46 @@ const Assignment = ({allUsers}) => {
                       })
                     : "N/A";
 
-                  const batchStudentCounts = assignment?.batches?.map(
-                    (batch) => {
-                      const studentsInBatch = allUsers?.filter((std) =>
-                        std?.courses?.some(
-                          (data) => data?.batchId === batch?.batchId
-                        )
-                      );
-                      return {
-                        batchName: batch.batchName,
-                        batchId: batch.batchId,
-                        studentCount: studentsInBatch?.length || 0,
-                      };
-                    }
-                  );
+                  // const batchStudentCounts = assignment?.batches?.map(
+                  //   (batch) => {
+                  //     const studentsInBatch = allUsers?.filter((std) =>
+                  //       std?.courses?.some(
+                  //         (data) => data?.batchId === batch?.batchId
+                  //       )
+                  //     );
+                  //     return {
+                  //       batchName: batch.batchName,
+                  //       batchId: batch.batchId,
+                  //       studentCount: studentsInBatch?.length || 0,
+                  //     };
+                  //   }
+                  // );
+                  const batchStudentData = assignment?.batches?.map((batch) => {
+                    const studentsInBatch = allUsers?.filter((std) =>
+                      std?.courses?.some((data) => data?.batchId === batch?.batchId)
+                    );
+                  
+                    return {
+                      batchName: batch.batchName,
+                      batchId: batch.batchId,
+                      studentCount: studentsInBatch?.length || 0,
+                      students: studentsInBatch || [],
+                    };
+                  });
 
-                  const totalStudents =
-                    batchStudentCounts?.reduce(
-                      (acc, batch) => acc + batch.studentCount,
-                      0
-                    ) || 0;
+                  // const totalStudents =
+                  //   batchStudentCounts?.reduce(
+                  //     (acc, batch) => acc + batch.studentCount,
+                  //     0
+                  //   ) || 0;
+                    const { totalStudentsCount, totalStudentsData } = batchStudentData?.reduce(
+                      (acc, batch) => {
+                        acc.totalStudentsCount += batch.studentCount;
+                        acc.totalStudentsData.push(...batch.students);
+                        return acc;
+                      },
+                      { totalStudentsCount: 0, totalStudentsData: [] }
+                    ) || { totalStudentsCount: 0, totalStudentsData: [] };
 
                   const evaluatedAssignmentTotal =
                     assignment?.participants?.filter(
@@ -298,8 +321,8 @@ const Assignment = ({allUsers}) => {
 
                   // Calculate the percentage
                   const percentage =
-                    totalStudents > 0
-                      ? (participantsCount / totalStudents) * 100
+                  totalStudentsCount > 0
+                      ? (participantsCount / totalStudentsCount) * 100
                       : 0;
 
                   // Determine the background color based on the percentage
@@ -358,7 +381,9 @@ const Assignment = ({allUsers}) => {
                           listView(
                             assignment.batches[0].batchId,
                             assignment?.participants,
-                            assignment?._id
+                            assignment?._id,
+                            totalStudentsData
+
                           )
                         }
                         className={`py-4 px-6 border-b text-left cursor-pointer `}
@@ -369,7 +394,7 @@ const Assignment = ({allUsers}) => {
                         {allUsers.length < 1 ? (
                           <CircularProgress size={20} />
                         ) : (
-                          totalStudents
+                          totalStudentsCount
                         )}
                       </td>
                       {/* <td className="py-4 px-6 border-b text-left">

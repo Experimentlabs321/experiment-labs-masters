@@ -11,7 +11,8 @@ const ClassStudentsList = ({
   participants,
   classId,
   reloadClassData,
-  allUsers
+  allUsers,
+  totalStudent
 }) => {
   const [students, setStudents] = useState([]);
   const [localParticipants, setLocalParticipants] = useState([]);
@@ -39,7 +40,7 @@ const ClassStudentsList = ({
     }
   }, [selectedBatchId, studentListOpen, participants]);
 
-  const sortedStudents = allUsers?.sort((a, b) => {
+  const sortedStudents = totalStudent?.sort((a, b) => {
     const isPresentA = localParticipants.some(
       (par) => par.participant.email === a.email || a.present
     );

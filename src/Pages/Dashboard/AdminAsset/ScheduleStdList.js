@@ -11,7 +11,8 @@ const ScheduleStdList = ({
   participants,
   classId,
   reloadClassData,
-  allUsers
+  allUsers,
+  totalStudent
 }) => {
   const [students, setStudents] = useState([]);
   const [localParticipants, setLocalParticipants] = useState([]);
@@ -40,7 +41,7 @@ const ScheduleStdList = ({
     }
   }, [selectedBatchId, studentListOpen, participants]);
 
-  const sortedStudents = allUsers?.sort((a, b) => {
+  const sortedStudents = totalStudent?.sort((a, b) => {
     const isAttendedA = localParticipants.some(
       (par) => par.participant.email === a.email || a.Attended
     );

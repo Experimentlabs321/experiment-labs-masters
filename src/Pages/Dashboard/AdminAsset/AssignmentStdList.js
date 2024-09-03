@@ -10,7 +10,8 @@ const AssignmentStdList = ({
   selectedBatchId,
   participants,
   allUsers,
-  selectedBatch
+  selectedBatch,
+  totalStudent
 }) => {
   const [students, setStudents] = useState([]);
   const [localParticipants, setLocalParticipants] = useState([]);
@@ -38,7 +39,7 @@ const AssignmentStdList = ({
     }
   }, [selectedBatchId, studentListOpen, participants]);
 
-  const sortedStudents = allUsers?.sort((a, b) => {
+  const sortedStudents = totalStudent?.sort((a, b) => {
     const isSubmitedA = localParticipants.some(
       (par) => par.participant.email === a.email || a.Submited
     );
