@@ -9,7 +9,8 @@ const ReadingStdList = ({
   setStudentListOpen,
   selectedBatchId,
   participants,
-  allUsers
+  allUsers,
+  totalStudent
 }) => {
   const [students, setStudents] = useState([]);
   const [localParticipants, setLocalParticipants] = useState([]);
@@ -37,7 +38,7 @@ const ReadingStdList = ({
     }
   }, [selectedBatchId, studentListOpen, participants]);
 
-  const sortedStudents = allUsers?.sort((a, b) => {
+  const sortedStudents = totalStudent?.sort((a, b) => {
     const isCompletedA = localParticipants.some(
       (par) => par.participant.email === a.email || a.Completed
     );

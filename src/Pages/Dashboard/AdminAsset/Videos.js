@@ -32,7 +32,7 @@ const Videos = ({allUsers}) => {
   const [selectedBatchId, setSelectedBatchId] = useState();
   const [participants, setParticipants] = useState();
   const [classId, setClassId] = useState();
-
+  const [totalStudent, setTotalStudent] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState("");
   const [selectedBatch, setSelectedBatch] = useState("");
   const [sortOrder, setSortOrder] = useState("desc"); // Default sorting order
@@ -75,11 +75,12 @@ const Videos = ({allUsers}) => {
   //   fetchData();
   // }, [userInfo?.organizationId]);
 
-  const listView = (id, participants, classId) => {
+  const listView = (id, participants, classId,totalStudentsData) => {
     setStudentListOpen(true);
     setSelectedBatchId(id);
     setParticipants(participants);
     setClassId(classId);
+    setTotalStudent(totalStudentsData)
   };
   const fileView = (file) => {
     setFileOpen(true);
@@ -159,6 +160,7 @@ const Videos = ({allUsers}) => {
         selectedBatchId={selectedBatchId}
         participants={participants}
         allUsers={allUsers}
+        totalStudent={totalStudent}
       />
       <FileDownload fileOpen={fileOpen} setFileOpen={setFileOpen} file={file} />
       {loading ? (
@@ -235,33 +237,54 @@ const Videos = ({allUsers}) => {
               </thead>
               <tbody>
                 {paginatedClasses?.map((video, index) => {
-                  const batchStudentCounts = video?.batches?.map((batch) => {
-                    if (allUsers.length > 0) {
-                      const studentsInBatch = allUsers?.filter((std) =>
-                        std?.courses?.some(
-                          (data) => data?.batchId === batch?.batchId
-                        )
-                      );
-                      return {
-                        batchName: batch.batchName,
-                        batchId: batch.batchId,
-                        studentCount: studentsInBatch?.length || 0,
-                      };
-                    }
-                  });
 
-                  const totalStudents =
-                    batchStudentCounts?.reduce(
-                      (acc, batch) => acc + batch?.studentCount,
-                      0
-                    ) || 0;
+                  // const batchStudentCounts = video?.batches?.map((batch) => {
+                  //   if (allUsers.length > 0) {
+                  //     const studentsInBatch = allUsers?.filter((std) =>
+                  //       std?.courses?.some(
+                  //         (data) => data?.batchId === batch?.batchId
+                  //       )
+                  //     );
+                  //     return {
+                  //       batchName: batch.batchName,
+                  //       batchId: batch.batchId,
+                  //       studentCount: studentsInBatch?.length || 0,
+                  //     };
+                  //   }
+                  // });
+
+                  // const totalStudents =
+                  //   batchStudentCounts?.reduce(
+                  //     (acc, batch) => acc + batch?.studentCount,
+                  //     0
+                  //   ) || 0;
+                  const batchStudentData = video?.batches?.map((batch) => {
+                    const studentsInBatch = allUsers?.filter((std) =>
+                      std?.courses?.some((data) => data?.batchId === batch?.batchId)
+                    );
+                  
+                    return {
+                      batchName: batch.batchName,
+                      batchId: batch.batchId,
+                      studentCount: studentsInBatch?.length || 0,
+                      students: studentsInBatch || [],
+                    };
+                  });
+                  const { totalStudentsCount, totalStudentsData } = batchStudentData?.reduce(
+                    (acc, batch) => {
+                      acc.totalStudentsCount += batch.studentCount;
+                      acc.totalStudentsData.push(...batch.students);
+                      return acc;
+                    },
+                    { totalStudentsCount: 0, totalStudentsData: [] }
+                  ) || { totalStudentsCount: 0, totalStudentsData: [] };
 
                   const participantsCount = video?.participants?.length || 0;
 
                   // Calculate the percentage
                   const percentage =
-                    totalStudents > 0
-                      ? (participantsCount / totalStudents) * 100
+                  totalStudentsCount > 0
+                      ? (participantsCount / totalStudentsCount) * 100
                       : 0;
 
                   // Determine the background color based on the percentage
@@ -316,7 +339,8 @@ const Videos = ({allUsers}) => {
                           listView(
                             video.batches[0].batchId,
                             video?.participants,
-                            video?._id
+                            video?._id,
+                            totalStudentsData
                           )
                         }
                         className={`py-4 px-6 border-b text-left cursor-pointer `}
@@ -327,7 +351,7 @@ const Videos = ({allUsers}) => {
                         {allUsers.length < 1 ? (
                           <CircularProgress size={20} />
                         ) : (
-                          totalStudents
+                          totalStudentsCount
                         )}
                       </td>
                       {/* <td className="py-4 px-6 border-b text-left">

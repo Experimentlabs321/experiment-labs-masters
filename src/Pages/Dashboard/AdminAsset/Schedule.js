@@ -18,7 +18,7 @@ const Schedule = ({allUsers}) => {
   const [selectedCourse, setSelectedCourse] = useState("");
   const [selectedBatch, setSelectedBatch] = useState("");
   const [classRecordId, setClassRecordId] = useState();
-
+  const [totalStudent, setTotalStudent] = useState([]);
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
@@ -57,11 +57,12 @@ const Schedule = ({allUsers}) => {
   //   fetchData();
   // }, [userInfo?.organizationId]);
 
-  const listView = (id, participants, classId) => {
+  const listView = (id, participants, classId,totalStudentsData) => {
     setStudentListOpen(true);
     setSelectedBatchId(id);
     setParticipants(participants);
     setClassId(classId);
+    setTotalStudent(totalStudentsData)
   };
 
   const recordView = (id) => {
@@ -112,6 +113,7 @@ const Schedule = ({allUsers}) => {
         participants={participants}
         classId={classId}
         allUsers={allUsers}
+        totalStudent={totalStudent}
       />
       <ClassRecord
         classRecordOpen={classRecordOpen}
@@ -188,26 +190,47 @@ const Schedule = ({allUsers}) => {
               </thead>
               <tbody>
                 {currentItems?.map((Schedule, index) => {
-                  const batchStudentCounts = Schedule?.batches?.map((batch) => {
-                    if (allUsers.length > 0) {
-                      const studentsInBatch = allUsers?.filter((std) =>
-                        std?.courses?.some(
-                          (data) => data?.batchId === batch?.batchId
-                        )
-                      );
-                      return {
-                        batchName: batch.batchName,
-                        batchId: batch.batchId,
-                        studentCount: studentsInBatch?.length || 0,
-                      };
-                    }
-                  });
 
-                  const totalStudents =
-                    batchStudentCounts?.reduce(
-                      (acc, batch) => acc + batch?.studentCount,
-                      0
-                    ) || 0;
+                  // const batchStudentCounts = Schedule?.batches?.map((batch) => {
+                  //   if (allUsers.length > 0) {
+                  //     const studentsInBatch = allUsers?.filter((std) =>
+                  //       std?.courses?.some(
+                  //         (data) => data?.batchId === batch?.batchId
+                  //       )
+                  //     );
+                  //     return {
+                  //       batchName: batch.batchName,
+                  //       batchId: batch.batchId,
+                  //       studentCount: studentsInBatch?.length || 0,
+                  //     };
+                  //   }
+                  // });
+                  const batchStudentData = Schedule?.batches?.map((batch) => {
+                    const studentsInBatch = allUsers?.filter((std) =>
+                      std?.courses?.some((data) => data?.batchId === batch?.batchId)
+                    );
+                  
+                    return {
+                      batchName: batch.batchName,
+                      batchId: batch.batchId,
+                      studentCount: studentsInBatch?.length || 0,
+                      students: studentsInBatch || [],
+                    };
+                  });
+                  const { totalStudentsCount, totalStudentsData } = batchStudentData?.reduce(
+                    (acc, batch) => {
+                      acc.totalStudentsCount += batch.studentCount;
+                      acc.totalStudentsData.push(...batch.students);
+                      return acc;
+                    },
+                    { totalStudentsCount: 0, totalStudentsData: [] }
+                  ) || { totalStudentsCount: 0, totalStudentsData: [] };
+
+                  // const totalStudents =
+                  //   batchStudentCounts?.reduce(
+                  //     (acc, batch) => acc + batch?.studentCount,
+                  //     0
+                  //   ) || 0;
 
                   return (
                     <tr
@@ -241,7 +264,8 @@ const Schedule = ({allUsers}) => {
                           listView(
                             Schedule.batches[0].batchId,
                             Schedule?.participants,
-                            Schedule?._id
+                            Schedule?._id,
+                            totalStudentsData,
                           )
                         }
                         className="py-4 px-6 border-b text-left cursor-pointer"
@@ -252,7 +276,7 @@ const Schedule = ({allUsers}) => {
                         {allUsers.length < 1 ? (
                           <CircularProgress size={20} />
                         ) : (
-                          totalStudents
+                          totalStudentsCount
                         )}
                       </td>
                       {/* <td className="py-4 px-6 border-b text-left">

@@ -31,7 +31,7 @@ const Reading = ({allUsers}) => {
   const [selectedBatchId, setSelectedBatchId] = useState();
   const [participants, setParticipants] = useState();
   const [classId, setClassId] = useState();
-
+  const [totalStudent, setTotalStudent] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState("");
   const [selectedBatch, setSelectedBatch] = useState("");
   const [sortOrder, setSortOrder] = useState("desc"); // Default sorting order
@@ -77,11 +77,12 @@ const Reading = ({allUsers}) => {
   //   fetchData();
   // }, [userInfo?.organizationId]);
 
-  const listView = (id, participants, classId) => {
+  const listView = (id, participants, classId,totalStudentsData) => {
     setStudentListOpen(true);
     setSelectedBatchId(id);
     setParticipants(participants);
     setClassId(classId);
+    setTotalStudent(totalStudentsData)
   };
 
   const fileView = (file) => {
@@ -161,6 +162,7 @@ const Reading = ({allUsers}) => {
         selectedBatchId={selectedBatchId}
         participants={participants}
         allUsers={allUsers}
+        totalStudent={totalStudent}
       />
       <FileDownload fileOpen={fileOpen} setFileOpen={setFileOpen} file={file} />
       {loading ? (
@@ -232,29 +234,51 @@ const Reading = ({allUsers}) => {
           </thead>
           <tbody>
             {paginatedClasses?.map((reading, index) => {
-              const batchStudentCounts = reading?.batches?.map((batch) => {
+
+              // const batchStudentCounts = reading?.batches?.map((batch) => {
+              //   const studentsInBatch = allUsers?.filter((std) =>
+              //     std?.courses?.some((data) => data?.batchId === batch?.batchId)
+              //   );
+              //   return {
+              //     batchName: batch.batchName,
+              //     batchId: batch.batchId,
+              //     studentCount: studentsInBatch?.length || 0,
+              //   };
+              // });
+
+              // const totalStudents =
+              //   batchStudentCounts?.reduce(
+              //     (acc, batch) => acc + batch.studentCount,
+              //     0
+              //   ) || 0;
+              const batchStudentData = reading?.batches?.map((batch) => {
                 const studentsInBatch = allUsers?.filter((std) =>
                   std?.courses?.some((data) => data?.batchId === batch?.batchId)
                 );
+              
                 return {
                   batchName: batch.batchName,
                   batchId: batch.batchId,
                   studentCount: studentsInBatch?.length || 0,
+                  students: studentsInBatch || [],
                 };
               });
 
-              const totalStudents =
-                batchStudentCounts?.reduce(
-                  (acc, batch) => acc + batch.studentCount,
-                  0
-                ) || 0;
+              const { totalStudentsCount, totalStudentsData } = batchStudentData?.reduce(
+                (acc, batch) => {
+                  acc.totalStudentsCount += batch.studentCount;
+                  acc.totalStudentsData.push(...batch.students);
+                  return acc;
+                },
+                { totalStudentsCount: 0, totalStudentsData: [] }
+              ) || { totalStudentsCount: 0, totalStudentsData: [] };
 
               const participantsCount = reading?.participants?.length || 0;
 
               // Calculate the percentage
               const percentage =
-                totalStudents > 0
-                  ? (participantsCount / totalStudents) * 100
+              totalStudentsCount > 0
+                  ? (participantsCount / totalStudentsCount) * 100
                   : 0;
 
               // Determine the background color based on the percentage
@@ -309,7 +333,8 @@ const Reading = ({allUsers}) => {
                       listView(
                         reading.batches[0].batchId,
                         reading?.participants,
-                        reading?._id
+                        reading?._id,
+                        totalStudentsData
                       )
                     }
                     className={`py-4 px-6 border-b text-left cursor-pointer `}
@@ -320,7 +345,7 @@ const Reading = ({allUsers}) => {
                     {allUsers.length < 1 ? (
                       <CircularProgress size={20} />
                     ) : (
-                      totalStudents
+                      totalStudentsCount
                     )}
                   </td>
                   {/* <td className="py-4 px-6 border-b text-left">
