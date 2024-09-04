@@ -7,7 +7,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-
+import { addHours } from 'date-fns';
 import axios from 'axios';
 import { red } from '@mui/material/colors';
 import { AuthContext } from '../../../contexts/AuthProvider';
@@ -501,6 +501,7 @@ const AdminAllSchedule = () => {
                 )}
                 {editedEvents.map((event, index) => {
                   const eventStartTime = new Date(event.start_time || event.start.dateTime || event.start);
+                  const startTimePlusOneHour = addHours(eventStartTime, 1);
                   return (
                     <tr
                       key={index}
@@ -592,7 +593,7 @@ const AdminAllSchedule = () => {
                         }) : ''}
                       </td>
                       <td className="py-4 px-6 border-b text-left">
-                        {eventStartTime < now ? (
+                        {startTimePlusOneHour < now ? (
                           <p className='text-sm'>Meeting Concluded</p>  // Show this if the meeting time is in the past
                         ) : (
                           <Link  // Only show the link if the meeting time is in the future or present
