@@ -20,8 +20,8 @@ function PreDashboard() {
       try {
         if (token && requestedBy) {
           const authData = await axios.post(
-            `http://localhost:5000/api/v1/auth`,
-            // `${process.env.REACT_APP_SERVERLESS_API}/api/v1/auth`,
+            // `http://localhost:5000/api/v1/auth`,
+            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/auth`,
             { token, requestedBy }
           );
           // console.log({ authData });
