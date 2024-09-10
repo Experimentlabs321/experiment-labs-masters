@@ -58,8 +58,8 @@ const MentorAssignments = () => {
       )
       .then((response) => {
         if (userInfo?.role === "admin") {
-          setAssignments(response?.data?.slice().reverse());
-          setFilteredAssignment(response?.data?.slice().reverse());
+          setAssignments(response?.data?.slice().reverse() || []);
+          setFilteredAssignment(response?.data?.slice().reverse() || []);
         } else {
           setAssignments(
             response?.data
@@ -124,7 +124,7 @@ const MentorAssignments = () => {
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
-        setCourses(response?.data);
+        setCourses(response?.data || []);
         setIsLoading(false);
       })
       .catch((error) => {
@@ -140,7 +140,7 @@ const MentorAssignments = () => {
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/courseId/${selectedCourse?._id}`
         )
         .then((response) => {
-          setBatchesData(response?.data);
+          setBatchesData(response?.data || []);
           setIsLoading(false);
         })
         .catch((error) => {
@@ -155,7 +155,7 @@ const MentorAssignments = () => {
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/students/${userInfo?.organizationId}`
       )
       .then((response) => {
-        setAllMyStudents(response?.data);
+        setAllMyStudents(response?.data || []);
         setIsLoading(false);
       })
       .catch((error) => {
@@ -171,7 +171,7 @@ const MentorAssignments = () => {
         // `http://localhost:5000/api/v1/users/mentors/organizationId/${userInfo?.organizationId}/role/execution mentor`
       )
       .then((response) => {
-        setMentors(response?.data);
+        setMentors(response?.data || []);
       })
       .catch((error) => console.error(error));
   }, [userInfo]);
@@ -424,8 +424,13 @@ const MentorAssignments = () => {
   return (
     <div>
       <Layout>
-        {isLoading && (
+        {/* {isLoading && (
           <div className=" flex align-items-center my-5 py-5">
+            <CircularProgress className="w-full mx-auto" />
+          </div>
+        )} */}
+        {filteredAssignments.length===0 && (
+          <div className=" flex align-items-center my-5 py-5 mt-24">
             <CircularProgress className="w-full mx-auto" />
           </div>
         )}
@@ -586,7 +591,7 @@ const MentorAssignments = () => {
                         <option className="hidden" value="">
                           Select Mentor
                         </option>
-                        {mentors?.map((mentor) => (
+                        {mentors && mentors?.map((mentor) => (
                           <option key={mentor._id} value={mentor._id}>
                             {mentor?.name}
                           </option>
