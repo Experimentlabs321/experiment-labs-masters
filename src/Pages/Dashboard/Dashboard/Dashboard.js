@@ -149,20 +149,36 @@ const Dashboard = () => {
       });
   }, [userInfo]);
 
+  // useEffect(() => {
+  //   axios
+  //     .get(
+  //       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/weeks/courseId/${selectedCourse?._id}`
+  //     )
+  //     .then((response) => {
+  //       setWeeks(response?.data || []);
+  //       setIsLoading(false)
+  //     })
+  //     .catch((error) => {
+  //       console.error(error)
+  //       setIsLoading(false)
+  //     });
+  // }, [selectedCourse]);
   useEffect(() => {
     axios
       .get(
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/weeks/courseId/${selectedCourse?._id}`
       )
       .then((response) => {
-        setWeeks(response?.data || []);
-        setIsLoading(false)
+        console.log('API Response:', response?.data);  // Log response data
+        setWeeks(Array.isArray(response?.data) ? response?.data : []);
+        setIsLoading(false);
       })
       .catch((error) => {
-        console.error(error)
-        setIsLoading(false)
+        console.error(error);
+        setIsLoading(false);
       });
   }, [selectedCourse]);
+  
 
   useEffect(() => {
     setCurrentWeek(null);
@@ -178,20 +194,38 @@ const Dashboard = () => {
     });
   }, [selectedCourse, weeks]);
 
+  // useEffect(() => {
+  //   axios
+  //     .get(
+  //       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/weekId/${currentWeek?._id}`
+  //     )
+  //     .then((response) => {
+  //       setChapters(response?.data || []);
+  //       setIsLoading(false)
+  //     })
+  //     .catch((error) => {
+  //       console.error(error)
+  //       setIsLoading(false)
+  //     });
+  // }, [currentWeek]);
+
   useEffect(() => {
     axios
       .get(
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/weekId/${currentWeek?._id}`
       )
       .then((response) => {
-        setChapters(response?.data || []);
-        setIsLoading(false)
+        console.log('API Response:', response?.data);  // Add this line
+        setChapters(Array.isArray(response?.data) ? response?.data : []);
+        setIsLoading(false);
       })
       .catch((error) => {
-        console.error(error)
-        setIsLoading(false)
+        console.error(error);
+        setIsLoading(false);
       });
   }, [currentWeek]);
+  
+
   useEffect(() => {
     let totalCompleted = 0;
     let totalTask = 0;

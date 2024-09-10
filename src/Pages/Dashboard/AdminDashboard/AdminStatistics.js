@@ -62,7 +62,7 @@ const AdminStatistics = ({ itemDetails }) => {
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/getAllPaidInfo/organizationId/${userInfo?.organizationId}`
         )
         .then((response) => {
-          setPaidStudents(response?.data);
+          setPaidStudents(response?.data || []);
           setIsLoading(false);
         })
         .catch((error) => {

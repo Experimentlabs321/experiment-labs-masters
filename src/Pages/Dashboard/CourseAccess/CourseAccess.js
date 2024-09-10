@@ -52,7 +52,7 @@ const CourseAccess = () => {
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/userId/${userInfo._id}`
         )
         .then((response) => {
-          setMyCourses(response?.data);
+          setMyCourses(response?.data || []);
           setIsLoading(false);
         })
         .catch((error) => {
@@ -64,8 +64,8 @@ const CourseAccess = () => {
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
         )
         .then((response) => {
-          setCourses(response?.data);
-          setFilterData(response?.data);
+          setCourses(response?.data || []);
+          setFilterData(response?.data || []);
           setIsLoading(false);
         })
         .catch((error) => {
@@ -77,7 +77,7 @@ const CourseAccess = () => {
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/bundles/organizationId/${userInfo.organizationId}`
         )
         .then((response) => {
-          setBundles(response?.data);
+          setBundles(response?.data || []);
           setIsLoading(false);
         })
         .catch((error) => {
@@ -100,7 +100,7 @@ const CourseAccess = () => {
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/CourseCategory/getCourseCategory/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
-        setCourseCategories(response?.data);
+        setCourseCategories(response?.data || []);
         setIsLoading(false);
       })
       .catch((error) => {
@@ -146,7 +146,8 @@ const CourseAccess = () => {
           console.error(error);
           Loading().close();
         });
-    } else if (stateParams === "allCourses") {
+    } 
+    else if (stateParams === "allCourses") {
       Loading();
       axios
         .get(
@@ -210,7 +211,7 @@ const CourseAccess = () => {
     });
   };
 
-  //console.log(bundles);
+  //console.log(showCourses);
 
   return (
     <div>
@@ -405,7 +406,7 @@ const CourseAccess = () => {
                     : "justify-between gap-x-2"
                 }  gap-y-5`}
               >
-                {showCourses?.map((course, index) => {
+                {showCourses?.length >0 && showCourses?.map((course, index) => {
                   const date = new Date(course?.courseStartingDate);
                   const options = {
                     year: "numeric",
@@ -726,7 +727,7 @@ const CourseAccess = () => {
                     : "justify-between gap-x-2"
                 }  gap-y-5`}
               >
-                {showCourses?.map((course, index) => {
+                {showCourses.length > 0 && showCourses?.map((course, index) => {
                   const date = new Date(course?.bundleStartingDate);
                   const options = {
                     year: "numeric",
