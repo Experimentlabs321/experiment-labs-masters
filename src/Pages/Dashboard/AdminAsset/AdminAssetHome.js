@@ -57,7 +57,8 @@ const AdminAssetHome = () => {
       if (userInfo?.organizationId) {
         try {
           const response = await axios.get(
-            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/students/${userInfo?.organizationId}`
+            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/paidStudentsLimitData/${userInfo?.organizationId}`
+           // `http://localhost:5000/api/v1/users/paidStudentsLimitData/${userInfo?.organizationId}`
           );
           // Ensure response.data is an array before setting state
           setAllUsers(Array.isArray(response?.data) ? response.data : []);
