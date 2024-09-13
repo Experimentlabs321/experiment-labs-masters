@@ -49,8 +49,7 @@ const MentorAssignments = () => {
     }
     setLoading(false);
   }, [userInfo]);
-  console.log(selectedSubmissions);
-  console.log(userInfo.name);
+ 
   useEffect(() => {
     axios
       .get(
@@ -118,20 +117,38 @@ const MentorAssignments = () => {
     };
   }, []);
 
+  // useEffect(() => {
+  //   axios
+  //     .get(
+  //       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
+  //     )
+  //     .then((response) => {
+  //       setCourses(response?.data || []);
+  //       setIsLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //       setIsLoading(false);
+  //     });
+  // }, [userInfo]);
   useEffect(() => {
+    setIsLoading(true); // Set loading to true when the request starts
     axios
       .get(
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
-        setCourses(response?.data || []);
-        setIsLoading(false);
+        // Ensure response data is an array
+        setCourses(Array.isArray(response?.data) ? response.data : []);
+        setIsLoading(false); // Set loading to false after successful request
       })
       .catch((error) => {
         console.error(error);
-        setIsLoading(false);
+        setCourses([]); // Set an empty array in case of error
+        setIsLoading(false); // Set loading to false after error
       });
   }, [userInfo]);
+  
 
   useEffect(() => {
     if (selectedCourse?._id)
@@ -149,32 +166,32 @@ const MentorAssignments = () => {
         });
   }, [selectedCourse]);
 
-  useEffect(() => {
-    axios
-      .get(
-        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/students/${userInfo?.organizationId}`
-      )
-      .then((response) => {
-        setAllMyStudents(response?.data || []);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        setIsLoading(false);
-      });
-  }, [userInfo]);
+  // useEffect(() => {
+  //   axios
+  //     .get(
+  //       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/students/${userInfo?.organizationId}`
+  //     )
+  //     .then((response) => {
+  //       setAllMyStudents(response?.data || []);
+  //       setIsLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //       setIsLoading(false);
+  //     });
+  // }, [userInfo]);
 
   useEffect(() => {
     axios
       .get(
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/mentors/organizationId/${userInfo?.organizationId}/role/execution mentor`
-        // `http://localhost:5000/api/v1/users/mentors/organizationId/${userInfo?.organizationId}/role/execution mentor`
       )
       .then((response) => {
-        setMentors(response?.data || []);
+        setMentors(Array.isArray(response?.data) ? response.data : []); // Ensure it's an array
       })
       .catch((error) => console.error(error));
   }, [userInfo]);
+  
 
   const applyFilters = () => {
     let filtered = assignments;
@@ -372,7 +389,7 @@ const MentorAssignments = () => {
     //     : [...prevState, mentor]
     // );
   };
-  console.log(selectedMentorsForEditOrAssign);
+  
 
   const handleToggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -402,7 +419,7 @@ const MentorAssignments = () => {
     try {
       const response = await axios.post(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/addMultipleResult`, submissionIds);
 
-      console.log(response.data.message === "Result added successfully");
+    //  console.log(response.data.message === "Result added successfully");
       // You can also add logic to handle success, such as displaying a message or updating state
       if(response.data.message === "Result added successfully"){
         toast.success("Results added successfully!");
@@ -430,7 +447,7 @@ const MentorAssignments = () => {
           </div>
         )} */}
         {filteredAssignments.length===0 && (
-          <div className=" flex align-items-center my-5 py-5 mt-24">
+          <div className=" flex align-items-center my-5 py-5 pt-24">
             <CircularProgress className="w-full mx-auto" />
           </div>
         )}

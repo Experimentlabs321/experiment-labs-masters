@@ -8,12 +8,12 @@ import ReactApexChart from 'react-apexcharts';
 
 import { CircularProgress } from '@mui/material';
 
-const ApexChart = ({ selectedFilter, students, setTotalStudents, setTotalEnrolledStudents, fromDate, toDate ,itemDetails}) => {
+const ApexChart = ({ selectedFilter, students, setTotalStudents, setTotalEnrolledStudents, fromDate, toDate ,itemDetails,isLoading}) => {
 
 
   const [chartState, setChartData] = useState();
   ///7 days total vs enrolled students
-  const [isLoading, setIsLoading] = useState(true);
+  //const [isLoading, setIsLoading] = useState(false);
   const [dayArr, setSevenDayArr] = useState([]);
   const [totalStudentsSevenDays, setTotalStudentsSevenDays] = useState([]);
   const [totalSevenDaysDayEnrolled, setTotalSevenDaysDayEnrolled] = useState([]);
@@ -38,6 +38,7 @@ const ApexChart = ({ selectedFilter, students, setTotalStudents, setTotalEnrolle
 
   //////// 7 days for total vs enrolled students
   useEffect(() => {
+  
     if (selectedFilter === "Last 7 Days" && students) {
       const fromDateObj = new Date();
       fromDateObj.setDate(fromDateObj.getDate() - 6);
@@ -73,10 +74,10 @@ const ApexChart = ({ selectedFilter, students, setTotalStudents, setTotalEnrolle
       const totalEnrolledArray = days?.map(day => {
         return students?.filter(student => {
           const studentDate = new Date(student.dateCreated);
-          return studentDate.toDateString() === day.toDateString() && student?.courses && student.courses.length > 0 && student.role === "user";
+          return studentDate.toDateString() === day.toDateString() && student?.courses && student.courses.length > 0 ;
         }).length;
       });
-
+    
 
       const totalEnrolledSum = totalEnrolledArray?.reduce((total, count) => total + count, 0);
 
@@ -84,7 +85,10 @@ const ApexChart = ({ selectedFilter, students, setTotalStudents, setTotalEnrolle
 
       setTotalEnrolledStudents(totalEnrolledSum);
 
-      setIsLoading(false);
+  
+
+     //setIsLoading(false);
+
     }
   }, [students, selectedFilter, setTotalEnrolledStudents, setTotalStudents]);
 
@@ -137,7 +141,7 @@ const ApexChart = ({ selectedFilter, students, setTotalStudents, setTotalEnrolle
       const totalEnrolledArray = days?.map(day => {
         return students.filter(student => {
           const studentDate = new Date(student.dateCreated);
-          return studentDate.toDateString() === day.toDateString() && student?.courses && student.courses.length > 0 && student.role === "user";
+          return studentDate.toDateString() === day.toDateString() && student?.courses && student.courses.length > 0 ;
         }).length;
       });
 
@@ -148,7 +152,7 @@ const ApexChart = ({ selectedFilter, students, setTotalStudents, setTotalEnrolle
 
       setTotalEnrolledStudents(totalEnrolledSum);
 
-      setIsLoading(false);
+     // setIsLoading(false);
     }
   }, [students, selectedFilter, setTotalStudents, setTotalEnrolledStudents]);
 
@@ -198,7 +202,7 @@ const ApexChart = ({ selectedFilter, students, setTotalStudents, setTotalEnrolle
 
         return students?.filter(student => {
           const studentDate = new Date(student.dateCreated);
-          return studentDate >= startDate && studentDate <= endDate && student?.courses && student.courses.length > 0 && student.role === "user";
+          return studentDate >= startDate && studentDate <= endDate && student?.courses && student.courses.length > 0 ;
         }).length;
       });
 
@@ -208,7 +212,7 @@ const ApexChart = ({ selectedFilter, students, setTotalStudents, setTotalEnrolle
 
       setTotalEnrolledStudents(totalEnrolledSum);
 
-      setIsLoading(false);
+    //  setIsLoading(false);
     }
   }, [students, selectedFilter, setTotalStudents, setTotalEnrolledStudents]);
 
@@ -245,7 +249,7 @@ const ApexChart = ({ selectedFilter, students, setTotalStudents, setTotalEnrolle
         totalStudentsSum += totalStudents;
   
         // Total enrolled students for the year
-        const totalEnrolled = yearStudents.filter(student => student.courses && student.courses.length > 0 && student.role === "user").length;
+        const totalEnrolled = yearStudents.filter(student => student.courses && student.courses.length > 0 ).length;
         totalEnrolledByYear.push(totalEnrolled);
         totalEnrolledSum += totalEnrolled;
       });
@@ -257,7 +261,7 @@ const ApexChart = ({ selectedFilter, students, setTotalStudents, setTotalEnrolle
       setTotalStudents(totalStudentsSum);
       setTotalEnrolledStudents(totalEnrolledSum);
   
-      setIsLoading(false);
+     // setIsLoading(false);
     }
   }, [selectedFilter, students, setTotalStudents, setTotalEnrolledStudents]);
   
@@ -274,7 +278,7 @@ const ApexChart = ({ selectedFilter, students, setTotalStudents, setTotalEnrolle
       if (fromDateTime.getTime() > toDateTime.getTime()) {
         // Handle invalid date range
         console.error("Invalid date range!");
-        setIsLoading(false);
+      //  setIsLoading(false);
         return;
       }
 
@@ -316,7 +320,7 @@ const ApexChart = ({ selectedFilter, students, setTotalStudents, setTotalEnrolle
       const totalEnrolledArray = days.map(day => {
         return filteredStudents.filter(student => {
           const studentDate = new Date(student.dateCreated);
-          return studentDate.toDateString() === day.toDateString() && student?.courses && student.courses.length > 0 && student.role === "user";
+          return studentDate.toDateString() === day.toDateString() && student?.courses && student.courses.length > 0;
         }).length;
       });
 
@@ -325,12 +329,13 @@ const ApexChart = ({ selectedFilter, students, setTotalStudents, setTotalEnrolle
       setTotalCustomEnrolled(totalEnrolledArray);
       setTotalEnrolledStudents(totalEnrolledSum);
 
-      setIsLoading(false);
+     // setIsLoading(false);
     }
   }, [students, selectedFilter, fromDate, toDate, setTotalStudents, setTotalEnrolledStudents]);
 
 
   useEffect(() => {
+
     //total students
     let dataValue = dayArr;
     let dataTotalValues = totalStudentsSevenDays;
@@ -470,8 +475,9 @@ const ApexChart = ({ selectedFilter, students, setTotalStudents, setTotalEnrolle
     customDayArr,
     totalStudentsCustom,
     totalCustomEnrolled,
+    itemDetails?.enrolledStudents,
+    itemDetails?.totalStudents
   ]);
-
 
   return (
     <div>
@@ -480,10 +486,10 @@ const ApexChart = ({ selectedFilter, students, setTotalStudents, setTotalEnrolle
         
       </h1>
       {isLoading && (
-        <div className=" flex align-items-center my-5 py-5">
-          <CircularProgress className="w-full mx-auto" />
-        </div>
-      )}
+                <div className=" flex align-items-center my-5 py-5">
+                    <CircularProgress className="w-full mx-auto" />
+                </div>
+            )}
       <div id="chart">
         {chartState && chartState.options && chartState.series && (
           <ReactApexChart

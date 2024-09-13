@@ -50,6 +50,7 @@ const RevenueChart = ({
 
     // 7 days for revenue vs discount
     useEffect(() => {
+
         if (selectedFilter === "Last 7 Days" && paidStudents) {
 
 
@@ -100,6 +101,7 @@ const RevenueChart = ({
             setTotalRevenue(totalRevenueSum);
 
             setIsLoading(false);
+
         }
     }, [selectedFilter, paidStudents, setTotalRevenue]);
 

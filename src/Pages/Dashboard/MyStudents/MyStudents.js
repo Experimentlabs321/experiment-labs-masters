@@ -60,16 +60,31 @@ const MyStudents = () => {
   }, [userInfo]);
   // console.log(itemDetails)
 
+  // useEffect(() => {
+  //   axios
+  //     .get(
+  //       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
+  //     )
+  //     .then((response) => {
+  //       setCourses(response?.data);
+  //     })
+  //     .catch((error) => console.error(error));
+  // }, [userInfo]);
   useEffect(() => {
     axios
       .get(
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
-        setCourses(response?.data);
+        // Ensure response data is an array before setting it
+        setCourses(Array.isArray(response?.data) ? response.data : []);
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error(error);
+        setCourses([]); // Set an empty array in case of error
+      });
   }, [userInfo]);
+  
 
   useEffect(() => {
     if (selectedCourse?._id)
