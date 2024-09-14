@@ -386,7 +386,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
       };
       setParticipationData(sendData?.participantTask);
       const submitCompletion = await axios.post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/Quiz/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/Quiz/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`,
         sendData
       );
       setCount(count + 1);
@@ -416,7 +416,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
       };
       setParticipationData(sendData?.participantTask);
       const submitCompletion = await axios.post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/Quiz/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/Quiz/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`,
         sendData
       );
       setCount(count + 1);
