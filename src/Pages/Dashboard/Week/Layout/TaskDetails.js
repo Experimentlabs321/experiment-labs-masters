@@ -91,7 +91,7 @@ const TaskDetails = () => {
 
     axios
       .get(
-        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/${taskTypeForAPI}/taskId/${id}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/${taskTypeForAPI}/taskId/${id}?email=${user?.email}`
       )
       .then((response) => {
         setTaskData(response?.data);
@@ -99,7 +99,7 @@ const TaskDetails = () => {
       .catch((error) => {
         console.error(error);
       });
-  }, [queryTaskType, id]);
+  }, [queryTaskType, id, user?.email]);
 
   useEffect(() => {
     if (taskData?.chapterId)
