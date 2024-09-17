@@ -1078,6 +1078,7 @@ const ScheduleTask = ({ taskData, week }) => {
                       // );
 
                       console.log("res ", updateResponse?.data);
+                      console.log("taskname ", taskData?.taskName);
                       if (updateResponse?.data?.acknowledged) {
                         const sendMail = await axios.post(
                           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
@@ -1527,6 +1528,7 @@ const ScheduleTask = ({ taskData, week }) => {
                     Loading();
                     if (newZoomSchedule?.data?.uuid) {
                       console.log("zoom schedule ", newZoomSchedule?.data);
+                      const { id, topic, start_time, created_at, join_url, start_url } = newZoomSchedule?.data;
                       const utcTimeStr = newZoomSchedule?.data?.start_time;
                       const timezoneStr = newZoomSchedule?.data?.timezone;
                       const meetingLength = newZoomSchedule?.data?.duration; // Assuming this is in minutes
@@ -1564,7 +1566,7 @@ const ScheduleTask = ({ taskData, week }) => {
                       const formattedDate = moment(
                         meetingStart,
                         "MM/DD/YYYY, hh:mm:ss A"
-                      ).format("YYYY-MM-DD");
+                      ).format("DD-MM-YYYY");
                       const formattedStartTime = moment(
                         meetingStart,
                         "MM/DD/YYYY, hh:mm:ss A"
@@ -1573,7 +1575,7 @@ const ScheduleTask = ({ taskData, week }) => {
                         meetingEnd,
                         "MM/DD/YYYY, hh:mm:ss A"
                       ).format("hh:mm:ss A");
-                      console.log(formattedDate);
+                      console.log("formatted datetime ", formattedDate);
                       console.log(formattedEndTime);
                       try {
                         const newpostData = {
@@ -1601,7 +1603,12 @@ const ScheduleTask = ({ taskData, week }) => {
                           batchName: batchName,
                         };
                         const postingData = {
-                          ...newZoomSchedule?.data,
+                          id, // Zoom meeting ID
+                          topic, // Zoom meeting topic
+                          start_time, // Zoom meeting start time
+                          created_at, // When the Zoom meeting was created
+                          join_url, // URL for participants to join
+                          start_url, // URL for the host to start the meeting
                           summary: `${stdName ? stdName : userInfo?.name
                             } ${calendarSubjectName}`,
                           requester: requesterStd ? requesterStd : user?.email,
@@ -1638,6 +1645,7 @@ const ScheduleTask = ({ taskData, week }) => {
                           );
 
                           console.log("res ", updateResponse);
+                          console.log("taskname ", taskData?.taskName);
                           if (updateResponse?.data?.acknowledged) {
                             const sendMail = await axios.post(
                               `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
@@ -1648,6 +1656,7 @@ const ScheduleTask = ({ taskData, week }) => {
                                 templateType: "emailAction",
                                 templateName: "resheduleTaskStudent",
                                 organizationId: userInfo?.organizationId,
+                                schedule_name: taskData?.scheduleName || taskData?.taskName,
                                 start_time: formattedStartTime,
                                 end_time: formattedEndTime,
                                 learner_name: userInfo?.name,
@@ -1669,7 +1678,7 @@ const ScheduleTask = ({ taskData, week }) => {
                                 to: `${adminMail}`,
                                 templateType: "emailAction",
                                 templateName: "resheduleTask",
-                                schedule_name: taskData?.scheduleName,
+                                schedule_name: taskData?.scheduleName || taskData?.taskName,
                                 organizationId: userInfo?.organizationId,
                                 start_time: formattedStartTime,
                                 end_time: formattedEndTime,
@@ -1958,6 +1967,7 @@ const ScheduleTask = ({ taskData, week }) => {
                   logToDatabase("Zoom schedule created successfully", newZoomSchedule.data);
                   if (newZoomSchedule?.data?.uuid) {
                     console.log("zoom schedule ", newZoomSchedule?.data);
+                    const { id, topic, start_time, created_at, join_url, start_url } = newZoomSchedule?.data;
                     const utcTimeStr = newZoomSchedule?.data?.start_time;
                     const timezoneStr = newZoomSchedule?.data?.timezone;
                     const meetingLength = newZoomSchedule?.data?.duration; // Assuming this is in minutes
@@ -1998,7 +2008,7 @@ const ScheduleTask = ({ taskData, week }) => {
                     const formattedDate = moment(
                       meetingStart,
                       "MM/DD/YYYY, hh:mm:ss A"
-                    ).format("YYYY-MM-DD");
+                    ).format("DD-MM-YYYY");
                     const formattedStartTime = moment(
                       meetingStart,
                       "MM/DD/YYYY, hh:mm:ss A"
@@ -2007,14 +2017,19 @@ const ScheduleTask = ({ taskData, week }) => {
                       meetingEnd,
                       "MM/DD/YYYY, hh:mm:ss A"
                     ).format("hh:mm:ss A");
-                    console.log(formattedDate);
+                    console.log("formattedDate ", formattedDate);
                     console.log(formattedEndTime);
                     try {
                       async function initiate() {
                         try {
                           Loading();
                           const postingData = {
-                            ...newZoomSchedule?.data,
+                            id, // Zoom meeting ID
+                            topic, // Zoom meeting topic
+                            start_time, // Zoom meeting start time
+                            created_at, // When the Zoom meeting was created
+                            join_url, // URL for participants to join
+                            start_url, // URL for the host to start the meeting
                             summary: `${userInfo?.name} ${calendarSubjectName}`,
                             requester: user?.email,
                             studentName: userInfo?.name,
@@ -2129,7 +2144,12 @@ const ScheduleTask = ({ taskData, week }) => {
                                 if (response?.data?.acknowledged) {
                                   logToDatabase("Added data in event collection successfully", { matchObject });
                                   const postData = {
-                                    ...newZoomSchedule?.data,
+                                    id, // Zoom meeting ID
+                                    topic, // Zoom meeting topic
+                                    start_time, // Zoom meeting start time
+                                    created_at, // When the Zoom meeting was created
+                                    join_url, // URL for participants to join
+                                    start_url, // URL for the host to start the meeting
                                     summary: `${userInfo?.name} ${calendarSubjectName}`,
                                     requester: user?.email,
                                     studentName: userInfo?.name,
@@ -2166,6 +2186,7 @@ const ScheduleTask = ({ taskData, week }) => {
                                         templateType: "emailAction",
                                         templateName: "sheduleTaskStudent",
                                         organizationId: userInfo?.organizationId,
+                                        schedule_name: taskData?.scheduleName || taskData?.taskName,
                                         start_time: formattedStartTime,
                                         learner_name: userInfo?.name,
                                         end_time: formattedEndTime,
@@ -2188,7 +2209,7 @@ const ScheduleTask = ({ taskData, week }) => {
                                         to: `${adminMail}`,
                                         templateType: "emailAction",
                                         templateName: "sheduleTask",
-                                        schedule_name: taskData?.scheduleName,
+                                        schedule_name: taskData?.scheduleName || taskData?.taskName,
                                         organizationId: userInfo?.organizationId,
                                         start_time: formattedStartTime,
                                         end_time: formattedEndTime,
