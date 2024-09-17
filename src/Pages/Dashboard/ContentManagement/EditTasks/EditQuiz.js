@@ -133,7 +133,7 @@ const EditQuiz = () => {
     if (submitPermission) {
       await delete updatedQuizObject?._id;
       const newQuiz = await axios.put(
-        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/quizes/taskId/${quizData?._id}`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/quizes/taskId/${id}`,
         updatedQuizObject
       );
       console.log(newQuiz);

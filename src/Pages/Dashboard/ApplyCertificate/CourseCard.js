@@ -14,36 +14,15 @@ const CourseCard = ({ course }) => {
     day: "numeric",
   };
   useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters`)
-      .then((response) => {
-        const currentCourseChapter = response?.data?.filter(
-          (item) => item?.courseId === course?._id
-        );
-        if (currentCourseChapter) {
-          let totalCompleted = 0;
-          let totalTask = 0;
-          currentCourseChapter?.forEach((item) => {
-            item?.tasks?.forEach((singleTask) => {
-              totalTask++;
-              if (singleTask?.participants) {
-                if (
-                  singleTask?.participants?.find(
-                    (item) => item?.participantId === userInfo?._id
-                  )
-                ) {
-                  totalCompleted++;
-                }
-              }
-            });
-          });
-          if (totalCompleted !== 0 && totalTask !== 0)
-            setCompletionPercentage(
-              parseInt((totalCompleted / totalTask) * 100)
-            );
-        }
-      })
-      .catch((error) => console.error(error));
+    if (course?._id && userInfo?._id)
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/courseId/${course?._id}/userId/${userInfo?._id}`
+        )
+        .then((response) => {
+          setCompletionPercentage(response?.data?.completionPercentage);
+        })
+        .catch((error) => console.error(error));
   }, [userInfo, course]);
   return (
     <div className="bg-[#F6F7FF] rounded-[20px] p-[20px] max-w-[340px] shadow-[4px_4px_4px_0px_#0000001a]">
