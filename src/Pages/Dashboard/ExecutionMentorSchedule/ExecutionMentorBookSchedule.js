@@ -1123,14 +1123,14 @@ const ExecutionMentorBookSchedule = ({
             }
             Loading();
             const checkScheduleCalendar = await axios.post(
-              `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/matchEvents`, emailobject
+              `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/matchEvents`, emailobject,{ timeout: 10000 }
             )
             console.log(checkScheduleCalendar?.data?.message);
             if (checkScheduleCalendar?.data?.message === "You can request") {
               Loading();
               const newZoomSchedule = await axios.post(
                 `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/meeting/organizationId/${selectedStudent?.organizationId}`,
-                zoomSchedule
+                zoomSchedule,{ timeout: 10000 }
               );
               if (newZoomSchedule?.data?.uuid) {
                 console.log("zoom schedule ", newZoomSchedule?.data);
@@ -1212,7 +1212,7 @@ const ExecutionMentorBookSchedule = ({
                     console.log({ calendarInfo: InfoCalendar });
                     const newSchedule = await axios.put(
                       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/events`,
-                      { calendarInfo: InfoCalendar }
+                      { calendarInfo: InfoCalendar },{ timeout: 10000 }
                     );
                     console.log("info ", newSchedule);
                     // Step 1: Prepare Google Calendar event data
@@ -1281,7 +1281,7 @@ const ExecutionMentorBookSchedule = ({
                           const response = await axios.post(
                             // `${process.env.REACT_APP_BACKEND_API}/events`,
                             `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events`,
-                            newpostData
+                            newpostData,{ timeout: 10000 }
                           );
                           console.log("event response ", response);
 
@@ -1313,7 +1313,7 @@ const ExecutionMentorBookSchedule = ({
                             // Step 4: Update database with Google Calendar event details
                             const newEvent = await axios.post(
                               `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/${idSchedule}/addEvent`,
-                              postData
+                              postData,{ timeout: 10000 }
                             );
                             console.log("new event ", newEvent);
                             if (newEvent?.data?.acknowledged) {
