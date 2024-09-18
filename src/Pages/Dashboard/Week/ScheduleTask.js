@@ -585,7 +585,7 @@ const ScheduleTask = ({ taskData, week }) => {
     }
     return timeSlots;
   };
-  useEffect(() => { }, [userRequesterEvents]);
+
   // Function to filter out busy time slots
   const filterBusyTimeSlots = (allTimeSlots, busyTimeSlots, reservedEvent) => {
     return allTimeSlots.filter((timeSlot) => {
@@ -1529,7 +1529,7 @@ const ScheduleTask = ({ taskData, week }) => {
                     Loading();
                     if (newZoomSchedule?.data?.uuid || newZoomSchedule.data?.start_time) {
                       console.log("zoom schedule ", newZoomSchedule?.data);
-                      const { id, topic, start_time, created_at, join_url, start_url } = newZoomSchedule?.data;
+                      const { id, topic, start_time, created_at, join_url, start_url,timezone,duration} = newZoomSchedule?.data;
                       const utcTimeStr = newZoomSchedule?.data?.start_time;
                       const timezoneStr = newZoomSchedule?.data?.timezone;
                       const meetingLength = newZoomSchedule?.data?.duration; // Assuming this is in minutes
@@ -1610,6 +1610,8 @@ const ScheduleTask = ({ taskData, week }) => {
                           created_at, // When the Zoom meeting was created
                           join_url, // URL for participants to join
                           start_url, // URL for the host to start the meeting
+                          timezone,
+                          duration,
                           summary: `${stdName ? stdName : userInfo?.name} ${calendarSubjectName}`,
                           requester: requesterStd ? requesterStd : user?.email,
                           studentName: stdName ? stdName : userInfo?.name,
@@ -1637,14 +1639,14 @@ const ScheduleTask = ({ taskData, week }) => {
                           { calendarInfo: InfoCalendar }, { timeout: 10000 }
                         );
                         console.log(newSchedule);
-                        logToDatabase("Data in calendarInfo collection successfully in reschedule", { newSchedule});
+                        logToDatabase("Data in calendarInfo collection successfully in reschedule", { newSchedule });
 
                         if (newSchedule?.data?.success === true) {
                           const updateResponse = await axios.put(
                             `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/${eventDBid}`,
                             newpostData, { timeout: 10000 }
                           );
-                          logToDatabase("Reschedule data in event collection successfully", { updateResponse});
+                          logToDatabase("Reschedule data in event collection successfully", { updateResponse });
                           console.log("res ", updateResponse);
                           console.log("taskname ", taskData?.taskName);
                           if (updateResponse?.data?.acknowledged) {
@@ -1738,8 +1740,7 @@ const ScheduleTask = ({ taskData, week }) => {
                               sendMailAdmin?.data?.success
                             ) {
                               const updatedEvent = {
-                                summary: `${stdName ? stdName : userInfo?.name
-                                  } ${calendarSubjectName}`,
+                                summary: `${stdName ? stdName : userInfo?.name} ${calendarSubjectName}`,
                                 description: `Join Zoom Meeting: ${window.location.origin}/taskDetails/${taskData?._id}?taskType=Schedule`,
                                 location: "", // Zoom meeting link as location
                                 start: {
@@ -1791,7 +1792,7 @@ const ScheduleTask = ({ taskData, week }) => {
                               );
 
                               console.log(newRescheduleEvent);
-                              logToDatabase("Reschedule in schedule collection successfully", { newRescheduleEvent});
+                              logToDatabase("Reschedule in schedule collection successfully", { newRescheduleEvent });
                               // const newSchedule = await axios.post(
                               //   `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/updateOrInsertCalendarInfo/email/${calendarInfo?.email}`,
                               //   calendarInfo
@@ -1970,7 +1971,7 @@ const ScheduleTask = ({ taskData, week }) => {
                   logToDatabase("Zoom schedule created successfully", filteredZoomData);
                   if (newZoomSchedule?.data?.uuid || newZoomSchedule?.data?.start_time) {
                     console.log("zoom schedule ", newZoomSchedule?.data);
-                    const { id, topic, start_time, created_at, join_url, start_url } = newZoomSchedule?.data;
+                    const { id, topic, start_time, created_at, join_url, start_url, timezone, duration } = newZoomSchedule?.data;
                     const utcTimeStr = newZoomSchedule?.data?.start_time;
                     const timezoneStr = newZoomSchedule?.data?.timezone;
                     const meetingLength = newZoomSchedule?.data?.duration; // Assuming this is in minutes
@@ -2032,6 +2033,8 @@ const ScheduleTask = ({ taskData, week }) => {
                           created_at, // When the Zoom meeting was created
                           join_url, // URL for participants to join
                           start_url, // URL for the host to start the meeting
+                          timezone,
+                          duration,
                           summary: `${userInfo?.name} ${calendarSubjectName}`,
                           requester: user?.email,
                           studentName: userInfo?.name,
@@ -2059,7 +2062,7 @@ const ScheduleTask = ({ taskData, week }) => {
                           { timeout: 10000 }
                         );
                         console.log("info ", newSchedule);
-                        logToDatabase("Data in calendarInfo collection successfully", { newSchedule});
+                        logToDatabase("Data in calendarInfo collection successfully", { newSchedule });
                         // Step 1: Prepare Google Calendar event data
                         const event = {
                           summary: `${userInfo?.name} ${calendarSubjectName}`,
@@ -2153,6 +2156,8 @@ const ScheduleTask = ({ taskData, week }) => {
                                   created_at, // When the Zoom meeting was created
                                   join_url, // URL for participants to join
                                   start_url, // URL for the host to start the meeting
+                                  timezone,
+                                  duration,
                                   summary: `${userInfo?.name} ${calendarSubjectName}`,
                                   requester: user?.email,
                                   studentName: userInfo?.name,
@@ -2433,20 +2438,21 @@ const ScheduleTask = ({ taskData, week }) => {
     // Convert start date to local time in the specified timezone
     const options = {
       timeZone: timezoneStr,
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
+      day: "2-digit",     // Day comes first
+      month: "2-digit",   // Then month
+      year: "numeric",    // Then year
       hour: "2-digit",
       minute: "2-digit",
       second: "2-digit",
+      hour12: true        // Optional: this will format the time in 12-hour format
     };
-    const meetingStart = startDate.toLocaleString(undefined, options);
+    const meetingStart = startDate.toLocaleString('en-GB', options);
     console.log(meetingStart);
     // Calculate end date by adding the duration to the start date
     const endDate = new Date(startDate.getTime() + meetingLength * 60000); // 60000 ms in a minute
 
     // Convert end date to local time in the specified timezone
-    const meetingEnd = endDate.toLocaleString(undefined, options);
+    const meetingEnd = endDate.toLocaleString('en-GB', options);
     if (currentDateTime > meetingEndTime && type === "start") {
       return "The meeting has already happened.";
     } else if (currentDateTime < meetingEndTime && type === "start") {
