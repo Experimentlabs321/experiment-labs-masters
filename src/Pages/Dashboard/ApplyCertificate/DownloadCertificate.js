@@ -105,10 +105,13 @@ const DownloadCertificate = () => {
 
   useEffect(() => {
     Loading();
+    const batchId = userInfo?.courses?.find(
+      (item) => item?.courseId === courseId
+    )?.batchId;
     if (courseId && userInfo?._id)
       axios
         .get(
-          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/courseId/${courseId}/userId/${userInfo?._id}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/courseId/${courseId}/batchId/${batchId}/userId/${userInfo?._id}`
         )
         .then((response) => {
           setCompletionPercentage(response?.data?.completionPercentage);
