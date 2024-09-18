@@ -14,10 +14,13 @@ const CourseCard = ({ course }) => {
     day: "numeric",
   };
   useEffect(() => {
+    const batchId = userInfo?.courses?.find(
+      (item) => item?.courseId === course?._id
+    )?.batchId;
     if (course?._id && userInfo?._id)
       axios
         .get(
-          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/courseId/${course?._id}/userId/${userInfo?._id}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/courseId/${course?._id}/batchId/${batchId}/userId/${userInfo?._id}`
         )
         .then((response) => {
           setCompletionPercentage(response?.data?.completionPercentage);
