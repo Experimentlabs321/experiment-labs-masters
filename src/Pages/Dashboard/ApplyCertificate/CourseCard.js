@@ -13,6 +13,7 @@ const CourseCard = ({ course }) => {
     month: "long",
     day: "numeric",
   };
+  // fetch completion percentage
   useEffect(() => {
     const batchId = userInfo?.courses?.find(
       (item) => item?.courseId === course?._id
