@@ -1123,18 +1123,18 @@ const ExecutionMentorBookSchedule = ({
             }
             Loading();
             const checkScheduleCalendar = await axios.post(
-              `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/matchEvents`, emailobject,{ timeout: 10000 }
+              `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/matchEvents`, emailobject, { timeout: 10000 }
             )
             console.log(checkScheduleCalendar?.data?.message);
             if (checkScheduleCalendar?.data?.message === "You can request") {
               Loading();
               const newZoomSchedule = await axios.post(
                 `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/meeting/organizationId/${selectedStudent?.organizationId}`,
-                zoomSchedule,{ timeout: 10000 }
+                zoomSchedule, { timeout: 10000 }
               );
               if (newZoomSchedule?.data?.uuid) {
                 console.log("zoom schedule ", newZoomSchedule?.data);
-                const { id, topic, start_time, created_at, join_url, start_url } = newZoomSchedule?.data;
+                const { id, topic, start_time, created_at, join_url, start_url, timezone, duration } = newZoomSchedule?.data;
 
                 const utcTimeStr = newZoomSchedule?.data?.start_time;
                 const timezoneStr = newZoomSchedule?.data?.timezone;
@@ -1191,6 +1191,8 @@ const ExecutionMentorBookSchedule = ({
                       created_at, // When the Zoom meeting was created
                       join_url, // URL for participants to join
                       start_url, // URL for the host to start the meeting
+                      timezone,
+                      duration,
                       summary: `${selectedStudent?.name} ${calendarSubjectName}`,
                       requester: selectedStudent?.email,
                       studentName: selectedStudent?.name,
@@ -1212,7 +1214,7 @@ const ExecutionMentorBookSchedule = ({
                     console.log({ calendarInfo: InfoCalendar });
                     const newSchedule = await axios.put(
                       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/events`,
-                      { calendarInfo: InfoCalendar },{ timeout: 10000 }
+                      { calendarInfo: InfoCalendar }, { timeout: 10000 }
                     );
                     console.log("info ", newSchedule);
                     // Step 1: Prepare Google Calendar event data
@@ -1281,7 +1283,7 @@ const ExecutionMentorBookSchedule = ({
                           const response = await axios.post(
                             // `${process.env.REACT_APP_BACKEND_API}/events`,
                             `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events`,
-                            newpostData,{ timeout: 10000 }
+                            newpostData, { timeout: 10000 }
                           );
                           console.log("event response ", response);
 
@@ -1293,6 +1295,8 @@ const ExecutionMentorBookSchedule = ({
                               created_at, // When the Zoom meeting was created
                               join_url, // URL for participants to join
                               start_url, // URL for the host to start the meeting
+                              timezone,
+                              duration,
                               summary: `${selectedStudent?.name} ${calendarSubjectName}`,
                               requester: selectedStudent?.email,
                               studentName: selectedStudent?.name,
@@ -1313,7 +1317,7 @@ const ExecutionMentorBookSchedule = ({
                             // Step 4: Update database with Google Calendar event details
                             const newEvent = await axios.post(
                               `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/${idSchedule}/addEvent`,
-                              postData,{ timeout: 10000 }
+                              postData, { timeout: 10000 }
                             );
                             console.log("new event ", newEvent);
                             if (newEvent?.data?.acknowledged) {
