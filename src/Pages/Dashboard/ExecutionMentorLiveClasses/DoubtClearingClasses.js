@@ -32,7 +32,7 @@ const DoubtClearingClasses = () => {
       )
       .then((response) => {
         Loading().close();
-
+//console.log(response?.data)
         setUserRequesterEvents(response?.data);
         setEvents(response?.data);
         const currentDate = new Date(getCurrentDate()).getTime();
@@ -137,6 +137,8 @@ const DoubtClearingClasses = () => {
   const filteredEvents = userRequesterEvents.filter(
     (event) => event?._id !== excludedEventId
   );
+ 
+
 
   function getEditedEvents(events) {
     return events.sort((a, b) => {
@@ -168,7 +170,7 @@ const DoubtClearingClasses = () => {
     setStudentOpen(true);
     setEventDetails(event)
 
-    console.log(event)
+   
    // setSelectedBatchId(id);
    // setParticipants(participants);
    // setClassId(classId);
@@ -309,6 +311,7 @@ const DoubtClearingClasses = () => {
               event.start_time || event.start.dateTime || event.start
             );
             const timeLeft = getTimeLeft(eventStartTime);
+            
             return (
               <div
                 className="p-5"

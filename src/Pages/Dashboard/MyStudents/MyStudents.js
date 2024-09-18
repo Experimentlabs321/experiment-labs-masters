@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import AddStudent from "../AddStudent/AddStudent";
 import Loading from "../../Shared/Loading/Loading";
 import toast from "react-hot-toast";
+import { Box, LinearProgress } from "@mui/material";
 
 const MyStudents = () => {
   const { paidStudents } = useParams();
@@ -29,6 +30,16 @@ const MyStudents = () => {
     selectedExecutionMentorsForEditOrAssign,
     setSelectedExecutionMentorsForEditOrAssign,
   ] = useState([]);
+  const [currentPaginationPage, setCurrentPaginationPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [enteredSearchQuery, setEnteredSearchQuery] = useState("");
+  const [paginationPages, setPaginationPages] = useState([]);
+
+  const handlePageChange = (newPage) => {
+    if (newPage > 0 && newPage <= totalPages) {
+      setCurrentPaginationPage(newPage);
+    }
+  };
 
   useEffect(() => {
     if (userInfo) {
@@ -49,16 +60,31 @@ const MyStudents = () => {
   }, [userInfo]);
   // console.log(itemDetails)
 
+  // useEffect(() => {
+  //   axios
+  //     .get(
+  //       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
+  //     )
+  //     .then((response) => {
+  //       setCourses(response?.data);
+  //     })
+  //     .catch((error) => console.error(error));
+  // }, [userInfo]);
   useEffect(() => {
     axios
       .get(
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
-        setCourses(response?.data);
+        // Ensure response data is an array before setting it
+        setCourses(Array.isArray(response?.data) ? response.data : []);
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error(error);
+        setCourses([]); // Set an empty array in case of error
+      });
   }, [userInfo]);
+  
 
   useEffect(() => {
     if (selectedCourse?._id)
@@ -95,26 +121,75 @@ const MyStudents = () => {
   }, []);
 
   useEffect(() => {
+    setLoading(true);
     axios
       .get(
-        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/students/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v2/users/students/${
+          userInfo?.organizationId
+        }?page=${currentPaginationPage}&search=${enteredSearchQuery}&course=${
+          selectedCourse?._id || ""
+        }&batch=${selectedBatch?._id || ""}&status=${
+          selectedValidationStatus || ""
+        }`
+        // `http://localhost:5000/api/v1/users/students/${
+        //   userInfo?.organizationId
+        // }?page=${currentPaginationPage}&search=${enteredSearchQuery}&course=${
+        //   selectedCourse?._id || ""
+        // }&batch=${selectedBatch?._id || ""}&status=${
+        //   selectedValidationStatus || ""
+        // }`
       )
       .then((response) => {
-        response?.data.reverse();
+        console.log(response);
+        // response?.data?.students.reverse();
+        setProgress(100);
         if (paidStudents) {
-          const paidStudents = response?.data?.filter(
+          const paidStudents = response?.data?.students?.filter(
             (student) => student?.courses && student?.courses[0]
           );
           console.log(paidStudents);
           setAllMyStudents(paidStudents);
           setFilteredStudents(paidStudents);
+          setTotalPages(response?.data?.totalPages);
         } else {
-          setAllMyStudents(response?.data);
-          setFilteredStudents(response?.data);
+          setAllMyStudents(response?.data?.students);
+          setFilteredStudents(response?.data?.students);
+          setTotalPages(response?.data?.totalPages);
         }
+        setLoading(false);
       })
-      .catch((error) => console.error(error));
-  }, [userInfo, paidStudents]);
+      .catch((error) => {
+        console.error(error);
+        setProgress(100);
+        setLoading(false);
+      });
+  }, [userInfo, paidStudents, currentPaginationPage]);
+
+  const handleSearch = async (e) => {
+    const searchQuery = e.target.value;
+    setEnteredSearchQuery(e.target.value);
+
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v2/users/students/${
+          userInfo?.organizationId
+        }?search=${searchQuery}&course=${selectedCourse?._id || ""}&batch=${
+          selectedBatch?._id || ""
+        }&status=${selectedValidationStatus || ""}`
+      );
+      setProgress(100);
+      const data = await response.json();
+      console.log(data);
+      setFilteredStudents(data.students);
+      setTotalPages(data?.totalPages);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching filtered students:", error);
+      setProgress(100);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     axios
@@ -129,60 +204,20 @@ const MyStudents = () => {
   }, [userInfo]);
 
   const applyFilters = async (topic, batch, status) => {
-    let filtered = allMyStudents;
-    console.log(topic, batch, status);
-
-    // Apply course filter
-    if (topic?._id) {
-      filtered = await filtered.filter((student) =>
-        student.courses?.find((course) => course?.courseId === topic?._id)
-      );
-    }
-    console.log(filtered);
-
-    // Apply batch filter
-    if (batch?._id) {
-      filtered = await filtered.filter((student) =>
-        student.courses?.find((b) => b?.batchId === batch._id)
-      );
-    }
-
-    // Apply validation filter
-    if (status) {
-      if (status === "Paid") {
-        filtered = await filtered.filter(
-          (item) => item?.courses && item?.courses[0]
-        );
-      } else if (status === "Unpaid") {
-        filtered = await filtered.filter(
-          (item) => !item?.courses || !item?.courses[0]
-        );
-      } else if (status === "Expired") {
-        filtered = await filtered.filter(
-          (item) => item?.courses && item?.courses[0]
-        );
-        filtered = await filtered.filter((item) => {
-          let flag = false;
-          item?.courses?.map((course) => {
-            if (course?.enrollDate) {
-              const actualCourse = courses?.find(
-                (i) => i?._id === course?.courseId
-              );
-              if (
-                parseInt(actualCourse?.expirationDay) -
-                  daysDifferenceFromEnrolled(course?.enrollDate) <
-                0
-              ) {
-                flag = true;
-              }
-            }
-          });
-          return flag;
-        });
-      }
-    }
-
-    setFilteredStudents(filtered);
+    setLoading(true);
+    const response = await fetch(
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v2/users/students/${
+        userInfo?.organizationId
+      }?course=${topic?._id || ""}&batch=${batch?._id || ""}&status=${
+        status || ""
+      }`
+    );
+    const data = await response.json();
+    setProgress(100);
+    setFilteredStudents(data.students);
+    setTotalPages(data.totalPages);
+    setCurrentPaginationPage(data.currentPage);
+    setLoading(false);
   };
   const formateDate = (dateCreated) => {
     const date = new Date(dateCreated);
@@ -265,6 +300,59 @@ const MyStudents = () => {
     Loading().close();
   };
 
+  const [progress, setProgress] = React.useState(0);
+
+  useEffect(() => {
+    if (loading) {
+      const timer = setInterval(() => {
+        if (loading)
+          setProgress((oldProgress) => {
+            if (oldProgress === 100) {
+              return 0;
+            }
+            const diff = Math.random() * 10;
+            return Math.min(oldProgress + diff, 100);
+          });
+      }, 500);
+
+      return () => {
+        clearInterval(timer);
+      };
+    }
+  }, [loading, progress]);
+
+  const getPaginationPages = () => {
+    const pages = [];
+    const maxPagesToShow = 4;
+
+    if (totalPages <= maxPagesToShow) {
+      // Show all pages if the total is less than or equal to maxPagesToShow
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      // Show first two, current page, and last two
+      const startPages = [1, 2];
+      const endPages = [totalPages - 1, totalPages];
+
+      if (currentPaginationPage <= 2) {
+        pages.push(...startPages, "...", ...endPages);
+      } else if (currentPaginationPage >= totalPages - 1) {
+        pages.push(...startPages, "...", ...endPages);
+      } else {
+        pages.push(1, "...", currentPaginationPage, "...", totalPages);
+      }
+    }
+
+    return pages;
+  };
+
+  useEffect(() => {
+    setPaginationPages(getPaginationPages());
+  }, [totalPages, currentPaginationPage]);
+
+  // const paginationPages = getPaginationPages();
+
   return (
     <div>
       <Layout>
@@ -305,22 +393,9 @@ const MyStudents = () => {
               <div>
                 <div>
                   <input
-                    onChange={(e) => {
-                      setFilteredStudents(
-                        allMyStudents?.filter((student) => {
-                          return Object.keys(student).some((key) =>
-                            student[key]
-                              ?.toString()
-                              .toLowerCase()
-                              .includes(e.target.value.toString().toLowerCase())
-                          );
-                        })
-                      );
-                    }}
+                    onChange={handleSearch}
                     name="Search"
-                    placeholder={
-                      itemDetails?.search ? itemDetails?.search : "Search"
-                    }
+                    placeholder="Search"
                     className="block w-full px-4 py-2 mt-2 rounded-md border bg-white border-[#B7B7B7] focus:border-blue-500 focus:outline-none focus:ring"
                   />
                 </div>
@@ -416,230 +491,336 @@ const MyStudents = () => {
                   </button> */}
                 </div>
               </div>
-              <div
-                style={{
-                  maxWidth: `${
-                    window.innerWidth - (window.innerWidth > 1024 ? 370 : 40)
-                  }px`,
-                }}
-                // style={{ height: "70vh" }}
-                className="overflow-x-auto h-[60vh] overscroll-y-auto"
-              >
-                <table className=" min-w-full font-sans bg-white border border-gray-300">
-                  <thead className="bg-gray-800 text-white sticky top-0">
-                    <tr>
-                      <th className="py-3 px-6 border-b text-left">
-                        {itemDetails?.name ? itemDetails?.name : "Name"}
-                      </th>
-                      <th className="py-3 px-6 border-b text-left">
-                        {itemDetails?.email ? itemDetails?.email : "Email"}
-                      </th>
-                      <th className="py-3 px-6 border-b text-left">
-                        {itemDetails?.phone ? itemDetails?.phone : "Phone"}
-                      </th>
-                      <th className="py-3 px-6 border-b text-left">
-                        {itemDetails?.joiningDate
-                          ? itemDetails?.joiningDate
-                          : "Joining Date"}
-                      </th>
-                      <th className="py-3 px-6 border-b text-left">
-                        {itemDetails?.paidOrUnpaid
-                          ? itemDetails?.paidOrUnpaid
-                          : "Paid/Unpaid"}
-                      </th>
-                      <th className="py-3 px-6 border-b text-left">
-                        Assign Mentor
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredStudents &&
-                      filteredStudents[0] &&
-                      filteredStudents?.reverse()?.map((student, index) => {
-                        const formattedDate = new Date(
-                          student?.dateCreated
-                        )?.toLocaleDateString();
+              {loading && filteredStudents?.length === 0 && (
+                <div className=" flex justify-center  w-full  ">
+                  <div className="flex flex-col items-center gap-3">
+                    <p className="mt-20">Loading...</p>
+                    <Box sx={{ width: "500px" }}>
+                      <LinearProgress
+                        sx={{ height: "20px", borderRadius: "10px" }}
+                        variant="determinate"
+                        value={progress}
+                      />
+                    </Box>
+                  </div>
 
-                        return (
-                          <tr
-                            key={student?._id}
-                            className={
-                              index % 2 === 0 ? "bg-gray-100" : "bg-gray-50"
-                            }
-                          >
-                            <td className="py-4 px-6 border-b text-left">
-                              <Link to={`/profile/${student?.email}`}>
-                                {student?.name}
-                              </Link>
-                            </td>
-                            <td className="py-4 px-6 border-b text-left">
-                              <Link to={`/profile/${student?.email}`}>
-                                {student?.email}
-                              </Link>
-                            </td>
-                            <td className="py-4 px-6 border-b text-left">
-                              <Link to={`/profile/${student?.email}`}>
-                                {student?.phone}
-                              </Link>
-                            </td>
-                            <td className="py-4 px-6 border-b text-left">
-                              <Link to={`/profile/${student?.email}`}>
-                                {formattedDate}
-                              </Link>
-                            </td>
-                            <td className="py-4 px-6 border-b text-left">
-                              {parseInt(selectedCourse?.expirationDay) -
-                                daysDifferenceFromEnrolled(
-                                  student?.courses?.find(
-                                    (item) =>
-                                      item?.courseId === selectedCourse?._id
-                                  )?.enrollDate
-                                ) <
-                                0 ||
-                              (!selectedCourse?._id &&
-                                selectedValidationStatus === "Expired") ? (
+                  {/* <CircularProgress className="w-full mx-auto" /> */}
+                </div>
+              )}
+              {filteredStudents[0] && (
+                <div
+                  style={{
+                    maxWidth: `${
+                      window.innerWidth - (window.innerWidth > 1024 ? 370 : 40)
+                    }px`,
+                  }}
+                  // style={{ height: "70vh" }}
+                  className="overflow-x-auto h-[60vh] overscroll-y-auto"
+                >
+                  <table className=" min-w-full font-sans bg-white border border-gray-300">
+                    <thead className="bg-gray-800 text-white sticky top-0">
+                      <tr>
+                        <th className="py-3 px-6 border-b text-left">
+                          {itemDetails?.name ? itemDetails?.name : "Name"}
+                        </th>
+                        <th className="py-3 px-6 border-b text-left">
+                          {itemDetails?.email ? itemDetails?.email : "Email"}
+                        </th>
+                        <th className="py-3 px-6 border-b text-left">
+                          {itemDetails?.phone ? itemDetails?.phone : "Phone"}
+                        </th>
+                        <th className="py-3 px-6 border-b text-left">
+                          {itemDetails?.joiningDate
+                            ? itemDetails?.joiningDate
+                            : "Joining Date"}
+                        </th>
+                        <th className="py-3 px-6 border-b text-left">
+                          {itemDetails?.paidOrUnpaid
+                            ? itemDetails?.paidOrUnpaid
+                            : "Paid/Unpaid"}
+                        </th>
+                        <th className="py-3 px-6 border-b text-left">
+                          Assign Mentor
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredStudents &&
+                        !loading &&
+                        filteredStudents[0] &&
+                        filteredStudents?.map((student, index) => {
+                          const formattedDate = new Date(
+                            student?.dateCreated
+                          )?.toLocaleDateString();
+
+                          return (
+                            <tr
+                              key={student?._id}
+                              className={
+                                index % 2 === 0 ? "bg-gray-100" : "bg-gray-50"
+                              }
+                            >
+                              <td className="py-4 px-6 border-b text-left">
                                 <Link to={`/profile/${student?.email}`}>
-                                  <span className="text-orange-600 font-semibold">
-                                    &#9888;{" "}
-                                    {itemDetails?.expired
-                                      ? itemDetails?.expired
-                                      : "Expired"}
-                                  </span>
+                                  {student?.name}
                                 </Link>
-                              ) : (
+                              </td>
+                              <td className="py-4 px-6 border-b text-left">
                                 <Link to={`/profile/${student?.email}`}>
-                                  {student?.courses && student?.courses[0] ? (
-                                    <span className="text-green font-semibold">
-                                      &#x2713;{" "}
-                                      {itemDetails?.paid
-                                        ? itemDetails?.paid
-                                        : "Paid"}
-                                    </span>
-                                  ) : (
-                                    <span className="text-red-600 font-semibold">
-                                      &#x2717;{" "}
-                                      {itemDetails?.unpaid
-                                        ? itemDetails?.unpaid
-                                        : "Unpaid"}
-                                    </span>
-                                  )}
+                                  {student?.email}
                                 </Link>
-                              )}
-                            </td>
-                            <td className="py-4 px-6 border-b text-left">
-                              <div className=" flex gap-1">
-                                <div>
-                                  {editOrAssignExecutionMentor?._id !==
-                                    student?._id && (
-                                    <div className="flex gap-1">
-                                      <div
-                                        className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] p-2 cursor-pointer"
-                                        // onClick={handleToggleDropdown}
-                                      >
-                                        {student?.executionMentors?.length >
-                                        0 ? (
-                                          student?.executionMentors?.map(
-                                            (mentor, idx) => (
-                                              <span className=" whitespace-nowrap">
-                                                {student?.executionMentors
-                                                  ?.length >
-                                                idx + 1
-                                                  ? `${
-                                                      executionMentors?.find(
+                              </td>
+                              <td className="py-4 px-6 border-b text-left">
+                                <Link to={`/profile/${student?.email}`}>
+                                  {student?.phone}
+                                </Link>
+                              </td>
+                              <td className="py-4 px-6 border-b text-left">
+                                <Link to={`/profile/${student?.email}`}>
+                                  {formattedDate}
+                                </Link>
+                              </td>
+                              <td className="py-4 px-6 border-b text-left">
+                                {parseInt(selectedCourse?.expirationDay) -
+                                  daysDifferenceFromEnrolled(
+                                    student?.courses?.find(
+                                      (item) =>
+                                        item?.courseId === selectedCourse?._id
+                                    )?.enrollDate
+                                  ) <
+                                  0 ||
+                                (!selectedCourse?._id &&
+                                  selectedValidationStatus === "Expired") ? (
+                                  <Link to={`/profile/${student?.email}`}>
+                                    <span className="text-orange-600 font-semibold">
+                                      &#9888;{" "}
+                                      {itemDetails?.expired
+                                        ? itemDetails?.expired
+                                        : "Expired"}
+                                    </span>
+                                  </Link>
+                                ) : (
+                                  <Link to={`/profile/${student?.email}`}>
+                                    {student?.courses && student?.courses[0] ? (
+                                      <span className="text-green font-semibold">
+                                        &#x2713;{" "}
+                                        {itemDetails?.paid
+                                          ? itemDetails?.paid
+                                          : "Paid"}
+                                      </span>
+                                    ) : (
+                                      <span className="text-red-600 font-semibold">
+                                        &#x2717;{" "}
+                                        {itemDetails?.unpaid
+                                          ? itemDetails?.unpaid
+                                          : "Unpaid"}
+                                      </span>
+                                    )}
+                                  </Link>
+                                )}
+                              </td>
+                              <td className="py-4 px-6 border-b text-left">
+                                <div className=" flex gap-1">
+                                  <div>
+                                    {editOrAssignExecutionMentor?._id !==
+                                      student?._id && (
+                                      <div className="flex gap-1">
+                                        <div
+                                          className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] p-2 cursor-pointer"
+                                          // onClick={handleToggleDropdown}
+                                        >
+                                          {student?.executionMentors?.length >
+                                          0 ? (
+                                            student?.executionMentors?.map(
+                                              (mentor, idx) => (
+                                                <span className=" whitespace-nowrap">
+                                                  {student?.executionMentors
+                                                    ?.length >
+                                                  idx + 1
+                                                    ? `${
+                                                        executionMentors?.find(
+                                                          (item) =>
+                                                            item?.email ===
+                                                            mentor?.mentorEmail
+                                                        )?.name
+                                                      }, `
+                                                    : executionMentors?.find(
                                                         (item) =>
                                                           item?.email ===
                                                           mentor?.mentorEmail
-                                                      )?.name
-                                                    }, `
-                                                  : executionMentors?.find(
-                                                      (item) =>
-                                                        item?.email ===
-                                                        mentor?.mentorEmail
-                                                    )?.name}
-                                              </span>
+                                                      )?.name}
+                                                </span>
+                                              )
                                             )
-                                          )
-                                        ) : (
-                                          <span className=" whitespace-nowrap">
-                                            Mentor not assigned!
-                                          </span>
+                                          ) : (
+                                            <span className=" whitespace-nowrap">
+                                              Mentor not assigned!
+                                            </span>
+                                          )}
+                                        </div>
+                                        {userInfo?.role === "admin" && (
+                                          <button
+                                            onClick={() => {
+                                              setEditOrAssignExecutionMentor(
+                                                student
+                                              );
+                                              setSelectedExecutionMentorsForEditOrAssign(
+                                                student?.executionMentors
+                                                  ? student?.executionMentors
+                                                  : []
+                                              );
+                                            }}
+                                            className="px-3 py-1 bg-blue text-white rounded"
+                                          >
+                                            Edit
+                                          </button>
                                         )}
                                       </div>
-                                      {userInfo?.role === "admin" && (
-                                        <button
-                                          onClick={() => {
-                                            setEditOrAssignExecutionMentor(
-                                              student
-                                            );
-                                            setSelectedExecutionMentorsForEditOrAssign(
-                                              student?.executionMentors
-                                                ? student?.executionMentors
-                                                : []
-                                            );
-                                          }}
-                                          className="px-3 py-1 bg-blue text-white rounded"
-                                        >
-                                          Edit
-                                        </button>
-                                      )}
-                                    </div>
-                                  )}
-                                  {editOrAssignExecutionMentor?._id ===
-                                    student?._id &&
-                                    userInfo?.role === "admin" && (
-                                      <div className="flex gap-1 items-end">
-                                        <div className=" w-full rounded-md shadow-lg bg-white">
-                                          <ul className="max-h-48 overflow-auto rounded-md py-1 text-base leading-6 shadow-xs focus:outline-none sm:text-sm sm:leading-5 ">
-                                            {executionMentors?.map(
-                                              (mentor, idx) => (
-                                                <li
-                                                  key={mentor?._id + idx}
-                                                  className="flex items-center p-2"
-                                                >
-                                                  <input
-                                                    type="radio"
-                                                    checked={
-                                                      selectedExecutionMentorsForEditOrAssign[0]
-                                                        ?.mentorId ===
-                                                      mentor?._id
-                                                    }
-                                                    onChange={(e) =>
-                                                      handleExecutionMentorSelectChange(
-                                                        mentor,
-                                                        e
-                                                      )
-                                                    }
-                                                    className="form-checkbox h-5 w-5 text-indigo-600 transition duration-150 ease-in-out"
-                                                  />
-                                                  <span className="ml-2 whitespace-nowrap text-gray-700">
-                                                    {mentor?.name}
-                                                  </span>
-                                                </li>
-                                              )
-                                            )}
-                                          </ul>
-                                        </div>
-                                        <button
-                                          onClick={() =>
-                                            handleAddOrUpdateMentor(
-                                              student?._id,
-                                              index
-                                            )
-                                          }
-                                          className="px-3 py-1 bg-blue text-white rounded"
-                                        >
-                                          Save
-                                        </button>
-                                      </div>
                                     )}
+                                    {editOrAssignExecutionMentor?._id ===
+                                      student?._id &&
+                                      userInfo?.role === "admin" && (
+                                        <div className="flex gap-1 items-end">
+                                          <div className=" w-full rounded-md shadow-lg bg-white">
+                                            <ul className="max-h-48 overflow-auto rounded-md py-1 text-base leading-6 shadow-xs focus:outline-none sm:text-sm sm:leading-5 ">
+                                              {executionMentors?.map(
+                                                (mentor, idx) => (
+                                                  <li
+                                                    key={mentor?._id + idx}
+                                                    className="flex items-center p-2"
+                                                  >
+                                                    <input
+                                                      type="radio"
+                                                      checked={
+                                                        selectedExecutionMentorsForEditOrAssign[0]
+                                                          ?.mentorId ===
+                                                        mentor?._id
+                                                      }
+                                                      onChange={(e) =>
+                                                        handleExecutionMentorSelectChange(
+                                                          mentor,
+                                                          e
+                                                        )
+                                                      }
+                                                      className="form-checkbox h-5 w-5 text-indigo-600 transition duration-150 ease-in-out"
+                                                    />
+                                                    <span className="ml-2 whitespace-nowrap text-gray-700">
+                                                      {mentor?.name}
+                                                    </span>
+                                                  </li>
+                                                )
+                                              )}
+                                            </ul>
+                                          </div>
+                                          <button
+                                            onClick={() =>
+                                              handleAddOrUpdateMentor(
+                                                student?._id,
+                                                index
+                                              )
+                                            }
+                                            className="px-3 py-1 bg-blue text-white rounded"
+                                          >
+                                            Save
+                                          </button>
+                                        </div>
+                                      )}
+                                  </div>
                                 </div>
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                  </tbody>
-                </table>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                    </tbody>
+                  </table>
+                  {loading && (
+                    <div className=" flex justify-center  w-full  ">
+                      <div className="flex flex-col items-center gap-3">
+                        <p className="mt-20">Loading...</p>
+                        <Box sx={{ width: "500px" }}>
+                          <LinearProgress
+                            sx={{ height: "20px", borderRadius: "10px" }}
+                            variant="determinate"
+                            value={progress}
+                          />
+                        </Box>
+                      </div>
+
+                      {/* <CircularProgress className="w-full mx-auto" /> */}
+                    </div>
+                  )}
+                </div>
+              )}
+              <div class="flex items-center justify-between border-t border-gray-200 bg-white py-3">
+                <div class="">
+                  <div>
+                    <nav
+                      className="isolate inline-flex -space-x-px rounded-md shadow-sm"
+                      aria-label="Pagination"
+                    >
+                      <button
+                        onClick={() =>
+                          handlePageChange(currentPaginationPage - 1)
+                        }
+                        className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                        disabled={currentPaginationPage === 1}
+                      >
+                        <span className="sr-only">Previous</span>
+                        <svg
+                          className="h-5 w-5"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </button>
+
+                      {paginationPages.map((page, index) => (
+                        <button
+                          key={index}
+                          onClick={() =>
+                            typeof page === "number" && handlePageChange(page)
+                          }
+                          className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold ${
+                            page === currentPaginationPage
+                              ? "bg-indigo-600 text-white"
+                              : "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                          } focus:z-20 focus:outline-offset-0 font-sans`}
+                          disabled={typeof page !== "number"}
+                        >
+                          {page}
+                        </button>
+                      ))}
+
+                      <button
+                        onClick={() =>
+                          handlePageChange(currentPaginationPage + 1)
+                        }
+                        className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                        disabled={currentPaginationPage === totalPages}
+                      >
+                        <span className="sr-only">Next</span>
+                        <svg
+                          className="h-5 w-5"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </button>
+                    </nav>
+                  </div>
+                </div>
               </div>
             </>
           ) : (

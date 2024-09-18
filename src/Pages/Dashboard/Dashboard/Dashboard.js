@@ -149,20 +149,36 @@ const Dashboard = () => {
       });
   }, [userInfo]);
 
+  // useEffect(() => {
+  //   axios
+  //     .get(
+  //       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/weeks/courseId/${selectedCourse?._id}`
+  //     )
+  //     .then((response) => {
+  //       setWeeks(response?.data || []);
+  //       setIsLoading(false)
+  //     })
+  //     .catch((error) => {
+  //       console.error(error)
+  //       setIsLoading(false)
+  //     });
+  // }, [selectedCourse]);
   useEffect(() => {
     axios
       .get(
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/weeks/courseId/${selectedCourse?._id}`
       )
       .then((response) => {
-        setWeeks(response?.data || []);
-        setIsLoading(false)
+        console.log('API Response:', response?.data);  // Log response data
+        setWeeks(Array.isArray(response?.data) ? response?.data : []);
+        setIsLoading(false);
       })
       .catch((error) => {
-        console.error(error)
-        setIsLoading(false)
+        console.error(error);
+        setIsLoading(false);
       });
   }, [selectedCourse]);
+  
 
   useEffect(() => {
     setCurrentWeek(null);
@@ -178,26 +194,44 @@ const Dashboard = () => {
     });
   }, [selectedCourse, weeks]);
 
+  // useEffect(() => {
+  //   axios
+  //     .get(
+  //       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/weekId/${currentWeek?._id}`
+  //     )
+  //     .then((response) => {
+  //       setChapters(response?.data || []);
+  //       setIsLoading(false)
+  //     })
+  //     .catch((error) => {
+  //       console.error(error)
+  //       setIsLoading(false)
+  //     });
+  // }, [currentWeek]);
+
   useEffect(() => {
     axios
       .get(
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/weekId/${currentWeek?._id}`
       )
       .then((response) => {
-        setChapters(response?.data || []);
-        setIsLoading(false)
+        console.log('API Response:', response?.data);  // Add this line
+        setChapters(Array.isArray(response?.data) ? response?.data : []);
+        setIsLoading(false);
       })
       .catch((error) => {
-        console.error(error)
-        setIsLoading(false)
+        console.error(error);
+        setIsLoading(false);
       });
   }, [currentWeek]);
+  
+
   useEffect(() => {
     let totalCompleted = 0;
     let totalTask = 0;
     if (chapters) {
       chapters?.forEach((item) => {
-        console.log(item);
+       // console.log(item);
         item?.tasks?.forEach((task) => {
           totalTask++;
           if (task?.participants) {
@@ -214,7 +248,7 @@ const Dashboard = () => {
     }
     setCurrentWeekCompletion(parseInt((totalCompleted / totalTask) * 100));
     setIsLoading(false)
-    console.log(totalCompleted, totalTask);
+  //  console.log(totalCompleted, totalTask);
   }, [chapters, user, userInfo]);
 
   useEffect(() => {
@@ -252,7 +286,53 @@ const Dashboard = () => {
         setIsLoading(false)
       });
   }, [user, userInfo, selectedCourse]);
+  function isWithinSixtyMinutes(startTime) {
+    const now = new Date();
+    console.log("time now ", now)
+    const start = new Date(startTime);
+    console.log("start time ", start)
+    const diffInMs = start - now;
+    const diffInMinutes = diffInMs / (1000 * 60);
+    return diffInMinutes <= 60;
+  }
+  const handleLinkClick = async (event, userInfo, meetingType, link) => {
+    const scheduleData = await axios.get(
+      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/schedule/taskId/${event?.scheduleId}`)
+    console.log(scheduleData);
+    const sendData = {
+      participantChapter: {
+        email: userInfo?.email,
+        participantId: userInfo?._id,
+        status: "Completed",
+        completionDateTime: new Date(),
+      },
+      participantTask: {
+        participant: {
+          email: userInfo?.email,
+          participantId: userInfo?._id,
+          status: "Completed",
+          completionDateTime: new Date(),
+        },
+      },
+    };
 
+    try {
+      if(scheduleData?.data?.chapterId){
+        const response = await axios.post(
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/Schedule/taskId/${event?.scheduleId}/chapterId/${scheduleData?.data?.chapterId}`,
+          sendData
+        );
+        console.log(response);
+  
+        if (response.status === 200) {
+          // Navigate to the meeting link
+          window.location.href = link;
+        }
+      }
+    } catch (error) {
+      console.error("Error sending participant data:", error);
+    }
+  };
   const dashboardImages = {
     userImg: Person,
     userImgMobile: PersonForMobile,
@@ -299,7 +379,7 @@ const Dashboard = () => {
         setIsLoading(false);
       });
   }, [userInfo]);
-  console.log(userRequesterEvents);
+ // console.log(userRequesterEvents);
   const getCurrentDate = () => {
     const today = new Date();
     const year = today.getFullYear();
@@ -360,7 +440,7 @@ const Dashboard = () => {
       second: '2-digit'
     };
     const meetingStart = startDate.toLocaleString(undefined, options);
-    console.log(meetingStart);
+    //console.log(meetingStart);
     // Calculate end date by adding the duration to the start date
     const endDate = new Date(startDate.getTime() + meetingLength * 60000); // 60000 ms in a minute
 
@@ -425,7 +505,7 @@ const Dashboard = () => {
                       />
                     ))}
                   </div>
-                 {/*  <div className="mt-[20px] bg-[#D7ECFF] labJourney rounded-lg px-[10px] flex lg:hidden overflow-x-scroll h-[155px]">
+                  {/*  <div className="mt-[20px] bg-[#D7ECFF] labJourney rounded-lg px-[10px] flex lg:hidden overflow-x-scroll h-[155px]">
                     {data?.map((singleData, i) => (
                       <div
                         className={`${i % 2 === 0
@@ -529,17 +609,36 @@ const Dashboard = () => {
                             {/* <Link to={event?.hangoutLink} className="flex gap-2 items-center justify-center py-[6px]">
                               <img src={googlemeet} className="w-[21px] h-[21px]" alt="googlemeet"></img><p>Go to Meet Link</p>
                             </Link> */}
-                            <Link
-                              to={event?.meetingType === 'Zoom' ? userInfo?.role === 'admin' ? event?.start_url : event?.join_url : event?.hangoutLink}
-                              className="flex gap-2 items-center justify-center py-[6px]"
-                            >
-                              <img
-                                src={event?.meetingType === 'Zoom' ? zoom : googlemeet}
-                                className="w-[21px] h-[21px]"
-                                alt="googlemeet or zoom"
-                              ></img>
-                              <p>Go to {event?.meetingType === 'Zoom' ? 'zoom' : 'meet'} Link</p>
-                            </Link>
+                            {isWithinSixtyMinutes(event?.start_time) ? (
+                              <div>
+                                <button
+                                  onClick={() =>
+                                    handleLinkClick(
+                                      event,
+                                      userInfo,
+                                      event?.meetingType,
+                                      event?.meetingType === "Zoom"
+                                        ? userInfo?.role === "admin"
+                                          ? event?.start_url
+                                          : event?.join_url
+                                        : event?.hangoutLink
+                                    )
+                                  }
+                                  className="flex gap-2 items-center justify-center py-[6px] w-full"
+                                >
+                                  <img
+                                    src={event?.meetingType === "Zoom" ? zoom : googlemeet}
+                                    className="w-[21px] h-[21px]"
+                                    alt="googlemeet or zoom"
+                                  />
+                                  <p>
+                                    Go to {event?.meetingType === "Zoom" ? "zoom" : "meet"} Link
+                                  </p>
+                                </button>
+                              </div>
+                            ) : (
+                              <p className="mt-3 text-center">Link will be available 60 minutes before the start time</p>
+                            )}
                           </div>
                         </div>
                       ))}

@@ -12,7 +12,7 @@ import { CircularProgress } from "@mui/material";
 const AdminStatistics = ({ itemDetails }) => {
   const { userInfo } = useContext(AuthContext);
   const [overViewCount, setOverViewCount] = useState();
-  const [students, setStudents] = useState();
+  const [students, setStudents] = useState([]);
   const [selectedFilter, setSelectedFilter] = useState("Last 7 Days");
   const [totalStudents, setTotalStudents] = useState();
   const [totalEnrolledStudents, setTotalEnrolledStudents] = useState();
@@ -28,33 +28,55 @@ const AdminStatistics = ({ itemDetails }) => {
       )
       .then((response) => {
         setOverViewCount(response?.data);
-        setIsLoading(false);
+       // setIsLoading(false);
       })
       .catch((error) => {
         console.error(error);
-        setIsLoading(false);
+      //  setIsLoading(false);
       });
   }, [userInfo]);
 
   // console.log(overViewCount);
 
+  // useEffect(() => {
+  //   if (userInfo?.organizationId) {
+  //     axios
+  //       .get(
+  //         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/students/${userInfo?.organizationId}`
+  //       )
+  //       .then((response) => {
+  //         setStudents(response?.data || []);
+  //         setIsLoading(false);
+  //       })
+  //       .catch((error) => {
+  //         console.error(error);
+  //         setIsLoading(false);
+  //       });
+  //     setIsLoading(false);
+  //   }
+  // }, [userInfo]);
+
   useEffect(() => {
     if (userInfo?.organizationId) {
+     // setIsLoading(true);  // Start loading before the request
+  
       axios
         .get(
-          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/students/${userInfo?.organizationId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/studentsLimitData/${userInfo?.organizationId}`
+          //`http://localhost:5000/api/v1/users/studentsLimitData/${userInfo?.organizationId}`
         )
         .then((response) => {
-          setStudents(response?.data);
-          setIsLoading(false);
+          const studentsData = Array.isArray(response?.data) ? response?.data : [];  // Ensure it's an array
+          setStudents(studentsData);  // Set students data
+         setIsLoading(false);  // Stop loading after success
         })
         .catch((error) => {
-          console.error(error);
-          setIsLoading(false);
+          console.error('Error fetching students:', error);
+          setIsLoading(false);  // Stop loading even if there's an error
         });
-      setIsLoading(false);
     }
   }, [userInfo]);
+
   useEffect(() => {
     if (userInfo?.organizationId) {
       axios
@@ -62,14 +84,14 @@ const AdminStatistics = ({ itemDetails }) => {
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/getAllPaidInfo/organizationId/${userInfo?.organizationId}`
         )
         .then((response) => {
-          setPaidStudents(response?.data);
-          setIsLoading(false);
+          setPaidStudents(response?.data || []);
+         // setIsLoading(false);
         })
         .catch((error) => {
           console.error(error);
-          setIsLoading(false);
+         // setIsLoading(false);
         });
-      setIsLoading(false);
+    //  setIsLoading(false);
     }
   }, [userInfo]);
 
@@ -281,6 +303,7 @@ const AdminStatistics = ({ itemDetails }) => {
           setTotalEnrolledStudents={setTotalEnrolledStudents}
           toDate={toDate}
           fromDate={fromDate}
+          isLoading={isLoading}
         />
         <RevenueChart
           itemDetails={itemDetails}
