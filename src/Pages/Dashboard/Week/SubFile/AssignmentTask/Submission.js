@@ -213,7 +213,7 @@ const Submission = ({ taskData, count, setCount }) => {
           checkSubmit();
         }
 
-        // Loading().close();
+        Loading().close();
       }
     } catch (error) {
       Loading().close();
