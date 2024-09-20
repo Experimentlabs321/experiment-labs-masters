@@ -1473,7 +1473,7 @@ const ScheduleTask = ({ taskData, week }) => {
                 console.log("Formatted for Zoom UTC:", ReformattedDateTimeUTC);
                 const matchObject = {
                   start_time: ReformattedDateTimeUTC,
-                  requester: user?.email,
+                  requester: requesterStd ? requesterStd : user?.email,
                   scheduleId: taskId,
                 }
                 const emailobject = {
@@ -1586,10 +1586,8 @@ const ScheduleTask = ({ taskData, week }) => {
                           duration: newZoomSchedule?.data?.duration,
                           join_url: studentUrl,
                           start_url: adminUrl,
-                          topic: `Session with ${stdName ? stdName : userInfo?.name
-                            } on ${course?.courseFullName}`,
-                          summary: `${stdName ? stdName : userInfo?.name
-                            } ${calendarSubjectName}`,
+                          topic: `Session with ${stdName ? stdName : userInfo?.name} on ${taskData?.courseName}`,
+                          summary: `${stdName ? stdName : userInfo?.name} ${calendarSubjectName}`,
                           requester: requesterStd ? requesterStd : user?.email,
                           studentName: stdName ? stdName : userInfo?.name,
                           organization: {
@@ -1662,7 +1660,7 @@ const ScheduleTask = ({ taskData, week }) => {
                                 schedule_name: taskData?.scheduleName || taskData?.taskName,
                                 start_time: formattedStartTime,
                                 end_time: formattedEndTime,
-                                learner_name: userInfo?.name,
+                                learner_name: stdName ? stdName : userInfo?.name,
                                 // meeting_link: studentUrl,
                                 meeting_link: `${window.location.origin}/taskDetails/${taskData?._id}?taskType=Schedule`,
                                 admin_name: adminName,
