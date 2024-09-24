@@ -221,6 +221,13 @@ const AddStudent = () => {
         setStudentStatus("Prepaid");
         form.reset();
       } else {
+        if (!selectedBatch?._id) {
+          Swal.fire({
+            title: "Pleas select a batch!",
+            icon: "error",
+          });
+          return;
+        }
         if (mode === "course") {
           const newUser = await axios.post(
             `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/addOrUpdateUserWithCourse`,
@@ -359,7 +366,7 @@ const AddStudent = () => {
       {/* <Layout> */}
       <div className="p-4 mx-auto w-full">
         <div className="grid grid-flow-col mt-10 border-b border-[#D9D9D9] pb-2">
-       {/*    <button>
+          {/*    <button>
             <img
                onClick={handleBack}
               src={backIcon}
