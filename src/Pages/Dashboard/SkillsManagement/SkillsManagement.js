@@ -29,7 +29,6 @@ const SkillsManagement = () => {
         )
         .then((response) => {
           setItemDetails(response?.data);
-
         })
         .finally(() => {
           setLoading(false);
@@ -59,7 +58,7 @@ const SkillsManagement = () => {
       const orgInfo = { ...orgData };
       orgInfo.showSkillsManagement = !orgData?.showSkillsManagement;
       delete orgInfo._id;
-      console.log("Data ==========>", orgInfo);
+      // console.log("Data ==========>", orgInfo);
 
       const updateOrg = await axios.put(
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/organizations/${orgData?._id}`,
@@ -68,7 +67,11 @@ const SkillsManagement = () => {
 
       if (updateOrg?.data?.acknowledged) {
         setOrgData({ _id: orgData?._id, ...orgInfo });
-        toast.success(itemDetails?.visibilityOfSkillsManagementEditedSuccessfully ? itemDetails?.visibilityOfSkillsManagementEditedSuccessfully : "Skills Management" );
+        toast.success(
+          itemDetails?.visibilityOfSkillsManagementEditedSuccessfully
+            ? itemDetails?.visibilityOfSkillsManagementEditedSuccessfully
+            : "Skills Management"
+        );
         // event.target.reset();
       }
     }
@@ -78,15 +81,14 @@ const SkillsManagement = () => {
       <Layout>
         <div className="flex items-center justify-center gap-7 pt-20 lg:pt-10">
           <div className="UserManagement origin-top-left rotate-[-0.51deg] text-zinc-500 text-[30px] font-medium">
-            {
-              itemDetails?.skillsManagement ? itemDetails?.skillsManagement : "Skills Management"
-            }
-
+            {itemDetails?.skillsManagement
+              ? itemDetails?.skillsManagement
+              : "Skills Management"}
           </div>
           <div className="Input w-[425px] h-16 relative bg-slate-100 rounded-[40px] shadow-inner">
             <input
               className="Search w-[329px] left-[32px] top-[12px] absolute text-zinc-500 text-[20px] font-light leading-10 bg-transparent"
-              placeholder={ itemDetails?.search ? itemDetails?.search : "Search" }
+              placeholder={itemDetails?.search ? itemDetails?.search : "Search"}
             />
             <div className="Button w-10 h-10 left-[373px] top-[12px] absolute bg-zinc-500 rounded-[32px] shadow">
               <SearchIcon className="Search1 w-6 h-6 left-[8px] top-[8px] absolute text-white" />
@@ -115,15 +117,21 @@ const SkillsManagement = () => {
               />
               <div className="block bg-gray-600 w-14 h-8 rounded-full"></div>
               <div
-                className={`${orgData?.showSkillsManagement
+                className={`${
+                  orgData?.showSkillsManagement
                     ? "bg-green translate-x-full"
                     : "bg-gray-300 translate-x-0"
-                  } absolute left-1 top-1 w-6 h-6 rounded-full transition-transform transform ease-in-out duration-300`}
+                } absolute left-1 top-1 w-6 h-6 rounded-full transition-transform transform ease-in-out duration-300`}
               ></div>
             </div>
             <div className="ml-3 text-gray-700 font-semibold text-xl">
-              {!orgData?.showSkillsManagement ? itemDetails?.showSkillsManagement ? itemDetails?.showSkillsManagement : "Show Skills Management"
-                : itemDetails?.removeSkillsManagement ? itemDetails?.removeSkillsManagement : "Remove Skills Management"}
+              {!orgData?.showSkillsManagement
+                ? itemDetails?.showSkillsManagement
+                  ? itemDetails?.showSkillsManagement
+                  : "Show Skills Management"
+                : itemDetails?.removeSkillsManagement
+                ? itemDetails?.removeSkillsManagement
+                : "Remove Skills Management"}
             </div>
           </label>
         </div>
@@ -141,10 +149,9 @@ const SkillsManagement = () => {
               />
               <div className="Content grow shrink basis-0 flex-col justify-start items-start gap-2 inline-flex">
                 <div className="CardTitle self-stretch text-black text-[24px] font-normal leading-normal">
-                  {
-                    itemDetails?.skillsCreations ? itemDetails?.skillsCreations : "Skills Creations"
-                  }
-
+                  {itemDetails?.skillsCreations
+                    ? itemDetails?.skillsCreations
+                    : "Skills Creations"}
                 </div>
                 <div className="CardDesription self-stretch">
                   <span className="text-zinc-900 text-[16px] font-normal leading-normal">
@@ -170,10 +177,9 @@ const SkillsManagement = () => {
               />
               <div className="Content grow shrink basis-0 flex-col justify-start items-start gap-2 inline-flex">
                 <div className="CardTitle self-stretch text-black text-[24px] font-normal leading-normal">
-                {
-              itemDetails?.skillsImprovementEngine ? itemDetails?.skillsImprovementEngine : "Skills Improvement Engine"
-            }
-                  
+                  {itemDetails?.skillsImprovementEngine
+                    ? itemDetails?.skillsImprovementEngine
+                    : "Skills Improvement Engine"}
                 </div>
                 <div className="CardDesription self-stretch">
                   <span className="text-zinc-900 text-[16px] font-normal leading-normal">

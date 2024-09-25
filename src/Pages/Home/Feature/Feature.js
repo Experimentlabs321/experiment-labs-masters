@@ -211,7 +211,7 @@ const Feature = () => {
 
   // console.log(isLargeScreen);
 
-  console.log("Mouse Entered Index-----> ", mouseEnteredIndex);
+  // console.log("Mouse Entered Index-----> ", mouseEnteredIndex);
 
   const [open, setOpen] = React.useState(false);
 
@@ -227,7 +227,7 @@ const Feature = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("Clicked");
+    // console.log("Clicked");
     ReactGA.event({
       category: "Click",
       action: "Submit Data From Navbar",
@@ -249,20 +249,17 @@ const Feature = () => {
       Time: new Date(),
     };
 
-    console.log("Gone Here ===============>", data);
+    // console.log("Gone Here ===============>", data);
 
-    fetch(
-      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/interactions`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }
-    )
+    fetch(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/interactions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
       .then(async (res) => {
-        console.log("Submit ===============>", res);
+        // console.log("Submit ===============>", res);
         const sendMail = await axios.post(
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
           {
@@ -279,7 +276,7 @@ const Feature = () => {
             `,
           }
         );
-        console.log("Send Mail ===============>", sendMail);
+        // console.log("Send Mail ===============>", sendMail);
         if (sendMail?.data?.success) {
           Swal.fire({
             icon: "success",
@@ -290,7 +287,7 @@ const Feature = () => {
       })
       .catch((error) => {
         // Errors are reported there
-        console.log(error);
+        // console.log(error);
       });
   };
 
@@ -323,8 +320,9 @@ const Feature = () => {
                 });
                 setSelectedIndex(index);
               }}
-              className={`courses ${selectedIndex !== index && "bg-dark"} ${selectedIndex === index && "bg-purple text-white"
-                }`}
+              className={`courses ${selectedIndex !== index && "bg-dark"} ${
+                selectedIndex === index && "bg-purple text-white"
+              }`}
               key={index}
             >
               {course?.category}
@@ -400,10 +398,11 @@ const Feature = () => {
               >
                 <div
                   style={{ borderRadius: "24px" }}
-                  className={`${index === mouseEnteredIndex
+                  className={`${
+                    index === mouseEnteredIndex
                       ? "absolute top-0 z-50 w-[20vw]"
                       : "hidden"
-                    } bg-[#94A4FF] pt-1 pl-1`}
+                  } bg-[#94A4FF] pt-1 pl-1`}
                 >
                   <div
                     style={{

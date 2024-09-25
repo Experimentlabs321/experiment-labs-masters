@@ -41,7 +41,7 @@ const EditResult = (submittedAssignment) => {
       .catch((error) => console.error(error));
   }, []);
 
-  console.log(mainAssignments);
+  // console.log(mainAssignments);
 
   const [CategoryMain, setCategoryMain] = useState({});
 
@@ -65,7 +65,7 @@ const EditResult = (submittedAssignment) => {
     }
   }, [mainAssignments]);
 
-  console.log(CategoryMain);
+  // console.log(CategoryMain);
 
   const [parameters, setParameters] = useState({});
 
@@ -91,7 +91,7 @@ const EditResult = (submittedAssignment) => {
     }
   }, [mainAssignments]);
 
-  console.log(parameters);
+  // console.log(parameters);
 
   const [earning, setEarning] = useState({});
 
@@ -115,7 +115,7 @@ const EditResult = (submittedAssignment) => {
     }
   }, [mainAssignments]);
 
-  console.log(earning);
+  // console.log(earning);
 
   const handleClickCategory = (categoryName) => {
     setSelectedCategoryName(categoryName);
@@ -197,7 +197,7 @@ const EditResult = (submittedAssignment) => {
       setError3(false);
     }
   };
-  console.log(newAssignment);
+  // console.log(newAssignment);
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = newAssignment;
@@ -213,8 +213,8 @@ const EditResult = (submittedAssignment) => {
       toast.error("Value error");
     } else {
       const addMarks = await axios.post(
-       // `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${id}/addResult`,
-       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/${id}/result`,
+        // `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${id}/addResult`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/${id}/result`,
         manageAssignment
       );
 

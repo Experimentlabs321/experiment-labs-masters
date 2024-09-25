@@ -45,7 +45,7 @@ const OffersTable = ({ offerData, setOfferData, getAllOffers, isLoading }) => {
     setMaxDiscountValue(offer?.maxDiscountValue);
     setMinCourseValue(offer?.minCourseValue);
     const newDate = new Date(offer?.validTill);
-    console.log(newDate);
+    // console.log(newDate);
     setValidTill(offer?.validTill);
     setMaxUseCount(offer?.maxUseCount);
     setSelectedBatches(offer?.selectedBatches);
@@ -148,7 +148,7 @@ const OffersTable = ({ offerData, setOfferData, getAllOffers, isLoading }) => {
         disabled,
       };
 
-      console.log(updateOffer);
+      // console.log(updateOffer);
 
       const res = await axios.put(
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/offers/${id}`,
@@ -196,109 +196,105 @@ const OffersTable = ({ offerData, setOfferData, getAllOffers, isLoading }) => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-         <div
-          style={{ height: "70vh" }}
-          className="overflow-x-auto "
-        >
-<table className="min-w-full border bg-white rounded-lg">
-          <thead>
-            <tr className="border-b">
-              <th className="py-2 px-4 text-left">CREATED ON</th>
-              <th className="py-2 px-4 text-left">CODE</th>
-              <th className="py-2 px-4 text-left">DETAILS</th>
-              <th className="py-2 px-4 text-left">VALID TILL</th>
-              <th className="py-2 px-4 text-left">ACTIVE</th>
-              <th className="py-2 px-4 text-left">USED</th>
-              <th className="py-2 px-4 text-left">ACTIONS</th>
-            </tr>
-          </thead>
-          <tbody>
-            {/* Add your data rows here */}
-            {isLoading ? (
-              <>
-                {Array.from({ length: 5 }, (_, index) => (
-                  <tr key={index} className="border-b animate-pulse">
-                    <td className="py-2 px-4 text-left">
-                      <div className="h-4 bg-gray-300 rounded"></div>
+        <div style={{ height: "70vh" }} className="overflow-x-auto ">
+          <table className="min-w-full border bg-white rounded-lg">
+            <thead>
+              <tr className="border-b">
+                <th className="py-2 px-4 text-left">CREATED ON</th>
+                <th className="py-2 px-4 text-left">CODE</th>
+                <th className="py-2 px-4 text-left">DETAILS</th>
+                <th className="py-2 px-4 text-left">VALID TILL</th>
+                <th className="py-2 px-4 text-left">ACTIVE</th>
+                <th className="py-2 px-4 text-left">USED</th>
+                <th className="py-2 px-4 text-left">ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody>
+              {/* Add your data rows here */}
+              {isLoading ? (
+                <>
+                  {Array.from({ length: 5 }, (_, index) => (
+                    <tr key={index} className="border-b animate-pulse">
+                      <td className="py-2 px-4 text-left">
+                        <div className="h-4 bg-gray-300 rounded"></div>
+                      </td>
+                      <td className="py-2 px-4 text-left">
+                        <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+                      </td>
+                      <td className="py-2 px-4 text-left">
+                        <div className="flex flex-col gap-1 text-xs">
+                          <div className="h-2 bg-gray-300 rounded w-1/2"></div>
+                          <div className="h-2 bg-gray-300 rounded w-2/3"></div>
+                          <div className="h-2 bg-gray-300 rounded w-1/2"></div>
+                        </div>
+                      </td>
+                      <td className="py-2 px-4 text-left">
+                        <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+                      </td>
+                      <td className="py-2 px-4 text-left">
+                        <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+                      </td>
+                      <td className="py-2 px-4 text-left">
+                        <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+                      </td>
+                      <td className="py-2 px-4 text-left">
+                        <div className="flex gap-2">
+                          <div className="h-4 bg-gray-300 rounded w-6"></div>
+                          <div className="h-4 bg-gray-300 rounded w-6"></div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </>
+              ) : (
+                filteredOffers?.map((offer, index) => (
+                  <tr key={index} className="border-b">
+                    <td className="py-2 px-4 text-left font-sans">
+                      {offer.createdAt}
                     </td>
-                    <td className="py-2 px-4 text-left">
-                      <div className="h-4 bg-gray-300 rounded w-3/4"></div>
-                    </td>
+                    <td className="py-2 px-4 text-left">{offer?.code}</td>
                     <td className="py-2 px-4 text-left">
                       <div className="flex flex-col gap-1 text-xs">
-                        <div className="h-2 bg-gray-300 rounded w-1/2"></div>
-                        <div className="h-2 bg-gray-300 rounded w-2/3"></div>
-                        <div className="h-2 bg-gray-300 rounded w-1/2"></div>
+                        <span>Discount: {offer?.discountPercent}%</span>
+                        <span>Max Discount: {offer?.maxDiscountValue}</span>
+                        <span>Min Cart: {offer?.minCourseValue}</span>
                       </div>
                     </td>
+                    <td className="py-2 px-4 text-left">{offer?.validTill}</td>
                     <td className="py-2 px-4 text-left">
-                      <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+                      {new Date(offer?.validTill) >= new Date() &&
+                      !offer?.disabled
+                        ? "Yes"
+                        : "No"}
                     </td>
                     <td className="py-2 px-4 text-left">
-                      <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+                      {offer?.usedCount || 0}
                     </td>
                     <td className="py-2 px-4 text-left">
-                      <div className="h-4 bg-gray-300 rounded w-1/4"></div>
-                    </td>
-                    <td className="py-2 px-4 text-left">
-                      <div className="flex gap-2">
-                        <div className="h-4 bg-gray-300 rounded w-6"></div>
-                        <div className="h-4 bg-gray-300 rounded w-6"></div>
+                      <div>
+                        <span onClick={() => handleInputs(offer)}>
+                          <EditIcon
+                            sx={{
+                              ":hover": { color: "yellow" },
+                            }}
+                          />
+                        </span>
+                        <span onClick={() => handleDeleteOffer(offer._id)}>
+                          <DeleteIcon
+                            sx={{
+                              ":hover": { color: "red" },
+                            }}
+                          />
+                        </span>
                       </div>
                     </td>
                   </tr>
-                ))}
-              </>
-            ) : (
-              filteredOffers?.map((offer, index) => (
-                <tr key={index} className="border-b">
-                  <td className="py-2 px-4 text-left font-sans">
-                    {offer.createdAt}
-                  </td>
-                  <td className="py-2 px-4 text-left">{offer?.code}</td>
-                  <td className="py-2 px-4 text-left">
-                    <div className="flex flex-col gap-1 text-xs">
-                      <span>Discount: {offer?.discountPercent}%</span>
-                      <span>Max Discount: {offer?.maxDiscountValue}</span>
-                      <span>Min Cart: {offer?.minCourseValue}</span>
-                    </div>
-                  </td>
-                  <td className="py-2 px-4 text-left">{offer?.validTill}</td>
-                  <td className="py-2 px-4 text-left">
-                    {new Date(offer?.validTill) >= new Date() &&
-                    !offer?.disabled
-                      ? "Yes"
-                      : "No"}
-                  </td>
-                  <td className="py-2 px-4 text-left">
-                    {offer?.usedCount || 0}
-                  </td>
-                  <td className="py-2 px-4 text-left">
-                    <div>
-                      <span onClick={() => handleInputs(offer)}>
-                        <EditIcon
-                          sx={{
-                            ":hover": { color: "yellow" },
-                          }}
-                        />
-                      </span>
-                      <span onClick={() => handleDeleteOffer(offer._id)}>
-                        <DeleteIcon
-                          sx={{
-                            ":hover": { color: "red" },
-                          }}
-                        />
-                      </span>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            )}
-            {/* Add more rows as needed */}
-          </tbody>
-        </table>
+                ))
+              )}
+              {/* Add more rows as needed */}
+            </tbody>
+          </table>
         </div>
-        
       </div>
       <DialogLayoutForFromControl
         open={updateOpen}

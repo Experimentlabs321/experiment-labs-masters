@@ -34,7 +34,7 @@ const StageInfo = ({ chapters, stage, week }) => {
       filteredChapters.push(singleChapter);
     });
   }, [chapters]);
-  console.log(filteredChapters);
+  // console.log(filteredChapters);
   return (
     <div
       className="flex items-center justify-between gap-5 p-5"

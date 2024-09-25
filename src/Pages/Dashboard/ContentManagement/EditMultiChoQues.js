@@ -119,11 +119,11 @@ const EditMultiChoQues = ({
     setIsOpenAddCourseCategory(false);
   };
 
-  console.log(options);
+  // console.log(options);
 
   const { user } = useContext(AuthContext);
 
-  console.log(user);
+  // console.log(user);
 
   const editor = useRef(null);
 
@@ -197,7 +197,7 @@ const EditMultiChoQues = ({
       Loading().close();
     }
 
-    console.log(newQuestion, addQuestion);
+    // console.log(newQuestion, addQuestion);
     backButtonHandle();
     Loading().close();
   };
@@ -614,7 +614,7 @@ const EditMultiChoQues = ({
                 {options[0] &&
                   options?.map((answer, index) => {
                     let answerFormula = answer?.answerFormula || "";
-                    console.log(answerFormula);
+                    // console.log(answerFormula);
                     return (
                       <div key={`${index}${editingQueInfo?._id}`}>
                         <div className="dropdown-menu mt-[71px] mb-[45px] flex gap-10 justify-between  bg-[#F7F7F7] p-5 rounded-lg">

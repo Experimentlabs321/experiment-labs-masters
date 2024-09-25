@@ -35,10 +35,10 @@ const ExecutionMentorBookSchedule = ({
   addBookOpen,
   setAddBookOpen,
   idWeek,
-  fullEventData
+  fullEventData,
 }) => {
-  console.log("full data ", fullEventData);
-  console.log("week ", idWeek);
+  // console.log("full data ", fullEventData);
+  // console.log("week ", idWeek);
   const { id } = useParams();
 
   const [isOpenGeneral, setIsOpenGeneral] = useState(true);
@@ -49,9 +49,9 @@ const ExecutionMentorBookSchedule = ({
   const { user, userInfo } = useContext(AuthContext);
   const [matching, setMatching] = useState(false);
   const matchInputWithBusySlots = (inputDate, inputTime, busyTimeSlots) => {
-    console.log("Busy Time Slots:", busyTimeSlots);
+    // console.log("Busy Time Slots:", busyTimeSlots);
     const inputDateTime = new Date(`${inputDate}T${inputTime}`);
-    console.log("Input DateTime:", inputDateTime);
+    // console.log("Input DateTime:", inputDateTime);
 
     // Format input date and time to match the busyTimeSlots format
     const options = {
@@ -68,9 +68,9 @@ const ExecutionMentorBookSchedule = ({
     // Extract date and time separately from formatted string
     const [inputDateString, inputTimeString] = inputDateTimeString.split(", ");
 
-    console.log("Formatted Input DateTime:", inputDateTimeString);
-    console.log("Input Date:", inputDateString);
-    console.log("Input Time:", inputTimeString);
+    // console.log("Formatted Input DateTime:", inputDateTimeString);
+    // console.log("Input Date:", inputDateString);
+    // console.log("Input Time:", inputTimeString);
 
     const isMatch = busyTimeSlots?.some((busySlot) => {
       const busyStartDateTimeString = busySlot.start.dateTime;
@@ -83,14 +83,14 @@ const ExecutionMentorBookSchedule = ({
       const busyStartDateTime = new Date(busySlot.start.dateTime);
       const busyEndDateTime = new Date(busySlot.end.dateTime);
 
-      console.log("Checking Busy Start:", busyStartDateTimeString);
-      console.log("Checking Busy End:", busyEndDateTimeString);
+      // console.log("Checking Busy Start:", busyStartDateTimeString);
+      // console.log("Checking Busy End:", busyEndDateTimeString);
       if (
         inputDateTime >= busyStartDateTime &&
         inputDateTime < busyEndDateTime
       ) {
         // if (inputTimeString >= busyStartTime && inputTimeString >= busyEndTime)
-        console.log("busy start and end: ", busyStartTime, busyEndTime);
+        // console.log("busy start and end: ", busyStartTime, busyEndTime);
         return true;
       }
       // Check if the input date matches the busy date and if input time falls within the busy time range
@@ -143,7 +143,7 @@ const ExecutionMentorBookSchedule = ({
   const [students, setStudents] = useState([]);
   const [maxDateString, setMaxDateString] = useState("");
   const [filteredStudents, setFilteredStudents] = useState([]);
-  console.log(userInfo);
+  // console.log(userInfo);
   const toggleDropdownGeneral = () => {
     setIsOpenGeneral(!isOpenGeneral);
   };
@@ -153,17 +153,17 @@ const ExecutionMentorBookSchedule = ({
   const toggleDropdownEvaluationParameter = () => {
     setsOpenEvaluationParameter(!isOpenEvaluationParameter);
   };
-  console.log(
-    `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/email/${selectedAdmin}`
-  );
+  // console.log(
+  //   `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/email/${selectedAdmin}`
+  // );
   useEffect(() => {
     axios
       .get(
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/email/${userInfo?.email}`
       )
       .then((response) => {
-        console.log("here");
-        console.log(response);
+        // console.log("here");
+        // console.log(response);
         setAdminCalendarInfo(response?.data);
 
         const currentDate = new Date(); // Current date
@@ -188,7 +188,7 @@ const ExecutionMentorBookSchedule = ({
       .then((response) => {
         Loading().close();
         setStudents(response?.data?.data || []);
-        console.log(response?.data);
+        // console.log(response?.data);
         // setIsLoading(false);
       })
       .catch((error) => {
@@ -197,7 +197,7 @@ const ExecutionMentorBookSchedule = ({
         // setIsLoading(false);
       });
   }, [userInfo, selected]);
-  console.log(students);
+  // console.log(students);
 
   /*   useEffect(() => {
     if (chapter?.courseId) {
@@ -212,7 +212,7 @@ const ExecutionMentorBookSchedule = ({
         .catch((error) => console.error(error));
     }
   }, [chapter?.courseId]); */
-  console.log(selectedAdmin);
+  // console.log(selectedAdmin);
 
   const navigate = useNavigate();
 
@@ -229,7 +229,7 @@ const ExecutionMentorBookSchedule = ({
     let period = hours < 12 || hours === 24 ? "AM" : "PM";
     return `${hours12}:${minutes} ${period}`;
   }
-  console.log(selectedStudent);
+  // console.log(selectedStudent);
   const handleDateChange = (event) => {
     const selectedDate = event.target.value;
 
@@ -278,17 +278,17 @@ const ExecutionMentorBookSchedule = ({
   };
   const handleTimeChange = (event) => {
     const selectedTime12h = event.target.value;
-    console.log(`Setting time to ${selectedTime12h}`);
+    // console.log(`Setting time to ${selectedTime12h}`);
 
     const selectedTime24h = convert12HourTo24Hour(selectedTime12h);
-    console.log(`Converted time to 24-hour format: ${selectedTime24h}`);
+    // console.log(`Converted time to 24-hour format: ${selectedTime24h}`);
 
     const minTime = selectedMin;
     const maxTime = selectedMax;
     setMaxTime(maxTime);
     setMinTime(minTime);
 
-    console.log("Selected Date:", selectedDate);
+    // console.log("Selected Date:", selectedDate);
 
     handleTimeSelection(selectedTime24h, selectedDate, minTime, maxTime); // Pass selectedDate
 
@@ -316,25 +316,25 @@ const ExecutionMentorBookSchedule = ({
     minTime,
     maxTime
   ) => {
-    console.log(selectedTime, selectedDate, minTime, maxTime);
+    // console.log(selectedTime, selectedDate, minTime, maxTime);
     const selectedT = new Date(`${selectedDate}T${selectedTime}`);
     setselectedTimeDate(selectedT);
     const minTimeDate = new Date(`${selectedDate}T${minTime}`);
     const maxTimeDate = new Date(`${selectedDate}T${maxTime}`);
-    console.log(selectedT);
-    console.log(minTimeDate, maxTimeDate);
+    // console.log(selectedT);
+    // console.log(minTimeDate, maxTimeDate);
     if (selectedT < minTimeDate || selectedT > maxTimeDate) {
-      console.log("entered");
+      // console.log("entered");
       setCheckTime(true);
       setTimeRangeError(true);
       // Reset the time to the initial state or do nothing
       document.getElementById("time").value = minTime;
     } else {
-      console.log("adssssssentered");
+      // console.log("adssssssentered");
       setTimeRangeError(false);
       setCheckTime(false);
       setTime(selectedTime);
-      console.log("handleTimeSelection", selectedTime);
+      // console.log("handleTimeSelection", selectedTime);
       matchInputWithBusySlots(selectedDate, selectedTime, busyTimeSlots);
     }
   };
@@ -352,7 +352,7 @@ const ExecutionMentorBookSchedule = ({
     setFilteredStudents(filtered);
   }, [students, scheduleEvents]);
 
-  console.log("Filtered Students: ", filteredStudents);
+  // console.log("Filtered Students: ", filteredStudents);
   useEffect(() => {
     const busyTimeSlots = adminCalendarInfo?.events
       ?.map((event) => {
@@ -377,7 +377,7 @@ const ExecutionMentorBookSchedule = ({
           return null; // Skip events without a valid start or end dateTime
         }
         const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        console.log(userTimeZone);
+        // console.log(userTimeZone);
         // Convert the start and end times to the Asia/Kolkata time zone
         const options = {
           timeZone: "Asia/Kolkata",
@@ -388,7 +388,7 @@ const ExecutionMentorBookSchedule = ({
           minute: "2-digit",
           second: "2-digit",
         };
-        console.log(options);
+        // console.log(options);
         const startTime = new Date(startDateTime).toLocaleString(
           "en-US",
           options
@@ -481,26 +481,26 @@ const ExecutionMentorBookSchedule = ({
         text: `Please choose a time between ${minTime} and ${maxTime}.`,
       });
     } else {
-      console.log("select date", date);
-      console.log("select time", time);
+      // console.log("select date", date);
+      // console.log("select time", time);
       if (date && time) {
         Loading();
-        console.log("iamin");
+        // console.log("iamin");
         const selectedTimeDatee = new Date(`${date}T${time}`); // Keep the Z for UTC
-        console.log("selected time date", selectedTimeDatee);
+        // console.log("selected time date", selectedTimeDatee);
         const endDateTimeUTC = new Date(selectedTimeDatee);
         endDateTimeUTC.setUTCMinutes(
           endDateTimeUTC.getUTCMinutes() + Number(durationMeeting)
         );
-        console.log("end time", endDateTimeUTC);
+        // console.log("end time", endDateTimeUTC);
         const currentDateTime = new Date();
         const timeDifferenceInMilliseconds =
           selectedTimeDatee.getTime() - currentDateTime.getTime();
         const eventStartTime = formatDateTimeWithTimeZones(selectedTimeDatee);
         const eventEndTime = formatDateTimeWithTimeZones(endDateTimeUTC);
-        console.log("event s ", eventStartTime);
-        console.log("event e ", eventEndTime);
-        console.log("difference ", timeDifferenceInMilliseconds);
+        // console.log("event s ", eventStartTime);
+        // console.log("event e ", eventEndTime);
+        // console.log("difference ", timeDifferenceInMilliseconds);
         // // Use these formatted strings in your communication
         // console.log(`Event Start: ${formattedStartTime}`); // For logging or display
         // console.log(`Event End: ${formattedEndTime}`);
@@ -873,12 +873,12 @@ const ExecutionMentorBookSchedule = ({
                     email: adminCalendarInfo?.email,
                     event: event,
                   };
-                  console.log({ calendarInfo: InfoCalendar });
+                  // console.log({ calendarInfo: InfoCalendar });
                   const newSchedule = await axios.put(
                     `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/events`,
                     { calendarInfo: InfoCalendar }
                   );
-                  console.log(newSchedule);
+                  // console.log(newSchedule);
                   if (newSchedule?.data?.success === false) {
                     if (
                       newSchedule?.data?.message ===
@@ -973,8 +973,8 @@ const ExecutionMentorBookSchedule = ({
                           redirectLink: `/taskDetails/${idSchedule}?taskType=Schedule`,
                         }
                       );
-                      console.log(newNotification);
-                      console.log("send ", sendMail);
+                      // console.log(newNotification);
+                      // console.log("send ", sendMail);
                       if (
                         sendMail?.data?.success &&
                         sendMailAdmin?.data?.success
@@ -1012,7 +1012,7 @@ const ExecutionMentorBookSchedule = ({
                   })
                   .then(
                     (response) => {
-                      console.log(response);
+                      // console.log(response);
                       var event = {
                         title: `${selectedStudent?.name} ${calendarSubjectName}`,
                         start: {
@@ -1096,7 +1096,7 @@ const ExecutionMentorBookSchedule = ({
                 ("0" + inputDateTime.getMinutes()).slice(-2),
                 ("0" + inputDateTime.getSeconds()).slice(-2),
               ].join(":");
-            console.log("Formatted for Zoom (local time):", formattedDateTime);
+            // console.log("Formatted for Zoom (local time):", formattedDateTime);
             const zoomSchedule = {
               start_time: formattedDateTime,
               duration: durationMeeting,
@@ -1109,32 +1109,45 @@ const ExecutionMentorBookSchedule = ({
             localDate.setMinutes(localDate.getMinutes() + 30);
 
             // Convert the updated local date to UTC string without milliseconds
-            const formattedDateTimeUTC = localDate.toISOString().split('.')[0] + 'Z';
+            const formattedDateTimeUTC =
+              localDate.toISOString().split(".")[0] + "Z";
 
-            console.log("Formatted for Zoom UTC:", formattedDateTimeUTC);
+            // console.log("Formatted for Zoom UTC:", formattedDateTimeUTC);
             const matchObject = {
               start_time: formattedDateTimeUTC,
               requester: selectedStudent?.email,
               scheduleId: idSchedule,
-            }
+            };
             const emailobject = {
               email: adminCalendarInfo?.email,
               event: matchObject,
-            }
+            };
             Loading();
             const checkScheduleCalendar = await axios.post(
-              `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/matchEvents`, emailobject, { timeout: 10000 }
-            )
-            console.log(checkScheduleCalendar?.data?.message);
+              `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/matchEvents`,
+              emailobject,
+              { timeout: 10000 }
+            );
+            // console.log(checkScheduleCalendar?.data?.message);
             if (checkScheduleCalendar?.data?.message === "You can request") {
               Loading();
               const newZoomSchedule = await axios.post(
                 `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/meeting/organizationId/${selectedStudent?.organizationId}`,
-                zoomSchedule, { timeout: 10000 }
+                zoomSchedule,
+                { timeout: 10000 }
               );
               if (newZoomSchedule?.data?.uuid) {
-                console.log("zoom schedule ", newZoomSchedule?.data);
-                const { id, topic, start_time, created_at, join_url, start_url, timezone, duration } = newZoomSchedule?.data;
+                // console.log("zoom schedule ", newZoomSchedule?.data);
+                const {
+                  id,
+                  topic,
+                  start_time,
+                  created_at,
+                  join_url,
+                  start_url,
+                  timezone,
+                  duration,
+                } = newZoomSchedule?.data;
 
                 const utcTimeStr = newZoomSchedule?.data?.start_time;
                 const timezoneStr = newZoomSchedule?.data?.timezone;
@@ -1153,7 +1166,10 @@ const ExecutionMentorBookSchedule = ({
                   minute: "2-digit",
                   second: "2-digit",
                 };
-                const meetingStart = startDate.toLocaleString(undefined, options);
+                const meetingStart = startDate.toLocaleString(
+                  undefined,
+                  options
+                );
 
                 // Calculate end date by adding the duration to the start date
                 const endDate = new Date(
@@ -1162,8 +1178,8 @@ const ExecutionMentorBookSchedule = ({
 
                 // Convert end date to local time in the specified timezone
                 const meetingEnd = endDate.toLocaleString(undefined, options);
-                console.log("meeting start date: ", meetingStart);
-                console.log("meeting end date: ", meetingEnd);
+                // console.log("meeting start date: ", meetingStart);
+                // console.log("meeting end date: ", meetingEnd);
                 const format = "MM/DD/YYYY, hh:mm:ss A"; // This is the format based on your output
                 const meetingStartDate = moment(meetingStart, format).toDate(); // Use moment.js to parse the string
                 const meetingEndDate = moment(meetingEnd, format).toDate();
@@ -1179,8 +1195,8 @@ const ExecutionMentorBookSchedule = ({
                   meetingEnd,
                   "MM/DD/YYYY, hh:mm:ss A"
                 ).format("hh:mm:ss A");
-                console.log(formattedDate);
-                console.log(formattedEndTime);
+                // console.log(formattedDate);
+                // console.log(formattedEndTime);
                 try {
                   async function initiate() {
                     Loading();
@@ -1211,12 +1227,13 @@ const ExecutionMentorBookSchedule = ({
                       email: adminCalendarInfo?.email,
                       event: postingData,
                     };
-                    console.log({ calendarInfo: InfoCalendar });
+                    // console.log({ calendarInfo: InfoCalendar });
                     const newSchedule = await axios.put(
                       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/events`,
-                      { calendarInfo: InfoCalendar }, { timeout: 10000 }
+                      { calendarInfo: InfoCalendar },
+                      { timeout: 10000 }
                     );
-                    console.log("info ", newSchedule);
+                    // console.log("info ", newSchedule);
                     // Step 1: Prepare Google Calendar event data
                     const event = {
                       summary: `${selectedStudent?.name} ${calendarSubjectName}`,
@@ -1251,10 +1268,10 @@ const ExecutionMentorBookSchedule = ({
                             Authorization: `Bearer ${newAccessToken}`,
                           },
                         });
-                        console.log(
-                          "Google Calendar event created successfully:",
-                          response
-                        );
+                        // console.log(
+                        //   "Google Calendar event created successfully:",
+                        //   response
+                        // );
                         const calendarEventId = response.result.id;
                         if (calendarEventId) {
                           const newpostData = {
@@ -1269,7 +1286,8 @@ const ExecutionMentorBookSchedule = ({
                             studentName: selectedStudent?.name,
                             organization: {
                               organizationId: selectedStudent?.organizationId,
-                              organizationName: selectedStudent?.organizationName,
+                              organizationName:
+                                selectedStudent?.organizationName,
                             },
                             weekId: idWeek,
                             googleCalendarId: calendarEventId,
@@ -1283,9 +1301,10 @@ const ExecutionMentorBookSchedule = ({
                           const response = await axios.post(
                             // `${process.env.REACT_APP_BACKEND_API}/events`,
                             `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events`,
-                            newpostData, { timeout: 10000 }
+                            newpostData,
+                            { timeout: 10000 }
                           );
-                          console.log("event response ", response);
+                          // console.log("event response ", response);
 
                           if (response?.data?.acknowledged) {
                             const postData = {
@@ -1312,14 +1331,16 @@ const ExecutionMentorBookSchedule = ({
                               batchName: selectedBatch,
                               googleCalendarId: calendarEventId,
                               eventDBid: response?.data?.insertedId,
-                              executionMentors: selectedStudent?.executionMentors,
+                              executionMentors:
+                                selectedStudent?.executionMentors,
                             };
                             // Step 4: Update database with Google Calendar event details
                             const newEvent = await axios.post(
                               `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/${idSchedule}/addEvent`,
-                              postData, { timeout: 10000 }
+                              postData,
+                              { timeout: 10000 }
                             );
-                            console.log("new event ", newEvent);
+                            // console.log("new event ", newEvent);
                             if (newEvent?.data?.acknowledged) {
                               const sendMail = await axios.post(
                                 `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
@@ -1329,9 +1350,12 @@ const ExecutionMentorBookSchedule = ({
                                   to: `${selectedStudent?.email}`,
                                   templateType: "emailAction",
                                   templateName: "sheduleTaskStudent",
-                                  organizationId: selectedStudent?.organizationId,
+                                  organizationId:
+                                    selectedStudent?.organizationId,
                                   learner_name: selectedStudent?.name,
-                                  schedule_name: fullEventData?.scheduleName || fullEventData?.taskName,
+                                  schedule_name:
+                                    fullEventData?.scheduleName ||
+                                    fullEventData?.taskName,
                                   start_time: formattedStartTime,
                                   end_time: formattedEndTime,
                                   meeting_link: `${window.location.origin}/taskDetails/${idSchedule}?taskType=Schedule`,
@@ -1343,7 +1367,7 @@ const ExecutionMentorBookSchedule = ({
                                     }`, */
                                 }
                               );
-                              console.log("std mail ", sendMail);
+                              // console.log("std mail ", sendMail);
                               const sendMailAdmin = await axios.post(
                                 `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
                                 {
@@ -1353,11 +1377,14 @@ const ExecutionMentorBookSchedule = ({
                                   templateType: "emailAction",
                                   templateName: "sheduleTask",
                                   schedule_name: selectedSchedule,
-                                  organizationId: selectedStudent?.organizationId,
+                                  organizationId:
+                                    selectedStudent?.organizationId,
                                   start_time: formattedStartTime,
                                   end_time: formattedEndTime,
                                   meeting_link: adminUrl,
-                                  schedule_name: fullEventData?.scheduleName || fullEventData?.taskName,
+                                  schedule_name:
+                                    fullEventData?.scheduleName ||
+                                    fullEventData?.taskName,
                                   learner_name: selectedStudent?.name,
                                   learner_email: selectedStudent?.email,
                                   meeting_date: formattedDate,
@@ -1366,7 +1393,7 @@ const ExecutionMentorBookSchedule = ({
                                     }`, */
                                 }
                               );
-                              console.log("admin mail ", sendMailAdmin);
+                              // console.log("admin mail ", sendMailAdmin);
 
                               const newNotification = await axios.post(
                                 `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/notifications/addNotification`,
@@ -1403,7 +1430,7 @@ const ExecutionMentorBookSchedule = ({
                       }
                     } catch (error) {
                       console.error("An error occurred:", error);
-                      console.log(error?.response?.data?.message);
+                      // console.log(error?.response?.data?.message);
                       if (
                         error?.response?.data?.message ===
                         "Requested slot has been booked!"
@@ -1438,7 +1465,7 @@ const ExecutionMentorBookSchedule = ({
                   gapi.load("client", initiate);
                 } catch (error) {
                   console.error("An error occurred:", error);
-                  console.log(error?.response?.data?.message);
+                  // console.log(error?.response?.data?.message);
                   if (
                     error?.response?.data?.message ===
                     "Requested slot has been booked!"
@@ -1450,7 +1477,8 @@ const ExecutionMentorBookSchedule = ({
                       text: "Requested slot has been booked! Please try another slot.",
                     });
                   } else if (
-                    error?.response?.data?.message === "Calendar info not found!"
+                    error?.response?.data?.message ===
+                    "Calendar info not found!"
                   ) {
                     Loading().close();
                     await Swal.fire({
@@ -1468,16 +1496,20 @@ const ExecutionMentorBookSchedule = ({
                   }
                 }
               }
-            }
-            else if (checkScheduleCalendar?.data?.message === "Requested slot has been booked!") {
+            } else if (
+              checkScheduleCalendar?.data?.message ===
+              "Requested slot has been booked!"
+            ) {
               Loading().close();
               await Swal.fire({
                 icon: "error",
                 title: "Oops...",
                 text: "Requested slot has been booked! Please try another slot.",
               });
-            }
-            else if (checkScheduleCalendar?.data?.message === "Calendar info not found!") {
+            } else if (
+              checkScheduleCalendar?.data?.message ===
+              "Calendar info not found!"
+            ) {
               Loading().close();
               await Swal.fire({
                 icon: "error",
@@ -1486,7 +1518,6 @@ const ExecutionMentorBookSchedule = ({
               });
             }
             Loading().close();
-
           } catch (error) {
             Loading().close();
             console.error(
@@ -1528,7 +1559,7 @@ const ExecutionMentorBookSchedule = ({
       second: "2-digit",
     };
     const meetingStart = startDate.toLocaleString(undefined, options);
-    console.log(meetingStart);
+    // console.log(meetingStart);
     // Calculate end date by adding the duration to the start date
     const endDate = new Date(startDate.getTime() + meetingLength * 60000); // 60000 ms in a minute
 
@@ -1551,7 +1582,7 @@ const ExecutionMentorBookSchedule = ({
     const day = String(today.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
-  console.log("schedule ", scheduleEvents);
+  // console.log("schedule ", scheduleEvents);
   const isTimeSlotBusy = (timeSlot) => {
     for (const busySlot of busyTimeSlots) {
       if (
@@ -1577,11 +1608,11 @@ const ExecutionMentorBookSchedule = ({
     return false;
   };
   const handleDeleteSchedule = async (id) => {
-    console.log("clicked");
+    // console.log("clicked");
     const res = await axios.delete(
       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/schedule/taskId/${id}`
     );
-    console.log(res);
+    // console.log(res);
     if (res.data.result.acknowledged) {
       Swal.fire({
         title: "Deleted successfully!",
@@ -1592,7 +1623,7 @@ const ExecutionMentorBookSchedule = ({
   };
   const handleDialogClose = () => {
     // Your logic here to handle state change when dialog is closed
-    console.log("Dialog closed");
+    // console.log("Dialog closed");
     setPicked(false);
     // Add any state changes you want to handle here
   };
@@ -1827,7 +1858,7 @@ const ExecutionMentorBookSchedule = ({
                         className="text-[18px] font-sans font-[700] h-[45px] lg:h-[60px] w-full py-2 px-[24px] rounded-[14px] text-black focus:outline-none appearance-none"
                         name="time"
                         id="time"
-                      // defaultValue={taskData?.minimumTime}
+                        // defaultValue={taskData?.minimumTime}
                       >
                         <option className="hidden">Select Time</option>
                         {generateTimeOptions()}

@@ -23,7 +23,7 @@ const Aside = () => {
   const [toggleButton, setToggleButton] = useState(false);
   const { userInfo } = useContext(AuthContext);
   const { id } = useParams();
-  console.log("id", id);
+  // console.log("id", id);
   const navigate = useNavigate();
 
   const asideRef = useRef(null); // Create a ref for the aside element
@@ -54,7 +54,7 @@ const Aside = () => {
       .then((response) => {
         // setCourseData(response?.data);
 
-        console.log(response?.data);
+        // console.log(response?.data);
         setCourseFullName(response?.data.courseFullName);
         setCourseDescription(response?.data.courseDescription);
         setCourseThumbnail(response?.data.courseThumbnail);

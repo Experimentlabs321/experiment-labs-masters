@@ -34,7 +34,7 @@ const NormalLogin = () => {
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-  
+
   const location = useLocation();
   const from = location.state?.from || "/";
   const handleClickOpen = () => {
@@ -58,15 +58,15 @@ const NormalLogin = () => {
       });
   };
 
-  console.log(orgRootUrl);
-//   useEffect(() => {
-//     axios
-//       .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/organizations/${id}`)
-//       .then((response) => {
-//         setOrgData(response?.data);
-//       })
-//       .catch((error) => console.error(error));
-//   }, [id]);
+  // console.log(orgRootUrl);
+  //   useEffect(() => {
+  //     axios
+  //       .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/organizations/${id}`)
+  //       .then((response) => {
+  //         setOrgData(response?.data);
+  //       })
+  //       .catch((error) => console.error(error));
+  //   }, [id]);
   useEffect(() => {
     if (user?.email && redirectUser) {
       if (userInfo?.email && redirectUser) {
@@ -79,7 +79,7 @@ const NormalLogin = () => {
     Loading();
     e.preventDefault();
     const userAgent = window.navigator.userAgent;
-    console.log("shihab   ", window.navigator);
+    // console.log("shihab   ", window.navigator);
     const platform = window.navigator.platform;
     const randomString =
       Math.random().toString(20).substring(2, 14) +
@@ -88,7 +88,7 @@ const NormalLogin = () => {
     // const deviceID = `${userAgent}-${platform}-${randomString}`;
     // console.log("device id",deviceID)
     // console.log("platform",platform)
-    console.log("platform ", userAgent);
+    // console.log("platform ", userAgent);
 
     const form = e?.target;
     const email = form.email.value;
@@ -101,7 +101,7 @@ const NormalLogin = () => {
         }
       );
 
-      console.log(userDevice);
+      // console.log(userDevice);
 
       // Assuming your server returns a specific status code for device limit reached
       if (userDevice?.status === 200) {
@@ -126,7 +126,7 @@ const NormalLogin = () => {
     } catch (error) {
       Loading().close();
       // Handle any other errors that may occur during the Axios request
-      console.log(error?.response?.status);
+      // console.log(error?.response?.status);
 
       if (error?.response?.status === 400) {
         Swal.fire({
@@ -147,7 +147,9 @@ const NormalLogin = () => {
 
   const saveUser = async (email) => {
     try {
-      fetch(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/users?email=${email}`)
+      fetch(
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users?email=${email}`
+      )
         .then((res) => res.json())
         .then((data) => {
           Loading().close();
@@ -160,7 +162,7 @@ const NormalLogin = () => {
   const handleLogout = () => {
     logOut()
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         //navigate("/");
       })
       .catch((error) => console.error(error));
@@ -189,7 +191,7 @@ const NormalLogin = () => {
               }
             );
 
-            console.log(userDevice);
+            // console.log(userDevice);
 
             // Assuming your server returns a specific status code for device limit reached
             if (userDevice?.status === 200) {
@@ -208,7 +210,7 @@ const NormalLogin = () => {
             }
           } catch (error) {
             // Handle any other errors that may occur during the Axios request
-            console.log(error?.response?.status);
+            // console.log(error?.response?.status);
 
             if (error?.response?.status === 400) {
               // Swal.fire({
@@ -401,10 +403,7 @@ const NormalLogin = () => {
                 <div className="flex justify-center">
                   <p className="font-medium text-lg">
                     Don't have an account?{" "}
-                    <Link
-                      to={`/register`}
-                      className="text-blue cursor-pointer"
-                    >
+                    <Link to={`/register`} className="text-blue cursor-pointer">
                       Register
                     </Link>
                   </p>

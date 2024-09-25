@@ -58,7 +58,7 @@ const CourseAnalysis = () => {
   const [fileOpen, setFileOpen] = useState(false);
   const [file, setFile] = useState();
   const { id } = useParams();
-  console.log(id);
+  // console.log(id);
   const navigate = useNavigate();
 
   const TaskTypeInfo = [
@@ -167,7 +167,7 @@ const CourseAnalysis = () => {
 
     if (newChapter?.data?.acknowledged) {
       toast.success("Chapter added Successfully");
-      console.log(newChapter?.data);
+      // console.log(newChapter?.data);
       setChapters([
         ...chapters,
         { ...chapter, _id: newChapter?.data?.insertedId },
@@ -176,7 +176,7 @@ const CourseAnalysis = () => {
       event.target.reset();
     }
 
-    console.log("Add chapter----->", chapter);
+    // console.log("Add chapter----->", chapter);
   };
 
   const handleEditChapterName = async (event) => {
@@ -216,7 +216,7 @@ const CourseAnalysis = () => {
       confirmButtonText: "Delete",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        console.log("Delete functionality...", task);
+        // console.log("Delete functionality...", task);
         let taskTypeForAPI;
         switch (task?.taskType) {
           case "Assignment":
@@ -299,7 +299,7 @@ const CourseAnalysis = () => {
             );
           selectedChapterAndTaskToDeleteTask.task.batches = remainingBatches;
           setSelectedBatchesToDeleteTask([]);
-          console.log(selectedChapterAndTaskToDeleteTask.task);
+          // console.log(selectedChapterAndTaskToDeleteTask.task);
           fetch(
             `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/${taskTypeForAPI}/taskId/${task?.taskId}`,
             {
@@ -330,7 +330,7 @@ const CourseAnalysis = () => {
         .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/${id}`)
         .then((response) => {
           setCourseData(response?.data);
-          console.log(response?.data);
+          // console.log(response?.data);
         })
         .catch((error) => console.error(error));
   }, [id]);
@@ -366,9 +366,9 @@ const CourseAnalysis = () => {
           setuserTime1(Time1);
           setuserTime2(Time2);
 
-          console.log(Time1);
-          console.log(Time2);
-          console.log("details ", courseData);
+          // console.log(Time1);
+          // console.log(Time2);
+          // console.log("details ", courseData);
           Loading().close();
         })
         .catch((error) => {
@@ -437,7 +437,7 @@ const CourseAnalysis = () => {
             const batchId = userInfo?.courses?.find(
               (item) => item?.courseId === courseData?._id
             )?.batchId;
-            console.log(batchId);
+            // console.log(batchId);
             response?.data?.forEach((item) => {
               let singleChapter = { ...item };
               singleChapter.tasks = [];
@@ -448,13 +448,13 @@ const CourseAnalysis = () => {
                   )
                 ) {
                   singleChapter.tasks.push(singleTask);
-                  console.log(item);
+                  // console.log(item);
                 }
               });
               chapterWithFilteredTask.push(singleChapter);
             });
             setChapters(chapterWithFilteredTask);
-            console.log("tasks =======>", chapterWithFilteredTask[0]?.tasks);
+            // console.log("tasks =======>", chapterWithFilteredTask[0]?.tasks);
           }
           setIsLoading(false);
         })
@@ -520,7 +520,7 @@ const CourseAnalysis = () => {
     setFile(file);
   };
 
-  console.log(courseDetails);
+  // console.log(courseDetails);
 
   return (
     <div>

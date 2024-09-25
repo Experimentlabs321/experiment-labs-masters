@@ -30,7 +30,7 @@ const Navbar = (props) => {
   const paymentNavbarLogo = localStorage.getItem("paymentNavbarLogo");
   const orgRootUrl = localStorage.getItem("orgRootUrl");
 
-  console.log(organizationData);
+  // console.log(organizationData);
   localStorage.setItem("organizationFavicon", organizationData?.favicon);
   localStorage.setItem(
     "paymentNavbarLogo",
@@ -44,7 +44,7 @@ const Navbar = (props) => {
   const handleLogout = () => {
     logOut()
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         // navigate("/");
       })
       .catch((error) => console.error(error));

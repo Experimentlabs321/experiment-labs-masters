@@ -73,7 +73,7 @@ const Feedback = () => {
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getFeedbackSubDetailsByOrganizationAndName/feedbackSettings/organizationsId/${userInfo?.organizationId}`
         )
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           setItemFeedbackSettingDetails(response?.data);
         })
         .finally(() => {
@@ -151,7 +151,7 @@ const Feedback = () => {
     }
     setIsOpenFeedbackItemAddForm(false);
   };
-  console.log(feedbackCategories);
+  // console.log(feedbackCategories);
 
   const handleItemDelete = async (name) => {
     const deleteData = {
@@ -160,7 +160,7 @@ const Feedback = () => {
       courseId: selectedCourse?._id,
       feedbackItemName: name,
     };
-    console.log(deleteData);
+    // console.log(deleteData);
     await Swal.fire({
       title: itemFeedbackSettingDetails?.areYouSure
         ? itemFeedbackSettingDetails?.areYouSure
@@ -187,7 +187,7 @@ const Feedback = () => {
           }
         )
           .then((result) => {
-            console.log(result);
+            // console.log(result);
             if (result?.ok) {
               toast.success(
                 itemFeedbackSettingDetails?.itemDeletedSuccessfully

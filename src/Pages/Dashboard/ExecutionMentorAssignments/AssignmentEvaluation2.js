@@ -37,7 +37,7 @@ const AssignmentEvaluation2 = () => {
   //  console.log(id)
   const navigate = useNavigate();
   const { userInfo, user } = useContext(AuthContext);
-  console.log(userInfo);
+  // console.log(userInfo);
 
   //console.log(user.displayName);
   // console.log(user.photoURL);
@@ -73,7 +73,7 @@ const AssignmentEvaluation2 = () => {
     setSelectedFile(file);
   };
 
-  console.log(selectedFile);
+  // console.log(selectedFile);
   const handleTabClick = (tab) => {
     setSelectedTab(tab);
   };
@@ -132,7 +132,7 @@ const AssignmentEvaluation2 = () => {
       .catch((error) => console.error(error));
   }, [assignment]);
 
-  console.log(assignment);
+  // console.log(assignment);
 
   useEffect(() => {
     Loading();
@@ -187,8 +187,8 @@ const AssignmentEvaluation2 = () => {
 
   const handleClickSkill = (skillName) => {
     setSelectedSkillName(skillName);
-    console.log(skillName);
-    console.log(changeCategoryName);
+    // console.log(skillName);
+    // console.log(changeCategoryName);
     if (
       mainAssignments?.skillParameterData ||
       mainAssignments?.earningParameterData
@@ -301,7 +301,7 @@ const AssignmentEvaluation2 = () => {
         //   taskId: assignment?.taskId
       };
 
-      console.log(manageAssignment);
+      // console.log(manageAssignment);
       const addMarks = await axios.post(
         // `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${id}/addResult`,
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/${id}/result`,
@@ -336,7 +336,7 @@ const AssignmentEvaluation2 = () => {
         sendData
       );
 
-      console.log(submitCompletion);
+      // console.log(submitCompletion);
     }
   };
 
@@ -394,7 +394,7 @@ const AssignmentEvaluation2 = () => {
       dateAndTime: new Date(),
     };
 
-    console.log(manageFeedback);
+    // console.log(manageFeedback);
     Loading();
     const sendMail = await axios.post(
       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
@@ -412,7 +412,7 @@ const AssignmentEvaluation2 = () => {
       }
     );
 
-    console.log(sendMail);
+    // console.log(sendMail);
 
     const addFeedback = await axios.post(
       // `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${id}/addResult`,
@@ -450,7 +450,7 @@ const AssignmentEvaluation2 = () => {
       sendData
     );
 
-    console.log(submitCompletion, sendData);
+    // console.log(submitCompletion, sendData);
   };
   const handleSubmitFeedback = async (event) => {
     event.preventDefault();
@@ -468,7 +468,7 @@ const AssignmentEvaluation2 = () => {
       dateAndTime: new Date(),
     };
 
-    console.log(manageFeedback);
+    // console.log(manageFeedback);
     Loading();
     const sendMail = await axios.post(
       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
@@ -486,7 +486,7 @@ const AssignmentEvaluation2 = () => {
       }
     );
 
-    console.log(sendMail);
+    // console.log(sendMail);
 
     const addFeedback = await axios.post(
       //  `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${id}/addReview`,
@@ -526,11 +526,11 @@ const AssignmentEvaluation2 = () => {
       sendData
     );
 
-    console.log(submitCompletion, sendData);
+    // console.log(submitCompletion, sendData);
   };
 
   const handleAcceptOrReject = async (status) => {
-    console.log(status);
+    // console.log(status);
     const manageStatus = {
       status,
       resultSubmitterName: user.displayName,
@@ -538,7 +538,7 @@ const AssignmentEvaluation2 = () => {
       dateAndTime: new Date(),
     };
 
-    console.log(manageStatus);
+    // console.log(manageStatus);
     Loading();
     const sendMail = await axios.post(
       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
@@ -556,7 +556,7 @@ const AssignmentEvaluation2 = () => {
       }
     );
 
-    console.log(sendMail);
+    // console.log(sendMail);
 
     const addFeedback = await axios.post(
       //`${process.env.REACT_APP_BACKEND_API}/submitAssignment/${id}/addResult`,
@@ -595,7 +595,7 @@ const AssignmentEvaluation2 = () => {
       sendData
     );
 
-    console.log(submitCompletion, sendData);
+    // console.log(submitCompletion, sendData);
   };
   const handleDownload = async (fileUrl) => {
     try {
@@ -630,7 +630,7 @@ const AssignmentEvaluation2 = () => {
       saveAs(blob, fileName);
     } catch (error) {
       if (axios.isCancel(error)) {
-        console.log("Download cancelled:", error.message);
+        // console.log("Download cancelled:", error.message);
       } else {
         console.error("Error downloading the file:", error);
       }
@@ -680,7 +680,7 @@ const AssignmentEvaluation2 = () => {
     };
   }, [assignment?.fileUrl, cancelTokenSource]);
 
-  console.log(assignment?.fileUrl);
+  // console.log(assignment?.fileUrl);
   const [iframeLoader, setIframeLoaded] = useState(false);
   const [progress, setProgress] = useState(5);
   const [key, setKey] = useState(0);
@@ -698,7 +698,7 @@ const AssignmentEvaluation2 = () => {
         });
       }, 5000);
 
-      console.log(key);
+      // console.log(key);
 
       return () => {
         clearInterval(timer);
@@ -1099,7 +1099,7 @@ const AssignmentEvaluation2 = () => {
                         width="90%"
                         height="80vh"
                         onLoad={() => {
-                          console.log("iframe loaded");
+                          // console.log("iframe loaded");
                           setProgress(100);
                           setInterval(() => {
                             setIframeLoaded(true);

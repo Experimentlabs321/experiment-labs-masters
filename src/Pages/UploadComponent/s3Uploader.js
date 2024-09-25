@@ -28,7 +28,6 @@
 import AWS from "aws-sdk";
 import { v4 as uuidv4 } from "uuid";
 
-
 AWS.config.update({
   accessKeyId: process.env.REACT_APP_accessKeyId,
   secretAccessKey: process.env.REACT_APP_secretAccessKey,
@@ -40,10 +39,10 @@ AWS.config.update({
 const s3 = new AWS.S3();
 
 const uploadFileToS3 = (file, onProgress) => {
-  console.log("Uploading file to S3...");
+  // console.log("Uploading file to S3...");
 
   const fileKey = `${uuidv4()}-${Date.now()}-${file.name}`;
-  
+
   const params = {
     Bucket: "experiment-labs-my-bucket",
     Key: fileKey,
@@ -54,12 +53,12 @@ const uploadFileToS3 = (file, onProgress) => {
   return new Promise((resolve, reject) => {
     // Create a managed upload instance
     const managedUpload = s3.upload(params);
-    console.log(managedUpload);
+    // console.log(managedUpload);
     // Attach the httpUploadProgress event listener to the managed upload
     managedUpload.on("httpUploadProgress", (progress) => {
-      console.log("Progress event:", progress);
+      // console.log("Progress event:", progress);
       const percentage = Math.round((progress.loaded / progress.total) * 100);
-      console.log("Progress Percentage:", percentage);
+      // console.log("Progress Percentage:", percentage);
       onProgress(percentage); // Call the onProgress callback with the percentage
     });
 
@@ -67,9 +66,12 @@ const uploadFileToS3 = (file, onProgress) => {
     managedUpload
       .promise()
       .then((response) => {
-        console.log("Upload successful: ", response);
+        // console.log("Upload successful: ", response);
         resolve(`${process.env.REACT_APP_file_base_url}/${response.Key}`); // Resolve the promise with the file URL
-        console.log("Resolve Link ===================> ",`${process.env.REACT_APP_file_base_url}/${response.Key}`);
+        // console.log(
+        //   "Resolve Link ===================> ",
+        //   `${process.env.REACT_APP_file_base_url}/${response.Key}`
+        // );
       })
       .catch((error) => {
         console.error("Upload failed:", error);

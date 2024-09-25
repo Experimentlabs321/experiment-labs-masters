@@ -204,7 +204,7 @@ const WeekConfiguration = ({
       event.target.reset();
     }
 
-    console.log("Add chapter----->", week);
+    // console.log("Add chapter----->", week);
   };
 
   const handleEditWeekName = async (event) => {
@@ -223,7 +223,7 @@ const WeekConfiguration = ({
       return total || 0;
     };
 
-    console.log(totalAddedCombinedWeighted());
+    // console.log(totalAddedCombinedWeighted());
 
     if (
       totalAddedCombinedWeighted() === 100 ||
@@ -300,7 +300,7 @@ const WeekConfiguration = ({
       );
     }
   };
-  console.log(tasksNumber, totalGamificationValue());
+  // console.log(tasksNumber, totalGamificationValue());
   return (
     <div
       className={`relative inline-block ${

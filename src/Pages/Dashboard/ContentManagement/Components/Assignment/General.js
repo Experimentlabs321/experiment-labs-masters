@@ -87,7 +87,7 @@ const General = ({
     }
   };
 
-  console.log(schedule);
+  // console.log(schedule);
   return (
     <div>
       <div className="dropdown-menu mt-[71px] mb-[45px] border-b-2 ">

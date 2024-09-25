@@ -286,7 +286,7 @@ const StartTest = () => {
   const handleJumpQuestion = (i) => {
     const myForm = document.getElementById("myForm");
     myForm.reset();
-    console.log(questions);
+    // console.log(questions);
     setSelectedOption("");
     setCurrentQuestion(i);
   };
@@ -306,7 +306,7 @@ const StartTest = () => {
 
   if (submittedQuestions)
     submittedQuestion = JSON.parse(submittedQuestions)[currentQuestion];
-  console.log(submittedQuestions);
+  // console.log(submittedQuestions);
   return (
     <div>
       <div className="flex flex-col items-center justify-center">

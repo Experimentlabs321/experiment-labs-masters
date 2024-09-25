@@ -130,7 +130,7 @@ const ItemEarningParameter = ({
       setSelectedItems(filterItems);
     }
   }, [forEdit, selectedData]);
-  console.log(selectedCategories, selectedItems);
+  // console.log(selectedCategories, selectedItems);
   return (
     <div>
       <div className="">
@@ -463,7 +463,7 @@ const ItemEarningParameter = ({
                       setProceed(false);
                       setEarningItemNumberingSection(true);
                       setEarningItemNumberingView(true);
-                      console.log(selectedData);
+                      // console.log(selectedData);
                     }}
                     className="bg-[#2EB0FB] cursor-pointer rounded-lg px-4 py-1 font-semibold text-[#fff]"
                   >
@@ -475,7 +475,12 @@ const ItemEarningParameter = ({
           )}
           {earningItemNumberingView && (
             <div className=" mt-2 rounded border mb-5 flex me-10 ">
-              <form onSubmit={() => console.log("data")} className="w-full">
+              <form
+                onSubmit={() => {
+                  // console.log("data")
+                }}
+                className="w-full"
+              >
                 <div className="grid grid-cols-12 gap-4 2xl:gap-6 p-8">
                   <div className=" col-span-4 ">
                     {categories?.map((category) => (

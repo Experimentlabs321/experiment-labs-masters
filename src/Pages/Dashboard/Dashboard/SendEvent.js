@@ -1135,11 +1135,11 @@ function SendEvent() {
       );
       setStartTime(combinedDateTime.toISOString());
       setEndTime(endDateTime.toISOString());
-      console.log(
-        "Combined Date and Time:",
-        combinedDateTime.toISOString(),
-        endDateTime.toISOString()
-      );
+      // console.log(
+      //   "Combined Date and Time:",
+      //   combinedDateTime.toISOString(),
+      //   endDateTime.toISOString()
+      // );
       // You can now use combinedDateTime as needed
     } else {
       console.error("Both date and time must be selected.");
@@ -1217,7 +1217,7 @@ function SendEvent() {
               },
             ],
           };
-          console.log(event);
+          // console.log(event);
           // Handle the new access token and possibly a new refresh token
           const newAccessToken = data.access_token;
           function initiate() {
@@ -1233,7 +1233,7 @@ function SendEvent() {
               })
               .then(
                 (response) => {
-                  console.log(response);
+                  // console.log(response);
                   return [true, response];
                 },
                 function (err) {

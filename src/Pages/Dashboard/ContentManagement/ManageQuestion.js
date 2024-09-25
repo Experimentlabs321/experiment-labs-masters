@@ -249,12 +249,12 @@ const ManageQuestion = ({
       Loading().close();
       setOpenAddFromQuesBank(false);
     }
-    console.log(updatedQuizObject);
+    // console.log(updatedQuizObject);
     Loading().close();
   };
 
   const handleAddSelQues = () => {
-    console.log(quizData);
+    // console.log(quizData);
     updateQuestionsForBatch(
       selectedBatchForAddingQuestion?._id,
       selectedOptionsQuestionFromQuesBank
@@ -359,12 +359,12 @@ const ManageQuestion = ({
   }, [selectedBatchesForShowingQuestion]);
 
   const filterQuestionsForSelectedBatches = () => {
-    console.log(selectedBatchesForShowingQuestion);
+    // console.log(selectedBatchesForShowingQuestion);
     const filteredQuestions = quizData?.questions?.filter((batch) =>
       selectedBatches.includes(batch?.batchId)
     )?.questions;
     setQuestionsForSelectedBatches(filteredQuestions);
-    console.log(filteredQuestions);
+    // console.log(filteredQuestions);
   };
 
   const handleOptionChangeBatch = (event, optionValue) => {
@@ -426,7 +426,7 @@ const ManageQuestion = ({
         });
   }, [userInfo?.organizationId, addQues]);
 
-  console.log(questionBankQuestions);
+  // console.log(questionBankQuestions);
   const [expandedIndex, setExpandedIndex] = useState(null);
 
   const handleToggleRow = (index) => {
@@ -522,7 +522,7 @@ const ManageQuestion = ({
           { questions: updatedQuestions }
         )
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           Loading().close();
           setQuizQuestions(quizQuestions?.filter((item) => item?._id !== id));
           toast.success("Quiz Updated Successfully");
@@ -558,22 +558,22 @@ const ManageQuestion = ({
         handle: ".sortable-handle",
         onEnd: async (event) => {
           const { oldIndex, newIndex } = event;
-          console.log(
-            quizQuestions[event.oldIndex],
-            quizQuestions[event.newIndex]
-          );
-          console.log(
-            `Moved from index ${event.oldIndex} to ${event.newIndex}`
-          );
+          // console.log(
+          //   quizQuestions[event.oldIndex],
+          //   quizQuestions[event.newIndex]
+          // );
+          // console.log(
+          //   `Moved from index ${event.oldIndex} to ${event.newIndex}`
+          // );
           Loading();
           // Update the chapters state based on the rearrangement
           const updateQuestions = async () => {
             setQuizQuestionsWithBatches((prevQuestions) => {
-              console.log(prevQuestions);
+              // console.log(prevQuestions);
               const updatedQuestions = [...prevQuestions];
               const [movedQuestion] = updatedQuestions.splice(oldIndex, 1);
               updatedQuestions.splice(newIndex, 0, movedQuestion);
-              console.log(updatedQuestions);
+              // console.log(updatedQuestions);
               try {
                 axios
                   .put(
@@ -581,7 +581,7 @@ const ManageQuestion = ({
                     { questions: updatedQuestions }
                   )
                   .then((response) => {
-                    console.log(response);
+                    // console.log(response);
                     Loading().close();
                     toast.success("Quiz Updated Successfully");
                   })
@@ -599,7 +599,7 @@ const ManageQuestion = ({
               const updatedQuestions = [...prevQuestions];
               const [movedQuestion] = updatedQuestions.splice(oldIndex, 1);
               updatedQuestions.splice(newIndex, 0, movedQuestion);
-              console.log(updatedQuestions);
+              // console.log(updatedQuestions);
               return updatedQuestions;
             });
           };
@@ -639,7 +639,7 @@ const ManageQuestion = ({
     }
   }, [quizQuestions]);
 
-  console.log(quizData);
+  // console.log(quizData);
 
   return (
     <div>
@@ -963,7 +963,7 @@ const ManageQuestion = ({
                                   <button
                                     onClick={(e) => {
                                       e.preventDefault();
-                                      console.log(questionType);
+                                      // console.log(questionType);
                                       setAddQues(true);
                                     }}
                                     className="px-10 py-2 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"
@@ -1275,7 +1275,7 @@ const ManageQuestion = ({
                               <div className="flex justify-center mt-10">
                                 <button
                                   onClick={() => {
-                                    console.log("add");
+                                    // console.log("add");
                                     handleAddSelQues();
                                   }}
                                   className="px-10 py-2 bg-[#3E4DAC] text-[#fff] text-xl font-bold rounded-lg"

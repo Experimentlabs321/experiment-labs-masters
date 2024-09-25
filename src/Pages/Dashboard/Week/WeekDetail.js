@@ -118,7 +118,7 @@ const WeekDetail = ({
     JSON.parse(localStorage.getItem("currentWeek"))
   );
   const { id } = useParams();
-  console.log(id);
+  // console.log(id);
   const [isLoading, setIsLoading] = useState(true);
   const [taskData, setTaskData] = useState({});
   const handleNext = () => {
@@ -133,9 +133,9 @@ const WeekDetail = ({
     } else {
       setOpenTask(week?.lecture[lectureNo]?.tasks[tasksNo + 1]);
       setTasksNo(tasksNo + 1);
-      console.log(tasksNo);
+      // console.log(tasksNo);
     }
-    console.log(openTask);
+    // console.log(openTask);
   };
   const handlePrevious = () => {
     if (tasksNo - 1 < 0) {
@@ -153,14 +153,14 @@ const WeekDetail = ({
     } else {
       setOpenTask(week?.lecture[lectureNo]?.tasks[tasksNo - 1]);
       setTasksNo(tasksNo - 1);
-      console.log(tasksNo);
+      // console.log(tasksNo);
     }
     // setOpenTask(week?.lecture[lectureNo]?.tasks[tasksNo]);
   };
 
   useEffect(() => {
     let taskTypeForAPI;
-    console.log(openTask?.taskType);
+    // console.log(openTask?.taskType);
     switch (openTask?.taskType) {
       case "Assignment":
         taskTypeForAPI = "assignments";

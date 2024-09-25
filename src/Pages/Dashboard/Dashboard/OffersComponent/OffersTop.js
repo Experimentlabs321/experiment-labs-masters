@@ -27,7 +27,6 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
   const [bundleDropdown, setBundleDropdown] = useState(false);
   const [selectedBundles, setSelectedBundles] = useState([]);
   const [bundleIds, setBundleIds] = useState([]);
-  
 
   // State for validation errors
   const [errors, setErrors] = useState({});
@@ -53,7 +52,7 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
       .catch((error) => console.error(error));
   }, [userInfo]);
 
-  console.log(availableCourses);
+  // console.log(availableCourses);
 
   const generateRandomCode = () => {
     const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -119,7 +118,7 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
       setCode(newCode);
     }
 
-    console.log(validationErrors);
+    // console.log(validationErrors);
 
     // If there are no validation errors, you can proceed with the form submission
     if (Object.keys(validationErrors).length === 0 && code.length >= 1) {
@@ -141,7 +140,7 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
         disabled: false,
       };
 
-      console.log(newOffer);
+      // console.log(newOffer);
 
       const res = await axios.post(
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/offers`,
@@ -190,7 +189,7 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/courseId/${selectedCourse._id}`
     );
     selectedCourse.batches = data;
-    console.log("Selected Course", selectedCourse);
+    // console.log("Selected Course", selectedCourse);
 
     if (!selectedCourses?.includes(selectedCourse)) {
       setSelectedCourses([...selectedCourses, selectedCourse]);
@@ -232,7 +231,7 @@ const OffersTop = ({ offerData, setOfferData, getAllOffers }) => {
     if (!selectedBatches?.includes(batch._id)) {
       setSelectedBatches([...selectedBatches, batch._id]);
     } else {
-      console.log(selectedBatches, batch._id);
+      // console.log(selectedBatches, batch._id);
       const newSelectedBatches = selectedBatches.filter(
         (removeBatch) => removeBatch !== batch._id
       );

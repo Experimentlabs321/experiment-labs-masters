@@ -141,7 +141,7 @@ const CreateCertificate = () => {
         const parentWidth = sectionRef.current?.clientWidth;
         const parentHeight = sectionRef.current?.clientHeight;
 
-        console.log(parentWidth, parentHeight);
+        // console.log(parentWidth, parentHeight);
 
         const widthRatio = parentWidth / width;
         const heightRatio = height / parentHeight;
@@ -152,7 +152,7 @@ const CreateCertificate = () => {
         sectionRef.current.style.width = `${parentWidth}px`;
 
         setZoom(initialZoom + 0.2);
-        console.log(initialZoom);
+        // console.log(initialZoom);
       };
     };
 

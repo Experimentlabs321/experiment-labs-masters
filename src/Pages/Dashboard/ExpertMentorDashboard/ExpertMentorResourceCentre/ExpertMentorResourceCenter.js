@@ -93,7 +93,7 @@ const ExpertMentorResourceCentre = () => {
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/courseId/${courseId}`
       );
       setBatches(response?.data);
-      console.log("response =========>", response?.data);
+      // console.log("response =========>", response?.data);
     } catch (error) {
       // console.error("Error fetching data:", error);
     }

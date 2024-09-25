@@ -49,7 +49,7 @@ const MyStudents = () => {
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getMyLearnersSubDetailsByOrganizationAndName/myLearners/organizationsId/${userInfo?.organizationId}`
         )
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           setItemDetails(response?.data);
         })
         .finally(() => {
@@ -84,7 +84,6 @@ const MyStudents = () => {
         setCourses([]); // Set an empty array in case of error
       });
   }, [userInfo]);
-  
 
   useEffect(() => {
     if (selectedCourse?._id)
@@ -140,14 +139,14 @@ const MyStudents = () => {
         // }`
       )
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         // response?.data?.students.reverse();
         setProgress(100);
         if (paidStudents) {
           const paidStudents = response?.data?.students?.filter(
             (student) => student?.courses && student?.courses[0]
           );
-          console.log(paidStudents);
+          // console.log(paidStudents);
           setAllMyStudents(paidStudents);
           setFilteredStudents(paidStudents);
           setTotalPages(response?.data?.totalPages);
@@ -180,7 +179,7 @@ const MyStudents = () => {
       );
       setProgress(100);
       const data = await response.json();
-      console.log(data);
+      // console.log(data);
       setFilteredStudents(data.students);
       setTotalPages(data?.totalPages);
       setLoading(false);
@@ -240,7 +239,7 @@ const MyStudents = () => {
   };
 
   const handleExecutionMentorSelectChange = (mentor, e) => {
-    console.log(e.target.checked, mentor);
+    // console.log(e.target.checked, mentor);
     if (e.target.checked) {
       setSelectedExecutionMentorsForEditOrAssign([
         {
@@ -258,14 +257,14 @@ const MyStudents = () => {
     Loading();
 
     if (selectedExecutionMentorsForEditOrAssign?.length > 0) {
-      console.log(selectedExecutionMentorsForEditOrAssign);
+      // console.log(selectedExecutionMentorsForEditOrAssign);
       const newAssign = await axios.put(
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/learnerId/${learnerId}/assign-executionMentor`,
         // `http://localhost:5000/api/v1/users/learnerId/${learnerId}/assign-executionMentor`,
         { executionMentors: selectedExecutionMentorsForEditOrAssign }
       );
 
-      console.log(newAssign);
+      // console.log(newAssign);
       if (newAssign) {
         toast.success("Mentor Added Successfully!");
         filteredStudents[index].executionMentors =

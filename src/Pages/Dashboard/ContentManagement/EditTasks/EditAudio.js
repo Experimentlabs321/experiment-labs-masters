@@ -187,7 +187,7 @@ const EditAudio = () => {
     let fileUrl = "";
     if (selectedFile) fileUrl = await uploadFileToS3(selectedFile);
     const form = event.target;
-    console.log(form.audioTopicName);
+    // console.log(form.audioTopicName);
     const audioTopicName = form.audioTopicName?.value;
 
     const ManageAudio = {
@@ -209,13 +209,13 @@ const EditAudio = () => {
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/audios/taskId/${audioData?._id}`,
         ManageAudio
       );
-      console.log(newTask);
+      // console.log(newTask);
 
       if (newTask?.data?.acknowledged) {
         toast.success("Audio Edited Successfully");
       }
 
-      console.log(ManageAudio);
+      // console.log(ManageAudio);
     }
     Loading().close();
     navigate(-1);

@@ -1,29 +1,22 @@
 //PointsRedemptions.js
 
-import React, {
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React, { useContext, useEffect, useState } from "react";
 
-import axios from 'axios';
-import { toast } from 'react-hot-toast';
-import Swal from 'sweetalert2';
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import Swal from "sweetalert2";
 
-import AddSharpIcon from '@mui/icons-material/AddSharp';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import SearchIcon from '@mui/icons-material/Search';
-import Badge from '@mui/material/Badge';
+import AddSharpIcon from "@mui/icons-material/AddSharp";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import SearchIcon from "@mui/icons-material/Search";
+import Badge from "@mui/material/Badge";
 
-import UploadingImg from '../../../assets/PointsRedemptions/uploadimg.png';
-import { AuthContext } from '../../../contexts/AuthProvider';
-import Layout from '../Layout';
-import AddRedemptionPointItemForm
-  from './RedemptionLogicsComponents/AddRedemptionPointItemForm';
-import EditRedemptionItemForm
-  from './RedemptionLogicsComponents/EditRedemptionItemForm';
-import SelectRedemptionCategory
-  from './RedemptionLogicsComponents/SelectRedemptionCategory';
+import UploadingImg from "../../../assets/PointsRedemptions/uploadimg.png";
+import { AuthContext } from "../../../contexts/AuthProvider";
+import Layout from "../Layout";
+import AddRedemptionPointItemForm from "./RedemptionLogicsComponents/AddRedemptionPointItemForm";
+import EditRedemptionItemForm from "./RedemptionLogicsComponents/EditRedemptionItemForm";
+import SelectRedemptionCategory from "./RedemptionLogicsComponents/SelectRedemptionCategory";
 
 const RedemptionLogics = () => {
   const { userInfo } = useContext(AuthContext);
@@ -53,10 +46,8 @@ const RedemptionLogics = () => {
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getPointsAndRedemptionsSubDetailsByOrganizationAndName/redemptionLogic/organizationsId/${userInfo?.organizationId}`
         )
         .then((response) => {
-
-          console.log(response)
+          // console.log(response)
           setItemDetails(response?.data);
-
         })
         .finally(() => {
           setLoading(false);
@@ -64,7 +55,7 @@ const RedemptionLogics = () => {
     }
     setLoading(false);
   }, [userInfo]);
-  console.log(itemDetails)
+  // console.log(itemDetails)
 
   useEffect(() => {
     axios
@@ -118,10 +109,14 @@ const RedemptionLogics = () => {
       courseId: selectedCourse?._id,
       redemptionItemName: name,
     };
-    console.log(deleteData);
+    // console.log(deleteData);
     await Swal.fire({
-      title: itemDetails?.areYouSure ? itemDetails?.areYouSure : "Are you sure?",
-      text: itemDetails?.onceDeletedTheItemWillNotRecover ? itemDetails?.onceDeletedTheItemWillNotRecover : "Once deleted, the item will not recover!",
+      title: itemDetails?.areYouSure
+        ? itemDetails?.areYouSure
+        : "Are you sure?",
+      text: itemDetails?.onceDeletedTheItemWillNotRecover
+        ? itemDetails?.onceDeletedTheItemWillNotRecover
+        : "Once deleted, the item will not recover!",
       icon: "warning",
       buttons: true,
       showCancelButton: true,
@@ -130,7 +125,7 @@ const RedemptionLogics = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         fetch(
-        //  `${process.env.REACT_APP_SERVERLESS_API}/deleteRedemptionItem`,
+          //  `${process.env.REACT_APP_SERVERLESS_API}/deleteRedemptionItem`,
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/redemptionCategories/redemptionItems`,
           {
             method: "DELETE",
@@ -138,11 +133,16 @@ const RedemptionLogics = () => {
               "Content-Type": "application/json",
             },
             body: JSON.stringify(deleteData),
-          })
+          }
+        )
           .then((result) => {
-            console.log(result);
+            // console.log(result);
             if (result?.ok) {
-              toast.success(itemDetails?.itemDeletedSuccessfully ? itemDetails?.itemDeletedSuccessfully : "Item Deleted Successfully!");
+              toast.success(
+                itemDetails?.itemDeletedSuccessfully
+                  ? itemDetails?.itemDeletedSuccessfully
+                  : "Item Deleted Successfully!"
+              );
               const remainingItems =
                 selectedRedemptionCategory?.redemptionItems?.filter(
                   (item) => item?.redemptionItemName !== name
@@ -217,8 +217,9 @@ const RedemptionLogics = () => {
 
         <div className="flex items-center justify-between container mx-auto px-4 gap-7 pt-20 lg:pt-10 ">
           <div className="UserManagement origin-top-left rotate-[-0.51deg] text-zinc-500 text-[30px] font-medium">
-            {itemDetails?.redemptionLogics ? itemDetails?.redemptionLogics : "Redemption Logics"}
-
+            {itemDetails?.redemptionLogics
+              ? itemDetails?.redemptionLogics
+              : "Redemption Logics"}
           </div>
           <div className="Input w-[425px] h-16 relative bg-slate-100 rounded-[40px] shadow-inner">
             <input
@@ -236,25 +237,28 @@ const RedemptionLogics = () => {
         <div className="px-4 mt-[40px]">
           <div>
             <h1 className=" text-[#737373] text-[24px] font-[500] mb-2 ">
-              {itemDetails?.selectCourse ? itemDetails?.selectCourse : "Select Course"}
-
+              {itemDetails?.selectCourse
+                ? itemDetails?.selectCourse
+                : "Select Course"}
             </h1>
             <div className="flex flex-wrap">
               {!courses[0] && (
                 <div
                   className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
                 >
-                  {itemDetails?.noCourseAddedYet ? itemDetails?.noCourseAddedYet : "No course added yet!"}
-
+                  {itemDetails?.noCourseAddedYet
+                    ? itemDetails?.noCourseAddedYet
+                    : "No course added yet!"}
                 </div>
               )}
               {courses?.map((item, index) => (
                 <button
                   key={index}
-                  className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 ${selectedCourse?._id === item?._id
-                    ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
-                    : "text-[#949494]"
-                    }`}
+                  className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 ${
+                    selectedCourse?._id === item?._id
+                      ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
+                      : "text-[#949494]"
+                  }`}
                   onClick={() => handleSelectCourse(item)}
                 >
                   {item?.courseFullName}
@@ -280,7 +284,9 @@ const RedemptionLogics = () => {
                 Swal.fire({
                   icon: "error",
                   title: "Oops...",
-                  text: itemDetails?.pleaseAddAtLeastOneCategory ? itemDetails?.pleaseAddAtLeastOneCategory : "Please add at least one category!",
+                  text: itemDetails?.pleaseAddAtLeastOneCategory
+                    ? itemDetails?.pleaseAddAtLeastOneCategory
+                    : "Please add at least one category!",
                 });
                 return;
               }
@@ -294,8 +300,9 @@ const RedemptionLogics = () => {
               <AddSharpIcon sx={{ fontSize: 150 }} />
             </div>
             <div className="text-[#8F8F8F] pb-5  mt-[-10px] font-medium text-base">
-              {itemDetails?.addDetails ? itemDetails?.addDetails : "Add Details"}
-
+              {itemDetails?.addDetails
+                ? itemDetails?.addDetails
+                : "Add Details"}
             </div>
           </div>
           {selectedRedemptionCategory?.redemptionItems?.map((item) => (
@@ -344,8 +351,9 @@ const RedemptionLogics = () => {
                         setIsOpenRedemptionItemAddForm(false);
                       }}
                     >
-                      {itemDetails?.editItem ? itemDetails?.editItem : "Edit Item"}
-
+                      {itemDetails?.editItem
+                        ? itemDetails?.editItem
+                        : "Edit Item"}
                     </li>
                     <li
                       className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
@@ -353,8 +361,9 @@ const RedemptionLogics = () => {
                         handleItemDelete(item?.redemptionItemName)
                       }
                     >
-                      {itemDetails?.deleteItem ? itemDetails?.deleteItem : "Delete Item"}
-
+                      {itemDetails?.deleteItem
+                        ? itemDetails?.deleteItem
+                        : "Delete Item"}
                     </li>
                   </ul>
                 )}

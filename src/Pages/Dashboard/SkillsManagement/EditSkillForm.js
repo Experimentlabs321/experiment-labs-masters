@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 
-import axios from 'axios';
-import { toast } from 'react-hot-toast';
+import axios from "axios";
+import { toast } from "react-hot-toast";
 
-import Parameters from './Parameters';
+import Parameters from "./Parameters";
 
 const EditSkillForm = ({
   setIsOpenSkillAddForm,
@@ -19,7 +19,7 @@ const EditSkillForm = ({
   userInfo,
   selectedSkill,
   setIsOpenSkillEditForm,
-  itemDetails
+  itemDetails,
 }) => {
   useEffect(() => {
     setParameters(selectedSkill?.parameters);
@@ -38,14 +38,18 @@ const EditSkillForm = ({
         description: event?.target?.description?.value,
       },
     };
-    console.log(data);
+    // console.log(data);
     if (data?.categoryName === selectedSkillCategory?.categoryName) {
       const updatedSkill = await axios.put(
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/skillCategories/skills`,
         data
       );
       if (updatedSkill?.data?.acknowledged) {
-        toast.success(itemDetails?.skillUpdatedSuccessfully ? itemDetails?.skillUpdatedSuccessfully : "Skill Updated Successfully");
+        toast.success(
+          itemDetails?.skillUpdatedSuccessfully
+            ? itemDetails?.skillUpdatedSuccessfully
+            : "Skill Updated Successfully"
+        );
         const updateSkillsArray = [...selectedSkillCategory?.skills];
         const selectedSkillIndex = updateSkillsArray?.findIndex(
           (skill) => skill?.skillName === selectedSkill?.skillName
@@ -94,7 +98,8 @@ const EditSkillForm = ({
               courseId: selectedCourse?._id,
               skillName: selectedSkill?.skillName,
             }),
-          })
+          }
+        )
           .then((result) => {
             if (result?.ok) {
               const remainingSkills = selectedSkillCategory?.skills?.filter(
@@ -106,20 +111,20 @@ const EditSkillForm = ({
               });
               const selectedCategorySkills = currentCategory?.skills
                 ? [
-                  ...currentCategory?.skills,
-                  {
-                    skillName: event?.target?.skillName?.value,
-                    parameters: [...parameters],
-                    description: event?.target?.description?.value,
-                  },
-                ]
+                    ...currentCategory?.skills,
+                    {
+                      skillName: event?.target?.skillName?.value,
+                      parameters: [...parameters],
+                      description: event?.target?.description?.value,
+                    },
+                  ]
                 : [
-                  {
-                    skillName: event?.target?.skillName?.value,
-                    parameters: [...parameters],
-                    description: event?.target?.description?.value,
-                  },
-                ];
+                    {
+                      skillName: event?.target?.skillName?.value,
+                      parameters: [...parameters],
+                      description: event?.target?.description?.value,
+                    },
+                  ];
               setSelectedSkillCategory({
                 categoryName: currentCategory?.categoryName,
                 skills: selectedCategorySkills,
@@ -137,7 +142,11 @@ const EditSkillForm = ({
               setParameters([]);
               setIsOpenSkillEditForm(false);
               event.target.reset();
-              toast.success(itemDetails?.skillUpdatedSuccessfully ? itemDetails?.skillUpdatedSuccessfully : "Skill Updated Successfully!");
+              toast.success(
+                itemDetails?.skillUpdatedSuccessfully
+                  ? itemDetails?.skillUpdatedSuccessfully
+                  : "Skill Updated Successfully!"
+              );
             }
           })
           .catch((error) => {
@@ -177,16 +186,18 @@ const EditSkillForm = ({
                   alt="UploadingImg"
                 />
                 <p className="mt-[-38px] text-base font-semibold text-[#fff] mb-4">
-                  {itemDetails?.uploadIcon ? itemDetails?.uploadIcon : "Upload Icon"}
-
+                  {itemDetails?.uploadIcon
+                    ? itemDetails?.uploadIcon
+                    : "Upload Icon"}
                 </p>
               </div>
               <div className="w-full pl-8">
                 <div className="grid grid-cols-1 gap-x-6 gap-y-4 mt-2 sm:grid-cols-2 w-full">
                   <div>
                     <label className="text-[16px] font-[600]" htmlFor="case">
-                      {itemDetails?.skillCategory ? itemDetails?.skillCategory : "Skill Category"}
-
+                      {itemDetails?.skillCategory
+                        ? itemDetails?.skillCategory
+                        : "Skill Category"}
                     </label>
                     <select
                       defaultValue={selectedSkillCategory?.categoryName}
@@ -201,18 +212,19 @@ const EditSkillForm = ({
                         <>
                           {skillCategory?.categoryName !==
                             selectedSkillCategory?.categoryName && (
-                              <option value={skillCategory?.categoryName}>
-                                {skillCategory?.categoryName}
-                              </option>
-                            )}
+                            <option value={skillCategory?.categoryName}>
+                              {skillCategory?.categoryName}
+                            </option>
+                          )}
                         </>
                       ))}
                     </select>
                   </div>
                   <div>
                     <label className="text-[16px] font-[600]" htmlFor="case">
-                      {itemDetails?.skillName ? itemDetails?.skillName : "Skill Name"}
-
+                      {itemDetails?.skillName
+                        ? itemDetails?.skillName
+                        : "Skill Name"}
                     </label>
                     <input
                       id="skillName"
@@ -237,7 +249,9 @@ const EditSkillForm = ({
             <div className="flex items-center text-center">
               <div>
                 <p className="w-[145px] text-[16px] font-[600]">
-                  {itemDetails?.description ? itemDetails?.description : "Description"}
+                  {itemDetails?.description
+                    ? itemDetails?.description
+                    : "Description"}
                 </p>
               </div>
               <div class="w-full pl-8 mt-4 flex justify-center items-center col-span-2 ">

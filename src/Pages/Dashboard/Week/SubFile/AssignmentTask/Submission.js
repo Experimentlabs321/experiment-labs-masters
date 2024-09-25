@@ -19,7 +19,7 @@ const Submission = ({ taskData, count, setCount }) => {
   const [course, setCourse] = useState({});
   const [batch, setBatch] = useState({});
   const [submissionData, setSubmissionData] = useState({});
-  console.log(userInfo);
+  // console.log(userInfo);
   useEffect(() => {
     axios
       .get(
@@ -63,7 +63,7 @@ const Submission = ({ taskData, count, setCount }) => {
       })
       .catch((error) => console.error(error));
   }, [taskData, userInfo]);
-  console.log(course);
+  // console.log(course);
 
   const handleDragEnter = (e) => {
     e.preventDefault();
@@ -132,7 +132,7 @@ const Submission = ({ taskData, count, setCount }) => {
         submissionDateTime: new Date(),
       };
       if (manageAssignment && fileUrl) {
-        console.log(manageAssignment);
+        // console.log(manageAssignment);
         const newAssignment = await axios.post(
           // `${process.env.REACT_APP_BACKEND_API}/submitAssignment`,
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions`,
@@ -160,7 +160,7 @@ const Submission = ({ taskData, count, setCount }) => {
           sendData
         );
 
-        console.log(submitCompletion);
+        // console.log(submitCompletion);
 
         if (newAssignment?.data?.acknowledged) {
           const newNotification = await axios.post(
@@ -206,7 +206,7 @@ const Submission = ({ taskData, count, setCount }) => {
               }
             );
           }
-          console.log(newNotification);
+          // console.log(newNotification);
           toast.success("Assignment Submitted Successfully");
           setCount(count + 1);
           checkSubmit();
@@ -223,7 +223,7 @@ const Submission = ({ taskData, count, setCount }) => {
       });
     }
   };
-  console.log(taskData?.courseId, taskData?.chapterId, batch[0]?._id);
+  // console.log(taskData?.courseId, taskData?.chapterId, batch[0]?._id);
 
   return (
     <div>

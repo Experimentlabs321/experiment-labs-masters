@@ -37,7 +37,7 @@ const OtherRecordings = ({ courses }) => {
       .catch((error) => console.error(error));
   }, [selectedCourse]);
 
-  console.log(recordedClasses);
+  // console.log(recordedClasses);
 
   return (
     <>

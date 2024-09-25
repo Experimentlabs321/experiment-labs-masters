@@ -16,7 +16,6 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { Dialog, useMediaQuery, useTheme } from "@mui/material";
 import app from "../../../firebase/firebase.config";
 
-
 const LoginWithOrganization = () => {
   const { id } = useParams();
   const { user, userInfo, signIn, providerLogin, logOut } =
@@ -36,7 +35,6 @@ const LoginWithOrganization = () => {
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-  
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -59,7 +57,7 @@ const LoginWithOrganization = () => {
       });
   };
 
-  console.log(orgRootUrl);
+  // console.log(orgRootUrl);
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/organizations/${id}`)
@@ -80,7 +78,7 @@ const LoginWithOrganization = () => {
     Loading();
     e.preventDefault();
     const userAgent = window.navigator.userAgent;
-    console.log("shihab   ", window.navigator);
+    // console.log("shihab   ", window.navigator);
     const platform = window.navigator.platform;
     const randomString =
       Math.random().toString(20).substring(2, 14) +
@@ -89,7 +87,7 @@ const LoginWithOrganization = () => {
     // const deviceID = `${userAgent}-${platform}-${randomString}`;
     // console.log("device id",deviceID)
     // console.log("platform",platform)
-    console.log("platform ", userAgent);
+    // console.log("platform ", userAgent);
 
     const form = e?.target;
     const email = form.email.value;
@@ -102,7 +100,7 @@ const LoginWithOrganization = () => {
         }
       );
 
-      console.log(userDevice);
+      // console.log(userDevice);
 
       // Assuming your server returns a specific status code for device limit reached
       if (userDevice?.status === 200) {
@@ -127,7 +125,7 @@ const LoginWithOrganization = () => {
     } catch (error) {
       Loading().close();
       // Handle any other errors that may occur during the Axios request
-      console.log(error?.response?.status);
+      // console.log(error?.response?.status);
 
       if (error?.response?.status === 400) {
         Swal.fire({
@@ -156,8 +154,10 @@ const LoginWithOrganization = () => {
           Loading().close();
           localStorage.setItem("role", data?.role);
           if (data?.role === "admin") navigate("/adminDashboardHome");
-          else if(data?.role ==='execution mentor') navigate("/executionMentorDashboard");
-          else if(data?.role ==='expert mentor') navigate("/expertMentorDashboard");
+          else if (data?.role === "execution mentor")
+            navigate("/executionMentorDashboard");
+          else if (data?.role === "expert mentor")
+            navigate("/expertMentorDashboard");
           else navigate("/dashboard");
         });
     } catch (error) {}
@@ -166,7 +166,7 @@ const LoginWithOrganization = () => {
   const handleLogout = () => {
     logOut()
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         //navigate("/");
       })
       .catch((error) => console.error(error));
@@ -195,7 +195,7 @@ const LoginWithOrganization = () => {
               }
             );
 
-            console.log(userDevice);
+            // console.log(userDevice);
 
             // Assuming your server returns a specific status code for device limit reached
             if (userDevice?.status === 200) {
@@ -214,7 +214,7 @@ const LoginWithOrganization = () => {
             }
           } catch (error) {
             // Handle any other errors that may occur during the Axios request
-            console.log(error?.response?.status);
+            // console.log(error?.response?.status);
 
             if (error?.response?.status === 400) {
               // Swal.fire({

@@ -1,27 +1,19 @@
-import {
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import { useContext, useEffect, useState } from "react";
 
-import axios from 'axios';
-import { toast } from 'react-hot-toast';
-import {
-  Link,
-  useNavigate,
-  useParams,
-} from 'react-router-dom';
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
-import Audioimg from '../../../assets/ContentManagement/audio.png';
-import required from '../../../assets/ContentManagement/required.png';
-import { AuthContext } from '../../../contexts/AuthProvider';
-import Loading from '../../Shared/Loading/Loading';
-import uploadFileToS3 from '../../UploadComponent/s3Uploader';
-import Layout from '../Layout';
-import AudioTask from '../Week/AudioTask';
-import CompletionParameter from './Components/Shared/CompletionParameter';
-import ItemEarningParameter from './Components/Shared/ItemEarningParameter';
-import SkillBasedParameter from './Components/Shared/SkillBasedParameter';
+import Audioimg from "../../../assets/ContentManagement/audio.png";
+import required from "../../../assets/ContentManagement/required.png";
+import { AuthContext } from "../../../contexts/AuthProvider";
+import Loading from "../../Shared/Loading/Loading";
+import uploadFileToS3 from "../../UploadComponent/s3Uploader";
+import Layout from "../Layout";
+import AudioTask from "../Week/AudioTask";
+import CompletionParameter from "./Components/Shared/CompletionParameter";
+import ItemEarningParameter from "./Components/Shared/ItemEarningParameter";
+import SkillBasedParameter from "./Components/Shared/SkillBasedParameter";
 
 const ManageAudio = () => {
   // upload file
@@ -80,8 +72,8 @@ const ManageAudio = () => {
 
   useEffect(() => {
     axios
-    .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${id}`)
-     // .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
+      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${id}`)
+      // .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
       .then((response) => {
         setChapter(response?.data);
         const fetchData = {
@@ -165,7 +157,7 @@ const ManageAudio = () => {
     let fileUrl = "";
     if (selectedFile) fileUrl = await uploadFileToS3(selectedFile);
     const form = event.target;
-    console.log(form.audioTopicName);
+    // console.log(form.audioTopicName);
     const audioTopicName = form.audioTopicName?.value;
 
     const ManageAudio = {
@@ -183,13 +175,13 @@ const ManageAudio = () => {
     };
 
     setAudioData(ManageAudio);
-    console.log(ManageAudio);
+    // console.log(ManageAudio);
     if (submitPermission) {
       const newTask = await axios.post(
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/audios`,
         ManageAudio
       );
-      console.log(newTask);
+      // console.log(newTask);
 
       if (newTask) {
         toast.success("Audio added Successfully");
@@ -210,11 +202,11 @@ const ManageAudio = () => {
             notificationTriggeredBy: user?.email,
           }
         );
-        console.log(newNotification);
+        // console.log(newNotification);
         navigate(-1);
       }
 
-      console.log(ManageAudio);
+      // console.log(ManageAudio);
     }
     Loading().close();
   };

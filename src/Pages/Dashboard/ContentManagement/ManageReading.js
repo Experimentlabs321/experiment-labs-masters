@@ -1,29 +1,21 @@
-import {
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import { useContext, useEffect, useState } from "react";
 
-import axios from 'axios';
-import { toast } from 'react-hot-toast';
-import {
-  Link,
-  useNavigate,
-  useParams,
-} from 'react-router-dom';
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
-import required from '../../../assets/ContentManagement/required.png';
-import { AuthContext } from '../../../contexts/AuthProvider';
-import Loading from '../../Shared/Loading/Loading';
-import TextEditor from '../../Shared/TextEditor/TextEditor';
-import uploadFileToS3 from '../../UploadComponent/s3Uploader';
-import Layout from '../Layout';
-import ReadingTask from '../Week/ReadingTask';
-import CompletionParameter from './Components/Shared/CompletionParameter';
-import ItemEarningParameter from './Components/Shared/ItemEarningParameter';
-import SkillBasedParameter from './Components/Shared/SkillBasedParameter';
+import required from "../../../assets/ContentManagement/required.png";
+import { AuthContext } from "../../../contexts/AuthProvider";
+import Loading from "../../Shared/Loading/Loading";
+import TextEditor from "../../Shared/TextEditor/TextEditor";
+import uploadFileToS3 from "../../UploadComponent/s3Uploader";
+import Layout from "../Layout";
+import ReadingTask from "../Week/ReadingTask";
+import CompletionParameter from "./Components/Shared/CompletionParameter";
+import ItemEarningParameter from "./Components/Shared/ItemEarningParameter";
+import SkillBasedParameter from "./Components/Shared/SkillBasedParameter";
 
 const ManageReading = () => {
   // upload file
@@ -84,7 +76,7 @@ const ManageReading = () => {
 
   useEffect(() => {
     axios
-     // .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
+      // .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
       .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${id}`)
       .then((response) => {
         setChapter(response?.data);
@@ -187,14 +179,14 @@ const ManageReading = () => {
     };
 
     setReadingData(manageReading);
-    console.log(manageReading);
+    // console.log(manageReading);
 
-     if (submitPermission) {
+    if (submitPermission) {
       const newTask = await axios.post(
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/readings`,
         manageReading
       );
-      console.log(newTask);
+      // console.log(newTask);
 
       if (newTask?.data?.result?.acknowledged) {
         const newNotification = await axios.post(
@@ -214,16 +206,16 @@ const ManageReading = () => {
             notificationTriggeredBy: user?.email,
           }
         );
-        console.log(newNotification);
+        // console.log(newNotification);
         toast.success("Reading material added Successfully!");
       }
       Loading().close();
       navigate(-1);
-      console.log(manageReading);
-    } 
+      // console.log(manageReading);
+    }
   };
 
-  console.log(selectedFile);
+  // console.log(selectedFile);
 
   return (
     <div>
@@ -469,7 +461,6 @@ const ManageReading = () => {
                 </ul>
               </div>
             </div>
-           
 
             <div className="ml-[30px] space-y-4 mb-8">
               <fieldset>
@@ -486,7 +477,6 @@ const ManageReading = () => {
                       name="radioDownloadOption"
                       checked={enableDownload === true}
                       onChange={() => setEnableDownload(true)}
-                    
                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
                     />
                     <label
@@ -504,7 +494,6 @@ const ManageReading = () => {
                       name="radioDownloadOption"
                       checked={enableDownload === false}
                       onChange={() => setEnableDownload(false)}
-                     
                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
                     />
                     <label
@@ -516,7 +505,6 @@ const ManageReading = () => {
                   </div>
                 </div>
               </fieldset>
-
             </div>
             <div className="ml-[30px] space-y-4 mb-8">
               <fieldset>

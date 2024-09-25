@@ -59,17 +59,17 @@ const WeekDetails = ({
   const handleEditChapter = async (chapter) => {
     const updatedChapter = { ...chapter };
     delete updatedChapter._id;
-    console.log(chapter);
+    // console.log(chapter);
     if (chapter?._id) {
-      console.log(updatedChapter);
+      // console.log(updatedChapter);
       try {
         const newChapter = await axios.put(
           `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/chapters/${chapter?._id}`,
           updatedChapter
         );
         // setCount(count + 1);
-        console.log(newChapter);
-        console.log(chapter);
+        // console.log(newChapter);
+        // console.log(chapter);
       } catch (error) {
         console.log(error);
       }
@@ -103,8 +103,8 @@ const WeekDetails = ({
       // },
       onEnd: (event) => {
         const { oldIndex, newIndex } = event;
-        console.log(chapters[event.oldIndex], chapters[event.newIndex]);
-        console.log(`Moved from index ${event.oldIndex} to ${event.newIndex}`);
+        // console.log(chapters[event.oldIndex], chapters[event.newIndex]);
+        // console.log(`Moved from index ${event.oldIndex} to ${event.newIndex}`);
         // Update the chapters state based on the rearrangement
         setChapters((prevChapters) => {
           // Clone the previous chapters array to avoid mutation
@@ -112,12 +112,12 @@ const WeekDetails = ({
           // Rearrange the chapters
           const [movedChapter] = updatedChapters.splice(oldIndex, 1);
           updatedChapters.splice(newIndex, 0, movedChapter);
-          console.log(prevChapters, updatedChapters);
+          // console.log(prevChapters, updatedChapters);
           prevChapters?.forEach(async (chapter, index) => {
             console.log(chapter, updatedChapters[index]);
             const updatedChapter = { ...updatedChapters[index] };
             updatedChapter._id = chapter?._id;
-            console.log(updatedChapter);
+            // console.log(updatedChapter);
             await handleEditChapter(updatedChapter);
           });
           return updatedChapters;
@@ -243,7 +243,7 @@ const WeekDetails = ({
             `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/deleteTasksInChapter/chapterId/${id}`
           )
           .then((result) => {
-            console.log(result);
+            // console.log(result);
             if (result?.status === 200) {
               Swal.fire({
                 icon: "warning",
@@ -263,14 +263,14 @@ const WeekDetails = ({
         return;
       }
 
-      console.log(id);
+      // console.log(id);
 
       await axios
         .delete(
           `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/chapterId/${id}`
         )
         .then((result) => {
-          console.log(result);
+          // console.log(result);
           if (result?.status === 200) {
             Swal.fire({
               title: "Deleted!",
@@ -294,7 +294,7 @@ const WeekDetails = ({
   };
 
   const handleMoveChapter = async (oldIndex, newIndex) => {
-    console.log(oldIndex, newIndex);
+    // console.log(oldIndex, newIndex);
     Loading();
     if (oldIndex >= 0 && newIndex >= 0 && newIndex < chapters?.length) {
       const newChapterId = chapters[oldIndex]._id;
@@ -303,7 +303,7 @@ const WeekDetails = ({
       const oldChapter = chapters[oldIndex];
       newChapter._id = newChapterId;
       oldChapter._id = oldChapterId;
-      console.log(newChapter, oldChapter);
+      // console.log(newChapter, oldChapter);
       await handleEditChapter(newChapter);
       await handleEditChapter(oldChapter);
       setCount(count + 1);

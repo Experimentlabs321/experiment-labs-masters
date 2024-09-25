@@ -12,18 +12,14 @@ import { AuthContext } from "../../../contexts/AuthProvider";
 import TextEditor from "../../Shared/TextEditor/TextEditor";
 
 const AddingEditingCalQues = ({ addQues, setAddQues, setOpenNewQuesType }) => {
-
   const { userInfo } = useContext(AuthContext);
 
   ///
   const [isOpenGeneralCourseInfo, setIsOpenGeneralCourseInfo] = useState(true);
   const [isOpenCourseFormat, setIsOpenCourseFormat] = useState(false);
 
-
   const [questionText, setQuestionText] = useState("");
   const [generalFeedback, setGeneralFeedback] = useState("");
-
-
 
   const toggleDropdownCourseSelection = () => {
     setIsOpenGeneralCourseInfo(!isOpenGeneralCourseInfo);
@@ -70,11 +66,11 @@ const AddingEditingCalQues = ({ addQues, setAddQues, setOpenNewQuesType }) => {
     setIsOpenAddCourseCategory(false);
   };
 
-  console.log(answers);
+  // console.log(answers);
 
   const { user } = useContext(AuthContext);
 
-  console.log(user);
+  // console.log(user);
 
   /// handle Submit
   const handleSubmit = async (event) => {
@@ -106,13 +102,13 @@ const AddingEditingCalQues = ({ addQues, setAddQues, setOpenNewQuesType }) => {
         addQuestion
       ); */
 
-    console.log(addQuestion);
+    // console.log(addQuestion);
   };
 
   const backButtonHandle = () => {
     setOpenNewQuesType(false);
     setAddQues(false);
-  }
+  };
 
   return (
     <div>
@@ -141,14 +137,25 @@ const AddingEditingCalQues = ({ addQues, setAddQues, setOpenNewQuesType }) => {
               </h1>
               <p className="text-[25px] font-bold">General</p>
               {!isOpenGeneralCourseInfo && (
-                <img className="w-6 cursor-pointer" src={arrowright} alt="arrowRight" />
+                <img
+                  className="w-6 cursor-pointer"
+                  src={arrowright}
+                  alt="arrowRight"
+                />
               )}
 
-              {isOpenGeneralCourseInfo && <img className="cursor-pointer" src={arrowDown} alt="arrowDown" />}
+              {isOpenGeneralCourseInfo && (
+                <img
+                  className="cursor-pointer"
+                  src={arrowDown}
+                  alt="arrowDown"
+                />
+              )}
 
               <i
-                className={`dropdown-arrow ${isOpenGeneralCourseInfo ? "open" : ""
-                  }`}
+                className={`dropdown-arrow ${
+                  isOpenGeneralCourseInfo ? "open" : ""
+                }`}
               ></i>
             </div>
             {isOpenGeneralCourseInfo && (
@@ -196,7 +203,9 @@ const AddingEditingCalQues = ({ addQues, setAddQues, setOpenNewQuesType }) => {
                   <div className="mt-20">
                     <div className="flex items-center gap-4">
                       <p className="h-2 w-2 bg-black rounded-full"></p>
-                      <p className="font-bold text-lg me-[36px]">Default Marks</p>
+                      <p className="font-bold text-lg me-[36px]">
+                        Default Marks
+                      </p>
                       <img src={required} alt="required" />
                     </div>
 
@@ -207,8 +216,6 @@ const AddingEditingCalQues = ({ addQues, setAddQues, setOpenNewQuesType }) => {
                       placeholder="Eg. 2"
                     />
                   </div>
-
-
                 </div>
 
                 <div>
@@ -323,8 +330,6 @@ const AddingEditingCalQues = ({ addQues, setAddQues, setOpenNewQuesType }) => {
                         </div>
                       </div>
                     </div>
-
-
                   </div>
                 </div>
               </div>
@@ -340,13 +345,25 @@ const AddingEditingCalQues = ({ addQues, setAddQues, setOpenNewQuesType }) => {
                 </h1>
                 <p className="text-[25px] font-bold">Answers Options</p>
                 {!isOpenCourseFormat && (
-                  <img className="w-6 cursor-pointer" src={arrowright} alt="arrowRight" />
+                  <img
+                    className="w-6 cursor-pointer"
+                    src={arrowright}
+                    alt="arrowRight"
+                  />
                 )}
 
-                {isOpenCourseFormat && <img className="cursor-pointer" src={arrowDown} alt="arrowDown" />}
+                {isOpenCourseFormat && (
+                  <img
+                    className="cursor-pointer"
+                    src={arrowDown}
+                    alt="arrowDown"
+                  />
+                )}
 
                 <i
-                  className={`dropdown-arrow ${isOpenCourseFormat ? "open" : ""}`}
+                  className={`dropdown-arrow ${
+                    isOpenCourseFormat ? "open" : ""
+                  }`}
                 ></i>
               </div>
 
@@ -376,7 +393,6 @@ const AddingEditingCalQues = ({ addQues, setAddQues, setOpenNewQuesType }) => {
                             <p className="h-2 w-2 bg-black rounded-full"></p>
                             <p className="font-bold text-lg">
                               Answer {index + 1} formula
-
                             </p>
                             <img src={required} alt="required" />
                           </div>
@@ -387,7 +403,11 @@ const AddingEditingCalQues = ({ addQues, setAddQues, setOpenNewQuesType }) => {
                               <TextEditor
                                 value={answer.answerFormula}
                                 setValue={(value) =>
-                                  handleInputChange(index, value, "answerFormula")
+                                  handleInputChange(
+                                    index,
+                                    value,
+                                    "answerFormula"
+                                  )
                                 }
                               />
                             </div>
@@ -400,10 +420,8 @@ const AddingEditingCalQues = ({ addQues, setAddQues, setOpenNewQuesType }) => {
                             <p className="font-semibold text-[#000000]  py-2">
                               Tolerance ±
                             </p>
-
                           </div>
                           <input
-
                             className="mt-6 ms-6 border rounded-md w-[50%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                             type="number"
                             name={`tolerance${index}`}
@@ -416,10 +434,7 @@ const AddingEditingCalQues = ({ addQues, setAddQues, setOpenNewQuesType }) => {
                             }
                             placeholder=""
                           />
-
                         </div>
-
-
                       </div>
                       <div className="">
                         <div className="">
