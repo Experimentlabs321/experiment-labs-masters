@@ -138,7 +138,7 @@ const WhatsappCreateTemplate = ({
     }
   };
 
-  console.log(selectedRequiredTemplateForOrg);
+  // console.log(selectedRequiredTemplateForOrg);
 
   return (
     <div className="w-full my-8">

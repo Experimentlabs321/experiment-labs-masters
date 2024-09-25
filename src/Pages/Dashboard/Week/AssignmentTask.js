@@ -17,7 +17,7 @@ const AssignmentTask = ({ taskData, count, setCount }) => {
     });
   }
   const [isFixed, setIsFixed] = useState(false);
-  console.log(taskData);
+  // console.log(taskData);
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 200) {
@@ -38,12 +38,12 @@ const AssignmentTask = ({ taskData, count, setCount }) => {
       const res = await axios.delete(
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/assignments/taskId/${taskId}`
       );
-      console.log(res);
+      // console.log(res);
       if (res.data.success) {
         navigate(-1);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
   return (

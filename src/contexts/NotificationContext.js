@@ -42,7 +42,7 @@ export const NotificationProvider = ({ children }) => {
                     newNotification?.recipient?.batches?.find(
                       (batch) => batch?.batchId === findStudentCourse?.batchId
                     );
-                  console.log(findStudentBatch);
+                  // console.log(findStudentBatch);
                   if (findStudentBatch) {
                     setNotifications((prevNotifications) => [
                       newNotification,
@@ -195,7 +195,7 @@ export const NotificationProvider = ({ children }) => {
         `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/notifications/clearAll/userEmail/${user?.email}`
       );
 
-      console.log(clearAll);
+      // console.log(clearAll);
 
       if (clearAll?.status === 200) {
         await fetchNotifications();
@@ -218,7 +218,7 @@ export const NotificationProvider = ({ children }) => {
                   `${process.env.REACT_APP_SOCKET_SERVER_API}/api/v1/announcements/getAnnouncement/organizationId/${userInfo?.data?.organizationId}`
                 )
                 .then(async (response) => {
-                  console.log(response);
+                  // console.log(response);
                   if (response?.data?.announcements) {
                     response?.data?.announcements?.reverse();
                     setAnnouncements(response?.data?.announcements);

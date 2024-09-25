@@ -53,7 +53,7 @@ const Payment = () => {
   const [isBatchPayment, setIsBatchPayment] = useState(false);
   // const [pixelId, setPixelId] = useState(null);
 
-  console.log(queryBatch);
+  // console.log(queryBatch);
 
   const dateCreated = new Date();
 
@@ -213,13 +213,13 @@ const Payment = () => {
         paidAmount: 0,
         userId: data?._id,
       };
-      console.log("EnrollData ============>", enrollData);
+      // console.log("EnrollData ============>", enrollData);
       const res = await axios.post(
         // `http://localhost:5000/api/v1/users/unpaidUsers/enroll`,
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/unpaidUsers/enroll`,
         enrollData
       );
-      console.log("Free Response =========>", res);
+      // console.log("Free Response =========>", res);
       if (res.data.success) {
         setUserInfo(res.data.userData);
         Swal.fire({
@@ -261,7 +261,7 @@ const Payment = () => {
       }
     );
 
-    console.log("Went to Line 135", order);
+    // console.log("Went to Line 135", order);
 
     const options = {
       key: organizationData?.paymentInstance?.key_id,
@@ -297,8 +297,8 @@ const Payment = () => {
         response.coupon = coupon || "";
         response.organizationId = organizationData?._id;
         response.organizationName = organizationData?.organizationName;
-        console.log("Response ========>", response);
-        console.log(selectOffer._id);
+        // console.log("Response ========>", response);
+        // console.log(selectOffer._id);
         Loading();
         const res = await axios.post(
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/unpaidUsers/verifyPayment`,
@@ -332,12 +332,12 @@ const Payment = () => {
       },
     };
 
-    console.log("Went to Line 188", options);
+    // console.log("Went to Line 188", options);
 
     const rzp1 = new window.Razorpay(options);
-    console.log("Went to Line 191", rzp1);
+    // console.log("Went to Line 191", rzp1);
     rzp1.open();
-    console.log("Went to Line 192 ");
+    // console.log("Went to Line 192 ");
     Loading().close();
   };
 
@@ -346,7 +346,7 @@ const Payment = () => {
       .then((res) => res.json())
       .then((data) => {
         localStorage.setItem("role", data?.role);
-        console.log("Role =====>", data?.role);
+        // console.log("Role =====>", data?.role);
         setUserInfo(data);
         handleEnroll(data);
       });
@@ -386,7 +386,7 @@ const Payment = () => {
   const handleLogout = () => {
     logOut()
       .then((res) => {
-        console.log(res);
+        // console.log(res);
       })
       .catch((error) => console.error(error));
   };
@@ -467,7 +467,7 @@ const Payment = () => {
           console.error(error);
         });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 

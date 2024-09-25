@@ -51,8 +51,8 @@ const ManageQuestionBank = () => {
     setExportQues(false);
   };
 
-  console.log(exportQues);
-  console.log(importQues);
+  // console.log(exportQues);
+  // console.log(importQues);
 
   const handleOptionChangeQuestion = (event) => {
     const optionValue = event.target.value;

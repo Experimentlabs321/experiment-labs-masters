@@ -1,4 +1,4 @@
-  import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import CourseTham from "../../../assets/Dashboard/CourseTham.png";
 import axios from "axios";
 import { AuthContext } from "../../../contexts/AuthProvider";
@@ -56,12 +56,14 @@ const BundlePayment = () => {
     setCoupon("");
     setSelectedOffer("");
     setCouponDiscount(0);
-    console.log("Offers  ================>", offers?.data?.result);
+    // console.log("Offers  ================>", offers?.data?.result);
   };
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/bundles/bundleId/${id}`)
+      .get(
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/bundles/bundleId/${id}`
+      )
       .then((response) => {
         setCourse(response?.data);
         fetchOffers(response?.data?._id);
@@ -126,8 +128,8 @@ const BundlePayment = () => {
   };
 
   const handleEnroll = async (data) => {
-    console.log("Went to Line 124");
-    console.log("Data =============>", data);
+    // console.log("Went to Line 124");
+    // console.log("Data =============>", data);
     Loading();
 
     if (+course?.price - +couponDiscount === 0) {
@@ -143,13 +145,13 @@ const BundlePayment = () => {
         paidAmount: 0,
         userId: data?._id,
       };
-      console.log("EnrollData ============>", enrollData);
+      // console.log("EnrollData ============>", enrollData);
       const res = await axios.post(
         // `http://localhost:5000/api/v1/users/unpaidUsers/enroll`,
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/unpaidUsers/enroll`,
         enrollData
       );
-      console.log("Free Response =========>", res);
+      // console.log("Free Response =========>", res);
       if (res.data.success) {
         setUserInfo(res.data.userData);
         Swal.fire({
@@ -192,7 +194,7 @@ const BundlePayment = () => {
       }
     );
 
-    console.log("Went to Line 135", order);
+    // console.log("Went to Line 135", order);
 
     const options = {
       key: organizationData?.paymentInstance?.key_id,
@@ -230,8 +232,8 @@ const BundlePayment = () => {
         response.coupon = coupon || "";
         response.organizationId = organizationData?._id;
         response.organizationName = organizationData?.organizationName;
-        console.log("Response ========>", response);
-        console.log(selectOffer._id);
+        // console.log("Response ========>", response);
+        // console.log(selectOffer._id);
         Loading();
         const res = await axios.post(
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/unpaidUsers/verifyBundlePayment`,
@@ -265,12 +267,12 @@ const BundlePayment = () => {
       },
     };
 
-    console.log("Went to Line 188", options);
+    // console.log("Went to Line 188", options);
 
     const rzp1 = new window.Razorpay(options);
-    console.log("Went to Line 191", rzp1);
+    // console.log("Went to Line 191", rzp1);
     rzp1.open();
-    console.log("Went to Line 192 ");
+    // console.log("Went to Line 192 ");
     Loading().close();
   };
 
@@ -279,7 +281,7 @@ const BundlePayment = () => {
       .then((res) => res.json())
       .then((data) => {
         localStorage.setItem("role", data?.role);
-        console.log("Role =====>", data?.role);
+        // console.log("Role =====>", data?.role);
         setUserInfo(data);
         handleEnroll(data);
       });
@@ -319,7 +321,7 @@ const BundlePayment = () => {
   const handleLogout = () => {
     logOut()
       .then((res) => {
-        console.log(res);
+        // console.log(res);
       })
       .catch((error) => console.error(error));
   };
@@ -453,7 +455,7 @@ const BundlePayment = () => {
     }
   };
 
-  console.log(course, organizationData);
+  // console.log(course, organizationData);
 
   return (
     <>

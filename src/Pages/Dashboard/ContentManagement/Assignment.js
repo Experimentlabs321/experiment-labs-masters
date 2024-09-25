@@ -244,14 +244,14 @@ const Assignment = () => {
     };
 
     setAssignmentData(manageAssignment);
-    console.log(manageAssignment);
+    // console.log(manageAssignment);
 
     if (submitPermission) {
       const newAssignment = await axios.post(
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/assignments`,
         manageAssignment
       );
-      console.log(newAssignment);
+      // console.log(newAssignment);
       if (newAssignment?.data?.result?.acknowledged) {
         toast.success("Assignment added Successfully");
         const newNotification = await axios.post(
@@ -271,11 +271,11 @@ const Assignment = () => {
             notificationTriggeredBy: user?.email,
           }
         );
-        console.log(newNotification);
+        // console.log(newNotification);
         navigate(-1);
       }
 
-      console.log(manageAssignment);
+      // console.log(manageAssignment);
     }
     Loading().close();
   };

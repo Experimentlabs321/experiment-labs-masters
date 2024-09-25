@@ -25,14 +25,14 @@ const QuestionForm = ({
     setSelectedQuestionData(questions[currentQuestion + 1]);
     setQuestion(questions[currentQuestion + 1]?.questionTitle);
     setCurrentQuestion(currentQuestion + 1);
-    console.log(question);
+    // console.log(question);
   };
 
   const handleBackQuestion = () => {
     setSelectedQuestionData(questions[currentQuestion - 1]);
     setQuestion(questions[currentQuestion - 1]?.questionTitle);
     setCurrentQuestion(currentQuestion - 1);
-    console.log(question);
+    // console.log(question);
   };
 
   const handleQuestionBlur = () => {
@@ -43,7 +43,7 @@ const QuestionForm = ({
     setQuestions(allQuestions);
   };
 
-  console.log(selectedQuestionData);
+  // console.log(selectedQuestionData);
 
   return (
     <div

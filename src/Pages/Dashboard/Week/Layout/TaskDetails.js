@@ -56,7 +56,7 @@ const TaskDetails = () => {
   const queryTaskType = queryParameters.get("taskType");
   useEffect(() => {
     let taskTypeForAPI;
-    console.log(queryTaskType);
+    // console.log(queryTaskType);
     switch (queryTaskType) {
       case "Assignment":
         taskTypeForAPI = "assignments";
@@ -148,7 +148,7 @@ const TaskDetails = () => {
             const batchId = userInfo?.courses?.find(
               (item) => item?.courseId === courseData?._id
             )?.batchId;
-            console.log(batchId);
+            // console.log(batchId);
             response?.data?.forEach((item) => {
               let singleChapter = { ...item };
               singleChapter.tasks = [];
@@ -159,18 +159,18 @@ const TaskDetails = () => {
                   )
                 ) {
                   singleChapter.tasks.push(singleTask);
-                  console.log(item);
+                  // console.log(item);
                 }
               });
               chapterWithFilteredTask.push(singleChapter);
             });
             setChapters(chapterWithFilteredTask);
-            console.log("tasks =======>", chapterWithFilteredTask[0]?.tasks);
+            // console.log("tasks =======>", chapterWithFilteredTask[0]?.tasks);
           }
         })
         .catch((error) => console.error(error));
   }, [week, count]);
-  console.log(chapters);
+  // console.log(chapters);
   return (
     <div key={taskData?._id}>
       <div>

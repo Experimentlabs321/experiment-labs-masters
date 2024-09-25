@@ -1,29 +1,25 @@
 //ExpertMentorStudentFeedback
 
-import 'react-circular-progressbar/dist/styles.css';
+import "react-circular-progressbar/dist/styles.css";
 
-import React, {
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React, { useContext, useEffect, useState } from "react";
 
-import axios from 'axios';
+import axios from "axios";
 
-import CloseIcon from '@mui/icons-material/Close';
-import SearchIcon from '@mui/icons-material/Search';
-import Dialog from '@mui/material/Dialog';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import IconButton from '@mui/material/IconButton';
-import Rating from '@mui/material/Rating';
-import { styled } from '@mui/material/styles';
-import Typography from '@mui/material/Typography';
+import CloseIcon from "@mui/icons-material/Close";
+import SearchIcon from "@mui/icons-material/Search";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import IconButton from "@mui/material/IconButton";
+import Rating from "@mui/material/Rating";
+import { styled } from "@mui/material/styles";
+import Typography from "@mui/material/Typography";
 
-import IconNav from '../../../assets/ExpertMentorDashboard/Iconnav.svg';
-import ranking from '../../../assets/ExpertMentorDashboard/ranking.svg';
-import { AuthContext } from '../../../contexts/AuthProvider';
-import Layout from '../Layout';
+import IconNav from "../../../assets/ExpertMentorDashboard/Iconnav.svg";
+import ranking from "../../../assets/ExpertMentorDashboard/ranking.svg";
+import { AuthContext } from "../../../contexts/AuthProvider";
+import Layout from "../Layout";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -34,9 +30,9 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-const ExpertMentorStudentFeedback = ({admin}) => {
+const ExpertMentorStudentFeedback = ({ admin }) => {
   const { userInfo, user } = useContext(AuthContext);
-  console.log(admin);
+  // console.log(admin);
   const [open, setOpen] = useState(false);
   const [selectedTab1, setSelectedTab1] = useState("All");
   const [courses, setCourses] = useState([]);
@@ -62,10 +58,8 @@ const ExpertMentorStudentFeedback = ({admin}) => {
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getFeedbackSubDetailsByOrganizationAndName/liveClassFeedback/organizationsId/${userInfo?.organizationId}`
         )
         .then((response) => {
-
-          console.log(response)
+          // console.log(response)
           setItemDetails(response?.data);
-
         })
         .finally(() => {
           setLoading(false);
@@ -73,7 +67,7 @@ const ExpertMentorStudentFeedback = ({admin}) => {
     }
     setLoading(false);
   }, [userInfo]);
-  console.log(itemDetails)
+  // console.log(itemDetails)
 
   const handleTabClick1 = (tab) => {
     setSelectedTab1(tab);
@@ -130,8 +124,8 @@ const ExpertMentorStudentFeedback = ({admin}) => {
       .catch((error) => console.error(error));
   }, [userInfo?.organizationId, selectedCourse?._id]);
 
-  console.log(mainCourse);
-  console.log(courses?.length);
+  // console.log(mainCourse);
+  // console.log(courses?.length);
   // console.log(selectedCourse?._id)
 
   useEffect(() => {
@@ -193,7 +187,7 @@ const ExpertMentorStudentFeedback = ({admin}) => {
           return acc;
         }, []);
 
-        console.log(filteredFeedbacks);
+        // console.log(filteredFeedbacks);
         setClasses(filteredFeedbacks);
         setSelectedClass(filteredFeedbacks[0]);
         setSelectedClass(filteredFeedbacks[0]);
@@ -226,7 +220,7 @@ const ExpertMentorStudentFeedback = ({admin}) => {
     setOpen(true);
   };
 
-  console.log(selectedUser);
+  // console.log(selectedUser);
 
   const handleSelectClassChange = (e) => {
     setSelectedClass(e.target.value);
@@ -315,458 +309,91 @@ const ExpertMentorStudentFeedback = ({admin}) => {
     }
   }, [classes, selectedClass]);
 
-  console.log(givenRating);
+  // console.log(givenRating);
 
   return (
     <div>
-      {
-        (admin) ? <>
-       
-
-        <div className="mt-20 ms-10">
-          <div>
-            <h1 className=" text-[#737373] text-[24px] font-[500] mb-2 ">
-              {itemDetails?.selectCourse ? itemDetails?.selectCourse :"Select Course"}
-              
-            </h1>
-            <div className="flex flex-wrap">
-              {!courses[0] && (
-                <div
-                  className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
-                >
-                  {itemDetails?.noCourseAddedYet ? itemDetails?.noCourseAddedYet :"No course added yet!"}
-                  
-                </div>
-              )}
-              {courses?.map((item, index) => (
-                <button
-                  key={index}
-                  className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 ${
-                    selectedCourse?._id === item?._id
-                      ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
-                      : "text-[#949494]"
-                  }`}
-                  onClick={() => handleSelectCourse(item)}
-                >
-                  {item?.courseFullName}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="flex items-center gap-5">
-            <p className="text-[#676767] text-xl font-semibold">
-            {itemDetails?.selectClass ? itemDetails?.selectClass :"Select Class"}
-              
-               :
-            </p>
-            {!classes?.length ? (
-              <p className="my-10 text-red-600">
-                {itemDetails?.classNotFound ? itemDetails?.classNotFound :"Class not found"}
-                </p>
-            ) : (
-              <select
-                className="my-10 py-3 px-5 text-[#676767] text-lg font-semibold focus:outline-none"
-                name="selectCourse"
-                id="selectCourse"
-                style={{
-                  borderRadius: "8px",
-                  background: "#F8F9FE",
-                  boxShadow: "2px 2px 10px 0px rgba(149, 156, 225, 0.50)",
-                }}
-                value={selectedClass?.taskId}
-                onChange={handleSelectClassChange}
-              >
-                {classes?.map((cls) => (
-                  <option key={cls.id} value={cls.taskId}>
-                    {cls.taskName}
-                  </option>
-                ))}
-              </select>
-            )}
-          </div>
-
-          <p className="text-[#3E4DAC] text-xl font-bold mt-10 flex items-center gap-3">
-            <span>
-              <img src={ranking} alt="icon" />
-            </span>{" "}
-            {itemDetails?.rating ? itemDetails?.rating :"Rating"}
-            
-          </p>
-        </div>
-
-        <div className="flex justify-between items-center">
-          <div className="my-10">
-            {/*    <div className="flex justify-between items-center">
-                            <div className='px-10 flex gap-10 pb-3 text-lg  '>
-                                <button
-
-                                    onClick={() => handleTabClick1('All')}
-                                    style={{
-                                        fontWeight: selectedTab1 === 'All' ? 'bold' : 'normal',
-                                        borderBottom: selectedTab1 === 'All' ? '2px solid black' : 'none',
-                                        color: selectedTab1 === 'All' ? '#081765' : '#BEBEBE'
-                                    }}
-                                >
-                                    All
-                                </button>
-                                <button
-
-                                    onClick={() => handleTabClick1('Labwise')}
-                                    style={{
-                                        fontWeight: selectedTab1 === 'Labwise' ? 'bold' : 'normal',
-                                        borderBottom: selectedTab1 === 'Labwise' ? '2px solid black' : 'none',
-                                        color: selectedTab1 === 'Labwise' ? '#081765' : '#BEBEBE'
-                                    }}
-                                >
-                                    Labwise
-                                </button>
-                                <button
-
-                                    onClick={() => handleTabClick1('Batchwise')}
-                                    style={{
-                                        fontWeight: selectedTab1 === 'Batchwise' ? 'bold' : 'normal',
-                                        borderBottom: selectedTab1 === 'Batchwise' ? '2px solid black' : 'none',
-                                        color: selectedTab1 === 'Batchwise' ? '#081765' : '#BEBEBE'
-                                    }}
-                                >
-                                    Batchwise
-                                </button>
-
-
-
-
-                            </div>
-
-                        </div> */}
-          </div>
-
-          <div className="my-10 me-10">
-            {/* <p>{itemDetails?.totalStudents ? itemDetails?.totalStudents :"Total Students"} - 1000</p> */}
-          </div>
-        </div>
-
-        {selectedTab1 === "All" && classes?.length ? (
-          <>
-            <div className="mx-10 mb-10 ">
-              <div className="grid grid-cols-4 gap-5 items-center ">
-                {selectedClassShow?.submitterId &&
-                  selectedClassShow?.categories?.map((category) =>
-                    category?.feedbackItems?.map((item) => (
-                      <div className="flex flex-col items-center h-[100%] justify-end">
-                        <div className="">
-                          <div>
-                            <img
-                              className="h-[150px]"
-                              src={item?.selectedIcon}
-                              alt="Icon"
-                            />
-                          </div>
-                        </div>
-                        <p className="text-lg font-bold">
-                          {item?.feedbackItemName}
-                        </p>
-                        <div className="my-3">
-                          {givenRating.map(
-                            (data) =>
-                              data.feedbackItemName ==
-                                item?.feedbackItemName && (
-                                <>
-                                  {mainCourse[item?.feedbackItemName] ===
-                                    "10" && (
-                                    <Rating
-                                      readOnly
-                                      // name="size-medium"
-                                      name=""
-                                      max={10}
-                                      value={data?.averageRating}
-                                      //  value={CategoryRatingValue} // Controlled value
-                                    />
-                                  )}
-                                  {mainCourse[item?.feedbackItemName] ===
-                                    "5" && (
-                                    <Rating
-                                      readOnly
-                                      // name="size-medium"
-                                      name=""
-                                      value={data?.averageRating}
-                                      //  value={CategoryRatingValue} // Controlled value
-                                    />
-                                  )}
-                                </>
-                              )
-                          )}
-
-                          {}
-
-                          {/*  <Stack spacing={1}>
-                                                                <Rating size="large" name="half-rating" defaultValue={2.5} precision={0.5} />
-
-                                                            </Stack> */}
-                        </div>
-                        {classes?.map(
-                          (data) =>
-                            (data?.taskId === selectedClass?.taskId ||
-                              data?.taskId === selectedClass) && (
-                              <div>
-                                <p className="text-lg font-normal">
-                                  {data?.givenFeedbacks.length} {itemDetails?.students ? itemDetails?.students :"students"}
-                                </p>
-                                {data?.givenFeedbacks?.map((givenFeedback) =>
-                                  givenFeedback.categories?.map((category) =>
-                                    category.feedbackItems?.map(
-                                      (m) =>
-                                        m.feedbackItemName ===
-                                          item?.feedbackItemName && (
-                                          <>
-                                            <p
-                                              onClick={() =>
-                                                handleSelectUser(
-                                                  givenFeedback?.submitterName,
-                                                  givenFeedback?.comment
-                                                )
-                                              }
-                                              className="mt-3 text-lg font-bold cursor-pointer"
-                                            >
-                                              {givenFeedback?.submitterName}
-                                            </p>
-
-                                            <div>
-                                              <BootstrapDialog
-                                                onClose={handleClose}
-                                                aria-labelledby="customized-dialog-title"
-                                                open={open}
-                                              >
-                                                <DialogTitle
-                                                  sx={{ m: 0, px: 20 }}
-                                                  id="customized-dialog-title"
-                                                >
-                                                  {selectedUser?.userName}
-                                                </DialogTitle>
-                                                <IconButton
-                                                  aria-label="close"
-                                                  onClick={handleClose}
-                                                  sx={{
-                                                    position: "absolute",
-                                                    right: 8,
-                                                    top: 8,
-                                                    color: (theme) =>
-                                                      theme.palette.grey[500],
-                                                  }}
-                                                >
-                                                  <CloseIcon />
-                                                </IconButton>
-                                                <DialogContent dividers>
-                                                  <Typography gutterBottom>
-                                                    {selectedUser?.comment}
-                                                  </Typography>
-                                                </DialogContent>
-                                              </BootstrapDialog>
-                                            </div>
-
-                                            {mainCourse[m?.feedbackItemName] ===
-                                              "5" && (
-                                              <Rating
-                                                readOnly
-                                                name="read-only"
-                                                defaultValue={m?.itemRating}
-
-                                                // value={CategoryRatingValue} // Controlled value
-                                              />
-                                            )}
-                                            {mainCourse[m?.feedbackItemName] ===
-                                              "10" && (
-                                              <Rating
-                                                readOnly
-                                                // name="size-medium"
-                                                name="read-only"
-                                                max={10}
-                                                defaultValue={m?.itemRating}
-                                                //  value={CategoryRatingValue} // Controlled value
-                                              />
-                                            )}
-                                          </>
-                                        )
-                                    )
-                                  )
-                                )}
-                              </div>
-                            )
-                        )}
-
-                        {/* <p className="text-lg font-normal">Needs Improvement </p> */}
-
-                        {/*   <p className="text-[#8A8A8A] text-base">Product lab | Batch -3</p>
-                                                        <p className="text-[#8A8A8A] text-base">Week -3</p> */}
-
-                        {/* <button className="bg-[#6278FF] rounded-md text-[#fff] text-base font-medium mt-5 px-10 py-2">View More</button> */}
-                      </div>
-                    ))
-                  )}
-              </div>
-            </div>
-
-            <div className="ms-10 text-lg font-semibold">{itemDetails?.allComments ? itemDetails?.allComments :"All Comments"}</div>
-
-            <div className="grid grid-cols-2 my-10 gap-10 overflow-auto h-[500px] mx-10">
-              {classes?.map(
-                (data) =>
-                  (data?.taskId === selectedClass?.taskId ||
-                    data?.taskId === selectedClass) &&
-                  data?.givenFeedbacks?.map((givenFeedback) => (
-                    // <p>{givenFeedback?.comment}</p>
-                    <div
-                      className="p-5 h-[170px]"
-                      style={{
-                        borderRadius: "10px",
-                        border: "1px solid #E3E3E3",
-                        background: "#FFF",
-                        boxShadow: "4px 4px 4px 0px rgba(0, 0, 0, 0.25)",
-                      }}
-                    >
-                      <p className=" text-base font-semibold">
-                        {givenFeedback?.comment}{" "}
-                      </p>
-                      <p className="text-[#838383] text-base font-normal my-2">
-                        {userInfo?.organizationName}
-                      </p>
-                      <p className="flex justify-between text-[#838383] text-base font-normal mt-5   ">
-                        {" "}
-                        {givenFeedback?.submitterName}{" "}
-                        <span> {givenFeedback?.dateAndTime}</span>
-                      </p>
-                    </div>
-                    /*    givenFeedback.categories?.map((category) => (
-                                                       category.feedbackItems?.map((m,) => (
-
-                                                         <p>aaaaaaa</p>
-
-
-                                                       )))) */
-                  ))
-              )}
-
-              {/*   <div className="p-5"
-                                    style={{
-                                        borderRadius: "10px",
-                                        border: "1px solid #E3E3E3",
-                                        background: "#FFF",
-                                        boxShadow: "4px 4px 4px 0px rgba(0, 0, 0, 0.25)"
-                                    }}
-                                >
-                                    <p className=" text-base font-semibold">Delivery of content was  understandable </p>
-                                    <p className="text-[#838383] text-base font-normal my-2">Product Lab | Batch 3</p>
-                                    <p className="flex justify-between text-[#838383] text-base font-normal mt-5   "> Mahima Negi <span> 11.45 am</span></p>
-                                </div> */}
-            </div>
-          </>
-        ) : (
-          <p className="text-[red] ms-10 mt-10 text-lg font-semibold text-center">
-            {itemDetails?.thereIsNoResult ? itemDetails?.thereIsNoResult :"There is no Result"}
-            
-          </p>
-        )}
-        </> 
-        : 
-        <> <Layout>
-        <div className="px-20  py-4 flex items-center  fixed w-[100%] justify-between bg-[#FFF] top-0  border-b ">
-          <div>
-            <p className="flex items-center gap-2 text-lg font-semibold text-[#3E4DAC]">
-              {" "}
-              {itemDetails?.studentFeedback ? itemDetails?.studentFeedback :"Student Feedback"}  
-            </p>
-          </div>
-
-          <div className="flex items-center gap-5 me-80 ">
-            <div
-              className=" p-2"
-              style={{
-                borderRadius: "8px",
-                background: "#F8F9FE",
-                boxShadow: "2px 2px 10px 0px rgba(149, 156, 225, 0.50)",
-              }}
-            >
-              <SearchIcon />
-              <input type="text rounded-lg p-2" placeholder="Search" />
-            </div>
-
+      {admin ? (
+        <>
+          <div className="mt-20 ms-10">
             <div>
-              <img src={IconNav} alt="Iconnav" />
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-20 ms-10">
-          <div>
-            <h1 className=" text-[#737373] text-[24px] font-[500] mb-2 ">
-            {itemDetails?.selectCourse ? itemDetails?.selectCourse :"Select Course"}
-              
-            </h1>
-            <div className="flex flex-wrap">
-              {!courses[0] && (
-                <div
-                  className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
-                >
-                  {itemDetails?.noCourseAddedYet ? itemDetails?.noCourseAddedYet :"No course added yet!"}
-                  
-                </div>
-              )}
-              {courses?.map((item, index) => (
-                <button
-                  key={index}
-                  className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 ${
-                    selectedCourse?._id === item?._id
-                      ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
-                      : "text-[#949494]"
-                  }`}
-                  onClick={() => handleSelectCourse(item)}
-                >
-                  {item?.courseFullName}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="flex items-center gap-5">
-            <p className="text-[#676767] text-xl font-semibold">
-            {itemDetails?.selectClass ? itemDetails?.selectClass :"Select Class"} :
-            </p>
-            {!classes?.length ? (
-              <p className="my-10 text-red-600">{itemDetails?.classNotFound ? itemDetails?.classNotFound :"Class not found"}</p>
-            ) : (
-              <select
-                className="my-10 py-3 px-5 text-[#676767] text-lg font-semibold focus:outline-none"
-                name="selectCourse"
-                id="selectCourse"
-                style={{
-                  borderRadius: "8px",
-                  background: "#F8F9FE",
-                  boxShadow: "2px 2px 10px 0px rgba(149, 156, 225, 0.50)",
-                }}
-                value={selectedClass?.taskId}
-                onChange={handleSelectClassChange}
-              >
-                {classes?.map((cls) => (
-                  <option key={cls.id} value={cls.taskId}>
-                    {cls.taskName}
-                  </option>
+              <h1 className=" text-[#737373] text-[24px] font-[500] mb-2 ">
+                {itemDetails?.selectCourse
+                  ? itemDetails?.selectCourse
+                  : "Select Course"}
+              </h1>
+              <div className="flex flex-wrap">
+                {!courses[0] && (
+                  <div
+                    className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
+                  >
+                    {itemDetails?.noCourseAddedYet
+                      ? itemDetails?.noCourseAddedYet
+                      : "No course added yet!"}
+                  </div>
+                )}
+                {courses?.map((item, index) => (
+                  <button
+                    key={index}
+                    className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 ${
+                      selectedCourse?._id === item?._id
+                        ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
+                        : "text-[#949494]"
+                    }`}
+                    onClick={() => handleSelectCourse(item)}
+                  >
+                    {item?.courseFullName}
+                  </button>
                 ))}
-              </select>
-            )}
+              </div>
+            </div>
+
+            <div className="flex items-center gap-5">
+              <p className="text-[#676767] text-xl font-semibold">
+                {itemDetails?.selectClass
+                  ? itemDetails?.selectClass
+                  : "Select Class"}
+                :
+              </p>
+              {!classes?.length ? (
+                <p className="my-10 text-red-600">
+                  {itemDetails?.classNotFound
+                    ? itemDetails?.classNotFound
+                    : "Class not found"}
+                </p>
+              ) : (
+                <select
+                  className="my-10 py-3 px-5 text-[#676767] text-lg font-semibold focus:outline-none"
+                  name="selectCourse"
+                  id="selectCourse"
+                  style={{
+                    borderRadius: "8px",
+                    background: "#F8F9FE",
+                    boxShadow: "2px 2px 10px 0px rgba(149, 156, 225, 0.50)",
+                  }}
+                  value={selectedClass?.taskId}
+                  onChange={handleSelectClassChange}
+                >
+                  {classes?.map((cls) => (
+                    <option key={cls.id} value={cls.taskId}>
+                      {cls.taskName}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </div>
+
+            <p className="text-[#3E4DAC] text-xl font-bold mt-10 flex items-center gap-3">
+              <span>
+                <img src={ranking} alt="icon" />
+              </span>{" "}
+              {itemDetails?.rating ? itemDetails?.rating : "Rating"}
+            </p>
           </div>
 
-          <p className="text-[#3E4DAC] text-xl font-bold mt-10 flex items-center gap-3">
-            <span>
-              <img src={ranking} alt="icon" />
-            </span>{" "}
-            {itemDetails?.rating ? itemDetails?.rating :"Rating"}
-            
-          </p>
-        </div>
-
-        <div className="flex justify-between items-center">
-          <div className="my-10">
-            {/*    <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center">
+            <div className="my-10">
+              {/*    <div className="flex justify-between items-center">
                             <div className='px-10 flex gap-10 pb-3 text-lg  '>
                                 <button
 
@@ -808,214 +435,223 @@ const ExpertMentorStudentFeedback = ({admin}) => {
                             </div>
 
                         </div> */}
+            </div>
+
+            <div className="my-10 me-10">
+              {/* <p>{itemDetails?.totalStudents ? itemDetails?.totalStudents :"Total Students"} - 1000</p> */}
+            </div>
           </div>
 
-          <div className="my-10 me-10">
-            <p>{itemDetails?.totalStudents ? itemDetails?.totalStudents :"Total Students"} - 1000</p>
-          </div>
-        </div>
-
-        {selectedTab1 === "All" && classes?.length ? (
-          <>
-            <div className="mx-10 mb-10 ">
-              <div className="grid grid-cols-4 gap-5 items-center ">
-                {selectedClassShow?.submitterId &&
-                  selectedClassShow?.categories?.map((category) =>
-                    category?.feedbackItems?.map((item) => (
-                      <div className="flex flex-col items-center h-[100%] justify-end">
-                        <div className="">
-                          <div>
-                            <img
-                              className="h-[150px]"
-                              src={item?.selectedIcon}
-                              alt="Icon"
-                            />
+          {selectedTab1 === "All" && classes?.length ? (
+            <>
+              <div className="mx-10 mb-10 ">
+                <div className="grid grid-cols-4 gap-5 items-center ">
+                  {selectedClassShow?.submitterId &&
+                    selectedClassShow?.categories?.map((category) =>
+                      category?.feedbackItems?.map((item) => (
+                        <div className="flex flex-col items-center h-[100%] justify-end">
+                          <div className="">
+                            <div>
+                              <img
+                                className="h-[150px]"
+                                src={item?.selectedIcon}
+                                alt="Icon"
+                              />
+                            </div>
                           </div>
-                        </div>
-                        <p className="text-lg font-bold">
-                          {item?.feedbackItemName}
-                        </p>
-                        <div className="my-3">
-                          {givenRating.map(
-                            (data) =>
-                              data.feedbackItemName ==
-                                item?.feedbackItemName && (
-                                <>
-                                  {mainCourse[item?.feedbackItemName] ===
-                                    "10" && (
-                                    <Rating
-                                      readOnly
-                                      // name="size-medium"
-                                      name=""
-                                      max={10}
-                                      value={data?.averageRating}
-                                      //  value={CategoryRatingValue} // Controlled value
-                                    />
-                                  )}
-                                  {mainCourse[item?.feedbackItemName] ===
-                                    "5" && (
-                                    <Rating
-                                      readOnly
-                                      // name="size-medium"
-                                      name=""
-                                      value={data?.averageRating}
-                                      //  value={CategoryRatingValue} // Controlled value
-                                    />
-                                  )}
-                                </>
-                              )
-                          )}
+                          <p className="text-lg font-bold">
+                            {item?.feedbackItemName}
+                          </p>
+                          <div className="my-3">
+                            {givenRating.map(
+                              (data) =>
+                                data.feedbackItemName ==
+                                  item?.feedbackItemName && (
+                                  <>
+                                    {mainCourse[item?.feedbackItemName] ===
+                                      "10" && (
+                                      <Rating
+                                        readOnly
+                                        // name="size-medium"
+                                        name=""
+                                        max={10}
+                                        value={data?.averageRating}
+                                        //  value={CategoryRatingValue} // Controlled value
+                                      />
+                                    )}
+                                    {mainCourse[item?.feedbackItemName] ===
+                                      "5" && (
+                                      <Rating
+                                        readOnly
+                                        // name="size-medium"
+                                        name=""
+                                        value={data?.averageRating}
+                                        //  value={CategoryRatingValue} // Controlled value
+                                      />
+                                    )}
+                                  </>
+                                )
+                            )}
 
-                          {}
+                            {}
 
-                          {/*  <Stack spacing={1}>
+                            {/*  <Stack spacing={1}>
                                                                 <Rating size="large" name="half-rating" defaultValue={2.5} precision={0.5} />
 
                                                             </Stack> */}
-                        </div>
-                        {classes?.map(
-                          (data) =>
-                            (data?.taskId === selectedClass?.taskId ||
-                              data?.taskId === selectedClass) && (
-                              <div>
-                                <p className="text-lg font-normal">
-                                  {data?.givenFeedbacks.length} {itemDetails?.students ? itemDetails?.students :"students"} 
-                                </p>
-                                {data?.givenFeedbacks?.map((givenFeedback) =>
-                                  givenFeedback.categories?.map((category) =>
-                                    category.feedbackItems?.map(
-                                      (m) =>
-                                        m.feedbackItemName ===
-                                          item?.feedbackItemName && (
-                                          <>
-                                            <p
-                                              onClick={() =>
-                                                handleSelectUser(
-                                                  givenFeedback?.submitterName,
-                                                  givenFeedback?.comment
-                                                )
-                                              }
-                                              className="mt-3 text-lg font-bold cursor-pointer"
-                                            >
-                                              {givenFeedback?.submitterName}
-                                            </p>
-
-                                            <div>
-                                              <BootstrapDialog
-                                                onClose={handleClose}
-                                                aria-labelledby="customized-dialog-title"
-                                                open={open}
+                          </div>
+                          {classes?.map(
+                            (data) =>
+                              (data?.taskId === selectedClass?.taskId ||
+                                data?.taskId === selectedClass) && (
+                                <div>
+                                  <p className="text-lg font-normal">
+                                    {data?.givenFeedbacks.length}{" "}
+                                    {itemDetails?.students
+                                      ? itemDetails?.students
+                                      : "students"}
+                                  </p>
+                                  {data?.givenFeedbacks?.map((givenFeedback) =>
+                                    givenFeedback.categories?.map((category) =>
+                                      category.feedbackItems?.map(
+                                        (m) =>
+                                          m.feedbackItemName ===
+                                            item?.feedbackItemName && (
+                                            <>
+                                              <p
+                                                onClick={() =>
+                                                  handleSelectUser(
+                                                    givenFeedback?.submitterName,
+                                                    givenFeedback?.comment
+                                                  )
+                                                }
+                                                className="mt-3 text-lg font-bold cursor-pointer"
                                               >
-                                                <DialogTitle
-                                                  sx={{ m: 0, px: 20 }}
-                                                  id="customized-dialog-title"
-                                                >
-                                                  {selectedUser?.userName}
-                                                </DialogTitle>
-                                                <IconButton
-                                                  aria-label="close"
-                                                  onClick={handleClose}
-                                                  sx={{
-                                                    position: "absolute",
-                                                    right: 8,
-                                                    top: 8,
-                                                    color: (theme) =>
-                                                      theme.palette.grey[500],
-                                                  }}
-                                                >
-                                                  <CloseIcon />
-                                                </IconButton>
-                                                <DialogContent dividers>
-                                                  <Typography gutterBottom>
-                                                    {selectedUser?.comment}
-                                                  </Typography>
-                                                </DialogContent>
-                                              </BootstrapDialog>
-                                            </div>
+                                                {givenFeedback?.submitterName}
+                                              </p>
 
-                                            {mainCourse[m?.feedbackItemName] ===
-                                              "5" && (
-                                              <Rating
-                                                readOnly
-                                                name="read-only"
-                                                defaultValue={m?.itemRating}
+                                              <div>
+                                                <BootstrapDialog
+                                                  onClose={handleClose}
+                                                  aria-labelledby="customized-dialog-title"
+                                                  open={open}
+                                                >
+                                                  <DialogTitle
+                                                    sx={{ m: 0, px: 20 }}
+                                                    id="customized-dialog-title"
+                                                  >
+                                                    {selectedUser?.userName}
+                                                  </DialogTitle>
+                                                  <IconButton
+                                                    aria-label="close"
+                                                    onClick={handleClose}
+                                                    sx={{
+                                                      position: "absolute",
+                                                      right: 8,
+                                                      top: 8,
+                                                      color: (theme) =>
+                                                        theme.palette.grey[500],
+                                                    }}
+                                                  >
+                                                    <CloseIcon />
+                                                  </IconButton>
+                                                  <DialogContent dividers>
+                                                    <Typography gutterBottom>
+                                                      {selectedUser?.comment}
+                                                    </Typography>
+                                                  </DialogContent>
+                                                </BootstrapDialog>
+                                              </div>
 
-                                                // value={CategoryRatingValue} // Controlled value
-                                              />
-                                            )}
-                                            {mainCourse[m?.feedbackItemName] ===
-                                              "10" && (
-                                              <Rating
-                                                readOnly
-                                                // name="size-medium"
-                                                name="read-only"
-                                                max={10}
-                                                defaultValue={m?.itemRating}
-                                                //  value={CategoryRatingValue} // Controlled value
-                                              />
-                                            )}
-                                          </>
-                                        )
+                                              {mainCourse[
+                                                m?.feedbackItemName
+                                              ] === "5" && (
+                                                <Rating
+                                                  readOnly
+                                                  name="read-only"
+                                                  defaultValue={m?.itemRating}
+
+                                                  // value={CategoryRatingValue} // Controlled value
+                                                />
+                                              )}
+                                              {mainCourse[
+                                                m?.feedbackItemName
+                                              ] === "10" && (
+                                                <Rating
+                                                  readOnly
+                                                  // name="size-medium"
+                                                  name="read-only"
+                                                  max={10}
+                                                  defaultValue={m?.itemRating}
+                                                  //  value={CategoryRatingValue} // Controlled value
+                                                />
+                                              )}
+                                            </>
+                                          )
+                                      )
                                     )
-                                  )
-                                )}
-                              </div>
-                            )
-                        )}
+                                  )}
+                                </div>
+                              )
+                          )}
 
-                        {/* <p className="text-lg font-normal">Needs Improvement </p> */}
+                          {/* <p className="text-lg font-normal">Needs Improvement </p> */}
 
-                        {/*   <p className="text-[#8A8A8A] text-base">Product lab | Batch -3</p>
+                          {/*   <p className="text-[#8A8A8A] text-base">Product lab | Batch -3</p>
                                                         <p className="text-[#8A8A8A] text-base">Week -3</p> */}
 
-                        {/* <button className="bg-[#6278FF] rounded-md text-[#fff] text-base font-medium mt-5 px-10 py-2">View More</button> */}
-                      </div>
-                    ))
-                  )}
+                          {/* <button className="bg-[#6278FF] rounded-md text-[#fff] text-base font-medium mt-5 px-10 py-2">View More</button> */}
+                        </div>
+                      ))
+                    )}
+                </div>
               </div>
-            </div>
 
-            <div className="ms-10 text-lg font-semibold"> {itemDetails?.allComments ? itemDetails?.allComments :"All Comments"}</div>
+              <div className="ms-10 text-lg font-semibold">
+                {itemDetails?.allComments
+                  ? itemDetails?.allComments
+                  : "All Comments"}
+              </div>
 
-            <div className="grid grid-cols-2 my-10 gap-10 overflow-auto h-[500px] mx-10">
-              {classes?.map(
-                (data) =>
-                  (data?.taskId === selectedClass?.taskId ||
-                    data?.taskId === selectedClass) &&
-                  data?.givenFeedbacks?.map((givenFeedback) => (
-                    // <p>{givenFeedback?.comment}</p>
-                    <div
-                      className="p-5 h-[170px]"
-                      style={{
-                        borderRadius: "10px",
-                        border: "1px solid #E3E3E3",
-                        background: "#FFF",
-                        boxShadow: "4px 4px 4px 0px rgba(0, 0, 0, 0.25)",
-                      }}
-                    >
-                      <p className=" text-base font-semibold">
-                        {givenFeedback?.comment}{" "}
-                      </p>
-                      <p className="text-[#838383] text-base font-normal my-2">
-                        {userInfo?.organizationName}
-                      </p>
-                      <p className="flex justify-between text-[#838383] text-base font-normal mt-5   ">
-                        {" "}
-                        {givenFeedback?.submitterName}{" "}
-                        <span> {givenFeedback?.dateAndTime}</span>
-                      </p>
-                    </div>
-                    /*    givenFeedback.categories?.map((category) => (
+              <div className="grid grid-cols-2 my-10 gap-10 overflow-auto h-[500px] mx-10">
+                {classes?.map(
+                  (data) =>
+                    (data?.taskId === selectedClass?.taskId ||
+                      data?.taskId === selectedClass) &&
+                    data?.givenFeedbacks?.map((givenFeedback) => (
+                      // <p>{givenFeedback?.comment}</p>
+                      <div
+                        className="p-5 h-[170px]"
+                        style={{
+                          borderRadius: "10px",
+                          border: "1px solid #E3E3E3",
+                          background: "#FFF",
+                          boxShadow: "4px 4px 4px 0px rgba(0, 0, 0, 0.25)",
+                        }}
+                      >
+                        <p className=" text-base font-semibold">
+                          {givenFeedback?.comment}{" "}
+                        </p>
+                        <p className="text-[#838383] text-base font-normal my-2">
+                          {userInfo?.organizationName}
+                        </p>
+                        <p className="flex justify-between text-[#838383] text-base font-normal mt-5   ">
+                          {" "}
+                          {givenFeedback?.submitterName}{" "}
+                          <span> {givenFeedback?.dateAndTime}</span>
+                        </p>
+                      </div>
+                      /*    givenFeedback.categories?.map((category) => (
                                                        category.feedbackItems?.map((m,) => (
 
                                                          <p>aaaaaaa</p>
 
 
                                                        )))) */
-                  ))
-              )}
+                    ))
+                )}
 
-              {/*   <div className="p-5"
+                {/*   <div className="p-5"
                                     style={{
                                         borderRadius: "10px",
                                         border: "1px solid #E3E3E3",
@@ -1027,17 +663,431 @@ const ExpertMentorStudentFeedback = ({admin}) => {
                                     <p className="text-[#838383] text-base font-normal my-2">Product Lab | Batch 3</p>
                                     <p className="flex justify-between text-[#838383] text-base font-normal mt-5   "> Mahima Negi <span> 11.45 am</span></p>
                                 </div> */}
+              </div>
+            </>
+          ) : (
+            <p className="text-[red] ms-10 mt-10 text-lg font-semibold text-center">
+              {itemDetails?.thereIsNoResult
+                ? itemDetails?.thereIsNoResult
+                : "There is no Result"}
+            </p>
+          )}
+        </>
+      ) : (
+        <>
+          {" "}
+          <Layout>
+            <div className="px-20  py-4 flex items-center  fixed w-[100%] justify-between bg-[#FFF] top-0  border-b ">
+              <div>
+                <p className="flex items-center gap-2 text-lg font-semibold text-[#3E4DAC]">
+                  {" "}
+                  {itemDetails?.studentFeedback
+                    ? itemDetails?.studentFeedback
+                    : "Student Feedback"}
+                </p>
+              </div>
+
+              <div className="flex items-center gap-5 me-80 ">
+                <div
+                  className=" p-2"
+                  style={{
+                    borderRadius: "8px",
+                    background: "#F8F9FE",
+                    boxShadow: "2px 2px 10px 0px rgba(149, 156, 225, 0.50)",
+                  }}
+                >
+                  <SearchIcon />
+                  <input type="text rounded-lg p-2" placeholder="Search" />
+                </div>
+
+                <div>
+                  <img src={IconNav} alt="Iconnav" />
+                </div>
+              </div>
             </div>
-          </>
-        ) : (
-          <p className="text-[red] ms-10 mt-10 text-lg font-semibold text-center">
-            {itemDetails?.thereIsNoResult ? itemDetails?.thereIsNoResult :"There is no Result"}
-            
-          </p>
-        )}
-      </Layout></>
-      }
-     
+
+            <div className="mt-20 ms-10">
+              <div>
+                <h1 className=" text-[#737373] text-[24px] font-[500] mb-2 ">
+                  {itemDetails?.selectCourse
+                    ? itemDetails?.selectCourse
+                    : "Select Course"}
+                </h1>
+                <div className="flex flex-wrap">
+                  {!courses[0] && (
+                    <div
+                      className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
+                    >
+                      {itemDetails?.noCourseAddedYet
+                        ? itemDetails?.noCourseAddedYet
+                        : "No course added yet!"}
+                    </div>
+                  )}
+                  {courses?.map((item, index) => (
+                    <button
+                      key={index}
+                      className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 ${
+                        selectedCourse?._id === item?._id
+                          ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
+                          : "text-[#949494]"
+                      }`}
+                      onClick={() => handleSelectCourse(item)}
+                    >
+                      {item?.courseFullName}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex items-center gap-5">
+                <p className="text-[#676767] text-xl font-semibold">
+                  {itemDetails?.selectClass
+                    ? itemDetails?.selectClass
+                    : "Select Class"}{" "}
+                  :
+                </p>
+                {!classes?.length ? (
+                  <p className="my-10 text-red-600">
+                    {itemDetails?.classNotFound
+                      ? itemDetails?.classNotFound
+                      : "Class not found"}
+                  </p>
+                ) : (
+                  <select
+                    className="my-10 py-3 px-5 text-[#676767] text-lg font-semibold focus:outline-none"
+                    name="selectCourse"
+                    id="selectCourse"
+                    style={{
+                      borderRadius: "8px",
+                      background: "#F8F9FE",
+                      boxShadow: "2px 2px 10px 0px rgba(149, 156, 225, 0.50)",
+                    }}
+                    value={selectedClass?.taskId}
+                    onChange={handleSelectClassChange}
+                  >
+                    {classes?.map((cls) => (
+                      <option key={cls.id} value={cls.taskId}>
+                        {cls.taskName}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </div>
+
+              <p className="text-[#3E4DAC] text-xl font-bold mt-10 flex items-center gap-3">
+                <span>
+                  <img src={ranking} alt="icon" />
+                </span>{" "}
+                {itemDetails?.rating ? itemDetails?.rating : "Rating"}
+              </p>
+            </div>
+
+            <div className="flex justify-between items-center">
+              <div className="my-10">
+                {/*    <div className="flex justify-between items-center">
+                            <div className='px-10 flex gap-10 pb-3 text-lg  '>
+                                <button
+
+                                    onClick={() => handleTabClick1('All')}
+                                    style={{
+                                        fontWeight: selectedTab1 === 'All' ? 'bold' : 'normal',
+                                        borderBottom: selectedTab1 === 'All' ? '2px solid black' : 'none',
+                                        color: selectedTab1 === 'All' ? '#081765' : '#BEBEBE'
+                                    }}
+                                >
+                                    All
+                                </button>
+                                <button
+
+                                    onClick={() => handleTabClick1('Labwise')}
+                                    style={{
+                                        fontWeight: selectedTab1 === 'Labwise' ? 'bold' : 'normal',
+                                        borderBottom: selectedTab1 === 'Labwise' ? '2px solid black' : 'none',
+                                        color: selectedTab1 === 'Labwise' ? '#081765' : '#BEBEBE'
+                                    }}
+                                >
+                                    Labwise
+                                </button>
+                                <button
+
+                                    onClick={() => handleTabClick1('Batchwise')}
+                                    style={{
+                                        fontWeight: selectedTab1 === 'Batchwise' ? 'bold' : 'normal',
+                                        borderBottom: selectedTab1 === 'Batchwise' ? '2px solid black' : 'none',
+                                        color: selectedTab1 === 'Batchwise' ? '#081765' : '#BEBEBE'
+                                    }}
+                                >
+                                    Batchwise
+                                </button>
+
+
+
+
+                            </div>
+
+                        </div> */}
+              </div>
+
+              <div className="my-10 me-10">
+                <p>
+                  {itemDetails?.totalStudents
+                    ? itemDetails?.totalStudents
+                    : "Total Students"}{" "}
+                  - 1000
+                </p>
+              </div>
+            </div>
+
+            {selectedTab1 === "All" && classes?.length ? (
+              <>
+                <div className="mx-10 mb-10 ">
+                  <div className="grid grid-cols-4 gap-5 items-center ">
+                    {selectedClassShow?.submitterId &&
+                      selectedClassShow?.categories?.map((category) =>
+                        category?.feedbackItems?.map((item) => (
+                          <div className="flex flex-col items-center h-[100%] justify-end">
+                            <div className="">
+                              <div>
+                                <img
+                                  className="h-[150px]"
+                                  src={item?.selectedIcon}
+                                  alt="Icon"
+                                />
+                              </div>
+                            </div>
+                            <p className="text-lg font-bold">
+                              {item?.feedbackItemName}
+                            </p>
+                            <div className="my-3">
+                              {givenRating.map(
+                                (data) =>
+                                  data.feedbackItemName ==
+                                    item?.feedbackItemName && (
+                                    <>
+                                      {mainCourse[item?.feedbackItemName] ===
+                                        "10" && (
+                                        <Rating
+                                          readOnly
+                                          // name="size-medium"
+                                          name=""
+                                          max={10}
+                                          value={data?.averageRating}
+                                          //  value={CategoryRatingValue} // Controlled value
+                                        />
+                                      )}
+                                      {mainCourse[item?.feedbackItemName] ===
+                                        "5" && (
+                                        <Rating
+                                          readOnly
+                                          // name="size-medium"
+                                          name=""
+                                          value={data?.averageRating}
+                                          //  value={CategoryRatingValue} // Controlled value
+                                        />
+                                      )}
+                                    </>
+                                  )
+                              )}
+
+                              {}
+
+                              {/*  <Stack spacing={1}>
+                                                                <Rating size="large" name="half-rating" defaultValue={2.5} precision={0.5} />
+
+                                                            </Stack> */}
+                            </div>
+                            {classes?.map(
+                              (data) =>
+                                (data?.taskId === selectedClass?.taskId ||
+                                  data?.taskId === selectedClass) && (
+                                  <div>
+                                    <p className="text-lg font-normal">
+                                      {data?.givenFeedbacks.length}{" "}
+                                      {itemDetails?.students
+                                        ? itemDetails?.students
+                                        : "students"}
+                                    </p>
+                                    {data?.givenFeedbacks?.map(
+                                      (givenFeedback) =>
+                                        givenFeedback.categories?.map(
+                                          (category) =>
+                                            category.feedbackItems?.map(
+                                              (m) =>
+                                                m.feedbackItemName ===
+                                                  item?.feedbackItemName && (
+                                                  <>
+                                                    <p
+                                                      onClick={() =>
+                                                        handleSelectUser(
+                                                          givenFeedback?.submitterName,
+                                                          givenFeedback?.comment
+                                                        )
+                                                      }
+                                                      className="mt-3 text-lg font-bold cursor-pointer"
+                                                    >
+                                                      {
+                                                        givenFeedback?.submitterName
+                                                      }
+                                                    </p>
+
+                                                    <div>
+                                                      <BootstrapDialog
+                                                        onClose={handleClose}
+                                                        aria-labelledby="customized-dialog-title"
+                                                        open={open}
+                                                      >
+                                                        <DialogTitle
+                                                          sx={{ m: 0, px: 20 }}
+                                                          id="customized-dialog-title"
+                                                        >
+                                                          {
+                                                            selectedUser?.userName
+                                                          }
+                                                        </DialogTitle>
+                                                        <IconButton
+                                                          aria-label="close"
+                                                          onClick={handleClose}
+                                                          sx={{
+                                                            position:
+                                                              "absolute",
+                                                            right: 8,
+                                                            top: 8,
+                                                            color: (theme) =>
+                                                              theme.palette
+                                                                .grey[500],
+                                                          }}
+                                                        >
+                                                          <CloseIcon />
+                                                        </IconButton>
+                                                        <DialogContent dividers>
+                                                          <Typography
+                                                            gutterBottom
+                                                          >
+                                                            {
+                                                              selectedUser?.comment
+                                                            }
+                                                          </Typography>
+                                                        </DialogContent>
+                                                      </BootstrapDialog>
+                                                    </div>
+
+                                                    {mainCourse[
+                                                      m?.feedbackItemName
+                                                    ] === "5" && (
+                                                      <Rating
+                                                        readOnly
+                                                        name="read-only"
+                                                        defaultValue={
+                                                          m?.itemRating
+                                                        }
+
+                                                        // value={CategoryRatingValue} // Controlled value
+                                                      />
+                                                    )}
+                                                    {mainCourse[
+                                                      m?.feedbackItemName
+                                                    ] === "10" && (
+                                                      <Rating
+                                                        readOnly
+                                                        // name="size-medium"
+                                                        name="read-only"
+                                                        max={10}
+                                                        defaultValue={
+                                                          m?.itemRating
+                                                        }
+                                                        //  value={CategoryRatingValue} // Controlled value
+                                                      />
+                                                    )}
+                                                  </>
+                                                )
+                                            )
+                                        )
+                                    )}
+                                  </div>
+                                )
+                            )}
+
+                            {/* <p className="text-lg font-normal">Needs Improvement </p> */}
+
+                            {/*   <p className="text-[#8A8A8A] text-base">Product lab | Batch -3</p>
+                                                        <p className="text-[#8A8A8A] text-base">Week -3</p> */}
+
+                            {/* <button className="bg-[#6278FF] rounded-md text-[#fff] text-base font-medium mt-5 px-10 py-2">View More</button> */}
+                          </div>
+                        ))
+                      )}
+                  </div>
+                </div>
+
+                <div className="ms-10 text-lg font-semibold">
+                  {" "}
+                  {itemDetails?.allComments
+                    ? itemDetails?.allComments
+                    : "All Comments"}
+                </div>
+
+                <div className="grid grid-cols-2 my-10 gap-10 overflow-auto h-[500px] mx-10">
+                  {classes?.map(
+                    (data) =>
+                      (data?.taskId === selectedClass?.taskId ||
+                        data?.taskId === selectedClass) &&
+                      data?.givenFeedbacks?.map((givenFeedback) => (
+                        // <p>{givenFeedback?.comment}</p>
+                        <div
+                          className="p-5 h-[170px]"
+                          style={{
+                            borderRadius: "10px",
+                            border: "1px solid #E3E3E3",
+                            background: "#FFF",
+                            boxShadow: "4px 4px 4px 0px rgba(0, 0, 0, 0.25)",
+                          }}
+                        >
+                          <p className=" text-base font-semibold">
+                            {givenFeedback?.comment}{" "}
+                          </p>
+                          <p className="text-[#838383] text-base font-normal my-2">
+                            {userInfo?.organizationName}
+                          </p>
+                          <p className="flex justify-between text-[#838383] text-base font-normal mt-5   ">
+                            {" "}
+                            {givenFeedback?.submitterName}{" "}
+                            <span> {givenFeedback?.dateAndTime}</span>
+                          </p>
+                        </div>
+                        /*    givenFeedback.categories?.map((category) => (
+                                                       category.feedbackItems?.map((m,) => (
+
+                                                         <p>aaaaaaa</p>
+
+
+                                                       )))) */
+                      ))
+                  )}
+
+                  {/*   <div className="p-5"
+                                    style={{
+                                        borderRadius: "10px",
+                                        border: "1px solid #E3E3E3",
+                                        background: "#FFF",
+                                        boxShadow: "4px 4px 4px 0px rgba(0, 0, 0, 0.25)"
+                                    }}
+                                >
+                                    <p className=" text-base font-semibold">Delivery of content was  understandable </p>
+                                    <p className="text-[#838383] text-base font-normal my-2">Product Lab | Batch 3</p>
+                                    <p className="flex justify-between text-[#838383] text-base font-normal mt-5   "> Mahima Negi <span> 11.45 am</span></p>
+                                </div> */}
+                </div>
+              </>
+            ) : (
+              <p className="text-[red] ms-10 mt-10 text-lg font-semibold text-center">
+                {itemDetails?.thereIsNoResult
+                  ? itemDetails?.thereIsNoResult
+                  : "There is no Result"}
+              </p>
+            )}
+          </Layout>
+        </>
+      )}
     </div>
   );
 };

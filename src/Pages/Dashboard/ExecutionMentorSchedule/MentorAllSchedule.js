@@ -1,26 +1,20 @@
+import "react-circular-progressbar/dist/styles.css";
 
-import 'react-circular-progressbar/dist/styles.css';
-
-import React, {
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-import { addHours } from 'date-fns';
-import axios from 'axios';
-import { red } from '@mui/material/colors';
-import { AuthContext } from '../../../contexts/AuthProvider';
-import Layout from '../Layout';
-import Loading from '../../Shared/Loading/Loading';
-import { Link } from 'react-router-dom';
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import AccessAlarmOutlinedIcon from '@mui/icons-material/AccessAlarmOutlined';
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { addHours } from "date-fns";
+import axios from "axios";
+import { red } from "@mui/material/colors";
+import { AuthContext } from "../../../contexts/AuthProvider";
+import Layout from "../Layout";
+import Loading from "../../Shared/Loading/Loading";
+import { Link } from "react-router-dom";
+import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
+import AccessAlarmOutlinedIcon from "@mui/icons-material/AccessAlarmOutlined";
 import googlemeet from "../../../assets/icons/googlemeet.png";
 import zoom from "../../../assets/icons/zoom-240.png";
 import eye from "../../../assets/ExecutionMentor/eye.svg";
-import toast from 'react-hot-toast';
-import RecordingMentor from './RecordingMentor';
+import toast from "react-hot-toast";
+import RecordingMentor from "./RecordingMentor";
 const MentorAllSchedule = () => {
   const { userInfo, user } = useContext(AuthContext);
   const [userRequesterEvents, setUserRequesterEvents] = useState([]);
@@ -41,19 +35,20 @@ const MentorAllSchedule = () => {
 
   const [recordings, setRecordings] = useState({});
 
-
   useEffect(() => {
     if (!userInfo?.email) {
       return;
     }
     Loading();
     axios
-      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/mentorEmail/${userInfo?.email}`)
+      .get(
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/mentorEmail/${userInfo?.email}`
+      )
       .then((response) => {
         Loading().close();
 
         setUserRequesterEvents(response?.data);
-        console.log("response ", response?.data)
+        // console.log("response ", response?.data)
         setEvents(response?.data);
         const currentDate = new Date(getCurrentDate()).getTime();
         // const filteredEvents = response?.data.filter(event => {
@@ -61,8 +56,6 @@ const MentorAllSchedule = () => {
         //   const eventStartDate = new Date(event.start?.dateTime || event.start_time).getTime();
         //   return eventStartDate >= currentDate;
         // });
-
-
       })
       .catch((error) => {
         Loading().close();
@@ -73,14 +66,12 @@ const MentorAllSchedule = () => {
       });
   }, [userInfo]);
 
-
-
   // Helper function to get today's date in YYYY-MM-DD format
   const getCurrentDate = () => {
     const today = new Date();
     const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
 
@@ -99,10 +90,10 @@ const MentorAllSchedule = () => {
       const startTime = event.start?.dateTime
         ? new Date(event.start.dateTime)
         : event.start_time
-          ? new Date(event.start_time)
-          : null;
+        ? new Date(event.start_time)
+        : null;
 
-      console.log("from :", from, "to :", to, "start :", startTime);
+      // console.log("from :", from, "to :", to, "start :", startTime);
       // Ensure both startTime and endTime are valid Date objects before comparing
       return startTime && startTime >= from && startTime <= to;
     });
@@ -115,48 +106,52 @@ const MentorAllSchedule = () => {
 
   const now = new Date();
   useEffect(() => {
-    const sorteddEvents = userRequesterEvents?.slice()?.sort((a, b) => {
-      const dateA = new Date(a?.start_time);
-      const dateB = new Date(b?.start_time);
-      return dateA - dateB;
-    }).filter(event => new Date(event?.start_time) > now);
+    const sorteddEvents = userRequesterEvents
+      ?.slice()
+      ?.sort((a, b) => {
+        const dateA = new Date(a?.start_time);
+        const dateB = new Date(b?.start_time);
+        return dateA - dateB;
+      })
+      .filter((event) => new Date(event?.start_time) > now);
     setSortedEvents(sorteddEvents);
     const excludedEventId = sortedEvents[0]?._id;
-    console.log(excludedEventId)
-    const filtereddEvents = userRequesterEvents?.filter(event => event?._id !== excludedEventId);
+    // console.log(excludedEventId)
+    const filtereddEvents = userRequesterEvents?.filter(
+      (event) => event?._id !== excludedEventId
+    );
     setFilteredEvents(filtereddEvents);
   }, [userRequesterEvents]);
-
 
   function getEditedEvents(events) {
     return events.sort((a, b) => {
       // Normalize start times to Date objects
-      const startTimeA = new Date(a?.start_time || a.start?.dateTime || a?.start);
-      const startTimeB = new Date(b?.start_time || b.start?.dateTime || b?.start);
+      const startTimeA = new Date(
+        a?.start_time || a.start?.dateTime || a?.start
+      );
+      const startTimeB = new Date(
+        b?.start_time || b.start?.dateTime || b?.start
+      );
 
       // Sort in descending order (most recent dates first)
       return startTimeB - startTimeA;
     });
   }
   const editedEvents = getEditedEvents(filteredEvents);
-  console.log("sorted ",sortedEvents);
+  // console.log("sorted ",sortedEvents);
 
-  console.log("edited ",editedEvents);
-
-
-
+  // console.log("edited ",editedEvents);
 
   return (
     <div>
-
       {userRequesterEvents?.length > 0 ? (
         // Render content specific to events where the user is the requester
         <>
-
           <div
             style={{
-              maxWidth: `${window.innerWidth - (window.innerWidth > 1024 ? 370 : 40)
-                }px`,
+              maxWidth: `${
+                window.innerWidth - (window.innerWidth > 1024 ? 370 : 40)
+              }px`,
             }}
             className={`h-[70vh] w-fit overflow-y-auto mt-5 border `}
           >
@@ -168,7 +163,6 @@ const MentorAllSchedule = () => {
                   </th>
                   <th className="py-3 px-6 border-b text-left whitespace-nowrap ">
                     Student Name
-
                   </th>
                   <th className="py-3 px-6 border-b text-left whitespace-nowrap">
                     Course Name
@@ -189,21 +183,25 @@ const MentorAllSchedule = () => {
               </thead>
               <tbody>
                 {sortedEvents.length > 0 && (
-                  <tr
-                    className="bg-emerald-500 text-white font-medium"
-                  >
+                  <tr className="bg-emerald-500 text-white font-medium">
                     <td className="py-4 px-6 border-b text-left whitespace-nowrap">
-                      {sortedEvents[0].topic ? sortedEvents[0].topic : sortedEvents[0].summary}
+                      {sortedEvents[0].topic
+                        ? sortedEvents[0].topic
+                        : sortedEvents[0].summary}
                     </td>
                     <td className="py-4 px-6 border-b text-left">
                       {sortedEvents[0].studentName}
                     </td>
                     <td className="py-4 px-4 text-left relative">
-                      <div className='flex gap-2 items-center'>
+                      <div className="flex gap-2 items-center">
                         <p>{sortedEvents[0].courseName}</p>
                         {sortedEvents[0].courseName && (
                           <div className="group cursor-pointer">
-                            <img src={eye} alt="eye" className="inline w-4 h-4 bg-[#081765] hover:bg-opacity-70 text-[#fff]" />
+                            <img
+                              src={eye}
+                              alt="eye"
+                              className="inline w-4 h-4 bg-[#081765] hover:bg-opacity-70 text-[#fff]"
+                            />
                             <div className="absolute left-0 top-0 ml-1 w-auto p-2 min-w-max bg-black text-white text-sm rounded-lg hidden group-hover:block">
                               {sortedEvents[0].batchName}
                             </div>
@@ -212,30 +210,48 @@ const MentorAllSchedule = () => {
                       </div>
                     </td>
                     <td className="py-4 px-6 border-b text-left">
-                      {sortedEvents[0].start_time ? new Date(sortedEvents[0].start_time).toLocaleDateString('en-US', {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      }) : sortedEvents[0].start ? new Date(sortedEvents[0].start).toLocaleDateString('en-US', {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      }) : ''}
+                      {sortedEvents[0].start_time
+                        ? new Date(
+                            sortedEvents[0].start_time
+                          ).toLocaleDateString("en-US", {
+                            weekday: "long",
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })
+                        : sortedEvents[0].start
+                        ? new Date(sortedEvents[0].start).toLocaleDateString(
+                            "en-US",
+                            {
+                              weekday: "long",
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            }
+                          )
+                        : ""}
                     </td>
                     <td className="py-4 px-6 border-b text-left">
-                      {sortedEvents[0].start_time ? new Date(sortedEvents[0].start_time).toLocaleTimeString('en-US', {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit',
-                        hour12: true
-                      }) : sortedEvents[0].start ? new Date(sortedEvents[0].start).toLocaleTimeString('en-US', {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit',
-                        hour12: true
-                      }) : ''}
+                      {sortedEvents[0].start_time
+                        ? new Date(
+                            sortedEvents[0].start_time
+                          ).toLocaleTimeString("en-US", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            second: "2-digit",
+                            hour12: true,
+                          })
+                        : sortedEvents[0].start
+                        ? new Date(sortedEvents[0].start).toLocaleTimeString(
+                            "en-US",
+                            {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              second: "2-digit",
+                              hour12: true,
+                            }
+                          )
+                        : ""}
                     </td>
 
                     <td className="py-4 px-6 border-b text-left">
@@ -264,24 +280,24 @@ const MentorAllSchedule = () => {
                           className="w-[21px] h-[21px]"
                           alt="googlemeet or zoom"
                         ></img>
-
                       </Link>
                     </td>
                     <td className="py-4 px-6 border-b text-left">
-                      <RecordingMentor zoomId={sortedEvents[0]?.id}></RecordingMentor>
+                      <RecordingMentor
+                        zoomId={sortedEvents[0]?.id}
+                      ></RecordingMentor>
                     </td>
-
                   </tr>
                 )}
                 {editedEvents.map((event, index) => {
-                  const eventStartTime = new Date(event.start_time || event.start.dateTime || event.start);
+                  const eventStartTime = new Date(
+                    event.start_time || event.start.dateTime || event.start
+                  );
                   const startTimePlusOneHour = addHours(eventStartTime, 1);
                   return (
                     <tr
                       key={index}
-                      className={
-                        index % 2 === 0 ? "bg-gray-100" : "bg-gray-50"
-                      }
+                      className={index % 2 === 0 ? "bg-gray-100" : "bg-gray-50"}
                     >
                       <td className="py-4 px-6 border-b text-left whitespace-nowrap">
                         {/* {userInfo?.role === "admin" && (
@@ -318,59 +334,91 @@ const MentorAllSchedule = () => {
                         {event?.studentName}
                       </td>
                       <td className="py-4 px-4 text-left relative">
-                        <div className='flex gap-2 items-center'>
+                        <div className="flex gap-2 items-center">
                           <p>{event?.courseName}</p>
-                          {event?.courseName ? <div className="group cursor-pointer">
-                            <img src={eye} alt="eye" className="inline w-4 h-4 bg-[#081765] hover:bg-opacity-70 text-[#fff]" />
-                            <div className="absolute left-0 top-0 ml-1 w-auto p-2 min-w-max bg-black text-white text-sm rounded-lg hidden group-hover:block">
-                              {event?.batchName}
+                          {event?.courseName ? (
+                            <div className="group cursor-pointer">
+                              <img
+                                src={eye}
+                                alt="eye"
+                                className="inline w-4 h-4 bg-[#081765] hover:bg-opacity-70 text-[#fff]"
+                              />
+                              <div className="absolute left-0 top-0 ml-1 w-auto p-2 min-w-max bg-black text-white text-sm rounded-lg hidden group-hover:block">
+                                {event?.batchName}
+                              </div>
                             </div>
-                          </div> : <></>}
+                          ) : (
+                            <></>
+                          )}
                         </div>
                       </td>
 
                       <td className="py-4 px-6 border-b text-left">
-                        {event?.start_time ? new Date(event.start_time).toLocaleDateString('en-US', {
-                          weekday: 'long', // "Monday"
-                          year: 'numeric', // "2024"
-                          month: 'long', // "May"
-                          day: 'numeric' // "30"
-                        }) : event?.start ? new Date(event.start).toLocaleDateString('en-US', {
-                          weekday: 'long', // "Monday"
-                          year: 'numeric', // "2024"
-                          month: 'long', // "May"
-                          day: 'numeric' // "30"
-                        }) : event?.start.dateTime ? new Date(event.start.dateTime).toLocaleDateString('en-US', {
-                          weekday: 'long', // "Monday"
-                          year: 'numeric', // "2024"
-                          month: 'long', // "May"
-                          day: 'numeric' // "30"
-                        }) : ''}
+                        {event?.start_time
+                          ? new Date(event.start_time).toLocaleDateString(
+                              "en-US",
+                              {
+                                weekday: "long", // "Monday"
+                                year: "numeric", // "2024"
+                                month: "long", // "May"
+                                day: "numeric", // "30"
+                              }
+                            )
+                          : event?.start
+                          ? new Date(event.start).toLocaleDateString("en-US", {
+                              weekday: "long", // "Monday"
+                              year: "numeric", // "2024"
+                              month: "long", // "May"
+                              day: "numeric", // "30"
+                            })
+                          : event?.start.dateTime
+                          ? new Date(event.start.dateTime).toLocaleDateString(
+                              "en-US",
+                              {
+                                weekday: "long", // "Monday"
+                                year: "numeric", // "2024"
+                                month: "long", // "May"
+                                day: "numeric", // "30"
+                              }
+                            )
+                          : ""}
                       </td>
 
                       <td className="py-4 px-6 border-b text-left">
-                        {event?.start_time ? new Date(event.start_time).toLocaleTimeString('en-US', {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          second: '2-digit',
-                          hour12: true
-                        }) : event?.start ? new Date(event.start).toLocaleTimeString('en-US', {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          second: '2-digit',
-                          hour12: true
-                        }) : event?.start.dateTime ? new Date(event.start.dateTime).toLocaleTimeString('en-US', {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          second: '2-digit',
-                          hour12: true
-                        }) : ''}
+                        {event?.start_time
+                          ? new Date(event.start_time).toLocaleTimeString(
+                              "en-US",
+                              {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                second: "2-digit",
+                                hour12: true,
+                              }
+                            )
+                          : event?.start
+                          ? new Date(event.start).toLocaleTimeString("en-US", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              second: "2-digit",
+                              hour12: true,
+                            })
+                          : event?.start.dateTime
+                          ? new Date(event.start.dateTime).toLocaleTimeString(
+                              "en-US",
+                              {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                second: "2-digit",
+                                hour12: true,
+                              }
+                            )
+                          : ""}
                       </td>
                       <td className="py-4 px-6 border-b text-left">
                         {startTimePlusOneHour < now ? (
-                          <p className='text-sm'>Meeting Concluded</p>  // Show this if the meeting time is in the past
+                          <p className="text-sm">Meeting Concluded</p> // Show this if the meeting time is in the past
                         ) : (
-                          <Link  // Only show the link if the meeting time is in the future or present
+                          <Link // Only show the link if the meeting time is in the future or present
                             to={
                               event?.meetingType === "Zoom"
                                 ? event?.start_url
@@ -379,15 +427,29 @@ const MentorAllSchedule = () => {
                             className="flex gap-2 items-center justify-center py-[6px] px-4 rounded-lg mb-2 mt-3"
                           >
                             <img
-                              src={event?.meetingType === "Zoom" ? zoom : googlemeet}
+                              src={
+                                event?.meetingType === "Zoom"
+                                  ? zoom
+                                  : googlemeet
+                              }
                               className="w-[21px] h-[21px]"
-                              alt={event?.meetingType === "Zoom" ? "zoom" : "googlemeet"}
+                              alt={
+                                event?.meetingType === "Zoom"
+                                  ? "zoom"
+                                  : "googlemeet"
+                              }
                             ></img>
                           </Link>
                         )}
                       </td>
                       <td className="py-4 px-6 border-b text-left">
-                        {startTimePlusOneHour < now ? (<RecordingMentor zoomId={event?.id}></RecordingMentor>) : (<p className='text-left text-sm'>Meeting yet to happen</p>)}
+                        {startTimePlusOneHour < now ? (
+                          <RecordingMentor zoomId={event?.id}></RecordingMentor>
+                        ) : (
+                          <p className="text-left text-sm">
+                            Meeting yet to happen
+                          </p>
+                        )}
                       </td>
                     </tr>
                   );
@@ -396,12 +458,13 @@ const MentorAllSchedule = () => {
             </table>
           </div>
         </>
-      )
-        : <p className="text-center font-medium text-sky-400 mt-5 ">No Upcoming Scheduled Events</p>}
+      ) : (
+        <p className="text-center font-medium text-sky-400 mt-5 ">
+          No Upcoming Scheduled Events
+        </p>
+      )}
     </div>
   );
 };
 
 export default MentorAllSchedule;
-
-

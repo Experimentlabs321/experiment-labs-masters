@@ -43,9 +43,8 @@ import emailjs from "@emailjs/browser";
 import { toast } from "react-hot-toast";
 import ReactGA from "react-ga4";
 import Swal from "sweetalert2";
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -57,7 +56,6 @@ const ScienceInnovationNav = (props) => {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-
 
   const scrollToSection = (sectionId) => {
     scroll.scrollTo(sectionId, {
@@ -134,7 +132,7 @@ const ScienceInnovationNav = (props) => {
   const handleLogout = () => {
     logOut()
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         navigate("/");
       })
       .catch((error) => console.error(error));
@@ -187,7 +185,7 @@ const ScienceInnovationNav = (props) => {
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
-    console.log("Clicked");
+    // console.log("Clicked");
     ReactGA.event({
       category: "Click",
       action: "Submit Data From Navbar",
@@ -209,20 +207,17 @@ const ScienceInnovationNav = (props) => {
       Time: new Date(),
     };
 
-    console.log("Gone Here ===============>", data);
+    // console.log("Gone Here ===============>", data);
 
-    fetch(
-      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/interactions`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }
-    )
+    fetch(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/interactions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
       .then(async (res) => {
-        console.log("Submit ===============>", res);
+        // console.log("Submit ===============>", res);
         const sendMail = await axios.post(
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
           {
@@ -239,7 +234,7 @@ const ScienceInnovationNav = (props) => {
             `,
           }
         );
-        console.log("Send Mail ===============>", sendMail);
+        // console.log("Send Mail ===============>", sendMail);
         if (sendMail?.data?.success) {
           Swal.fire({
             icon: "success",
@@ -250,7 +245,7 @@ const ScienceInnovationNav = (props) => {
       })
       .catch((error) => {
         // Errors are reported there
-        console.log(error);
+        // console.log(error);
       });
   };
 
@@ -399,7 +394,7 @@ const ScienceInnovationNav = (props) => {
   };
 
   const graphyLogin = async (email, displayName) => {
-    console.log(email, displayName);
+    // console.log(email, displayName);
     try {
       const payload = {
         name: displayName,
@@ -497,10 +492,10 @@ const ScienceInnovationNav = (props) => {
             graphyLogin(loginData.email, loginData.name);
             // navigate("/dashboard");
           })
-          .catch((error) => { });
+          .catch((error) => {});
       })
       .catch((error) => {
-        console.log(error.message);
+        // console.log(error.message);
       });
     e.preventDefault();
   };
@@ -508,8 +503,8 @@ const ScienceInnovationNav = (props) => {
   // Login user with Email Password
   const loginUser = (email, password, location, history) => {
     signIn(email, password)
-      .then((userCredential) => { })
-      .catch((error) => { });
+      .then((userCredential) => {})
+      .catch((error) => {});
   };
 
   const handleOnChange = (e) => {
@@ -527,7 +522,7 @@ const ScienceInnovationNav = (props) => {
         setNewLogin(true);
       });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 
@@ -745,15 +740,11 @@ const ScienceInnovationNav = (props) => {
                 <button
                   type="button"
                   onClick={togglePasswordVisibility}
-                   className="text-[#000] mb-"
+                  className="text-[#000] mb-"
                 >
                   {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
                 </button>
-
               </div>
-
-
-
 
               <button
                 onClick={() => {

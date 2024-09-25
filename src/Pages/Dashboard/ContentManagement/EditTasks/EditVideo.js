@@ -196,7 +196,7 @@ const EditVideo = () => {
     Loading();
     let fileUrl = "";
     let isYoutubeLink;
-    console.log(selectedFile);
+    // console.log(selectedFile);
     if (selectedFile) {
       fileUrl = await uploadFileToS3(selectedFile);
       isYoutubeLink = false;
@@ -220,7 +220,7 @@ const EditVideo = () => {
       enableDownload,
     };
 
-    console.log("Video Data =================>", ManageVideo);
+    // console.log("Video Data =================>", ManageVideo);
 
     setVideoData(ManageVideo);
 
@@ -229,14 +229,14 @@ const EditVideo = () => {
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/videos/taskId/${videoData?._id}`,
         ManageVideo
       );
-      console.log(newTask);
+      // console.log(newTask);
 
       if (newTask?.data?.result?.acknowledged) {
         toast.success("Video added Successfully");
       }
       Loading().close();
       navigate(-1);
-      console.log(ManageVideo);
+      // console.log(ManageVideo);
     }
   };
 

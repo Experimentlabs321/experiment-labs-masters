@@ -35,7 +35,7 @@ const Announcements = () => {
     }
     setLoading(false);
   }, [userInfo]);
-  console.log(announcements);
+  // console.log(announcements);
 
   const handleDate = (dateTime) => {
     const date = new Date(dateTime).toDateString();

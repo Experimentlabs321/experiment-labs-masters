@@ -223,7 +223,7 @@ const Login = () => {
         const email = result?.user?.email;
         const displayName = result?.user?.displayName;
         saveUser(email);
-        console.log(email, displayName);
+        // console.log(email, displayName);
         if (email) {
           graphyLogin(email, displayName);
         }

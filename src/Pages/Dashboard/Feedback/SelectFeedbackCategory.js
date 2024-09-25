@@ -1,16 +1,13 @@
 //SelectFeedbackCategory
 
-import React, {
-  useContext,
-  useState,
-} from 'react';
+import React, { useContext, useState } from "react";
 
-import axios from 'axios';
-import { toast } from 'react-hot-toast';
-import Swal from 'sweetalert2';
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import Swal from "sweetalert2";
 
-import { AuthContext } from '../../../contexts/AuthProvider';
-import DialogLayout from '../Shared/DialogLayout';
+import { AuthContext } from "../../../contexts/AuthProvider";
+import DialogLayout from "../Shared/DialogLayout";
 
 const SelectFeedbackCategory = ({
   setFeedbackCategories,
@@ -20,7 +17,7 @@ const SelectFeedbackCategory = ({
   setCategoryThreeDot,
   categoryThreeDot,
   selectedCourse,
-  itemFeedbackSettingDetails
+  itemFeedbackSettingDetails,
 }) => {
   const { userInfo } = useContext(AuthContext);
   const [editCategoryOpen, setEditCategoryOpen] = useState(false);
@@ -29,8 +26,12 @@ const SelectFeedbackCategory = ({
     if (!selectedCourse?._id || !userInfo?.organizationId) {
       Swal.fire({
         icon: "warning",
-        title: itemFeedbackSettingDetails?.thereIsNoCourse ? itemFeedbackSettingDetails?.thereIsNoCourse : "There is no course",
-        text: itemFeedbackSettingDetails?.pleaseCreateACourseFirst ? itemFeedbackSettingDetails?.pleaseCreateACourseFirst : "Please create a course first!",
+        title: itemFeedbackSettingDetails?.thereIsNoCourse
+          ? itemFeedbackSettingDetails?.thereIsNoCourse
+          : "There is no course",
+        text: itemFeedbackSettingDetails?.pleaseCreateACourseFirst
+          ? itemFeedbackSettingDetails?.pleaseCreateACourseFirst
+          : "Please create a course first!",
       });
       return;
     }
@@ -46,13 +47,16 @@ const SelectFeedbackCategory = ({
     );
 
     if (newCategory?.data?.acknowledged) {
-      toast.success(itemFeedbackSettingDetails?.categoryAddedSuccessfully ? itemFeedbackSettingDetails?.categoryAddedSuccessfully : "Category added Successfully");
+      toast.success(
+        itemFeedbackSettingDetails?.categoryAddedSuccessfully
+          ? itemFeedbackSettingDetails?.categoryAddedSuccessfully
+          : "Category added Successfully"
+      );
       setFeedbackCategories([
         ...feedbackCategories,
         {
           categoryName: `category ${feedbackCategories?.length + 1}`,
           rating: "5",
-
         },
       ]);
       setSelectedFeedbackCategory({
@@ -76,8 +80,12 @@ const SelectFeedbackCategory = ({
       setEditCategoryOpen(false);
       Swal.fire({
         icon: "error",
-        title: itemFeedbackSettingDetails?.categoryAlreadyExist ? itemFeedbackSettingDetails?.categoryAlreadyExist : "Category already exist!",
-        text: itemFeedbackSettingDetails?.pleaseEnterAnUniqueCategoryName ? itemFeedbackSettingDetails?.pleaseEnterAnUniqueCategoryName : "Please enter an unique category name!",
+        title: itemFeedbackSettingDetails?.categoryAlreadyExist
+          ? itemFeedbackSettingDetails?.categoryAlreadyExist
+          : "Category already exist!",
+        text: itemFeedbackSettingDetails?.pleaseEnterAnUniqueCategoryName
+          ? itemFeedbackSettingDetails?.pleaseEnterAnUniqueCategoryName
+          : "Please enter an unique category name!",
       });
       return;
     }
@@ -88,14 +96,14 @@ const SelectFeedbackCategory = ({
       newRating: event?.target?.rating?.value,
       courseId: selectedCourse?._id,
     };
-    console.log({
-      organizationId: userInfo?.organizationId,
-      oldCategoryName: selectedFeedbackCategory?.categoryName,
-      newCategoryName: event?.target?.categoryName?.value,
-      oldRating: selectedFeedbackCategory?.rating,
-      newRating: event?.target?.rating?.value,
-      courseId: selectedCourse?._id,
-    });
+    // console.log({
+    //   organizationId: userInfo?.organizationId,
+    //   oldCategoryName: selectedFeedbackCategory?.categoryName,
+    //   newCategoryName: event?.target?.categoryName?.value,
+    //   oldRating: selectedFeedbackCategory?.rating,
+    //   newRating: event?.target?.rating?.value,
+    //   courseId: selectedCourse?._id,
+    // });
     const updatedCategory = await axios.put(
       // `${process.env.REACT_APP_BACKEND_API}/feedback_categories/categoryName`,
       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/feedbackCategories/categoryName`,
@@ -103,13 +111,18 @@ const SelectFeedbackCategory = ({
     );
 
     if (updatedCategory?.data?.acknowledged) {
-      toast.success(itemFeedbackSettingDetails?.categoryUpdatedSuccessfully ? itemFeedbackSettingDetails?.categoryUpdatedSuccessfully : "Category Updated Successfully");
+      toast.success(
+        itemFeedbackSettingDetails?.categoryUpdatedSuccessfully
+          ? itemFeedbackSettingDetails?.categoryUpdatedSuccessfully
+          : "Category Updated Successfully"
+      );
       const updatedCategoriesArray = [...feedbackCategories];
       const selectedIndex = updatedCategoriesArray.findIndex(
         (category) =>
           category.categoryName === selectedFeedbackCategory.categoryName
       );
-      updatedCategoriesArray[selectedIndex].categoryName = category.categoryName;
+      updatedCategoriesArray[selectedIndex].categoryName =
+        category.categoryName;
       updatedCategoriesArray[selectedIndex].rating = category.rating;
       setFeedbackCategories(updatedCategoriesArray);
       setEditCategoryOpen(false);
@@ -117,11 +130,14 @@ const SelectFeedbackCategory = ({
     }
   };
 
-
   const handleCategoryDelete = async (name) => {
     await Swal.fire({
-      title: itemFeedbackSettingDetails?.areYouSure ? itemFeedbackSettingDetails?.areYouSure : "Are you sure?",
-      text: itemFeedbackSettingDetails?.onceDeletedTheCategoryWillNotRecover ? itemFeedbackSettingDetails?.onceDeletedTheCategoryWillNotRecover : "Once deleted, the category will not recover!",
+      title: itemFeedbackSettingDetails?.areYouSure
+        ? itemFeedbackSettingDetails?.areYouSure
+        : "Are you sure?",
+      text: itemFeedbackSettingDetails?.onceDeletedTheCategoryWillNotRecover
+        ? itemFeedbackSettingDetails?.onceDeletedTheCategoryWillNotRecover
+        : "Once deleted, the category will not recover!",
       icon: "warning",
       buttons: true,
       showCancelButton: true,
@@ -129,13 +145,13 @@ const SelectFeedbackCategory = ({
       confirmButtonText: "Delete",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        console.log({
-          organizationId: userInfo?.organizationId,
-          categoryName: name,
-          courseId: selectedCourse?._id,
-        });
+        // console.log({
+        //   organizationId: userInfo?.organizationId,
+        //   categoryName: name,
+        //   courseId: selectedCourse?._id,
+        // });
         fetch(
-         // `${process.env.REACT_APP_BACKEND_API}/feedback/deleteCategory`,
+          // `${process.env.REACT_APP_BACKEND_API}/feedback/deleteCategory`,
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/feedbackCategories/categories`,
           {
             method: "PUT",
@@ -147,7 +163,8 @@ const SelectFeedbackCategory = ({
               categoryName: name,
               courseId: selectedCourse?._id,
             }),
-          })
+          }
+        )
           .then((response) => {
             if (!response.ok) {
               throw new Error(`Request failed with status: ${response.status}`);
@@ -155,9 +172,13 @@ const SelectFeedbackCategory = ({
             return response.json();
           })
           .then((result) => {
-            console.log(result);
+            // console.log(result);
             if (result?.acknowledged) {
-              toast.success(itemFeedbackSettingDetails?.categoryDeletedSuccessfully ? itemFeedbackSettingDetails?.categoryDeletedSuccessfully : "Category Deleted Successfully!");
+              toast.success(
+                itemFeedbackSettingDetails?.categoryDeletedSuccessfully
+                  ? itemFeedbackSettingDetails?.categoryDeletedSuccessfully
+                  : "Category Deleted Successfully!"
+              );
               const remainingCategories = feedbackCategories.filter(
                 (category) => category?.categoryName !== name
               );
@@ -183,8 +204,9 @@ const SelectFeedbackCategory = ({
         borderRadius="15px"
         title={
           <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
-            {itemFeedbackSettingDetails?.editCategoryName ? itemFeedbackSettingDetails?.editCategoryName : "Edit Category Name"}
-
+            {itemFeedbackSettingDetails?.editCategoryName
+              ? itemFeedbackSettingDetails?.editCategoryName
+              : "Edit Category Name"}
           </p>
         }
       >
@@ -193,7 +215,9 @@ const SelectFeedbackCategory = ({
           className="px-[32px] py-[24px] "
         >
           <h1 className=" text-[18px] font-[700] mb-[20px] ">
-            {itemFeedbackSettingDetails?.categoryName ? itemFeedbackSettingDetails?.categoryName : "Category Name"}
+            {itemFeedbackSettingDetails?.categoryName
+              ? itemFeedbackSettingDetails?.categoryName
+              : "Category Name"}
           </h1>
           <input
             type="text"
@@ -204,20 +228,30 @@ const SelectFeedbackCategory = ({
             className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
           />
           <h1 className=" text-[18px] font-[700] mb-[20px] ">
-            {itemFeedbackSettingDetails?.rating ? itemFeedbackSettingDetails?.rating : "Rating"}
+            {itemFeedbackSettingDetails?.rating
+              ? itemFeedbackSettingDetails?.rating
+              : "Rating"}
           </h1>
           <input
             type="text"
             id="rating"
             name="rating"
             defaultValue={selectedFeedbackCategory?.rating}
-            placeholder={itemFeedbackSettingDetails?.rating ? itemFeedbackSettingDetails?.rating : "Rating"}
+            placeholder={
+              itemFeedbackSettingDetails?.rating
+                ? itemFeedbackSettingDetails?.rating
+                : "Rating"
+            }
             className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] "
           />
           <div className="w-full flex items-center justify-center mt-[40px]">
             <input
               type="submit"
-              value={itemFeedbackSettingDetails?.update ? itemFeedbackSettingDetails?.update : "Update"}
+              value={
+                itemFeedbackSettingDetails?.update
+                  ? itemFeedbackSettingDetails?.update
+                  : "Update"
+              }
               className="py-[15px] px-[48px] cursor-pointer text-[20px] font-[700] rounded-[8px] bg-[#3E4DAC] text-white "
             />
           </div>
@@ -225,22 +259,27 @@ const SelectFeedbackCategory = ({
       </DialogLayout>
       {/* Edit category name end */}
       <h1 className=" text-[#737373] text-[24px] font-[500] mt-5 mb-2 ">
-        {itemFeedbackSettingDetails?.feedbackCategory ? itemFeedbackSettingDetails?.feedbackCategory : "Feedback Category"}
-
+        {itemFeedbackSettingDetails?.feedbackCategory
+          ? itemFeedbackSettingDetails?.feedbackCategory
+          : "Feedback Category"}
       </h1>
       <div className="flex flex-wrap gap-y-2 items-center">
         {feedbackCategories?.map((item, index) => (
           <button
             key={index}
-            className={`px-2 py-3 relative text-base border rounded-md font-semibold flex items-center min-w-[150px] justify-between gap-6 mr-1 ${selectedFeedbackCategory?.categoryName === item?.categoryName
+            className={`px-2 py-3 relative text-base border rounded-md font-semibold flex items-center min-w-[150px] justify-between gap-6 mr-1 ${
+              selectedFeedbackCategory?.categoryName === item?.categoryName
                 ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
                 : "text-[#949494]"
-              }`}
+            }`}
             onClick={() => setSelectedFeedbackCategory(item)}
           >
             {item?.categoryName}
             <br />
-            {itemFeedbackSettingDetails?.rating ? itemFeedbackSettingDetails?.rating : "Rating"} :  {item?.rating}
+            {itemFeedbackSettingDetails?.rating
+              ? itemFeedbackSettingDetails?.rating
+              : "Rating"}{" "}
+            : {item?.rating}
             <button
               onBlur={() => setCategoryThreeDot(false)}
               onClick={() => setCategoryThreeDot(!categoryThreeDot)}
@@ -277,8 +316,9 @@ const SelectFeedbackCategory = ({
                     }}
                     className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
                   >
-                    {itemFeedbackSettingDetails?.editCategoryName ? itemFeedbackSettingDetails?.editCategoryName : "Edit Category Name"}
-
+                    {itemFeedbackSettingDetails?.editCategoryName
+                      ? itemFeedbackSettingDetails?.editCategoryName
+                      : "Edit Category Name"}
                   </li>
                   <li
                     className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
@@ -288,8 +328,9 @@ const SelectFeedbackCategory = ({
                       );
                     }}
                   >
-                    {itemFeedbackSettingDetails?.deleteCategory ? itemFeedbackSettingDetails?.deleteCategory : "Delete Category"}
-
+                    {itemFeedbackSettingDetails?.deleteCategory
+                      ? itemFeedbackSettingDetails?.deleteCategory
+                      : "Delete Category"}
                   </li>
                 </ul>
               )}
@@ -299,7 +340,9 @@ const SelectFeedbackCategory = ({
           <div
             className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
           >
-            {itemFeedbackSettingDetails?.pleaseAddCategory ? itemFeedbackSettingDetails?.pleaseAddCategory : "Please Add Category"}
+            {itemFeedbackSettingDetails?.pleaseAddCategory
+              ? itemFeedbackSettingDetails?.pleaseAddCategory
+              : "Please Add Category"}
             ...
           </div>
         )}

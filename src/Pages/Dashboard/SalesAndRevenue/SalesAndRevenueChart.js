@@ -1,13 +1,10 @@
 //RevenueChart.js
 
-import React, {
-  useEffect,
-  useState,
-} from 'react';
+import React, { useEffect, useState } from "react";
 
-import ReactApexChart from 'react-apexcharts';
+import ReactApexChart from "react-apexcharts";
 
-import { CircularProgress } from '@mui/material';
+import { CircularProgress } from "@mui/material";
 
 const SalesAndRevenueChart = ({
   selectedFilter,
@@ -208,7 +205,7 @@ const SalesAndRevenueChart = ({
   }, [selectedFilter, paidStudents, setTotalRevenue]);
 
   /// overall revenue vs discount
- /*  useEffect(() => {
+  /*  useEffect(() => {
     if (selectedFilter === "Overall" && paidStudents) {
       const currentDate = new Date();
       const startDate = new Date(
@@ -275,41 +272,47 @@ const SalesAndRevenueChart = ({
     if (selectedFilter === "Overall" && paidStudents) {
       // Group paid students by year
       const studentsByYear = {};
-      paidStudents.forEach(student => {
+      paidStudents.forEach((student) => {
         const year = new Date(student.paidAt).getFullYear();
         if (!studentsByYear[year]) {
           studentsByYear[year] = [];
         }
         studentsByYear[year].push(student);
       });
-  
+
       // Initialize arrays to store data for each year
       const years = Object.keys(studentsByYear);
       const totalRevenueByYear = [];
       const totalDiscountByYear = [];
       let totalRevenueSum = 0;
-  
+
       // Calculate statistics for each year
-      years.forEach(year => {
+      years.forEach((year) => {
         const yearStudents = studentsByYear[year];
-        const revenueSum = yearStudents.reduce((sum, student) => sum + (+student.paidAmount || 0), 0);
-        const discountSum = yearStudents.reduce((sum, student) => sum + (+student.discountAmount || 0), 0);
-  
+        const revenueSum = yearStudents.reduce(
+          (sum, student) => sum + (+student.paidAmount || 0),
+          0
+        );
+        const discountSum = yearStudents.reduce(
+          (sum, student) => sum + (+student.discountAmount || 0),
+          0
+        );
+
         totalRevenueByYear.push(revenueSum);
         totalDiscountByYear.push(discountSum);
         totalRevenueSum += revenueSum;
       });
-  
+
       // Set state variables
       setOverallArr(years);
       setTotalRevenueOverall(totalRevenueByYear);
       setTotalDiscountOverall(totalDiscountByYear);
       setTotalRevenue(totalRevenueSum);
-  
+
       setIsLoading(false);
     }
   }, [selectedFilter, paidStudents, setTotalRevenue]);
-  
+
   // custom date
   useEffect(() => {
     if (
@@ -534,7 +537,7 @@ const SalesAndRevenueChart = ({
         );
 
         if (course?.selectedBatches && course?.selectedBatches[0]) {
-          console.log("in");
+          // console.log("in");
           paidStudentsForCourse = paidStudentsForCourse.filter((student) =>
             course?.selectedBatches?.find(
               (batch) => batch?._id === student?.courses[0]?.batchId

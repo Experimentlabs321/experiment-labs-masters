@@ -230,7 +230,7 @@ const EditFiles = () => {
         // event.target.reset();
       }
 
-      console.log(ManageFile);
+      // console.log(ManageFile);
     }
     Loading().close();
     navigate(-1);

@@ -93,7 +93,7 @@ const Aside = ({
   const handleEditChapter = async (chapter) => {
     const updatedChapter = { ...chapter };
     delete updatedChapter._id;
-    console.log(chapter);
+    // console.log(chapter);
     if (chapter?._id) {
       try {
         const newChapter = await axios.put(
@@ -101,16 +101,16 @@ const Aside = ({
           updatedChapter
         );
         // setCount(count + 1);
-        console.log(newChapter);
-        console.log(chapter);
+        // console.log(newChapter);
+        // console.log(chapter);
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
     }
   };
 
   const handleMoveChapter = async (oldIndex, newIndex) => {
-    console.log(oldIndex, newIndex);
+    // console.log(oldIndex, newIndex);
     Loading();
     if (oldIndex >= 0 && newIndex >= 0 && newIndex < chapters?.length) {
       const newChapterId = chapters[oldIndex]._id;
@@ -119,7 +119,7 @@ const Aside = ({
       const oldChapter = chapters[oldIndex];
       newChapter._id = newChapterId;
       oldChapter._id = oldChapterId;
-      console.log(newChapter, oldChapter);
+      // console.log(newChapter, oldChapter);
       await handleEditChapter(newChapter);
       await handleEditChapter(oldChapter);
       setCount(count + 1);
@@ -147,8 +147,8 @@ const Aside = ({
       // },
       onEnd: (event) => {
         const { oldIndex, newIndex } = event;
-        console.log(chapters[event.oldIndex], chapters[event.newIndex]);
-        console.log(`Moved from index ${event.oldIndex} to ${event.newIndex}`);
+        // console.log(chapters[event.oldIndex], chapters[event.newIndex]);
+        // console.log(`Moved from index ${event.oldIndex} to ${event.newIndex}`);
         // Update the chapters state based on the rearrangement
         setChapters((prevChapters) => {
           // Clone the previous chapters array to avoid mutation
@@ -156,12 +156,12 @@ const Aside = ({
           // Rearrange the chapters
           const [movedChapter] = updatedChapters.splice(oldIndex, 1);
           updatedChapters.splice(newIndex, 0, movedChapter);
-          console.log(prevChapters, updatedChapters);
+          // console.log(prevChapters, updatedChapters);
           prevChapters?.forEach(async (chapter, index) => {
-            console.log(chapter, updatedChapters[index]);
+            // console.log(chapter, updatedChapters[index]);
             const updatedChapter = { ...updatedChapters[index] };
             updatedChapter._id = chapter?._id;
-            console.log(updatedChapter);
+            // console.log(updatedChapter);
             await handleEditChapter(updatedChapter);
           });
           return updatedChapters;
@@ -182,10 +182,10 @@ const Aside = ({
           animation: 150,
           group: taskGroupName,
           onEnd: (event) => {
-            console.log(
-              `Moved from index ${event.oldIndex} to ${event.newIndex}`,
-              chapters
-            );
+            // console.log(
+            //   `Moved from index ${event.oldIndex} to ${event.newIndex}`,
+            //   chapters
+            // );
             const { oldIndex, newIndex } = event;
             // Update the tasks array of the corresponding chapter
             setChapters((prevChapters) => {

@@ -1,24 +1,20 @@
-import React, {
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React, { useContext, useEffect, useState } from "react";
 
-import axios from 'axios';
-import { toast } from 'react-hot-toast';
-import Swal from 'sweetalert2';
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import Swal from "sweetalert2";
 
-import AddSharpIcon from '@mui/icons-material/AddSharp';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import SearchIcon from '@mui/icons-material/Search';
-import Badge from '@mui/material/Badge';
+import AddSharpIcon from "@mui/icons-material/AddSharp";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import SearchIcon from "@mui/icons-material/Search";
+import Badge from "@mui/material/Badge";
 
-import UploadingImg from '../../../assets/PointsRedemptions/uploadimg.png';
-import { AuthContext } from '../../../contexts/AuthProvider';
-import Layout from '../Layout';
-import AddSkillForm from './AddSkillForm';
-import EditSkillForm from './EditSkillForm';
-import SelectSkillCategory from './SelectSkillCategory';
+import UploadingImg from "../../../assets/PointsRedemptions/uploadimg.png";
+import { AuthContext } from "../../../contexts/AuthProvider";
+import Layout from "../Layout";
+import AddSkillForm from "./AddSkillForm";
+import EditSkillForm from "./EditSkillForm";
+import SelectSkillCategory from "./SelectSkillCategory";
 
 const Skill = () => {
   const { userInfo } = useContext(AuthContext);
@@ -46,10 +42,8 @@ const Skill = () => {
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getSkillsManagementSubDetailsByOrganizationAndName/skillsCreations/organizationsId/${userInfo?.organizationId}`
         )
         .then((response) => {
-
-          console.log(response)
+          // console.log(response)
           setItemDetails(response?.data);
-
         })
         .finally(() => {
           setLoading(false);
@@ -57,7 +51,7 @@ const Skill = () => {
     }
     setLoading(false);
   }, [userInfo]);
-  console.log(itemDetails)
+  // console.log(itemDetails)
 
   useEffect(() => {
     let newParameters = [];
@@ -122,8 +116,12 @@ const Skill = () => {
       skillName: name,
     };
     await Swal.fire({
-      title: itemDetails?.areYouSure ? itemDetails?.areYouSure : "Are you sure?",
-      text: itemDetails?.onceDeletedTheSkillWillNotRecover ? itemDetails?.onceDeletedTheSkillWillNotRecover : "Once deleted, the skill will not recover!",
+      title: itemDetails?.areYouSure
+        ? itemDetails?.areYouSure
+        : "Are you sure?",
+      text: itemDetails?.onceDeletedTheSkillWillNotRecover
+        ? itemDetails?.onceDeletedTheSkillWillNotRecover
+        : "Once deleted, the skill will not recover!",
       icon: "warning",
       buttons: true,
       showCancelButton: true,
@@ -132,7 +130,7 @@ const Skill = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         fetch(
-        //  `${process.env.REACT_APP_BACKEND_API}/deleteSkill`,
+          //  `${process.env.REACT_APP_BACKEND_API}/deleteSkill`,
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/skillCategories/skills`,
           {
             method: "DELETE",
@@ -140,10 +138,15 @@ const Skill = () => {
               "Content-Type": "application/json",
             },
             body: JSON.stringify(deleteData),
-          })
+          }
+        )
           .then((result) => {
             if (result?.ok) {
-              toast.success(itemDetails?.skillDeletedSuccessfully ? itemDetails?.skillDeletedSuccessfully : "Skill Deleted Successfully!");
+              toast.success(
+                itemDetails?.skillDeletedSuccessfully
+                  ? itemDetails?.skillDeletedSuccessfully
+                  : "Skill Deleted Successfully!"
+              );
               const remainingSkills = selectedSkillCategory?.skills?.filter(
                 (skill) => skill?.skillName !== name
               );
@@ -166,8 +169,9 @@ const Skill = () => {
       <Layout>
         <div className="flex items-center justify-between container mx-auto px-4 gap-7 pt-20 lg:pt-10 ">
           <div className="UserManagement origin-top-left rotate-[-0.51deg] text-zinc-500 text-[30px] font-medium">
-            {itemDetails?.skillsManagement ? itemDetails?.skillsManagement : "Skills Management"}
-
+            {itemDetails?.skillsManagement
+              ? itemDetails?.skillsManagement
+              : "Skills Management"}
           </div>
           <div className="Input w-[425px] h-16 relative bg-slate-100 rounded-[40px] shadow-inner">
             <input
@@ -185,25 +189,29 @@ const Skill = () => {
         <div className="px-4 mt-[40px]">
           <div>
             <h1 className=" text-[#737373] text-[24px] font-[500] mb-2 ">
-              {itemDetails?.selectCourse ? itemDetails?.selectCourse : "Select Course"}
-
+              {itemDetails?.selectCourse
+                ? itemDetails?.selectCourse
+                : "Select Course"}
             </h1>
             <div className="flex flex-wrap">
               {!courses[0] && (
                 <div
                   className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
                 >
-                  {itemDetails?.noCourseAddedYet ? itemDetails?.noCourseAddedYet : "No course added yet"}
+                  {itemDetails?.noCourseAddedYet
+                    ? itemDetails?.noCourseAddedYet
+                    : "No course added yet"}
                   !
                 </div>
               )}
               {courses?.map((item, index) => (
                 <button
                   key={index}
-                  className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 ${selectedCourse?._id === item?._id
+                  className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 ${
+                    selectedCourse?._id === item?._id
                       ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
                       : "text-[#949494]"
-                    }`}
+                  }`}
                   onClick={() => handleSelectCourse(item)}
                 >
                   {item?.courseFullName}
@@ -244,8 +252,9 @@ const Skill = () => {
               <AddSharpIcon sx={{ fontSize: 150 }} />
             </div>
             <div className="text-[#8F8F8F] pb-5  mt-[-10px] font-medium text-base">
-              {itemDetails?.addDetails ? itemDetails?.addDetails : "Add Details"}
-
+              {itemDetails?.addDetails
+                ? itemDetails?.addDetails
+                : "Add Details"}
             </div>
           </div>
           {selectedSkillCategory?.skills?.map((item) => (
@@ -293,15 +302,17 @@ const Skill = () => {
                         setIsOpenSkillAddForm(false);
                       }}
                     >
-                      {itemDetails?.editSkill ? itemDetails?.editSkill : "Edit Skill"}
-
+                      {itemDetails?.editSkill
+                        ? itemDetails?.editSkill
+                        : "Edit Skill"}
                     </li>
                     <li
                       className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
                       onMouseDown={() => handleSkillDelete(item?.skillName)}
                     >
-                      {itemDetails?.deleteSkill ? itemDetails?.deleteSkill : "Delete Skill"}
-
+                      {itemDetails?.deleteSkill
+                        ? itemDetails?.deleteSkill
+                        : "Delete Skill"}
                     </li>
                   </ul>
                 )}

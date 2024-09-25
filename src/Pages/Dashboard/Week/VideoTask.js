@@ -233,7 +233,7 @@ const VideoTask = ({ taskData, count, setCount }) => {
       saveAs(blob, fileName);
     } catch (error) {
       if (axios.isCancel(error)) {
-        console.log("Download cancelled:", error.message);
+        // console.log("Download cancelled:", error.message);
       } else {
         console.error("Error downloading the file:", error);
       }
@@ -253,7 +253,7 @@ const VideoTask = ({ taskData, count, setCount }) => {
       }
     };
   }, [taskData?.additionalFiles, cancelTokenSource]);
-  console.log(taskData);
+  // console.log(taskData);
   return (
     <div>
       {taskData?.additionalFiles && (
@@ -337,7 +337,7 @@ const VideoTask = ({ taskData, count, setCount }) => {
                   controlsList="nodownload"
                   disablePictureInPicture
                   onLoadedMetadata={() => {
-                    console.log("Video metadata loaded");
+                    // console.log("Video metadata loaded");
                     const video = videoRef.current;
                     if (video) {
                       setupEventListeners(video);

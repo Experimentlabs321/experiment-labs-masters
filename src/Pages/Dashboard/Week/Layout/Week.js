@@ -68,7 +68,7 @@ const Week = () => {
   const { user, userInfo } = useContext(AuthContext);
   const [count, setCount] = useState(0);
 
-  console.log(week);
+  // console.log(week);
 
   useEffect(() => {
     axios
@@ -83,7 +83,7 @@ const Week = () => {
           const batchId = userInfo?.courses?.find(
             (item) => item?.courseId === courseData?._id
           )?.batchId;
-          console.log(batchId);
+          // console.log(batchId);
           response?.data?.forEach((item) => {
             let singleChapter = { ...item };
             singleChapter.tasks = [];
@@ -94,13 +94,13 @@ const Week = () => {
                 )
               ) {
                 singleChapter.tasks.push(singleTask);
-                console.log(item);
+                // console.log(item);
               }
             });
             chapterWithFilteredTask.push(singleChapter);
           });
           setChapters(chapterWithFilteredTask);
-          console.log("tasks =======>", chapterWithFilteredTask[0]?.tasks);
+          // console.log("tasks =======>", chapterWithFilteredTask[0]?.tasks);
         }
 
         //console.log(response?.data);
@@ -108,7 +108,7 @@ const Week = () => {
       })
       .catch((error) => console.error(error));
   }, [id, count, Role, userInfo]);
-  console.log("Chapters ==============>", chapters);
+  // console.log("Chapters ==============>", chapters);
   //const [toggleButton, setToggleButton] = useState(false);
 
   useEffect(() => {
@@ -122,7 +122,7 @@ const Week = () => {
       .catch((error) => console.error(error));
   }, [chapters]);
 
-  console.log("CourseData ============>", courseData);
+  // console.log("CourseData ============>", courseData);
 
   useEffect(() => {
     // Function to update toggleButton based on device size

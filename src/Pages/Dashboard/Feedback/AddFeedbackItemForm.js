@@ -64,24 +64,24 @@ const AddFeedbackItemForm = ({
       })
       .catch((error) => console.error(error));
   }, [courseId]);
-  console.log(course);
+  // console.log(course);
 
   const handleAddFeedbackItem = async (event) => {
     event.preventDefault();
     let fileUrl = "";
     if (selectedFile) fileUrl = await uploadFileToS3(selectedFile);
-    console.log({
-      organizationId: userInfo?.organizationId,
-      categoryName: selectedFeedbackCategory?.categoryName,
-      courseId: selectedCourse?._id,
-      feedbackItem: {
-        feedbackItemName: event?.target?.feedbackItemName?.value,
-        itemRating: selectedRatingOption,
+    // console.log({
+    //   organizationId: userInfo?.organizationId,
+    //   categoryName: selectedFeedbackCategory?.categoryName,
+    //   courseId: selectedCourse?._id,
+    //   feedbackItem: {
+    //     feedbackItemName: event?.target?.feedbackItemName?.value,
+    //     itemRating: selectedRatingOption,
 
-        selectedIcon: fileUrl,
-        giveAccess: selectedAccessOptions,
-      },
-    });
+    //     selectedIcon: fileUrl,
+    //     giveAccess: selectedAccessOptions,
+    //   },
+    // });
     if (
       selectedFeedbackCategory?.feedbackItems?.find(
         (item) =>

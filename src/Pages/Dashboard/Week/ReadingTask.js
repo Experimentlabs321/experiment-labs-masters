@@ -52,11 +52,11 @@ const ReadingTask = ({ taskData, count, setCount }) => {
   useEffect(() => {
     const specificDiv = document.getElementById("document");
     if (specificDiv) {
-      console.log(
-        "Specific div has loaded.",
-        additionalFile,
-        taskData?.additionalFiles
-      );
+      // console.log(
+      //   "Specific div has loaded.",
+      //   additionalFile,
+      //   taskData?.additionalFiles
+      // );
       // You can perform actions related to the specific div here
     }
   }, [taskData, user, additionalFile]);
@@ -67,7 +67,7 @@ const ReadingTask = ({ taskData, count, setCount }) => {
       !taskData?.completionParameter ||
       taskData?.completionParameter?.completionParameter === "Without Quiz"
     ) {
-      console.log("in");
+      // console.log("in");
       setOpenQuiz(false);
       setOverlayVisible(false);
       const sendData = {
@@ -109,7 +109,7 @@ const ReadingTask = ({ taskData, count, setCount }) => {
         });
       }
     } else {
-      console.log("else");
+      // console.log("else");
       Loading().close();
       setOpenQuiz(true);
       setOverlayVisible(true);
@@ -153,7 +153,7 @@ const ReadingTask = ({ taskData, count, setCount }) => {
       saveAs(blob, fileName);
     } catch (error) {
       if (axios.isCancel(error)) {
-        console.log("Download cancelled:", error.message);
+        // console.log("Download cancelled:", error.message);
       } else {
         console.error("Error downloading the file:", error);
       }
@@ -279,7 +279,7 @@ const ReadingTask = ({ taskData, count, setCount }) => {
                     src={taskData?.additionalFiles}
                     alt="Img"
                     onLoad={() => {
-                      console.log("iframe loaded");
+                      // console.log("iframe loaded");
                       setIframeLoaded(true);
                     }}
                     className="w-[90%] mx-auto h-[68vh] border-[10px] border-b-50 rounded-lg border-[#292929]"
@@ -291,7 +291,7 @@ const ReadingTask = ({ taskData, count, setCount }) => {
                   key={taskData?._id}
                   src={additionalFile && additionalFile}
                   onLoad={() => {
-                    console.log("iframe loaded");
+                    // console.log("iframe loaded");
                     setIframeLoaded(true);
                   }}
                   title="Your Document"

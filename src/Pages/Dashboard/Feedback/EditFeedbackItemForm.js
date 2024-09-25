@@ -23,7 +23,7 @@ const EditFeedbackItemForm = ({
   courseId,
   itemFeedbackSettingDetails,
 }) => {
-  console.log(selectedFeedback);
+  // console.log(selectedFeedback);
 
   const [selectedIcon, setSelectedIcon] = useState(
     selectedFeedback?.selectedIcon
@@ -83,7 +83,7 @@ const EditFeedbackItemForm = ({
     }; */
   const [selectedFile, setSelectedFile] = useState(null);
 
-  console.log(selectedIcon);
+  // console.log(selectedIcon);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -99,7 +99,7 @@ const EditFeedbackItemForm = ({
       })
       .catch((error) => console.error(error));
   }, [courseId]);
-  console.log(course);
+  // console.log(course);
 
   const handleEditFeedbackItem = async (event) => {
     event.preventDefault();
@@ -120,7 +120,7 @@ const EditFeedbackItemForm = ({
         executionMentorFormFields: formFieldsForExecutionMentor,
       },
     };
-    console.log(data);
+    // console.log(data);
     if (data?.categoryName === selectedFeedbackCategory?.categoryName) {
       /*    if (
                selectedFeedbackCategory?.feedbackItems?.find(

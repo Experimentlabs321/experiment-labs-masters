@@ -70,7 +70,7 @@ const LoginWithOrganization = () => {
       .catch((error) => console.error(error));
   }, [id]);
 
-  console.log(orgData?._id);
+  // console.log(orgData?._id);
   const handleLogout = () => {
     Loading();
     logOut()
@@ -99,7 +99,7 @@ const LoginWithOrganization = () => {
       dateCreated,
     };
 
-    console.log(data);
+    // console.log(data);
 
     try {
       const result = await createUser(email, password);
@@ -108,7 +108,7 @@ const LoginWithOrganization = () => {
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users`,
           data
         );
-        console.log("Response ================>", res);
+        // console.log("Response ================>", res);
         const userDevice = await axios.put(
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/addDevice/${email}`,
           {
@@ -125,7 +125,7 @@ const LoginWithOrganization = () => {
               templateType: "emailAction",
               templateName: "learnerSignUp",
               organizationId: id,
-              learner_name : name,
+              learner_name: name,
             }
           );
           navigate(`/login/${id}`);
@@ -134,10 +134,10 @@ const LoginWithOrganization = () => {
           toast.success("Registered Failed");
         }
         // handleLogout();
-        console.log(res);
+        // console.log(res);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
     Loading().close();
   };
@@ -177,7 +177,7 @@ const LoginWithOrganization = () => {
                   templateType: "emailAction",
                   templateName: "learnerSignUp",
                   organizationId: id,
-                  learner_name : newName,
+                  learner_name: newName,
                 }
               );
               navigate(`/login/${id}`);

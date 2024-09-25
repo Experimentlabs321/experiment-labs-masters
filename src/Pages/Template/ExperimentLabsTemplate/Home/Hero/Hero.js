@@ -27,7 +27,6 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-
 const Hero = ({ heroData }) => {
   // const visibleIndex = useRef(0);
 
@@ -118,7 +117,7 @@ const Hero = ({ heroData }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("Clicked");
+    // console.log("Clicked");
     ReactGA.event({
       category: "Click",
       action: "Submit Data From Navbar",
@@ -140,20 +139,17 @@ const Hero = ({ heroData }) => {
       Time: new Date(),
     };
 
-    console.log("Gone Here ===============>", data);
+    // console.log("Gone Here ===============>", data);
 
-    fetch(
-      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/interactions`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }
-    )
+    fetch(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/interactions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
       .then(async (res) => {
-        console.log("Submit ===============>", res);
+        // console.log("Submit ===============>", res);
         const sendMail = await axios.post(
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
           {
@@ -170,7 +166,7 @@ const Hero = ({ heroData }) => {
             `,
           }
         );
-        console.log("Send Mail ===============>", sendMail);
+        // console.log("Send Mail ===============>", sendMail);
         if (sendMail?.data?.success) {
           Swal.fire({
             icon: "success",
@@ -181,7 +177,7 @@ const Hero = ({ heroData }) => {
       })
       .catch((error) => {
         // Errors are reported there
-        console.log(error);
+        // console.log(error);
       });
   };
 
@@ -197,12 +193,8 @@ const Hero = ({ heroData }) => {
       >
         <div className="relative">
           <div className="pt-28 pb-20 px-10 lg:pl-10">
-            <h1 className="text-4xl font-bold">
-              {heroData?.heroTitle}
-            </h1>
-            <p className="mt-8 mb-12 text-2xl">
-              {heroData?.heroDescription}
-            </p>
+            <h1 className="text-4xl font-bold">{heroData?.heroTitle}</h1>
+            <p className="mt-8 mb-12 text-2xl">{heroData?.heroDescription}</p>
 
             {/* <div className='my-8 text-white flex flex-col gap-3 justify-start'>
                             <span><LanguageIcon className='mr-2' /> Curriculum that takes learning<span className='font-bold initial'> {` beyond the classroom`}</span></span>

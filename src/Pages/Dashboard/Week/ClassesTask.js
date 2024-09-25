@@ -30,7 +30,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 
 const ClassesTask = ({ taskData }) => {
   const { id } = useParams();
-  console.log(id);
+  // console.log(id);
   const [isOpen, setIsOpen] = useState(false);
   const { userInfo, user } = useContext(AuthContext);
   if (userInfo.role !== "admin") {
@@ -71,7 +71,7 @@ const ClassesTask = ({ taskData }) => {
   useEffect(() => {
     // Function that you want to run every 30 seconds
     const intervalFunction = () => {
-      console.log("This will run every 30 seconds!", new Date(), minutes);
+      // console.log("This will run every 30 seconds!", new Date(), minutes);
       // Add your repeating logic here
       const currentDateTime = new Date();
       const timeDifferenceInMilliseconds = providedDateTime - currentDateTime;
@@ -110,10 +110,10 @@ const ClassesTask = ({ taskData }) => {
       `https://experiment-labs-master-server.vercel.app/chapter/${taskData?.chapterId}/task/${taskData?._id}/add-participant/${openTask?.taskType}`,
       sendData
     );
-    console.log(submitCompletion);
+    // console.log(submitCompletion);
   };
 
-  console.log(taskData);
+  // console.log(taskData);
 
   return (
     <div>
@@ -136,7 +136,13 @@ const ClassesTask = ({ taskData }) => {
       </div>
       <div className="h-full flex flex-col items-center justify-center ">
         {/* will show only when meeting is not expired and won't show in student side */}
-        {(!(minutes < -1 * (taskData?.duration + 10)) && userInfo.role!=="user") && <CopyToClipBoard fieldName={"Join URL"} textToCopy={taskData?.meetingData?.join_url} />}
+        {!(minutes < -1 * (taskData?.duration + 10)) &&
+          userInfo.role !== "user" && (
+            <CopyToClipBoard
+              fieldName={"Join URL"}
+              textToCopy={taskData?.meetingData?.join_url}
+            />
+          )}
         <div
           className="border-x-[30px] mt-[40px] border-t-[30px] border-b-[50px] rounded-lg border-[#292929] w-[865px] h-[500px] bg-[#434343] flex items-center justify-center flex-col "
           width="865px"

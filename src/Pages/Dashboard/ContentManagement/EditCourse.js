@@ -19,9 +19,9 @@ const EditCourse = () => {
   const [isOpenCompletionTracking, setisOpenCompletionTracking] =
     useState(false);
   const rootUrl = window.location.origin;
-  console.log(rootUrl);
+  // console.log(rootUrl);
   const [courseCategories, setCourseCategories] = useState();
-  const [courseCategoryInput, setCourseCategoryInput] = useState('');
+  const [courseCategoryInput, setCourseCategoryInput] = useState("");
 
   const [categoryName, setCategoryName] = useState();
 
@@ -72,7 +72,7 @@ const EditCourse = () => {
       })
       .catch((error) => console.error(error));
   }, [id]);
-  console.log(courseData);
+  // console.log(courseData);
   /// handle Submit
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -100,7 +100,8 @@ const EditCourse = () => {
       +form.showactivitycompletionconditions?.value;
     const coursePurchaseUrl = "" + form.coursePurchaseUrl?.value;
     const enableDrip = form.enableDrip?.value === "false" ? false : true;
-    const courseVisibility = form.courseVisibility?.value === "false" ? false : true;
+    const courseVisibility =
+      form.courseVisibility?.value === "false" ? false : true;
     const expirationDay = form.expirationDay?.value;
     const courseInitialUrl = form.courseInitialUrl?.value;
 
@@ -152,8 +153,8 @@ const EditCourse = () => {
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/${id}`,
         addCourse
       );
-      console.log("new course --> ", newCourse);
-      console.log(newCourse?.data?.course?.acknowledged);
+      // console.log("new course --> ", newCourse);
+      // console.log(newCourse?.data?.course?.acknowledged);
 
       if (newCourse?.data?.acknowledged) {
         toast.success("Course Edited Successfully");
@@ -161,23 +162,21 @@ const EditCourse = () => {
         form.reset();
       }
 
-      console.log("Add Course----->", addCourse);
+      // console.log("Add Course----->", addCourse);
     }
     Loading().close();
   };
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/CourseCategory/getCourseCategory/organizationId/${userInfo?.organizationId}`)
+      .get(
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/CourseCategory/getCourseCategory/organizationId/${userInfo?.organizationId}`
+      )
       .then((response) => {
         setCourseCategories(response?.data);
-
       })
       .catch((error) => console.error(error));
   }, [userInfo]);
-
-
-
 
   const handleSubmitCourseCategory = async () => {
     const addCourseCategory = {
@@ -193,24 +192,26 @@ const EditCourse = () => {
       },
     };
 
-    console.log(addCourseCategory);
+    // console.log(addCourseCategory);
 
     try {
-      const response = await axios.post(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/CourseCategory/addCourseCategory/organizationId/${userInfo?.organizationId}`, addCourseCategory);
-      console.log(response)
+      const response = await axios.post(
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/CourseCategory/addCourseCategory/organizationId/${userInfo?.organizationId}`,
+        addCourseCategory
+      );
+      // console.log(response)
       if (response.data === "Course category added successfully") {
         toast.success("Category added Successfully");
         // Reset the form after successful submission
-        setCategoryName(addCourseCategory?.courseCategoryName)
-        setCourseCategoryInput('');
+        setCategoryName(addCourseCategory?.courseCategoryName);
+        setCourseCategoryInput("");
       } else {
-        toast.error('Error submitting Category');
+        toast.error("Error submitting Category");
       }
     } catch (error) {
-      console.error('Error submitting course:', error);
+      console.error("Error submitting course:", error);
     }
   };
-
 
   return (
     <div>
@@ -240,8 +241,9 @@ const EditCourse = () => {
             {isOpenGeneralCourseInfo && <img src={arrowDown} alt=""></img>}
 
             <i
-              className={`dropdown-arrow ${isOpenGeneralCourseInfo ? "open" : ""
-                }`}
+              className={`dropdown-arrow ${
+                isOpenGeneralCourseInfo ? "open" : ""
+              }`}
             ></i>
           </div>
           {isOpenGeneralCourseInfo && (
@@ -348,19 +350,21 @@ const EditCourse = () => {
                     </p>
                   </div>
                   <div className="flex">
-                  <button
-  onMouseDown={async () => {
-    try {
-      await navigator.clipboard.writeText(`${rootUrl}/payment/${id}`);
-      toast.success("Url Copied!");
-    } catch (err) {
-      console.error("Unable to copy to clipboard", err);
-    }
-  }}
-  className="mt-6 ms-6 border rounded-l-md lg:w-fit w-[80%] h-[50px] p-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] overflow-hidden text-ellipsis whitespace-nowrap"
->
-  {`${rootUrl}/payment/${id}`}
-</button>
+                    <button
+                      onMouseDown={async () => {
+                        try {
+                          await navigator.clipboard.writeText(
+                            `${rootUrl}/payment/${id}`
+                          );
+                          toast.success("Url Copied!");
+                        } catch (err) {
+                          console.error("Unable to copy to clipboard", err);
+                        }
+                      }}
+                      className="mt-6 ms-6 border rounded-l-md lg:w-fit w-[80%] h-[50px] p-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] overflow-hidden text-ellipsis whitespace-nowrap"
+                    >
+                      {`${rootUrl}/payment/${id}`}
+                    </button>
                     <button
                       className="mt-6 border rounded-r-md w-fit h-[50px] p-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
                       onClick={async () => {
@@ -386,14 +390,14 @@ const EditCourse = () => {
                     </p>
                   </div>
                   <div className="flex">
-                  <input
-                    className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
-                    name="courseInitialUrl"
-                    defaultValue={courseData?.courseInitialUrl}
-                    type="url"
-                    placeholder="https://www.google.com/"
-                  />
-                  {/*   <button
+                    <input
+                      className="mt-6 ms-6 border rounded-md w-[90%] h-[50px] ps-2 text-[#535353] focus:outline-0 bg-[#F6F7FF] "
+                      name="courseInitialUrl"
+                      defaultValue={courseData?.courseInitialUrl}
+                      type="url"
+                      placeholder="https://www.google.com/"
+                    />
+                    {/*   <button
                       onMouseDown={async () => {
                         try {
                           await navigator.clipboard.writeText(
@@ -424,7 +428,6 @@ const EditCourse = () => {
                     </button>
                   </div>
                 </div>
-
               </div>
 
               <div>
@@ -442,23 +445,18 @@ const EditCourse = () => {
                       required
                       className="w-full bg-[#F6F7FF] text-base font-semibold focus:outline-0"
                       name="courseCategory"
-
                     >
                       {/* Default option */}
 
-
-                      {
-                        (categoryName) ?
-                          <option value={categoryName}>
-                            {categoryName}
-                          </option>
-                          :
-
-                          <option defaultValue={courseData?.courseCategory || ""}>
-                            {courseData?.courseCategory ? courseData?.courseCategory : ""}
-                          </option>
-
-                      }
+                      {categoryName ? (
+                        <option value={categoryName}>{categoryName}</option>
+                      ) : (
+                        <option defaultValue={courseData?.courseCategory || ""}>
+                          {courseData?.courseCategory
+                            ? courseData?.courseCategory
+                            : ""}
+                        </option>
+                      )}
 
                       {/* Map over courseCategories and render options */}
                       {courseCategories?.courseCategories?.map((category) => (
@@ -471,7 +469,6 @@ const EditCourse = () => {
                         </option>
                       ))}
                     </select>
-
 
                     <div
                       onClick={openModaladdcoursecategory}
@@ -511,17 +508,18 @@ const EditCourse = () => {
                                 type="text"
                                 placeholder="Eg. Entrepreneurship Lab"
                                 value={courseCategoryInput}
-                                onChange={(e) => setCourseCategoryInput(e.target.value)}
+                                onChange={(e) =>
+                                  setCourseCategoryInput(e.target.value)
+                                }
                               />
                               <div className="flex justify-center mt-5">
-
                                 <button
                                   className="px-[20px] lg:py-3 py-2 bg-[#3E4DAC] hover:bg-opacity-70 text-[#fff] cursor-pointer text-xl font-bold rounded-lg"
-                                  onClick={handleSubmitCourseCategory}>Add</button>
-
-
+                                  onClick={handleSubmitCourseCategory}
+                                >
+                                  Add
+                                </button>
                               </div>
-
                             </div>
                           </div>
                         </div>
@@ -683,7 +681,7 @@ const EditCourse = () => {
                       className="select select-bordered w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold"
                       name="courseFormat"
                       defaultValue={courseData?.courseFormat}
-                    //id="option"
+                      //id="option"
                     >
                       <option value="weeks">Weekly format</option>
                       <option value="Parent"></option>
@@ -741,7 +739,7 @@ const EditCourse = () => {
                       className="w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold"
                       name="groups"
                       defaultValue={courseData?.groups}
-                    // id="option"
+                      // id="option"
                     >
                       <option className="" value="No Groups">
                         No Groups
@@ -861,8 +859,9 @@ const EditCourse = () => {
             {isOpenCompletionTracking && <img src={arrowDown} alt=""></img>}
 
             <i
-              className={`dropdown-arrow ${isOpenCompletionTracking ? "open" : ""
-                }`}
+              className={`dropdown-arrow ${
+                isOpenCompletionTracking ? "open" : ""
+              }`}
             ></i>
           </div>
 

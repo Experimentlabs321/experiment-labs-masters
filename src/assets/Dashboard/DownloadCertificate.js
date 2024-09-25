@@ -292,7 +292,7 @@ const DownloadCertificate = () => {
         const parentWidth = sectionRef.current?.clientWidth;
         const parentHeight = sectionRef.current?.clientHeight;
 
-        console.log(parentWidth, parentHeight);
+        // console.log(parentWidth, parentHeight);
 
         const widthRatio = parentWidth / width;
         const heightRatio = height / parentHeight;
@@ -304,7 +304,7 @@ const DownloadCertificate = () => {
 
         if (initialZoom > 0.5) setZoom(0.5);
         else setZoom(initialZoom);
-        console.log(initialZoom);
+        // console.log(initialZoom);
       };
     };
 

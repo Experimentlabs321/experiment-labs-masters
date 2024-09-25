@@ -92,7 +92,7 @@ const SalesAndRevenue = () => {
       });
   }, [userInfo]);
 
-  console.log(filteredStudents);
+  // console.log(filteredStudents);
 
   useEffect(() => {
     axios
@@ -272,7 +272,7 @@ const SalesAndRevenue = () => {
     setCurrentPage(page);
   };
 
-  console.log(bundles);
+  // console.log(bundles);
 
   const handleCourseOrBundleName = (std) => {
     let courseOrBundleName = "";
@@ -283,10 +283,10 @@ const SalesAndRevenue = () => {
       (item) => item?._id === std?.batchId
     );
     const bundlesData = bundles?.find((item) => item?._id === std?.bundleId);
-    console.log(std);
-    console.log(bundlesData?.bundleFullName, courseData?.courseFullName);
+    // console.log(std);
+    // console.log(bundlesData?.bundleFullName, courseData?.courseFullName);
     if (!std?.bundleId) {
-      console.log(courseData?.courseFullName);
+      // console.log(courseData?.courseFullName);
       courseOrBundleName = courseData?.courseFullName;
     } else {
       // courseOrBundleName = bundles?.find(
@@ -295,7 +295,7 @@ const SalesAndRevenue = () => {
 
       courseOrBundleName = bundlesData?.bundleFullName;
     }
-    console.log(courseData, bundlesData);
+    // console.log(courseData, bundlesData);
     return courseOrBundleName || "";
   };
 

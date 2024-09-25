@@ -10,9 +10,9 @@ const MySubmission = ({ taskData }) => {
   useEffect(() => {
     axios
       .get(
-       // `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${taskData?._id}/${userInfo?._id}`
+        // `${process.env.REACT_APP_BACKEND_API}/submitAssignment/${taskData?._id}/${userInfo?._id}`
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/taskId/${taskData?._id}/submitterId/${userInfo?._id}
-        `,
+        `
       )
       .then((response) => {
         if (response && response.data && response.data.length > 0) {
@@ -24,17 +24,16 @@ const MySubmission = ({ taskData }) => {
         setIsLoading(false);
       });
   }, [userInfo?._id, taskData]);
-  
-  console.log(submissionData);
+
+  // console.log(submissionData);
 
   return (
     <>
-      {isLoading ?
+      {isLoading ? (
         <div className=" flex align-items-center my-5 py-5">
           <CircularProgress className="w-full mx-auto" />
         </div>
-        :
-
+      ) : (
         <div>
           {/* <div
   className={`relative  w-[400px] mt-[40px] px-4 mb-[10px] flex items-center gap-[32px] `}
@@ -107,11 +106,11 @@ const MySubmission = ({ taskData }) => {
             {userInfo?.role === "admin" ? (
               <>
                 {taskData?.file ? (
-                  taskData?.file.endsWith('.png') ||
-                    taskData?.file.endsWith('.jpg') ||
-                    taskData?.file.endsWith('.jpeg') ||
-                    taskData?.file.endsWith('.gif') ||
-                    taskData?.file.endsWith('.bmp') ? (
+                  taskData?.file.endsWith(".png") ||
+                  taskData?.file.endsWith(".jpg") ||
+                  taskData?.file.endsWith(".jpeg") ||
+                  taskData?.file.endsWith(".gif") ||
+                  taskData?.file.endsWith(".bmp") ? (
                     <div className="">
                       <img
                         src={taskData?.file}
@@ -160,11 +159,11 @@ const MySubmission = ({ taskData }) => {
             ) : (
               <>
                 {submissionData?.fileUrl ? (
-                  submissionData?.fileUrl.endsWith('.png') ||
-                    submissionData?.fileUrl.endsWith('.jpg') ||
-                    submissionData?.fileUrl.endsWith('.jpeg') ||
-                    submissionData?.fileUrl.endsWith('.gif') ||
-                    submissionData?.fileUrl.endsWith('.bmp') ? (
+                  submissionData?.fileUrl.endsWith(".png") ||
+                  submissionData?.fileUrl.endsWith(".jpg") ||
+                  submissionData?.fileUrl.endsWith(".jpeg") ||
+                  submissionData?.fileUrl.endsWith(".gif") ||
+                  submissionData?.fileUrl.endsWith(".bmp") ? (
                     <div className="">
                       <img
                         src={submissionData?.fileUrl}
@@ -190,15 +189,12 @@ const MySubmission = ({ taskData }) => {
                     </h1>
                   </div>
                 )}
-
               </>
             )}
           </div>
         </div>
-      }
-
+      )}
     </>
-
   );
 };
 

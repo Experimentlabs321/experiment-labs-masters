@@ -87,11 +87,11 @@ const AddingEditingMultiChoQues = ({
     setIsOpenAddCourseCategory(false);
   };
 
-  console.log(options);
+  // console.log(options);
 
   const { user } = useContext(AuthContext);
 
-  console.log(user);
+  // console.log(user);
 
   /// handle Submit
   const handleSubmit = async (event) => {
@@ -148,7 +148,7 @@ const AddingEditingMultiChoQues = ({
       // }
     }
 
-    console.log(newQuestion, addQuestion);
+    // console.log(newQuestion, addQuestion);
     backButtonHandle();
     Loading().close();
   };

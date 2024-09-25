@@ -1,20 +1,13 @@
-import React, {
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React, { useContext, useEffect, useState } from "react";
 
-import axios from 'axios';
-import { toast } from 'react-hot-toast';
-import {
-  useNavigate,
-  useParams,
-} from 'react-router-dom';
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import { useNavigate, useParams } from "react-router-dom";
 
-import required from '../../../assets/ContentManagement/required.png';
-import { AuthContext } from '../../../contexts/AuthProvider';
-import Loading from '../../Shared/Loading/Loading';
-import TextEditor from '../../Shared/TextEditor/TextEditor';
+import required from "../../../assets/ContentManagement/required.png";
+import { AuthContext } from "../../../contexts/AuthProvider";
+import Loading from "../../Shared/Loading/Loading";
+import TextEditor from "../../Shared/TextEditor/TextEditor";
 
 const QuizGeneralInformation = () => {
   const [selectedTab, setSelectedTab] = useState("Quiz General Information");
@@ -46,7 +39,7 @@ const QuizGeneralInformation = () => {
 
   useEffect(() => {
     axios
-     // .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
+      // .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
       .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${id}`)
       .then((response) => {
         setChapter(response?.data);
@@ -150,11 +143,11 @@ const QuizGeneralInformation = () => {
         formData
       );
 
-      console.log(newQuiz);
+      // console.log(newQuiz);
 
       if (newQuiz?.data?.result?.acknowledged) {
         Loading().close();
-        console.log(newQuiz);
+        // console.log(newQuiz);
         localStorage.setItem("chapter", chapter?.chapterName);
         localStorage.setItem(
           "task",
@@ -173,7 +166,7 @@ const QuizGeneralInformation = () => {
       }
       Loading().close();
 
-      console.log(formData);
+      // console.log(formData);
     }
   };
 

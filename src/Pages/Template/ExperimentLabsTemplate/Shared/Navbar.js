@@ -68,7 +68,7 @@ const Navbar = (props) => {
   const handleLogout = () => {
     logOut()
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         navigate("/");
       })
       .catch((error) => console.error(error));
@@ -127,7 +127,7 @@ const Navbar = (props) => {
     const phone = form.phone.value;
     const selectClass = form.selectClass.value;
 
-    console.log(name, email, phone, selectClass);
+    // console.log(name, email, phone, selectClass);
 
     if (!name || !email || !phone || !selectClass) {
       setError("Please fill in all the fields");
@@ -152,7 +152,7 @@ const Navbar = (props) => {
   const navigate = useNavigate();
 
   const graphyLogin = async (email, displayName) => {
-    console.log(email, displayName);
+    // console.log(email, displayName);
     saveUser(email);
     try {
       const payload = {
@@ -229,7 +229,7 @@ const Navbar = (props) => {
       });
   };
 
-  console.log("ab", role);
+  // console.log("ab", role);
 
   const handleDashboard = () => {
     const Role = localStorage.getItem("role");
@@ -269,12 +269,12 @@ const Navbar = (props) => {
     const name = form.name.value;
     const email = form.email.value;
     const password = form.password.value;
-    console.log(email, name, password);
+    // console.log(email, name, password);
 
     createUser(email, password)
       .then((result) => {
         const user = result?.user;
-        console.log(user);
+        // console.log(user);
 
         alert("Register successfull");
         setOpen2(false);
@@ -340,7 +340,7 @@ const Navbar = (props) => {
         saveUser(email);
       });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       toast.error("password or email error");
     }
   };
@@ -351,7 +351,7 @@ const Navbar = (props) => {
     )
       .then((res) => res.json())
       .then((data) => {
-        console.log("aaaaaaaaa", data);
+        // console.log("aaaaaaaaa", data);
 
         // setRole(data?.role);
         localStorage.setItem("role", data?.role);
@@ -404,7 +404,7 @@ const Navbar = (props) => {
     });
   };
   const userChecking = () => {
-    console.log(user);
+    // console.log(user);
   };
 
   const [formOpen, setFormOpen] = React.useState(false);
@@ -447,7 +447,7 @@ const Navbar = (props) => {
       Time: new Date(),
     };
 
-    console.log("Gone Here ===============>", data);
+    // console.log("Gone Here ===============>", data);
 
     fetch(`${process.env.REACT_APP_SERVER_API}/api/v1/users/interactions`, {
       method: "POST",
@@ -457,7 +457,7 @@ const Navbar = (props) => {
       body: JSON.stringify(data),
     })
       .then(async (res) => {
-        console.log("Submit ===============>", res);
+        // console.log("Submit ===============>", res);
         const sendMail = await axios.post(
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
           {
@@ -474,7 +474,7 @@ const Navbar = (props) => {
             `,
           }
         );
-        console.log("Send Mail ===============>", sendMail);
+        // console.log("Send Mail ===============>", sendMail);
         if (sendMail?.data?.success) {
           Swal.fire({
             icon: "success",
@@ -485,7 +485,7 @@ const Navbar = (props) => {
       })
       .catch((error) => {
         // Errors are reported there
-        console.log(error);
+        // console.log(error);
       });
 
     // const templateParams = {

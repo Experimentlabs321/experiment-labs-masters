@@ -19,7 +19,6 @@ import { toast } from "react-hot-toast";
 import ReactGA from "react-ga4";
 import Swal from "sweetalert2";
 
-
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -53,7 +52,7 @@ const HearFromStudents = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("Clicked");
+    // console.log("Clicked");
     ReactGA.event({
       category: "Click",
       action: "Submit Data From Navbar",
@@ -75,20 +74,17 @@ const HearFromStudents = () => {
       Time: new Date(),
     };
 
-    console.log("Gone Here ===============>", data);
+    // console.log("Gone Here ===============>", data);
 
-    fetch(
-      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/interactions`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }
-    )
+    fetch(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/interactions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
       .then(async (res) => {
-        console.log("Submit ===============>", res);
+        // console.log("Submit ===============>", res);
         const sendMail = await axios.post(
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
           {
@@ -105,7 +101,7 @@ const HearFromStudents = () => {
             `,
           }
         );
-        console.log("Send Mail ===============>", sendMail);
+        // console.log("Send Mail ===============>", sendMail);
         if (sendMail?.data?.success) {
           Swal.fire({
             icon: "success",
@@ -119,7 +115,6 @@ const HearFromStudents = () => {
         console.log(error);
       });
   };
-
 
   return (
     <div>
@@ -270,7 +265,10 @@ const HearFromStudents = () => {
       <div className=" flex justify-between mt-10">
         {/* <h1 className="text-xl">Hear Straight from our Students</h1> */}
 
-        <button onClick={handleClickOpen} className="px-5 py-1 bg-[#FF557A] rounded-3xl hover:bg-opacity-75">
+        <button
+          onClick={handleClickOpen}
+          className="px-5 py-1 bg-[#FF557A] rounded-3xl hover:bg-opacity-75"
+        >
           More info
         </button>
       </div>

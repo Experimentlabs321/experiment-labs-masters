@@ -20,7 +20,7 @@ const FilesTask = ({ taskData, count, setCount }) => {
   );
   const [openQuiz, setOpenQuiz] = useState(false);
   const [isOverlayVisible, setOverlayVisible] = useState(false);
-  console.log(taskData);
+  // console.log(taskData);
   const [completionStatus, setCompletionStatus] = useState(false);
   const [additionalFile, setAdditionalFile] = useState("");
   const pdfContainerRef = useRef(null);
@@ -89,8 +89,8 @@ const FilesTask = ({ taskData, count, setCount }) => {
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/${openTask?.taskType}/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`,
         sendData
       );
-      console.log(submitCompletion);
-      console.log(sendData);
+      // console.log(submitCompletion);
+      // console.log(sendData);
       setCompletionStatus(true);
       if (submitCompletion?.data?.acknowledged) {
         setCount(count + 1);
@@ -109,13 +109,13 @@ const FilesTask = ({ taskData, count, setCount }) => {
         });
       }
     } else {
-      console.log("else");
+      // console.log("else");
       Loading().close();
       setOpenQuiz(true);
       setOverlayVisible(true);
     }
   };
-  console.log(taskData?.fileDescription);
+  // console.log(taskData?.fileDescription);
   const [downloadProgress, setDownloadProgress] = useState(0);
   const [cancelTokenSource, setCancelTokenSource] = useState(null);
   const [iframeLoaded, setIframeLoaded] = useState(false);
@@ -153,7 +153,7 @@ const FilesTask = ({ taskData, count, setCount }) => {
       saveAs(blob, fileName);
     } catch (error) {
       if (axios.isCancel(error)) {
-        console.log("Download cancelled:", error.message);
+        // console.log("Download cancelled:", error.message);
       } else {
         console.error("Error downloading the file:", error);
       }
@@ -242,7 +242,7 @@ const FilesTask = ({ taskData, count, setCount }) => {
                             src={taskData?.additionalFiles}
                             alt="Img"
                             onLoad={() => {
-                              console.log("iframe loaded");
+                              // console.log("iframe loaded");
                               setIframeLoaded(true);
                             }}
                             className="w-[90%] mx-auto h-[68vh] border-[10px] border-b-50 rounded-lg border-[#292929]"
@@ -263,7 +263,7 @@ const FilesTask = ({ taskData, count, setCount }) => {
                             width="90%"
                             height="80vh"
                             onLoadedData={() => {
-                              console.log("iframe loaded");
+                              // console.log("iframe loaded");
                               setIframeLoaded(true);
                             }}
                             controls
@@ -283,7 +283,7 @@ const FilesTask = ({ taskData, count, setCount }) => {
                             key={taskData?._id}
                             src={additionalFile && additionalFile}
                             onLoad={() => {
-                              console.log("iframe loaded");
+                              // console.log("iframe loaded");
                               setIframeLoaded(true);
                             }}
                             title="Your Document"

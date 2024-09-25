@@ -116,7 +116,7 @@ const CertificateEditor = ({
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/certificateTemplates/courseId/${selectedCourse?._id}/batchId/${selectedBatch?._id}`
         )
         .then((response) => {
-          console.log(response?.data?.template);
+          // console.log(response?.data?.template);
           setCertificateTemplate(response?.data?.template);
           setSelectedBackgroundTemplate(
             response?.data?.template?.selectedBackgroundTemplate
@@ -302,7 +302,7 @@ const CertificateEditor = ({
         courseId: selectedCourse?._id,
         batchId: selectedBatch?._id,
       };
-      console.log(templateData);
+      // console.log(templateData);
       const addTemplate = await axios.post(
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/certificateTemplates`,
         templateData
@@ -328,7 +328,7 @@ const CertificateEditor = ({
     }
   };
 
-  console.log(selectedCourse, selectedBatch);
+  // console.log(selectedCourse, selectedBatch);
 
   return (
     <div className="col-span-3 border-l border-black h-[100vh] overflow-y-scroll p-1 relative flex justify-center items-start">

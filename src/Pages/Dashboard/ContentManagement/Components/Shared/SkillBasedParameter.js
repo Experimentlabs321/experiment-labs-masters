@@ -757,7 +757,7 @@ const SkillBasedParameter = ({
                               onClick={() => {
                                 setSelectedSkill(skill);
                                 setOpenSelectedSkillParameters(true);
-                                console.log(skill);
+                                // console.log(skill);
                               }}
                             />
                           </div>
@@ -807,7 +807,12 @@ const SkillBasedParameter = ({
         )}
         {skillParameterNumberingView && (
           <div className=" mt-2 rounded border mb-5 flex me-10 ">
-            <form onSubmit={() => console.log("data")} className="w-full">
+            <form
+              onSubmit={() => {
+                // console.log("data")
+              }}
+              className="w-full"
+            >
               <div className="grid grid-cols-12 gap-4 2xl:gap-6 p-8">
                 <div className=" col-span-4 ">
                   {categories?.map((category) => (

@@ -164,14 +164,14 @@ function App() {
       },
     });
 
-    console.log(session);
+    // console.log(session);
 
     if (!response.ok) {
       throw new Error("Failed to fetch Google Calendar events");
     }
 
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     return data.items || [];
   }
 
@@ -183,7 +183,7 @@ function App() {
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/updateEvent/${adminEmail}`,
         events
       );
-      console.log(newEvent);
+      // console.log(newEvent);
       if (newEvent?.data?.success) {
         console.log("Events updated");
       }
