@@ -97,41 +97,40 @@ const Submission = ({ taskData, count, setCount }) => {
   };
 
   const handleSubmit = async () => {
-    Loading();
-    let fileUrl = "";
-    if (selectedFile) fileUrl = await uploadFileToS3(selectedFile);
-
-    const manageAssignment = {
-      taskId: taskData?._id,
-      taskName: taskData?.taskName,
-      chapterName: localStorage.getItem("chapter"),
-      courseName: localStorage.getItem("course"),
-      chapterId: taskData?.chapterId,
-      courseId: taskData?.courseId,
-      mentors: userInfo?.executionMentor
-        ? userInfo?.executionMentor
-        : taskData?.executionMentors
-        ? taskData?.executionMentors
-        : [],
-      batchId: batch[0]?._id,
-      weekName: JSON.parse(localStorage.getItem("currentWeek"))?.weekName,
-      fileUrl: fileUrl,
-      submitter: taskData?.autoEvaluation
-        ? {
-            ...userInfo,
-            result: {
-              attachFile: "",
-              feedback: "",
-              resultSubmitterName: "Admin",
-              resultSubmitterPhotoURL: null,
-              dateAndTime: new Date(),
-            },
-          }
-        : userInfo,
-      submissionDateTime: new Date(),
-    };
-
     try {
+      Loading();
+      let fileUrl = "";
+      if (selectedFile) fileUrl = await uploadFileToS3(selectedFile);
+
+      const manageAssignment = {
+        taskId: taskData?._id,
+        taskName: taskData?.taskName,
+        chapterName: localStorage.getItem("chapter"),
+        courseName: localStorage.getItem("course"),
+        chapterId: taskData?.chapterId,
+        courseId: taskData?.courseId,
+        mentors: userInfo?.executionMentor
+          ? userInfo?.executionMentor
+          : taskData?.executionMentors
+          ? taskData?.executionMentors
+          : [],
+        batchId: batch[0]?._id,
+        weekName: JSON.parse(localStorage.getItem("currentWeek"))?.weekName,
+        fileUrl: fileUrl,
+        submitter: taskData?.autoEvaluation
+          ? {
+              ...userInfo,
+              result: {
+                attachFile: "",
+                feedback: "",
+                resultSubmitterName: "Admin",
+                resultSubmitterPhotoURL: null,
+                dateAndTime: new Date(),
+              },
+            }
+          : userInfo,
+        submissionDateTime: new Date(),
+      };
       if (manageAssignment && fileUrl) {
         console.log(manageAssignment);
         const newAssignment = await axios.post(
@@ -213,10 +212,15 @@ const Submission = ({ taskData, count, setCount }) => {
           checkSubmit();
         }
 
-        // Loading().close();
+        Loading().close();
       }
     } catch (error) {
-      Loading().close();
+      // Loading().close();
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something wrong happened! Please try again later.",
+      });
     }
   };
   console.log(taskData?.courseId, taskData?.chapterId, batch[0]?._id);
