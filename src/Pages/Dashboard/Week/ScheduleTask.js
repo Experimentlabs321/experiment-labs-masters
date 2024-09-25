@@ -2082,7 +2082,7 @@ const ScheduleTask = ({ taskData, week }) => {
                             useDefault: true,
                           },
                         };
-
+                        logToDatabase("Data for sending to google calendar is made ", { event });
                         try {
                           // Step 2: Create Google Calendar event
                           if (newSchedule?.data?.success === true) {
@@ -2101,6 +2101,7 @@ const ScheduleTask = ({ taskData, week }) => {
                               "Google Calendar event created successfully:",
                               response
                             );
+                            logToDatabase("Google calendar creation response ", { response });
                             const calendarEventId = response.result.id;
                             if (calendarEventId) {
                               logToDatabase("Added data in google calendar successfully", { matchObject });
