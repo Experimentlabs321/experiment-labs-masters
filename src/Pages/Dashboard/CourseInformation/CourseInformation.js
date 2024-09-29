@@ -375,7 +375,7 @@ const CourseInformation = () => {
     if (currentWeek?._id) {
       axios
         .get(
-          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/weekId/${currentWeek?._id}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/limited/weekId/${currentWeek?._id}`
         )
         .then((response) => {
           if (Role === "admin") setChapters(response?.data);

@@ -26,6 +26,7 @@ import Loading from "../../../Shared/Loading/Loading";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import { Badge } from "@mui/material";
+import { Box, LinearProgress } from "@mui/material";
 
 const Aside = ({
   toggleButton,
@@ -221,9 +222,27 @@ const Aside = ({
     };
   }, [chapters]);
 
+  const [progress, setProgress] = React.useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setProgress((oldProgress) => {
+        if (oldProgress === 100) {
+          return 0;
+        }
+        const diff = Math.random() * 10;
+        return Math.min(oldProgress + diff, 100);
+      });
+    }, 500);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
+
   return (
     <aside
-      ref={asideRef}
+      // ref={asideRef}
       id="sidebar"
       className={`fixed ${
         toggleButton ? " lg:flex" : "hidden"
@@ -252,7 +271,7 @@ const Aside = ({
               <h1 className="ml-3 text-[18px] font-[500]">Hide menu</h1>
             </button>
             <ul
-              ref={Role === "admin" ? containerRef : null}
+              // ref={Role === "admin" ? containerRef : null}
               className="space-y-2 h-[80vh] overflow-y-auto labJourneyRemoveScroll pb-2 text-white"
             >
               {/* <li>
@@ -275,6 +294,22 @@ const Aside = ({
                   <h1 className="ml-3 text-[18px] font-[500]">Hide menu</h1>
                 </button>
               </li> */}
+              {!chapters[0] && (
+                <div className=" flex justify-center  w-full  ">
+                  <div className="flex flex-col items-center gap-3">
+                    <p className="mt-20">Loading...</p>
+                    <Box sx={{ width: "180px" }}>
+                      <LinearProgress
+                        sx={{ height: "20px", borderRadius: "10px" }}
+                        variant="determinate"
+                        value={progress}
+                      />
+                    </Box>
+                  </div>
+
+                  {/* <CircularProgress className="w-full mx-auto" /> */}
+                </div>
+              )}
               {chapters?.map((item, index) => {
                 const chapterIndex = index;
                 return (

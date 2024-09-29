@@ -105,13 +105,13 @@ const TaskDetails = () => {
     if (taskData?.chapterId)
       axios
         .get(
-          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${taskData?.chapterId}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${taskData?.chapterId}/email/${user?.email}`
         )
         .then((res) => {
-          setChapter(res?.data);
-          setOpenTopic(res?.data?.chapterName);
+          setChapter(res?.data[0]);
+          setOpenTopic(res?.data[0]?.chapterName);
           setOpenTask(
-            res?.data?.tasks?.find((item) => item?.taskId === taskData?._id)
+            res?.data[0]?.tasks?.find((item) => item?.taskId === taskData?._id)
           );
         })
         .catch((error) => console.error(error));
@@ -170,6 +170,7 @@ const TaskDetails = () => {
         })
         .catch((error) => console.error(error));
   }, [week, count]);
+  // console.log(chapters);
   // console.log(chapters);
   return (
     <div key={taskData?._id}>
@@ -277,7 +278,7 @@ const TaskDetails = () => {
                                 stroke-linejoin="round"
                               />
                             </svg>
-                            <Link
+                            {/* <Link
                               to={`/questLevels/${chapter?.courseId}`}
                               className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline "
                             >
@@ -298,7 +299,7 @@ const TaskDetails = () => {
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
                               />
-                            </svg>
+                            </svg> */}
                             <button className=" font-sans mr-[30px] text-[20px] font-[400] ">
                               {taskData?.taskName}
                             </button>
