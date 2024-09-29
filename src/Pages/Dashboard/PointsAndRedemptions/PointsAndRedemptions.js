@@ -28,7 +28,6 @@ const PointsAndRedemptions = () => {
         )
         .then((response) => {
           setItemDetails(response?.data);
-
         })
         .finally(() => {
           setLoading(false);
@@ -59,7 +58,7 @@ const PointsAndRedemptions = () => {
       const orgInfo = { ...orgData };
       orgInfo.showPointsAndRedemptions = !orgData?.showPointsAndRedemptions;
       delete orgInfo._id;
-      console.log("Data ==========>", orgInfo);
+      // console.log("Data ==========>", orgInfo);
 
       const updateOrg = await axios.put(
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/organizations/${orgData?._id}`,
@@ -81,23 +80,20 @@ const PointsAndRedemptions = () => {
       <Layout>
         <div className="flex items-center justify-center gap-7 mt-20 lg:mt-10">
           <div className="UserManagement origin-top-left rotate-[-0.51deg] text-zinc-500 text-[30px] font-medium">
-            {
-              itemDetails?.pointsAndRedemptions ? itemDetails?.pointsAndRedemptions : "Points And Redemptions"
-            }
-
+            {itemDetails?.pointsAndRedemptions
+              ? itemDetails?.pointsAndRedemptions
+              : "Points And Redemptions"}
           </div>
           <div className="Input w-[425px] h-16 relative bg-slate-100 rounded-[40px] shadow-inner">
             <input
               className="Search w-[329px] left-[32px] top-[12px] absolute text-zinc-500 text-[20px] font-light leading-10 bg-transparent"
-              placeholder={ 
-                itemDetails?.search ? itemDetails?.search : "Search"
-              }
+              placeholder={itemDetails?.search ? itemDetails?.search : "Search"}
             />
             <div className="Button w-10 h-10 left-[373px] top-[12px] absolute bg-zinc-500 rounded-[32px] shadow">
               <SearchIcon className="Search1 w-6 h-6 left-[8px] top-[8px] absolute text-white" />
             </div>
           </div>
-      {/*     <Badge badgeContent={1} color="error">
+          {/*     <Badge badgeContent={1} color="error">
             <NotificationsIcon color="action" />
           </Badge> */}
         </div>
@@ -120,21 +116,26 @@ const PointsAndRedemptions = () => {
               />
               <div className="block bg-gray-600 w-14 h-8 rounded-full"></div>
               <div
-                className={`${orgData?.showPointsAndRedemptions
+                className={`${
+                  orgData?.showPointsAndRedemptions
                     ? "bg-green translate-x-full"
                     : "bg-gray-300 translate-x-0"
-                  } absolute left-1 top-1 w-6 h-6 rounded-full transition-transform transform ease-in-out duration-300`}
+                } absolute left-1 top-1 w-6 h-6 rounded-full transition-transform transform ease-in-out duration-300`}
               ></div>
             </div>
             <div className="ml-3 text-gray-700 font-semibold text-xl">
-              {!orgData?.showPointsAndRedemptions ? itemDetails?.show ? itemDetails?.show : "Show" : itemDetails?.remove ? itemDetails?.remove : "Remove"}
+              {!orgData?.showPointsAndRedemptions
+                ? itemDetails?.show
+                  ? itemDetails?.show
+                  : "Show"
+                : itemDetails?.remove
+                ? itemDetails?.remove
+                : "Remove"}
               <span className="ms-1">
-                {
-                  itemDetails?.pointsAndRedemptions ? itemDetails?.pointsAndRedemptions : "Points And Redemptions"
-                }
-
+                {itemDetails?.pointsAndRedemptions
+                  ? itemDetails?.pointsAndRedemptions
+                  : "Points And Redemptions"}
               </span>
-
             </div>
           </label>
         </div>
@@ -152,10 +153,9 @@ const PointsAndRedemptions = () => {
               />
               <div className="Content grow shrink basis-0 flex-col justify-start items-start gap-2 inline-flex">
                 <div className="CardTitle self-stretch text-black text-[24px] font-normal leading-normal">
-                {
-                  itemDetails?.gamifiedSetting ? itemDetails?.gamifiedSetting : "Gamified Setting"
-                }
-                 
+                  {itemDetails?.gamifiedSetting
+                    ? itemDetails?.gamifiedSetting
+                    : "Gamified Setting"}
                 </div>
                 <div className="CardDesription self-stretch">
                   <span className="text-zinc-900 text-[16px] font-normal leading-normal">
@@ -181,10 +181,9 @@ const PointsAndRedemptions = () => {
               />
               <div className="Content grow shrink basis-0 flex-col justify-start items-start gap-2 inline-flex">
                 <div className="CardTitle self-stretch text-black text-[24px] font-normal leading-normal">
-                {
-                  itemDetails?.earningLogic ? itemDetails?.earningLogic : "Earning Logic"
-                }
-                  
+                  {itemDetails?.earningLogic
+                    ? itemDetails?.earningLogic
+                    : "Earning Logic"}
                 </div>
                 <div className="CardDesription self-stretch">
                   <span className="text-zinc-900 text-[16px] font-normal leading-normal">
@@ -210,10 +209,9 @@ const PointsAndRedemptions = () => {
               />
               <div className="Content grow shrink basis-0 flex-col justify-start items-start gap-2 inline-flex">
                 <div className="CardTitle self-stretch text-black text-[24px] font-normal leading-normal">
-                {
-                  itemDetails?.redemptionLogic ? itemDetails?.redemptionLogic : "Redemption Logic"
-                }
-                  
+                  {itemDetails?.redemptionLogic
+                    ? itemDetails?.redemptionLogic
+                    : "Redemption Logic"}
                 </div>
                 <div className="CardDesription self-stretch">
                   <span className="text-zinc-900 text-[16px] font-normal leading-normal">

@@ -1,69 +1,59 @@
-import React, { useContext } from 'react';
+import React, { useContext } from "react";
 
-import axios from 'axios';
-import toast from 'react-hot-toast';
+import axios from "axios";
+import toast from "react-hot-toast";
 
-import NotificationIcon from '../../../assets/Dashboard/NotificationIcon.svg';
-import NotificationIconMobile
-  from '../../../assets/Dashboard/NotificationIconMobile.svg';
-import SearchIcon from '../../../assets/Dashboard/SearchIcon.png';
-import SearchIconMobile from '../../../assets/Dashboard/SearchIconMobile.svg';
-import { AuthContext } from '../../../contexts/AuthProvider';
+import NotificationIcon from "../../../assets/Dashboard/NotificationIcon.svg";
+import NotificationIconMobile from "../../../assets/Dashboard/NotificationIconMobile.svg";
+import SearchIcon from "../../../assets/Dashboard/SearchIcon.png";
+import SearchIconMobile from "../../../assets/Dashboard/SearchIconMobile.svg";
+import { AuthContext } from "../../../contexts/AuthProvider";
 
 const RedemptionProduct = ({ setState, state, redemptionProduct }) => {
-  console.log(redemptionProduct);
+  // console.log(redemptionProduct);
   const { userInfo } = useContext(AuthContext);
-  console.log(userInfo);
-  const totalPoints = localStorage.getItem("EarningTotalPoint")
+  // console.log(userInfo);
+  const totalPoints = localStorage.getItem("EarningTotalPoint");
   const handleRedemption = async (event) => {
     event.preventDefault();
 
-
-
     const newItem = await axios.post(
-     // `${process.env.REACT_APP_BACKEND_API}/redemptionAccess`,
+      // `${process.env.REACT_APP_BACKEND_API}/redemptionAccess`,
       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/redemptionAccesses`,
       {
         organizationId: userInfo?.organizationId,
         userId: userInfo?._id,
         redemptionItemName: redemptionProduct.redemptionItemName,
         accessItem: {
-
           redemptionItemName: redemptionProduct.redemptionItemName,
           itemValue: redemptionProduct.itemValue,
           dateAndTime: new Date(),
-
         },
       }
     );
 
-
     if (newItem?.data?.acknowledged) {
       toast.success("Item added Successfully");
-      setState("Redemption Congratulation")
-      localStorage.setItem("EarningTotalPoint", totalPoints - redemptionProduct?.itemValue)
-
-    }
-    else if (newItem?.data?._id) {
+      setState("Redemption Congratulation");
+      localStorage.setItem(
+        "EarningTotalPoint",
+        totalPoints - redemptionProduct?.itemValue
+      );
+    } else if (newItem?.data?._id) {
       toast.success("Item added Successfully");
-      setState("Redemption Congratulation")
-      localStorage.setItem("EarningTotalPoint", totalPoints - redemptionProduct?.itemValue)
-
-    }
-    else if (!newItem?.data?._id) {
+      setState("Redemption Congratulation");
+      localStorage.setItem(
+        "EarningTotalPoint",
+        totalPoints - redemptionProduct?.itemValue
+      );
+    } else if (!newItem?.data?._id) {
       toast.error("Item not added ");
-
-    }
-    else {
+    } else {
       toast.error("Item not added");
-
     }
 
-
-    console.log(newItem?.data)
-
+    // console.log(newItem?.data)
   };
-
 
   return (
     <div className="py-[65px] px-4">
@@ -163,11 +153,18 @@ const RedemptionProduct = ({ setState, state, redemptionProduct }) => {
             </p>
             <div className="flex items-center justify-between border-y-2 border-[#B1B8D0] lg:mr-[140px] mt-[15px] lg:mt-[30px] py-[30px]">
               <div className="flex gap-2 items-center">
-                <img className="h-[100px]" src={redemptionProduct?.selectedIcon} alt="icon" />
+                <img
+                  className="h-[100px]"
+                  src={redemptionProduct?.selectedIcon}
+                  alt="icon"
+                />
                 <div>
-                  <p className="text-lg font-bold">{redemptionProduct?.redemptionItemName}</p>
-                  <p className="text-[#979797] text-[6px] lg:text-[11px] font-[400] max-w-[190px]">{redemptionProduct?.description}</p>
-
+                  <p className="text-lg font-bold">
+                    {redemptionProduct?.redemptionItemName}
+                  </p>
+                  <p className="text-[#979797] text-[6px] lg:text-[11px] font-[400] max-w-[190px]">
+                    {redemptionProduct?.description}
+                  </p>
                 </div>
               </div>
               <div>
@@ -207,14 +204,16 @@ const RedemptionProduct = ({ setState, state, redemptionProduct }) => {
           <div className="flex justify-evenly mt-0 lg:mt-[27px] mb-[20px] lg:mb-0">
             <button
               onClick={() => setState("Redeem gifts")}
-              className="w-[100px] lg:w-[160px] bg-[#FF557A] rounded-full lg:rounded-[10px] py-2 text-[12px] lg:text-[15px] font-[700]">
+              className="w-[100px] lg:w-[160px] bg-[#FF557A] rounded-full lg:rounded-[10px] py-2 text-[12px] lg:text-[15px] font-[700]"
+            >
               Back
             </button>
 
             <button
               onClick={handleRedemption}
               //onClick={() => setState("Redemption Congratulation")}
-              className="w-[100px] lg:w-[160px] bg-[#FF557A] rounded-full lg:rounded-[10px] py-2 text-[12px] lg:text-[15px] font-[700]">
+              className="w-[100px] lg:w-[160px] bg-[#FF557A] rounded-full lg:rounded-[10px] py-2 text-[12px] lg:text-[15px] font-[700]"
+            >
               Redeem
             </button>
           </div>

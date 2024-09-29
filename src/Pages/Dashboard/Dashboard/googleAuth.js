@@ -6,7 +6,7 @@ const useGoogleApiAuth = () => {
     const initClient = async () => {
       await new Promise((resolve, reject) => {
         window.gapi.load("client", () => {
-          console.log("loaded client");
+          // console.log("loaded client");
 
           window.gapi.client
             .init({
@@ -19,7 +19,7 @@ const useGoogleApiAuth = () => {
               scope: "https://www.googleapis.com/auth/calendar",
             })
             .then(() => {
-              console.log("initialized client");
+              // console.log("initialized client");
               resolve();
             })
             .catch((error) => {

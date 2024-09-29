@@ -93,6 +93,20 @@ const AdminCalendarSchedule = () => {
   const [adminCalendarInfo, setAdminCalendarInfo] = useState({});
   const [executionMentors, setExecutionMentors] = useState([]);
   const [selectedMentors, setSelectedMentors] = useState([]);
+  const [isRecentSignIn, setIsRecentSignIn] = useState(false);
+
+  useEffect(() => {
+    if (session && session.user && session.user.last_sign_in_at) {
+      const lastSignIn = new Date(session.user.last_sign_in_at);
+      //console.log(lastSignIn)
+      const now = new Date();
+      const fiveMinutesInMillis = 5 * 60 * 1000;
+      const isWithinFiveMinutes = (now - lastSignIn) <= fiveMinutesInMillis;
+      //console.log(isWithinFiveMinutes);
+      setIsRecentSignIn(isWithinFiveMinutes);
+    }
+  }, [session]);
+
 
   // Save current location before redirecting to Google sign-in
   useEffect(() => {
@@ -110,7 +124,7 @@ const AdminCalendarSchedule = () => {
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/courseId/${localStorage.getItem("courseId")}`
       )
       .then((response) => {
-        setBatchesData(response?.data);
+        setBatchesData(response?.data || []);
       })
       .catch((error) => console.error(error));
   }, [chapter?.courseId]);
@@ -119,12 +133,12 @@ const AdminCalendarSchedule = () => {
       // .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
       .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${id}`)
       .then((response) => {
-        setChapter(response?.data);
+        setChapter(response?.data || []);
       })
 
       .catch((error) => console.error(error));
   }, [id, userInfo, userInfo?.email]);
-  console.log(userInfo?.email);
+  //(userInfo?.email);
   useEffect(() => {
     if (chapter?.courseId)
       axios
@@ -132,23 +146,23 @@ const AdminCalendarSchedule = () => {
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/${chapter?.courseId}`
         )
         .then((response) => {
-          setCourse(response?.data);
+          setCourse(response?.data || []);
         });
   }, [chapter]);
-  console.log(course);
+  //console.log(course);
   useEffect(() => {
     axios
       .get(
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/email/${userInfo?.email}`
       )
       .then((response) => {
-        console.log(response);
-        setAdminCalendarInfo(response?.data);
+        //console.log(response);
+        setAdminCalendarInfo(response?.data || []);
       })
 
       .catch((error) => console.error(error));
   }, [id, userInfo, userInfo?.email]);
-  console.log(adminCalendarInfo);
+  //console.log(adminCalendarInfo);
   useEffect(() => {
     axios
       .get(
@@ -156,8 +170,8 @@ const AdminCalendarSchedule = () => {
         // `http://localhost:5000/api/v1/users/mentors/organizationId/${userInfo?.organizationId}/role/execution mentor`
       )
       .then((response) => {
-        setExecutionMentors(response?.data);
-        console.log(response?.data);
+        setExecutionMentors(response?.data || [])
+        //console.log(response?.data || [])
       })
       .catch((error) => {
         console.error(error);
@@ -231,9 +245,9 @@ const AdminCalendarSchedule = () => {
     const eventStart = new Date(event?.start?.dateTime); // Parse event start date
     return eventStart >= currentDate && eventStart <= endDate;
   });
-  console.log(endDate);
-  console.log(calendarEvents);
-  console.log(relevantEvents);
+  //console.log(endDate);
+  //console.log(calendarEvents);
+  //console.log(relevantEvents);
   const handleSubmit = async (event) => {
     Loading();
     event.preventDefault();
@@ -248,23 +262,24 @@ const AdminCalendarSchedule = () => {
     const offDays = adminCalendarInfo?.offDays;
     const meetingType = adminCalendarInfo?.meetingType;
     const calendarInfo = { ...adminCalendarInfo, email: userInfo?.email };
-    console.log(adminCalendarInfo);
+    //console.log(adminCalendarInfo);
     calendarInfo.syncedMail = session?.user?.email;
-    calendarInfo.events = relevantEvents;
+    calendarInfo.events = adminCalendarInfo?.events;
     delete calendarInfo._id;
-    console.log(calendarInfo);
+    //console.log(calendarInfo);
     const newSchedule = await axios.post(
       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo`,
       { calendarInfo: calendarInfo }
     );
-    console.log(newSchedule);
+    //console.log(newSchedule);
     const manageSchedule = {
       scheduleName,
       taskName: scheduleName,
       chapterId: chapter?._id,
-      weekId : chapter?.weekId,
+      weekId: chapter?.weekId,
       courseName: course?.courseFullName,
       courseId: chapter?.courseId,
+      organizationId: userInfo?.organizationId,
       batches: selectedBatches,
       offDays: offDays,
       dateRange: dateRange,
@@ -280,13 +295,13 @@ const AdminCalendarSchedule = () => {
       executionMentors: selectedMentors,
     };
     setAssignmentData(manageSchedule);
-    console.log(manageSchedule);
+    //console.log(manageSchedule);
     if (submitPermission) {
       const newSchedule = await axios.post(
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/schedule`,
         manageSchedule
       );
-      console.log(newSchedule);
+      //console.log(newSchedule);
       if (newSchedule?.data?.result?.acknowledged) {
         Loading().close();
         toast.success("Schedule added Successfully");
@@ -296,14 +311,14 @@ const AdminCalendarSchedule = () => {
         Loading().close();
         toast.error("Something went wrong");
       }
-      console.log(manageSchedule);
+      //console.log(manageSchedule);
     }
     Loading().close();
   };
-  console.log("Start", start);
-  console.log("End", end);
-  console.log("Event", eventName);
-  console.log("Description", eventDescription);
+  //console.log("Start", start);
+  //console.log("End", end);
+  //console.log("Event", eventName);
+  //console.log("Description", eventDescription);
   // useEffect(() => {
 
   //   if (!session?.provider_token) {
@@ -347,7 +362,7 @@ const AdminCalendarSchedule = () => {
         alert("Error logging in to Google provider with Supabase");
       } else {
         // If there is no error, the sign-in is successful
-        console.log("Google Sign-In successful!");
+        //console.log("Google Sign-In successful!");
         navigate(previousLocation);
         // console.log(calendarEvents); // Log calendarEvents here or perform any other actions
       }
@@ -357,7 +372,7 @@ const AdminCalendarSchedule = () => {
     }
   };
   if (googleSignIn) {
-    console.log("done signin");
+    //console.log("done signin");
   }
   async function signOut() {
     await supabase.auth.signOut();
@@ -405,7 +420,7 @@ const AdminCalendarSchedule = () => {
       },
     });
 
-    console.log(session);
+    //console.log(session);
 
     if (!response.ok) {
       throw new Error("Failed to fetch Google Calendar events");
@@ -417,7 +432,7 @@ const AdminCalendarSchedule = () => {
     const timeZone =
       data.items.length > 0 ? data.items[0].start.timeZone : "UTC";
 
-    console.log(data);
+    //console.log(data);
 
     return { events: data.items || [], timeZone };
   }
@@ -459,12 +474,10 @@ const AdminCalendarSchedule = () => {
         zoomMeetingUrl = parts[1].trim(); // Store the URL from the description
         // console.log("URL for 'Start the Meeting':", zoomMeetingUrl);
       } else {
-        console.log("No URL found after 'Start the Meeting:'.");
+        //console.log("No URL found after 'Start the Meeting:'.");
       }
     } else {
-      console.log(
-        "Description is not available or does not contain 'Start the Meeting:'."
-      );
+      //console.log("Description is not available or does not contain 'Start the Meeting:'.");
     }
     // console.log(formattedStartDate);
     // console.log(formattedEndDate);
@@ -519,7 +532,7 @@ const AdminCalendarSchedule = () => {
     setIsModalOpen(true);
   };
   async function createCalendarEvent() {
-    console.log("Creating calendar event");
+    //console.log("Creating calendar event");
     const event = {
       summary: eventName,
       description: eventDescription,
@@ -546,11 +559,11 @@ const AdminCalendarSchedule = () => {
         }
       );
 
-      console.log("Response status:", response.status);
+      //console.log("Response status:", response.status);
 
       // Store the response text in a variable
       const responseBody = await response.text();
-      console.log("Response body:", responseBody);
+      //console.log("Response body:", responseBody);
 
       if (!response.ok) {
         throw new Error(
@@ -560,7 +573,7 @@ const AdminCalendarSchedule = () => {
 
       // Parse the response text as JSON
       const data = JSON.parse(responseBody);
-      console.log("API response:", data);
+      //console.log("API response:", data);
       alert("Event created, check your Google Calendar!");
     } catch (error) {
       console.error("Error creating event:", error.message);
@@ -706,7 +719,7 @@ const AdminCalendarSchedule = () => {
             <p>Manage Schedule in {chapter?.chapterName}</p>
           </div>
           <div>
-            {session && calendarEvents?.length > 0 ? (
+            {isRecentSignIn ? (
               <>
                 <div className="my-6 px-5">
                   <h2>Your Calendar Events</h2>
@@ -982,8 +995,8 @@ const AdminCalendarSchedule = () => {
                           <label
                             htmlFor="radioYes"
                             className={`ml-2 text-sm font-medium ${course?.enableDrip
-                                ? "text-gray-400"
-                                : "text-gray-900"
+                              ? "text-gray-400"
+                              : "text-gray-900"
                               }`}
                           >
                             Yes
@@ -1003,8 +1016,8 @@ const AdminCalendarSchedule = () => {
                           <label
                             htmlFor="radioNo"
                             className={`ml-2 text-sm font-medium ${course?.enableDrip
-                                ? "text-gray-400"
-                                : "text-gray-900"
+                              ? "text-gray-400"
+                              : "text-gray-900"
                               }`}
                           >
                             No

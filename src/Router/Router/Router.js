@@ -133,6 +133,12 @@ import PastClasses from "../../Pages/Dashboard/ExecutionMentorLiveClasses/PastCl
 import Mentors from "../../Pages/Dashboard/Mentors/Mentors";
 import ExecutionMentorMainSchedule from "../../Pages/Dashboard/ExecutionMentorSchedule/ExecutionMentorMainSchedule";
 import MentorCalendar from "../../Pages/Dashboard/Mentors/MentorCalendar";
+import PreDashboard from "../../Pages/Shared/PreDashboard/PreDashboard";
+import PrivateRoute from "../PrivateRoute/PrivateRoute";
+import NormalLogin from "../../Pages/Login/NormalLogin/NormalLogin";
+import FindSchedule from "../../Pages/Dashboard/Week/FindSchedule";
+import AdminAssetHome from "../../Pages/Dashboard/AdminAsset/AdminAssetHome";
+import CourseAnalysis from "../../Pages/Dashboard/CourseInformation/CourseAnalysis";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -247,6 +253,10 @@ const router = createBrowserRouter([
     element: <Dashboard />,
   },
   {
+    path: "/preDashboard",
+    element: <PreDashboard />,
+  },
+  {
     path: "/leaderBoard",
     element: <LeaderBoard />,
   },
@@ -271,12 +281,16 @@ const router = createBrowserRouter([
     element: <CourseInformation />,
   },
   {
+    path: "/courseAnalysis/:id",
+    element: <CourseAnalysis />,
+  },
+  {
     path: "/week/:id",
     element: <Week />,
   },
   {
     path: "/taskDetails/:id",
-    element: <TaskDetails />,
+    element: <PrivateRoute> <TaskDetails /></PrivateRoute>,
   },
   {
     path: "/careerAnalysis",
@@ -611,6 +625,10 @@ const router = createBrowserRouter([
     element: <LoginWithOrganization />,
   },
   {
+    path: "/login",
+    element: <NormalLogin></NormalLogin>,
+  },
+  {
     path: "/register/:id",
     element: <RegisterWithOrganization />,
   },
@@ -681,6 +699,14 @@ const router = createBrowserRouter([
   {
     path: "/salesAndRevenue",
     element: <SalesAndRevenue />,
+  },
+  {
+    path: "/findSchedule",
+    element:<PrivateRoute><FindSchedule /></PrivateRoute> ,
+  },
+  {
+    path: "/adminAsset",
+    element:<AdminAssetHome /> ,
   },
 ]);
 

@@ -60,7 +60,7 @@ const Quiz = ({
         givenAnswer: e.target.value,
       };
     }
-    console.log(score, point);
+    // console.log(score, point);
   };
 
   const handleNextQuestion = () => {
@@ -80,7 +80,7 @@ const Quiz = ({
   };
 
   const handleSubmit = async () => {
-    console.log(openTask?.taskType, taskData?._id, taskData?.chapterId);
+    // console.log(openTask?.taskType, taskData?._id, taskData?.chapterId);
     Loading();
     if (point >= taskData?.completionParameter?.passMarks) {
       setOpenQuiz(false);
@@ -135,7 +135,7 @@ const Quiz = ({
     // localStorage.setItem("questionWithSelectedAns", JSON.stringify(questions));
     // setAnswered(0);
     // setCurrentQuestion(0);
-    console.log(point, score);
+    // console.log(point, score);
     // setScore(0);
     // setCongratulationOpen(true);
   };

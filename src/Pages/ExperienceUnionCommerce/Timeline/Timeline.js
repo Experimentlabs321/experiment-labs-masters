@@ -6,7 +6,7 @@ import emailjs from "@emailjs/browser";
 import Dialog from "@mui/material/Dialog";
 import Slide from "@mui/material/Slide";
 import Swal from "sweetalert2";
-import axios from "axios"
+import axios from "axios";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -40,7 +40,7 @@ const Timeline = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("Clicked");
+    // console.log("Clicked");
     ReactGA.event({
       category: "Click",
       action: "Submit Data From Navbar",
@@ -62,20 +62,17 @@ const Timeline = () => {
       Time: new Date(),
     };
 
-    console.log("Gone Here ===============>", data);
+    // console.log("Gone Here ===============>", data);
 
-    fetch(
-      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/interactions`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }
-    )
+    fetch(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/interactions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
       .then(async (res) => {
-        console.log("Submit ===============>", res);
+        // console.log("Submit ===============>", res);
         const sendMail = await axios.post(
           `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
           {
@@ -92,7 +89,7 @@ const Timeline = () => {
             `,
           }
         );
-        console.log("Send Mail ===============>", sendMail);
+        // console.log("Send Mail ===============>", sendMail);
         if (sendMail?.data?.success) {
           Swal.fire({
             icon: "success",
@@ -103,12 +100,12 @@ const Timeline = () => {
       })
       .catch((error) => {
         // Errors are reported there
-        console.log(error);
+        // console.log(error);
       });
   };
   const handleSubmitDownloadBrochure = (event) => {
     event.preventDefault();
-    console.log("Clicked");
+    // console.log("Clicked");
     ReactGA.event({
       category: "Click",
       action: "Submit Data From Navbar",
@@ -130,20 +127,17 @@ const Timeline = () => {
       Time: new Date(),
     };
 
-    console.log("Gone Here ===============>", data);
+    // console.log("Gone Here ===============>", data);
 
-    fetch(
-      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/interactions`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }
-    )
+    fetch(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/interactions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
       .then(async (res) => {
-        console.log("Submit ===============>", res);
+        // console.log("Submit ===============>", res);
         const sendMail = await axios.post(
           `${process.env.REACT_APP_SERVER_API}/api/v1/sendMail`,
           {
@@ -160,7 +154,7 @@ const Timeline = () => {
             `,
           }
         );
-        console.log("Send Mail ===============>", sendMail);
+        // console.log("Send Mail ===============>", sendMail);
         if (sendMail?.data?.success) {
           Swal.fire({
             icon: "success",
@@ -171,7 +165,7 @@ const Timeline = () => {
       })
       .catch((error) => {
         // Errors are reported there
-        console.log(error);
+        // console.log(error);
       });
 
     const a = document.createElement("a");

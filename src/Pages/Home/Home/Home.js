@@ -11,8 +11,8 @@ import LifeAtUnion from "../LifeAtUnion/LifeAtUnion";
 import ExperienceUnion from "../ExperienceUnion/ExperienceUnion";
 import Campus from "../../SciencePage/Campus/Campus";
 import ReactGA from "react-ga4";
-import { useNavigate } from 'react-router-dom';
-import { useSession } from '@supabase/auth-helpers-react';
+import { useNavigate } from "react-router-dom";
+import { useSession } from "@supabase/auth-helpers-react";
 import Loading from "../../Shared/Loading/Loading";
 import axios from "axios";
 const Home = () => {
@@ -30,7 +30,7 @@ const Home = () => {
 
   const rootUrl = window.location.href;
   useEffect(() => {
-   // Show loading indicator
+    // Show loading indicator
     const timer = setTimeout(() => {
       setLoading(false); // Close loading indicator after 5 seconds
     }, 4000);
@@ -39,7 +39,7 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-  //  Loading();
+    //  Loading();
     try {
       if (rootUrl) {
         axios
@@ -50,33 +50,35 @@ const Home = () => {
             }
           )
           .then((response) => {
-            console.log(response);
+            // console.log(response);
             setOrgDetails(response?.data?.organization);
-            
-            if (window.location.href === response?.data?.organization?.orgDefaultUrl && response?.data?.organization?.orgRootUrl !== response?.data?.organization?.orgDefaultUrl) {
+
+            if (
+              window.location.href ===
+                response?.data?.organization?.orgDefaultUrl &&
+              response?.data?.organization?.orgRootUrl !==
+                response?.data?.organization?.orgDefaultUrl
+            ) {
               window.location.href = response?.data?.organization?.orgRootUrl;
-          //    Loading().close();
+              //    Loading().close();
               return;
             }
-           
-
           });
       }
     } catch (error) {
-     // Loading().close();
-      console.log(error);
+      // Loading().close();
+      // console.log(error);
     }
   }, [rootUrl]);
-
 
   useEffect(() => {
     const handleRedirectAfterSignIn = () => {
       // If the user is signed in
       if (session?.user) {
-        const preAuthUrl = localStorage.getItem('preAuthUrl');
+        const preAuthUrl = localStorage.getItem("preAuthUrl");
         if (preAuthUrl) {
           navigate(preAuthUrl);
-          localStorage.removeItem('preAuthUrl'); // Clean up
+          localStorage.removeItem("preAuthUrl"); // Clean up
         }
       }
     };
@@ -89,30 +91,32 @@ const Home = () => {
     ReactGA.send({ hitType: "pageview", page: "/", title: "Home" });
   }, []);
 
-  return (<>
-  {
-    loading ? <></> : <div style={{ width: "100%" }} className="bg-dark text-white">
-    <MyHelmet>
-      Experiment Labs | Career Counselling | Sell Online courses
-    </MyHelmet>
-    <div className="mt-[3rem]">
-      <Hero />
-    </div>
-    <div>
-      <Feature />
-    </div>
-    <TakeTest />
-    <AllCourses />
-    {/* <AiTutor/> */}
-    <MeetTheMaster />
-    <CEOChallenge />
-    <LifeAtUnion />
-    <Campus />
-    {/* <ExperienceUnion/> */}
-  </div>
-  }
-  </>
-    
+  return (
+    <>
+      {loading ? (
+        <></>
+      ) : (
+        <div style={{ width: "100%" }} className="bg-dark text-white">
+          <MyHelmet>
+            Experiment Labs | Career Counselling | Sell Online courses
+          </MyHelmet>
+          <div className="mt-[3rem]">
+            <Hero />
+          </div>
+          <div>
+            <Feature />
+          </div>
+          <TakeTest />
+          <AllCourses />
+          {/* <AiTutor/> */}
+          <MeetTheMaster />
+          <CEOChallenge />
+          <LifeAtUnion />
+          <Campus />
+          {/* <ExperienceUnion/> */}
+        </div>
+      )}
+    </>
   );
 };
 

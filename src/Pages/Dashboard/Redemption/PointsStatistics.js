@@ -28,7 +28,7 @@ const chartInfo = [
 const PointsStatistics = ({ setState, state }) => {
   const [activeLevel, setActiveLevel] = useState("Level 6");
   const [max, setMax] = useState(0);
-  console.log(max);
+  // console.log(max);
   return (
     <div className="py-[65px] px-4">
       <div className="hidden lg:flex flex-row justify-between items-center">

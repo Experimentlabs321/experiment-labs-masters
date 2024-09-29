@@ -27,7 +27,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
   const [givenAnswers, setGivenAnswers] = useState([]);
   const [participationData, setParticipationData] = useState({});
 
-  console.log(taskData);
+  // console.log(taskData);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -62,7 +62,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
 
   const handleOptionChange = (option) => {
     setSelectedOption(option?.answerFormula);
-    console.log(option);
+    // console.log(option);
     if (option?.answer === "correct") {
       if (
         !questions[currentQuestion]?.givenAnswer ||
@@ -145,11 +145,11 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
             )?.answer === "correct"
         )?.length;
 
-        console.log(
-          selectedCorrectAnswers,
-          totalCorrectAnswers,
-          prevCorrectAnswers
-        );
+        // console.log(
+        //   selectedCorrectAnswers,
+        //   totalCorrectAnswers,
+        //   prevCorrectAnswers
+        // );
 
         if (selectedOptions?.length + 1 <= totalCorrectAnswers) {
           if (selectedCorrectAnswers === totalCorrectAnswers) {
@@ -272,7 +272,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
       }
     }
   };
-  console.log("point ==>", point, "score ==>", score);
+  // console.log("point ==>", point, "score ==>", score);
 
   const handleNextQuestion = () => {
     const myForm = document.getElementById("myForm");
@@ -284,7 +284,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
       const findGivenAns = givenAnswers?.find(
         (item) => item?.questionId === questions[currentQuestion + 1]?._id
       );
-      console.log(findGivenAns);
+      // console.log(findGivenAns);
       if (questions[currentQuestion + 1]?.oneOrMultipleOption === "one") {
         if (findGivenAns)
           setSelectedOption(findGivenAns?.givenAnswer?.answerFormula);
@@ -310,7 +310,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
       const findGivenAns = givenAnswers?.find(
         (item) => item?.questionId === questions[currentQuestion - 1]?._id
       );
-      console.log(findGivenAns);
+      // console.log(findGivenAns);
       if (questions[currentQuestion - 1]?.oneOrMultipleOption === "one") {
         if (findGivenAns)
           setSelectedOption(findGivenAns?.givenAnswer?.answerFormula);
@@ -329,7 +329,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
   const handleJumpQuestion = (i) => {
     const myForm = document.getElementById("myForm");
     myForm.reset();
-    console.log(questions);
+    // console.log(questions);
     setCurrentQuestion(i);
     setSelectedOption("");
     setSelectedOptions([]);
@@ -338,7 +338,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
       const findGivenAns = givenAnswers?.find(
         (item) => item?.questionId === questions[i]?._id
       );
-      console.log(findGivenAns);
+      // console.log(findGivenAns);
       if (questions[i]?.oneOrMultipleOption === "one") {
         if (findGivenAns)
           setSelectedOption(findGivenAns?.givenAnswer?.answerFormula);
@@ -386,7 +386,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
       };
       setParticipationData(sendData?.participantTask);
       const submitCompletion = await axios.post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/Quiz/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/Quiz/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`,
         sendData
       );
       setCount(count + 1);
@@ -416,7 +416,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
       };
       setParticipationData(sendData?.participantTask);
       const submitCompletion = await axios.post(
-        `${process.env.REACT_APP_SERVER_API}/api/v1/tasks/taskType/Quiz/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/Quiz/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`,
         sendData
       );
       setCount(count + 1);
@@ -443,7 +443,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
       const findCourse = userInfo?.courses?.find(
         (item) => item?.courseId === chapter?.courseId
       );
-      console.log(findCourse);
+      // console.log(findCourse);
       if (findCourse?.batchId && taskData?.questions?.length > 0) {
         axios
           .get(
@@ -452,7 +452,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
           )
           .then((response) => {
             if (response?.data) setQuizQuestions(response?.data);
-            console.log(response?.data);
+            // console.log(response?.data);
           });
       }
     } catch (error) {
@@ -460,7 +460,7 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
     }
   }, [chapter, taskData, userInfo, participationData]);
 
-  console.log(taskData);
+  // console.log(taskData);
 
   return (
     <div>

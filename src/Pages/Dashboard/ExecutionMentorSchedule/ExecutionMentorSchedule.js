@@ -30,6 +30,8 @@ import toast from "react-hot-toast";
 import required from "../../../assets/ContentManagement/required.png";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import AdminAllSchedule from "./AdminAllSchedule";
+import AdminBookSchedule from "./AdminBookSchedule";
+import AdminScheduleList from "./AdminScheduleList";
 
 const ExecutionMentorSchedule = () => {
   const { agenda } = useParams();
@@ -70,8 +72,8 @@ const ExecutionMentorSchedule = () => {
   const [meetingTypee, setMeetingTypee] = useState(
     adminCalendarInfo?.meetingType || ""
   );
-  console.log(calendarEvents);
-  console.log(session);
+  //console.log(calendarEvents);
+  //console.log(session);
 
   useEffect(() => {
     axios
@@ -79,9 +81,10 @@ const ExecutionMentorSchedule = () => {
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo/email/${userInfo?.email}`
       )
       .then((response) => {
-        console.log(response)
+        //console.log(response)
         setAdminCalendarInfo(response?.data);
-        setSelectedHoliday(response?.data?.offDays);
+        //console.log(response?.data)
+        setSelectedHoliday(response?.data?.offDays || []);
       })
 
       .catch((error) => console.error(error));
@@ -108,7 +111,7 @@ const ExecutionMentorSchedule = () => {
   //     })
   //     .catch((error) => console.error(error));
   // }, [chapter?.courseId]);
-  console.log(adminCalendarInfo, user?.email);
+  //console.log(adminCalendarInfo, user?.email);
   // useEffect(() => {
   //   axios
   //     .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${id}`)
@@ -208,20 +211,20 @@ const ExecutionMentorSchedule = () => {
     }
   };
   const handleOptionChangeHoliday = (day) => {
-    const isSelected = selectedHoliday.includes(day.day);
+    const isSelected = selectedHoliday.includes(day?.day);
 
     if (isSelected) {
       // If the day is already selected, remove it from the array
       const updatedSelection = selectedHoliday.filter(
-        (selectedDay) => selectedDay !== day.day
+        (selectedDay) => selectedDay !== day?.day
       );
       setSelectedHoliday(updatedSelection);
     } else {
       // If the day is not selected, add it to the array
-      setSelectedHoliday((prevSelection) => [...prevSelection, day.day]);
+      setSelectedHoliday((prevSelection) => [...prevSelection, day?.day]);
     }
   };
-  console.log(selectedHoliday);
+  //console.log(selectedHoliday);
   const getCurrentDate = () => {
     const today = new Date();
     const year = today.getFullYear();
@@ -255,7 +258,7 @@ const ExecutionMentorSchedule = () => {
       const eventStart = new Date(event?.start?.dateTime); // Parse event start date
       return eventStart >= currDate && eventStart <= endDate;
     });
-    console.log(relevantEvents);
+    //console.log(relevantEvents);
     event.preventDefault();
     const currentDate = getCurrentDate();
     const form = event.target;
@@ -272,19 +275,19 @@ const ExecutionMentorSchedule = () => {
       minimumTime,
       meetingDuration: meetingDuration,
       meetingType: meetingType,
-      events: relevantEvents || [],
+      events: adminCalendarInfo?.events || [],
       adminMail: userInfo?.email,
       syncedMail: session?.user?.email,
       email: userInfo?.email,
     };
     setAssignmentData(manageSchedule);
-    console.log(manageSchedule);
+    //console.log(manageSchedule);
     if (submitPermission) {
       const newSchedule = await axios.post(
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/calenderInfo`,
         { calendarInfo: manageSchedule }
       );
-      console.log(newSchedule);
+      //console.log(newSchedule);
       if (newSchedule?.status === 200) {
         toast.success("Schedule added Successfully");
         event.target.reset();
@@ -294,10 +297,6 @@ const ExecutionMentorSchedule = () => {
 
     }
   };
-  // console.log("Start", start);
-  // console.log("End", end);
-  // console.log("Event", eventName);
-  // console.log("Description", eventDescription);
   const googleSignIn = async () => {
     const preAuthUrl = window.location.pathname; // You might want to store the full location object or pathname
     localStorage.setItem("preAuthUrl", preAuthUrl);
@@ -309,7 +308,6 @@ const ExecutionMentorSchedule = () => {
           persistSession: true,
         },
       });
-
       if (error) {
         console.error("Error during Google Sign-In:", error.message);
         alert("Error logging in to Google provider with Supabase");
@@ -331,84 +329,78 @@ const ExecutionMentorSchedule = () => {
       fetchAndDisplayGoogleCalendarEvents();
       fetchPrimaryCalendarInfo();
     }
-    //  else {
-    //   if (currentPage === "Schedule Settings") 
-    //   { googleSignIn(); }
-    // }
   }, [currentPage]);
   if (isLoading) {
     return <></>;
   }
-
- 
   async function signOut() {
     await supabase.auth.signOut();
   }
   async function fetchPrimaryCalendarInfo() {
-    if(currentPage === 'Schedule Settings'){
-    try {
-      const response = await fetch(
-        "https://www.googleapis.com/calendar/v3/users/me/calendarList/primary",
-        {
-          method: "GET",
-          headers: {
-            Authorization: "Bearer " + session.provider_token,
-          },
+    if (currentPage === 'Schedule Settings') {
+      try {
+        const response = await fetch(
+          "https://www.googleapis.com/calendar/v3/users/me/calendarList/primary",
+          {
+            method: "GET",
+            headers: {
+              Authorization: "Bearer " + session.provider_token,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch primary calendar information");
         }
-      );
+        const calendarInfo = await response.json();
+        const primaryCalendarTimeZone = calendarInfo.timeZone;
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch primary calendar information");
+        // Now that we have the calendar's timezone, set it for FullCalendar
+        setTimeZone(primaryCalendarTimeZone);
+      } catch (error) {
+        console.error(error.message);
+        // Optionally, handle errors such as setting a default timezone or user notification
+        setCalendarFetch(true); // Consider a more descriptive state variable name or error handling strategy
       }
-      const calendarInfo = await response.json();
-      const primaryCalendarTimeZone = calendarInfo.timeZone;
-
-      // Now that we have the calendar's timezone, set it for FullCalendar
-      setTimeZone(primaryCalendarTimeZone);
-    } catch (error) {
-      console.error(error.message);
-      // Optionally, handle errors such as setting a default timezone or user notification
-      setCalendarFetch(true); // Consider a more descriptive state variable name or error handling strategy
     }
-  }
   }
   async function fetchGoogleCalendarEvents() {
-   if(currentPage === 'Schedule Settings'){
-    const currentDate = new Date().toISOString();
-    const url = new URL(
-      "https://www.googleapis.com/calendar/v3/calendars/primary/events"
-    );
+    if (currentPage === 'Schedule Settings') {
+      const currentDate = new Date().toISOString();
+      const url = new URL(
+        "https://www.googleapis.com/calendar/v3/calendars/primary/events"
+      );
 
-    url.searchParams.append("timeMin", currentDate);
-    url.searchParams.append("singleEvents", true);
-    url.searchParams.append("orderBy", "startTime");
+      url.searchParams.append("timeMin", currentDate);
+      url.searchParams.append("singleEvents", true);
+      url.searchParams.append("orderBy", "startTime");
 
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + session.provider_token,
-      },
-    });
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + session.provider_token,
+        },
+      });
 
-    console.log(session);
+      //console.log(session);
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch Google Calendar events");
+      if (!response.ok) {
+        throw new Error("Failed to fetch Google Calendar events");
+      }
+
+      const data = await response.json();
+
+      // Extract time zone from the first event (assuming all events have the same time zone)
+      const timeZone =
+        data.items.length > 0 ? data.items[0].start.timeZone : "UTC";
+
+      //console.log(data);
+
+      return { events: data.items || [], timeZone };
     }
-
-    const data = await response.json();
-
-    // Extract time zone from the first event (assuming all events have the same time zone)
-    const timeZone =
-      data.items.length > 0 ? data.items[0].start.timeZone : "UTC";
-
-    console.log(data);
-
-    return { events: data.items || [], timeZone };
-   }
   }
   async function fetchAndDisplayGoogleCalendarEvents() {
-    if(currentPage === 'Schedule Settings'){
+    if (currentPage === 'Schedule Settings') {
       try {
         const events = await fetchGoogleCalendarEvents();
         setCalendarError(false);
@@ -448,12 +440,10 @@ const ExecutionMentorSchedule = () => {
         zoomMeetingUrl = parts[1].trim(); // Store the URL from the description
         // console.log("URL for 'Start the Meeting':", zoomMeetingUrl);
       } else {
-        console.log("No URL found after 'Start the Meeting:'.");
+        //console.log("No URL found after 'Start the Meeting:'.");
       }
     } else {
-      console.log(
-        "Description is not available or does not contain 'Start the Meeting:'."
-      );
+      //console.log("Description is not available or does not contain 'Start the Meeting:'.");
     }
     // console.log(formattedStartDate);
     // console.log(formattedEndDate);
@@ -633,7 +623,7 @@ const ExecutionMentorSchedule = () => {
   //     </div>
   //   );
   // }
-  console.log(itemDetails);
+  //console.log(itemDetails);
   return (
     <div>
       <Layout>
@@ -669,6 +659,16 @@ const ExecutionMentorSchedule = () => {
             Doubt class feedback
           </button> */}
           <button
+            onClick={() => setCurrentPage("Schedule List")}
+            className={`px-4 py-2 text-lg font-semibold rounded-lg ${currentPage === "Schedule List"
+              ? "bg-[#3E4DAC] text-white"
+              : "bg-white border-2 border-gray-400 text-black"
+              }`}
+          >
+            {currentPage === 'Schedule List' && session ? 'Schedule List' : "Schedule List"}
+
+          </button>
+          <button
             onClick={() => setCurrentPage("Schedule Settings")}
             className={`px-4 py-2 text-lg font-semibold rounded-lg ${currentPage === "Schedule Settings"
               ? "bg-[#3E4DAC] text-white"
@@ -686,6 +686,11 @@ const ExecutionMentorSchedule = () => {
             <AdminAllSchedule />
           </>
 
+        }
+        {
+          currentPage === "Schedule List" && <>
+            <AdminScheduleList />
+          </>
         }
         {
           currentPage === "Schedule Settings" && <>

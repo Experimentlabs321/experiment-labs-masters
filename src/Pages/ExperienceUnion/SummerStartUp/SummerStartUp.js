@@ -13,15 +13,14 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import LiveTvIcon from "@mui/icons-material/LiveTv";
 import emailjs from "@emailjs/browser";
 import Swal from "sweetalert2";
-import axios from "axios"
+import axios from "axios";
 
 import ReactGA from "react-ga4";
 
 const SummerStartUp = () => {
-
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("Clicked");
+    // console.log("Clicked");
     ReactGA.event({
       category: "Click",
       action: "Submit Data From Navbar",
@@ -43,20 +42,17 @@ const SummerStartUp = () => {
       Time: new Date(),
     };
 
-    console.log("Gone Here ===============>", data);
+    // console.log("Gone Here ===============>", data);
 
-    fetch(
-      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/interactions`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }
-    )
+    fetch(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/interactions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
       .then(async (res) => {
-        console.log("Submit ===============>", res);
+        // console.log("Submit ===============>", res);
         const sendMail = await axios.post(
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
           {
@@ -73,7 +69,7 @@ const SummerStartUp = () => {
             `,
           }
         );
-        console.log("Send Mail ===============>", sendMail);
+        // console.log("Send Mail ===============>", sendMail);
         if (sendMail?.data?.success) {
           Swal.fire({
             icon: "success",
@@ -84,7 +80,7 @@ const SummerStartUp = () => {
       })
       .catch((error) => {
         // Errors are reported there
-        console.log(error);
+        // console.log(error);
       });
   };
   return (
@@ -154,7 +150,10 @@ const SummerStartUp = () => {
             </div>
           </div>
           <div className="w-full">
-            <form onSubmit={handleSubmit} className="bg-[#424242] p-8 rounded-md border-2 border-custom-blue border-opacity-40 w-full lg:max-w-[480px]">
+            <form
+              onSubmit={handleSubmit}
+              className="bg-[#424242] p-8 rounded-md border-2 border-custom-blue border-opacity-40 w-full lg:max-w-[480px]"
+            >
               <div>
                 <label>
                   Name<span className="text-red-600">*</span>
@@ -203,7 +202,8 @@ const SummerStartUp = () => {
                 </div>
               </div>
               <div className="mt-6">
-                <label htmlFor="option">Select One<span className="text-red-600">*</span>
+                <label htmlFor="option">
+                  Select One<span className="text-red-600">*</span>
                 </label>
                 <div className=" flex gap-2 mt-4 border px-3 py-3 rounded-md">
                   <CallIcon />
@@ -213,13 +213,14 @@ const SummerStartUp = () => {
                     name="option"
                     id="option"
                   >
-                    <option className="bg" value="Student">Student</option>
+                    <option className="bg" value="Student">
+                      Student
+                    </option>
                     <option value="Parent">Parent</option>
                     <option value="Counselor">Counselor</option>
                     <option value="Others">Others</option>
                   </select>
                 </div>
-
               </div>
               <div className="mt-6">
                 <label>

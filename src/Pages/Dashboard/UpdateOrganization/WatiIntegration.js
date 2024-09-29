@@ -7,9 +7,9 @@ import Loading from "../../Shared/Loading/Loading";
 
 const WatiIntegration = ({ watiInstance, setWatiInstance, orgData }) => {
   const { userInfo } = useContext(AuthContext);
-  console.log(orgData);
+  // console.log(orgData);
   const [accessToken, setAccessToken] = useState(watiInstance?.accessToken);
-  
+
   const [loading, setLoading] = useState(false);
   const [itemDetails, setItemDetails] = useState();
   const [showForm, setShowForm] = useState(false);
@@ -27,7 +27,7 @@ const WatiIntegration = ({ watiInstance, setWatiInstance, orgData }) => {
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getUpdateOrganizationSubDetailsByOrganizationAndName/paymentIntegration/organizationsId/${userInfo?.organizationId}`
         )
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           setItemDetails(response?.data);
         })
         .finally(() => {
@@ -36,7 +36,7 @@ const WatiIntegration = ({ watiInstance, setWatiInstance, orgData }) => {
     }
     setLoading(false);
   }, [userInfo]);
-  console.log(orgData?._id);
+  // console.log(orgData?._id);
 
   useEffect(() => {
     axios
@@ -45,7 +45,7 @@ const WatiIntegration = ({ watiInstance, setWatiInstance, orgData }) => {
         // `http://localhost:5000/api/v1/organizations/whatsapp/e/64cbbd756f0ef101bc957231`
       )
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
 
         /*   setToken(response.data?.accessKeyId);
         setTemplateName(response.data?.templateName);
@@ -64,19 +64,17 @@ const WatiIntegration = ({ watiInstance, setWatiInstance, orgData }) => {
 
     const orgWhatsappInfo = {
       whatsappIntegration: {
-      
-        accessToken:selectedTemplate?.accessToken,
-        email:selectedTemplate?.email,
-        htmlPart:selectedTemplate?.htmlPart,
+        accessToken: selectedTemplate?.accessToken,
+        email: selectedTemplate?.email,
+        htmlPart: selectedTemplate?.htmlPart,
 
-        templateType:selectedTemplate?.templateType,
-        textPart:selectedTemplate?.textPart,
+        templateType: selectedTemplate?.templateType,
+        textPart: selectedTemplate?.textPart,
 
         templateName: selectedTemplate?.templateName,
-        
       },
     };
-    console.log(orgWhatsappInfo)
+    // console.log(orgWhatsappInfo)
     const updateOrg = await axios.put(
       //`${process.env.REACT_APP_SERVERLESS_API}/api/v1/organizations/whatsapp/e/${orgData?._id}`,
       `http://localhost:5000/api/v1/organizations/whatsapp/e/663e1bcdf7168d402bddb048`,
@@ -141,7 +139,7 @@ const WatiIntegration = ({ watiInstance, setWatiInstance, orgData }) => {
         }
       );
 
-      console.log("Message sent successfully:", response.data);
+      // console.log("Message sent successfully:", response.data);
     } catch (error) {
       console.error("Error sending message:", error);
     }
@@ -267,20 +265,25 @@ const WatiIntegration = ({ watiInstance, setWatiInstance, orgData }) => {
 
       <div className="flex gap-5">
         <input
-        className=" border p-2 rounded-md"
+          className=" border p-2 rounded-md"
           type="text"
           placeholder="Phone Number"
           value={phoneNumber}
           onChange={(e) => setPhoneNumber(e.target.value)}
         />
         <input
-        className=" border p-2 rounded-md"
+          className=" border p-2 rounded-md"
           type="text"
           placeholder="Message"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
-        <button className="bg-blue text-white p-2 font-semibold rounded-md" onClick={sendMessage}>Send Message</button>
+        <button
+          className="bg-blue text-white p-2 font-semibold rounded-md"
+          onClick={sendMessage}
+        >
+          Send Message
+        </button>
       </div>
     </div>
   );

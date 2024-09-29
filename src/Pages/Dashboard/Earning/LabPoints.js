@@ -1,27 +1,25 @@
-import React, {
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React, { useContext, useEffect, useState } from "react";
 
-import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import axios from "axios";
+import { useParams } from "react-router-dom";
 
-import { AuthContext } from '../../../contexts/AuthProvider';
-import MyLabPoints from './MyLabPoints';
-import Statement from './Statement';
+import { AuthContext } from "../../../contexts/AuthProvider";
+import MyLabPoints from "./MyLabPoints";
+import Statement from "./Statement";
 
 const LabPoints = () => {
   const { id } = useParams();
   const { userInfo, user } = useContext(AuthContext);
-  console.log(userInfo._id);
+  // console.log(userInfo._id);
 
   const [allResults, setAllResult] = useState();
 
   useEffect(() => {
     axios
-     // .get(`${process.env.REACT_APP_BACKEND_API}/getSubmitAssignment/all/${userInfo._id}`)
-      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/submitterId/${userInfo._id}`)
+      // .get(`${process.env.REACT_APP_BACKEND_API}/getSubmitAssignment/all/${userInfo._id}`)
+      .get(
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/submitterId/${userInfo._id}`
+      )
       .then((response) => {
         // setAssignment(response?.data)
 
@@ -34,7 +32,7 @@ const LabPoints = () => {
       .catch((error) => console.error(error));
   }, [userInfo._id]);
 
-  console.log(allResults);
+  // console.log(allResults);
   ////////////////////////////
   const [currentIndex, setCurrentIndex] = useState(1);
   const [CategoryName, setCategoryName] = useState({});
@@ -61,7 +59,7 @@ const LabPoints = () => {
       });
     }
   }, [allResults]);
-  console.log(allCategoryNames);
+  // console.log(allCategoryNames);
 
   /*  useEffect(() => {
      if (allResults) {
@@ -147,7 +145,7 @@ const LabPoints = () => {
     }
   }, [allResults]);
 
-  console.log(itemName);
+  // console.log(itemName);
   const [itemCategorySum, setItemCategorySum] = useState({});
 
   useEffect(() => {
@@ -173,7 +171,7 @@ const LabPoints = () => {
       });
     }
   }, [allResults, itemName]);
-  console.log(itemCategorySum);
+  // console.log(itemCategorySum);
 
   const itemValue = Object.values(itemCategorySum);
   //const newEarningItemDataLabels = Object.keys(earningItemResult);
@@ -182,12 +180,14 @@ const LabPoints = () => {
     useState();
   const [redemptionAccessSum, setRedemptionAccessSum] = useState();
 
-  console.log(userInfo.organizationId);
+  // console.log(userInfo.organizationId);
 
   useEffect(() => {
     axios
       //.get(`${process.env.REACT_APP_BACKEND_API}/getRedemptionAccess/${userInfo?.organizationId}/${userInfo?._id}`)
-      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/redemptionAccesses/organizationId/${userInfo?.organizationId}/userId/${userInfo?._id}`)
+      .get(
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/redemptionAccesses/organizationId/${userInfo?.organizationId}/userId/${userInfo?._id}`
+      )
       .then((response) => {
         const AllAccessItems = response?.data.accessItems;
         const RedemptionItem = {};
@@ -206,15 +206,15 @@ const LabPoints = () => {
       })
       .catch((error) => console.error(error));
   }, [userInfo?.organizationId]);
-  console.log(redemptionAccessCollection);
+  // console.log(redemptionAccessCollection);
 
   //const RedemptionValue = Object.values(redemptionAccessCollection);
 
   let TotalRedemptionValue = redemptionAccessSum || 0;
-  console.log(TotalRedemptionValue);
+  // console.log(TotalRedemptionValue);
 
   const totalSum = itemValue.reduce((sum, value) => sum + value, 0);
-  console.log(totalSum);
+  // console.log(totalSum);
   localStorage.setItem("EarningTotalPoint", totalSum - TotalRedemptionValue);
 
   const previous = () => {
@@ -228,7 +228,7 @@ const LabPoints = () => {
       setCurrentIndex(currentIndex + 1);
     }
   };
-  console.log(allCategoryNames);
+  // console.log(allCategoryNames);
 
   return (
     <div>

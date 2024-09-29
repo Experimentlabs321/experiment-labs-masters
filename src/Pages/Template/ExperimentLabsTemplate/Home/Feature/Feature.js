@@ -30,7 +30,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const Feature = ({featureData}) => {
+const Feature = ({ featureData }) => {
   const [courses, setCourses] = useState([...featureData]);
 
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -77,7 +77,7 @@ const Feature = ({featureData}) => {
 
   // console.log(isLargeScreen);
 
-  console.log("Mouse Entered Index-----> ", mouseEnteredIndex);
+  // console.log("Mouse Entered Index-----> ", mouseEnteredIndex);
 
   const [open, setOpen] = React.useState(false);
 

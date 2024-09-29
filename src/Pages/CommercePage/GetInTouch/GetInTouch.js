@@ -15,7 +15,6 @@ import { toast } from "react-hot-toast";
 import ReactGA from "react-ga4";
 import Swal from "sweetalert2";
 
-
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -40,7 +39,7 @@ const GetInTouch = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("Clicked");
+    // console.log("Clicked");
     ReactGA.event({
       category: "Click",
       action: "Submit Data From Navbar",
@@ -62,20 +61,17 @@ const GetInTouch = () => {
       Time: new Date(),
     };
 
-    console.log("Gone Here ===============>", data);
+    // console.log("Gone Here ===============>", data);
 
-    fetch(
-      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/interactions`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }
-    )
+    fetch(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/interactions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
       .then(async (res) => {
-        console.log("Submit ===============>", res);
+        // console.log("Submit ===============>", res);
         const sendMail = await axios.post(
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
           {
@@ -92,7 +88,7 @@ const GetInTouch = () => {
             `,
           }
         );
-        console.log("Send Mail ===============>", sendMail);
+        // console.log("Send Mail ===============>", sendMail);
         if (sendMail?.data?.success) {
           Swal.fire({
             icon: "success",
@@ -124,7 +120,10 @@ const GetInTouch = () => {
           </p>
         </div>
         <div className="w-full">
-          <form onSubmit={handleSubmit} className="text-dark p-8 rounded-md border-custom-blue  border-opacity-40 w-full lg:max-w-[480px]">
+          <form
+            onSubmit={handleSubmit}
+            className="text-dark p-8 rounded-md border-custom-blue  border-opacity-40 w-full lg:max-w-[480px]"
+          >
             <div>
               <label className="ml-5 text-white">Name</label>
               <div className="flex gap-2  border-2xl bg-[white] px-2 py-2 rounded-3xl">

@@ -1,15 +1,12 @@
 //EditRedemptionItemForm
 
-import React, {
-  useEffect,
-  useState,
-} from 'react';
+import React, { useEffect, useState } from "react";
 
-import axios from 'axios';
-import { toast } from 'react-hot-toast';
-import Swal from 'sweetalert2';
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import Swal from "sweetalert2";
 
-import uploadFileToS3 from '../../../UploadComponent/s3Uploader';
+import uploadFileToS3 from "../../../UploadComponent/s3Uploader";
 
 const EditRedemptionItemForm = ({
   selectedRedemptionLogic,
@@ -23,9 +20,9 @@ const EditRedemptionItemForm = ({
   selectedCourse,
   userInfo,
   courseId,
-  itemDetails
+  itemDetails,
 }) => {
-  console.log(selectedRedemptionLogic);
+  // console.log(selectedRedemptionLogic);
   const [itemValue, setItemValue] = useState(
     parseInt(selectedRedemptionLogic?.itemValue)
   );
@@ -44,7 +41,7 @@ const EditRedemptionItemForm = ({
   };
   const [selectedFile, setSelectedFile] = useState(null);
 
-  console.log(selectedIcon);
+  // console.log(selectedIcon);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -60,7 +57,7 @@ const EditRedemptionItemForm = ({
       })
       .catch((error) => console.error(error));
   }, [courseId]);
-  console.log(course);
+  // console.log(course);
 
   const handleEditRedemptionItem = async (event) => {
     event.preventDefault();
@@ -82,7 +79,7 @@ const EditRedemptionItemForm = ({
         description: event?.target?.description?.value,
       },
     };
-    console.log(data);
+    // console.log(data);
     if (data?.categoryName === selectedRedemptionCategory?.categoryName) {
       // if (
       //   selectedredemptionCategory?.earningItems?.find(
@@ -105,7 +102,11 @@ const EditRedemptionItemForm = ({
       );
 
       if (updatedItem?.data?.acknowledged) {
-        toast.success(itemDetails?.itemUpdatedSuccessfully ? itemDetails?.itemUpdatedSuccessfully : "Item Updated Successfully");
+        toast.success(
+          itemDetails?.itemUpdatedSuccessfully
+            ? itemDetails?.itemUpdatedSuccessfully
+            : "Item Updated Successfully"
+        );
         const updateItemsArray = [
           ...selectedRedemptionCategory?.redemptionItems,
         ];
@@ -141,8 +142,12 @@ const EditRedemptionItemForm = ({
         setIsOpenRedemptionItemEditForm(false);
         Swal.fire({
           icon: "error",
-          title: itemDetails?.itemAlreadyExist ? itemDetails?.itemAlreadyExist : "Item already exist!",
-          text: itemDetails?.pleaseEnterAnUniqueItemName ? itemDetails?.pleaseEnterAnUniqueItemName : "Please enter an unique item name!",
+          title: itemDetails?.itemAlreadyExist
+            ? itemDetails?.itemAlreadyExist
+            : "Item already exist!",
+          text: itemDetails?.pleaseEnterAnUniqueItemName
+            ? itemDetails?.pleaseEnterAnUniqueItemName
+            : "Please enter an unique item name!",
         });
         return;
       }
@@ -167,7 +172,7 @@ const EditRedemptionItemForm = ({
       );
       if (newItem?.data?.acknowledged) {
         fetch(
-        //  `${process.env.REACT_APP_BACKEND_API}/deleteRedemptionItem`,
+          //  `${process.env.REACT_APP_BACKEND_API}/deleteRedemptionItem`,
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/redemptionCategories/redemptionItems`,
           {
             method: "DELETE",
@@ -180,7 +185,8 @@ const EditRedemptionItemForm = ({
               courseId: selectedCourse?._id,
               redemptionItemName: selectedRedemptionLogic?.redemptionItemName,
             }),
-          })
+          }
+        )
           .then((result) => {
             if (result?.ok) {
               const remainingItems =
@@ -195,32 +201,32 @@ const EditRedemptionItemForm = ({
               });
               const selectedCategoryItems = currentCategory?.redemptionItems
                 ? [
-                  ...currentCategory?.redemptionItems,
-                  {
-                    redemptionItemName:
-                      event?.target?.redemptionItemName?.value,
-                    redemptionValue: selectedRedemptionOption,
-                    itemValue: event?.target?.itemValue?.value,
-                    minimumValue: event?.target?.minimumValue?.value,
-                    redemptionLevel: event?.target?.redemptionLevel?.value,
-                    redemptionLink: event?.target?.redemptionLink?.value,
-                    description: event?.target?.description?.value,
-                    selectedIcon,
-                  },
-                ]
+                    ...currentCategory?.redemptionItems,
+                    {
+                      redemptionItemName:
+                        event?.target?.redemptionItemName?.value,
+                      redemptionValue: selectedRedemptionOption,
+                      itemValue: event?.target?.itemValue?.value,
+                      minimumValue: event?.target?.minimumValue?.value,
+                      redemptionLevel: event?.target?.redemptionLevel?.value,
+                      redemptionLink: event?.target?.redemptionLink?.value,
+                      description: event?.target?.description?.value,
+                      selectedIcon,
+                    },
+                  ]
                 : [
-                  {
-                    redemptionItemName:
-                      event?.target?.redemptionItemName?.value,
-                    redemptionValue: selectedRedemptionOption,
-                    itemValue: event?.target?.itemValue?.value,
-                    minimumValue: event?.target?.minimumValue?.value,
-                    redemptionLevel: event?.target?.redemptionLevel?.value,
-                    redemptionLink: event?.target?.redemptionLink?.value,
-                    description: event?.target?.description?.value,
-                    selectedIcon,
-                  },
-                ];
+                    {
+                      redemptionItemName:
+                        event?.target?.redemptionItemName?.value,
+                      redemptionValue: selectedRedemptionOption,
+                      itemValue: event?.target?.itemValue?.value,
+                      minimumValue: event?.target?.minimumValue?.value,
+                      redemptionLevel: event?.target?.redemptionLevel?.value,
+                      redemptionLink: event?.target?.redemptionLink?.value,
+                      description: event?.target?.description?.value,
+                      selectedIcon,
+                    },
+                  ];
               setSelectedRedemptionCategory({
                 categoryName: currentCategory?.categoryName,
                 redemptionItems: selectedCategoryItems,
@@ -237,7 +243,11 @@ const EditRedemptionItemForm = ({
               ]);
               setIsOpenRedemptionItemEditForm(false);
               event.target.reset();
-              toast.success(itemDetails?.itemUpdatedSuccessfully ? itemDetails?.itemUpdatedSuccessfully : "Item Updated Successfully!");
+              toast.success(
+                itemDetails?.itemUpdatedSuccessfully
+                  ? itemDetails?.itemUpdatedSuccessfully
+                  : "Item Updated Successfully!"
+              );
             }
           })
           .catch((error) => {
@@ -275,17 +285,16 @@ const EditRedemptionItemForm = ({
                     alt="UploadingImg"
                   />
                   <p className="mt-[-60px] text-base font-semibold text-[#fff] mb-4">
-                    {itemDetails?.uploadIcon ? itemDetails?.uploadIcon : "Upload Icon"}
-
+                    {itemDetails?.uploadIcon
+                      ? itemDetails?.uploadIcon
+                      : "Upload Icon"}
                   </p>
 
                   <label
                     className="mt-[-16px] flex items-center px-5 py-2 rounded-lg bg-[#FFDB70] text-xs font-bold"
                     htmlFor="input-file-upload"
                   >
-
                     {itemDetails?.browser ? itemDetails?.browser : "Browser"}
-
                   </label>
                   <input
                     className="w-[1%]"
@@ -312,8 +321,9 @@ const EditRedemptionItemForm = ({
                 <div className="grid grid-cols-1 gap-x-6 gap-y-4 mt-2 sm:grid-cols-2 w-full">
                   <div>
                     <label className="text-[16px] font-[600]" htmlFor="case">
-                      {itemDetails?.redemptionCategory ? itemDetails?.redemptionCategory : "Redemption Category"}
-
+                      {itemDetails?.redemptionCategory
+                        ? itemDetails?.redemptionCategory
+                        : "Redemption Category"}
                     </label>
                     <select
                       defaultValue={selectedRedemptionCategory?.categoryName}
@@ -328,10 +338,10 @@ const EditRedemptionItemForm = ({
                         <>
                           {redemptionCategory?.categoryName !==
                             selectedRedemptionCategory?.categoryName && (
-                              <option value={redemptionCategory?.categoryName}>
-                                {redemptionCategory?.categoryName}
-                              </option>
-                            )}
+                            <option value={redemptionCategory?.categoryName}>
+                              {redemptionCategory?.categoryName}
+                            </option>
+                          )}
                         </>
                       ))}
                     </select>
@@ -339,8 +349,9 @@ const EditRedemptionItemForm = ({
 
                   <div>
                     <label className="text-[16px] font-[600]" htmlFor="case">
-                      {itemDetails?.redemptionItemName ? itemDetails?.redemptionItemName : "Redemption Item Name"}
-
+                      {itemDetails?.redemptionItemName
+                        ? itemDetails?.redemptionItemName
+                        : "Redemption Item Name"}
                     </label>
                     <input
                       id="redemptionItemName"
@@ -353,8 +364,9 @@ const EditRedemptionItemForm = ({
 
                   <div className=" flex flex-col justify-center ">
                     <p className="font-semibold text-[#000000]  py-2">
-                      {itemDetails?.redemptionValue ? itemDetails?.redemptionValue : "Redemption Value"}
-
+                      {itemDetails?.redemptionValue
+                        ? itemDetails?.redemptionValue
+                        : "Redemption Value"}
                     </p>
                     <div className=" flex gap-7 items-center  h-[40px]   text-[#535353] ">
                       <div>
@@ -371,8 +383,9 @@ const EditRedemptionItemForm = ({
                           for="draft"
                           className="peer-checked/draft: font-normal"
                         >
-                          {itemDetails?.external ? itemDetails?.external : "External"}
-
+                          {itemDetails?.external
+                            ? itemDetails?.external
+                            : "External"}
                         </label>
                       </div>
 
@@ -390,8 +403,9 @@ const EditRedemptionItemForm = ({
                           for="published"
                           class="peer-checked/published: font-normal"
                         >
-                          {itemDetails?.internal ? itemDetails?.internal : "Internal"}
-
+                          {itemDetails?.internal
+                            ? itemDetails?.internal
+                            : "Internal"}
                         </label>
                       </div>
                     </div>
@@ -399,8 +413,9 @@ const EditRedemptionItemForm = ({
 
                   <div className=" ">
                     <p className="font-semibold text-[#000000]  py-2">
-                      {itemDetails?.redemptionLevel ? itemDetails?.redemptionLevel : "Redemption Level"}
-
+                      {itemDetails?.redemptionLevel
+                        ? itemDetails?.redemptionLevel
+                        : "Redemption Level"}
                     </p>
                     <div className="   w-[100%]  text-[#535353] ">
                       <select
@@ -426,8 +441,9 @@ const EditRedemptionItemForm = ({
 
                   <div>
                     <label className="text-[16px] font-[600]" htmlFor="case">
-                      {itemDetails?.redemptionLink ? itemDetails?.redemptionLink : "Redemption Link"}
-
+                      {itemDetails?.redemptionLink
+                        ? itemDetails?.redemptionLink
+                        : "Redemption Link"}
                     </label>
                     <input
                       id="redemptionLink"
@@ -440,7 +456,9 @@ const EditRedemptionItemForm = ({
                   <div className="flex flex-col gap-10 mt-5">
                     <div className="flex justify-between  items-center ">
                       <p className="font-bold text-base me-5">
-                        {itemDetails?.itemValue ? itemDetails?.itemValue : "Item Value"}
+                        {itemDetails?.itemValue
+                          ? itemDetails?.itemValue
+                          : "Item Value"}
                       </p>
                       <div className="text-[18px] w-[40%]  h-[40px] flex  ">
                         <button
@@ -478,7 +496,9 @@ const EditRedemptionItemForm = ({
 
                     <div className="flex justify-between items-center ">
                       <p className="font-bold text-base me-5">
-                        {itemDetails?.minimumValue ? itemDetails?.minimumValue : "Minimum Value"}
+                        {itemDetails?.minimumValue
+                          ? itemDetails?.minimumValue
+                          : "Minimum Value"}
                       </p>
                       <div className="text-[18px] w-[40%]  h-[40px] flex  ">
                         <button

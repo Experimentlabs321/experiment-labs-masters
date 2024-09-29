@@ -216,20 +216,20 @@ const EditReading = () => {
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/readings/taskId/${readingData?._id}`,
         manageReading
       );
-      console.log(newTask);
+      // console.log(newTask);
 
       if (newTask?.data?.result?.acknowledged) {
         toast.success("Reading material updated Successfully!");
         event.target.reset();
       }
 
-      console.log(manageReading);
+      // console.log(manageReading);
     }
     Loading().close();
     navigate(-1);
   };
 
-  console.log(selectedBatches);
+  // console.log(selectedBatches);
 
   return (
     <div>

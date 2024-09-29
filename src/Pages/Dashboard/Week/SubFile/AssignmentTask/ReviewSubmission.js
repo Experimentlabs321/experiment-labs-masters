@@ -40,9 +40,9 @@ const ReviewSubmission = (taskData) => {
 
   //
   ///
-  console.log(submittedResult);
-  console.log(taskData?.taskData._id);
-  console.log(userInfo?._id);
+  // console.log(submittedResult);
+  // console.log(taskData?.taskData._id);
+  // console.log(userInfo?._id);
   const [value, setvalue] = useState();
   useEffect(() => {
     axios
@@ -244,8 +244,8 @@ const ReviewSubmission = (taskData) => {
     };
   }, [taskData, totalSum]);
 
-  console.log(newEarningItemDataValues);
-  console.log(newEarningItemDataLabels);
+  // console.log(newEarningItemDataValues);
+  // console.log(newEarningItemDataLabels);
 
   useEffect(() => {
     if (submittedResult) {
@@ -290,8 +290,8 @@ const ReviewSubmission = (taskData) => {
       });
     }
   }, [submittedResult]);
-  console.log(newSkillItemDataLabels);
-  console.log(newSkillItemDataValues);
+  // console.log(newSkillItemDataLabels);
+  // console.log(newSkillItemDataValues);
 
   const mainSkillItemDataLabels = Object.keys(mainSkillItem);
   const mainSkillItemDataValues = Object.values(mainSkillItem);
@@ -327,8 +327,8 @@ const ReviewSubmission = (taskData) => {
       })
       .catch((error) => console.error(error));
   }, [userInfo]);
-  console.log(mainSkillItemDataLabels);
-  console.log(mainSkillItemDataValues);
+  // console.log(mainSkillItemDataLabels);
+  // console.log(mainSkillItemDataValues);
 
   function formatDateTime(dateTimeString) {
     const dateObject = new Date(dateTimeString);
@@ -387,7 +387,7 @@ const ReviewSubmission = (taskData) => {
       saveAs(blob, fileName);
     } catch (error) {
       if (axios.isCancel(error)) {
-        console.log("Download cancelled:", error.message);
+        // console.log("Download cancelled:", error.message);
       } else {
         console.error("Error downloading the file:", error);
       }

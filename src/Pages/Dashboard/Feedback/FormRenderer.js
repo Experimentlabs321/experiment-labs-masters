@@ -13,7 +13,7 @@ const DynamicFormRender = ({ formFields }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
+    // console.log(formData);
     // Here you can send formData to your backend or do further processing
   };
 

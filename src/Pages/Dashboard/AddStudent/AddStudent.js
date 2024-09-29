@@ -39,7 +39,7 @@ const AddStudent = () => {
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getMyLearnersSubDetailsByOrganizationAndName/addLearners/organizationsId/${userInfo?.organizationId}`
         )
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           setItemDetails(response?.data);
         })
         .finally(() => {
@@ -83,7 +83,7 @@ const AddStudent = () => {
         console.error(error);
       });
   }, [userInfo]);
-  console.log(bundles);
+  // console.log(bundles);
 
   useEffect(() => {
     if (selectedCourse?._id)
@@ -152,7 +152,7 @@ const AddStudent = () => {
     Loading();
     try {
       const form = event?.target;
-      console.log("Selected School:", schoolInfo?.schoolName);
+      // console.log("Selected School:", schoolInfo?.schoolName);
       const userData = {
         name: form.name.value,
         email: form.email.value,
@@ -162,8 +162,8 @@ const AddStudent = () => {
         role: "user",
         profileImg: studentProfileImg,
       };
-      console.log(userData);
-      console.log(form.studentStatus.value);
+      // console.log(userData);
+      // console.log(form.studentStatus.value);
       if (form.studentStatus.value === "Paid") {
         if (mode === "course") {
           const newData = {
@@ -221,6 +221,13 @@ const AddStudent = () => {
         setStudentStatus("Prepaid");
         form.reset();
       } else {
+        if (!selectedBatch?._id) {
+          Swal.fire({
+            title: "Pleas select a batch!",
+            icon: "error",
+          });
+          return;
+        }
         if (mode === "course") {
           const newUser = await axios.post(
             `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/addOrUpdateUserWithCourse`,
@@ -232,7 +239,7 @@ const AddStudent = () => {
             }
           );
 
-          console.log(newUser);
+          // console.log(newUser);
 
           if (newUser) {
             const enrollData = {
@@ -254,7 +261,7 @@ const AddStudent = () => {
                 ? newUser?.data?.insertedUser?.insertedId
                 : newUser?.data?.existingUser?._id,
             };
-            console.log("EnrollData ============>", enrollData);
+            // console.log("EnrollData ============>", enrollData);
             const res = await axios.post(
               // `http://localhost:5000/api/v1/users/unpaidUsers/enroll`,
               `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/unpaidUsers/enroll`,
@@ -296,7 +303,7 @@ const AddStudent = () => {
             }
           );
 
-          console.log(newUser);
+          // console.log(newUser);
 
           if (newUser) {
             const enrollData = {
@@ -314,7 +321,7 @@ const AddStudent = () => {
                 ? newUser?.data?.insertedUser?.insertedId
                 : newUser?.data?.existingUser?._id,
             };
-            console.log("EnrollData ============>", enrollData);
+            // console.log("EnrollData ============>", enrollData);
             const res = await axios.post(
               // `http://localhost:5000/api/v1/users/unpaidUsers/enroll`,
               `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/unpaidUsers/enroll`,
@@ -352,14 +359,14 @@ const AddStudent = () => {
     }
   };
 
-  console.log(selectedCourse);
+  // console.log(selectedCourse);
 
   return (
     <div>
       {/* <Layout> */}
       <div className="p-4 mx-auto w-full">
         <div className="grid grid-flow-col mt-10 border-b border-[#D9D9D9] pb-2">
-       {/*    <button>
+          {/*    <button>
             <img
                onClick={handleBack}
               src={backIcon}

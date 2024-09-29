@@ -1,15 +1,11 @@
-import React, {
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React, { useContext, useEffect, useState } from "react";
 
-import axios from 'axios';
-import { toast } from 'react-hot-toast';
-import Swal from 'sweetalert2';
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import Swal from "sweetalert2";
 
-import { AuthContext } from '../../../../../contexts/AuthProvider';
-import DialogLayout from '../../../Shared/DialogLayout';
+import { AuthContext } from "../../../../../contexts/AuthProvider";
+import DialogLayout from "../../../Shared/DialogLayout";
 
 const SelectEarningCategory = ({
   setEarningCategories,
@@ -19,7 +15,7 @@ const SelectEarningCategory = ({
   setCategoryThreeDot,
   categoryThreeDot,
   selectedCourse,
-  itemDetails
+  itemDetails,
 }) => {
   const { userInfo } = useContext(AuthContext);
   const [editCategoryOpen, setEditCategoryOpen] = useState(false);
@@ -29,8 +25,12 @@ const SelectEarningCategory = ({
     if (!selectedCourse?._id || !userInfo?.organizationId) {
       Swal.fire({
         icon: "warning",
-        title: itemDetails?.thereIsNoCourse ? itemDetails?.thereIsNoCourse : "There is no course",
-        text: itemDetails?.pleaseCreateACourseFirst ? itemDetails?.pleaseCreateACourseFirst : "Please create a course first!",
+        title: itemDetails?.thereIsNoCourse
+          ? itemDetails?.thereIsNoCourse
+          : "There is no course",
+        text: itemDetails?.pleaseCreateACourseFirst
+          ? itemDetails?.pleaseCreateACourseFirst
+          : "Please create a course first!",
       });
       return;
     }
@@ -46,7 +46,11 @@ const SelectEarningCategory = ({
     );
 
     if (newCategory?.data?.acknowledged) {
-      toast.success(itemDetails?.categoryAddedSuccessfully ? itemDetails?.categoryAddedSuccessfully : "Category added Successfully");
+      toast.success(
+        itemDetails?.categoryAddedSuccessfully
+          ? itemDetails?.categoryAddedSuccessfully
+          : "Category added Successfully"
+      );
       setEarningCategories([
         ...earningCategories,
         {
@@ -76,14 +80,18 @@ const SelectEarningCategory = ({
       courseId: selectedCourse?._id,
       totalWeight: event?.target?.totalWeight?.value,
     };
-    console.log(update);
+    // console.log(update);
     const updatedCategory = await axios.put(
       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/earningCategories/categoryName`,
       update
     );
 
     if (updatedCategory?.data?.acknowledged) {
-      toast.success(itemDetails?.categoryUpdatedSuccessfully ? itemDetails?.categoryUpdatedSuccessfully : "Category Updated Successfully");
+      toast.success(
+        itemDetails?.categoryUpdatedSuccessfully
+          ? itemDetails?.categoryUpdatedSuccessfully
+          : "Category Updated Successfully"
+      );
       const updatedCategoriesArray = [...earningCategories];
       const selectedIndex = updatedCategoriesArray.findIndex(
         (category) =>
@@ -100,8 +108,12 @@ const SelectEarningCategory = ({
 
   const handleCategoryDelete = async (name) => {
     await Swal.fire({
-      title: itemDetails?.areYouSure ? itemDetails?.areYouSure : "Are you sure?",
-      text: itemDetails?.onceDeletedTheCategoryWillNotRecover ? itemDetails?.onceDeletedTheCategoryWillNotRecover : "Once deleted, the category will not recover!",
+      title: itemDetails?.areYouSure
+        ? itemDetails?.areYouSure
+        : "Are you sure?",
+      text: itemDetails?.onceDeletedTheCategoryWillNotRecover
+        ? itemDetails?.onceDeletedTheCategoryWillNotRecover
+        : "Once deleted, the category will not recover!",
       icon: "warning",
       buttons: true,
       showCancelButton: true,
@@ -109,13 +121,13 @@ const SelectEarningCategory = ({
       confirmButtonText: "Delete",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        console.log({
-          organizationId: userInfo?.organizationId,
-          categoryName: name,
-          courseId: selectedCourse?._id,
-        });
+        // console.log({
+        //   organizationId: userInfo?.organizationId,
+        //   categoryName: name,
+        //   courseId: selectedCourse?._id,
+        // });
         fetch(
-        //  `${process.env.REACT_APP_BACKEND_API}/earning/deleteCategory`,
+          //  `${process.env.REACT_APP_BACKEND_API}/earning/deleteCategory`,
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/earningCategories/categories`,
           {
             method: "PUT",
@@ -127,7 +139,8 @@ const SelectEarningCategory = ({
               categoryName: name,
               courseId: selectedCourse?._id,
             }),
-          })
+          }
+        )
           .then((response) => {
             if (!response.ok) {
               throw new Error(`Request failed with status: ${response.status}`);
@@ -135,7 +148,7 @@ const SelectEarningCategory = ({
             return response.json();
           })
           .then((result) => {
-            console.log(result);
+            // console.log(result);
             if (result?.acknowledged) {
               toast.success("Category Deleted Successfully!");
               const remainingCategories = earningCategories.filter(
@@ -173,10 +186,9 @@ const SelectEarningCategory = ({
         borderRadius="15px"
         title={
           <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
-            {
-              itemDetails?.editCategoryName ? itemDetails?.editCategoryName : "Edit Category Name"
-            }
-
+            {itemDetails?.editCategoryName
+              ? itemDetails?.editCategoryName
+              : "Edit Category Name"}
           </p>
         }
       >
@@ -185,9 +197,9 @@ const SelectEarningCategory = ({
           className="px-[32px] py-[24px] "
         >
           <h1 className=" text-[18px] font-[700] mb-[10px] ">
-            {
-              itemDetails?.categoryName ? itemDetails?.categoryName : "Category Name"
-            }
+            {itemDetails?.categoryName
+              ? itemDetails?.categoryName
+              : "Category Name"}
           </h1>
           <input
             type="text"
@@ -198,9 +210,9 @@ const SelectEarningCategory = ({
             className="bg-[#F6F7FF] border-[1px] border-[#CECECE] w-full rounded-[6px] py-[15px] px-[18px] mb-4 "
           />
           <h1 className=" text-[18px] font-[700] mb-[10px] ">
-            {
-              itemDetails?.totalWeight ? itemDetails?.totalWeight : "Total Weight"
-            }
+            {itemDetails?.totalWeight
+              ? itemDetails?.totalWeight
+              : "Total Weight"}
           </h1>
           <input
             type="number"
@@ -221,10 +233,9 @@ const SelectEarningCategory = ({
       </DialogLayout>
       {/* Edit category name end */}
       <h1 className=" text-[#737373] text-[24px] font-[500] mb-2 ">
-        {
-          itemDetails?.earningCategory ? itemDetails?.earningCategory : "Earning Category"
-        }
-
+        {itemDetails?.earningCategory
+          ? itemDetails?.earningCategory
+          : "Earning Category"}
       </h1>
       <div className="flex flex-wrap gap-y-2 items-center">
         {earningCategories?.map((item, index) => {
@@ -237,18 +248,33 @@ const SelectEarningCategory = ({
           return (
             <button
               key={index}
-              className={`px-2 py-3 relative text-base text-start border rounded-md font-semibold flex items-center min-w-[150px] justify-between gap-6 mr-1 ${selectedEarningCategory?.categoryName === item?.categoryName
-                ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
-                : "text-[#949494]"
-                }`}
+              className={`px-2 py-3 relative text-base text-start border rounded-md font-semibold flex items-center min-w-[150px] justify-between gap-6 mr-1 ${
+                selectedEarningCategory?.categoryName === item?.categoryName
+                  ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
+                  : "text-[#949494]"
+              }`}
               onClick={() => {
                 setSelectedEarningCategory(item);
               }}
             >
               <div>
-                <h1> {itemDetails?.name ? itemDetails?.name : "Name"}: {item?.categoryName}</h1>
-                <p>{itemDetails?.totalWeight ? itemDetails?.totalWeight : "Total Weight"} : {item?.totalWeight}</p>
-                <p>{itemDetails?.addedWeight ? itemDetails?.addedWeight : "Added Weight"} : {totalAddedWeight}</p>
+                <h1>
+                  {" "}
+                  {itemDetails?.name ? itemDetails?.name : "Name"}:{" "}
+                  {item?.categoryName}
+                </h1>
+                <p>
+                  {itemDetails?.totalWeight
+                    ? itemDetails?.totalWeight
+                    : "Total Weight"}{" "}
+                  : {item?.totalWeight}
+                </p>
+                <p>
+                  {itemDetails?.addedWeight
+                    ? itemDetails?.addedWeight
+                    : "Added Weight"}{" "}
+                  : {totalAddedWeight}
+                </p>
               </div>
               <button
                 onBlur={() => setCategoryThreeDot(false)}
@@ -286,8 +312,9 @@ const SelectEarningCategory = ({
                       }}
                       className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
                     >
-                      {itemDetails?.editCategoryName ? itemDetails?.editCategoryName : "Edit Category Name"}
-
+                      {itemDetails?.editCategoryName
+                        ? itemDetails?.editCategoryName
+                        : "Edit Category Name"}
                     </li>
                     <li
                       className="cursor-pointer p-2 hover:bg-[#5c5c5c21] rounded-lg w-full text-left text-black text-[13px] font-[600] "
@@ -297,8 +324,9 @@ const SelectEarningCategory = ({
                         );
                       }}
                     >
-                      {itemDetails?.deleteCategory ? itemDetails?.deleteCategory : "Delete Category"}
-
+                      {itemDetails?.deleteCategory
+                        ? itemDetails?.deleteCategory
+                        : "Delete Category"}
                     </li>
                   </ul>
                 )}
@@ -309,7 +337,9 @@ const SelectEarningCategory = ({
           <div
             className={`px-4 py-4 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 text-[#949494]`}
           >
-            {itemDetails?.pleaseAddCategory ? itemDetails?.pleaseAddCategory : "Please Add Category"}
+            {itemDetails?.pleaseAddCategory
+              ? itemDetails?.pleaseAddCategory
+              : "Please Add Category"}
             ...
           </div>
         )}

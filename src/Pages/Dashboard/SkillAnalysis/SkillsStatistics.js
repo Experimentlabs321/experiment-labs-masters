@@ -1,24 +1,20 @@
-import React, {
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React, { useContext, useEffect, useState } from "react";
 
-import axios from 'axios';
+import axios from "axios";
 
-import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 
-import { AuthContext } from '../../../contexts/AuthProvider';
-import DialogLayout from '../Shared/DialogLayout';
+import { AuthContext } from "../../../contexts/AuthProvider";
+import DialogLayout from "../Shared/DialogLayout";
 
 const SkillsStatistics = ({ skillsData, selectedCourse }) => {
-  console.log(selectedCourse?._id);
+  // console.log(selectedCourse?._id);
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState();
   const [selectedSkillName, setSelectedSkillName] = useState("");
 
   const { userInfo, user } = useContext(AuthContext);
-  console.log(userInfo);
+  // console.log(userInfo);
   const [course, setCourse] = useState();
   const [taskIds, setTaskIds] = useState();
   const [chapterIds, setChapterIds] = useState();
@@ -29,7 +25,7 @@ const SkillsStatistics = ({ skillsData, selectedCourse }) => {
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/courseId/${selectedCourse?._id}`
       )
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         const taskName = {};
         const chapterName = {};
         // setAssignment(response?.data)
@@ -50,16 +46,16 @@ const SkillsStatistics = ({ skillsData, selectedCourse }) => {
       .catch((error) => console.error(error));
   }, [selectedCourse?._id]);
 
-  console.log(course);
-  console.log(taskIds);
-  console.log(chapterIds);
+  // console.log(course);
+  // console.log(taskIds);
+  // console.log(chapterIds);
 
   const [allResults, setAllResult] = useState();
 
   useEffect(() => {
     axios
       .get(
-       // `${process.env.REACT_APP_BACKEND_API}/getSubmitAssignment/all/${userInfo._id}`
+        // `${process.env.REACT_APP_BACKEND_API}/getSubmitAssignment/all/${userInfo._id}`
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/assignmentSubmissions/submitterId/${userInfo._id}`
       )
       .then((response) => {
@@ -76,7 +72,7 @@ const SkillsStatistics = ({ skillsData, selectedCourse }) => {
       .catch((error) => console.error(error));
   }, [userInfo._id, taskIds]);
 
-  console.log(allResults);
+  // console.log(allResults);
 
   const [submittedTaskID, setSubmittedTaskID] = useState({});
 
@@ -94,7 +90,7 @@ const SkillsStatistics = ({ skillsData, selectedCourse }) => {
     }
   }, [allResults]);
 
-  console.log(submittedTaskID);
+  // console.log(submittedTaskID);
 
   const [mainAssignments, setMainAssignments] = useState();
   useEffect(() => {
@@ -111,7 +107,7 @@ const SkillsStatistics = ({ skillsData, selectedCourse }) => {
       .catch((error) => console.error(error));
   }, [submittedTaskID]);
 
-  console.log(mainAssignments);
+  // console.log(mainAssignments);
 
   const handleClickSkill = (skillName) => {
     setSelectedSkillName(skillName);
@@ -137,7 +133,7 @@ const SkillsStatistics = ({ skillsData, selectedCourse }) => {
             }
             item?.parameters.forEach((a) => {
               const parameterName = a.parameterName;
-              console.log(parameterName);
+              // console.log(parameterName);
               // If earningName already exists in earningItemsName, add itemValue to the existing value, otherwise, set it to itemValue
               if (parametersName.hasOwnProperty(parameterName)) {
                 parametersName[parameterName] += +a.parameterValue;
@@ -155,8 +151,8 @@ const SkillsStatistics = ({ skillsData, selectedCourse }) => {
     }
   }, [mainAssignments]);
 
-  console.log(sumParametersMain);
-  console.log(sumSkillMain);
+  // console.log(sumParametersMain);
+  // console.log(sumSkillMain);
 
   const [sumParameters, setSumParameters] = useState({});
   const [sumSkill, setSumSkill] = useState({});
@@ -178,7 +174,7 @@ const SkillsStatistics = ({ skillsData, selectedCourse }) => {
             }
             item?.parameters.forEach((a) => {
               const parameterName = a.parameterName;
-              console.log(parameterName);
+              // console.log(parameterName);
               // If earningName already exists in earningItemsName, add itemValue to the existing value, otherwise, set it to itemValue
               if (parametersName.hasOwnProperty(parameterName)) {
                 parametersName[parameterName] += +a.parameterValue;
@@ -196,8 +192,8 @@ const SkillsStatistics = ({ skillsData, selectedCourse }) => {
     }
   }, [allResults]);
 
-  console.log(sumParameters);
-  console.log(sumSkill);
+  // console.log(sumParameters);
+  // console.log(sumSkill);
 
   return (
     <div className="flex flex-row justify-between gap-4 overflow-x-scroll lg:grid grid-cols-3 lg:overflow-x-visible px-4 mt-[30px] lg:mt-0">

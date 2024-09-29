@@ -7,8 +7,8 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import { red } from "@mui/material/colors";
 import Swal from "sweetalert2";
 import WeekChapData from "./OffersComponent/WeekChapData";
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import Loading from "../../Shared/Loading/Loading";
 
 const Profile = () => {
@@ -23,12 +23,12 @@ const Profile = () => {
   const [expandedRows, setExpandedRows] = useState({});
   // Toggle the expansion of a row
   const toggleCourseDetails = (courseId) => {
-    console.log(`Toggling course details for: ${courseId}`);
-    setExpandedRows(prevExpandedRows => {
+    // console.log(`Toggling course details for: ${courseId}`);
+    setExpandedRows((prevExpandedRows) => {
       const isRowCurrentlyExpanded = !!prevExpandedRows[courseId];
       return {
         ...prevExpandedRows,
-        [courseId]: !isRowCurrentlyExpanded
+        [courseId]: !isRowCurrentlyExpanded,
       };
     });
   };
@@ -55,17 +55,19 @@ const Profile = () => {
 
   const fetchProfile = async () => {
     axios
-      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/users?email=${email}`)
+      .get(
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users?email=${email}`
+      )
       .then((user) => {
         setProfileInfo(user?.data);
       })
       .catch((error) => console.error(error));
-  }
+  };
 
   useEffect(() => {
     fetchProfile();
   }, [email]);
-  console.log("profile ", profileInfo);
+  // console.log("profile ", profileInfo);
   // console.log(profileInfo.name);
 
   const fetchCourseDetails = async () => {
@@ -99,8 +101,7 @@ const Profile = () => {
   useEffect(() => {
     fetchCourseDetails();
   }, [profileInfo]);
-  console.log("course  ", courseData);
-
+  // console.log("course  ", courseData);
 
   const fetchWeekDetails = async () => {
     const courses = profileInfo?.courses || [];
@@ -171,7 +172,7 @@ const Profile = () => {
   //   fetchChapterDetails();
   // }, [weekData]); // Ensure dependencies are correctly listed if there are more
 
-  console.log("week  ", weekData);
+  // console.log("week  ", weekData);
   // console.log("chapter  ", chapterData);
   // console.log("chapterssss  ", chapters);
 
@@ -195,7 +196,7 @@ const Profile = () => {
           device: userAgent,
         }
       );
-      console.log(userDevice);
+      // console.log(userDevice);
       if (userDevice) {
         // Show a success message to the user
         Swal.fire({
@@ -213,13 +214,13 @@ const Profile = () => {
   };
 
   const handleRefund = async (course) => {
-    console.log("Course", course);
+    // console.log("Course", course);
     if (!course?.receiptId) {
       return Swal.fire({
         icon: "error",
         title: "This Course is not Refundable",
       });
-    };
+    }
 
     Swal.fire({
       title: `Are you sure you want Refund ${course?.paidAmount}₹ ?`,
@@ -228,7 +229,7 @@ const Profile = () => {
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, Refund!"
+      confirmButtonText: "Yes, Refund!",
     }).then(async (result) => {
       if (result.isConfirmed) {
         Loading();
@@ -237,9 +238,8 @@ const Profile = () => {
             `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/refund`,
             // `http://localhost:5000/api/v1/users/refund`,
             {
-              receiptId: course?.receiptId
+              receiptId: course?.receiptId,
             }
-
           );
           navigate(-1);
           Loading().close();
@@ -247,29 +247,27 @@ const Profile = () => {
             Swal.fire({
               title: "Refunded!",
               text: `${response?.data?.message}`,
-              icon: "success"
+              icon: "success",
             });
-          }
-          else {
+          } else {
             Swal.fire({
               title: "Error!",
               text: `${response?.data?.message}`,
-              icon: "error"
+              icon: "error",
             });
           }
         } catch (error) {
           Swal.fire({
             title: "Error!",
             text: `${error?.message}`,
-            icon: "error"
+            icon: "error",
           });
           Loading().close();
         }
         // console.log(response);
-
       }
     });
-  }
+  };
 
   return (
     <div>
@@ -320,7 +318,10 @@ const Profile = () => {
                   />
                 </div>
                 <div className="">
-                  <Link to={`/mentorCalendar/${profileInfo?.email}`} className="text-blue-500 hover:text-blue-700">
+                  <Link
+                    to={`/mentorCalendar/${profileInfo?.email}`}
+                    className="text-blue-500 hover:text-blue-700"
+                  >
                     Go to Mentor Calendar
                   </Link>
                 </div>
@@ -373,16 +374,22 @@ const Profile = () => {
           <table className="min-w-full font-sans bg-white border border-gray-300 table-fixed">
             <thead className="bg-gray-800 text-white sticky top-0">
               <tr className="w-full">
-                <th className="w-1/5 py-3 px-6 border-b text-left">Course Name</th>
+                <th className="w-1/5 py-3 px-6 border-b text-left">
+                  Course Name
+                </th>
                 <th className="w-1/5 py-3 px-6 border-b text-left">
                   Course Category
                 </th>
                 <th className="w-1/5 py-3 px-6 border-b text-left">
                   Organization Name
                 </th>
-                <th className="w-1/5 py-3 px-6 border-b text-left">Start Date</th>
+                <th className="w-1/5 py-3 px-6 border-b text-left">
+                  Start Date
+                </th>
                 <th className="w-1/5 py-3 px-6 border-b text-left">End Date</th>
-                <th className="w-1/5 py-3 px-6 border-b text-left">Batch Name</th>
+                <th className="w-1/5 py-3 px-6 border-b text-left">
+                  Batch Name
+                </th>
                 <th className="w-1/5 py-3 px-6 border-b text-left">Action</th>
               </tr>
             </thead>
@@ -439,10 +446,11 @@ const Profile = () => {
                 );
               })} */}
               {courseData.map((data, index) => {
-
                 // const endDate = new Date(data?.courseEndingDate);
                 const isExpanded = !!expandedRows[data._id];
-                const courseWeekData = weekData.find((weekArray) => weekArray[0]?.courseId === data._id);
+                const courseWeekData = weekData.find(
+                  (weekArray) => weekArray[0]?.courseId === data._id
+                );
                 const { course, batch } = data;
                 const startDate = new Date(course?.enrollDate);
 
@@ -452,26 +460,31 @@ const Profile = () => {
                 const timeDifference = currentDate - startDate;
 
                 // Convert milliseconds to days
-                const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-                const courseDuration = +(data?.expirationDay || "0")
+                const daysDifference = Math.floor(
+                  timeDifference / (1000 * 60 * 60 * 24)
+                );
+                const courseDuration = +(data?.expirationDay || "0");
                 const expired = daysDifference > courseDuration;
 
                 let displayExpiration = "";
                 if (courseDuration !== 0) {
-                  const expirationDate = new Date(startDate.getTime() + courseDuration * 24 * 60 * 60 * 1000);
+                  const expirationDate = new Date(
+                    startDate.getTime() + courseDuration * 24 * 60 * 60 * 1000
+                  );
 
                   // Format the expiration date back to a string if necessary
                   // This example returns the date as YYYY-MM-DD
-                  displayExpiration = expirationDate.toISOString().split('T')[0];
+                  displayExpiration = expirationDate
+                    .toISOString()
+                    .split("T")[0];
                 }
 
-                console.log("My Console ==============>", data, expired);
+                // console.log("My Console ==============>", data, expired);
                 return (
-                  <React.Fragment key={index}> {/* Correct placement of key prop */}
-                    <tr
-                      key={index}
-                      className={"bg-gray-200 w-full"}
-                    >
+                  <React.Fragment key={index}>
+                    {" "}
+                    {/* Correct placement of key prop */}
+                    <tr key={index} className={"bg-gray-200 w-full"}>
                       <td className="py-4 px-6 border-b text-left">
                         {data?.courseFullName || "Not Available"}
                       </td>
@@ -479,7 +492,8 @@ const Profile = () => {
                         {data?.courseCategory || "Not Available"}
                       </td>
                       <td className="py-4 px-6 border-b text-left">
-                        {data?.organization?.organizationName || "Not Available"}
+                        {data?.organization?.organizationName ||
+                          "Not Available"}
                       </td>
                       <td className="py-4 px-6 border-b text-left">
                         {course?.enrollDate?.slice(0, 10) || "Not Available"}
@@ -491,14 +505,33 @@ const Profile = () => {
                         {batch.batchName || "Not Available"}
                       </td>
                       <td className="py-4 px-6 border-b text-left flex flex-col gap-2">
-                        <button onClick={() => handleRefund(course)} disabled={expired} className="bg-blue text-white font-bold px-2 py-1 rounded-full hover:bg-opacity-60 disabled:bg-red-400">{expired ? "Expired" : "Refund"}</button>
+                        <button
+                          onClick={() => handleRefund(course)}
+                          disabled={expired}
+                          className="bg-blue text-white font-bold px-2 py-1 rounded-full hover:bg-opacity-60 disabled:bg-red-400"
+                        >
+                          {expired ? "Expired" : "Refund"}
+                        </button>
                       </td>
                     </tr>
-                    <tr className="bg-sky-600 text-white cursor-pointer" onClick={() => toggleCourseDetails(data._id)}>
-                      <td colSpan="7" className="py-2 px-6 border-b text-center">
+                    <tr
+                      className="bg-sky-600 text-white cursor-pointer"
+                      onClick={() => toggleCourseDetails(data._id)}
+                    >
+                      <td
+                        colSpan="7"
+                        className="py-2 px-6 border-b text-center"
+                      >
                         <div className="flex justify-center items-center gap-2 w-full">
-                          <span>Progress Details: {data?.courseFullName || "Not Available"}</span>
-                          {isExpanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                          <span>
+                            Progress Details:{" "}
+                            {data?.courseFullName || "Not Available"}
+                          </span>
+                          {isExpanded ? (
+                            <KeyboardArrowUpIcon />
+                          ) : (
+                            <KeyboardArrowDownIcon />
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -506,23 +539,36 @@ const Profile = () => {
                       <>
                         <tr className={"bg-gray-100  sticky top-0"}>
                           <th className="py-2 px-5 border-b text-left">Week</th>
-                          <th className="py-2 px-5 border-b text-left">Chapter</th>
+                          <th className="py-2 px-5 border-b text-left">
+                            Chapter
+                          </th>
                           <th className="py-2 px-5 border-b text-left">Task</th>
-                          <th className="py-2 px-5 border-b text-left">Completion Status</th>
-                          <th className="py-2 px-5 border-b text-left">Deadline for completion</th>
-                          <th className="py-2 px-5 border-b text-left" colSpan={2}>WA/Email Nudge</th>
+                          <th className="py-2 px-5 border-b text-left">
+                            Completion Status
+                          </th>
+                          <th className="py-2 px-5 border-b text-left">
+                            Deadline for completion
+                          </th>
+                          <th
+                            className="py-2 px-5 border-b text-left"
+                            colSpan={2}
+                          >
+                            WA/Email Nudge
+                          </th>
                         </tr>
                         {courseWeekData?.map((weekDetail, index) => (
-                          <WeekChapData userId={profileInfo?._id} weekData={weekDetail} serial={index} key={index} />
+                          <WeekChapData
+                            userId={profileInfo?._id}
+                            weekData={weekDetail}
+                            serial={index}
+                            key={index}
+                          />
                         ))}
-
                       </>
                     )}
-
                   </React.Fragment>
                 );
               })}
-
             </tbody>
           </table>
         </div>

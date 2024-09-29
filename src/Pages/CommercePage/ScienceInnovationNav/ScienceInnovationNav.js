@@ -43,8 +43,8 @@ import emailjs from "@emailjs/browser";
 import { toast } from "react-hot-toast";
 import ReactGA from "react-ga4";
 import Swal from "sweetalert2";
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -132,7 +132,7 @@ const ScienceInnovationNav = (props) => {
   const handleLogout = () => {
     logOut()
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         navigate("/");
       })
       .catch((error) => console.error(error));
@@ -185,7 +185,7 @@ const ScienceInnovationNav = (props) => {
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
-    console.log("Clicked");
+    // console.log("Clicked");
     ReactGA.event({
       category: "Click",
       action: "Submit Data From Navbar",
@@ -207,20 +207,17 @@ const ScienceInnovationNav = (props) => {
       Time: new Date(),
     };
 
-    console.log("Gone Here ===============>", data);
+    // console.log("Gone Here ===============>", data);
 
-    fetch(
-      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/interactions`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }
-    )
+    fetch(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/interactions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
       .then(async (res) => {
-        console.log("Submit ===============>", res);
+        // console.log("Submit ===============>", res);
         const sendMail = await axios.post(
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
           {
@@ -237,7 +234,7 @@ const ScienceInnovationNav = (props) => {
             `,
           }
         );
-        console.log("Send Mail ===============>", sendMail);
+        // console.log("Send Mail ===============>", sendMail);
         if (sendMail?.data?.success) {
           Swal.fire({
             icon: "success",
@@ -397,7 +394,7 @@ const ScienceInnovationNav = (props) => {
   };
 
   const graphyLogin = async (email, displayName) => {
-    console.log(email, displayName);
+    // console.log(email, displayName);
     try {
       const payload = {
         name: displayName,
@@ -495,7 +492,7 @@ const ScienceInnovationNav = (props) => {
             graphyLogin(loginData.email, loginData.name);
             // navigate("/dashboard");
           })
-          .catch((error) => { });
+          .catch((error) => {});
       })
       .catch((error) => {
         console.log(error.message);
@@ -506,8 +503,8 @@ const ScienceInnovationNav = (props) => {
   // Login user with Email Password
   const loginUser = (email, password, location, history) => {
     signIn(email, password)
-      .then((userCredential) => { })
-      .catch((error) => { });
+      .then((userCredential) => {})
+      .catch((error) => {});
   };
 
   const handleOnChange = (e) => {
@@ -734,7 +731,7 @@ const ScienceInnovationNav = (props) => {
               </label>
               <div className="w-full flex items-center justify-items-center gap-1 bg-[#fff] h-[38px] rounded-[25px] mb-[19px]">
                 <input
-                   type={showPassword ? "text" : "password"}
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   onChange={handleOnChange}
                   className=" w-full text-[black] text-[17px] text-center leading-[38px] rounded-[25px]  "

@@ -4,6 +4,7 @@ import SearchIcon from "../../../assets/Dashboard/SearchIcon.png";
 import CourseTham from "../../../assets/Dashboard/CourseTham.png";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+//import axios from '../../../axios-setup';
 import { AuthContext } from "../../../contexts/AuthProvider";
 import Locked from "../../../assets/Dashboard/Locked.png";
 import Expired from "../../../assets/Dashboard/Expired.png";
@@ -39,7 +40,7 @@ const CourseAccess = () => {
     setSelectedOption(option);
     setIsOpen(false);
   };
- // console.log(courses);
+  // console.log(courses);
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const stateParam = queryParams.get("state");
@@ -51,7 +52,7 @@ const CourseAccess = () => {
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/userId/${userInfo._id}`
         )
         .then((response) => {
-          setMyCourses(response?.data);
+          setMyCourses(response?.data || []);
           setIsLoading(false);
         })
         .catch((error) => {
@@ -63,8 +64,8 @@ const CourseAccess = () => {
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
         )
         .then((response) => {
-          setCourses(response?.data);
-          setFilterData(response?.data);
+          setCourses(response?.data || []);
+          setFilterData(response?.data || []);
           setIsLoading(false);
         })
         .catch((error) => {
@@ -76,7 +77,7 @@ const CourseAccess = () => {
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/bundles/organizationId/${userInfo.organizationId}`
         )
         .then((response) => {
-          setBundles(response?.data);
+          setBundles(response?.data || []);
           setIsLoading(false);
         })
         .catch((error) => {
@@ -99,7 +100,7 @@ const CourseAccess = () => {
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/CourseCategory/getCourseCategory/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
-        setCourseCategories(response?.data);
+        setCourseCategories(response?.data || []);
         setIsLoading(false);
       })
       .catch((error) => {
@@ -138,7 +139,7 @@ const CourseAccess = () => {
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/userId/${userInfo._id}`
         )
         .then((response) => {
-          setShowCourses(response?.data);
+          setShowCourses(response?.data || []);
           Loading().close();
         })
         .catch((error) => {
@@ -152,8 +153,8 @@ const CourseAccess = () => {
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
         )
         .then((response) => {
-          setShowCourses(response?.data);
-          setFilterData(response?.data);
+          setShowCourses(response?.data || []);
+          setFilterData(response?.data || []);
           Loading().close();
         })
         .catch((error) => {
@@ -167,7 +168,7 @@ const CourseAccess = () => {
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/bundles/organizationId/${userInfo.organizationId}`
         )
         .then((response) => {
-          setShowCourses(response?.data);
+          setShowCourses(response?.data || []);
           Loading().close();
         })
         .catch((error) => {
@@ -209,7 +210,7 @@ const CourseAccess = () => {
     });
   };
 
-  //console.log(bundles);
+  //console.log(showCourses);
 
   return (
     <div>
@@ -404,167 +405,25 @@ const CourseAccess = () => {
                     : "justify-between gap-x-2"
                 }  gap-y-5`}
               >
-                {showCourses?.map((course, index) => {
-                  const date = new Date(course?.courseStartingDate);
-                  const options = {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  };
-                  const enrolledDate = new Date(
-                    userInfo?.courses?.find(
-                      (item) => item?.courseId === course?._id
-                    )?.enrollDate
-                  );
-                  const remainingDay =
-                    parseInt(course?.expirationDay) -
-                    daysDifferenceFromEnrolled(enrolledDate);
-                  return (
-                    <>
-                      {Role === "admin" ? (
-                        <div
-                          key={index}
-                          className="bg-[#F6F7FF] rounded-[20px] p-[20px] max-w-[340px] shadow-[4px_4px_4px_0px_#0000001a]"
-                        >
-                          <Link
-                            to={
-                              Role === "user" && remainingDay < 0
-                                ? {}
-                                : Role === "user" &&
-                                  stateParams === "allCourses" &&
-                                  !userInfo?.courses?.find(
-                                    (item) => item?.courseId === course?._id
-                                  )
-                                ? `/payment/${course?._id}`
-                                : `/questLevels/${course?._id}`
-                            }
-                            target={
-                              Role === "user" &&
-                              stateParams === "allCourses" &&
-                              !userInfo?.courses?.find(
-                                (item) => item?.courseId === course?._id
-                              )
-                                ? "_blank"
-                                : "_self"
-                            }
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              if (Role === "user" && remainingDay < 0) {
-                                handelExpire(course);
-                              }
-                            }}
-                          >
-                            <div className="card-content">
-                              <div className="relative">
-                                <img
-                                  className="w-full rounded-lg"
-                                  src={
-                                    course?.courseThumbnail
-                                      ? course?.courseThumbnail
-                                      : CourseTham
-                                  }
-                                  alt="CourseTham"
-                                />
-                                {Role === "user" &&
-                                  stateParams === "allCourses" &&
-                                  !userInfo?.courses?.find(
-                                    (item) => item?.courseId === course?._id
-                                  ) && (
-                                    <div className="w-full h-full absolute top-0 flex items-center justify-center bg-[#ffffffb6]">
-                                      <img
-                                        className=" w-[50px]"
-                                        src={Locked}
-                                        alt="CourseTham"
-                                      />
-                                    </div>
-                                  )}
-                                {Role === "user" && remainingDay < 0 && (
-                                  <div className="w-full h-full absolute top-0 flex items-center justify-center bg-[#ffffffb6]">
-                                    <img
-                                      className=" "
-                                      src={Expired}
-                                      alt="CourseTham"
-                                    />
-                                  </div>
-                                )}
-                              </div>
-                              <h1 className="text-[#3E4DAC] text-[16px] font-[800] mt-[16px] mb-[12px]">
-                                {course?.courseFullName}
-                              </h1>
-                              <p className="text-[#7A7A7A] text-[12px] font-[500] mb-[16px]">
-                                {course?.courseDescription}
-                              </p>
-                              {/* <div className="flex items-center justify-between">
-                        <p className="bg-[#E1D7FF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
-                          {course?.courseCategory}
-                        </p>
-                        <button className="bg-[#CEDBFF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
-                          {date?.toLocaleDateString("en-US", options)}
-                        </button>
-                      </div> */}
-                            </div>
-                          </Link>
-                          <div className="flex items-center justify-between">
-                            <div>
-                              {course?.courseVisibility === false ? (
-                                <div className="text-red-500 py-1 px-2 border-2 border-red-500 font-bold rounded-full">
-                                  Unpublished
-                                </div>
-                              ) : (
-                                <></>
-                              )}
-                            </div>
-                            <div
-                              className={`${
-                                Role === "admin" ? "block" : "hidden"
-                              } relative`}
-                            >
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  if (clickedCourse === course)
-                                    setClickedCourse(null);
-                                  else setClickedCourse(course);
-                                }}
-                                className="bg-black relative mt-[24px] p-[3px] rounded-full float-right"
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="20"
-                                  height="20"
-                                  viewBox="0 0 20 20"
-                                  fill="none"
-                                >
-                                  <path
-                                    d="M9.9987 8.33301C9.08203 8.33301 8.33203 9.08301 8.33203 9.99967C8.33203 10.9163 9.08203 11.6663 9.9987 11.6663C10.9154 11.6663 11.6654 10.9163 11.6654 9.99967C11.6654 9.08301 10.9154 8.33301 9.9987 8.33301ZM9.9987 3.33301C9.08203 3.33301 8.33203 4.08301 8.33203 4.99967C8.33203 5.91634 9.08203 6.66634 9.9987 6.66634C10.9154 6.66634 11.6654 5.91634 11.6654 4.99967C11.6654 4.08301 10.9154 3.33301 9.9987 3.33301ZM9.9987 13.333C9.08203 13.333 8.33203 14.083 8.33203 14.9997C8.33203 15.9163 9.08203 16.6663 9.9987 16.6663C10.9154 16.6663 11.6654 15.9163 11.6654 14.9997C11.6654 14.083 10.9154 13.333 9.9987 13.333Z"
-                                    fill="white"
-                                  />
-                                </svg>
-                                {clickedCourse === course && (
-                                  <ul className="absolute right-0 bottom-[17px] w-max border bg-[#141414] border-t-0 p-2 rounded-[8px] mt-1 transform translate-y-[-10px] shadow-[0px_2px_4px_0px_#00000026]">
-                                    <li className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600]">
-                                      <Link
-                                        to={`/editCourse/${course?._id}`}
-                                        onClick={() =>
-                                          console.log("Edit Course Details")
-                                        }
-                                      >
-                                        Edit Course Details
-                                      </Link>
-                                    </li>
-                                    <li className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600]">
-                                      <Link to={`/questLevels/${course?._id}`}>
-                                        Edit Course Contents
-                                      </Link>
-                                    </li>
-                                  </ul>
-                                )}
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      ) : (
-                        course?.courseVisibility !== false && (
+                {showCourses?.length > 0 &&
+                  showCourses?.map((course, index) => {
+                    const date = new Date(course?.courseStartingDate);
+                    const options = {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    };
+                    const enrolledDate = new Date(
+                      userInfo?.courses?.find(
+                        (item) => item?.courseId === course?._id
+                      )?.enrollDate
+                    );
+                    const remainingDay =
+                      parseInt(course?.expirationDay) -
+                      daysDifferenceFromEnrolled(enrolledDate);
+                    return (
+                      <>
+                        {Role === "admin" ? (
                           <div
                             key={index}
                             className="bg-[#F6F7FF] rounded-[20px] p-[20px] max-w-[340px] shadow-[4px_4px_4px_0px_#0000001a]"
@@ -578,9 +437,7 @@ const CourseAccess = () => {
                                     !userInfo?.courses?.find(
                                       (item) => item?.courseId === course?._id
                                     )
-                                  ? course?.courseInitialUrl
-                                    ? `${course?.courseInitialUrl}`
-                                    : `/payment/${course?._id}`
+                                  ? `/payment/${course?._id}`
                                   : `/questLevels/${course?._id}`
                               }
                               target={
@@ -640,13 +497,13 @@ const CourseAccess = () => {
                                   {course?.courseDescription}
                                 </p>
                                 {/* <div className="flex items-center justify-between">
-                          <p className="bg-[#E1D7FF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
-                            {course?.courseCategory}
-                          </p>
-                          <button className="bg-[#CEDBFF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
-                            {date?.toLocaleDateString("en-US", options)}
-                          </button>
-                        </div> */}
+                        <p className="bg-[#E1D7FF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
+                          {course?.courseCategory}
+                        </p>
+                        <button className="bg-[#CEDBFF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
+                          {date?.toLocaleDateString("en-US", options)}
+                        </button>
+                      </div> */}
                               </div>
                             </Link>
                             <div className="flex items-center justify-between">
@@ -690,9 +547,9 @@ const CourseAccess = () => {
                                       <li className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600]">
                                         <Link
                                           to={`/editCourse/${course?._id}`}
-                                          onClick={() =>
-                                            console.log("Edit Course Details")
-                                          }
+                                          onClick={() => {
+                                            // console.log("Edit Course Details")
+                                          }}
                                         >
                                           Edit Course Details
                                         </Link>
@@ -710,11 +567,158 @@ const CourseAccess = () => {
                               </div>
                             </div>
                           </div>
-                        )
-                      )}
-                    </>
-                  );
-                })}
+                        ) : (
+                          course?.courseVisibility !== false && (
+                            <div
+                              key={index}
+                              className="bg-[#F6F7FF] rounded-[20px] p-[20px] max-w-[340px] shadow-[4px_4px_4px_0px_#0000001a]"
+                            >
+                              <Link
+                                to={
+                                  Role === "user" && remainingDay < 0
+                                    ? {}
+                                    : Role === "user" &&
+                                      stateParams === "allCourses" &&
+                                      !userInfo?.courses?.find(
+                                        (item) => item?.courseId === course?._id
+                                      )
+                                    ? course?.courseInitialUrl
+                                      ? `${course?.courseInitialUrl}`
+                                      : `/payment/${course?._id}`
+                                    : `/questLevels/${course?._id}`
+                                }
+                                target={
+                                  Role === "user" &&
+                                  stateParams === "allCourses" &&
+                                  !userInfo?.courses?.find(
+                                    (item) => item?.courseId === course?._id
+                                  )
+                                    ? "_blank"
+                                    : "_self"
+                                }
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (Role === "user" && remainingDay < 0) {
+                                    handelExpire(course);
+                                  }
+                                }}
+                              >
+                                <div className="card-content">
+                                  <div className="relative">
+                                    <img
+                                      className="w-full rounded-lg"
+                                      src={
+                                        course?.courseThumbnail
+                                          ? course?.courseThumbnail
+                                          : CourseTham
+                                      }
+                                      alt="CourseTham"
+                                    />
+                                    {Role === "user" &&
+                                      stateParams === "allCourses" &&
+                                      !userInfo?.courses?.find(
+                                        (item) => item?.courseId === course?._id
+                                      ) && (
+                                        <div className="w-full h-full absolute top-0 flex items-center justify-center bg-[#ffffffb6]">
+                                          <img
+                                            className=" w-[50px]"
+                                            src={Locked}
+                                            alt="CourseTham"
+                                          />
+                                        </div>
+                                      )}
+                                    {Role === "user" && remainingDay < 0 && (
+                                      <div className="w-full h-full absolute top-0 flex items-center justify-center bg-[#ffffffb6]">
+                                        <img
+                                          className=" "
+                                          src={Expired}
+                                          alt="CourseTham"
+                                        />
+                                      </div>
+                                    )}
+                                  </div>
+                                  <h1 className="text-[#3E4DAC] text-[16px] font-[800] mt-[16px] mb-[12px]">
+                                    {course?.courseFullName}
+                                  </h1>
+                                  <p className="text-[#7A7A7A] text-[12px] font-[500] mb-[16px]">
+                                    {course?.courseDescription}
+                                  </p>
+                                  {/* <div className="flex items-center justify-between">
+                          <p className="bg-[#E1D7FF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
+                            {course?.courseCategory}
+                          </p>
+                          <button className="bg-[#CEDBFF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
+                            {date?.toLocaleDateString("en-US", options)}
+                          </button>
+                        </div> */}
+                                </div>
+                              </Link>
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  {course?.courseVisibility === false ? (
+                                    <div className="text-red-500 py-1 px-2 border-2 border-red-500 font-bold rounded-full">
+                                      Unpublished
+                                    </div>
+                                  ) : (
+                                    <></>
+                                  )}
+                                </div>
+                                <div
+                                  className={`${
+                                    Role === "admin" ? "block" : "hidden"
+                                  } relative`}
+                                >
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      if (clickedCourse === course)
+                                        setClickedCourse(null);
+                                      else setClickedCourse(course);
+                                    }}
+                                    className="bg-black relative mt-[24px] p-[3px] rounded-full float-right"
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="20"
+                                      height="20"
+                                      viewBox="0 0 20 20"
+                                      fill="none"
+                                    >
+                                      <path
+                                        d="M9.9987 8.33301C9.08203 8.33301 8.33203 9.08301 8.33203 9.99967C8.33203 10.9163 9.08203 11.6663 9.9987 11.6663C10.9154 11.6663 11.6654 10.9163 11.6654 9.99967C11.6654 9.08301 10.9154 8.33301 9.9987 8.33301ZM9.9987 3.33301C9.08203 3.33301 8.33203 4.08301 8.33203 4.99967C8.33203 5.91634 9.08203 6.66634 9.9987 6.66634C10.9154 6.66634 11.6654 5.91634 11.6654 4.99967C11.6654 4.08301 10.9154 3.33301 9.9987 3.33301ZM9.9987 13.333C9.08203 13.333 8.33203 14.083 8.33203 14.9997C8.33203 15.9163 9.08203 16.6663 9.9987 16.6663C10.9154 16.6663 11.6654 15.9163 11.6654 14.9997C11.6654 14.083 10.9154 13.333 9.9987 13.333Z"
+                                        fill="white"
+                                      />
+                                    </svg>
+                                    {clickedCourse === course && (
+                                      <ul className="absolute right-0 bottom-[17px] w-max border bg-[#141414] border-t-0 p-2 rounded-[8px] mt-1 transform translate-y-[-10px] shadow-[0px_2px_4px_0px_#00000026]">
+                                        <li className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600]">
+                                          <Link
+                                            to={`/editCourse/${course?._id}`}
+                                            onClick={() => {
+                                              // console.log("Edit Course Details")
+                                            }}
+                                          >
+                                            Edit Course Details
+                                          </Link>
+                                        </li>
+                                        <li className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600]">
+                                          <Link
+                                            to={`/questLevels/${course?._id}`}
+                                          >
+                                            Edit Course Contents
+                                          </Link>
+                                        </li>
+                                      </ul>
+                                    )}
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          )
+                        )}
+                      </>
+                    );
+                  })}
               </div>
             )}
             {stateParams === "bundles" && (
@@ -725,168 +729,26 @@ const CourseAccess = () => {
                     : "justify-between gap-x-2"
                 }  gap-y-5`}
               >
-                {showCourses?.map((course, index) => {
-                  const date = new Date(course?.bundleStartingDate);
-                  const options = {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  };
-                  const enrolledDate = new Date(
-                    userInfo?.courses?.find(
-                      (item) => item?.courseId === course?._id
-                    )?.enrollDate
-                  );
-                  const remainingDay =
-                    parseInt(course?.expirationDay) -
-                    daysDifferenceFromEnrolled(enrolledDate);
-                  // console.log(remainingDay);
-                  return (
-                    <>
-                      {Role === "admin" ? (
-                        <div
-                          key={index}
-                          className="bg-[#F6F7FF] rounded-[20px] p-[20px] max-w-[340px] shadow-[4px_4px_4px_0px_#0000001a]"
-                        >
-                          <Link
-                            to={
-                              Role === "user" && remainingDay < 0
-                                ? {}
-                                : Role === "user" &&
-                                  stateParams === "allCourses" &&
-                                  !myCourses?.find(
-                                    (item) => item?._id === course?._id
-                                  )
-                                ? `/payment/${course?._id}`
-                                : `/questLevels/${course?._id}`
-                            }
-                            target={
-                              Role === "user" &&
-                              stateParams === "allCourses" &&
-                              !myCourses?.find(
-                                (item) => item?._id === course?._id
-                              )
-                                ? "_blank"
-                                : "_self"
-                            }
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              if (Role === "user" && remainingDay < 0) {
-                                handelExpire(course);
-                              }
-                            }}
-                          >
-                            <div className="card-content">
-                              <div className="relative">
-                                <img
-                                  className="w-full rounded-lg"
-                                  src={
-                                    course?.bundleThumbnail
-                                      ? course?.bundleThumbnail
-                                      : CourseTham
-                                  }
-                                  alt="CourseTham"
-                                />
-                                {Role === "user" &&
-                                  stateParams === "allCourses" &&
-                                  !myCourses?.find(
-                                    (item) => item?._id === course?._id
-                                  ) && (
-                                    <div className="w-full h-full absolute top-0 flex items-center justify-center bg-[#ffffffb6]">
-                                      <img
-                                        className=" w-[50px]"
-                                        src={Locked}
-                                        alt="CourseTham"
-                                      />
-                                    </div>
-                                  )}
-                                {Role === "user" && remainingDay < 0 && (
-                                  <div className="w-full h-full absolute top-0 flex items-center justify-center bg-[#ffffffb6]">
-                                    <img
-                                      className=" "
-                                      src={Expired}
-                                      alt="CourseTham"
-                                    />
-                                  </div>
-                                )}
-                              </div>
-                              <h1 className="text-[#3E4DAC] text-[16px] font-[800] mt-[16px] mb-[12px]">
-                                {course?.bundleFullName}
-                              </h1>
-                              <p className="text-[#7A7A7A] text-[12px] font-[500] mb-[16px]">
-                                {course?.bundleDescription}
-                              </p>
-                              {/* <div className="flex items-center justify-between">
-                        <p className="bg-[#E1D7FF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
-                          {course?.courseCategory}
-                        </p>
-                        <button className="bg-[#CEDBFF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
-                          {date?.toLocaleDateString("en-US", options)}
-                        </button>
-                      </div> */}
-                            </div>
-                          </Link>
-                          <div className="flex items-center justify-between">
-                            <div>
-                              {course?.bundleVisibility === false ? (
-                                <div className="text-red-500 py-1 px-2 border-2 border-red-500 font-bold rounded-full">
-                                  Unpublished
-                                </div>
-                              ) : (
-                                <></>
-                              )}
-                            </div>
-                            <div
-                              className={`${
-                                Role === "admin" ? "block" : "hidden"
-                              } relative`}
-                            >
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  if (clickedCourse === course)
-                                    setClickedCourse(null);
-                                  else setClickedCourse(course);
-                                }}
-                                className="bg-black relative mt-[24px] p-[3px] rounded-full float-right"
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="20"
-                                  height="20"
-                                  viewBox="0 0 20 20"
-                                  fill="none"
-                                >
-                                  <path
-                                    d="M9.9987 8.33301C9.08203 8.33301 8.33203 9.08301 8.33203 9.99967C8.33203 10.9163 9.08203 11.6663 9.9987 11.6663C10.9154 11.6663 11.6654 10.9163 11.6654 9.99967C11.6654 9.08301 10.9154 8.33301 9.9987 8.33301ZM9.9987 3.33301C9.08203 3.33301 8.33203 4.08301 8.33203 4.99967C8.33203 5.91634 9.08203 6.66634 9.9987 6.66634C10.9154 6.66634 11.6654 5.91634 11.6654 4.99967C11.6654 4.08301 10.9154 3.33301 9.9987 3.33301ZM9.9987 13.333C9.08203 13.333 8.33203 14.083 8.33203 14.9997C8.33203 15.9163 9.08203 16.6663 9.9987 16.6663C10.9154 16.6663 11.6654 15.9163 11.6654 14.9997C11.6654 14.083 10.9154 13.333 9.9987 13.333Z"
-                                    fill="white"
-                                  />
-                                </svg>
-                                {clickedCourse === course && (
-                                  <ul className="absolute right-0 bottom-[17px] w-max border bg-[#141414] border-t-0 p-2 rounded-[8px] mt-1 transform translate-y-[-10px] shadow-[0px_2px_4px_0px_#00000026]">
-                                    <li className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600]">
-                                      <Link
-                                        to={`/editBundle/${course?._id}`}
-                                        onClick={() =>
-                                          console.log("Edit Course Details")
-                                        }
-                                      >
-                                        Edit Bundle Details
-                                      </Link>
-                                    </li>
-                                    {/* <li className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600]">
-                                      <Link to={`/questLevels/${course?._id}`}>
-                                        Edit Course Contents
-                                      </Link>
-                                    </li> */}
-                                  </ul>
-                                )}
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      ) : (
-                        course?.bundleVisibility !== false && (
+                {showCourses.length > 0 &&
+                  showCourses?.map((course, index) => {
+                    const date = new Date(course?.bundleStartingDate);
+                    const options = {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    };
+                    const enrolledDate = new Date(
+                      userInfo?.courses?.find(
+                        (item) => item?.courseId === course?._id
+                      )?.enrollDate
+                    );
+                    const remainingDay =
+                      parseInt(course?.expirationDay) -
+                      daysDifferenceFromEnrolled(enrolledDate);
+                    // console.log(remainingDay);
+                    return (
+                      <>
+                        {Role === "admin" ? (
                           <div
                             key={index}
                             className="bg-[#F6F7FF] rounded-[20px] p-[20px] max-w-[340px] shadow-[4px_4px_4px_0px_#0000001a]"
@@ -896,12 +758,12 @@ const CourseAccess = () => {
                                 Role === "user" && remainingDay < 0
                                   ? {}
                                   : Role === "user" &&
-                                    stateParams === "bundles" &&
-                                    !userInfo?.courses?.find(
-                                      (item) => item?.bundleId === course?._id
+                                    stateParams === "allCourses" &&
+                                    !myCourses?.find(
+                                      (item) => item?._id === course?._id
                                     )
-                                  ? `/bundle/payment/${course?._id}`
-                                  : `/courseAccess`
+                                  ? `/payment/${course?._id}`
+                                  : `/questLevels/${course?._id}`
                               }
                               target={
                                 Role === "user" &&
@@ -960,13 +822,13 @@ const CourseAccess = () => {
                                   {course?.bundleDescription}
                                 </p>
                                 {/* <div className="flex items-center justify-between">
-                          <p className="bg-[#E1D7FF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
-                            {course?.courseCategory}
-                          </p>
-                          <button className="bg-[#CEDBFF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
-                            {date?.toLocaleDateString("en-US", options)}
-                          </button>
-                        </div> */}
+                        <p className="bg-[#E1D7FF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
+                          {course?.courseCategory}
+                        </p>
+                        <button className="bg-[#CEDBFF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
+                          {date?.toLocaleDateString("en-US", options)}
+                        </button>
+                      </div> */}
                               </div>
                             </Link>
                             <div className="flex items-center justify-between">
@@ -1010,31 +872,174 @@ const CourseAccess = () => {
                                       <li className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600]">
                                         <Link
                                           to={`/editBundle/${course?._id}`}
-                                          onClick={() =>
-                                            console.log("Edit Course Details")
-                                          }
+                                          onClick={() => {
+                                            // console.log("Edit Course Details")
+                                          }}
                                         >
                                           Edit Bundle Details
                                         </Link>
                                       </li>
                                       {/* <li className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600]">
-                                        <Link
-                                          to={`/questLevels/${course?._id}`}
-                                        >
-                                          Edit Course Contents
-                                        </Link>
-                                      </li> */}
+                                      <Link to={`/questLevels/${course?._id}`}>
+                                        Edit Course Contents
+                                      </Link>
+                                    </li> */}
                                     </ul>
                                   )}
                                 </button>
                               </div>
                             </div>
                           </div>
-                        )
-                      )}
-                    </>
-                  );
-                })}
+                        ) : (
+                          course?.bundleVisibility !== false && (
+                            <div
+                              key={index}
+                              className="bg-[#F6F7FF] rounded-[20px] p-[20px] max-w-[340px] shadow-[4px_4px_4px_0px_#0000001a]"
+                            >
+                              <Link
+                                to={
+                                  Role === "user" && remainingDay < 0
+                                    ? {}
+                                    : Role === "user" &&
+                                      stateParams === "bundles" &&
+                                      !userInfo?.courses?.find(
+                                        (item) => item?.bundleId === course?._id
+                                      )
+                                    ? `/bundle/payment/${course?._id}`
+                                    : `/courseAccess`
+                                }
+                                target={
+                                  Role === "user" &&
+                                  stateParams === "allCourses" &&
+                                  !myCourses?.find(
+                                    (item) => item?._id === course?._id
+                                  )
+                                    ? "_blank"
+                                    : "_self"
+                                }
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (Role === "user" && remainingDay < 0) {
+                                    handelExpire(course);
+                                  }
+                                }}
+                              >
+                                <div className="card-content">
+                                  <div className="relative">
+                                    <img
+                                      className="w-full rounded-lg"
+                                      src={
+                                        course?.bundleThumbnail
+                                          ? course?.bundleThumbnail
+                                          : CourseTham
+                                      }
+                                      alt="CourseTham"
+                                    />
+                                    {Role === "user" &&
+                                      stateParams === "allCourses" &&
+                                      !myCourses?.find(
+                                        (item) => item?._id === course?._id
+                                      ) && (
+                                        <div className="w-full h-full absolute top-0 flex items-center justify-center bg-[#ffffffb6]">
+                                          <img
+                                            className=" w-[50px]"
+                                            src={Locked}
+                                            alt="CourseTham"
+                                          />
+                                        </div>
+                                      )}
+                                    {Role === "user" && remainingDay < 0 && (
+                                      <div className="w-full h-full absolute top-0 flex items-center justify-center bg-[#ffffffb6]">
+                                        <img
+                                          className=" "
+                                          src={Expired}
+                                          alt="CourseTham"
+                                        />
+                                      </div>
+                                    )}
+                                  </div>
+                                  <h1 className="text-[#3E4DAC] text-[16px] font-[800] mt-[16px] mb-[12px]">
+                                    {course?.bundleFullName}
+                                  </h1>
+                                  <p className="text-[#7A7A7A] text-[12px] font-[500] mb-[16px]">
+                                    {course?.bundleDescription}
+                                  </p>
+                                  {/* <div className="flex items-center justify-between">
+                          <p className="bg-[#E1D7FF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
+                            {course?.courseCategory}
+                          </p>
+                          <button className="bg-[#CEDBFF] px-[16px] py-[8px] rounded-[16px] text-[12px] font-[600] ">
+                            {date?.toLocaleDateString("en-US", options)}
+                          </button>
+                        </div> */}
+                                </div>
+                              </Link>
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  {course?.bundleVisibility === false ? (
+                                    <div className="text-red-500 py-1 px-2 border-2 border-red-500 font-bold rounded-full">
+                                      Unpublished
+                                    </div>
+                                  ) : (
+                                    <></>
+                                  )}
+                                </div>
+                                <div
+                                  className={`${
+                                    Role === "admin" ? "block" : "hidden"
+                                  } relative`}
+                                >
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      if (clickedCourse === course)
+                                        setClickedCourse(null);
+                                      else setClickedCourse(course);
+                                    }}
+                                    className="bg-black relative mt-[24px] p-[3px] rounded-full float-right"
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="20"
+                                      height="20"
+                                      viewBox="0 0 20 20"
+                                      fill="none"
+                                    >
+                                      <path
+                                        d="M9.9987 8.33301C9.08203 8.33301 8.33203 9.08301 8.33203 9.99967C8.33203 10.9163 9.08203 11.6663 9.9987 11.6663C10.9154 11.6663 11.6654 10.9163 11.6654 9.99967C11.6654 9.08301 10.9154 8.33301 9.9987 8.33301ZM9.9987 3.33301C9.08203 3.33301 8.33203 4.08301 8.33203 4.99967C8.33203 5.91634 9.08203 6.66634 9.9987 6.66634C10.9154 6.66634 11.6654 5.91634 11.6654 4.99967C11.6654 4.08301 10.9154 3.33301 9.9987 3.33301ZM9.9987 13.333C9.08203 13.333 8.33203 14.083 8.33203 14.9997C8.33203 15.9163 9.08203 16.6663 9.9987 16.6663C10.9154 16.6663 11.6654 15.9163 11.6654 14.9997C11.6654 14.083 10.9154 13.333 9.9987 13.333Z"
+                                        fill="white"
+                                      />
+                                    </svg>
+                                    {clickedCourse === course && (
+                                      <ul className="absolute right-0 bottom-[17px] w-max border bg-[#141414] border-t-0 p-2 rounded-[8px] mt-1 transform translate-y-[-10px] shadow-[0px_2px_4px_0px_#00000026]">
+                                        <li className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600]">
+                                          <Link
+                                            to={`/editBundle/${course?._id}`}
+                                            onClick={() => {
+                                              // console.log("Edit Course Details")
+                                            }}
+                                          >
+                                            Edit Bundle Details
+                                          </Link>
+                                        </li>
+                                        {/* <li className="cursor-pointer p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[13px] font-[600]">
+                                        <Link
+                                          to={`/questLevels/${course?._id}`}
+                                        >
+                                          Edit Course Contents
+                                        </Link>
+                                      </li> */}
+                                      </ul>
+                                    )}
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          )
+                        )}
+                      </>
+                    );
+                  })}
               </div>
             )}
           </div>

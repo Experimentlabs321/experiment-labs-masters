@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import uploadFileToS3 from "../../UploadComponent/s3Uploader";
 import Loading from "../../Shared/Loading/Loading";
 
-const AdminAnnouncementForm = ({ setShowAnnouncementForm,itemDetails }) => {
+const AdminAnnouncementForm = ({ setShowAnnouncementForm, itemDetails }) => {
   const { user, userInfo } = useContext(AuthContext);
   const [announcement, setAnnouncement] = useState({
     title: "",
@@ -47,7 +47,7 @@ const AdminAnnouncementForm = ({ setShowAnnouncementForm,itemDetails }) => {
         imageUrl,
       }
     );
-    console.log(newAnnouncement);
+    // console.log(newAnnouncement);
     if (newAnnouncement?.data?.acknowledged) {
       toast.success("Announcement Published Successfully");
     }
@@ -57,15 +57,18 @@ const AdminAnnouncementForm = ({ setShowAnnouncementForm,itemDetails }) => {
 
   return (
     <div className="admin-announcement-form bg-gray-100 py-8 px-4 rounded-lg shadow-md my-4">
-      <h2 className="text-xl font-bold mb-4">{itemDetails?.publishAnnouncement ? itemDetails?.publishAnnouncement : "Publish Announcement"} </h2>
+      <h2 className="text-xl font-bold mb-4">
+        {itemDetails?.publishAnnouncement
+          ? itemDetails?.publishAnnouncement
+          : "Publish Announcement"}{" "}
+      </h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label
             htmlFor="title"
             className="block text-gray-700 font-semibold mb-1"
           >
-            {itemDetails?.title ? itemDetails?.title : "Title"}
-            :
+            {itemDetails?.title ? itemDetails?.title : "Title"}:
           </label>
           <input
             type="text"
@@ -82,7 +85,9 @@ const AdminAnnouncementForm = ({ setShowAnnouncementForm,itemDetails }) => {
             htmlFor="description"
             className="block text-gray-700 font-semibold mb-1"
           >
-            {itemDetails?.description ? itemDetails?.description : "Description"}
+            {itemDetails?.description
+              ? itemDetails?.description
+              : "Description"}
             :
           </label>
           {/* Text editor */}
@@ -107,8 +112,7 @@ const AdminAnnouncementForm = ({ setShowAnnouncementForm,itemDetails }) => {
             htmlFor="urgency"
             className="block text-gray-700 font-semibold mb-1"
           >
-           {itemDetails?.urgency ? itemDetails?.urgency : "Urgency"}
-            :
+            {itemDetails?.urgency ? itemDetails?.urgency : "Urgency"}:
           </label>
           <select
             id="urgency"
@@ -117,10 +121,20 @@ const AdminAnnouncementForm = ({ setShowAnnouncementForm,itemDetails }) => {
             onChange={handleChange}
             className="w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus:border-blue-500"
           >
-            <option value="">{itemDetails?.selectUrgency ? itemDetails?.selectUrgency : "Select urgency"} </option>
-            <option value="high">{itemDetails?.high ? itemDetails?.high : "High"} </option>
-            <option value="medium">{itemDetails?.medium ? itemDetails?.medium : "Medium"} </option>
-            <option value="low">{itemDetails?.low ? itemDetails?.low : "Low"} </option>
+            <option value="">
+              {itemDetails?.selectUrgency
+                ? itemDetails?.selectUrgency
+                : "Select urgency"}{" "}
+            </option>
+            <option value="high">
+              {itemDetails?.high ? itemDetails?.high : "High"}{" "}
+            </option>
+            <option value="medium">
+              {itemDetails?.medium ? itemDetails?.medium : "Medium"}{" "}
+            </option>
+            <option value="low">
+              {itemDetails?.low ? itemDetails?.low : "Low"}{" "}
+            </option>
           </select>
         </div>
 
@@ -129,7 +143,9 @@ const AdminAnnouncementForm = ({ setShowAnnouncementForm,itemDetails }) => {
             htmlFor="imageUrl"
             className="block text-gray-700 font-semibold mb-1"
           >
-            {itemDetails?.announcementImage ? itemDetails?.announcementImage : "Announcement Image"}
+            {itemDetails?.announcementImage
+              ? itemDetails?.announcementImage
+              : "Announcement Image"}
             :
           </label>
           <input
@@ -150,7 +166,6 @@ const AdminAnnouncementForm = ({ setShowAnnouncementForm,itemDetails }) => {
           className="bg-sky-500 text-white px-4 py-2 rounded hover:bg-sky-600 transition duration-300"
         >
           {itemDetails?.publish ? itemDetails?.publish : "Publish"}
-          
         </button>
       </form>
     </div>

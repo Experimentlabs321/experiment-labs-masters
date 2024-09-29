@@ -1,16 +1,12 @@
-import React, {
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React, { useContext, useEffect, useState } from "react";
 
-import axios from 'axios';
+import axios from "axios";
 
-import { AuthContext } from '../../../contexts/AuthProvider';
-import Layout from '../Layout';
-import RedeemGifts from './RedeemGifts';
-import RedemptionCongratulation from './RedemptionCongratulation';
-import RedemptionProduct from './RedemptionProduct';
+import { AuthContext } from "../../../contexts/AuthProvider";
+import Layout from "../Layout";
+import RedeemGifts from "./RedeemGifts";
+import RedemptionCongratulation from "./RedemptionCongratulation";
+import RedemptionProduct from "./RedemptionProduct";
 
 const cheaps = [
   "Skill support",
@@ -85,28 +81,27 @@ const Redemption = () => {
   const { userInfo } = useContext(AuthContext);
   const [redemptionCollection, setRedemptionCollection] = useState();
 
-  console.log(userInfo.organizationId)
+  // console.log(userInfo.organizationId)
 
   useEffect(() => {
     axios
-        .get(
-           // `${process.env.REACT_APP_BACKEND_API}/redemptionCollections/${userInfo?.organizationId}`
-            `${process.env.REACT_APP_SERVERLESS_API}/api/v1/redemptionCategories/organizationId/${userInfo?.organizationId}`
-        )
-        .then((response) => {
-          setRedemptionCollection(response?.data);
-
-        })
-        .catch((error) => console.error(error));
-}, [userInfo?.organizationId]);
-console.log(redemptionCollection)
+      .get(
+        // `${process.env.REACT_APP_BACKEND_API}/redemptionCollections/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/redemptionCategories/organizationId/${userInfo?.organizationId}`
+      )
+      .then((response) => {
+        setRedemptionCollection(response?.data);
+      })
+      .catch((error) => console.error(error));
+  }, [userInfo?.organizationId]);
+  // console.log(redemptionCollection)
 
   const [state, setState] = useState("Redeem gifts");
   const [redemptionProduct, setRedemptionProduct] = useState();
   return (
     <div>
       <Layout>
-       {/*  {state === "Points statistics" && (
+        {/*  {state === "Points statistics" && (
           <PointsStatistics state={state} setState={setState} />
         )} */}
         {state === "Redeem gifts" && (

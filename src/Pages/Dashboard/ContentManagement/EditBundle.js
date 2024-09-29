@@ -32,7 +32,9 @@ const EditBundle = () => {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/bundles/bundleId/${id}`)
+      .get(
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/bundles/bundleId/${id}`
+      )
       .then((response) => {
         setBundleData(response?.data);
         setSelectedCoursesAndBatches(response?.data?.courses);
@@ -61,7 +63,7 @@ const EditBundle = () => {
           const { data } = await axios.get(
             `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/courseId/${element._id}`
           );
-          console.log("element: ", data);
+          // console.log("element: ", data);
           previousSelectedCourse[index].batches = data;
           setSelectedCourses([...previousSelectedCourse]);
         });
@@ -93,7 +95,7 @@ const EditBundle = () => {
       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/courseId/${selectedCourse._id}`
     );
     selectedCourse.batches = data;
-    console.log("Selected Course", selectedCourse);
+    // console.log("Selected Course", selectedCourse);
 
     if (!selectedCourses?.includes(selectedCourse)) {
       setSelectedCourses([...selectedCourses, selectedCourse]);
@@ -108,7 +110,7 @@ const EditBundle = () => {
   };
 
   const handleBatches = (course, batch) => {
-    console.log(course, batch);
+    // console.log(course, batch);
     if (
       !selectedCoursesAndBatches?.find((item) => item?.courseId === course?._id)
     ) {
@@ -119,7 +121,7 @@ const EditBundle = () => {
           { courseId: course?._id, batchId: batch?._id },
         ]);
       } else {
-        console.log(selectedBatches, batch._id);
+        // console.log(selectedBatches, batch._id);
         const newSelectedBatches = selectedBatches.filter(
           (removeBatch) => removeBatch !== batch._id
         );
@@ -133,7 +135,7 @@ const EditBundle = () => {
       const findPreviousBatchId = selectedCoursesAndBatches.find(
         (removeBatch) => removeBatch?.courseId === course._id
       )?.batchId;
-      console.log(findPreviousBatchId);
+      // console.log(findPreviousBatchId);
       const newSelectedBatches = selectedBatches.filter(
         (removeBatch) => removeBatch !== findPreviousBatchId
       );
@@ -194,7 +196,7 @@ const EditBundle = () => {
         addBundle
       );
 
-      console.log(updateBundle);
+      // console.log(updateBundle);
 
       if (updateBundle?.data?.acknowledged) {
         toast.success("Bundle Updated Successfully");
@@ -202,11 +204,11 @@ const EditBundle = () => {
         form.reset();
       }
 
-      console.log("Add Course----->", addBundle);
+      // console.log("Add Course----->", addBundle);
     }
   };
 
-  console.log(selectedCourses);
+  // console.log(selectedCourses);
 
   return (
     <div>

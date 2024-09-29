@@ -284,7 +284,7 @@ const EditAssignment = () => {
     Loading().close();
   };
 
-  console.log(assignmentData?.chapterId);
+  // console.log(assignmentData?.chapterId);
 
   return (
     <div>

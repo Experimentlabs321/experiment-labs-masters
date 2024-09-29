@@ -105,37 +105,19 @@ const DownloadCertificate = () => {
 
   useEffect(() => {
     Loading();
-    axios
-      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters`)
-      .then((response) => {
-        const currentCourseChapter = response?.data?.filter(
-          (item) => item?.courseId === courseId
-        );
-        if (currentCourseChapter) {
-          let totalCompleted = 0;
-          let totalTask = 0;
-          currentCourseChapter?.forEach((item) => {
-            item?.tasks?.forEach((singleTask) => {
-              totalTask++;
-              if (singleTask?.participants) {
-                if (
-                  singleTask?.participants?.find(
-                    (item) => item?.participantId === userInfo?._id
-                  )
-                ) {
-                  totalCompleted++;
-                }
-              }
-            });
-          });
-          if (totalCompleted !== 0 && totalTask !== 0)
-            setCompletionPercentage(
-              parseInt((totalCompleted / totalTask) * 100)
-            );
-        }
-        Loading().close();
-      })
-      .catch((error) => console.error(error));
+    const batchId = userInfo?.courses?.find(
+      (item) => item?.courseId === courseId
+    )?.batchId;
+    if (courseId && userInfo?._id)
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/courseId/${courseId}/batchId/${batchId}/userId/${userInfo?._id}`
+        )
+        .then((response) => {
+          setCompletionPercentage(response?.data?.completionPercentage);
+          Loading().close();
+        })
+        .catch((error) => console.error(error));
   }, [userInfo, courseId]);
 
   const CertificateContent = React.forwardRef((props, ref) => {
@@ -434,7 +416,7 @@ const DownloadCertificate = () => {
         const parentWidth = sectionRef.current?.clientWidth;
         const parentHeight = sectionRef.current?.clientHeight;
 
-        console.log(parentWidth, parentHeight);
+        // console.log(parentWidth, parentHeight);
 
         const widthRatio = parentWidth / width;
         const heightRatio = height / parentHeight;
@@ -446,7 +428,7 @@ const DownloadCertificate = () => {
 
         if (initialZoom > 0.5) setZoom(0.5);
         else setZoom(initialZoom);
-        console.log(initialZoom);
+        // console.log(initialZoom);
       };
     };
 

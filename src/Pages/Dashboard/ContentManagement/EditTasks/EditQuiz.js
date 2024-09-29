@@ -106,7 +106,7 @@ const EditQuiz = () => {
     }
   };
 
-  console.log(quizData);
+  // console.log(quizData);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -128,15 +128,15 @@ const EditQuiz = () => {
     updatedQuizObject.quizDescription = quizDescription;
 
     await setQuizData(updatedQuizObject);
-    console.log(updatedQuizObject);
+    // console.log(updatedQuizObject);
 
     if (submitPermission) {
       await delete updatedQuizObject?._id;
       const newQuiz = await axios.put(
-        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/quizes/taskId/${quizData?._id}`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/quizes/taskId/${id}`,
         updatedQuizObject
       );
-      console.log(newQuiz);
+      // console.log(newQuiz);
       if (newQuiz?.data?.updateResult?.acknowledged) {
         Loading().close();
         toast.success("Quiz Updated Successfully");
@@ -146,7 +146,7 @@ const EditQuiz = () => {
     Loading().close();
   };
 
-  console.log(quizDescription);
+  // console.log(quizDescription);
 
   return (
     <div>

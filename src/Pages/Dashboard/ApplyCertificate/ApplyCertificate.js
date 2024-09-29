@@ -15,7 +15,7 @@ const ApplyCertificate = () => {
   const options = ["Category name"];
   const Role = localStorage.getItem("role");
   const { userInfo } = useContext(AuthContext);
-  console.log(userInfo);
+  // console.log(userInfo);
 
   const toggleOptions = () => {
     setIsOpen(!isOpen);

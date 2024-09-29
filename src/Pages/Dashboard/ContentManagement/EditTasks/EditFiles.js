@@ -1,28 +1,20 @@
-import {
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import { useContext, useEffect, useState } from "react";
 
-import axios from 'axios';
-import { toast } from 'react-hot-toast';
-import {
-  Link,
-  useNavigate,
-  useParams,
-} from 'react-router-dom';
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
-import required from '../../../../assets/ContentManagement/required.png';
-import { AuthContext } from '../../../../contexts/AuthProvider';
-import Loading from '../../../Shared/Loading/Loading';
-import TextEditor from '../../../Shared/TextEditor/TextEditor';
-import uploadFileToS3 from '../../../UploadComponent/s3Uploader';
-import Layout from '../../Layout';
-import FilesTask from '../../Week/FilesTask';
-import ItemEarningParameter from '../Components/Shared/ItemEarningParameter';
-import SkillBasedParameter from '../Components/Shared/SkillBasedParameter';
+import required from "../../../../assets/ContentManagement/required.png";
+import { AuthContext } from "../../../../contexts/AuthProvider";
+import Loading from "../../../Shared/Loading/Loading";
+import TextEditor from "../../../Shared/TextEditor/TextEditor";
+import uploadFileToS3 from "../../../UploadComponent/s3Uploader";
+import Layout from "../../Layout";
+import FilesTask from "../../Week/FilesTask";
+import ItemEarningParameter from "../Components/Shared/ItemEarningParameter";
+import SkillBasedParameter from "../Components/Shared/SkillBasedParameter";
 
 const EditFiles = () => {
   // upload file
@@ -121,7 +113,9 @@ const EditFiles = () => {
     if (fileData?.chapterId)
       axios
         //.get(`${process.env.REACT_APP_BACKEND_API}/chapter/${fileData?.chapterId}`)
-        .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${fileData?.chapterId}`)
+        .get(
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${fileData?.chapterId}`
+        )
         .then((res) => setChapter(res?.data))
         .catch((error) => console.error(error));
   }, [fileData]);
@@ -227,7 +221,7 @@ const EditFiles = () => {
 
     if (submitPermission) {
       const newTask = await axios.put(
-        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/files/taskId/${fileData?._id}`,
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/files/taskId/${id}`,
         ManageFile
       );
 
@@ -236,7 +230,7 @@ const EditFiles = () => {
         // event.target.reset();
       }
 
-      console.log(ManageFile);
+      // console.log(ManageFile);
     }
     Loading().close();
     navigate(-1);
@@ -530,7 +524,7 @@ const EditFiles = () => {
                       type="radio"
                       id="radioNo"
                       name="radioOption"
-                      checked={taskDrip === false}
+                      checked={taskDrip !== true}
                       onChange={() => setTaskDrip(false)}
                       disabled={course?.enableDrip}
                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"

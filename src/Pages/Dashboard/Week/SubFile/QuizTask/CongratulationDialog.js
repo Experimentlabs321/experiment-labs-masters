@@ -93,7 +93,7 @@ const CongratulationDialog = ({
                 const findGivenAns = participationData?.questions?.find(
                   (item) => item?.questionId === questions[currentQuestion]?._id
                 );
-                console.log(findGivenAns);
+                // console.log(findGivenAns);
                 if (questions[currentQuestion]?.oneOrMultipleOption === "one") {
                   if (findGivenAns)
                     setSelectedOption(findGivenAns?.givenAnswer?.answerFormula);

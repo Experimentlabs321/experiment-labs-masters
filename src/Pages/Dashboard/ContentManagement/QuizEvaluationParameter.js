@@ -106,7 +106,7 @@ const QuizEvaluationParameter = () => {
   const handleArrowClick = (category) => {
     setSelectedSection(category);
   };
-  console.log(selectedSection);
+  // console.log(selectedSection);
 
   //
   const [SoftSkills, setSoftSkill] = useState(true);
@@ -229,7 +229,7 @@ const QuizEvaluationParameter = () => {
       skillCategory,
     };
 
-    console.log(manageclass);
+    // console.log(manageclass);
   };
 
   const { id } = useParams();

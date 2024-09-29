@@ -288,7 +288,7 @@ const DynamicForm = ({ formFields, setFormFields }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setFormData(formFields);
-    console.log(formData);
+    // console.log(formData);
     // Here you can send formData to your backend or do further processing
   };
 

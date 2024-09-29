@@ -8,7 +8,11 @@ import Locked from "../../../assets/Dashboard/Locked.png";
 import Expired from "../../../assets/Dashboard/Expired.png";
 import Swal from "sweetalert2";
 
-const DashboardCourses = ({ myCoursesChecked, allCoursesChecked, courseAccessUrl }) => {
+const DashboardCourses = ({
+  myCoursesChecked,
+  allCoursesChecked,
+  courseAccessUrl,
+}) => {
   const [courses, setCourses] = useState([]);
   const [myCourses, setMyCourses] = useState([]);
   const Role = localStorage.getItem("role");
@@ -50,7 +54,7 @@ const DashboardCourses = ({ myCoursesChecked, allCoursesChecked, courseAccessUrl
 
     // Convert milliseconds to days
     const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-    console.log(enrolledDate);
+    // console.log(enrolledDate);
 
     return daysDifference;
   };
@@ -73,7 +77,7 @@ const DashboardCourses = ({ myCoursesChecked, allCoursesChecked, courseAccessUrl
 
   return (
     <div className="px-8">
-      {(myCoursesChecked && myCourses.length > 0) ? (
+      {myCoursesChecked && myCourses.length > 0 ? (
         <>
           <div className="flex items-center justify-between pt-20 lg:pt-[40px]  ">
             <h1 className="text-[28px] font-[700] ">My courses</h1>
@@ -124,10 +128,11 @@ const DashboardCourses = ({ myCoursesChecked, allCoursesChecked, courseAccessUrl
           </div>
           <div className="my-[60px] ">
             <div
-              className={`flex flex-col lg:flex-row ${myCourses.length <= 2
-                ? "justify-start gap-x-14"
-                : "justify-between gap-x-2"
-                }  gap-y-5`}
+              className={`flex flex-col lg:flex-row ${
+                myCourses.length <= 2
+                  ? "justify-start gap-x-14"
+                  : "justify-between gap-x-2"
+              }  gap-y-5`}
             >
               {myCourses.slice(0, 3)?.map((course, index) => {
                 const date = new Date(course?.courseStartingDate);
@@ -144,7 +149,7 @@ const DashboardCourses = ({ myCoursesChecked, allCoursesChecked, courseAccessUrl
                 const remainingDay =
                   parseInt(course?.expirationDay) -
                   daysDifferenceFromEnrolled(enrolledDate);
-                console.log(remainingDay);
+                // console.log(remainingDay);
                 return (
                   <div
                     key={index}
@@ -155,10 +160,10 @@ const DashboardCourses = ({ myCoursesChecked, allCoursesChecked, courseAccessUrl
                         Role === "user" && remainingDay < 0
                           ? {}
                           : !myCourses?.find(
-                            (item) => item?._id === course?._id
-                          )
-                            ? `/payment/${course?._id}`
-                            : `/questLevels/${course?._id}`
+                              (item) => item?._id === course?._id
+                            )
+                          ? `/payment/${course?._id}`
+                          : `/questLevels/${course?._id}`
                       }
                       target={
                         !myCourses?.find((item) => item?._id === course?._id)
@@ -186,14 +191,14 @@ const DashboardCourses = ({ myCoursesChecked, allCoursesChecked, courseAccessUrl
                           {!myCourses?.find(
                             (item) => item?._id === course?._id
                           ) && (
-                              <div className="w-full h-full absolute top-0 flex items-center justify-center bg-[#ffffffb6]">
-                                <img
-                                  className=" w-[50px]"
-                                  src={Locked}
-                                  alt="CourseTham"
-                                />
-                              </div>
-                            )}
+                            <div className="w-full h-full absolute top-0 flex items-center justify-center bg-[#ffffffb6]">
+                              <img
+                                className=" w-[50px]"
+                                src={Locked}
+                                alt="CourseTham"
+                              />
+                            </div>
+                          )}
                           {Role === "user" && remainingDay < 0 && (
                             <div className="w-full h-full absolute top-0 flex items-center justify-center bg-[#ffffffb6]">
                               <img
@@ -226,25 +231,33 @@ const DashboardCourses = ({ myCoursesChecked, allCoursesChecked, courseAccessUrl
             </div>
           </div>
         </>
-      ) :
-        (
-          <div className="pt-20 lg:pt-[40px]">
-            <h1 className="text-[28px] font-[700] ">My courses</h1>
-            <div className="flex flex-col items-center justify-center p-6">
-
-              <p className="text-gray-600 mb-4">You don't have any Active Courses</p>
-              {!courseAccessUrl ?
-                <Link to={"/courseAccess?state=allCourses"} className="bg-blue text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition duration-300">
-                  Explore Courses
-                </Link> :
-                <a href={courseAccessUrl} target="_blank" rel="noreferrer" className="bg-blue text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition duration-300">
-                  Explore Courses
-                </a>
-              }
-            </div>
+      ) : (
+        <div className="pt-20 lg:pt-[40px]">
+          <h1 className="text-[28px] font-[700] ">My courses</h1>
+          <div className="flex flex-col items-center justify-center p-6">
+            <p className="text-gray-600 mb-4">
+              You don't have any Active Courses
+            </p>
+            {!courseAccessUrl ? (
+              <Link
+                to={"/courseAccess?state=allCourses"}
+                className="bg-blue text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition duration-300"
+              >
+                Explore Courses
+              </Link>
+            ) : (
+              <a
+                href={courseAccessUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="bg-blue text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition duration-300"
+              >
+                Explore Courses
+              </a>
+            )}
           </div>
-        )
-      }
+        </div>
+      )}
       {allCoursesChecked && (
         <>
           <div className="flex items-center justify-between pt-20 lg:pt-[40px]  ">
@@ -258,10 +271,11 @@ const DashboardCourses = ({ myCoursesChecked, allCoursesChecked, courseAccessUrl
           </div>
           <div className="my-[60px] ">
             <div
-              className={`flex flex-wrap ${courses.length <= 2
-                ? "justify-start gap-x-14"
-                : "justify-between gap-x-2"
-                }  gap-y-5`}
+              className={`flex flex-wrap ${
+                courses.length <= 2
+                  ? "justify-start gap-x-14"
+                  : "justify-between gap-x-2"
+              }  gap-y-5`}
             >
               {courses?.slice(0, 3)?.map((course, index) => {
                 const date = new Date(course?.courseStartingDate);
@@ -278,7 +292,7 @@ const DashboardCourses = ({ myCoursesChecked, allCoursesChecked, courseAccessUrl
                 const remainingDay =
                   parseInt(course?.expirationDay) -
                   daysDifferenceFromEnrolled(enrolledDate);
-                console.log(remainingDay);
+                // console.log(remainingDay);
                 return (
                   <div
                     key={index}
@@ -289,10 +303,10 @@ const DashboardCourses = ({ myCoursesChecked, allCoursesChecked, courseAccessUrl
                         Role === "user" && remainingDay < 0
                           ? {}
                           : !myCourses?.find(
-                            (item) => item?._id === course?._id
-                          )
-                            ? `/payment/${course?._id}`
-                            : `/questLevels/${course?._id}`
+                              (item) => item?._id === course?._id
+                            )
+                          ? `/payment/${course?._id}`
+                          : `/questLevels/${course?._id}`
                       }
                       target={
                         !myCourses?.find((item) => item?._id === course?._id)
@@ -320,14 +334,14 @@ const DashboardCourses = ({ myCoursesChecked, allCoursesChecked, courseAccessUrl
                           {!myCourses?.find(
                             (item) => item?._id === course?._id
                           ) && (
-                              <div className="w-full h-full absolute top-0 flex items-center justify-center bg-[#ffffffb6]">
-                                <img
-                                  className=" w-[50px]"
-                                  src={Locked}
-                                  alt="CourseTham"
-                                />
-                              </div>
-                            )}
+                            <div className="w-full h-full absolute top-0 flex items-center justify-center bg-[#ffffffb6]">
+                              <img
+                                className=" w-[50px]"
+                                src={Locked}
+                                alt="CourseTham"
+                              />
+                            </div>
+                          )}
                           {Role === "user" && remainingDay < 0 && (
                             <div className="w-full h-full absolute top-0 flex items-center justify-center bg-[#ffffffb6]">
                               <img

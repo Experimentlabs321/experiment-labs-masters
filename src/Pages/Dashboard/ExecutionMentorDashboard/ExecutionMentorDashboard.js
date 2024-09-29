@@ -73,7 +73,7 @@ const ExecutionMentorDashboard = () => {
 
   const { userInfo, user } = useContext(AuthContext);
 
-  console.log(user);
+  // console.log(user);
   return (
     <div>
       <Layout>
@@ -109,15 +109,14 @@ const ExecutionMentorDashboard = () => {
                   </Link>
                 </p>
               </div>
-           
-                <div className="w-full">
-                  <img
-                    className="w-[100%]"
-                    src={HumaaansSpace}
-                    alt="HumaaansSpace"
-                  />
-                </div>
-             
+
+              <div className="w-full">
+                <img
+                  className="w-[100%]"
+                  src={HumaaansSpace}
+                  alt="HumaaansSpace"
+                />
+              </div>
             </div>
 
             <div className="mt-10 flex gap-10">
@@ -155,7 +154,7 @@ const ExecutionMentorDashboard = () => {
                 </div>
               </div>
 
-             {/*  <div className="w-[50%]">
+              {/*  <div className="w-[50%]">
                 <div className="flex justify-between items-center">
                   <p className="text-[15px] font-bold">Progress</p>
                   <p className="flex items-center gap-2 text-[13px] font-bold text-[#8A8A8A]">
@@ -233,7 +232,7 @@ const ExecutionMentorDashboard = () => {
               </div> */}
             </div>
 
-          {/*   <div className="flex justify-between items-center my-10">
+            {/*   <div className="flex justify-between items-center my-10">
               <p className="text-[15px] font-bold">
                 Performance of the Students
               </p>
@@ -248,7 +247,7 @@ const ExecutionMentorDashboard = () => {
               </Link>
             </div> */}
 
-          {/*   <div className="w-[100%] h-[30px] text-[#fff] flex ">
+            {/*   <div className="w-[100%] h-[30px] text-[#fff] flex ">
               <div className="w-[70%] bg-[#081765] flex items-center justify-center rounded-s-xl">
                 70%
               </div>
@@ -298,7 +297,7 @@ const ExecutionMentorDashboard = () => {
                 </p>
               </div>
             </div> */}
-          {/*   <div className="flex justify-between items-center my-10">
+            {/*   <div className="flex justify-between items-center my-10">
               <p className="text-[15px] font-bold">
                 Students who need more guidance and attention
               </p>
@@ -313,7 +312,7 @@ const ExecutionMentorDashboard = () => {
               </Link>
             </div> */}
 
-           {/*  <div className="flex gap-5 w-full">
+            {/*  <div className="flex gap-5 w-full">
               <div className="w-[100%] flex justify-between py-5 mt-5 rounded-[20px] text-[#fff] bg-[#E90000]">
                 <div className="flex gap-3 ">
                   <div className=" w-[40px] bg-[#fff] text-[#000] rounded-full flex items-center justify-center ms-5">
@@ -364,7 +363,7 @@ const ExecutionMentorDashboard = () => {
             </div> */}
           </div>
 
-        {/*   <div>
+          {/*   <div>
             <AssignmentRightNev />
           </div> */}
         </div>

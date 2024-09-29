@@ -14,7 +14,7 @@ export default function OrgMentors() {
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/mentors/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
-        console.log(response?.data.reverse());
+        // console.log(response?.data.reverse());
         setAllMentors(response?.data.reverse());
         setFilteredMentors(response?.data.reverse());
       })

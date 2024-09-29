@@ -66,7 +66,7 @@ const UpdateOrganization = () => {
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getUpdateOrganizationSubDetailsByOrganizationAndName/organizationTheme/organizationsId/${userInfo?.organizationId}`
         )
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           setItemDetails(response?.data);
         })
         .finally(() => {
@@ -146,7 +146,7 @@ const UpdateOrganization = () => {
       dashboardTheme: dashboardTheme,
       courseAccessUrl,
     };
-    console.log(orgInfo);
+    // console.log(orgInfo);
 
     const updateOrg = await axios.put(
       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/organizations/${orgData?._id}`,
@@ -161,7 +161,7 @@ const UpdateOrganization = () => {
     }
   };
 
-  console.log(paymentNavbarColor);
+  // console.log(paymentNavbarColor);
 
   return (
     <div>

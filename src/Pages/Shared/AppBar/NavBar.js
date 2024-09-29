@@ -100,7 +100,7 @@ const NavBar = (props) => {
   const handleLogout = () => {
     logOut()
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         navigate("/");
       })
       .catch((error) => console.error(error));
@@ -261,7 +261,7 @@ const NavBar = (props) => {
   //     });
   // };
 
-  console.log("ab", role);
+  // console.log("ab", role);
 
   const handleDashboard = () => {
     const Role = localStorage.getItem("role");
@@ -301,12 +301,12 @@ const NavBar = (props) => {
     const name = form.name.value;
     const email = form.email.value;
     const password = form.password.value;
-    console.log(email, name, password);
+    // console.log(email, name, password);
 
     createUser(email, password)
       .then((result) => {
         const user = result?.user;
-        console.log(user);
+        // console.log(user);
 
         alert("Register successfull");
         setOpen2(false);
@@ -372,7 +372,7 @@ const NavBar = (props) => {
         saveUser(email);
       });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       toast.error("password or email error");
     }
   };
@@ -385,8 +385,8 @@ const NavBar = (props) => {
         const userDetails = await axios.get(
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users?email=${email}`
         );
-        console.log("Now Result  ==============>", result?.user?.email);
-        console.log("Now Result  ==============>", userDetails);
+        // console.log("Now Result  ==============>", result?.user?.email);
+        // console.log("Now Result  ==============>", userDetails);
         if (userDetails?.data?.isUser === false) {
           toast.error("Your Are Not Registered User");
           return handleLogout();
@@ -463,7 +463,7 @@ const NavBar = (props) => {
     });
   };
   const userChecking = () => {
-    console.log(user);
+    // console.log(user);
   };
 
   const [formOpen, setFormOpen] = React.useState(false);
@@ -506,7 +506,7 @@ const NavBar = (props) => {
       Time: new Date(),
     };
 
-    console.log("Gone Here ===============>", data);
+    // console.log("Gone Here ===============>", data);
 
     fetch(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/interactions`, {
       method: "POST",
@@ -516,7 +516,7 @@ const NavBar = (props) => {
       body: JSON.stringify(data),
     })
       .then(async (res) => {
-        console.log("Submit ===============>", res);
+        // console.log("Submit ===============>", res);
         const sendMail = await axios.post(
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
           {
@@ -533,7 +533,7 @@ const NavBar = (props) => {
             `,
           }
         );
-        console.log("Send Mail ===============>", sendMail);
+        // console.log("Send Mail ===============>", sendMail);
         if (sendMail?.data?.success) {
           Swal.fire({
             icon: "success",
@@ -545,7 +545,7 @@ const NavBar = (props) => {
       })
       .catch((error) => {
         // Errors are reported there
-        console.log(error);
+        // console.log(error);
       });
   };
 

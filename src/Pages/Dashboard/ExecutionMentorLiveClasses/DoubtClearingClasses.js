@@ -7,7 +7,6 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import ScheduleStudentsList from "./ScheduleStudentsList";
 
-
 const DoubtClearingClasses = () => {
   const { userInfo } = useContext(AuthContext);
   const [userRequesterEvents, setUserRequesterEvents] = useState([]);
@@ -18,8 +17,6 @@ const DoubtClearingClasses = () => {
 
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-
-
 
   useEffect(() => {
     if (!userInfo?.email) {
@@ -32,7 +29,7 @@ const DoubtClearingClasses = () => {
       )
       .then((response) => {
         Loading().close();
-
+        //console.log(response?.data)
         setUserRequesterEvents(response?.data);
         setEvents(response?.data);
         const currentDate = new Date(getCurrentDate()).getTime();
@@ -53,17 +50,13 @@ const DoubtClearingClasses = () => {
       });
   }, [userInfo]);
 
-
   const reloadEventData = () => {
     if (userInfo?.email) {
-     
       axios
         .get(
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/events/mentorEmail/${userInfo?.email}`
         )
         .then((response) => {
-          
-  
           setUserRequesterEvents(response?.data);
           setEvents(response?.data);
           const currentDate = new Date(getCurrentDate()).getTime();
@@ -76,12 +69,9 @@ const DoubtClearingClasses = () => {
           });
         })
         .catch((error) => {
-        
           console.error(error);
         })
-        .finally(() => {
-         
-        });
+        .finally(() => {});
     }
   };
   // Helper function to get today's date in YYYY-MM-DD format
@@ -111,7 +101,7 @@ const DoubtClearingClasses = () => {
         ? new Date(event.start_time)
         : null;
 
-      console.log("from :", from, "to :", to, "start :", startTime);
+      // console.log("from :", from, "to :", to, "start :", startTime);
       // Ensure both startTime and endTime are valid Date objects before comparing
       return startTime && startTime >= from && startTime <= to;
     });
@@ -131,7 +121,7 @@ const DoubtClearingClasses = () => {
       return dateA - dateB;
     })
     .filter((event) => new Date(event?.start_time) > now);
- // console.log(sortedEvents);
+  // console.log(sortedEvents);
   const excludedEventId = sortedEvents[0]?._id;
 
   const filteredEvents = userRequesterEvents.filter(
@@ -166,25 +156,24 @@ const DoubtClearingClasses = () => {
 
   const listView = (event) => {
     setStudentOpen(true);
-    setEventDetails(event)
+    setEventDetails(event);
 
-    console.log(event)
-   // setSelectedBatchId(id);
-   // setParticipants(participants);
-   // setClassId(classId);
+    // setSelectedBatchId(id);
+    // setParticipants(participants);
+    // setClassId(classId);
 
     //  console.log(id)
   };
-/*   console.log(sortedEvents);
+  /*   console.log(sortedEvents);
   console.log(editedEvents); */
 
   return (
     <div>
       <ScheduleStudentsList
-      setStudentOpen={setStudentOpen}
-      eventDetails={eventDetails}
-      studentOpen={studentOpen}
-      reloadEventData={reloadEventData}
+        setStudentOpen={setStudentOpen}
+        eventDetails={eventDetails}
+        studentOpen={studentOpen}
+        reloadEventData={reloadEventData}
       />
       {userRequesterEvents?.length > 0 ? (
         <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 mx-5 my-10">
@@ -194,7 +183,7 @@ const DoubtClearingClasses = () => {
               style={{
                 borderRadius: "10px",
                 border: "1px solid #EFEFEF",
-               
+
                 boxShadow: "0px 4px 4px 0px rgba(57, 80, 126, 0.14)",
               }}
             >
@@ -274,13 +263,15 @@ const DoubtClearingClasses = () => {
                   ) || " Time ended"}
                 </p>
                 <p
-                // onClick={() =>
-                //   listView(
-                //     sortedEvents[0]
-                //   )
-                // }
-                className=" mt-3 flex gap-5 cursor-pointer">
-                  <img src={list} alt="list" /> Students - {sortedEvents[0]?.participants?.length||0}/1
+                  // onClick={() =>
+                  //   listView(
+                  //     sortedEvents[0]
+                  //   )
+                  // }
+                  className=" mt-3 flex gap-5 cursor-pointer"
+                >
+                  <img src={list} alt="list" /> Students -{" "}
+                  {sortedEvents[0]?.participants?.length || 0}/1
                 </p>
               </div>
               <div className=" flex justify-center">
@@ -309,6 +300,7 @@ const DoubtClearingClasses = () => {
               event.start_time || event.start.dateTime || event.start
             );
             const timeLeft = getTimeLeft(eventStartTime);
+
             return (
               <div
                 className="p-5"
@@ -400,19 +392,18 @@ const DoubtClearingClasses = () => {
                     <img src={clock} alt="clock" /> {timeLeft || "Time ended"}
                   </p>
                   <p
-                    onClick={() =>
-                      listView(
-                        event
-                      )
-                    }
+                    onClick={() => listView(event)}
                     className=" mt-3 flex gap-5 cursor-pointer"
                   >
-                    <img src={list} alt="list" /> Students - {event?.participants?.length||0}/1
+                    <img src={list} alt="list" /> Students -{" "}
+                    {event?.participants?.length || 0}/1
                   </p>
                 </div>
                 <div className=" flex justify-center">
                   {eventStartTime < now ? (
-                    <p className="text-sm border rounded-md p-2 text-[#A1887F]">Meeting Concluded</p> // Show this if the meeting time is in the past
+                    <p className="text-sm border rounded-md p-2 text-[#A1887F]">
+                      Meeting Concluded
+                    </p> // Show this if the meeting time is in the past
                   ) : (
                     <Link
                       to={

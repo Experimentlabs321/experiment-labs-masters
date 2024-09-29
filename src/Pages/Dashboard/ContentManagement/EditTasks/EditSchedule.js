@@ -1,26 +1,18 @@
-import 'react-datetime-picker/dist/DateTimePicker.css';
-import 'react-calendar/dist/Calendar.css';
-import 'react-clock/dist/Clock.css';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
+import "react-datetime-picker/dist/DateTimePicker.css";
+import "react-calendar/dist/Calendar.css";
+import "react-clock/dist/Clock.css";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 
-import React, {
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React, { useContext, useEffect, useState } from "react";
 
-import axios from 'axios';
-import toast from 'react-hot-toast';
-import {
-  Link,
-  useNavigate,
-  useParams,
-} from 'react-router-dom';
+import axios from "axios";
+import toast from "react-hot-toast";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
-import required from '../../../../assets/ContentManagement/required.png';
-import { AuthContext } from '../../../../contexts/AuthProvider';
-import Loading from '../../../Shared/Loading/Loading';
-import Layout from '../../Layout';
+import required from "../../../../assets/ContentManagement/required.png";
+import { AuthContext } from "../../../../contexts/AuthProvider";
+import Loading from "../../../Shared/Loading/Loading";
+import Layout from "../../Layout";
 
 let global;
 const customStyles = {
@@ -67,8 +59,10 @@ const EditSchedule = ({ taskData }) => {
   // Save current location before redirecting to Google sign-in
   useEffect(() => {
     axios
-    //  .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${scheduleData?.chapterId}`)
-      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${scheduleData?.chapterId}`)
+      //  .get(`${process.env.REACT_APP_BACKEND_API}/chapter/${scheduleData?.chapterId}`)
+      .get(
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${scheduleData?.chapterId}`
+      )
       .then((response) => {
         setChapter(response?.data);
       })
@@ -146,7 +140,7 @@ const EditSchedule = ({ taskData }) => {
       setSelectedHoliday((prevSelection) => [...prevSelection, day.day]);
     }
   };
-  console.log(selectedHoliday);
+  // console.log(selectedHoliday);
   const getCurrentDate = () => {
     const today = new Date();
     const year = today.getFullYear();
@@ -196,16 +190,16 @@ const EditSchedule = ({ taskData }) => {
       usersession: scheduleData?.usersession,
       events: scheduleData?.events,
       taskDrip,
-      calendarSubjectName
+      calendarSubjectName,
     };
 
-    console.log(manageSchedule);
+    // console.log(manageSchedule);
     if (submitPermission) {
       const newTask = await axios.put(
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/schedule/taskId/${scheduleData?._id}`,
         manageSchedule
       );
-      console.log(newTask);
+      // console.log(newTask);
 
       if (newTask?.data?.result?.acknowledged) {
         toast.success("Schedule updated Successfully");
@@ -230,7 +224,7 @@ const EditSchedule = ({ taskData }) => {
       });
   }, [id]);
 
-  console.log(scheduleData?.scheduleName);
+  // console.log(scheduleData?.scheduleName);
 
   const days = [
     {
@@ -256,7 +250,7 @@ const EditSchedule = ({ taskData }) => {
       day: "Friday",
     },
   ];
-  console.log(scheduleData);
+  // console.log(scheduleData);
   return (
     <div>
       <Layout>
@@ -272,7 +266,7 @@ const EditSchedule = ({ taskData }) => {
                 </Link>
                 <svg
                   className="mr-[30px]"
-                  xmlns="http://www.w3.org/2000/svg"  
+                  xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="25"
                   viewBox="0 0 24 25"
@@ -387,7 +381,9 @@ const EditSchedule = ({ taskData }) => {
             <div className="">
               <div className="flex items-center gap-4">
                 <p className="h-2 w-2 bg-black rounded-full"></p>
-                <p className="font-bold text-lg me-[36px]">Calendar Subject Name</p>
+                <p className="font-bold text-lg me-[36px]">
+                  Calendar Subject Name
+                </p>
                 <img src={required} alt="required" />
               </div>
 

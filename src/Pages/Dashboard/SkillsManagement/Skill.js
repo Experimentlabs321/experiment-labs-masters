@@ -1,27 +1,20 @@
-import React, {
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React, { useContext, useEffect, useState } from "react";
 
-import axios from 'axios';
-import { toast } from 'react-hot-toast';
-import Swal from 'sweetalert2';
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import Swal from "sweetalert2";
 
-import AddSharpIcon from '@mui/icons-material/AddSharp';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import SearchIcon from '@mui/icons-material/Search';
-import Badge from '@mui/material/Badge';
+import AddSharpIcon from "@mui/icons-material/AddSharp";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import SearchIcon from "@mui/icons-material/Search";
+import Badge from "@mui/material/Badge";
 
-import UploadingImg from '../../../assets/PointsRedemptions/uploadimg.png';
-import { AuthContext } from '../../../contexts/AuthProvider';
-import Layout from '../Layout';
-import AddEarningPointItemForm
-  from '../PointsAndRedemptions/Components/EarningLogics/AddEarningPointItemForm';
-import EditEarningPointItemForm
-  from '../PointsAndRedemptions/Components/EarningLogics/EditEarningPointItemForm';
-import SelectEarningCategory
-  from '../PointsAndRedemptions/Components/EarningLogics/SelectEarningCategory';
+import UploadingImg from "../../../assets/PointsRedemptions/uploadimg.png";
+import { AuthContext } from "../../../contexts/AuthProvider";
+import Layout from "../Layout";
+import AddEarningPointItemForm from "../PointsAndRedemptions/Components/EarningLogics/AddEarningPointItemForm";
+import EditEarningPointItemForm from "../PointsAndRedemptions/Components/EarningLogics/EditEarningPointItemForm";
+import SelectEarningCategory from "../PointsAndRedemptions/Components/EarningLogics/SelectEarningCategory";
 
 const Skill = () => {
   const { userInfo } = useContext(AuthContext);
@@ -91,7 +84,7 @@ const Skill = () => {
       courseId: selectedCourse?._id,
       earningItemName: name,
     };
-    console.log(deleteData);
+    // console.log(deleteData);
     await Swal.fire({
       title: "Are you sure?",
       text: "Once deleted, the item will not recover!",
@@ -103,7 +96,7 @@ const Skill = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         fetch(
-        //  `${process.env.REACT_APP_BACKEND_API}/deleteItem`,
+          //  `${process.env.REACT_APP_BACKEND_API}/deleteItem`,
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/earningCategories/earningItems`,
           {
             method: "DELETE",
@@ -111,9 +104,10 @@ const Skill = () => {
               "Content-Type": "application/json",
             },
             body: JSON.stringify(deleteData),
-          })
+          }
+        )
           .then((result) => {
-            console.log(result);
+            // console.log(result);
             if (result?.ok) {
               toast.success("Item Deleted Successfully!");
               const remainingItems =
@@ -170,10 +164,11 @@ const Skill = () => {
               {courses?.map((item, index) => (
                 <button
                   key={index}
-                  className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 ${selectedCourse?._id === item?._id
+                  className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 ${
+                    selectedCourse?._id === item?._id
                       ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
                       : "text-[#949494]"
-                    }`}
+                  }`}
                   onClick={() => handleSelectCourse(item)}
                 >
                   {item?.courseFullName}

@@ -73,7 +73,7 @@ const Feedback = () => {
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/language/getFeedbackSubDetailsByOrganizationAndName/feedbackSettings/organizationsId/${userInfo?.organizationId}`
         )
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           setItemFeedbackSettingDetails(response?.data);
         })
         .finally(() => {
@@ -82,18 +82,36 @@ const Feedback = () => {
     }
     setLoading(false);
   }, [userInfo]);
-  console.log(itemFeedbackSettingDetails);
+  //console.log(itemFeedbackSettingDetails);
+  // useEffect(() => {
+  //   axios
+  //     .get(
+  //       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
+  //     )
+  //     .then((response) => {
+  //       setCourses(response?.data);
+  //       setSelectedCourse(response?.data[0]);
+  //     })
+  //     .catch((error) => console.error(error));
+  // }, [userInfo]);
   useEffect(() => {
     axios
       .get(
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
-        setCourses(response?.data);
-        setSelectedCourse(response?.data[0]);
+        const coursesData = Array.isArray(response?.data) ? response?.data : [];
+        setCourses(coursesData);
+        if (coursesData.length > 0) {
+          setSelectedCourse(coursesData[0]);
+        }
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error(error);
+        setCourses([]); // Set courses to an empty array in case of error
+      });
   }, [userInfo]);
+
   // console.log(userInfo?.organizationId)
   // console.log(selectedCourse._id)
   useEffect(() => {
@@ -133,7 +151,7 @@ const Feedback = () => {
     }
     setIsOpenFeedbackItemAddForm(false);
   };
-  console.log(feedbackCategories);
+  // console.log(feedbackCategories);
 
   const handleItemDelete = async (name) => {
     const deleteData = {
@@ -142,7 +160,7 @@ const Feedback = () => {
       courseId: selectedCourse?._id,
       feedbackItemName: name,
     };
-    console.log(deleteData);
+    // console.log(deleteData);
     await Swal.fire({
       title: itemFeedbackSettingDetails?.areYouSure
         ? itemFeedbackSettingDetails?.areYouSure
@@ -169,7 +187,7 @@ const Feedback = () => {
           }
         )
           .then((result) => {
-            console.log(result);
+            // console.log(result);
             if (result?.ok) {
               toast.success(
                 itemFeedbackSettingDetails?.itemDeletedSuccessfully
@@ -295,19 +313,20 @@ const Feedback = () => {
                         : "No course added yet!"}
                     </div>
                   )}
-                  {courses?.map((item, index) => (
-                    <button
-                      key={index}
-                      className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 ${
-                        selectedCourse?._id === item?._id
-                          ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
-                          : "text-[#949494]"
-                      }`}
-                      onClick={() => handleSelectCourse(item)}
-                    >
-                      {item?.courseFullName}
-                    </button>
-                  ))}
+                  {Array.isArray(courses) &&
+                    courses.map((item, index) => (
+                      <button
+                        key={index}
+                        className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 mr-1 ${
+                          selectedCourse?._id === item?._id
+                            ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
+                            : "text-[#949494]"
+                        }`}
+                        onClick={() => handleSelectCourse(item)}
+                      >
+                        {item?.courseFullName}
+                      </button>
+                    ))}
                 </div>
               </div>
               <div className="flex items-center gap-5 mt-5">

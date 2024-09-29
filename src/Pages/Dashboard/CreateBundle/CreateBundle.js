@@ -50,7 +50,7 @@ const CreateBundle = () => {
       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/courseId/${selectedCourse._id}`
     );
     selectedCourse.batches = data;
-    console.log("Selected Course", selectedCourse);
+    // console.log("Selected Course", selectedCourse);
 
     if (!selectedCourses?.includes(selectedCourse)) {
       setSelectedCourses([...selectedCourses, selectedCourse]);
@@ -65,7 +65,7 @@ const CreateBundle = () => {
   };
 
   const handleBatches = (course, batch) => {
-    console.log(course, batch);
+    // console.log(course, batch);
     if (
       !selectedCoursesAndBatches?.find((item) => item?.courseId === course?._id)
     ) {
@@ -76,7 +76,7 @@ const CreateBundle = () => {
           { courseId: course?._id, batchId: batch?._id },
         ]);
       } else {
-        console.log(selectedBatches, batch._id);
+        // console.log(selectedBatches, batch._id);
         const newSelectedBatches = selectedBatches.filter(
           (removeBatch) => removeBatch !== batch._id
         );
@@ -90,7 +90,7 @@ const CreateBundle = () => {
       const findPreviousBatchId = selectedCoursesAndBatches.find(
         (removeBatch) => removeBatch?.courseId === course._id
       )?.batchId;
-      console.log(findPreviousBatchId);
+      // console.log(findPreviousBatchId);
       const newSelectedBatches = selectedBatches.filter(
         (removeBatch) => removeBatch !== findPreviousBatchId
       );
@@ -150,8 +150,8 @@ const CreateBundle = () => {
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/bundles`,
         addBundle
       );
-      console.log("new course --> ", newBundle);
-      console.log(newBundle?.data?.course?.acknowledged);
+      // console.log("new course --> ", newBundle);
+      // console.log(newBundle?.data?.course?.acknowledged);
 
       if (newBundle?.data?.acknowledged) {
         toast.success("Bundle added Successfully");
@@ -159,11 +159,11 @@ const CreateBundle = () => {
         form.reset();
       }
 
-      console.log("Add Course----->", addBundle);
+      // console.log("Add Course----->", addBundle);
     }
   };
 
-  console.log(selectedBatches, selectedCoursesAndBatches);
+  // console.log(selectedBatches, selectedCoursesAndBatches);
 
   return (
     <div>

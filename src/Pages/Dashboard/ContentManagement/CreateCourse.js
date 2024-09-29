@@ -37,7 +37,7 @@ const CreateCourse = () => {
   const [isOpenCompletionTracking, setisOpenCompletionTracking] =
     useState(false);
   //const [isOpenNumberofWeeksChapters, setisOpenNumberofWeeksChapters] = useState(false);
-  const [courseCategoryInput, setCourseCategoryInput] = useState('');
+  const [courseCategoryInput, setCourseCategoryInput] = useState("");
   const [courseCategories, setCourseCategories] = useState();
   const [categoryName, setCategoryName] = useState();
 
@@ -114,7 +114,7 @@ const CreateCourse = () => {
   const [enableDrip, setEnableDrip] = useState(false);
   const router = useNavigate();
 
-  console.log(userInfo);
+  // console.log(userInfo);
 
   /// handle Submit
   const handleSubmit = async (event) => {
@@ -128,7 +128,8 @@ const CreateCourse = () => {
     const courseEndingDate = form.courseEndingDate?.value;
     const courseDescription = form.courseDescription?.value;
     const courseCategory = form.courseCategory?.value;
-    const courseVisibility = form.courseVisibility?.value === "false" ? false : true;
+    const courseVisibility =
+      form.courseVisibility?.value === "false" ? false : true;
     const courseIDNumber = form.courseIDNumber?.value;
     const courseFormat = form.courseFormat?.value;
     const gradesFormat = form.gradesFormat?.value;
@@ -191,25 +192,21 @@ const CreateCourse = () => {
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses`,
         addCourse
       );
-      console.log("new course --> ", newCourse);
-      console.log(newCourse?.data?.course?.acknowledged);
+      // console.log("new course --> ", newCourse);
+      // console.log(newCourse?.data?.course?.acknowledged);
 
       if (newCourse?.data?.course?.acknowledged) {
-
-
         toast.success("Course added Successfully");
         router("/courseAccess");
         form.reset();
       }
 
-      console.log("Add Course----->", addCourse);
+      // console.log("Add Course----->", addCourse);
     }
     Loading().close();
   };
 
   ///////////////////////
-
-
 
   const handleSubmitCourseCategory = async () => {
     const addCourseCategory = {
@@ -225,36 +222,38 @@ const CreateCourse = () => {
       },
     };
 
-    console.log(addCourseCategory);
+    // console.log(addCourseCategory);
 
     try {
-      const response = await axios.post(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/CourseCategory/addCourseCategory/organizationId/${userInfo?.organizationId}`, addCourseCategory);
-      console.log(response)
+      const response = await axios.post(
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/CourseCategory/addCourseCategory/organizationId/${userInfo?.organizationId}`,
+        addCourseCategory
+      );
+      // console.log(response)
       if (response.data === "Course category added successfully") {
         toast.success("Category added Successfully");
         // Reset the form after successful submission
-        setCategoryName(addCourseCategory?.courseCategoryName)
-        setCourseCategoryInput('');
-
-
+        setCategoryName(addCourseCategory?.courseCategoryName);
+        setCourseCategoryInput("");
       } else {
-        toast.error('Error submitting Category');
+        toast.error("Error submitting Category");
       }
     } catch (error) {
-      console.error('Error submitting course:', error);
+      console.error("Error submitting course:", error);
     }
   };
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/CourseCategory/getCourseCategory/organizationId/${userInfo?.organizationId}`)
+      .get(
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/CourseCategory/getCourseCategory/organizationId/${userInfo?.organizationId}`
+      )
       .then((response) => {
         setCourseCategories(response?.data);
-
       })
       .catch((error) => console.error(error));
   }, [userInfo]);
-  console.log(courseCategories?.courseCategories);
+  // console.log(courseCategories?.courseCategories);
 
   return (
     <div>
@@ -284,8 +283,9 @@ const CreateCourse = () => {
             {isOpenGeneralCourseInfo && <img src={arrowDown} alt=""></img>}
 
             <i
-              className={`dropdown-arrow ${isOpenGeneralCourseInfo ? "open" : ""
-                }`}
+              className={`dropdown-arrow ${
+                isOpenGeneralCourseInfo ? "open" : ""
+              }`}
             ></i>
           </div>
           {isOpenGeneralCourseInfo && (
@@ -410,8 +410,6 @@ const CreateCourse = () => {
                     placeholder="https://www.google.com/"
                   />
                 </div>
-
-
               </div>
 
               <div>
@@ -429,28 +427,21 @@ const CreateCourse = () => {
                       required
                       className="w-full bg-[#F6F7FF]  text-base font-semibold focus:outline-0"
                       name="courseCategory"
-                    // id="option"
+                      // id="option"
                     >
-
-                      {
-                        (categoryName) ?
-                          <option value={categoryName}>
-                            {categoryName}
-                          </option>
-                          :
-                          <option value="">
-                            Select Category
-                          </option>
-
-                      }
-                      {
-                        courseCategories?.courseCategories?.map((category) => (
-                          <option className="text-[#3E4DAC]" value={category?.categoryName}>{category?.categoryName}</option>
-
-                        ))
-                      }
-
-
+                      {categoryName ? (
+                        <option value={categoryName}>{categoryName}</option>
+                      ) : (
+                        <option value="">Select Category</option>
+                      )}
+                      {courseCategories?.courseCategories?.map((category) => (
+                        <option
+                          className="text-[#3E4DAC]"
+                          value={category?.categoryName}
+                        >
+                          {category?.categoryName}
+                        </option>
+                      ))}
                     </select>
                     <div
                       onClick={openModalAddCourseCategory}
@@ -489,20 +480,19 @@ const CreateCourse = () => {
                                 type="text"
                                 placeholder="Eg. Entrepreneurship Lab"
                                 value={courseCategoryInput}
-                                onChange={(e) => setCourseCategoryInput(e.target.value)}
+                                onChange={(e) =>
+                                  setCourseCategoryInput(e.target.value)
+                                }
                               />
                               <div className="flex justify-center mt-5">
-
                                 <button
                                   className="px-[20px] lg:py-3 py-2 bg-[#3E4DAC] hover:bg-opacity-70 text-[#fff] cursor-pointer text-xl font-bold rounded-lg"
-                                  onClick={handleSubmitCourseCategory}>Add</button>
-
-
+                                  onClick={handleSubmitCourseCategory}
+                                >
+                                  Add
+                                </button>
                               </div>
-
                             </div>
-
-
                           </div>
                         </div>
                       </div>
@@ -608,8 +598,6 @@ const CreateCourse = () => {
                       placeholder="Eg. 5000"
                     ></input>
                   </div>
-
-
                 </div>
               </div>
             </div>
@@ -655,7 +643,7 @@ const CreateCourse = () => {
                       required
                       className="select select-bordered w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold"
                       name="courseFormat"
-                    //id="option"
+                      //id="option"
                     >
                       <option value="weeks">Weekly format</option>
                       <option value="Parent"></option>
@@ -711,7 +699,7 @@ const CreateCourse = () => {
                       required
                       className="w-full bg-[#F6F7FF] text-[#3E4DAC] text-base font-semibold"
                       name="groups"
-                    // id="option"
+                      // id="option"
                     >
                       <option className="" value="No Groups">
                         No Groups
@@ -830,8 +818,9 @@ const CreateCourse = () => {
             {isOpenCompletionTracking && <img src={arrowDown} alt=""></img>}
 
             <i
-              className={`dropdown-arrow ${isOpenCompletionTracking ? "open" : ""
-                }`}
+              className={`dropdown-arrow ${
+                isOpenCompletionTracking ? "open" : ""
+              }`}
             ></i>
           </div>
 

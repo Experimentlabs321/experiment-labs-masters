@@ -25,6 +25,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import { Box, LinearProgress } from "@mui/material";
 
 const WeekDetails = ({
   chapters,
@@ -51,6 +52,7 @@ const WeekDetails = ({
   const [openTopics, setOpenTopics] = useState([]);
   const [screenSmall, setScreenSmall] = useState(false);
   const [windowWidth, setWindowWidth] = useState(0);
+  const [loadingChapterId, setLoadingChapterId] = useState("");
 
   const containerRef = useRef(null);
   let sortable;
@@ -58,17 +60,17 @@ const WeekDetails = ({
   const handleEditChapter = async (chapter) => {
     const updatedChapter = { ...chapter };
     delete updatedChapter._id;
-    console.log(chapter);
+    // console.log(chapter);
     if (chapter?._id) {
-      console.log(updatedChapter);
+      // console.log(updatedChapter);
       try {
         const newChapter = await axios.put(
           `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/chapters/${chapter?._id}`,
           updatedChapter
         );
         // setCount(count + 1);
-        console.log(newChapter);
-        console.log(chapter);
+        // console.log(newChapter);
+        // console.log(chapter);
       } catch (error) {
         console.log(error);
       }
@@ -76,16 +78,36 @@ const WeekDetails = ({
   };
 
   useEffect(() => {
-    setOpenTopics([]);
+    if (chapters[0]?.weekId !== currentWeek?._id) setOpenTopics([]);
   }, [currentWeek]);
+
+  const handleGetChapterDataWithTask = async (chapterId, index) => {
+    await axios
+      .get(
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${chapterId}/${
+          chapters[index - 1]?._id || "unavailable"
+        }/email/${user?.email}`
+      )
+      .then((response) => {
+        setOpenTopics([...openTopics, response?.data[0]]);
+        setLoadingChapterId("");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   useEffect(() => {
     if (openTopics?.length === 0) {
-      if (chapters && chapters[0]) setOpenTopics([chapters[0]?._id]);
+      if (chapters && chapters[0]) {
+        setLoadingChapterId(chapters[0]?._id);
+        handleGetChapterDataWithTask(chapters[0]?._id, 0);
+        // setOpenTopics([chapters[0]?._id]);
+      }
     }
   }, [chapters]);
 
-  useEffect(() => {
+  /*   useEffect(() => {
     const containerElement = containerRef.current;
 
     if (!containerElement) {
@@ -102,8 +124,8 @@ const WeekDetails = ({
       // },
       onEnd: (event) => {
         const { oldIndex, newIndex } = event;
-        console.log(chapters[event.oldIndex], chapters[event.newIndex]);
-        console.log(`Moved from index ${event.oldIndex} to ${event.newIndex}`);
+        // console.log(chapters[event.oldIndex], chapters[event.newIndex]);
+        // console.log(`Moved from index ${event.oldIndex} to ${event.newIndex}`);
         // Update the chapters state based on the rearrangement
         setChapters((prevChapters) => {
           // Clone the previous chapters array to avoid mutation
@@ -111,12 +133,12 @@ const WeekDetails = ({
           // Rearrange the chapters
           const [movedChapter] = updatedChapters.splice(oldIndex, 1);
           updatedChapters.splice(newIndex, 0, movedChapter);
-          console.log(prevChapters, updatedChapters);
+          // console.log(prevChapters, updatedChapters);
           prevChapters?.forEach(async (chapter, index) => {
             console.log(chapter, updatedChapters[index]);
             const updatedChapter = { ...updatedChapters[index] };
             updatedChapter._id = chapter?._id;
-            console.log(updatedChapter);
+            // console.log(updatedChapter);
             await handleEditChapter(updatedChapter);
           });
           return updatedChapters;
@@ -174,7 +196,7 @@ const WeekDetails = ({
       sortable.destroy();
       // Also, make sure to destroy all the task Sortables here if needed.
     };
-  }, [chapters]);
+  }, [chapters]); */
 
   useEffect(() => {
     // Function to update toggleButton based on device size
@@ -242,7 +264,7 @@ const WeekDetails = ({
             `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/deleteTasksInChapter/chapterId/${id}`
           )
           .then((result) => {
-            console.log(result);
+            // console.log(result);
             if (result?.status === 200) {
               Swal.fire({
                 icon: "warning",
@@ -262,14 +284,14 @@ const WeekDetails = ({
         return;
       }
 
-      console.log(id);
+      // console.log(id);
 
       await axios
         .delete(
           `${process.env.REACT_APP_SERVER_API}/api/v1/chapters/chapterId/${id}`
         )
         .then((result) => {
-          console.log(result);
+          // console.log(result);
           if (result?.status === 200) {
             Swal.fire({
               title: "Deleted!",
@@ -293,7 +315,7 @@ const WeekDetails = ({
   };
 
   const handleMoveChapter = async (oldIndex, newIndex) => {
-    console.log(oldIndex, newIndex);
+    // console.log(oldIndex, newIndex);
     Loading();
     if (oldIndex >= 0 && newIndex >= 0 && newIndex < chapters?.length) {
       const newChapterId = chapters[oldIndex]._id;
@@ -302,7 +324,7 @@ const WeekDetails = ({
       const oldChapter = chapters[oldIndex];
       newChapter._id = newChapterId;
       oldChapter._id = oldChapterId;
-      console.log(newChapter, oldChapter);
+      // console.log(newChapter, oldChapter);
       await handleEditChapter(newChapter);
       await handleEditChapter(oldChapter);
       setCount(count + 1);
@@ -321,10 +343,59 @@ const WeekDetails = ({
     }
   }, [windowWidth, chapters]);
 
+  const [progress, setProgress] = React.useState(0);
+
+  useEffect(() => {
+    if (!chapters[0]) {
+      const timer = setInterval(() => {
+        setProgress((oldProgress) => {
+          if (oldProgress === 100) {
+            return 0;
+          }
+          const diff = Math.random() * 10;
+          return Math.min(oldProgress + diff, 100);
+        });
+      }, 500);
+
+      return () => {
+        clearInterval(timer);
+      };
+    }
+  }, [chapters]);
+
+  const getPreviousChapterData = async (chapterId) => {
+    await axios
+      .get(
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${chapterId}/email/${user?.email}`
+      )
+      .then((response) => {
+        return response?.data[0];
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   return (
     <div
-      ref={Role === "admin" && window.innerWidth >= 1024 ? containerRef : null}
+    // ref={Role === "admin" && window.innerWidth >= 1024 ? containerRef : null}
     >
+      {!chapters[0] && (
+        <div className=" flex justify-center  w-full  ">
+          <div className="flex flex-col items-center gap-3">
+            <p className="mt-20">Loading...</p>
+            <Box sx={{ width: "500px" }}>
+              <LinearProgress
+                sx={{ height: "20px", borderRadius: "10px" }}
+                variant="determinate"
+                value={progress}
+              />
+            </Box>
+          </div>
+
+          {/* <CircularProgress className="w-full mx-auto" /> */}
+        </div>
+      )}
       {chapters?.map((chapter, index) => {
         const chapterIndex = index;
         return (
@@ -340,14 +411,16 @@ const WeekDetails = ({
               <div
                 onClick={() => {
                   const findChapter = openTopics?.find(
-                    (item) => item === chapter?._id
+                    (item) => item?._id === chapter?._id
                   );
                   if (findChapter) {
                     setOpenTopics(
-                      openTopics?.filter((item) => item !== chapter?._id)
+                      openTopics?.filter((item) => item?._id !== chapter?._id)
                     );
                   } else {
-                    setOpenTopics([...openTopics, chapter?._id]);
+                    setLoadingChapterId(chapter?._id);
+                    handleGetChapterDataWithTask(chapter?._id, index);
+                    // setOpenTopics([...openTopics, chapter?._id]);
                   }
                 }}
                 className="flex items-center justify-between mt-[15px] md:mt-[30px]"
@@ -445,11 +518,11 @@ const WeekDetails = ({
                       </ul>
                     )}
                     <button
-                      onClick={() => {
-                        if (clickedChapter === chapter) setClickedChapter(null);
-                        else setClickedChapter(chapter);
-                      }}
-                      onBlur={() => setClickedChapter(null)}
+                      // onClick={() => {
+                      //   if (clickedChapter === chapter) setClickedChapter(null);
+                      //   else setClickedChapter(chapter);
+                      // }}
+                      // onBlur={() => setClickedChapter(null)}
                       className=" hidden md:block"
                     >
                       <svg
@@ -479,9 +552,19 @@ const WeekDetails = ({
                             </button>
                           )} */}
               </div>
+              {loadingChapterId === chapter?._id && (
+                <div>
+                  <div class="flex space-x-2 justify-center items-center h-20">
+                    <span class="sr-only">Loading...</span>
+                    <div class="h-5 w-5 bg-blue rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                    <div class="h-5 w-5 bg-blue rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                    <div class="h-5 w-5 bg-blue rounded-full animate-bounce"></div>
+                  </div>
+                </div>
+              )}
               <div
                 className={`${
-                  openTopics?.find((item) => item === chapter?._id)
+                  openTopics?.find((item) => item?._id === chapter?._id)
                     ? ""
                     : "hidden"
                 } ${
@@ -489,301 +572,47 @@ const WeekDetails = ({
                 }`}
               >
                 {Role === "admin" &&
-                  chapter?.tasks?.map((task, taskIndex) => (
-                    <div key={task?.taskId} className="relative ">
-                      <div className="flex items-center justify-between my-[20px] md:my-[60px] relative z-10 ">
-                        <div className="flex gap-5 lg:gap-0 items-center w-full">
-                          {toggleButton && (
-                            <div className="w-[85px] flex items-center justify-center ">
-                              {Role !== "admin" && (
-                                <>
-                                  {task?.participants?.find(
-                                    (item) =>
-                                      item?.participantId === userInfo?._id
-                                  ) ? (
-                                    <>
-                                      {task?.participants?.find(
-                                        (item) =>
-                                          item?.participantId === userInfo?._id
-                                      )?.status === "Completed" ? (
-                                        <img src={Completed} alt="Completed" />
-                                      ) : (
-                                        <img
-                                          src={InProgress}
-                                          alt="InProgress"
-                                        />
-                                      )}
-                                    </>
-                                  ) : (
-                                    <>
-                                      <img src={Pending} alt="Pending" />
-                                    </>
-                                  )}
-                                </>
-                              )}
-                            </div>
-                          )}
-                          <div className="flex w-full items-center">
-                            {task?.taskType === "Reading" && (
-                              <img
-                                className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
-                                src={ReadingTask}
-                                alt="Task"
-                              />
-                            )}
-                            {task?.taskType === "Classes" && (
-                              <img
-                                className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
-                                src={ClassesTask}
-                                alt="Task"
-                              />
-                            )}
-                            {task?.taskType === "Assignment" && (
-                              <img
-                                className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
-                                src={AssignmentTask}
-                                alt="Task"
-                              />
-                            )}
-                            {task?.taskType === "Quiz" && (
-                              <img
-                                className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
-                                src={QuizTask}
-                                alt="Task"
-                              />
-                            )}
-                            {task?.taskType === "Live Test" && (
-                              <img
-                                className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
-                                src={LiveTestTask}
-                                alt="Task"
-                              />
-                            )}
-                            {task?.taskType === "Video" && (
-                              <img
-                                className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
-                                src={VideoTask}
-                                alt="Task"
-                              />
-                            )}
-                            {task?.taskType === "Audio" && (
-                              <img
-                                className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
-                                src={AudioTask}
-                                alt="Task"
-                              />
-                            )}
-                            {task?.taskType === "Files" && (
-                              <img
-                                className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
-                                src={FilesTask}
-                                alt="Task"
-                              />
-                            )}
-                            {task?.taskType === "Schedule" && (
-                              <img
-                                className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
-                                src={ScheduleTask}
-                                alt="Schedule"
-                              />
-                            )}
-                            <div className="z-0">
-                              <Link
-                                onClick={() => {
-                                  localStorage.setItem(
-                                    "chapter",
-                                    chapter?.chapterName
-                                  );
-                                  localStorage.setItem(
-                                    "task",
-                                    JSON.stringify(task)
-                                  );
-                                  localStorage.setItem(
-                                    "currentWeek",
-                                    JSON.stringify(currentWeek)
-                                  );
-                                  localStorage.setItem(
-                                    "courseId",
-                                    JSON.stringify(courseData?._id)
-                                  );
-                                }}
-                                to={`/taskDetails/${task?.taskId}?taskType=${task?.taskType}`}
-                                className="text-[#3E4DAC] text-[14px] md:text-[22px] font-[700] "
-                              >
-                                {task?.taskName}
-                              </Link>
-                              <p className="text-[#626262] text-[10px] md:text-[18px] font-[500] ">
-                                {task?.taskType}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                        {Role === "admin" && (
-                          <div className="hidden max-w-[200px] md:flex gap-2 flex-wrap ">
-                            {task?.batches?.map((batch) => (
-                              <h1 className="p-1 bg-slate-200 font-sans rounded-md">
-                                {batch?.batchName}
-                              </h1>
-                            ))}
-                          </div>
-                        )}
-                        {Role === "admin" && (
-                          <div className="relative flex items-center">
-                            <button
-                              onClick={() => {
-                                if (clickedTask === task) setClickedTask(null);
-                                else setClickedTask(task);
-                              }}
-                              onBlur={() => setClickedTask(null)}
-                              className=" md:mr-[25px] "
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="30"
-                                height="31"
-                                viewBox="0 0 30 31"
-                                fill="none"
-                              >
-                                <path
-                                  d="M15.0166 12.6104C13.6432 12.6104 12.5195 13.734 12.5195 15.1074C12.5195 16.4808 13.6432 17.6045 15.0166 17.6045C16.39 17.6045 17.5137 16.4808 17.5137 15.1074C17.5137 13.734 16.39 12.6104 15.0166 12.6104ZM15.0166 5.11914C13.6432 5.11914 12.5195 6.24282 12.5195 7.61621C12.5195 8.9896 13.6432 10.1133 15.0166 10.1133C16.39 10.1133 17.5137 8.9896 17.5137 7.61621C17.5137 6.24282 16.39 5.11914 15.0166 5.11914ZM15.0166 20.1016C13.6432 20.1016 12.5195 21.2252 12.5195 22.5986C12.5195 23.972 13.6432 25.0957 15.0166 25.0957C16.39 25.0957 17.5137 23.972 17.5137 22.5986C17.5137 21.2252 16.39 20.1016 15.0166 20.1016Z"
-                                  fill="black"
-                                />
-                              </svg>
-                            </button>
-                            {clickedTask === task && (
-                              <ul className="absolute z-10 right-5 top-[18px] md:top-[35px] w-max border  bg-[#141414] border-t-0 p-1 md:p-2 rounded-[8px] mt-1 transform translate-y-[-10px] shadow-[0px_2px_4px_0px_#00000026]">
-                                <li
-                                  onMouseDown={() => {
-                                    localStorage.setItem(
-                                      "chapter",
-                                      chapter?.chapterName
-                                    );
-                                    localStorage.setItem(
-                                      "task",
-                                      JSON.stringify(task)
-                                    );
-                                    localStorage.setItem(
-                                      "course",
-                                      courseData?.courseFullName
-                                    );
-                                    localStorage.setItem(
-                                      "currentWeek",
-                                      JSON.stringify(currentWeek)
-                                    );
-                                    navigate(
-                                      `/editTask/${task?.taskId}?taskType=${task?.taskType}`
-                                    );
-                                  }}
-                                  className="cursor-pointer p-1 md:p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[10px] md:text-[13px] font-[600] "
-                                >
-                                  Edit Task
-                                </li>
-                                <li
-                                  className="cursor-pointer p-1 md:p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[10px] md:text-[13px] font-[600] "
-                                  onMouseDown={() => {
-                                    // handleTaskDelete(task, chapter);
-                                    setDeleteTaskPopup(true);
-                                    setSelectedChapterAndTaskToDeleteTask({
-                                      task,
-                                      chapter,
-                                    });
-                                  }}
-                                >
-                                  Delete Task
-                                </li>
-                              </ul>
-                            )}
-                            <button className=" hidden md:block cursor-move">
-                              <MenuIcon />
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                      {chapter?.tasks?.length - 1 !== taskIndex && (
-                        <hr className="w-[2px] pt-[68px] md:pt-[150px] bg-[#C7C7C7] absolute bottom-[-45px] md:bottom-[-100px] md:left-[175px] left-[38px]" />
-                      )}
-                    </div>
-                  ))}
-                {Role !== "admin" &&
-                  chapter?.tasks?.map((task, taskIndex) => {
-                    const userIsParticipant = task?.participants?.some(
-                      (item) => item?.participantId === userInfo?._id
-                    );
-
-                    const isPreviousTaskCompleted =
-                      taskIndex === 0 || // Always allow navigation for the first task
-                      chapter?.tasks?.[taskIndex - 1]?.participants?.some(
-                        (item) =>
-                          item?.participantId === userInfo?._id &&
-                          (item?.status === "Completed" ||
-                            item?.status === "In Progress")
-                      );
-
-                    let isPrevChapterCompleted =
-                      chapterIndex === 0 ||
-                      chapters?.[chapterIndex - 1]?.tasks?.[
-                        chapters?.[chapterIndex - 1]?.tasks?.length - 1
-                      ]?.participants?.some(
-                        (item) =>
-                          item?.participantId === userInfo?._id &&
-                          (item?.status === "Completed" ||
-                            item?.status === "In Progress")
-                      );
-
-                    if (taskIndex !== 0) isPrevChapterCompleted = true;
-
-                    return (
-                      <div key={task?.taskId} className="relative">
-                        <div className="flex items-center justify-between my-[20px] md:my-[60px] relative z-10">
-                          {toggleButton && (
-                            <div className="w-[85px] flex items-center justify-center ">
-                              {Role !== "admin" && (
-                                <>
-                                  {userIsParticipant ? (
-                                    <>
-                                      {task?.participants?.find(
-                                        (item) =>
-                                          item?.participantId === userInfo?._id
-                                      )?.status === "Completed" ? (
-                                        <div className="w-full flex items-center justify-start gap-6">
-                                          {" "}
+                  openTopics
+                    ?.find((item) => item?._id === chapter?._id)
+                    ?.tasks?.map((task, taskIndex) => (
+                      <div key={task?.taskId} className="relative ">
+                        <div className="flex items-center justify-between my-[20px] md:my-[60px] relative z-10 ">
+                          <div className="flex gap-5 lg:gap-0 items-center w-full">
+                            {toggleButton && (
+                              <div className="w-[85px] flex items-center justify-center ">
+                                {Role !== "admin" && (
+                                  <>
+                                    {task?.participants?.find(
+                                      (item) =>
+                                        item?.participantId === userInfo?._id
+                                    ) ? (
+                                      <>
+                                        {task?.participants?.find(
+                                          (item) =>
+                                            item?.participantId ===
+                                            userInfo?._id
+                                        )?.status === "Completed" ? (
                                           <img
                                             src={Completed}
                                             alt="Completed"
                                           />
-                                        </div>
-                                      ) : (
-                                        <div className="w-full flex items-center justify-start gap-6">
+                                        ) : (
                                           <img
                                             src={InProgress}
                                             alt="InProgress"
                                           />
-                                        </div>
-                                      )}
-                                    </>
-                                  ) : (
-                                    <div className="w-full flex items-center justify-start gap-6">
-                                      <img src={Pending} alt="Pending" />
-                                      {!(
-                                        isPreviousTaskCompleted &&
-                                        isPrevChapterCompleted
-                                      ) &&
-                                        (courseData?.enableDrip ||
-                                          task?.taskDrip) && (
-                                          <img
-                                            className="w-[35px]"
-                                            src={lock}
-                                            alt="Lock"
-                                          />
                                         )}
-                                    </div>
-                                  )}
-                                </>
-                              )}
-                            </div>
-                          )}
-                          <div className="flex w-full items-center">
-                            <>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <img src={Pending} alt="Pending" />
+                                      </>
+                                    )}
+                                  </>
+                                )}
+                              </div>
+                            )}
+                            <div className="flex w-full items-center">
                               {task?.taskType === "Reading" && (
                                 <img
                                   className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
@@ -844,152 +673,426 @@ const WeekDetails = ({
                                 <img
                                   className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
                                   src={ScheduleTask}
-                                  alt="Task"
+                                  alt="Schedule"
                                 />
                               )}
-                            </>
-                            {courseData?.enableDrip && (
-                              <div className="">
-                                {isPreviousTaskCompleted &&
-                                isPrevChapterCompleted ? (
-                                  <Link
-                                    onClick={() => {
-                                      localStorage.setItem(
-                                        "chapter",
-                                        chapter?.chapterName
-                                      );
-                                      localStorage.setItem(
-                                        "task",
-                                        JSON.stringify(task)
-                                      );
-                                      localStorage.setItem(
-                                        "currentWeek",
-                                        JSON.stringify(currentWeek)
-                                      );
-                                      localStorage.setItem(
-                                        "courseId",
-                                        JSON.stringify(courseData?._id)
-                                      );
-                                    }}
-                                    to={`/taskDetails/${task?.taskId}?taskType=${task?.taskType}`}
-                                    className="text-[#3E4DAC] text-[14px] md:text-[22px] font-[700]"
-                                  >
-                                    {task?.taskName}
-                                  </Link>
-                                ) : (
-                                  <span
-                                    onClick={() =>
-                                      toast.error("Complete The Previous Task")
-                                    }
-                                    className="text-[#3E4DAC] text-[14px] md:text-[22px] font-[700]"
-                                  >
-                                    {task?.taskName}
-                                  </span>
-                                )}
-                                <p className="text-[#626262] text-[10px] md:text-[18px] font-[500]">
+                              <div className="z-0">
+                                <Link
+                                  onClick={() => {
+                                    localStorage.setItem(
+                                      "chapter",
+                                      chapter?.chapterName
+                                    );
+                                    localStorage.setItem(
+                                      "task",
+                                      JSON.stringify(task)
+                                    );
+                                    localStorage.setItem(
+                                      "currentWeek",
+                                      JSON.stringify(currentWeek)
+                                    );
+                                    localStorage.setItem(
+                                      "courseId",
+                                      JSON.stringify(courseData?._id)
+                                    );
+                                  }}
+                                  to={`/taskDetails/${task?.taskId}?taskType=${task?.taskType}`}
+                                  className="text-[#3E4DAC] text-[14px] md:text-[22px] font-[700] "
+                                >
+                                  {task?.taskName}
+                                </Link>
+                                <p className="text-[#626262] text-[10px] md:text-[18px] font-[500] ">
                                   {task?.taskType}
                                 </p>
                               </div>
-                            )}
-                            {!courseData?.enableDrip && (
-                              <div className="">
-                                {(isPreviousTaskCompleted &&
-                                  isPrevChapterCompleted) ||
-                                !task?.taskDrip ? (
-                                  <Link
-                                    onClick={() => {
-                                      localStorage.setItem(
-                                        "chapter",
-                                        chapter?.chapterName
-                                      );
-                                      localStorage.setItem(
-                                        "task",
-                                        JSON.stringify(task)
-                                      );
-                                      localStorage.setItem(
-                                        "currentWeek",
-                                        JSON.stringify(currentWeek)
-                                      );
-                                      localStorage.setItem(
-                                        "courseId",
-                                        JSON.stringify(courseData?._id)
-                                      );
-                                    }}
-                                    to={`/taskDetails/${task?.taskId}?taskType=${task?.taskType}`}
-                                    className="text-[#3E4DAC] text-[14px] md:text-[22px] font-[700]"
-                                  >
-                                    {task?.taskName}
-                                  </Link>
-                                ) : (
-                                  <span
-                                    onClick={() =>
-                                      toast.error("Complete The Previous Task")
-                                    }
-                                    className="text-[#3E4DAC] text-[14px] md:text-[22px] font-[700]"
-                                  >
-                                    {task?.taskName}
-                                  </span>
-                                )}
-                                <p className="text-[#626262] text-[10px] md:text-[18px] font-[500]">
-                                  {task?.taskType}
-                                </p>
-                              </div>
-                            )}
+                            </div>
                           </div>
-                          {!toggleButton && (
-                            <div className="mx-2 flex items-center justify-center ">
-                              {Role !== "admin" && (
-                                <>
-                                  {userIsParticipant ? (
-                                    <>
-                                      {task?.participants?.find(
-                                        (item) =>
-                                          item?.participantId === userInfo?._id
-                                      )?.status === "Completed" ? (
-                                        <div className="w-full flex items-center justify-start gap-6">
-                                          {" "}
-                                          <img
-                                            src={Completed}
-                                            alt="Completed"
-                                          />
-                                        </div>
-                                      ) : (
-                                        <div className="w-full flex items-center justify-start gap-6">
-                                          <img
-                                            src={InProgress}
-                                            alt="InProgress"
-                                          />
-                                        </div>
-                                      )}
-                                    </>
-                                  ) : (
-                                    <div className="w-full flex flex-col gap-2">
-                                      <img src={Pending} alt="Pending" />
-                                      {!(
-                                        isPreviousTaskCompleted &&
-                                        isPrevChapterCompleted
-                                      ) &&
-                                        (courseData?.enableDrip ||
-                                          task?.taskDrip) && (
-                                          <img
-                                            className="w-[35px]"
-                                            src={lock}
-                                            alt="Lock"
-                                          />
-                                        )}
-                                    </div>
-                                  )}
-                                </>
+                          {Role === "admin" && (
+                            <div className="hidden max-w-[200px] md:flex gap-2 flex-wrap ">
+                              {task?.batches?.map((batch) => (
+                                <h1 className="p-1 bg-slate-200 font-sans rounded-md">
+                                  {batch?.batchName}
+                                </h1>
+                              ))}
+                            </div>
+                          )}
+                          {Role === "admin" && (
+                            <div className="relative flex items-center">
+                              <button
+                                onClick={() => {
+                                  if (clickedTask === task)
+                                    setClickedTask(null);
+                                  else setClickedTask(task);
+                                }}
+                                onBlur={() => setClickedTask(null)}
+                                className=" md:mr-[25px] "
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="30"
+                                  height="31"
+                                  viewBox="0 0 30 31"
+                                  fill="none"
+                                >
+                                  <path
+                                    d="M15.0166 12.6104C13.6432 12.6104 12.5195 13.734 12.5195 15.1074C12.5195 16.4808 13.6432 17.6045 15.0166 17.6045C16.39 17.6045 17.5137 16.4808 17.5137 15.1074C17.5137 13.734 16.39 12.6104 15.0166 12.6104ZM15.0166 5.11914C13.6432 5.11914 12.5195 6.24282 12.5195 7.61621C12.5195 8.9896 13.6432 10.1133 15.0166 10.1133C16.39 10.1133 17.5137 8.9896 17.5137 7.61621C17.5137 6.24282 16.39 5.11914 15.0166 5.11914ZM15.0166 20.1016C13.6432 20.1016 12.5195 21.2252 12.5195 22.5986C12.5195 23.972 13.6432 25.0957 15.0166 25.0957C16.39 25.0957 17.5137 23.972 17.5137 22.5986C17.5137 21.2252 16.39 20.1016 15.0166 20.1016Z"
+                                    fill="black"
+                                  />
+                                </svg>
+                              </button>
+                              {clickedTask === task && (
+                                <ul className="absolute z-10 right-5 top-[18px] md:top-[35px] w-max border  bg-[#141414] border-t-0 p-1 md:p-2 rounded-[8px] mt-1 transform translate-y-[-10px] shadow-[0px_2px_4px_0px_#00000026]">
+                                  <li
+                                    onMouseDown={() => {
+                                      localStorage.setItem(
+                                        "chapter",
+                                        chapter?.chapterName
+                                      );
+                                      localStorage.setItem(
+                                        "task",
+                                        JSON.stringify(task)
+                                      );
+                                      localStorage.setItem(
+                                        "course",
+                                        courseData?.courseFullName
+                                      );
+                                      localStorage.setItem(
+                                        "currentWeek",
+                                        JSON.stringify(currentWeek)
+                                      );
+                                      navigate(
+                                        `/editTask/${task?.taskId}?taskType=${task?.taskType}`
+                                      );
+                                    }}
+                                    className="cursor-pointer p-1 md:p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[10px] md:text-[13px] font-[600] "
+                                  >
+                                    Edit Task
+                                  </li>
+                                  <li
+                                    className="cursor-pointer p-1 md:p-2 hover:bg-[#5c5c5c5c] rounded-lg w-full text-left text-[#fff] text-[10px] md:text-[13px] font-[600] "
+                                    onMouseDown={() => {
+                                      // handleTaskDelete(task, chapter);
+                                      setDeleteTaskPopup(true);
+                                      setSelectedChapterAndTaskToDeleteTask({
+                                        task,
+                                        chapter,
+                                      });
+                                    }}
+                                  >
+                                    Delete Task
+                                  </li>
+                                </ul>
                               )}
+                              <button className=" hidden md:block cursor-move">
+                                <MenuIcon />
+                              </button>
                             </div>
                           )}
                         </div>
-                        {chapter?.tasks?.length - 1 !== taskIndex && (
+                        {openTopics?.find((item) => item?._id === chapter?._id)
+                          ?.tasks?.length -
+                          1 !==
+                          taskIndex && (
                           <hr className="w-[2px] pt-[68px] md:pt-[150px] bg-[#C7C7C7] absolute bottom-[-45px] md:bottom-[-100px] md:left-[175px] left-[38px]" />
                         )}
                       </div>
-                    );
-                  })}
+                    ))}
+                {Role !== "admin" &&
+                  openTopics
+                    ?.find((item) => item?._id === chapter?._id)
+                    ?.tasks?.map((task, taskIndex) => {
+                      const userIsParticipant = task?.participants?.some(
+                        (item) => item?.participantId === userInfo?._id
+                      );
+
+                      const chapterDataForChecking = openTopics?.find(
+                        (item) => item?._id === chapter?._id
+                      );
+
+                      const isPreviousTaskCompleted =
+                        taskIndex === 0 || // Always allow navigation for the first task
+                        chapterDataForChecking.tasks?.[
+                          taskIndex - 1
+                        ]?.participants?.some(
+                          (item) =>
+                            item?.participantId === userInfo?._id &&
+                            (item?.status === "Completed" ||
+                              item?.status === "In Progress")
+                        );
+
+                      let isPrevChapterCompleted =
+                        chapterDataForChecking?.previousChapterCompletionStatus;
+
+                      if (taskIndex !== 0) isPrevChapterCompleted = true;
+
+                      return (
+                        <div key={task?.taskId} className="relative">
+                          <div className="flex items-center justify-between my-[20px] md:my-[60px] relative z-10">
+                            {toggleButton && (
+                              <div className="w-[85px] flex items-center justify-center ">
+                                {Role !== "admin" && (
+                                  <>
+                                    {userIsParticipant ? (
+                                      <>
+                                        {task?.participants?.find(
+                                          (item) =>
+                                            item?.participantId ===
+                                            userInfo?._id
+                                        )?.status === "Completed" ? (
+                                          <div className="w-full flex items-center justify-start gap-6">
+                                            {" "}
+                                            <img
+                                              src={Completed}
+                                              alt="Completed"
+                                            />
+                                          </div>
+                                        ) : (
+                                          <div className="w-full flex items-center justify-start gap-6">
+                                            <img
+                                              src={InProgress}
+                                              alt="InProgress"
+                                            />
+                                          </div>
+                                        )}
+                                      </>
+                                    ) : (
+                                      <div className="w-full flex items-center justify-start gap-6">
+                                        <img src={Pending} alt="Pending" />
+                                        {!(
+                                          isPreviousTaskCompleted &&
+                                          isPrevChapterCompleted
+                                        ) &&
+                                          (courseData?.enableDrip ||
+                                            task?.taskDrip) && (
+                                            <img
+                                              className="w-[35px]"
+                                              src={lock}
+                                              alt="Lock"
+                                            />
+                                          )}
+                                      </div>
+                                    )}
+                                  </>
+                                )}
+                              </div>
+                            )}
+                            <div className="flex w-full items-center">
+                              <>
+                                {task?.taskType === "Reading" && (
+                                  <img
+                                    className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
+                                    src={ReadingTask}
+                                    alt="Task"
+                                  />
+                                )}
+                                {task?.taskType === "Classes" && (
+                                  <img
+                                    className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
+                                    src={ClassesTask}
+                                    alt="Task"
+                                  />
+                                )}
+                                {task?.taskType === "Assignment" && (
+                                  <img
+                                    className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
+                                    src={AssignmentTask}
+                                    alt="Task"
+                                  />
+                                )}
+                                {task?.taskType === "Quiz" && (
+                                  <img
+                                    className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
+                                    src={QuizTask}
+                                    alt="Task"
+                                  />
+                                )}
+                                {task?.taskType === "Live Test" && (
+                                  <img
+                                    className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
+                                    src={LiveTestTask}
+                                    alt="Task"
+                                  />
+                                )}
+                                {task?.taskType === "Video" && (
+                                  <img
+                                    className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
+                                    src={VideoTask}
+                                    alt="Task"
+                                  />
+                                )}
+                                {task?.taskType === "Audio" && (
+                                  <img
+                                    className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
+                                    src={AudioTask}
+                                    alt="Task"
+                                  />
+                                )}
+                                {task?.taskType === "Files" && (
+                                  <img
+                                    className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
+                                    src={FilesTask}
+                                    alt="Task"
+                                  />
+                                )}
+                                {task?.taskType === "Schedule" && (
+                                  <img
+                                    className=" ml-[20px] md:ml-[60px] w-[40px] md:w-[65px] mr-[12px] md:mr-[30px] "
+                                    src={ScheduleTask}
+                                    alt="Task"
+                                  />
+                                )}
+                              </>
+                              {courseData?.enableDrip && (
+                                <div className="">
+                                  {isPreviousTaskCompleted &&
+                                  isPrevChapterCompleted ? (
+                                    <Link
+                                      onClick={() => {
+                                        localStorage.setItem(
+                                          "chapter",
+                                          chapter?.chapterName
+                                        );
+                                        localStorage.setItem(
+                                          "task",
+                                          JSON.stringify(task)
+                                        );
+                                        localStorage.setItem(
+                                          "currentWeek",
+                                          JSON.stringify(currentWeek)
+                                        );
+                                        localStorage.setItem(
+                                          "courseId",
+                                          JSON.stringify(courseData?._id)
+                                        );
+                                      }}
+                                      to={`/taskDetails/${task?.taskId}?taskType=${task?.taskType}`}
+                                      className="text-[#3E4DAC] text-[14px] md:text-[22px] font-[700]"
+                                    >
+                                      {task?.taskName}
+                                    </Link>
+                                  ) : (
+                                    <span
+                                      onClick={() =>
+                                        toast.error(
+                                          "Complete The Previous Task"
+                                        )
+                                      }
+                                      className="text-[#3E4DAC] text-[14px] md:text-[22px] font-[700]"
+                                    >
+                                      {task?.taskName}
+                                    </span>
+                                  )}
+                                  <p className="text-[#626262] text-[10px] md:text-[18px] font-[500]">
+                                    {task?.taskType}
+                                  </p>
+                                </div>
+                              )}
+                              {!courseData?.enableDrip && (
+                                <div className="">
+                                  {(isPreviousTaskCompleted &&
+                                    isPrevChapterCompleted) ||
+                                  !task?.taskDrip ? (
+                                    <Link
+                                      onClick={() => {
+                                        localStorage.setItem(
+                                          "chapter",
+                                          chapter?.chapterName
+                                        );
+                                        localStorage.setItem(
+                                          "task",
+                                          JSON.stringify(task)
+                                        );
+                                        localStorage.setItem(
+                                          "currentWeek",
+                                          JSON.stringify(currentWeek)
+                                        );
+                                        localStorage.setItem(
+                                          "courseId",
+                                          JSON.stringify(courseData?._id)
+                                        );
+                                      }}
+                                      to={`/taskDetails/${task?.taskId}?taskType=${task?.taskType}`}
+                                      className="text-[#3E4DAC] text-[14px] md:text-[22px] font-[700]"
+                                    >
+                                      {task?.taskName}
+                                    </Link>
+                                  ) : (
+                                    <span
+                                      onClick={() =>
+                                        toast.error(
+                                          "Complete The Previous Task"
+                                        )
+                                      }
+                                      className="text-[#3E4DAC] text-[14px] md:text-[22px] font-[700]"
+                                    >
+                                      {task?.taskName}
+                                    </span>
+                                  )}
+                                  <p className="text-[#626262] text-[10px] md:text-[18px] font-[500]">
+                                    {task?.taskType}
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+                            {!toggleButton && (
+                              <div className="mx-2 flex items-center justify-center ">
+                                {Role !== "admin" && (
+                                  <>
+                                    {userIsParticipant ? (
+                                      <>
+                                        {task?.participants?.find(
+                                          (item) =>
+                                            item?.participantId ===
+                                            userInfo?._id
+                                        )?.status === "Completed" ? (
+                                          <div className="w-full flex items-center justify-start gap-6">
+                                            {" "}
+                                            <img
+                                              src={Completed}
+                                              alt="Completed"
+                                            />
+                                          </div>
+                                        ) : (
+                                          <div className="w-full flex items-center justify-start gap-6">
+                                            <img
+                                              src={InProgress}
+                                              alt="InProgress"
+                                            />
+                                          </div>
+                                        )}
+                                      </>
+                                    ) : (
+                                      <div className="w-full flex flex-col gap-2">
+                                        <img src={Pending} alt="Pending" />
+                                        {!(
+                                          isPreviousTaskCompleted &&
+                                          isPrevChapterCompleted
+                                        ) &&
+                                          (courseData?.enableDrip ||
+                                            task?.taskDrip) && (
+                                            <img
+                                              className="w-[35px]"
+                                              src={lock}
+                                              alt="Lock"
+                                            />
+                                          )}
+                                      </div>
+                                    )}
+                                  </>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                          {openTopics?.find(
+                            (item) => item?._id === chapter?._id
+                          )?.tasks?.length -
+                            1 !==
+                            taskIndex && (
+                            <hr className="w-[2px] pt-[68px] md:pt-[150px] bg-[#C7C7C7] absolute bottom-[-45px] md:bottom-[-100px] md:left-[175px] left-[38px]" />
+                          )}
+                        </div>
+                      );
+                    })}
               </div>
             </div>
             {Role === "admin" && (

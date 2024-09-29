@@ -53,14 +53,14 @@ const BatchConfiguration = ({
       },
     };
 
-    console.log(sendData);
+    // console.log(sendData);
 
     const newBatch = await axios.post(
       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches`,
       sendData
     );
 
-    console.log(newBatch);
+    // console.log(newBatch);
 
     // sendData?.user?.participants?.forEach((element) => {
     //   createUser(element?.email, element?.password);
@@ -96,7 +96,7 @@ const BatchConfiguration = ({
       // participants: participants,
     };
 
-    console.log(sendData);
+    // console.log(sendData);
 
     try {
       const editBatch = await axios.put(
@@ -104,7 +104,7 @@ const BatchConfiguration = ({
         sendData
       );
 
-      console.log(editBatch); // Log the response data
+      // console.log(editBatch); // Log the response data
 
       if (editBatch?.status === 200) {
         toast.success("Batch Updated Successfully");
@@ -137,7 +137,7 @@ const BatchConfiguration = ({
             `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/deleteBatch/batchId/${selectedBatches[0]?._id}`
           );
 
-          console.log(deleteBatch);
+          // console.log(deleteBatch);
 
           // sendData?.user?.participants?.forEach((element) => {
           //   createUser(element?.email, element?.password);
@@ -174,7 +174,7 @@ const BatchConfiguration = ({
             title: "Oops...",
             text: `${error?.message}`,
           });
-          console.log(error?.message);
+          // console.log(error?.message);
         }
       }
     });

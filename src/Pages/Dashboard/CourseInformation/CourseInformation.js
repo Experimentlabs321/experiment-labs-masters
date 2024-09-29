@@ -158,7 +158,7 @@ const CourseInformation = () => {
 
     if (newChapter?.data?.acknowledged) {
       toast.success("Chapter added Successfully");
-      console.log(newChapter?.data);
+      // console.log(newChapter?.data);
       setChapters([
         ...chapters,
         { ...chapter, _id: newChapter?.data?.insertedId },
@@ -167,7 +167,7 @@ const CourseInformation = () => {
       event.target.reset();
     }
 
-    console.log("Add chapter----->", chapter);
+    // console.log("Add chapter----->", chapter);
   };
 
   const handleEditChapterName = async (event) => {
@@ -207,7 +207,7 @@ const CourseInformation = () => {
       confirmButtonText: "Delete",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        console.log("Delete functionality...", task);
+        // console.log("Delete functionality...", task);
         let taskTypeForAPI;
         switch (task?.taskType) {
           case "Assignment":
@@ -290,7 +290,7 @@ const CourseInformation = () => {
             );
           selectedChapterAndTaskToDeleteTask.task.batches = remainingBatches;
           setSelectedBatchesToDeleteTask([]);
-          console.log(selectedChapterAndTaskToDeleteTask.task);
+          // console.log(selectedChapterAndTaskToDeleteTask.task);
           fetch(
             `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/${taskTypeForAPI}/taskId/${task?.taskId}`,
             {
@@ -375,7 +375,7 @@ const CourseInformation = () => {
     if (currentWeek?._id) {
       axios
         .get(
-          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/weekId/${currentWeek?._id}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/limited/weekId/${currentWeek?._id}`
         )
         .then((response) => {
           if (Role === "admin") setChapters(response?.data);
@@ -384,7 +384,7 @@ const CourseInformation = () => {
             const batchId = userInfo?.courses?.find(
               (item) => item?.courseId === courseData?._id
             )?.batchId;
-            console.log(batchId);
+            // console.log(batchId);
             response?.data?.forEach((item) => {
               let singleChapter = { ...item };
               singleChapter.tasks = [];
@@ -395,13 +395,13 @@ const CourseInformation = () => {
                   )
                 ) {
                   singleChapter.tasks.push(singleTask);
-                  console.log(item);
+                  // console.log(item);
                 }
               });
               chapterWithFilteredTask.push(singleChapter);
             });
             setChapters(chapterWithFilteredTask);
-            console.log("tasks =======>", chapterWithFilteredTask[0]?.tasks);
+            // console.log("tasks =======>", chapterWithFilteredTask[0]?.tasks);
           }
           setIsLoading(false);
         })
@@ -426,7 +426,7 @@ const CourseInformation = () => {
         });
   }, [id]);
 
-  console.log(chapters);
+  // console.log(chapters);
 
   return (
     <div>
@@ -476,7 +476,7 @@ const CourseInformation = () => {
                       width={600}
                       title={
                         <p className=" h-[90px] text-[22px] font-[700] flex items-center text-[#3E4DAC] px-[32px] py-5 border-b-2">
-                        Add Task
+                          Add Task
                         </p>
                       }
                     >

@@ -1,22 +1,18 @@
-import React, {
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React, { useContext, useEffect, useState } from "react";
 
-import axios from 'axios';
-import toast from 'react-hot-toast';
-import { useParams } from 'react-router-dom';
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useParams } from "react-router-dom";
 
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import Rating from '@mui/material/Rating';
-import { styled } from '@mui/material/styles';
-import Typography from '@mui/material/Typography';
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import Rating from "@mui/material/Rating";
+import { styled } from "@mui/material/styles";
+import Typography from "@mui/material/Typography";
 
-import { AuthContext } from '../../../contexts/AuthProvider';
+import { AuthContext } from "../../../contexts/AuthProvider";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -28,7 +24,6 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 const FeedbackPopup = ({ taskData }) => {
-  
   const { id } = useParams();
 
   const { userInfo, user } = useContext(AuthContext);
@@ -67,21 +62,22 @@ const FeedbackPopup = ({ taskData }) => {
   const handleClose = () => {
     setOpen(false);
   };
-   console.log(taskData?.courseId)
+  //  console.log(taskData?.courseId)
 
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACKEND_API}/chapters/${id}`)
-     // .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${id}`)
+      // .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${id}`)
       .then((response) => {
-       
         setCourseId(response?.data?.map((item) => item.courseId));
       })
       .catch((error) => console.error(error));
 
     axios
-     // .get(`${process.env.REACT_APP_BACKEND_API}/getFeedback/${taskData?._id}`)
-      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/givenFeedbacks/taskId/${taskData?._id}`)
+      // .get(`${process.env.REACT_APP_BACKEND_API}/getFeedback/${taskData?._id}`)
+      .get(
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/givenFeedbacks/taskId/${taskData?._id}`
+      )
 
       .then((response) => {
         if (response?.data) {
@@ -106,14 +102,13 @@ const FeedbackPopup = ({ taskData }) => {
   useEffect(() => {
     axios
       .get(
-       // `${process.env.REACT_APP_BACKEND_API}/feedback_categories/${userInfo?.organizationId}`
-       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/feedbackCategories/organizationId/${userInfo?.organizationId}`
-      
+        // `${process.env.REACT_APP_BACKEND_API}/feedback_categories/${userInfo?.organizationId}`
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/feedbackCategories/organizationId/${userInfo?.organizationId}`
       )
       .then((response) => {
-       // setFeedbacks(response?.data);
+        // setFeedbacks(response?.data);
         const feedbacks = response?.data?.courses?.find(
-         // (data) => data?.courseId === courseId[0]
+          // (data) => data?.courseId === courseId[0]
           (data) => data?.courseId === taskData?.courseId
         );
 
@@ -128,7 +123,14 @@ const FeedbackPopup = ({ taskData }) => {
         setSelectedCategory(feedbacks?.categories[0].categoryName);
       })
       .catch((error) => console.error(error));
-  }, [userInfo?.organizationId, courseId, existing,getFeedback,isDurationEnded,taskData?.courseId]);
+  }, [
+    userInfo?.organizationId,
+    courseId,
+    existing,
+    getFeedback,
+    isDurationEnded,
+    taskData?.courseId,
+  ]);
 
   // console.log(feedbacks)
   // console.log(existing)
@@ -205,7 +207,7 @@ const FeedbackPopup = ({ taskData }) => {
     }
   }, [feedbackGiven]);
 
-  console.log(open);
+  // console.log(open);
   // console.log(userInfo)
 
   const handleComment = (e) => {
@@ -231,7 +233,7 @@ const FeedbackPopup = ({ taskData }) => {
 
     try {
       const addFeedback = await axios.post(
-       // `${process.env.REACT_APP_BACKEND_API}/givenFeedbacks`,
+        // `${process.env.REACT_APP_BACKEND_API}/givenFeedbacks`,
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/givenFeedbacks`,
         manageFeedback
       );
@@ -256,7 +258,7 @@ const FeedbackPopup = ({ taskData }) => {
       console.error("Error occurred while submitting feedback:", error);
     }
   };
-  console.log(feedbacks)
+  // console.log(feedbacks)
   return (
     <form>
       {/*     <Button variant="outlined" onClick={handleClickOpen}>

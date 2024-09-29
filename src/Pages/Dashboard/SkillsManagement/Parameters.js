@@ -5,7 +5,7 @@ const Parameters = ({
   allParameters,
   parameters,
   setParameters,
-  itemDetails
+  itemDetails,
 }) => {
   const [evaluation, setEvaluation] = useState("");
   const [evaluationDropdown, setEvaluationDropdown] = useState(false);
@@ -16,9 +16,9 @@ const Parameters = ({
 
   const handleEvaluationSelectParameter = (item) => {
     setEvaluation(item);
-    if (parameters?.find((parameter) => parameter === item))
-      console.log(parameters);
-    else setParameters([...parameters, item]);
+    if (parameters?.find((parameter) => parameter === item)) {
+      // console.log(parameters);
+    } else setParameters([...parameters, item]);
     setEvaluation("");
     setEvaluationDropdown(false);
   };
@@ -26,7 +26,7 @@ const Parameters = ({
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
       event.preventDefault();
-      console.log("Enter key pressed in input!");
+      // console.log("Enter key pressed in input!");
       // You can add any logic you want here
     }
   };
@@ -71,13 +71,14 @@ const Parameters = ({
     const newParameters = parameters.filter((tag) => tag !== removedTag);
     setParameters(newParameters);
   };
-  
+
   return (
     <>
       <div className="relative">
         <label className="text-[16px] font-[600]" htmlFor="case">
-        { itemDetails?.evaluationOn ? itemDetails?.evaluationOn : "Evaluation on" }
-          
+          {itemDetails?.evaluationOn
+            ? itemDetails?.evaluationOn
+            : "Evaluation on"}
         </label>
         <input
           onKeyPress={handleKeyPress}

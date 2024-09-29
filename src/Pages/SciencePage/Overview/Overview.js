@@ -19,13 +19,11 @@ import { toast } from "react-hot-toast";
 import ReactGA from "react-ga4";
 import Swal from "sweetalert2";
 
-
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const Overview = () => {
-
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -45,7 +43,7 @@ const Overview = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("Clicked");
+    // console.log("Clicked");
     ReactGA.event({
       category: "Click",
       action: "Submit Data From Navbar",
@@ -67,20 +65,17 @@ const Overview = () => {
       Time: new Date(),
     };
 
-    console.log("Gone Here ===============>", data);
+    // console.log("Gone Here ===============>", data);
 
-    fetch(
-      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/interactions`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }
-    )
+    fetch(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/interactions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
       .then(async (res) => {
-        console.log("Submit ===============>", res);
+        // console.log("Submit ===============>", res);
         const sendMail = await axios.post(
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
           {
@@ -97,7 +92,7 @@ const Overview = () => {
             `,
           }
         );
-        console.log("Send Mail ===============>", sendMail);
+        // console.log("Send Mail ===============>", sendMail);
         if (sendMail?.data?.success) {
           Swal.fire({
             icon: "success",
@@ -108,7 +103,7 @@ const Overview = () => {
       })
       .catch((error) => {
         // Errors are reported there
-        console.log(error);
+        // console.log(error);
       });
   };
 
@@ -118,7 +113,7 @@ const Overview = () => {
     ReactGA.event({
       category: "Click",
       action: "Open Form for Career Handbook from Science & Innovation Hero",
-      label: 'Apply Now'
+      label: "Apply Now",
     });
     setOpen2(true);
   };
@@ -127,10 +122,9 @@ const Overview = () => {
     setOpen2(false);
   };
 
-
-  const handleSubmit2 = event => {
+  const handleSubmit2 = (event) => {
     event.preventDefault();
-    console.log("Clicked");
+    // console.log("Clicked");
     ReactGA.event({
       category: "Click",
       action: "Submit Data From Navbar",
@@ -152,20 +146,17 @@ const Overview = () => {
       Time: new Date(),
     };
 
-    console.log("Gone Here ===============>", data);
+    // console.log("Gone Here ===============>", data);
 
-    fetch(
-      `${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/interactions`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }
-    )
+    fetch(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/users/interactions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
       .then(async (res) => {
-        console.log("Submit ===============>", res);
+        // console.log("Submit ===============>", res);
         const sendMail = await axios.post(
           `${process.env.REACT_APP_SERVERLESS_API}/api/v1/sendMail`,
           {
@@ -182,7 +173,7 @@ const Overview = () => {
               `,
           }
         );
-        console.log("Send Mail ===============>", sendMail);
+        // console.log("Send Mail ===============>", sendMail);
         if (sendMail?.data?.success) {
           Swal.fire({
             icon: "success",
@@ -193,15 +184,15 @@ const Overview = () => {
       })
       .catch((error) => {
         // Errors are reported there
-        console.log(error);
+        // console.log(error);
       });
 
-    const a = document.createElement('a');
-    a.href = 'https://drive.google.com/uc?export=download&id=16Zpw9uP_ZyWmyjuKAeEi6h11-WXrN8sl';
-    a.download = 'HandBook.pdf'; // Set the desired file name
+    const a = document.createElement("a");
+    a.href =
+      "https://drive.google.com/uc?export=download&id=16Zpw9uP_ZyWmyjuKAeEi6h11-WXrN8sl";
+    a.download = "HandBook.pdf"; // Set the desired file name
     a.click();
-
-  }
+  };
 
   return (
     <div className="pt-40 flex items-center justify-center pb-20 font">
@@ -221,9 +212,8 @@ const Overview = () => {
                   <PlayArrowRoundedIcon sx={{ color: "#FFFFFF" }} />
                 </span>
                 <span style={{ fontWeight: "500" }}>
-                  Discover various career options in
-                  Engineering,Product Management,Design, Research and 40+
-                  fields.
+                  Discover various career options in Engineering,Product
+                  Management,Design, Research and 40+ fields.
                 </span>
               </div>
               <div className="flex flex-row items-center gap-1">
@@ -247,10 +237,16 @@ const Overview = () => {
             </div>
 
             <div className="flex flex-col lg:flex-row w-full gap-8">
-              <button onClick={handleClickOpen} className=" rounded-3xl bg-[#6278FF] font-semibold hover:bg-opacity-80 hover:transition-all hover:delay-300 hover:ease-out w-full py-1">
+              <button
+                onClick={handleClickOpen}
+                className=" rounded-3xl bg-[#6278FF] font-semibold hover:bg-opacity-80 hover:transition-all hover:delay-300 hover:ease-out w-full py-1"
+              >
                 Connect With Counsellor
               </button>
-              <button onClick={handleClickOpen2} className=" border border-[#6278FF] rounded-3xl font-semibold hover:bg-opacity-80 hover:transition-all hover:delay-300 hover:ease-out w-full py-1">
+              <button
+                onClick={handleClickOpen2}
+                className=" border border-[#6278FF] rounded-3xl font-semibold hover:bg-opacity-80 hover:transition-all hover:delay-300 hover:ease-out w-full py-1"
+              >
                 Download Career Report
               </button>
             </div>
@@ -318,11 +314,7 @@ const Overview = () => {
               </div>
               <div className="mt-2">
                 <h1 className="text-2xl font-bold">July 11, 2023</h1>
-                <p
-                  className="font-thin mt-2 text-sm"
-                >
-                  Limited seats only
-                </p>
+                <p className="font-thin mt-2 text-sm">Limited seats only</p>
               </div>
             </div>
           </div>
@@ -480,44 +472,90 @@ const Overview = () => {
         onClose={handleClose2}
         aria-labelledby="responsive-dialog-title"
       >
-
-        <div className='bg-dark w-full min-w-[300px] sm:min-w-[350px] lg:w-[500px] p-5 cursor-pointer'>
-          <div className='w-full'>
-            <h4 onClick={handleClose2} className='text-xl text-white text-right hover:text-purple'>x</h4>
-            <h1 className='text-2xl font-semibold text-pink text-center'>DOWNLOAD  Career Handbook</h1>
+        <div className="bg-dark w-full min-w-[300px] sm:min-w-[350px] lg:w-[500px] p-5 cursor-pointer">
+          <div className="w-full">
+            <h4
+              onClick={handleClose2}
+              className="text-xl text-white text-right hover:text-purple"
+            >
+              x
+            </h4>
+            <h1 className="text-2xl font-semibold text-pink text-center">
+              DOWNLOAD Career Handbook
+            </h1>
           </div>
-          <form onSubmit={handleSubmit2} autoComplete='off' className='lg:px-10'>
-            <div className='flex flex-col items-center mt-6 gap-1 text-white'>
+          <form
+            onSubmit={handleSubmit2}
+            autoComplete="off"
+            className="lg:px-10"
+          >
+            <div className="flex flex-col items-center mt-6 gap-1 text-white">
               <label htmlFor="name">Enter Name</label>
-              <input required className="text-center w-full py-2 rounded-3xl text-black focus:outline-none" placeholder='Enter your Name' type="text" name="name" id="name" />
+              <input
+                required
+                className="text-center w-full py-2 rounded-3xl text-black focus:outline-none"
+                placeholder="Enter your Name"
+                type="text"
+                name="name"
+                id="name"
+              />
             </div>
-            <div className='flex flex-col items-center mt-6 gap-1 text-white'>
+            <div className="flex flex-col items-center mt-6 gap-1 text-white">
               <label htmlFor="number">Enter Number</label>
-              <input required className="text-center w-full py-2 rounded-3xl text-black focus:outline-none" placeholder='Enter your number' type="number" name="number" id="number" />
+              <input
+                required
+                className="text-center w-full py-2 rounded-3xl text-black focus:outline-none"
+                placeholder="Enter your number"
+                type="number"
+                name="number"
+                id="number"
+              />
             </div>
-            <div className='flex flex-col items-center mt-6 gap-1 text-white'>
+            <div className="flex flex-col items-center mt-6 gap-1 text-white">
               <label htmlFor="email">Enter Email</label>
-              <input required className="text-center w-full py-2 rounded-3xl text-black focus:outline-none" placeholder='Enter your email' type="email" name="email" id="email" />
+              <input
+                required
+                className="text-center w-full py-2 rounded-3xl text-black focus:outline-none"
+                placeholder="Enter your email"
+                type="email"
+                name="email"
+                id="email"
+              />
             </div>
-            <div className='flex flex-col items-center mt-6 gap-1 text-white'>
+            <div className="flex flex-col items-center mt-6 gap-1 text-white">
               <label htmlFor="option">Select One</label>
-              <select required className="text-center w-full py-2 rounded-3xl text-black focus:outline-none" name="option" id="option">
+              <select
+                required
+                className="text-center w-full py-2 rounded-3xl text-black focus:outline-none"
+                name="option"
+                id="option"
+              >
                 <option value="Student">Student</option>
                 <option value="Parent">Parent</option>
                 <option value="Counselor">Counselor</option>
                 <option value="Others">Others</option>
               </select>
             </div>
-            <div className='flex flex-col items-center mt-6 gap-1 text-white'>
+            <div className="flex flex-col items-center mt-6 gap-1 text-white">
               <label htmlFor="city">Enter City</label>
-              <input required className="text-center w-full py-2 rounded-3xl text-black focus:outline-none" placeholder='Enter your city' type="text" name="city" id="city" />
+              <input
+                required
+                className="text-center w-full py-2 rounded-3xl text-black focus:outline-none"
+                placeholder="Enter your city"
+                type="text"
+                name="city"
+                id="city"
+              />
             </div>
-            <div className='flex flex-col items-center mt-6 gap-1 text-white'>
-              <input className='text-white py-2 font-bold rounded-3xl bg-pink hover:bg-purple w-1/2 text-center' type="submit" value={'Download'} />
+            <div className="flex flex-col items-center mt-6 gap-1 text-white">
+              <input
+                className="text-white py-2 font-bold rounded-3xl bg-pink hover:bg-purple w-1/2 text-center"
+                type="submit"
+                value={"Download"}
+              />
             </div>
           </form>
         </div>
-
       </Dialog>
     </div>
   );
