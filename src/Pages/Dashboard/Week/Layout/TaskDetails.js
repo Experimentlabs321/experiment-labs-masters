@@ -171,6 +171,7 @@ const TaskDetails = () => {
         .catch((error) => console.error(error));
   }, [week, count]);
   // console.log(chapters);
+  // console.log(chapters);
   return (
     <div key={taskData?._id}>
       <div>
