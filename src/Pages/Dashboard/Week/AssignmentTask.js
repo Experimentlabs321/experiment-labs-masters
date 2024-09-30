@@ -7,8 +7,14 @@ import { AuthContext } from "../../../contexts/AuthProvider";
 import axios from "axios";
 import { Navigate, useNavigate } from "react-router-dom";
 
-const AssignmentTask = ({ taskData, count, setCount }) => {
-  const { userInfo } = useContext(AuthContext);
+const AssignmentTask = ({
+  taskData,
+  count,
+  setCount,
+  taskCompletionCount,
+  setTaskCompletionCount,
+}) => {
+  const { userInfo, user } = useContext(AuthContext);
   const navigate = useNavigate();
   const [view, setView] = useState("Instructions");
   if (userInfo.role !== "admin") {
@@ -138,7 +144,13 @@ const AssignmentTask = ({ taskData, count, setCount }) => {
           <Instructions instructions={taskData?.instructions} />
         )}
         {view === "Submission" && (
-          <Submission taskData={taskData} count={count} setCount={setCount} />
+          <Submission
+            taskData={taskData}
+            count={count}
+            setCount={setCount}
+            taskCompletionCount={taskCompletionCount}
+            setTaskCompletionCount={setTaskCompletionCount}
+          />
         )}
         {view === "Review Submission" && (
           <ReviewSubmission taskData={taskData} />

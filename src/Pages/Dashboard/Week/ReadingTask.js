@@ -13,7 +13,13 @@ import { AuthContext } from "../../../contexts/AuthProvider";
 import Loading from "../../Shared/Loading/Loading";
 import Quiz from "./SubFile/Shared/Quiz";
 
-const ReadingTask = ({ taskData, count, setCount }) => {
+const ReadingTask = ({
+  taskData,
+  count,
+  setCount,
+  taskCompletionCount,
+  setTaskCompletionCount,
+}) => {
   const navigate = useNavigate();
   const [additionalFile, setAdditionalFile] = useState("");
   const { userInfo, user } = useContext(AuthContext);
@@ -100,6 +106,9 @@ const ReadingTask = ({ taskData, count, setCount }) => {
           title: "Congratulations!",
           text: "You have completed successfully!",
         });
+        setTimeout(() => {
+          setTaskCompletionCount(taskCompletionCount + 1);
+        }, 2000);
         // navigate(`/questLevels/${chapterId}`);
       } else {
         Swal.fire({
@@ -206,20 +215,23 @@ const ReadingTask = ({ taskData, count, setCount }) => {
   const [progress, setProgress] = React.useState(0);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress((oldProgress) => {
-        if (oldProgress === 100) {
-          return 0;
-        }
-        const diff = Math.random() * 10;
-        return Math.min(oldProgress + diff, 100);
-      });
-    }, 500);
+    if (!iframeLoaded && taskData?.additionalFiles) {
+      const timer = setInterval(() => {
+        setProgress((oldProgress) => {
+          if (oldProgress === 100) {
+            return 0;
+          }
+          const diff = Math.random() * 10;
+          return Math.min(oldProgress + diff, 100);
+        });
+      }, 500);
 
-    return () => {
-      clearInterval(timer);
-    };
+      return () => {
+        clearInterval(timer);
+      };
+    }
   }, []);
+
   return (
     <div>
       {completionStatus ? (
@@ -237,7 +249,7 @@ const ReadingTask = ({ taskData, count, setCount }) => {
         </button>
       )}
 
-      {!iframeLoaded && (
+      {!iframeLoaded && taskData?.additionalFiles && (
         <div className=" flex justify-center  w-full  ">
           <div className="flex flex-col items-center gap-3">
             <p className="mt-20">Loading...</p>
@@ -354,6 +366,8 @@ const ReadingTask = ({ taskData, count, setCount }) => {
           questions={taskData?.completionParameter?.questions}
           count={count}
           setCount={setCount}
+          taskCompletionCount={taskCompletionCount}
+          setTaskCompletionCount={setTaskCompletionCount}
         />
       )}
       <div className="px-4 py-20 textEditor">

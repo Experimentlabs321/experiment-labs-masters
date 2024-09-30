@@ -41,6 +41,9 @@ const Aside = ({
   courseData,
   count,
   setCount,
+  taskData,
+  taskCompletionCount,
+  setTaskCompletionCount,
 }) => {
   // const [openTopic, setOpenTopic] = useState(data[0]?.name);
   // const [openTask, setOpenTask] = useState(data[0]?.tasks[0]);
@@ -51,10 +54,55 @@ const Aside = ({
   const [clickedChapter, setClickedChapter] = useState({});
   const options = ["Category name"];
   const [openTopics, setOpenTopics] = useState([]);
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo, user } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [loadingChapterId, setLoadingChapterId] = useState("");
 
   const asideRef = useRef(null); // Create a ref for the aside element
+
+  const handleGetChapterDataWithTask = async (chapterId, index) => {
+    await axios
+      .get(
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${chapterId}/${
+          chapters[index - 1]?._id || "unavailable"
+        }/email/${user?.email}`
+      )
+      .then((response) => {
+        if (userInfo?.role === "admin") {
+          setOpenTopics([
+            ...openTopics?.filter((i) => i?._id !== chapterId),
+            response?.data[0],
+          ]);
+          setLoadingChapterId("");
+        } else {
+          const batchId = userInfo?.courses?.find(
+            (item) => item?.courseId === courseData?._id
+          )?.batchId;
+          let singleChapter = { ...response?.data[0] };
+          singleChapter.tasks = [];
+          response?.data[0]?.tasks?.forEach((singleTask) => {
+            if (
+              singleTask?.batches?.find(
+                (singleBatch) => singleBatch?.batchId === batchId
+              )
+            ) {
+              singleChapter.tasks.push(singleTask);
+              // console.log(item);
+            }
+          });
+          setOpenTopics([
+            ...openTopics?.filter((i) => i?._id !== chapterId),
+            singleChapter,
+          ]);
+          setLoadingChapterId("");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  // console.log(openTopics);
 
   // Effect for handling clicks outside of the aside
   useEffect(() => {
@@ -78,9 +126,72 @@ const Aside = ({
 
   useEffect(() => {
     if (openTopics?.length === 0) {
-      if (chapters && chapters[0]) setOpenTopics([chapters[0]?._id]);
+      if (chapters && chapters[0]) {
+        const indexOfTaskChapter = chapters.findIndex(
+          (x) => x?._id === taskData?.chapterId
+        );
+        if (taskData?.chapterId) {
+          setLoadingChapterId(taskData?.chapterId);
+          handleGetChapterDataWithTask(taskData?.chapterId, indexOfTaskChapter);
+        }
+      }
     }
-  }, [chapters]);
+  }, [taskData, chapters]);
+
+  const handleGetChapterDataWithTaskForTaskCompletion = async (
+    chapterId,
+    index
+  ) => {
+    await axios
+      .get(
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/${chapterId}/${
+          chapters[index - 1]?._id || "unavailable"
+        }/email/${user?.email}`
+      )
+      .then((response) => {
+        if (userInfo?.role === "admin") {
+          setOpenTopics([response?.data[0]]);
+          setLoadingChapterId("");
+        } else {
+          const batchId = userInfo?.courses?.find(
+            (item) => item?.courseId === courseData?._id
+          )?.batchId;
+          let singleChapter = { ...response?.data[0] };
+          singleChapter.tasks = [];
+          response?.data[0]?.tasks?.forEach((singleTask) => {
+            if (
+              singleTask?.batches?.find(
+                (singleBatch) => singleBatch?.batchId === batchId
+              )
+            ) {
+              singleChapter.tasks.push(singleTask);
+              // console.log(item);
+            }
+          });
+          setOpenTopics([singleChapter]);
+          setLoadingChapterId("");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  useEffect(() => {
+    setOpenTopics([]);
+    if (openTopics?.length > 0 && taskCompletionCount !== 0) {
+      const indexOfTaskChapter = chapters.findIndex(
+        (x) => x?._id === taskData?.chapterId
+      );
+      if (taskData?.chapterId) {
+        setLoadingChapterId(taskData?.chapterId);
+        handleGetChapterDataWithTaskForTaskCompletion(
+          taskData?.chapterId,
+          indexOfTaskChapter
+        );
+      }
+    }
+  }, [taskCompletionCount]);
 
   const toggleOptions = () => {
     setIsOpen(!isOpen);
@@ -225,20 +336,22 @@ const Aside = ({
   const [progress, setProgress] = React.useState(0);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress((oldProgress) => {
-        if (oldProgress === 100) {
-          return 0;
-        }
-        const diff = Math.random() * 10;
-        return Math.min(oldProgress + diff, 100);
-      });
-    }, 500);
+    if (!chapters[0]) {
+      const timer = setInterval(() => {
+        setProgress((oldProgress) => {
+          if (oldProgress === 100) {
+            return 0;
+          }
+          const diff = Math.random() * 10;
+          return Math.min(oldProgress + diff, 100);
+        });
+      }, 500);
 
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
+      return () => {
+        clearInterval(timer);
+      };
+    }
+  }, [chapters]);
 
   return (
     <aside
@@ -272,7 +385,7 @@ const Aside = ({
             </button>
             <ul
               // ref={Role === "admin" ? containerRef : null}
-              className="space-y-2 h-[80vh] overflow-y-auto labJourneyRemoveScroll pb-2 text-white"
+              className="space-y-2 h-[80vh] overflow-y-auto labJourneyRemoveScroll pb-20 text-white"
             >
               {/* <li>
                 <button
@@ -319,15 +432,28 @@ const Aside = ({
                         // onClick={() => setOpenTopic(item?.chapterName)}
 
                         onClick={() => {
+                          // const findChapter = openTopics?.find(
+                          //   (c) => c === item?._id
+                          // );
+                          // if (findChapter) {
+                          //   setOpenTopics(
+                          //     openTopics?.filter((i) => i !== item?._id)
+                          //   );
+                          // } else {
+                          //   setOpenTopics([...openTopics, item?._id]);
+                          // }
+
                           const findChapter = openTopics?.find(
-                            (c) => c === item?._id
+                            (i) => i?._id === item?._id
                           );
                           if (findChapter) {
                             setOpenTopics(
-                              openTopics?.filter((i) => i !== item?._id)
+                              openTopics?.filter((i) => i?._id !== item?._id)
                             );
                           } else {
-                            setOpenTopics([...openTopics, item?._id]);
+                            setLoadingChapterId(item?._id);
+                            handleGetChapterDataWithTask(item?._id, index);
+                            // setOpenTopics([...openTopics, chapter?._id]);
                           }
                         }}
                         className={`text-white font-normal rounded-[15px] flex items-center px-[20px] py-[13px] cursor-pointer group`}
@@ -379,12 +505,12 @@ const Aside = ({
                           {Role === "admin" && (
                             <div className="relative flex items-center">
                               <button
-                                onClick={() => {
-                                  if (clickedChapter === item)
-                                    setClickedChapter(null);
-                                  else setClickedChapter(item);
-                                }}
-                                onBlur={() => setClickedChapter(null)}
+                                // onClick={() => {
+                                //   if (clickedChapter === item)
+                                //     setClickedChapter(null);
+                                //   else setClickedChapter(item);
+                                // }}
+                                // onBlur={() => setClickedChapter(null)}
                                 className=" "
                               >
                                 <svg
@@ -431,286 +557,38 @@ const Aside = ({
                           )}
                         </h1>
                       </div>
+                      {loadingChapterId === item?._id && (
+                        <div>
+                          <div class="flex space-x-2 justify-center items-center h-20">
+                            <span class="sr-only">Loading...</span>
+                            <div class="h-4 w-4 bg-white rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                            <div class="h-4 w-4 bg-white rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                            <div class="h-4 w-4 bg-white rounded-full animate-bounce"></div>
+                          </div>
+                        </div>
+                      )}
                       <div
                         className={` ${
-                          openTopics?.find((topic) => topic === item?._id)
+                          openTopics?.find((topic) => topic?._id === item?._id)
                             ? ""
                             : "hidden"
                         } sub-items`}
                       >
                         {Role === "admin" &&
-                          item?.tasks?.map((task, index) => (
-                            <div
-                              key={task?.taskId}
-                              onClick={() => {
-                                setOpenTask(task);
-                                localStorage.setItem(
-                                  "task",
-                                  JSON.stringify(task)
-                                );
-                                navigate(
-                                  `/taskDetails/${task?.taskId}?taskType=${task?.taskType}`
-                                );
-                                if (window.innerWidth <= 768) {
-                                  // If the click is outside the sidebar and we're on a mobile device, hide the sidebar
-                                  setToggleButton(false); // Assuming setToggleButton(true) hides the sidebar
-                                }
-                              }}
-                              className={`${
-                                openTask?.taskId === task?.taskId
-                                  ? "bg-[#FFFDCF] border-[#3E4DAC] border-l-[12px] pl-[8px]"
-                                  : "pl-[20px]"
-                              }  text-white font-normal flex items-center justify-between pr-[10px] py-[13px] group cursor-pointer`}
-                            >
-                              <div className="flex items-center">
-                                <div className="min-w-[40px] max-w-[40px] min-h-[40px] max-h-[40px] text-black flex items-center justify-center rounded-full ">
-                                  {task?.taskType === "Reading" && (
-                                    <img
-                                      className={`${
-                                        openTask?.taskId === task?.taskId
-                                          ? "border-black"
-                                          : "border-white"
-                                      }  border p-[5px] rounded-full `}
-                                      src={
-                                        openTask?.taskId === task?.taskId
-                                          ? ReadingActive
-                                          : Reading
-                                      }
-                                      alt="TaskIcon"
-                                    />
-                                  )}
-                                  {task?.taskType === "Assignment" && (
-                                    <img
-                                      className={`${
-                                        openTask?.taskId === task?.taskId
-                                          ? "border-black"
-                                          : "border-white"
-                                      }  border p-[5px] rounded-full `}
-                                      src={
-                                        openTask?.taskId === task?.taskId
-                                          ? AssignmentActive
-                                          : Assignment
-                                      }
-                                      alt="TaskIcon"
-                                    />
-                                  )}
-                                  {task?.taskType === "Classes" && (
-                                    <img
-                                      className={`${
-                                        openTask?.taskId === task?.taskId
-                                          ? "border-black"
-                                          : "border-white"
-                                      }  border p-[5px] rounded-full `}
-                                      src={
-                                        openTask?.taskId === task?.taskId
-                                          ? ClassesActive
-                                          : Classes
-                                      }
-                                      alt="TaskIcon"
-                                    />
-                                  )}
-                                  {task?.taskType === "Quiz" && (
-                                    <img
-                                      className={`${
-                                        openTask?.taskId === task?.taskId
-                                          ? "border-black"
-                                          : "border-white"
-                                      }  border p-[5px] rounded-full `}
-                                      src={
-                                        openTask?.taskId === task?.taskId
-                                          ? QuizActive
-                                          : Quiz
-                                      }
-                                      alt="TaskIcon"
-                                    />
-                                  )}
-                                  {task?.taskType === "Live Test" && (
-                                    <img
-                                      className={`${
-                                        openTask?.taskId === task?.taskId
-                                          ? "border-black"
-                                          : "border-white"
-                                      }  border p-[5px] rounded-full `}
-                                      src={
-                                        openTask?.taskId === task?.taskId
-                                          ? LiveTestActive
-                                          : LiveTest
-                                      }
-                                      alt="TaskIcon"
-                                    />
-                                  )}
-                                  {task?.taskType === "Video" && (
-                                    <img
-                                      className={`${
-                                        openTask?.taskId === task?.taskId
-                                          ? "border-black"
-                                          : "border-white"
-                                      }  border p-[5px] rounded-full `}
-                                      src={
-                                        openTask?.taskId === task?.taskId
-                                          ? VideoActive
-                                          : Video
-                                      }
-                                      alt="TaskIcon"
-                                    />
-                                  )}
-                                  {task?.taskType === "Audio" && (
-                                    <img
-                                      className={`${
-                                        openTask?.taskId === task?.taskId
-                                          ? "border-black"
-                                          : "border-white"
-                                      }  border p-[5px] rounded-full `}
-                                      src={
-                                        openTask?.taskId === task?.taskId
-                                          ? AudioActive
-                                          : Audio
-                                      }
-                                      alt="TaskIcon"
-                                    />
-                                  )}
-                                  {task?.taskType === "Files" && (
-                                    <img
-                                      className={`${
-                                        openTask?.taskId === task?.taskId
-                                          ? "border-black"
-                                          : "border-white"
-                                      }  border p-[5px] rounded-full `}
-                                      src={
-                                        openTask?.taskId === task?.taskId
-                                          ? FilesActive
-                                          : Files
-                                      }
-                                      alt="TaskIcon"
-                                    />
-                                  )}
-                                  {task?.taskType === "Schedule" && (
-                                    <img
-                                      className={`${
-                                        openTask?.taskId === task?.taskId
-                                          ? "border-black"
-                                          : "border-white"
-                                      }  border p-[5px] rounded-full `}
-                                      src={
-                                        openTask?.taskId === task?.taskId
-                                          ? calendar
-                                          : calendar
-                                      }
-                                      alt="TaskIcon"
-                                    />
-                                  )}
-                                </div>
-                                <h1
-                                  className={`text-white ml-3 text-[18px] font-[500]  `}
-                                >
-                                  <span
-                                    className={`mr-[5px] ${
-                                      openTask?.taskId === task?.taskId
-                                        ? "text-black"
-                                        : "text-white"
-                                    } `}
-                                  >
-                                    {/* Task {index + 1}:  */}
-                                    {task?.taskType}:
-                                  </span>{" "}
-                                  <span
-                                    className={`mr-[22px] ${
-                                      openTask?.taskId === task?.taskId
-                                        ? "text-[#3E4DAC]"
-                                        : "text-[#A4B0FF]"
-                                    }  `}
-                                  >
-                                    {task?.taskName}
-                                  </span>
-                                </h1>
-                              </div>
-                              {Role === "admin" && (
-                                <>
-                                  {openTask?.taskId === task?.taskId ? (
-                                    <button>
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="25"
-                                        height="25"
-                                        viewBox="0 0 25 25"
-                                        fill="none"
-                                      >
-                                        <path
-                                          d="M12.4974 10.417C11.3516 10.417 10.4141 11.3545 10.4141 12.5003C10.4141 13.6462 11.3516 14.5837 12.4974 14.5837C13.6432 14.5837 14.5807 13.6462 14.5807 12.5003C14.5807 11.3545 13.6432 10.417 12.4974 10.417ZM12.4974 4.16699C11.3516 4.16699 10.4141 5.10449 10.4141 6.25033C10.4141 7.39616 11.3516 8.33366 12.4974 8.33366C13.6432 8.33366 14.5807 7.39616 14.5807 6.25033C14.5807 5.10449 13.6432 4.16699 12.4974 4.16699ZM12.4974 16.667C11.3516 16.667 10.4141 17.6045 10.4141 18.7503C10.4141 19.8962 11.3516 20.8337 12.4974 20.8337C13.6432 20.8337 14.5807 19.8962 14.5807 18.7503C14.5807 17.6045 13.6432 16.667 12.4974 16.667Z"
-                                          fill="black"
-                                        />
-                                      </svg>
-                                    </button>
-                                  ) : (
-                                    <button>
-                                      <svg
-                                        className=" float-right"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="25"
-                                        height="25"
-                                        viewBox="0 0 25 25"
-                                        fill="none"
-                                      >
-                                        <path
-                                          d="M12.4974 10.417C11.3516 10.417 10.4141 11.3545 10.4141 12.5003C10.4141 13.6462 11.3516 14.5837 12.4974 14.5837C13.6432 14.5837 14.5807 13.6462 14.5807 12.5003C14.5807 11.3545 13.6432 10.417 12.4974 10.417ZM12.4974 4.16699C11.3516 4.16699 10.4141 5.10449 10.4141 6.25033C10.4141 7.39616 11.3516 8.33366 12.4974 8.33366C13.6432 8.33366 14.5807 7.39616 14.5807 6.25033C14.5807 5.10449 13.6432 4.16699 12.4974 4.16699ZM12.4974 16.667C11.3516 16.667 10.4141 17.6045 10.4141 18.7503C10.4141 19.8962 11.3516 20.8337 12.4974 20.8337C13.6432 20.8337 14.5807 19.8962 14.5807 18.7503C14.5807 17.6045 13.6432 16.667 12.4974 16.667Z"
-                                          fill="white"
-                                        />
-                                      </svg>
-                                    </button>
-                                  )}
-                                </>
-                              )}
-                            </div>
-                          ))}
-
-                        {Role !== "admin" &&
-                          item?.tasks?.map((task, index) => {
-                            const userIsParticipant = task?.participants?.some(
-                              (item) => item?.participantId === userInfo?._id
-                            );
-
-                            const isPreviousTaskCompleted =
-                              index === 0 || // Always allow navigation for the first task
-                              item?.tasks?.[index - 1]?.participants?.some(
-                                (item) =>
-                                  item?.participantId === userInfo?._id &&
-                                  (item?.status === "Completed" ||
-                                    item?.status === "In Progress")
-                              );
-
-                            let isPrevChapterCompleted =
-                              chapterIndex === 0 ||
-                              chapters?.[chapterIndex - 1]?.tasks?.[
-                                chapters?.[chapterIndex - 1]?.tasks?.length - 1
-                              ]?.participants?.some(
-                                (item) =>
-                                  item?.participantId === userInfo?._id &&
-                                  (item?.status === "Completed" ||
-                                    item?.status === "In Progress")
-                              );
-
-                            if (index !== 0) isPrevChapterCompleted = true;
-
-                            return (
+                          openTopics
+                            ?.find((i) => i?._id === item?._id)
+                            ?.tasks?.map((task, index) => (
                               <div
                                 key={task?.taskId}
                                 onClick={() => {
-                                  if (
-                                    (isPreviousTaskCompleted &&
-                                      isPrevChapterCompleted) ||
-                                    !(courseData?.enableDrip || task?.taskDrip)
-                                  ) {
-                                    setOpenTask(task);
-                                    localStorage.setItem(
-                                      "task",
-                                      JSON.stringify(task)
-                                    );
-                                    navigate(
-                                      `/taskDetails/${task?.taskId}?taskType=${task?.taskType}`
-                                    );
-                                  } else
-                                    toast.error("Complete the Previous Task");
-
+                                  setOpenTask(task);
+                                  localStorage.setItem(
+                                    "task",
+                                    JSON.stringify(task)
+                                  );
+                                  navigate(
+                                    `/taskDetails/${task?.taskId}?taskType=${task?.taskType}`
+                                  );
                                   if (window.innerWidth <= 768) {
                                     // If the click is outside the sidebar and we're on a mobile device, hide the sidebar
                                     setToggleButton(false); // Assuming setToggleButton(true) hides the sidebar
@@ -733,22 +611,8 @@ const Aside = ({
                                         }  border p-[5px] rounded-full `}
                                         src={
                                           openTask?.taskId === task?.taskId
-                                            ? (isPreviousTaskCompleted &&
-                                                isPrevChapterCompleted) ||
-                                              !(
-                                                courseData?.enableDrip ||
-                                                task?.taskDrip
-                                              )
-                                              ? ReadingActive
-                                              : lock
-                                            : (isPreviousTaskCompleted &&
-                                                isPrevChapterCompleted) ||
-                                              !(
-                                                courseData?.enableDrip ||
-                                                task?.taskDrip
-                                              )
-                                            ? Reading
-                                            : lock
+                                            ? ReadingActive
+                                            : Reading
                                         }
                                         alt="TaskIcon"
                                       />
@@ -762,22 +626,8 @@ const Aside = ({
                                         }  border p-[5px] rounded-full `}
                                         src={
                                           openTask?.taskId === task?.taskId
-                                            ? (isPreviousTaskCompleted &&
-                                                isPrevChapterCompleted) ||
-                                              !(
-                                                courseData?.enableDrip ||
-                                                task?.taskDrip
-                                              )
-                                              ? AssignmentActive
-                                              : lock
-                                            : (isPreviousTaskCompleted &&
-                                                isPrevChapterCompleted) ||
-                                              !(
-                                                courseData?.enableDrip ||
-                                                task?.taskDrip
-                                              )
-                                            ? Assignment
-                                            : lock
+                                            ? AssignmentActive
+                                            : Assignment
                                         }
                                         alt="TaskIcon"
                                       />
@@ -791,22 +641,8 @@ const Aside = ({
                                         }  border p-[5px] rounded-full `}
                                         src={
                                           openTask?.taskId === task?.taskId
-                                            ? (isPreviousTaskCompleted &&
-                                                isPrevChapterCompleted) ||
-                                              !(
-                                                courseData?.enableDrip ||
-                                                task?.taskDrip
-                                              )
-                                              ? ClassesActive
-                                              : lock
-                                            : (isPreviousTaskCompleted &&
-                                                isPrevChapterCompleted) ||
-                                              !(
-                                                courseData?.enableDrip ||
-                                                task?.taskDrip
-                                              )
-                                            ? Classes
-                                            : lock
+                                            ? ClassesActive
+                                            : Classes
                                         }
                                         alt="TaskIcon"
                                       />
@@ -820,22 +656,8 @@ const Aside = ({
                                         }  border p-[5px] rounded-full `}
                                         src={
                                           openTask?.taskId === task?.taskId
-                                            ? (isPreviousTaskCompleted &&
-                                                isPrevChapterCompleted) ||
-                                              !(
-                                                courseData?.enableDrip ||
-                                                task?.taskDrip
-                                              )
-                                              ? QuizActive
-                                              : lock
-                                            : (isPreviousTaskCompleted &&
-                                                isPrevChapterCompleted) ||
-                                              !(
-                                                courseData?.enableDrip ||
-                                                task?.taskDrip
-                                              )
-                                            ? Quiz
-                                            : lock
+                                            ? QuizActive
+                                            : Quiz
                                         }
                                         alt="TaskIcon"
                                       />
@@ -849,22 +671,8 @@ const Aside = ({
                                         }  border p-[5px] rounded-full `}
                                         src={
                                           openTask?.taskId === task?.taskId
-                                            ? (isPreviousTaskCompleted &&
-                                                isPrevChapterCompleted) ||
-                                              !(
-                                                courseData?.enableDrip ||
-                                                task?.taskDrip
-                                              )
-                                              ? LiveTestActive
-                                              : lock
-                                            : (isPreviousTaskCompleted &&
-                                                isPrevChapterCompleted) ||
-                                              !(
-                                                courseData?.enableDrip ||
-                                                task?.taskDrip
-                                              )
-                                            ? LiveTest
-                                            : lock
+                                            ? LiveTestActive
+                                            : LiveTest
                                         }
                                         alt="TaskIcon"
                                       />
@@ -878,22 +686,8 @@ const Aside = ({
                                         }  border p-[5px] rounded-full `}
                                         src={
                                           openTask?.taskId === task?.taskId
-                                            ? (isPreviousTaskCompleted &&
-                                                isPrevChapterCompleted) ||
-                                              !(
-                                                courseData?.enableDrip ||
-                                                task?.taskDrip
-                                              )
-                                              ? VideoActive
-                                              : lock
-                                            : (isPreviousTaskCompleted &&
-                                                isPrevChapterCompleted) ||
-                                              !(
-                                                courseData?.enableDrip ||
-                                                task?.taskDrip
-                                              )
-                                            ? Video
-                                            : lock
+                                            ? VideoActive
+                                            : Video
                                         }
                                         alt="TaskIcon"
                                       />
@@ -907,22 +701,8 @@ const Aside = ({
                                         }  border p-[5px] rounded-full `}
                                         src={
                                           openTask?.taskId === task?.taskId
-                                            ? (isPreviousTaskCompleted &&
-                                                isPrevChapterCompleted) ||
-                                              !(
-                                                courseData?.enableDrip ||
-                                                task?.taskDrip
-                                              )
-                                              ? AudioActive
-                                              : lock
-                                            : (isPreviousTaskCompleted &&
-                                                isPrevChapterCompleted) ||
-                                              !(
-                                                courseData?.enableDrip ||
-                                                task?.taskDrip
-                                              )
-                                            ? Audio
-                                            : lock
+                                            ? AudioActive
+                                            : Audio
                                         }
                                         alt="TaskIcon"
                                       />
@@ -936,22 +716,8 @@ const Aside = ({
                                         }  border p-[5px] rounded-full `}
                                         src={
                                           openTask?.taskId === task?.taskId
-                                            ? (isPreviousTaskCompleted &&
-                                                isPrevChapterCompleted) ||
-                                              !(
-                                                courseData?.enableDrip ||
-                                                task?.taskDrip
-                                              )
-                                              ? FilesActive
-                                              : lock
-                                            : (isPreviousTaskCompleted &&
-                                                isPrevChapterCompleted) ||
-                                              !(
-                                                courseData?.enableDrip ||
-                                                task?.taskDrip
-                                              )
-                                            ? Files
-                                            : lock
+                                            ? FilesActive
+                                            : Files
                                         }
                                         alt="TaskIcon"
                                       />
@@ -965,22 +731,8 @@ const Aside = ({
                                         }  border p-[5px] rounded-full `}
                                         src={
                                           openTask?.taskId === task?.taskId
-                                            ? (isPreviousTaskCompleted &&
-                                                isPrevChapterCompleted) ||
-                                              !(
-                                                courseData?.enableDrip ||
-                                                task?.taskDrip
-                                              )
-                                              ? calendar
-                                              : lock
-                                            : (isPreviousTaskCompleted &&
-                                                isPrevChapterCompleted) ||
-                                              !(
-                                                courseData?.enableDrip ||
-                                                task?.taskDrip
-                                              )
                                             ? calendar
-                                            : lock
+                                            : calendar
                                         }
                                         alt="TaskIcon"
                                       />
@@ -1013,38 +765,456 @@ const Aside = ({
                                 {Role === "admin" && (
                                   <>
                                     {openTask?.taskId === task?.taskId ? (
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="25"
-                                        height="25"
-                                        viewBox="0 0 25 25"
-                                        fill="none"
-                                      >
-                                        <path
-                                          d="M12.4974 10.417C11.3516 10.417 10.4141 11.3545 10.4141 12.5003C10.4141 13.6462 11.3516 14.5837 12.4974 14.5837C13.6432 14.5837 14.5807 13.6462 14.5807 12.5003C14.5807 11.3545 13.6432 10.417 12.4974 10.417ZM12.4974 4.16699C11.3516 4.16699 10.4141 5.10449 10.4141 6.25033C10.4141 7.39616 11.3516 8.33366 12.4974 8.33366C13.6432 8.33366 14.5807 7.39616 14.5807 6.25033C14.5807 5.10449 13.6432 4.16699 12.4974 4.16699ZM12.4974 16.667C11.3516 16.667 10.4141 17.6045 10.4141 18.7503C10.4141 19.8962 11.3516 20.8337 12.4974 20.8337C13.6432 20.8337 14.5807 19.8962 14.5807 18.7503C14.5807 17.6045 13.6432 16.667 12.4974 16.667Z"
-                                          fill="black"
-                                        />
-                                      </svg>
+                                      <button>
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          width="25"
+                                          height="25"
+                                          viewBox="0 0 25 25"
+                                          fill="none"
+                                        >
+                                          <path
+                                            d="M12.4974 10.417C11.3516 10.417 10.4141 11.3545 10.4141 12.5003C10.4141 13.6462 11.3516 14.5837 12.4974 14.5837C13.6432 14.5837 14.5807 13.6462 14.5807 12.5003C14.5807 11.3545 13.6432 10.417 12.4974 10.417ZM12.4974 4.16699C11.3516 4.16699 10.4141 5.10449 10.4141 6.25033C10.4141 7.39616 11.3516 8.33366 12.4974 8.33366C13.6432 8.33366 14.5807 7.39616 14.5807 6.25033C14.5807 5.10449 13.6432 4.16699 12.4974 4.16699ZM12.4974 16.667C11.3516 16.667 10.4141 17.6045 10.4141 18.7503C10.4141 19.8962 11.3516 20.8337 12.4974 20.8337C13.6432 20.8337 14.5807 19.8962 14.5807 18.7503C14.5807 17.6045 13.6432 16.667 12.4974 16.667Z"
+                                            fill="black"
+                                          />
+                                        </svg>
+                                      </button>
                                     ) : (
-                                      <svg
-                                        className=" float-right"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="25"
-                                        height="25"
-                                        viewBox="0 0 25 25"
-                                        fill="none"
-                                      >
-                                        <path
-                                          d="M12.4974 10.417C11.3516 10.417 10.4141 11.3545 10.4141 12.5003C10.4141 13.6462 11.3516 14.5837 12.4974 14.5837C13.6432 14.5837 14.5807 13.6462 14.5807 12.5003C14.5807 11.3545 13.6432 10.417 12.4974 10.417ZM12.4974 4.16699C11.3516 4.16699 10.4141 5.10449 10.4141 6.25033C10.4141 7.39616 11.3516 8.33366 12.4974 8.33366C13.6432 8.33366 14.5807 7.39616 14.5807 6.25033C14.5807 5.10449 13.6432 4.16699 12.4974 4.16699ZM12.4974 16.667C11.3516 16.667 10.4141 17.6045 10.4141 18.7503C10.4141 19.8962 11.3516 20.8337 12.4974 20.8337C13.6432 20.8337 14.5807 19.8962 14.5807 18.7503C14.5807 17.6045 13.6432 16.667 12.4974 16.667Z"
-                                          fill="white"
-                                        />
-                                      </svg>
+                                      <button>
+                                        <svg
+                                          className=" float-right"
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          width="25"
+                                          height="25"
+                                          viewBox="0 0 25 25"
+                                          fill="none"
+                                        >
+                                          <path
+                                            d="M12.4974 10.417C11.3516 10.417 10.4141 11.3545 10.4141 12.5003C10.4141 13.6462 11.3516 14.5837 12.4974 14.5837C13.6432 14.5837 14.5807 13.6462 14.5807 12.5003C14.5807 11.3545 13.6432 10.417 12.4974 10.417ZM12.4974 4.16699C11.3516 4.16699 10.4141 5.10449 10.4141 6.25033C10.4141 7.39616 11.3516 8.33366 12.4974 8.33366C13.6432 8.33366 14.5807 7.39616 14.5807 6.25033C14.5807 5.10449 13.6432 4.16699 12.4974 4.16699ZM12.4974 16.667C11.3516 16.667 10.4141 17.6045 10.4141 18.7503C10.4141 19.8962 11.3516 20.8337 12.4974 20.8337C13.6432 20.8337 14.5807 19.8962 14.5807 18.7503C14.5807 17.6045 13.6432 16.667 12.4974 16.667Z"
+                                            fill="white"
+                                          />
+                                        </svg>
+                                      </button>
                                     )}
                                   </>
                                 )}
                               </div>
-                            );
-                          })}
+                            ))}
+
+                        {Role !== "admin" &&
+                          openTopics
+                            ?.find((i) => i?._id === item?._id)
+                            ?.tasks?.map((task, index) => {
+                              const userIsParticipant =
+                                task?.participants?.some(
+                                  (item) =>
+                                    item?.participantId === userInfo?._id
+                                );
+
+                              const chapterDataForChecking = openTopics?.find(
+                                (i) => i?._id === item?._id
+                              );
+
+                              const isPreviousTaskCompleted =
+                                index === 0 || // Always allow navigation for the first task
+                                chapterDataForChecking.tasks?.[
+                                  index - 1
+                                ]?.participants?.some(
+                                  (item) =>
+                                    item?.participantId === userInfo?._id &&
+                                    (item?.status === "Completed" ||
+                                      item?.status === "In Progress")
+                                );
+
+                              let isPrevChapterCompleted =
+                                chapterDataForChecking?.previousChapterCompletionStatus;
+
+                              if (index !== 0) isPrevChapterCompleted = true;
+                              // const userIsParticipant =
+                              //   task?.participants?.some(
+                              //     (item) =>
+                              //       item?.participantId === userInfo?._id
+                              //   );
+
+                              // const isPreviousTaskCompleted =
+                              //   index === 0 || // Always allow navigation for the first task
+                              //   item?.tasks?.[index - 1]?.participants?.some(
+                              //     (item) =>
+                              //       item?.participantId === userInfo?._id &&
+                              //       (item?.status === "Completed" ||
+                              //         item?.status === "In Progress")
+                              //   );
+
+                              // let isPrevChapterCompleted =
+                              //   chapterIndex === 0 ||
+                              //   chapters?.[chapterIndex - 1]?.tasks?.[
+                              //     chapters?.[chapterIndex - 1]?.tasks?.length -
+                              //       1
+                              //   ]?.participants?.some(
+                              //     (item) =>
+                              //       item?.participantId === userInfo?._id &&
+                              //       (item?.status === "Completed" ||
+                              //         item?.status === "In Progress")
+                              //   );
+
+                              // if (index !== 0) isPrevChapterCompleted = true;
+
+                              return (
+                                <div
+                                  key={task?.taskId}
+                                  onClick={() => {
+                                    if (
+                                      (isPreviousTaskCompleted &&
+                                        isPrevChapterCompleted) ||
+                                      !(
+                                        courseData?.enableDrip || task?.taskDrip
+                                      )
+                                    ) {
+                                      setOpenTask(task);
+                                      localStorage.setItem(
+                                        "task",
+                                        JSON.stringify(task)
+                                      );
+                                      navigate(
+                                        `/taskDetails/${task?.taskId}?taskType=${task?.taskType}`
+                                      );
+                                    } else
+                                      toast.error("Complete the Previous Task");
+
+                                    if (window.innerWidth <= 768) {
+                                      // If the click is outside the sidebar and we're on a mobile device, hide the sidebar
+                                      setToggleButton(false); // Assuming setToggleButton(true) hides the sidebar
+                                    }
+                                  }}
+                                  className={`${
+                                    openTask?.taskId === task?.taskId
+                                      ? "bg-[#FFFDCF] border-[#3E4DAC] border-l-[12px] pl-[8px]"
+                                      : "pl-[20px]"
+                                  }  text-white font-normal flex items-center justify-between pr-[10px] py-[13px] group cursor-pointer`}
+                                >
+                                  <div className="flex items-center">
+                                    <div className="min-w-[40px] max-w-[40px] min-h-[40px] max-h-[40px] text-black flex items-center justify-center rounded-full ">
+                                      {task?.taskType === "Reading" && (
+                                        <img
+                                          className={`${
+                                            openTask?.taskId === task?.taskId
+                                              ? "border-black"
+                                              : "border-white"
+                                          }  border p-[5px] rounded-full `}
+                                          src={
+                                            openTask?.taskId === task?.taskId
+                                              ? (isPreviousTaskCompleted &&
+                                                  isPrevChapterCompleted) ||
+                                                !(
+                                                  courseData?.enableDrip ||
+                                                  task?.taskDrip
+                                                )
+                                                ? ReadingActive
+                                                : lock
+                                              : (isPreviousTaskCompleted &&
+                                                  isPrevChapterCompleted) ||
+                                                !(
+                                                  courseData?.enableDrip ||
+                                                  task?.taskDrip
+                                                )
+                                              ? Reading
+                                              : lock
+                                          }
+                                          alt="TaskIcon"
+                                        />
+                                      )}
+                                      {task?.taskType === "Assignment" && (
+                                        <img
+                                          className={`${
+                                            openTask?.taskId === task?.taskId
+                                              ? "border-black"
+                                              : "border-white"
+                                          }  border p-[5px] rounded-full `}
+                                          src={
+                                            openTask?.taskId === task?.taskId
+                                              ? (isPreviousTaskCompleted &&
+                                                  isPrevChapterCompleted) ||
+                                                !(
+                                                  courseData?.enableDrip ||
+                                                  task?.taskDrip
+                                                )
+                                                ? AssignmentActive
+                                                : lock
+                                              : (isPreviousTaskCompleted &&
+                                                  isPrevChapterCompleted) ||
+                                                !(
+                                                  courseData?.enableDrip ||
+                                                  task?.taskDrip
+                                                )
+                                              ? Assignment
+                                              : lock
+                                          }
+                                          alt="TaskIcon"
+                                        />
+                                      )}
+                                      {task?.taskType === "Classes" && (
+                                        <img
+                                          className={`${
+                                            openTask?.taskId === task?.taskId
+                                              ? "border-black"
+                                              : "border-white"
+                                          }  border p-[5px] rounded-full `}
+                                          src={
+                                            openTask?.taskId === task?.taskId
+                                              ? (isPreviousTaskCompleted &&
+                                                  isPrevChapterCompleted) ||
+                                                !(
+                                                  courseData?.enableDrip ||
+                                                  task?.taskDrip
+                                                )
+                                                ? ClassesActive
+                                                : lock
+                                              : (isPreviousTaskCompleted &&
+                                                  isPrevChapterCompleted) ||
+                                                !(
+                                                  courseData?.enableDrip ||
+                                                  task?.taskDrip
+                                                )
+                                              ? Classes
+                                              : lock
+                                          }
+                                          alt="TaskIcon"
+                                        />
+                                      )}
+                                      {task?.taskType === "Quiz" && (
+                                        <img
+                                          className={`${
+                                            openTask?.taskId === task?.taskId
+                                              ? "border-black"
+                                              : "border-white"
+                                          }  border p-[5px] rounded-full `}
+                                          src={
+                                            openTask?.taskId === task?.taskId
+                                              ? (isPreviousTaskCompleted &&
+                                                  isPrevChapterCompleted) ||
+                                                !(
+                                                  courseData?.enableDrip ||
+                                                  task?.taskDrip
+                                                )
+                                                ? QuizActive
+                                                : lock
+                                              : (isPreviousTaskCompleted &&
+                                                  isPrevChapterCompleted) ||
+                                                !(
+                                                  courseData?.enableDrip ||
+                                                  task?.taskDrip
+                                                )
+                                              ? Quiz
+                                              : lock
+                                          }
+                                          alt="TaskIcon"
+                                        />
+                                      )}
+                                      {task?.taskType === "Live Test" && (
+                                        <img
+                                          className={`${
+                                            openTask?.taskId === task?.taskId
+                                              ? "border-black"
+                                              : "border-white"
+                                          }  border p-[5px] rounded-full `}
+                                          src={
+                                            openTask?.taskId === task?.taskId
+                                              ? (isPreviousTaskCompleted &&
+                                                  isPrevChapterCompleted) ||
+                                                !(
+                                                  courseData?.enableDrip ||
+                                                  task?.taskDrip
+                                                )
+                                                ? LiveTestActive
+                                                : lock
+                                              : (isPreviousTaskCompleted &&
+                                                  isPrevChapterCompleted) ||
+                                                !(
+                                                  courseData?.enableDrip ||
+                                                  task?.taskDrip
+                                                )
+                                              ? LiveTest
+                                              : lock
+                                          }
+                                          alt="TaskIcon"
+                                        />
+                                      )}
+                                      {task?.taskType === "Video" && (
+                                        <img
+                                          className={`${
+                                            openTask?.taskId === task?.taskId
+                                              ? "border-black"
+                                              : "border-white"
+                                          }  border p-[5px] rounded-full `}
+                                          src={
+                                            openTask?.taskId === task?.taskId
+                                              ? (isPreviousTaskCompleted &&
+                                                  isPrevChapterCompleted) ||
+                                                !(
+                                                  courseData?.enableDrip ||
+                                                  task?.taskDrip
+                                                )
+                                                ? VideoActive
+                                                : lock
+                                              : (isPreviousTaskCompleted &&
+                                                  isPrevChapterCompleted) ||
+                                                !(
+                                                  courseData?.enableDrip ||
+                                                  task?.taskDrip
+                                                )
+                                              ? Video
+                                              : lock
+                                          }
+                                          alt="TaskIcon"
+                                        />
+                                      )}
+                                      {task?.taskType === "Audio" && (
+                                        <img
+                                          className={`${
+                                            openTask?.taskId === task?.taskId
+                                              ? "border-black"
+                                              : "border-white"
+                                          }  border p-[5px] rounded-full `}
+                                          src={
+                                            openTask?.taskId === task?.taskId
+                                              ? (isPreviousTaskCompleted &&
+                                                  isPrevChapterCompleted) ||
+                                                !(
+                                                  courseData?.enableDrip ||
+                                                  task?.taskDrip
+                                                )
+                                                ? AudioActive
+                                                : lock
+                                              : (isPreviousTaskCompleted &&
+                                                  isPrevChapterCompleted) ||
+                                                !(
+                                                  courseData?.enableDrip ||
+                                                  task?.taskDrip
+                                                )
+                                              ? Audio
+                                              : lock
+                                          }
+                                          alt="TaskIcon"
+                                        />
+                                      )}
+                                      {task?.taskType === "Files" && (
+                                        <img
+                                          className={`${
+                                            openTask?.taskId === task?.taskId
+                                              ? "border-black"
+                                              : "border-white"
+                                          }  border p-[5px] rounded-full `}
+                                          src={
+                                            openTask?.taskId === task?.taskId
+                                              ? (isPreviousTaskCompleted &&
+                                                  isPrevChapterCompleted) ||
+                                                !(
+                                                  courseData?.enableDrip ||
+                                                  task?.taskDrip
+                                                )
+                                                ? FilesActive
+                                                : lock
+                                              : (isPreviousTaskCompleted &&
+                                                  isPrevChapterCompleted) ||
+                                                !(
+                                                  courseData?.enableDrip ||
+                                                  task?.taskDrip
+                                                )
+                                              ? Files
+                                              : lock
+                                          }
+                                          alt="TaskIcon"
+                                        />
+                                      )}
+                                      {task?.taskType === "Schedule" && (
+                                        <img
+                                          className={`${
+                                            openTask?.taskId === task?.taskId
+                                              ? "border-black"
+                                              : "border-white"
+                                          }  border p-[5px] rounded-full `}
+                                          src={
+                                            openTask?.taskId === task?.taskId
+                                              ? (isPreviousTaskCompleted &&
+                                                  isPrevChapterCompleted) ||
+                                                !(
+                                                  courseData?.enableDrip ||
+                                                  task?.taskDrip
+                                                )
+                                                ? calendar
+                                                : lock
+                                              : (isPreviousTaskCompleted &&
+                                                  isPrevChapterCompleted) ||
+                                                !(
+                                                  courseData?.enableDrip ||
+                                                  task?.taskDrip
+                                                )
+                                              ? calendar
+                                              : lock
+                                          }
+                                          alt="TaskIcon"
+                                        />
+                                      )}
+                                    </div>
+                                    <h1
+                                      className={`text-white ml-3 text-[18px] font-[500]  `}
+                                    >
+                                      <span
+                                        className={`mr-[5px] ${
+                                          openTask?.taskId === task?.taskId
+                                            ? "text-black"
+                                            : "text-white"
+                                        } `}
+                                      >
+                                        {/* Task {index + 1}:  */}
+                                        {task?.taskType}:
+                                      </span>{" "}
+                                      <span
+                                        className={`mr-[22px] ${
+                                          openTask?.taskId === task?.taskId
+                                            ? "text-[#3E4DAC]"
+                                            : "text-[#A4B0FF]"
+                                        }  `}
+                                      >
+                                        {task?.taskName}
+                                      </span>
+                                    </h1>
+                                  </div>
+                                  {Role === "admin" && (
+                                    <>
+                                      {openTask?.taskId === task?.taskId ? (
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          width="25"
+                                          height="25"
+                                          viewBox="0 0 25 25"
+                                          fill="none"
+                                        >
+                                          <path
+                                            d="M12.4974 10.417C11.3516 10.417 10.4141 11.3545 10.4141 12.5003C10.4141 13.6462 11.3516 14.5837 12.4974 14.5837C13.6432 14.5837 14.5807 13.6462 14.5807 12.5003C14.5807 11.3545 13.6432 10.417 12.4974 10.417ZM12.4974 4.16699C11.3516 4.16699 10.4141 5.10449 10.4141 6.25033C10.4141 7.39616 11.3516 8.33366 12.4974 8.33366C13.6432 8.33366 14.5807 7.39616 14.5807 6.25033C14.5807 5.10449 13.6432 4.16699 12.4974 4.16699ZM12.4974 16.667C11.3516 16.667 10.4141 17.6045 10.4141 18.7503C10.4141 19.8962 11.3516 20.8337 12.4974 20.8337C13.6432 20.8337 14.5807 19.8962 14.5807 18.7503C14.5807 17.6045 13.6432 16.667 12.4974 16.667Z"
+                                            fill="black"
+                                          />
+                                        </svg>
+                                      ) : (
+                                        <svg
+                                          className=" float-right"
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          width="25"
+                                          height="25"
+                                          viewBox="0 0 25 25"
+                                          fill="none"
+                                        >
+                                          <path
+                                            d="M12.4974 10.417C11.3516 10.417 10.4141 11.3545 10.4141 12.5003C10.4141 13.6462 11.3516 14.5837 12.4974 14.5837C13.6432 14.5837 14.5807 13.6462 14.5807 12.5003C14.5807 11.3545 13.6432 10.417 12.4974 10.417ZM12.4974 4.16699C11.3516 4.16699 10.4141 5.10449 10.4141 6.25033C10.4141 7.39616 11.3516 8.33366 12.4974 8.33366C13.6432 8.33366 14.5807 7.39616 14.5807 6.25033C14.5807 5.10449 13.6432 4.16699 12.4974 4.16699ZM12.4974 16.667C11.3516 16.667 10.4141 17.6045 10.4141 18.7503C10.4141 19.8962 11.3516 20.8337 12.4974 20.8337C13.6432 20.8337 14.5807 19.8962 14.5807 18.7503C14.5807 17.6045 13.6432 16.667 12.4974 16.667Z"
+                                            fill="white"
+                                          />
+                                        </svg>
+                                      )}
+                                    </>
+                                  )}
+                                </div>
+                              );
+                            })}
                       </div>
                     </div>
                   </li>

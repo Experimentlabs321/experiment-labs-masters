@@ -89,8 +89,28 @@ const WeekDetails = ({
         }/email/${user?.email}`
       )
       .then((response) => {
-        setOpenTopics([...openTopics, response?.data[0]]);
-        setLoadingChapterId("");
+        if (userInfo?.role === "admin") {
+          setOpenTopics([...openTopics, response?.data[0]]);
+          setLoadingChapterId("");
+        } else {
+          const batchId = userInfo?.courses?.find(
+            (item) => item?.courseId === courseData?._id
+          )?.batchId;
+          let singleChapter = { ...response?.data[0] };
+          singleChapter.tasks = [];
+          response?.data[0]?.tasks?.forEach((singleTask) => {
+            if (
+              singleTask?.batches?.find(
+                (singleBatch) => singleBatch?.batchId === batchId
+              )
+            ) {
+              singleChapter.tasks.push(singleTask);
+              // console.log(item);
+            }
+          });
+          setOpenTopics([...openTopics, singleChapter]);
+          setLoadingChapterId("");
+        }
       })
       .catch((error) => {
         console.error(error);

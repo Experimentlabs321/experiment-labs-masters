@@ -14,6 +14,7 @@ import AudioTask from "../AudioTask";
 import FilesTask from "../FilesTask";
 import ScheduleTask from "../ScheduleTask";
 import { AuthContext } from "../../../../contexts/AuthProvider";
+import { CircularProgress } from "@mui/material";
 
 const TaskDetails = () => {
   const { id } = useParams();
@@ -26,7 +27,9 @@ const TaskDetails = () => {
   const [openTopic, setOpenTopic] = useState("");
   const [toggleButton, setToggleButton] = useState(false);
   const [count, setCount] = useState(0);
+  const [taskCompletionCount, setTaskCompletionCount] = useState(0);
   const { user, userInfo } = useContext(AuthContext);
+  const [taskLoading, setTaskLoading] = useState(false);
 
   useEffect(() => {
     // Function to update toggleButton based on device size
@@ -55,6 +58,7 @@ const TaskDetails = () => {
   const queryParameters = new URLSearchParams(window.location.search);
   const queryTaskType = queryParameters.get("taskType");
   useEffect(() => {
+    setTaskLoading(true);
     let taskTypeForAPI;
     // console.log(queryTaskType);
     switch (queryTaskType) {
@@ -95,9 +99,11 @@ const TaskDetails = () => {
       )
       .then((response) => {
         setTaskData(response?.data);
+        setTaskLoading(false);
       })
       .catch((error) => {
         console.error(error);
+        setTaskLoading(false);
       });
   }, [queryTaskType, id, user?.email]);
 
@@ -138,7 +144,7 @@ const TaskDetails = () => {
     if (week?._id)
       axios
         .get(
-          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/weekId/${week?._id}`
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/limited/weekId/${week?._id}`
         )
         .then((response) => {
           setChapters(response?.data);
@@ -170,8 +176,6 @@ const TaskDetails = () => {
         })
         .catch((error) => console.error(error));
   }, [week, count]);
-  // console.log(chapters);
-  // console.log(chapters);
   return (
     <div key={taskData?._id}>
       <div>
@@ -179,6 +183,7 @@ const TaskDetails = () => {
           <Navbar />
           <div className="lg:flex overflow-hidden">
             <Aside
+              taskData={taskData}
               openTopic={openTopic}
               setOpenTopic={setOpenTopic}
               openTask={openTask}
@@ -191,6 +196,8 @@ const TaskDetails = () => {
               courseData={courseData}
               count={count}
               setCount={setCount}
+              taskCompletionCount={taskCompletionCount}
+              setTaskCompletionCount={setTaskCompletionCount}
             />
             <button
               onClick={() => setToggleButton(true)}
@@ -225,60 +232,61 @@ const TaskDetails = () => {
                     setCount={setCount}
                   /> */}
                   <div>
-                    {/* {isLoading && (
-                      <div className=" flex align-items-center my-5 py-5">
-                        <CircularProgress className="w-full mx-auto" />
+                    {taskLoading && (
+                      <div className=" h-screen flex align-items-center my-5 py-5">
+                        <CircularProgress className="w-full mx-auto my-auto" />
                       </div>
-                    )} */}
-                    <div className="relative z-0 ">
-                      <div className="pt-[110px] border-b-2 ">
-                        <div className="container mx-auto px-4 flex items-center justify-between ">
-                          <div className="flex items-center pt-[30px] pb-[40px] ">
-                            <Link
-                              to="/courseAccess"
-                              className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline "
-                            >
-                              My Courses
-                            </Link>
-                            <svg
-                              className="mr-[30px]"
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="25"
-                              viewBox="0 0 24 25"
-                              fill="none"
-                            >
-                              <path
-                                d="M9 18.667L15 12.667L9 6.66699"
-                                stroke="black"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                              />
-                            </svg>
-                            <Link
-                              to={`/questLevels/${chapter?.courseId}`}
-                              className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline "
-                            >
-                              Quest Levels
-                            </Link>
-                            <svg
-                              className="mr-[30px]"
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="25"
-                              viewBox="0 0 24 25"
-                              fill="none"
-                            >
-                              <path
-                                d="M9 18.667L15 12.667L9 6.66699"
-                                stroke="black"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                              />
-                            </svg>
-                            {/* <Link
+                    )}
+                    {!taskLoading && (
+                      <div className="relative z-0 ">
+                        <div className="pt-[110px] border-b-2 ">
+                          <div className="container mx-auto px-4 flex items-center justify-between ">
+                            <div className="flex items-center pt-[30px] pb-[40px] ">
+                              <Link
+                                to="/courseAccess"
+                                className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline "
+                              >
+                                My Courses
+                              </Link>
+                              <svg
+                                className="mr-[30px]"
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="25"
+                                viewBox="0 0 24 25"
+                                fill="none"
+                              >
+                                <path
+                                  d="M9 18.667L15 12.667L9 6.66699"
+                                  stroke="black"
+                                  stroke-width="2"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                              </svg>
+                              <Link
+                                to={`/questLevels/${chapter?.courseId}`}
+                                className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline "
+                              >
+                                Quest Levels
+                              </Link>
+                              <svg
+                                className="mr-[30px]"
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="25"
+                                viewBox="0 0 24 25"
+                                fill="none"
+                              >
+                                <path
+                                  d="M9 18.667L15 12.667L9 6.66699"
+                                  stroke="black"
+                                  stroke-width="2"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                              </svg>
+                              {/* <Link
                               to={`/questLevels/${chapter?.courseId}`}
                               className="text-[#168DE3] font-sans mr-[30px] text-[20px] font-[400] underline "
                             >
@@ -300,75 +308,92 @@ const TaskDetails = () => {
                                 stroke-linejoin="round"
                               />
                             </svg> */}
-                            <button className=" font-sans mr-[30px] text-[20px] font-[400] ">
-                              {taskData?.taskName}
-                            </button>
+                              <button className=" font-sans mr-[30px] text-[20px] font-[400] ">
+                                {taskData?.taskName}
+                              </button>
+                            </div>
                           </div>
                         </div>
+                        {openTask?.taskType === "Classes" && (
+                          <ClassesTask taskData={taskData} />
+                        )}
+                        {openTask?.taskType === "Assignment" && (
+                          <AssignmentTask
+                            taskData={taskData}
+                            chapters={chapters}
+                            count={count}
+                            setCount={setCount}
+                            taskCompletionCount={taskCompletionCount}
+                            setTaskCompletionCount={setTaskCompletionCount}
+                          />
+                        )}
+                        {openTask?.taskType === "Reading" && (
+                          <ReadingTask
+                            taskData={taskData}
+                            count={count}
+                            setCount={setCount}
+                            taskCompletionCount={taskCompletionCount}
+                            setTaskCompletionCount={setTaskCompletionCount}
+                          />
+                        )}
+                        {openTask?.taskType === "Quiz" && (
+                          <QuizTask
+                            chapter={chapter}
+                            taskData={taskData}
+                            count={count}
+                            setCount={setCount}
+                            taskCompletionCount={taskCompletionCount}
+                            setTaskCompletionCount={setTaskCompletionCount}
+                          />
+                        )}
+                        {openTask?.taskType === "LiveTests" && (
+                          <LiveTestTask
+                            taskData={taskData}
+                            count={count}
+                            setCount={setCount}
+                            taskCompletionCount={taskCompletionCount}
+                            setTaskCompletionCount={setTaskCompletionCount}
+                          />
+                        )}
+                        {openTask?.taskType === "Video" && (
+                          <VideoTask
+                            count={count}
+                            setCount={setCount}
+                            taskData={taskData}
+                            taskCompletionCount={taskCompletionCount}
+                            setTaskCompletionCount={setTaskCompletionCount}
+                          />
+                        )}
+                        {openTask?.taskType === "Audio" && (
+                          <AudioTask
+                            taskData={taskData}
+                            count={count}
+                            setCount={setCount}
+                            taskCompletionCount={taskCompletionCount}
+                            setTaskCompletionCount={setTaskCompletionCount}
+                          />
+                        )}
+                        {openTask?.taskType === "Files" && (
+                          <FilesTask
+                            taskData={taskData}
+                            count={count}
+                            setCount={setCount}
+                            taskCompletionCount={taskCompletionCount}
+                            setTaskCompletionCount={setTaskCompletionCount}
+                          />
+                        )}
+                        {openTask?.taskType === "Schedule" && (
+                          <ScheduleTask
+                            taskData={taskData}
+                            week={week}
+                            count={count}
+                            setCount={setCount}
+                            taskCompletionCount={taskCompletionCount}
+                            setTaskCompletionCount={setTaskCompletionCount}
+                          />
+                        )}
                       </div>
-                      {openTask?.taskType === "Classes" && (
-                        <ClassesTask taskData={taskData} />
-                      )}
-                      {openTask?.taskType === "Assignment" && (
-                        <AssignmentTask
-                          taskData={taskData}
-                          chapters={chapters}
-                          count={count}
-                          setCount={setCount}
-                        />
-                      )}
-                      {openTask?.taskType === "Reading" && (
-                        <ReadingTask
-                          taskData={taskData}
-                          count={count}
-                          setCount={setCount}
-                        />
-                      )}
-                      {openTask?.taskType === "Quiz" && (
-                        <QuizTask
-                          chapter={chapter}
-                          taskData={taskData}
-                          count={count}
-                          setCount={setCount}
-                        />
-                      )}
-                      {openTask?.taskType === "LiveTests" && (
-                        <LiveTestTask
-                          taskData={taskData}
-                          count={count}
-                          setCount={setCount}
-                        />
-                      )}
-                      {openTask?.taskType === "Video" && (
-                        <VideoTask
-                          count={count}
-                          setCount={setCount}
-                          taskData={taskData}
-                        />
-                      )}
-                      {openTask?.taskType === "Audio" && (
-                        <AudioTask
-                          taskData={taskData}
-                          count={count}
-                          setCount={setCount}
-                        />
-                      )}
-                      {openTask?.taskType === "Files" && (
-                        <FilesTask
-                          taskData={taskData}
-                          count={count}
-                          setCount={setCount}
-                        />
-                      )}
-                      {openTask?.taskType === "Schedule" && (
-                        <ScheduleTask
-                          taskData={taskData}
-                          week={week}
-                          count={count}
-                          setCount={setCount}
-                        />
-                      )}
-                    </div>
+                    )}
                   </div>
                 </div>
               </main>

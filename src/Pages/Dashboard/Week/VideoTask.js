@@ -10,7 +10,13 @@ import { useNavigate } from "react-router-dom";
 import Loading from "../../Shared/Loading/Loading";
 import Quiz from "./SubFile/Shared/Quiz";
 import { saveAs } from "file-saver";
-const VideoTask = ({ taskData, count, setCount }) => {
+const VideoTask = ({
+  taskData,
+  count,
+  setCount,
+  taskCompletionCount,
+  setTaskCompletionCount,
+}) => {
   const navigate = useNavigate();
   const [currentTime, setCurrentTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -184,6 +190,9 @@ const VideoTask = ({ taskData, count, setCount }) => {
           title: "Congratulations!",
           text: "You have completed successfully!",
         });
+        setTimeout(() => {
+          setTaskCompletionCount(taskCompletionCount + 1);
+        }, 2000);
         // navigate(-1);
       } else {
         Swal.fire({
@@ -399,6 +408,8 @@ const VideoTask = ({ taskData, count, setCount }) => {
           questions={taskData?.completionParameter?.questions}
           count={count}
           setCount={setCount}
+          taskCompletionCount={taskCompletionCount}
+          setTaskCompletionCount={setTaskCompletionCount}
         />
       )}
     </div>
