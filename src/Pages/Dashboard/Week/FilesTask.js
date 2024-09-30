@@ -8,7 +8,13 @@ import Loading from "../../Shared/Loading/Loading";
 import Quiz from "./SubFile/Shared/Quiz";
 import { CircularProgress } from "@mui/material";
 
-const FilesTask = ({ taskData, count, setCount }) => {
+const FilesTask = ({
+  taskData,
+  count,
+  setCount,
+  taskCompletionCount,
+  setTaskCompletionCount,
+}) => {
   const { userInfo, user } = useContext(AuthContext);
   if (userInfo.role !== "admin") {
     window.addEventListener("contextmenu", (e) => {
@@ -100,6 +106,9 @@ const FilesTask = ({ taskData, count, setCount }) => {
           title: "Congratulations!",
           text: "You have completed successfully!",
         });
+        setTimeout(() => {
+          setTaskCompletionCount(taskCompletionCount + 1);
+        }, 2000);
         // navigate(`/questLevels/${chapterId}`);
       } else {
         Swal.fire({
@@ -352,6 +361,8 @@ const FilesTask = ({ taskData, count, setCount }) => {
             questions={taskData?.completionParameter?.questions}
             count={count}
             setCount={setCount}
+            taskCompletionCount={taskCompletionCount}
+            setTaskCompletionCount={setTaskCompletionCount}
           />
         )}
         <div className="px-4 py-20 textEditor">

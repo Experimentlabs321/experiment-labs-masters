@@ -7,7 +7,13 @@ import { AuthContext } from "../../../../../contexts/AuthProvider";
 import Loading from "../../../../Shared/Loading/Loading";
 import Swal from "sweetalert2";
 
-const Submission = ({ taskData, count, setCount }) => {
+const Submission = ({
+  taskData,
+  count,
+  setCount,
+  taskCompletionCount,
+  setTaskCompletionCount,
+}) => {
   const [fileLoading, setFileLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState();
   // upload file
@@ -208,8 +214,11 @@ const Submission = ({ taskData, count, setCount }) => {
           }
           // console.log(newNotification);
           toast.success("Assignment Submitted Successfully");
-          setCount(count + 1);
           checkSubmit();
+          setCount(count + 1);
+          setTimeout(() => {
+            setTaskCompletionCount(taskCompletionCount + 1);
+          }, 2000);
         }
 
         Loading().close();

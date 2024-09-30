@@ -13,6 +13,8 @@ const Quiz = ({
   setCompletionStatus,
   count,
   setCount,
+  taskCompletionCount,
+  setTaskCompletionCount,
 }) => {
   const { user, userInfo } = useContext(AuthContext);
   const [openTask, setOpenTask] = useState(
@@ -115,6 +117,9 @@ const Quiz = ({
           title: "Congratulations!",
           text: "You have completed successfully!",
         });
+        setTimeout(() => {
+          setTaskCompletionCount(taskCompletionCount + 1);
+        }, 2000);
         // navigate(-1);
       } else {
         Swal.fire({

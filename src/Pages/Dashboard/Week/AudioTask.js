@@ -1,7 +1,13 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../../../contexts/AuthProvider";
 
-const AudioTask = ({ taskData, count, setCount }) => {
+const AudioTask = ({
+  taskData,
+  count,
+  setCount,
+  taskCompletionCount,
+  setTaskCompletionCount,
+}) => {
   const { userInfo } = useContext(AuthContext);
   if (userInfo.role !== "admin") {
     window.addEventListener("contextmenu", (e) => {

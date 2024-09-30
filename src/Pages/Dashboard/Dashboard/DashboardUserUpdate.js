@@ -95,6 +95,7 @@ const DashboardUserUpdate = ({
   const { userInfo } = useContext(AuthContext);
   const [currentWeek, setCurrentWeek] = useState({});
   const [completionPercentage, setCompletionPercentage] = useState(0);
+  const [completionLoading, setCompletionLoading] = useState(false);
   useEffect(() => {
     const currentDateTime = new Date();
     weeks?.forEach((element) => {
@@ -126,38 +127,21 @@ const DashboardUserUpdate = ({
     joinQuestImg,
   } = dashboardTheme;
 
-
   useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters`)
-      .then((response) => {
-        const currentCourseChapter = response?.data?.filter(
-          (item) => item?.courseId === selectedCourse?._id
-        );
-        if (currentCourseChapter) {
-          let totalCompleted = 0;
-          let totalTask = 0;
-          currentCourseChapter?.forEach((item) => {
-            item?.tasks?.forEach((singleTask) => {
-              totalTask++;
-              if (singleTask?.participants) {
-                if (
-                  singleTask?.participants?.find(
-                    (item) => item?.participantId === userInfo?._id
-                  )
-                ) {
-                  totalCompleted++;
-                }
-              }
-            });
-          });
-          if (totalCompleted !== 0 && totalTask !== 0)
-            setCompletionPercentage(
-              parseInt((totalCompleted / totalTask) * 100)
-            );
-        }
-      })
-      .catch((error) => console.error(error));
+    setCompletionLoading(true);
+    const batchId = userInfo?.courses?.find(
+      (item) => item?.courseId === selectedCourse?._id
+    )?.batchId;
+    if (selectedCourse?._id && userInfo?._id)
+      axios
+        .get(
+          `${process.env.REACT_APP_SERVERLESS_API}/api/v1/courses/courseId/${selectedCourse?._id}/batchId/${batchId}/userId/${userInfo?._id}`
+        )
+        .then((response) => {
+          setCompletionPercentage(response?.data?.completionPercentage);
+          setCompletionLoading(false);
+        })
+        .catch((error) => console.error(error));
   }, [userInfo, selectedCourse]);
 
   return (
@@ -217,7 +201,7 @@ const DashboardUserUpdate = ({
                     className="cursor-pointer py-2 text-[#6A6A6A] text-[14px] font-[400] "
                     onClick={() => {
                       setSelectedCourse(option);
-                    //  setCompletionPercentage(0);
+                      //  setCompletionPercentage(0);
                       localStorage.setItem("course", option?.courseFullName);
                       setIsOpen(false);
                     }}
@@ -251,13 +235,23 @@ const DashboardUserUpdate = ({
                     alt="person"
                   />
                   <div className="flex flex-col lg:flex-row items-center justify-center gap-3 lg:justify-around h-full">
-                    <h1 className="lg:text-[26px] text-[15px] font-[600] text-white text-center z-[1]">
-                      {courseCompletionText}{" "}
-                      <span className="text-[#FFDB70]">
-                        {completionPercentage}%
-                      </span>{" "}
-                      complete
-                    </h1>
+                    {completionLoading && (
+                      <div className=" flex align-items-center my-5 py-5">
+                        <CircularProgress
+                          sx={{ color: "inherit" }}
+                          className="w-full mx-auto my-auto"
+                        />
+                      </div>
+                    )}
+                    {!completionLoading && (
+                      <h1 className="lg:text-[26px] text-[15px] font-[600] text-white text-center z-[1]">
+                        {courseCompletionText}{" "}
+                        <span className="text-[#FFDB70]">
+                          {completionPercentage}%
+                        </span>{" "}
+                        complete
+                      </h1>
+                    )}
                   </div>
                 </>
               ) : (
@@ -270,13 +264,23 @@ const DashboardUserUpdate = ({
                     />
                   </div>
                   <div className="flex flex-col lg:flex-row items-center justify-center gap-3 lg:justify-around h-full">
-                    <h1 className="lg:text-[26px] text-[15px] font-[600] text-white text-center z-[1]">
-                      {courseCompletionText}{" "}
-                      <span className="text-[#FFDB70]">
-                        {completionPercentage}%
-                      </span>{" "}
-                      complete
-                    </h1>
+                    {completionLoading && (
+                      <div className=" flex align-items-center my-5 py-5">
+                        <CircularProgress
+                          sx={{ color: "inherit" }}
+                          className="w-full mx-auto my-auto"
+                        />
+                      </div>
+                    )}
+                    {!completionLoading && (
+                      <h1 className="lg:text-[26px] text-[15px] font-[600] text-white text-center z-[1]">
+                        {courseCompletionText}{" "}
+                        <span className="text-[#FFDB70] font-sans">
+                          {completionPercentage}%
+                        </span>{" "}
+                        complete
+                      </h1>
+                    )}
                   </div>
                 </>
               )}

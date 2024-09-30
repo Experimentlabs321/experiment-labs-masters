@@ -214,7 +214,7 @@ const Dashboard = () => {
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/chapters/weekId/${currentWeek?._id}`
       )
       .then((response) => {
-        console.log("API Response:", response?.data); // Add this line
+        // console.log("API Response:", response?.data); // Add this line
         setChapters(Array.isArray(response?.data) ? response?.data : []);
         setIsLoading(false);
       })

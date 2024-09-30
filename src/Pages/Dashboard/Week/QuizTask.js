@@ -11,7 +11,14 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const QuizTask = ({ taskData, count, setCount, chapter }) => {
+const QuizTask = ({
+  taskData,
+  count,
+  setCount,
+  chapter,
+  taskCompletionCount,
+  setTaskCompletionCount,
+}) => {
   const { userInfo } = useContext(AuthContext);
   const [open, setOpen] = React.useState(false);
   const [congratulationOpen, setCongratulationOpen] = useState(false);
@@ -389,8 +396,11 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/Quiz/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`,
         sendData
       );
-      setCount(count + 1);
       setCongratulationOpen(true);
+      setCount(count + 1);
+      setTimeout(() => {
+        setTaskCompletionCount(taskCompletionCount + 1);
+      }, 2000);
     } else {
       const sendData = {
         participantChapter: {
@@ -419,8 +429,11 @@ const QuizTask = ({ taskData, count, setCount, chapter }) => {
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/taskType/Quiz/taskId/${taskData?._id}/chapterId/${taskData?.chapterId}`,
         sendData
       );
-      setCount(count + 1);
       setCongratulationOpen(true);
+      setCount(count + 1);
+      setTimeout(() => {
+        setTaskCompletionCount(taskCompletionCount + 1);
+      }, 2000);
     }
     Loading().close();
   };
