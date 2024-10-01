@@ -4,16 +4,11 @@ import { Toaster } from "react-hot-toast";
 import ReactGA from "react-ga4";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "./contexts/AuthProvider";
-import axios from "axios";
-import { CircularProgress } from "@mui/material";
-import {
-  useSession,
-  useSupabaseClient,
-  useSessionContext,
-} from "@supabase/auth-helpers-react";
-import DynamicFavicon from "./DynamicFavicon";
 import AWS from "aws-sdk";
 import Loading from "./Pages/Shared/Loading/Loading";
+import DynamicFavicon from "./DynamicFavicon";
+import { useSession } from "@supabase/auth-helpers-react";
+import axios from "axios";
 
 AWS.config.update({
   accessKeyId: process.env.REACT_APP_accessKeyId,
@@ -23,60 +18,87 @@ AWS.config.update({
   httpOptions: { timeout: 30000, connectTimeout: 5000 },
 });
 
-// const s3 = new AWS.S3();
 ReactGA.initialize("G-RL7TBN4FCW");
+
 function App() {
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo, logOut } = useContext(AuthContext); // Use logOut from AuthContext
   const [data, setData] = useState(null);
   const [calendarEvents, setCalendarEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [devToolsOpen, setDevToolsOpen] = useState(false);
+  const [overlayActive, setOverlayActive] = useState(false);
+
   const session = useSession();
   const orgLogo = localStorage.getItem("organizationLogo");
   const pWASplashscreenLogo = localStorage.getItem("pWASplashscreenLogo");
   const pWALogo = localStorage.getItem("pWALogo");
-  /*   const [orgDetails, setOrgDetails] = useState({});
-
-  const rootUrl = window.location.href;
 
   useEffect(() => {
-    Loading();
-    try {
-      if (rootUrl) {
-        axios
-          .post(
-            `${process.env.REACT_APP_SERVER_API}/api/v1/organizations/findOrg`,
-            {
-              orgDefaultUrl: rootUrl,
-            }
-          )
-          .then((response) => {
-            console.log(response);
-            setOrgDetails(response?.data?.organization);
-            
-            if (window.location.href === response?.data?.organization?.orgDefaultUrl && response?.data?.organization?.orgRootUrl !== response?.data?.organization?.orgDefaultUrl) {
-              window.location.href = response?.data?.organization?.orgRootUrl;
-              Loading().close();
-              return;
-            }
-           
+    if (userInfo?.role === "user") {
+      // Disable right-click
+      const disableRightClick = (event) => event.preventDefault();
+      document.addEventListener("contextmenu", disableRightClick);
 
+      // Disable F12 and Ctrl+Shift+I
+      const disableInspectTools = (event) => {
+        if (event.key === "F12" || (event.ctrlKey && event.shiftKey && event.key === "I")) {
+          event.preventDefault();
+        }
+      };
+      document.addEventListener("keydown", disableInspectTools);
+
+      // Function to detect if Developer Tools are open
+      const detectDevTools = () => {
+        const threshold = 160;
+
+        // Simple detection based on window size difference
+        const sizeCheck = window.outerHeight - window.innerHeight > threshold || window.outerWidth - window.innerWidth > threshold;
+
+        // Time-based detection using debugger
+        let start = new Date();
+        debugger; // Will cause a delay if dev tools are open
+        let end = new Date();
+
+        if (sizeCheck || end - start > 100) {
+          setDevToolsOpen(true);
+          setOverlayActive(true); // Activate overlay when DevTools are open
+
+          logOut().then(() => {
+            const interval = setInterval(() => {
+              // Keep checking until dev tools are closed
+              if (
+                window.outerHeight - window.innerHeight <= threshold &&
+                window.outerWidth - window.innerWidth <= threshold &&
+                (new Date() - start) < 100
+              ) {
+                setDevToolsOpen(false);
+                setOverlayActive(false); // Remove overlay when DevTools are closed
+                clearInterval(interval);
+              }
+            }, 1000);
           });
-      }
-    } catch (error) {
-      Loading().close();
-      console.log(error);
-    }
-  }, [rootUrl]);
- */
+        }
+      };
 
+      window.addEventListener("resize", detectDevTools);
+
+      // Cleanup function to remove event listeners
+      return () => {
+        document.removeEventListener("contextmenu", disableRightClick);
+        document.removeEventListener("keydown", disableInspectTools);
+        window.removeEventListener("resize", detectDevTools);
+      };
+    }
+  }, [userInfo, logOut]);
+
+  // Fetch organization data and set dynamic manifest
   useEffect(() => {
     if (localStorage.getItem("role") === "admin") {
       fetchAndDisplayGoogleCalendarEvents();
     }
-    // fetchPrimaryCalendarInfo();
-    if (!userInfo) {
-      return;
-    }
+
+    if (!userInfo) return;
+
     fetch(
       `${process.env.REACT_APP_SERVERLESS_API}/api/v1/organizations/${userInfo?.organizationId}`
     )
@@ -84,6 +106,7 @@ function App() {
       .then((data) => {
         setData(data);
         setIsLoading(false);
+
         // Remove previous manifest if it exists
         const existingManifest = document.getElementById("manifest");
         if (existingManifest) {
@@ -127,7 +150,6 @@ function App() {
           new Blob([JSON.stringify(manifest)], { type: "application/json" })
         );
         document.head.appendChild(dynamicJsonDataLink);
-
         setIsLoading(false);
       })
       .catch((error) => {
@@ -136,16 +158,6 @@ function App() {
       });
   }, [userInfo, orgLogo]);
 
-  if (isLoading) {
-    return <div></div>;
-  }
-  const getCurrentDate = () => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const day = String(today.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
   async function fetchGoogleCalendarEvents() {
     const currentDate = new Date().toISOString();
     const url = new URL(
@@ -164,14 +176,11 @@ function App() {
       },
     });
 
-    // console.log(session);
-
     if (!response.ok) {
       throw new Error("Failed to fetch Google Calendar events");
     }
 
     const data = await response.json();
-    // console.log(data);
     return data.items || [];
   }
 
@@ -183,7 +192,6 @@ function App() {
         `${process.env.REACT_APP_SERVERLESS_API}/api/v1/tasks/updateEvent/${adminEmail}`,
         events
       );
-      // console.log(newEvent);
       if (newEvent?.data?.success) {
         console.log("Events updated");
       }
@@ -192,12 +200,35 @@ function App() {
       console.error(error.message);
     }
   }
-  //console.log(orgDetails);
+
+  if (isLoading) {
+    return <div></div>;
+  }
+
   return (
     <div className="max-w-[1920px] mx-auto">
       <DynamicFavicon />
       <RouterProvider router={router}></RouterProvider>
       <Toaster />
+      {overlayActive && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
+            color: "#fff",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 9999,
+          }}
+        >
+          <h1>Developer tools are open. Please close them to continue.</h1>
+        </div>
+      )}
     </div>
   );
 }

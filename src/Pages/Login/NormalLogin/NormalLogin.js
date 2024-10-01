@@ -75,9 +75,23 @@ const NormalLogin = () => {
       }
     }
   }, [user, userInfo]);
+  const detectDevTools = () => {
+    const threshold = 200; // Arbitrary value to determine if dev tools are open
+    const devToolsOpen = (window.outerHeight - window.innerHeight > threshold) || 
+                         (window.outerWidth - window.innerWidth > threshold);
+    return devToolsOpen;
+  };
   const handleLoginSubmit = async (e) => {
     Loading();
     e.preventDefault();
+    if (detectDevTools()) {
+      Swal.fire({
+        icon: "error",
+        title: "Developer Tools Detected",
+        text: "Please close the developer tools before logging in.",
+      });
+      return;
+    }
     const userAgent = window.navigator.userAgent;
     // console.log("shihab   ", window.navigator);
     const platform = window.navigator.platform;
@@ -169,6 +183,14 @@ const NormalLogin = () => {
   };
 
   const handleGoogleSignIn = async () => {
+    if (detectDevTools()) {
+      Swal.fire({
+        icon: "error",
+        title: "Developer Tools Detected",
+        text: "Please close the developer tools before logging in.",
+      });
+      return;
+    }
     Loading();
     const googleProvider = new GoogleAuthProvider();
     providerLogin(googleProvider)
