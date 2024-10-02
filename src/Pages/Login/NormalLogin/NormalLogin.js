@@ -422,14 +422,14 @@ const NormalLogin = () => {
                     Forgot password?
                   </button>
                 </div>
-                <div className="flex justify-center">
+                {/* <div className="flex justify-center">
                   <p className="font-medium text-lg">
                     Don't have an account?{" "}
                     <Link to={`/register`} className="text-blue cursor-pointer">
                       Register
                     </Link>
                   </p>
-                </div>
+                </div> */}
                 <p className="text-center text-error">
                   {/* <small>error</small> */}
                 </p>

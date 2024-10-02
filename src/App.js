@@ -38,7 +38,7 @@ function App() {
       // Disable right-click
       const disableRightClick = (event) => event.preventDefault();
       document.addEventListener("contextmenu", disableRightClick);
-
+  
       // Disable F12 and Ctrl+Shift+I
       const disableInspectTools = (event) => {
         if (event.key === "F12" || (event.ctrlKey && event.shiftKey && event.key === "I")) {
@@ -46,29 +46,30 @@ function App() {
         }
       };
       document.addEventListener("keydown", disableInspectTools);
-
+  
       // Function to detect if Developer Tools are open
       const detectDevTools = () => {
-        const threshold = 160;
-
+        const dynamicThreshold = Math.max(window.outerHeight * 0.15, window.outerWidth * 0.15); 
+        // 15% of the outer height or width (you can adjust this percentage)
+  
         // Simple detection based on window size difference
-        const sizeCheck = window.outerHeight - window.innerHeight > threshold || window.outerWidth - window.innerWidth > threshold;
-
+        const sizeCheck = window.outerHeight - window.innerHeight > dynamicThreshold || window.outerWidth - window.innerWidth > dynamicThreshold;
+  
         // Time-based detection using debugger
         let start = new Date();
         debugger; // Will cause a delay if dev tools are open
         let end = new Date();
-
+  
         if (sizeCheck || end - start > 100) {
           setDevToolsOpen(true);
           setOverlayActive(true); // Activate overlay when DevTools are open
-
+  
           logOut().then(() => {
             const interval = setInterval(() => {
               // Keep checking until dev tools are closed
               if (
-                window.outerHeight - window.innerHeight <= threshold &&
-                window.outerWidth - window.innerWidth <= threshold &&
+                window.outerHeight - window.innerHeight <= dynamicThreshold &&
+                window.outerWidth - window.innerWidth <= dynamicThreshold &&
                 (new Date() - start) < 100
               ) {
                 setDevToolsOpen(false);
@@ -79,9 +80,13 @@ function App() {
           });
         }
       };
-
+  
+      // Call the detectDevTools function once to check if DevTools are already open
+      detectDevTools();
+  
+      // Also add resize event listener to detect if DevTools open later
       window.addEventListener("resize", detectDevTools);
-
+  
       // Cleanup function to remove event listeners
       return () => {
         document.removeEventListener("contextmenu", disableRightClick);
