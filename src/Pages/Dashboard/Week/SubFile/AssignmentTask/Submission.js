@@ -107,7 +107,13 @@ const Submission = ({
       Loading();
       let fileUrl = "";
       if (selectedFile) fileUrl = await uploadFileToS3(selectedFile);
-
+      else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: " Please select a file to submit",
+        });
+      }
       const manageAssignment = {
         taskId: taskData?._id,
         taskName: taskData?.taskName,
