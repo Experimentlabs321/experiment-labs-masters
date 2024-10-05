@@ -81,17 +81,42 @@ function App() {
         }
       };
   
+      // Detect focus loss when dev tools are opened in a separate window
+      const detectFocusLoss = () => {
+        if (!document.hasFocus()) {
+          // Log out and activate overlay if focus is lost (could indicate dev tools opened in a new window)
+          setDevToolsOpen(true);
+          setOverlayActive(true);
+  
+          logOut().then(() => {
+            const focusInterval = setInterval(() => {
+              if (document.hasFocus()) {
+                setDevToolsOpen(false);
+                setOverlayActive(false);
+                clearInterval(focusInterval);
+              }
+            }, 1000);
+          });
+        }
+      };
+  
       // Call the detectDevTools function once to check if DevTools are already open
       detectDevTools();
   
       // Also add resize event listener to detect if DevTools open later
       window.addEventListener("resize", detectDevTools);
   
+      // Add blur event listener to detect focus loss (when dev tools are opened in a separate window)
+      window.addEventListener("blur", detectFocusLoss);
+      window.addEventListener("focus", detectFocusLoss);
+  
       // Cleanup function to remove event listeners
       return () => {
         document.removeEventListener("contextmenu", disableRightClick);
         document.removeEventListener("keydown", disableInspectTools);
         window.removeEventListener("resize", detectDevTools);
+        window.removeEventListener("blur", detectFocusLoss);
+        window.removeEventListener("focus", detectFocusLoss);
       };
     }
   }, [userInfo, logOut]);
