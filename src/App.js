@@ -47,90 +47,48 @@ function App() {
       };
       document.addEventListener("keydown", disableInspectTools);
   
-      // Detect if Developer Tools are open in a new window
+      // Function to detect if DevTools are open
       const detectDevTools = () => {
-        const dynamicThreshold = Math.max(window.outerHeight * 0.15, window.outerWidth * 0.15); 
+        const dynamicThreshold = Math.max(window.outerHeight * 0.15, window.outerWidth * 0.15);
   
-        // Simple detection based on window size difference
+        // Simple window size detection
         const sizeCheck = window.outerHeight - window.innerHeight > dynamicThreshold || window.outerWidth - window.innerWidth > dynamicThreshold;
   
-        // Time-based detection using debugger
+        // Time-based detection using debugger statement
         let start = new Date();
-        debugger; // Will cause a delay if dev tools are open
+        debugger; // This will pause and detect if DevTools are open
         let end = new Date();
   
+        // Detect if there's a time difference due to debugger pause, or the window size is abnormal
         if (sizeCheck || end - start > 100) {
+          // Log out if DevTools are open
           setDevToolsOpen(true);
-          setOverlayActive(true); // Activate overlay when DevTools are open
-  
-          logOut().then(() => {
-            const interval = setInterval(() => {
-              if (
-                window.outerHeight - window.innerHeight <= dynamicThreshold &&
-                window.outerWidth - window.innerWidth <= dynamicThreshold &&
-                (new Date() - start) < 100
-              ) {
-                setDevToolsOpen(false);
-                setOverlayActive(false); // Remove overlay when DevTools are closed
-                clearInterval(interval);
-              }
-            }, 1000);
-          });
+          setOverlayActive(true); // Optionally activate an overlay when DevTools are open
+          logOut(); // Log the user out immediately
         }
       };
   
-      // Detect focus loss when dev tools are opened in a separate window
-      let isTabSwitch = false; // Track if the focus loss was caused by a tab switch
+      // Interval-based continuous check for DevTools
+      const intervalId = setInterval(() => {
+        detectDevTools();
+      }, 1000); // Check every second
   
-      const detectFocusLoss = () => {
-        // Check if the user loses focus (could indicate developer tools in separate window)
-        setTimeout(() => {
-          if (!document.hasFocus() && !isTabSwitch) {
-            // Log out and activate overlay if focus is lost (could indicate dev tools opened in a new window)
-            setDevToolsOpen(true);
-            setOverlayActive(true);
-  
-            logOut().then(() => {
-              const focusInterval = setInterval(() => {
-                if (document.hasFocus()) {
-                  setDevToolsOpen(false);
-                  setOverlayActive(false);
-                  clearInterval(focusInterval);
-                }
-              }, 1000);
-            });
-          }
-        }, 200); // Small delay to prevent triggering on normal tab switch
-      };
-  
-      // Detect tab switches (before blur event fires)
-      const detectTabSwitch = () => {
-        isTabSwitch = true;
-        setTimeout(() => {
-          isTabSwitch = false; // Reset the flag after a short delay
-        }, 200);
-      };
-  
-      // Call the detectDevTools function once to check if DevTools are already open
-      detectDevTools();
-  
-      // Add event listeners
-      window.addEventListener("resize", detectDevTools);
-      window.addEventListener("blur", detectFocusLoss);
-      window.addEventListener("focus", detectFocusLoss);
-      window.addEventListener("visibilitychange", detectTabSwitch); // Detect tab switching
-  
-      // Cleanup function to remove event listeners
+      // Cleanup function to remove event listeners and interval
       return () => {
         document.removeEventListener("contextmenu", disableRightClick);
         document.removeEventListener("keydown", disableInspectTools);
-        window.removeEventListener("resize", detectDevTools);
-        window.removeEventListener("blur", detectFocusLoss);
-        window.removeEventListener("focus", detectFocusLoss);
-        window.removeEventListener("visibilitychange", detectTabSwitch);
+        clearInterval(intervalId); // Remove the interval check when component unmounts
       };
     }
   }, [userInfo, logOut]);
+  
+  
+  
+  
+  
+  
+  
+  
   
   
 
