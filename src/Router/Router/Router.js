@@ -139,6 +139,7 @@ import NormalLogin from "../../Pages/Login/NormalLogin/NormalLogin";
 import FindSchedule from "../../Pages/Dashboard/Week/FindSchedule";
 import AdminAssetHome from "../../Pages/Dashboard/AdminAsset/AdminAssetHome";
 import CourseAnalysis from "../../Pages/Dashboard/CourseInformation/CourseAnalysis";
+import ProtectedRoute from "../PrivateRoute/ProtectedRoute";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -250,7 +251,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    element: <Dashboard />,
+    element:<ProtectedRoute> <Dashboard /></ProtectedRoute>,
   },
   {
     path: "/preDashboard",
@@ -274,15 +275,15 @@ const router = createBrowserRouter([
   },
   {
     path: "/courseAccess",
-    element: <CourseAccess />,
+    element: <ProtectedRoute> <CourseAccess /></ProtectedRoute>,
   },
   {
     path: "/questLevels/:id",
-    element: <CourseInformation />,
+    element:<ProtectedRoute> <CourseInformation /></ProtectedRoute>,
   },
   {
     path: "/courseAnalysis/:id",
-    element: <CourseAnalysis />,
+    element:<ProtectedRoute> <CourseAnalysis /></ProtectedRoute>,
   },
   {
     path: "/week/:id",
@@ -330,47 +331,47 @@ const router = createBrowserRouter([
   },
   {
     path: "/createCourse",
-    element: <CreateCourse />,
+    element:<ProtectedRoute> <CreateCourse /></ProtectedRoute>,
   },
   {
     path: "/editCourse/:id",
-    element: <EditCourse />,
+    element:<ProtectedRoute> <EditCourse /></ProtectedRoute>,
   },
   {
     path: "/adminDashboardHome",
-    element: <AdminDashboardHome />,
+    element:<ProtectedRoute><AdminDashboardHome /></ProtectedRoute> ,
   },
   {
     path: "/manageLiveClasses/:id",
-    element: <ManageLiveClasses />,
+    element: <ProtectedRoute><ManageLiveClasses /></ProtectedRoute> ,
   },
   {
     path: "/assignment/:id",
-    element: <Assignment />,
+    element:<ProtectedRoute><Assignment /></ProtectedRoute> ,
   },
   {
     path: "/editTask/:id",
-    element: <EditTasks />,
+    element:<ProtectedRoute><EditTasks /></ProtectedRoute> ,
   },
   {
     path: "/manageReading/:id",
-    element: <ManageReading />,
+    element:<ProtectedRoute><ManageReading /></ProtectedRoute> ,
   },
   {
     path: "/manageFile/:id",
-    element: <ManageFile />,
+    element:<ProtectedRoute> <ManageFile /></ProtectedRoute>,
   },
   {
     path: "/manageVideo/:id",
-    element: <ManageVideo />,
+    element:<ProtectedRoute><ManageVideo /></ProtectedRoute> ,
   },
   {
     path: "/manageAudio/:id",
-    element: <ManageAudio />,
+    element:<ProtectedRoute> <ManageAudio /></ProtectedRoute>,
   },
   {
     path: "/manageQuiz/:id",
-    element: <ManageQuiz />,
+    element:<ProtectedRoute><ManageQuiz /></ProtectedRoute> ,
   },
   // {
   //   path: "/quizGeneralInfo/:id",
@@ -378,7 +379,7 @@ const router = createBrowserRouter([
   // },
   {
     path: "/quizResult/:id",
-    element: <QuizResult />,
+    element: <ProtectedRoute><QuizResult /></ProtectedRoute> ,
   },
   {
     path: "/quizEvaluationParameter/:id",
@@ -422,7 +423,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/mentorAssignments",
-    element: <MentorAssignments />,
+    element:<ProtectedRoute><MentorAssignments /></ProtectedRoute> ,
   },
   {
     path: "/mentors",
@@ -474,7 +475,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/students",
-    element: <Students />,
+    element:<ProtectedRoute> <Students /></ProtectedRoute>,
   },
   {
     path: "/studentsWhoNeedMoreGuidance",
@@ -646,11 +647,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/applyCertificate",
-    element: <ApplyCertificate />,
+    element:<ProtectedRoute><ApplyCertificate /></ProtectedRoute> ,
   },
   {
     path: "/applyCertificate/:courseId",
-    element: <DownloadCertificate />,
+    element: <ProtectedRoute><DownloadCertificate /></ProtectedRoute>,
   },
   {
     path: "/createCertificate",
@@ -662,11 +663,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/myStudents",
-    element: <MyStudents />,
+    element: <ProtectedRoute><MyStudents /></ProtectedRoute>,
   },
   {
     path: "/myStudents/:paidStudents",
-    element: <MyStudents />,
+    element: <ProtectedRoute><MyStudents /></ProtectedRoute> ,
   },
   {
     path: "/payment/:id",
@@ -698,7 +699,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/salesAndRevenue",
-    element: <SalesAndRevenue />,
+    element:<ProtectedRoute><SalesAndRevenue /></ProtectedRoute> ,
   },
   {
     path: "/findSchedule",
@@ -706,7 +707,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/adminAsset",
-    element:<AdminAssetHome /> ,
+    element: <ProtectedRoute><AdminAssetHome /></ProtectedRoute> ,
   },
 ]);
 

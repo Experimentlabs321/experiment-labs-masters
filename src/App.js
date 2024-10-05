@@ -47,10 +47,9 @@ function App() {
       };
       document.addEventListener("keydown", disableInspectTools);
   
-      // Function to detect if Developer Tools are open
+      // Detect if Developer Tools are open in a new window
       const detectDevTools = () => {
         const dynamicThreshold = Math.max(window.outerHeight * 0.15, window.outerWidth * 0.15); 
-        // 15% of the outer height or width (you can adjust this percentage)
   
         // Simple detection based on window size difference
         const sizeCheck = window.outerHeight - window.innerHeight > dynamicThreshold || window.outerWidth - window.innerWidth > dynamicThreshold;
@@ -66,7 +65,6 @@ function App() {
   
           logOut().then(() => {
             const interval = setInterval(() => {
-              // Keep checking until dev tools are closed
               if (
                 window.outerHeight - window.innerHeight <= dynamicThreshold &&
                 window.outerWidth - window.innerWidth <= dynamicThreshold &&
@@ -82,33 +80,45 @@ function App() {
       };
   
       // Detect focus loss when dev tools are opened in a separate window
-      const detectFocusLoss = () => {
-        if (!document.hasFocus()) {
-          // Log out and activate overlay if focus is lost (could indicate dev tools opened in a new window)
-          setDevToolsOpen(true);
-          setOverlayActive(true);
+      let isTabSwitch = false; // Track if the focus loss was caused by a tab switch
   
-          logOut().then(() => {
-            const focusInterval = setInterval(() => {
-              if (document.hasFocus()) {
-                setDevToolsOpen(false);
-                setOverlayActive(false);
-                clearInterval(focusInterval);
-              }
-            }, 1000);
-          });
-        }
+      const detectFocusLoss = () => {
+        // Check if the user loses focus (could indicate developer tools in separate window)
+        setTimeout(() => {
+          if (!document.hasFocus() && !isTabSwitch) {
+            // Log out and activate overlay if focus is lost (could indicate dev tools opened in a new window)
+            setDevToolsOpen(true);
+            setOverlayActive(true);
+  
+            logOut().then(() => {
+              const focusInterval = setInterval(() => {
+                if (document.hasFocus()) {
+                  setDevToolsOpen(false);
+                  setOverlayActive(false);
+                  clearInterval(focusInterval);
+                }
+              }, 1000);
+            });
+          }
+        }, 200); // Small delay to prevent triggering on normal tab switch
+      };
+  
+      // Detect tab switches (before blur event fires)
+      const detectTabSwitch = () => {
+        isTabSwitch = true;
+        setTimeout(() => {
+          isTabSwitch = false; // Reset the flag after a short delay
+        }, 200);
       };
   
       // Call the detectDevTools function once to check if DevTools are already open
       detectDevTools();
   
-      // Also add resize event listener to detect if DevTools open later
+      // Add event listeners
       window.addEventListener("resize", detectDevTools);
-  
-      // Add blur event listener to detect focus loss (when dev tools are opened in a separate window)
       window.addEventListener("blur", detectFocusLoss);
       window.addEventListener("focus", detectFocusLoss);
+      window.addEventListener("visibilitychange", detectTabSwitch); // Detect tab switching
   
       // Cleanup function to remove event listeners
       return () => {
@@ -117,9 +127,12 @@ function App() {
         window.removeEventListener("resize", detectDevTools);
         window.removeEventListener("blur", detectFocusLoss);
         window.removeEventListener("focus", detectFocusLoss);
+        window.removeEventListener("visibilitychange", detectTabSwitch);
       };
     }
   }, [userInfo, logOut]);
+  
+  
 
   // Fetch organization data and set dynamic manifest
   useEffect(() => {
