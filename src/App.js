@@ -82,16 +82,6 @@ function App() {
     }
   }, [userInfo, logOut]);
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-
   // Fetch organization data and set dynamic manifest
   useEffect(() => {
     if (localStorage.getItem("role") === "admin") {
