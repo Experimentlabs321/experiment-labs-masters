@@ -221,9 +221,9 @@ const AddStudent = () => {
         setStudentStatus("Prepaid");
         form.reset();
       } else {
-        if (!selectedBatch?._id) {
+        if (mode === "course" && !selectedBatch?._id) {
           Swal.fire({
-            title: "Pleas select a batch!",
+            title: "Please select a batch!",
             icon: "error",
           });
           return;
