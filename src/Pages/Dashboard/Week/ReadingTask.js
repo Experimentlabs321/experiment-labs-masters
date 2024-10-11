@@ -1,17 +1,14 @@
-// import mammoth from "mammoth";
 import React, { useContext, useEffect, useRef, useState } from "react";
-
 import axios from "axios";
 import { saveAs } from "file-saver";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import { Box, LinearProgress } from "@mui/material";
-
+import { Box, CircularProgress, Typography } from "@mui/material";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import Loading from "../../Shared/Loading/Loading";
 import Quiz from "./SubFile/Shared/Quiz";
+const IFRAME_TIMEOUT = 5000; // 5 sec timeout for iframe loading
 
 const ReadingTask = ({
   taskData,
@@ -23,49 +20,88 @@ const ReadingTask = ({
   const navigate = useNavigate();
   const [additionalFile, setAdditionalFile] = useState("");
   const { userInfo, user } = useContext(AuthContext);
-  if (userInfo.role !== "admin") {
-    window.addEventListener("contextmenu", (e) => {
-      e.preventDefault();
-    });
-  }
   const [openTask, setOpenTask] = useState(
     JSON.parse(localStorage.getItem("task"))
   );
   const [openQuiz, setOpenQuiz] = useState(false);
-  const [isOverlayVisible, setOverlayVisible] = useState(false);
   const [completionStatus, setCompletionStatus] = useState(false);
-  const pdfContainerRef = useRef(null);
+  const iframeRef = useRef(null); // Ref for iframe
+  const [iframeLoaded, setIframeLoaded] = useState(false);
+  const [hasReloaded, setHasReloaded] = useState(false); // Track if the page has already reloaded
+  const [loading, setLoading] = useState(true); // Loader state
+
   useEffect(() => {
     if (
       taskData?.participants?.find(
         (item) => item?.participant?.email === user?.email
       )
-    )
-      setCompletionStatus(true);
-    else setCompletionStatus(false);
-    if (
-      taskData?.additionalFiles &&
-      taskData?.additionalFiles !== additionalFile
     ) {
+      setCompletionStatus(true);
+    } else {
+      setCompletionStatus(false);
+    }
+    
+    if (taskData?.additionalFiles && taskData?.additionalFiles !== additionalFile) {
+      const timestamp = new Date().getTime()
       setAdditionalFile(
-        `https://docs.google.com/viewer?url=${taskData?.additionalFiles}&embedded=true`
+        `https://docs.google.com/viewer?url=${taskData?.additionalFiles}&embedded=true&timestamp=${timestamp}`
       );
+
+      // Set a fallback timer to reload the page if the iframe doesn't load within 1 minute
+      // const timeoutId = setTimeout(() => {
+      //   if (!iframeLoaded && !hasReloaded) {
+      //     console.log("Iframe did not load within 1 minute, reloading the page...");
+      //     setHasReloaded(true); // Mark the reload as done
+      //     window.location.reload(); // Reload the page
+      //   }
+      // }, IFRAME_TIMEOUT);
+      // Set a fallback timer to reload the iframe if it doesn't load within 1 minute
+// const timeoutId = setTimeout(() => {
+//   if (!iframeLoaded && !hasReloaded) {
+//     console.log("Iframe did not load within 1 minute, reloading the iframe...");
+//     setHasReloaded(true); // Mark the reload as done
+//     const iframe = document.getElementById(taskData?._id); // Replace with your iframe's ID
+//     if (iframe) {
+//       console.log("Reloaded",new Date())
+//       iframe.src = iframe.src; // Reload the iframe by resetting its src
+//     }
+//   }
+// }, IFRAME_TIMEOUT);
+
+//       return () => clearTimeout(timeoutId); // Clear the timeout on component unmount
     } else {
       setAdditionalFile("");
     }
-  }, [taskData, taskData?._id, user]);
+  }, [taskData, taskData?._id, user, iframeLoaded, hasReloaded]);
 
-  useEffect(() => {
-    const specificDiv = document.getElementById("document");
-    if (specificDiv) {
-      // console.log(
-      //   "Specific div has loaded.",
-      //   additionalFile,
-      //   taskData?.additionalFiles
-      // );
-      // You can perform actions related to the specific div here
-    }
-  }, [taskData, user, additionalFile]);
+  useEffect(()=>{
+    // const timeoutId = setTimeout(() => {
+    //   if (!iframeLoaded && !hasReloaded) {
+    //     console.log("Iframe did not load within 1 minute, reloading the iframe...");
+    //     setHasReloaded(true); // Mark the reload as done
+    //     const iframe = document.getElementById("test"); // Replace with your iframe's ID
+    //     if (iframe) {
+    //       console.log("Reloaded",new Date())
+    //       iframe.src = iframe.src; // Reload the iframe by resetting its src
+    //     }
+    //   }
+    // }, IFRAME_TIMEOUT);
+      const timeoutId = setTimeout(() => {
+        if (!iframeLoaded && !hasReloaded) {
+          console.log("Iframe did not load within 1 minute, reloading the page...");
+          setHasReloaded(true); // Mark the reload as done
+          window.location.reload(); // Reload the page
+        }
+      }, IFRAME_TIMEOUT);
+    
+          return () => clearTimeout(timeoutId);
+
+  },[setAdditionalFile,hasReloaded,iframeLoaded,taskData?._id])
+
+  const handleIframeLoad = () => {
+    setIframeLoaded(true); // Mark iframe as successfully loaded
+    setLoading(false); // Hide the loader
+  };
 
   const handleCompletion = async () => {
     Loading();
@@ -73,9 +109,7 @@ const ReadingTask = ({
       !taskData?.completionParameter ||
       taskData?.completionParameter?.completionParameter === "Without Quiz"
     ) {
-      // console.log("in");
       setOpenQuiz(false);
-      setOverlayVisible(false);
       const sendData = {
         participantChapter: {
           email: userInfo?.email,
@@ -97,7 +131,6 @@ const ReadingTask = ({
         sendData
       );
       Loading().close();
-      // setCompletionStatus(true);
       if (submitCompletion?.data?.acknowledged) {
         setCount(count + 1);
         setCompletionStatus(true);
@@ -109,29 +142,24 @@ const ReadingTask = ({
         setTimeout(() => {
           setTaskCompletionCount(taskCompletionCount + 1);
         }, 2000);
-        // navigate(`/questLevels/${chapterId}`);
       } else {
         Swal.fire({
           icon: "error",
           title: "Oops!",
-          text: "Some thing wrong happen please try again later!",
+          text: "Something went wrong, please try again later!",
         });
       }
     } else {
-      // console.log("else");
       Loading().close();
       setOpenQuiz(true);
-      setOverlayVisible(true);
     }
   };
-  // console.log(taskData);
+
   const [downloadProgress, setDownloadProgress] = useState(0);
   const [cancelTokenSource, setCancelTokenSource] = useState(null);
-  const [iframeLoaded, setIframeLoaded] = useState(false);
 
   const handleDownload = async () => {
     try {
-      // If there's an ongoing download, cancel it
       if (cancelTokenSource) {
         cancelTokenSource.cancel("Download cancelled");
       }
@@ -150,19 +178,16 @@ const ReadingTask = ({
         cancelToken: cancelToken.token,
       });
 
-      // Determine file name and extension
       const fileName = taskData?.additionalFiles.split("/").pop();
       const fileExtension = fileName.split(".").pop();
       const mimeType = getMimeType(fileExtension);
 
-      // Create Blob with response data
       const blob = new Blob([response.data], { type: mimeType });
 
-      // Save file
       saveAs(blob, fileName);
     } catch (error) {
       if (axios.isCancel(error)) {
-        // console.log("Download cancelled:", error.message);
+        console.log("Download cancelled:", error.message);
       } else {
         console.error("Error downloading the file:", error);
       }
@@ -172,7 +197,6 @@ const ReadingTask = ({
     }
   };
 
-  // Helper function to get MIME type based on file extension
   const getMimeType = (extension) => {
     switch (extension.toLowerCase()) {
       case "pdf":
@@ -192,45 +216,12 @@ const ReadingTask = ({
   };
 
   useEffect(() => {
-    // Cleanup the download if component unmounts or taskData?.additionalFiles changes
     return () => {
       if (cancelTokenSource) {
         cancelTokenSource.cancel("Download cancelled due to component unmount");
       }
     };
   }, [taskData?.additionalFiles, cancelTokenSource]);
-
-  useEffect(() => {
-    // Cleanup the download if taskData?.additionalFiles changes
-    return () => {
-      if (cancelTokenSource) {
-        cancelTokenSource.cancel(
-          "Download cancelled due to change in taskData"
-        );
-        setCancelTokenSource(null);
-        setDownloadProgress(0);
-      }
-    };
-  }, [taskData?.additionalFiles, cancelTokenSource]);
-  const [progress, setProgress] = React.useState(0);
-
-  useEffect(() => {
-    if (!iframeLoaded && taskData?.additionalFiles) {
-      const timer = setInterval(() => {
-        setProgress((oldProgress) => {
-          if (oldProgress === 100) {
-            return 0;
-          }
-          const diff = Math.random() * 10;
-          return Math.min(oldProgress + diff, 100);
-        });
-      }, 500);
-
-      return () => {
-        clearInterval(timer);
-      };
-    }
-  }, []);
 
   return (
     <div>
@@ -249,38 +240,21 @@ const ReadingTask = ({
         </button>
       )}
 
-      {!iframeLoaded && taskData?.additionalFiles && (
-        <div className=" flex justify-center  w-full  ">
+      {loading && taskData?.additionalFiles && (
+        <div className="flex justify-center w-full min-h-[72vh] items-center">
           <div className="flex flex-col items-center gap-3">
-            <p className="mt-20">Loading...</p>
-            <Box sx={{ width: "500px" }}>
-              <LinearProgress
-                sx={{ height: "20px", borderRadius: "10px" }}
-                variant="determinate"
-                value={progress}
-              />
-            </Box>
+            <CircularProgress />
+            <Typography variant="h6" align="center" color="textSecondary">
+              Document is loading...
+            </Typography>
           </div>
-
-          {/* <CircularProgress className="w-full mx-auto" /> */}
         </div>
       )}
 
       {additionalFile && (
-        <div
-          key={taskData?._id}
-          className="min-h-[72vh] mb-[60px]"
-          style={{ display: iframeLoaded ? "block" : "none" }}
-        >
+        <div id="test" key={taskData?._id} className="min-h-[72vh] mb-[60px]" style={{ display: iframeLoaded ? "block" : "none" }}>
           <div className="container mx-auto relative">
-            {/*   {isOverlayVisible && (
-              <div
-                className="fixed top-0 left-0 w-full h-full z-[9999] bg-transparent"
-                onClick={handleCompletion}
-              ></div>
-            )} */}
-
-            {additionalFile &&
+          {additionalFile &&
               (taskData?.additionalFiles.endsWith(".png") ||
               taskData?.additionalFiles.endsWith(".jpg") ||
               taskData?.additionalFiles.endsWith(".jpeg") ||
@@ -299,33 +273,33 @@ const ReadingTask = ({
                 </div>
               ) : (
                 <iframe
+                  ref={iframeRef}
                   id={taskData?._id}
                   key={taskData?._id}
                   src={additionalFile && additionalFile}
-                  onLoad={() => {
+                   onLoad={() => {
                     // console.log("iframe loaded");
-                    setIframeLoaded(true);
-                  }}
+                     setIframeLoaded(true);
+                  handleIframeLoad()
+                 }}
+                  // onLoad={handleIframeLoad}
                   title="Your Document"
                   className="h-[68vh] mx-auto border-x-30 mt-40 border-[10px] border-b-50 rounded-lg border-[#292929]"
                   width="90%"
                   height="80vh"
                 ></iframe>
               ))}
-
             {/* <iframe
-            id="document"
-            // key={additionalFile}
-            key={taskData?._id || additionalFile}
-            src="https://experiment-labs-my-bucket.s3.eu-north-1.amazonaws.com/_Level+1+-+Getting+Started+Edvanta.pdf"
-            // src={`https://docs.google.com/viewer?url=${
-            //   taskData?.additionalFiles ? taskData?.additionalFiles : ""
-            // }&embedded=true`
-            title="Your Document"
-            className="h-[68vh] mx-auto border-x-30 mt-40 border-[10px] border-b-50 rounded-lg border-[#292929]"
-            width="90%"
-            height="80vh"
-          ></iframe> */}
+              ref={iframeRef}
+              id={taskData?._id}
+              key={taskData?._id}
+              src={additionalFile}
+              onLoad={handleIframeLoad}
+              title="Your Document"
+              className="h-[68vh] mx-auto border-x-30 mt-40 border-[10px] border-b-50 rounded-lg border-[#292929]"
+              width="90%"
+              height="80vh"
+            ></iframe> */}
           </div>
           {taskData?.enableDownload && (
             <div className="flex justify-end me-20 my-10">
@@ -348,15 +322,11 @@ const ReadingTask = ({
                   Cancel
                 </button>
               )}
-              {/*  {downloadProgress > 0 && (
-                <div className="ml-4 flex items-center">
-                  <p>{downloadProgress}%</p>
-                </div>
-              )} */}
             </div>
           )}
         </div>
       )}
+
       {openQuiz && (
         <Quiz
           setOpenQuiz={setOpenQuiz}
@@ -370,6 +340,7 @@ const ReadingTask = ({
           setTaskCompletionCount={setTaskCompletionCount}
         />
       )}
+
       <div className="px-4 py-20 textEditor">
         <div dangerouslySetInnerHTML={{ __html: taskData?.readingMaterial }} />
       </div>
