@@ -69,6 +69,11 @@ function App() {
   }, [rootUrl]);
  */
 
+  // useEffect(() => {
+  //   if(userInfo?.isUser === false){
+  //     window.location.href = '/login';
+  //   }
+  // }, [userInfo?.devices]);
   useEffect(() => {
     if (localStorage.getItem("role") === "admin") {
       fetchAndDisplayGoogleCalendarEvents();
