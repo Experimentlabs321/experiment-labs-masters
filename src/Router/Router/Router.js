@@ -139,6 +139,7 @@ import NormalLogin from "../../Pages/Login/NormalLogin/NormalLogin";
 import FindSchedule from "../../Pages/Dashboard/Week/FindSchedule";
 import AdminAssetHome from "../../Pages/Dashboard/AdminAsset/AdminAssetHome";
 import CourseAnalysis from "../../Pages/Dashboard/CourseInformation/CourseAnalysis";
+import PrivateRouteAdmin from "../PrivateRoute/PrivateRouteAdmin";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -338,7 +339,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/adminDashboardHome",
-    element: <AdminDashboardHome />,
+    element: <PrivateRouteAdmin><AdminDashboardHome/></PrivateRouteAdmin>,
   },
   {
     path: "/manageLiveClasses/:id",
@@ -422,11 +423,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/mentorAssignments",
-    element: <MentorAssignments />,
+    element: <PrivateRouteAdmin><MentorAssignments /></PrivateRouteAdmin>,
   },
   {
     path: "/mentors",
-    element: <Mentors />,
+    element: <PrivateRouteAdmin><Mentors /></PrivateRouteAdmin>,
   },
   {
     path: "/mentorCalendar/:email",
@@ -454,7 +455,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/schedule",
-    element: <ExecutionMentorSchedule />,
+    element: <PrivateRouteAdmin><ExecutionMentorSchedule /></PrivateRouteAdmin>,
   },
   {
     path: "/mentorSchedule",
@@ -618,7 +619,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/feedback",
-    element: <Feedback />,
+    element: <PrivateRouteAdmin><Feedback /></PrivateRouteAdmin>,
   },
   {
     path: "/login/:id",
@@ -634,7 +635,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/updateOrganization",
-    element: <UpdateOrganization />,
+    element: <PrivateRouteAdmin><UpdateOrganization /></PrivateRouteAdmin>,
   },
   {
     path: "/internShips",
@@ -654,15 +655,15 @@ const router = createBrowserRouter([
   },
   {
     path: "/createCertificate",
-    element: <CreateCertificate />,
+    element: <PrivateRouteAdmin><CreateCertificate /></PrivateRouteAdmin>,
   },
   {
     path: "/offers",
-    element: <Offers />,
+    element: <PrivateRouteAdmin><Offers /></PrivateRouteAdmin>,
   },
   {
     path: "/myStudents",
-    element: <MyStudents />,
+    element: <PrivateRouteAdmin><MyStudents /></PrivateRouteAdmin>,
   },
   {
     path: "/myStudents/:paidStudents",
@@ -682,7 +683,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/announcements",
-    element: <Announcements />,
+    element: <PrivateRouteAdmin><Announcements /></PrivateRouteAdmin>,
   },
   {
     path: "/createBundle",
@@ -698,7 +699,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/salesAndRevenue",
-    element: <SalesAndRevenue />,
+    element: <PrivateRouteAdmin><SalesAndRevenue /></PrivateRouteAdmin>,
   },
   {
     path: "/findSchedule",
@@ -706,7 +707,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/adminAsset",
-    element:<AdminAssetHome /> ,
+    element: <PrivateRouteAdmin><AdminAssetHome /></PrivateRouteAdmin> ,
   },
 ]);
 

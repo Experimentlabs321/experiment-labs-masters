@@ -1,12 +1,11 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthProvider";
-import axios from "axios";
 import Swal from "sweetalert2";
 
-const PrivateRoutes = ({ children }) => {
+const PrivateRouteAdmin = ({ children }) => {
   const { user, loading, userInfo, logOut } = useContext(AuthContext); // Assuming you have a logout function in AuthContext
-  const [isLoading, setIsLoading] = useState(true);
+
   const location = useLocation();
   const fullPath = `${location.pathname}${location.search}`;
   const [taskTypeForAPI, setTaskTypeForAPI] = useState("");
@@ -23,45 +22,10 @@ const PrivateRoutes = ({ children }) => {
   const searchParams = new URLSearchParams(queryString);
   const taskType = searchParams.get("taskType"); // This will give you 'Schedule'
 
-  // console.log(id); // Output: 6639e0a8e7854998c458c4e3
-  // console.log(taskType); // Output: Schedule
 
-  // Map taskType to API-friendly values
-  useEffect(() => {
-    if (taskType === "Assignment") setTaskTypeForAPI("assignments");
-    else if (taskType === "Classes") setTaskTypeForAPI("classes");
-    else if (taskType === "Reading") setTaskTypeForAPI("readings");
-    else if (taskType === "Quiz") setTaskTypeForAPI("quizes");
-    else if (taskType === "Live Test") setTaskTypeForAPI("liveTests");
-    else if (taskType === "Video") setTaskTypeForAPI("videos");
-    else if (taskType === "Audio") setTaskTypeForAPI("audios");
-    else if (taskType === "Files") setTaskTypeForAPI("files");
-    else if (taskType === "Schedule") setTaskTypeForAPI("schedule");
-  }, [taskType]);
-
-  // Fetch task data
-  useEffect(() => {
-    if (taskTypeForAPI && id) {
-      axios
-        .get(
-          `${process.env.REACT_APP_SERVERLESS_API}/api/v2/tasks/taskType/${taskTypeForAPI}/taskId/${id}`
-        )
-        .then((response) => {
-          setTaskData(response.data);
-          setIsLoading(false);
-        })
-        .catch((error) => {
-          console.error(error);
-          setIsLoading(false);
-        });
-    }
-  }, [taskTypeForAPI, id]);
-
-  // console.log(taskTypeForAPI);
-  // console.log(taskData);
 
   // Loading state
-  if (loading || isLoading) {
+  if (loading || !userInfo) {
     return (
       <div className="text-center">
         <div role="status">
@@ -91,7 +55,7 @@ const PrivateRoutes = ({ children }) => {
   const showAccessDeniedPopup = () => {
     Swal.fire({
       title: "Access Denied",
-      text: "You do not have access to this task.",
+      text: "You do not have access to this route",
       icon: "error",
       confirmButtonText: "Logout",
     }).then((result) => {
@@ -104,14 +68,10 @@ const PrivateRoutes = ({ children }) => {
       }
     });
   };
-
+  
   // Check if user is authenticated and their courseId matches taskData.courseId
-  if (user && userInfo) {
-    const userCourse = userInfo?.courses?.find(
-      (course) => course?.courseId === taskData?.courseId
-    );
-
-    if (userCourse || userInfo?.role === 'admin') {
+  if (user) {
+    if (userInfo?.role === 'admin') {
       return children;
     } else {
       showAccessDeniedPopup(); // Trigger SweetAlert when access is denied
@@ -122,4 +82,4 @@ const PrivateRoutes = ({ children }) => {
   return <Navigate to="/login" state={{ from: fullPath }} replace></Navigate>;
 };
 
-export default PrivateRoutes;
+export default PrivateRouteAdmin;
