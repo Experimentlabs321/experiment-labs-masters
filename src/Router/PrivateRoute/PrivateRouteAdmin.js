@@ -71,7 +71,7 @@ const PrivateRouteAdmin = ({ children }) => {
   
   // Check if user is authenticated and their courseId matches taskData.courseId
   if (user) {
-    if (userInfo?.role === 'admin') {
+    if (userInfo?.role === 'admin' || userInfo?.role === 'execution mentor' || userInfo?.role === 'expert mentor') {
       return children;
     } else {
       showAccessDeniedPopup(); // Trigger SweetAlert when access is denied
